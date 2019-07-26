@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@patternfly/patternfly": "^2.23.0",
     "@patternfly/react-core": "^3.75.2",
     "@types/jest": "24.0.15",
     "@types/node": "12.6.8",
