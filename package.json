@@ -1,7 +1,7 @@
 {
-  "name": "patternfly-seed",
+  "name": "infinispan-console-ng",
   "version": "0.0.1",
-  "description": "An open source build scaffolding utility for web apps.",
+  "description": "The console for Infinispan/Red Hat Datagrid",
   "main": "index.js",
   "repository": "https://github.com/patternfly/patternfly-react-seed.git",
   "license": "MIT",
@@ -67,6 +67,7 @@
     "@patternfly/react-core": "^3.77.2",
     "@patternfly/react-icons": "^3.10.15",
     "@patternfly/react-styles": "^3.5.7",
+    "axios": "^0.19.0",
     "react-document-title": "^2.0.3",
     "react-router-dom": "^5.0.1",
     "react-router-last-location": "^2.0.1"
