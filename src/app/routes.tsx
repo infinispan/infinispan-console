@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { Alert, PageSection } from '@patternfly/react-core';
-import { DynamicImport } from '@app/DynamicImport';
-import { accessibleRouteChangeHandler } from '@app/utils/utils';
-import { Dashboard } from '@app/Dashboard/Dashboard';
-import { NotFound } from '@app/NotFound/NotFound';
+import {Route, RouteComponentProps, Switch} from 'react-router-dom';
+import {Alert, PageSection} from '@patternfly/react-core';
+import {DynamicImport} from '@app/DynamicImport';
+import {accessibleRouteChangeHandler} from '@app/utils/utils';
+import {CacheManagers} from '@app/CacheManagers/CacheManagers';
+import {NotFound} from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
-import { LastLocationProvider, useLastLocation } from 'react-router-last-location';
+import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
+import {Caches} from "@app/Caches/Caches";
+
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
   return () => import(/* webpackChunkName: 'support' */ '@app/Support/Support');
@@ -70,21 +72,20 @@ export interface IAppRoute {
 
 const routes: IAppRoute[] = [
   {
-    component: Dashboard,
+    component: CacheManagers,
     exact: true,
     icon: null,
-    label: 'Dashboard',
+    label: 'Cache Managers',
     path: '/',
-    title: 'Main Dashboard Title'
+    title: 'CacheManagers View'
   },
   {
-    component: Support,
+    component: Caches,
     exact: true,
     icon: null,
-    isAsync: true,
-    label: 'Support',
-    path: '/support',
-    title: 'Support Page Title'
+    label: 'Caches',
+    path: '/caches',
+    title: 'Cachessssss'
   }
 ];
 
