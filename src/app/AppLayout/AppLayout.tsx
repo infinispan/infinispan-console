@@ -48,11 +48,11 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
     <Nav id="nav-primary-simple">
       <NavList id="nav-list-simple" variant={NavVariants.simple}>
         {routes.map((route, idx) => {
-          return (
+          return route.menu ? (
             <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
               <NavLink exact={true} to={route.path} activeClassName="pf-m-current">{route.label}</NavLink>
             </NavItem>
-          );
+          ) : ('');
         })}
       </NavList>
     </Nav>

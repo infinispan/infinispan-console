@@ -68,6 +68,7 @@ export interface IAppRoute {
   path: string;
   title: string;
   isAsync?: boolean;
+  menu: boolean;
 }
 
 const routes: IAppRoute[] = [
@@ -77,7 +78,8 @@ const routes: IAppRoute[] = [
     icon: null,
     label: 'Cache Managers',
     path: '/',
-    title: 'CacheManagers View'
+    title: 'CacheManagers View',
+    menu: true
   },
   {
     component: Caches,
@@ -85,14 +87,15 @@ const routes: IAppRoute[] = [
     icon: null,
     label: 'Caches',
     path: '/caches',
-    title: 'Cachessssss'
+    title: 'Caches',
+    menu: false
   }
 ];
 
 const AppRoutes = () => (
   <LastLocationProvider>
     <Switch>
-      {routes.map(({ path, exact, component, title, isAsync, icon }, idx) => (
+      {routes.map(({ path, exact, component, title, isAsync, icon}, idx) => (
         <RouteWithTitleUpdates
           path={path}
           exact={exact}
