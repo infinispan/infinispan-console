@@ -76,7 +76,7 @@ const Cluster: React.FunctionComponent<any> = (props) => {
   //   .then(response => response.json())
   //   .then(data => console.log(data));
   //
-  // fetch('http://localhost:11222/rest/v2/server/cache-managers/DefaultCacheManager/health')
+  // fetch('http://localhost:11222/rest/v2/cache-managers/DefaultCacheManager/health')
   //   .then(response => response)
   //   .then(data => console.log(data));
 

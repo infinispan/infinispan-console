@@ -8,6 +8,7 @@ import {NotFound} from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
 import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
 import {Caches} from "@app/Caches/Caches";
+import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -79,6 +80,15 @@ const routes: IAppRoute[] = [
     label: 'Cache Managers',
     path: '/',
     title: 'CacheManagers View',
+    menu: true
+  },
+  {
+    component: InfinispanServer,
+    exact: true,
+    icon: null,
+    label: 'Infinispan Server',
+    path: '/server',
+    title: 'Infinispan Server',
     menu: true
   },
   {
