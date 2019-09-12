@@ -17,7 +17,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cacheManagers, setCacheManagers] = useState([]);
   const [expanded, setExpanded] = useState('');
   const [cacheManager, setCacheManager] = useState<ClusterManager | undefined>(undefined);
-  const [stats, setStatistics] = useState<CmStats>({statistics_enabled: false, read_write_ratio: 0.0});
+  const [cacheConfigs, setCacheConfigs] = useState([]);
+  const [stats, setStatistics] = useState<CmStats>({statistics_enabled: false});
 
   useEffect(() => {
     fetch("http://localhost:11222/rest/v2/server/cache-managers/")
@@ -29,12 +30,17 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
             .then(response => response.json())
             .then(data => {
-              setCacheManager(data)
+              setCacheManager(data);
+            });
+          fetch("http://localhost:11222/rest/v2/cache-managers/" + cm + "/cache-configs")
+            .then(response => response.json())
+            .then(data => {
+              setCacheConfigs(data);
             });
           fetch("http://localhost:11222/rest/v2/cache-managers/" + cm + "/stats")
             .then(response => response.json())
             .then(data => {
-              setStatistics(data)
+              setStatistics({statistics_enabled: data.statistics_enabled});
             });
         })
       });
@@ -61,12 +67,12 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <ListItem> <ClusterIcon/> {cacheManager.cluster_name} size <b>{cacheManager.cluster_size}</b></ListItem>
                 <ListItem>Physical Addresses: <b>{cacheManager.physical_addresses}</b></ListItem>
                 <ListItem><Label>{cacheManager.cache_manager_status}</Label></ListItem>
-                <ListItem>Statistics enabled: <b>{stats.statistics_enabled}</b></ListItem>
+                <ListItem>Statistics enabled: <b>{JSON.stringify(stats.statistics_enabled)}</b></ListItem>
                 <ListItem>
                   <Link to={{
                     pathname: '/caches',
                     state: {
-                      cacheManager:cm,
+                      cacheManager: cm,
                       caches: cacheManager.defined_caches
                     }
                   }}>Caches</Link>

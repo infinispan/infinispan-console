@@ -18,7 +18,6 @@ interface InfinispanServer {
 
 interface CmStats {
   statistics_enabled: boolean;
-  read_write_ratio: number;
 }
   // time_since_start":1,
   // time_since_reset":1,
