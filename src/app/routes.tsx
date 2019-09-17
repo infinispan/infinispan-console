@@ -8,6 +8,7 @@ import {NotFound} from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
 import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
 import {Caches} from "@app/Caches/Caches";
+import {CreateCache} from "@app/Caches/CreateCache";
 import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
 
 let routeFocusTimer: number;
@@ -97,6 +98,15 @@ const routes: IAppRoute[] = [
     icon: null,
     label: 'Caches',
     path: '/caches',
+    title: 'Caches',
+    menu: false
+  },
+  {
+    component: CreateCache,
+    exact: true,
+    icon: null,
+    label: 'Caches',
+    path: '/caches/create',
     title: 'Caches',
     menu: false
   }

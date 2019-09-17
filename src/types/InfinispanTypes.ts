@@ -16,6 +16,10 @@ interface InfinispanServer {
   version: string;
 }
 
+interface CacheConfig {
+  name: string;
+}
+
 interface CmStats {
   statistics_enabled: boolean;
 }
@@ -46,4 +50,5 @@ interface CmStats {
 interface Cache {
   name: string;
   started: boolean;
+  size?: number;
 }

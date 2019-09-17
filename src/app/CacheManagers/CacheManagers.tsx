@@ -17,7 +17,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cacheManagers, setCacheManagers] = useState([]);
   const [expanded, setExpanded] = useState('');
   const [cacheManager, setCacheManager] = useState<ClusterManager | undefined>(undefined);
-  const [cacheConfigs, setCacheConfigs] = useState([]);
+  const [cacheConfigs, setCacheConfigs] = useState<Array<CacheConfig>>([]);
   const [stats, setStatistics] = useState<CmStats>({statistics_enabled: false});
 
   useEffect(() => {
