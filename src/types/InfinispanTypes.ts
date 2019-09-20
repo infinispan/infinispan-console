@@ -47,8 +47,9 @@ interface CmStats {
   // retrievals":0
 
 
-interface Cache {
+interface InfinispanCache {
   name: string;
   started: boolean;
   size?: number;
+  type: string;
 }

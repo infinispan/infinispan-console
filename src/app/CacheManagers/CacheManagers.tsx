@@ -50,7 +50,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     <PageSection>
       <Accordion asDefinitionList>
         {cacheManager && cacheManagers.map(cm =>
-          <AccordionItem>
+           <AccordionItem>
             <AccordionToggle
               onClick={() => {
                 setExpanded('toggle-' + cm)
