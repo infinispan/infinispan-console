@@ -10,6 +10,7 @@ import {LastLocationProvider, useLastLocation} from 'react-router-last-location'
 import {Caches} from "@app/Caches/Caches";
 import {CreateCache} from "@app/Caches/CreateCache";
 import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
+import {DetailCache} from "@app/Caches/DetailCache";
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -108,6 +109,15 @@ const routes: IAppRoute[] = [
     label: 'Caches',
     path: '/caches/create',
     title: 'Caches',
+    menu: false
+  },
+  {
+    component: DetailCache,
+    exact: true,
+    icon: null,
+    label: 'Caches',
+    path: '/cache/',
+    title: 'Cache',
     menu: false
   }
 ];
