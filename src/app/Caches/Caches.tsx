@@ -1,6 +1,17 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Badge, Card, CardBody, CardHeader, Grid, GridItem, PageSection, Title,} from '@patternfly/react-core';
+import {
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  Grid,
+  GridItem,
+  PageSection,
+  Stack,
+  StackItem,
+  Title,
+} from '@patternfly/react-core';
 import {Link} from "react-router-dom";
 
 const Caches: React.FunctionComponent<any> = (props) => {
@@ -13,55 +24,66 @@ const Caches: React.FunctionComponent<any> = (props) => {
       fetch("http://localhost:11222/rest/v2/caches/" + cacheName.name + "/?action=size")
         .then(response => response.json())
         .then(size => {
-           fetch("http://localhost:11222/rest/v2/caches/" + cacheName.name + "/?action=config")
+          fetch("http://localhost:11222/rest/v2/caches/" + cacheName.name + "/?action=config")
             .then(response => response.json())
             .then(config => {
-              let cacheType:string = 'unknown';
-              if(config.hasOwnProperty('distributed-cache')) {
+              let cacheType: string = 'unknown';
+              if (config.hasOwnProperty('distributed-cache')) {
                 cacheType = 'distributed';
-              } else if(config.hasOwnProperty('replicated-cache')) {
+              } else if (config.hasOwnProperty('replicated-cache')) {
                 cacheType = 'replicated';
               }
-              let cache: InfinispanCache = {name: cacheName.name,
+              let cache: InfinispanCache = {
+                name: cacheName.name,
                 started: cacheName.started,
                 size: size,
-                type: cacheType};
+                type: cacheType
+              };
               return cache;
             }).then(cache => {
-             setCaches(prev => prev.concat(cache));
-           });
+            setCaches(prev => prev.concat(cache));
+          });
         });
     });
   }, []);
 
   return (
     <PageSection>
-      <Title id='caches-title' size="lg"><b>{cm}</b> Caches </Title>
-      <Grid>
-        {caches.map(cache =>
-          <GridItem id={'id-grid-item' + cache.name} span={6}>
-            <Card id={'id-card' + cache.name}>
-              <CardHeader id={'id-card-header' + cache.name}>{cache.name}</CardHeader>
-              <CardBody id={'id-card-body' + cache.name}>
-                <Badge>{cache.type} ({cache.size})</Badge>
-                <Link to={{
-                  pathname: '/caches/detail',
-                  state: {
-                    cacheName: cache.name,
-                  }}}>More</Link>
-              </CardBody>
-            </Card>
-          </GridItem>
-        )}
-
-      </Grid>
-      <Link to={{
-        pathname: '/caches/create',
-        state: {
-          cacheManager: cm,
-        }
-      }}>Create Cache</Link>
-
+      <Stack gutter="lg">
+        <StackItem><Title id='caches-title' size="lg"><b>{cm}</b></Title></StackItem>
+        <StackItem>
+          <Grid>
+            {caches.map(cache =>
+              <GridItem id={'id-grid-item' + cache.name} span={6}>
+                <Card id={'id-card' + cache.name}>
+                  <CardHeader id={'id-card-header' + cache.name}>{cache.name}</CardHeader>
+                  <CardBody id={'id-card-body' + cache.name}>
+                    <Stack gutter="sm">
+                      <StackItem><Badge>{cache.type}</Badge></StackItem>
+                      <StackItem isFilled>Size {cache.size}</StackItem>
+                      <StackItem>
+                        <Link to={{
+                          pathname: '/caches/detail',
+                          state: {
+                            cacheName: cache.name,
+                          }
+                        }}>Details</Link></StackItem>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </GridItem>
+            )}
+          </Grid>
+        </StackItem>
+        <StackItem>
+          <Link to={{
+            pathname: '/caches/create',
+            state: {
+              cacheManager: cm,
+            }
+          }}>Create Cache</Link>
+        </StackItem>
+      </Stack>
     </PageSection>
   );
 }
