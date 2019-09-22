@@ -122,6 +122,12 @@ const routes: IAppRoute[] = [
   }
 ];
 
+export let isLogged:Boolean = true;
+
+export let user = {
+  user: 'console',
+  password: 'password'
+}
 const AppRoutes = () => (
   <LastLocationProvider>
     <Switch>

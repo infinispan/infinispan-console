@@ -12,7 +12,7 @@ import {
   StackItem,
   Title,
 } from '@patternfly/react-core';
-import {Link} from "react-router-dom";
+import {Link, Switch} from "react-router-dom";
 
 const Caches: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
@@ -53,6 +53,8 @@ const Caches: React.FunctionComponent<any> = (props) => {
         <StackItem><Title id='caches-title' size="lg"><b>{cm}</b></Title></StackItem>
         <StackItem>
           <Grid>
+            <Switch>
+
             {caches.map(cache =>
               <GridItem id={'id-grid-item' + cache.name} span={6}>
                 <Card id={'id-card' + cache.name}>
@@ -73,6 +75,10 @@ const Caches: React.FunctionComponent<any> = (props) => {
                 </Card>
               </GridItem>
             )}
+              <GridItem id={'id-grid-item-empty'} span={12}>
+                No caches to be displayed
+              </GridItem>
+            </Switch>
           </Grid>
         </StackItem>
         <StackItem>

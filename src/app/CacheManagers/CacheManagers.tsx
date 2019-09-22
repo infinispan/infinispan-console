@@ -6,9 +6,9 @@ import {
   AccordionItem,
   AccordionToggle,
   Label,
-  List,
-  ListItem,
   PageSection,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import {ClusterIcon} from '@patternfly/react-icons'
 import {Link} from "react-router-dom";
@@ -50,7 +50,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     <PageSection>
       <Accordion asDefinitionList>
         {cacheManager && cacheManagers.map(cm =>
-           <AccordionItem>
+          <AccordionItem>
             <AccordionToggle
               onClick={() => {
                 setExpanded('toggle-' + cm)
@@ -63,12 +63,12 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
               id={'expand-' + cm}
               isHidden={expanded !== 'toggle-' + cm}
             >
-              <List>
-                <ListItem> <ClusterIcon/> {cacheManager.cluster_name} size <b>{cacheManager.cluster_size}</b></ListItem>
-                <ListItem>Physical Addresses: <b>{cacheManager.physical_addresses}</b></ListItem>
-                <ListItem><Label>{cacheManager.cache_manager_status}</Label></ListItem>
-                <ListItem>Statistics enabled: <b>{JSON.stringify(stats.statistics_enabled)}</b></ListItem>
-                <ListItem>
+              <Stack gutter="sm">
+                <StackItem><ClusterIcon/> {cacheManager.cluster_name} size <b>{cacheManager.cluster_size}</b></StackItem>
+                <StackItem>Physical Addresses: <b>{cacheManager.physical_addresses}</b></StackItem>
+                <StackItem><Label>{cacheManager.cache_manager_status}</Label></StackItem>
+                <StackItem>Statistics enabled: <b>{JSON.stringify(stats.statistics_enabled)}</b></StackItem>
+                <StackItem>
                   <Link to={{
                     pathname: '/caches',
                     state: {
@@ -76,8 +76,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                       caches: cacheManager.defined_caches
                     }
                   }}>Caches</Link>
-                </ListItem>
-              </List>
+                </StackItem>
+              </Stack>
             </AccordionContent>
           </AccordionItem>
         )}
