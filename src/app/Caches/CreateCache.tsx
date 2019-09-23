@@ -15,11 +15,13 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   };
 
   function createCache() {
+    console.log(name);
     let headers = new Headers();
     try {
       JSON.parse(config);
       headers.append('Content-Type', 'application/json');
     } catch (e) {
+      console.log(e);
       headers.append('Content-Type', 'application/xml');
     }
     fetch('http://localhost:11222/rest/v2/caches/' + name, {

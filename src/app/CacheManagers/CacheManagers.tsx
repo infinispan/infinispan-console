@@ -67,7 +67,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <StackItem><ClusterIcon/> {cacheManager.cluster_name} size <b>{cacheManager.cluster_size}</b></StackItem>
                 <StackItem>Physical Addresses: <b>{cacheManager.physical_addresses}</b></StackItem>
                 <StackItem><Label>{cacheManager.cache_manager_status}</Label></StackItem>
-                <StackItem>Statistics enabled: <b>{JSON.stringify(stats.statistics_enabled)}</b></StackItem>
+                {/*<StackItem>Statistics enabled: <b>{JSON.stringify(stats.statistics_enabled)}</b></StackItem>*/}
                 <StackItem>
                   <Link to={{
                     pathname: '/caches',

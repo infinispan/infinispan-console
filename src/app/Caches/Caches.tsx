@@ -53,10 +53,8 @@ const Caches: React.FunctionComponent<any> = (props) => {
         <StackItem><Title id='caches-title' size="lg"><b>{cm}</b></Title></StackItem>
         <StackItem>
           <Grid>
-            <Switch>
-
             {caches.map(cache =>
-              <GridItem id={'id-grid-item' + cache.name} span={6}>
+              <GridItem id={'id-grid-item' + cache.name} span={3}>
                 <Card id={'id-card' + cache.name}>
                   <CardHeader id={'id-card-header' + cache.name}>{cache.name}</CardHeader>
                   <CardBody id={'id-card-body' + cache.name}>
@@ -65,20 +63,16 @@ const Caches: React.FunctionComponent<any> = (props) => {
                       <StackItem isFilled>Size {cache.size}</StackItem>
                       <StackItem>
                         <Link to={{
-                          pathname: '/caches/detail',
-                          state: {
-                            cacheName: cache.name,
-                          }
+                          pathname: '/cache/'+ cache.name
                         }}>Details</Link></StackItem>
                     </Stack>
                   </CardBody>
                 </Card>
               </GridItem>
             )}
-              <GridItem id={'id-grid-item-empty'} span={12}>
+             {/* <GridItem id={'id-grid-item-empty'} span={12}>
                 No caches to be displayed
-              </GridItem>
-            </Switch>
+              </GridItem>*/}
           </Grid>
         </StackItem>
         <StackItem>

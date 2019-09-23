@@ -79,9 +79,9 @@ const routes: IAppRoute[] = [
     component: CacheManagers,
     exact: true,
     icon: null,
-    label: 'Cache Managers',
+    label: 'Containers',
     path: '/',
-    title: 'CacheManagers View',
+    title: 'Containers',
     menu: true
   },
   {
@@ -116,7 +116,7 @@ const routes: IAppRoute[] = [
     exact: true,
     icon: null,
     label: 'Caches',
-    path: '/cache/',
+    path: '/cache/:name',
     title: 'Cache',
     menu: false
   }
