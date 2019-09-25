@@ -6,6 +6,28 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
   const [name, setName] = useState('');
   const [config, setConfig] = useState('');
+  const [configs, setConfigs] = useState<OptionSelect[]>([]);
+  const [expanded, setExpanded] = useState(false);
+  const [selected, setSelected] = useState('');
+
+  interface OptionSelect {
+    value: string;
+    disabled?: boolean;
+    isPlaceholder?: boolean
+  }
+
+  fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
+    .then(response => response.json())
+    .then(data => {
+      let options: OptionSelect[] = [];
+      options.push({value: "Choose...", isPlaceholder: true})
+      data.cache_configuration_names.map(name => {
+        options.push({value: name})
+      });
+      setConfigs(options);
+    });
+
+
   const handleChangeName = name => {
     setName(name);
   };
@@ -14,7 +36,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     setConfig(config);
   };
 
-  function createCache() {
+  const createCache = () => {
     console.log(name);
     let headers = new Headers();
     try {
@@ -33,6 +55,24 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
       console.log(response.json());
     })
   }
+
+  const onToggle = isExpanded => {
+    setExpanded(isExpanded);
+  };
+
+  const clearSelection = () => {
+    setSelected('');
+    setExpanded(false);
+  };
+
+  const onSelect = (event, selection, isPlaceholder) => {
+    if (isPlaceholder) clearSelection();
+    else {
+      setSelected(selection);
+      setExpanded(false);
+      console.log('selected:', selection);
+    }
+  };
 
   return (
     <PageSection>
@@ -53,6 +93,26 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
             value={name}
             onChange={handleChangeName}
           />
+        </FormGroup>
+        <FormGroup fieldId='cache-config-name'>
+
+          {/*<Select*/}
+          {/*  toggleIcon={<CubeIcon/>}*/}
+          {/*  variant={SelectVariant.single}*/}
+          {/*  onToggle={onToggle}*/}
+          {/*  onSelect={onSelect}*/}
+          {/*  aria-label="Cache configs"*/}
+          {/*  direction={}>*/}
+          {/*  {configs.map((option, index) => (*/}
+          {/*    <SelectOption*/}
+          {/*      isDisabled={option.disabled}*/}
+          {/*      key={index}*/}
+          {/*      value={option.value}*/}
+          {/*      isPlaceholder={option.isPlaceholder}*/}
+          {/*    />*/}
+          {/*  ))}*/}
+          {/*</Select>*/}
+
         </FormGroup>
         <FormGroup label="Config"
                    isRequired

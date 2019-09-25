@@ -2,7 +2,7 @@ interface Cluster {
   health: string;
 }
 
-interface ClusterManager {
+interface CacheManager {
   name: string;
   physical_addresses: [];
   coordinator: boolean;

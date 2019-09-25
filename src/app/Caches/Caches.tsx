@@ -19,6 +19,7 @@ const Caches: React.FunctionComponent<any> = (props) => {
   const cacheNames = props.location.state.caches;
   const [caches, setCaches] = useState<InfinispanCache[]>([]);
 
+
   useEffect(() => {
     cacheNames.map(cacheName => {
       fetch("http://localhost:11222/rest/v2/caches/" + cacheName.name + "/?action=size")

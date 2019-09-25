@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
+import dataContainerService from '../../services/dataContainerService'
 import {
   Accordion,
   AccordionContent,
@@ -16,34 +17,41 @@ import {Link} from "react-router-dom";
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cacheManagers, setCacheManagers] = useState([]);
   const [expanded, setExpanded] = useState('');
-  const [cacheManager, setCacheManager] = useState<ClusterManager | undefined>(undefined);
+  const [cacheManager, setCacheManager] = useState<CacheManager | undefined>(undefined);
   const [cacheConfigs, setCacheConfigs] = useState<Array<CacheConfig>>([]);
   const [stats, setStatistics] = useState<CmStats>({statistics_enabled: false});
 
   useEffect(() => {
-    fetch("http://localhost:11222/rest/v2/server/cache-managers/")
-      .then(response => response.json())
-      .then(data => {
-        setCacheManagers(data);
-        data.map(cm => {
-          setExpanded('toggle-' + cm);
-          fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
-            .then(response => response.json())
-            .then(data => {
-              setCacheManager(data);
-            });
-          fetch("http://localhost:11222/rest/v2/cache-managers/" + cm + "/cache-configs")
-            .then(response => response.json())
-            .then(data => {
-              setCacheConfigs(data);
-            });
-          fetch("http://localhost:11222/rest/v2/cache-managers/" + cm + "/stats")
-            .then(response => response.json())
-            .then(data => {
-              setStatistics({statistics_enabled: data.statistics_enabled});
-            });
-        })
-      });
+    dataContainerService.getCacheManagers()
+      .then( data =>
+      setCacheManagers(data)
+      // // setExpanded('toggle-' + cm);
+      // console.log(data);
+
+    });
+    // fetch("http://localhost:11222/rest/v2/server/cache-managers/")
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     setCacheManagers(data);
+    //     data.map(cm => {
+    //       setExpanded('toggle-' + cm);
+    //       fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //           setCacheManager(data);
+    //         });
+    //       // fetch("http://localhost:11222/rest/v2/cache-managers/" + cm + "/cache-configs")
+    //       //   .then(response => response.json())
+    //       //   .then(data => {
+    //       //     setCacheConfigs(data);
+    //       //   });
+    //       // fetch("http://localhost:11222/rest/v2/cache-managers/" + cm + "/stats")
+    //       //   .then(response => response.json())
+    //       //   .then(data => {
+    //       //     setStatistics({statistics_enabled: data.statistics_enabled});
+    //       //   });
+    //     })
+    //   });
   }, []);
 
   return (
@@ -67,13 +75,12 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <StackItem><ClusterIcon/> {cacheManager.cluster_name} size <b>{cacheManager.cluster_size}</b></StackItem>
                 <StackItem>Physical Addresses: <b>{cacheManager.physical_addresses}</b></StackItem>
                 <StackItem><Label>{cacheManager.cache_manager_status}</Label></StackItem>
-                {/*<StackItem>Statistics enabled: <b>{JSON.stringify(stats.statistics_enabled)}</b></StackItem>*/}
                 <StackItem>
                   <Link to={{
                     pathname: '/caches',
                     state: {
                       cacheManager: cm,
-                      caches: cacheManager.defined_caches
+                      caches: cacheManager.defined_caches,
                     }
                   }}>Caches</Link>
                 </StackItem>
