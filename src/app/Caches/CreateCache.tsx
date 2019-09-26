@@ -1,6 +1,20 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {ActionGroup, Button, Form, FormGroup, PageSection, TextArea, TextInput, Title,} from '@patternfly/react-core';
+import {
+  ActionGroup,
+  Button, Expandable,
+  Form,
+  FormGroup,
+  PageSection,
+  Select,
+  SelectOption,
+  SelectVariant,
+  TextArea,
+  TextInput,
+  Title,
+} from '@patternfly/react-core';
+import {CubeIcon} from "@patternfly/react-icons";
+import {Link} from "react-router-dom";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
@@ -37,7 +51,6 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   };
 
   const createCache = () => {
-    console.log(name);
     let headers = new Headers();
     try {
       JSON.parse(config);
@@ -94,38 +107,45 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
             onChange={handleChangeName}
           />
         </FormGroup>
-        <FormGroup fieldId='cache-config-name'>
+        <FormGroup fieldId='cache-config-name'
+                   label="Select a template name">
 
-          {/*<Select*/}
-          {/*  toggleIcon={<CubeIcon/>}*/}
-          {/*  variant={SelectVariant.single}*/}
-          {/*  onToggle={onToggle}*/}
-          {/*  onSelect={onSelect}*/}
-          {/*  aria-label="Cache configs"*/}
-          {/*  direction={}>*/}
-          {/*  {configs.map((option, index) => (*/}
-          {/*    <SelectOption*/}
-          {/*      isDisabled={option.disabled}*/}
-          {/*      key={index}*/}
-          {/*      value={option.value}*/}
-          {/*      isPlaceholder={option.isPlaceholder}*/}
-          {/*    />*/}
-          {/*  ))}*/}
-          {/*</Select>*/}
+          <Select
+            toggleIcon={<CubeIcon/>}
+            variant={SelectVariant.single}
+            aria-label="Cache configs"
+            onToggle={onToggle}
+            onSelect={onSelect}
+            selections={selected}
+            isExpanded={expanded}
+            isDisabled={false}
+          >
+            {configs.map((option, index) => (
+              <SelectOption
+                isDisabled={option.disabled}
+                key={index}
+                value={option.value}
+                isPlaceholder={option.isPlaceholder}
+              />
+            ))}
+          </Select>
 
         </FormGroup>
-        <FormGroup label="Config"
-                   isRequired
-                   fieldId="cache-config"
-                   helperText="Please provide a cache config JSON or XML">
-          <TextArea
-            isRequired
-            value={config}
-            onChange={handleChangeConfig}
-            name="cache-config"
-            id="cache-config"
-          />
-        </FormGroup>
+        <Expandable toggleText="Provide a configuration" isExpanded={true}>
+          <FormGroup label="Config"
+                     isRequired
+                     fieldId="cache-config"
+                     helperText="Please provide a cache config JSON or XML">
+            <TextArea
+              isRequired
+              value={config}
+              onChange={handleChangeConfig}
+              name="cache-config"
+              id="cache-config"
+            />
+          </FormGroup>
+        </Expandable>
+
         <ActionGroup>
           <Button variant="primary" onClick={createCache}>Create</Button>
           <Button variant="secondary">Cancel</Button>

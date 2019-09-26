@@ -5,13 +5,14 @@ class ContainerService {
     this.endpoint = endpoint;
   }
 
-  public getCacheManagers() {
+  public getCacheManagers(): Promise<CacheManager[]> {
     return fetch(this.endpoint + "/server/cache-managers/")
       .then(response => response.json())
       .then(names => Promise.all(names.map(name =>
           fetch(this.endpoint + "/cache-managers/" + name)
             .then(response => response.json())
             .then(data => <CacheManager>{
+                name: data.name,
                 physical_addresses: data.physical_addresses,
                 coordinator: data.coordinator,
                 cluster_name: data.cluster_name,
