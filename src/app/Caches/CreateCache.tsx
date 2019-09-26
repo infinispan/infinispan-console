@@ -15,15 +15,15 @@ import {
   Title,
 } from '@patternfly/react-core';
 import {CubeIcon} from "@patternfly/react-icons";
+import cacheService from "../../services/cacheService";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
-  const choose: OptionSelect = {value: "Choose...", isPlaceholder: true};
   const cm = props.location.state.cacheManager;
   const [cacheName, setCacheName] = useState('');
   const [config, setConfig] = useState('');
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
   const [expandedSelect, setExpandedSelect] = useState(false);
-  const [selectedConfig, setSelectedConfig] = useState<undefined | OptionSelect>(choose);
+  const [selectedConfig, setSelectedConfig] = useState<null | string>(null);
   const [configExpanded, setConfigExpanded] = useState(false);
 
   interface OptionSelect {
@@ -57,34 +57,6 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     setConfig(config);
   };
 
-  const createCache = () => {
-    if (selectedConfig == null) {
-      let headers = new Headers();
-      try {
-        JSON.parse(config);
-        headers.append('Content-Type', 'application/json');
-      } catch (e) {
-        console.log(e);
-        headers.append('Content-Type', 'application/xml');
-      }
-      fetch('http://localhost:11222/rest/v2/caches/' + cacheName, {
-        method: 'POST',
-        body: config,
-        headers: headers
-      }).then(function (response) {
-        // display error here somewhere
-        console.log(response.json());
-      })
-    } else {
-      fetch('http://localhost:11222/rest/v2/caches/' + cacheName + '?template=' + selectedConfig.value, {
-        method: 'POST'
-      }).then(function (response) {
-        // display error here somewhere
-        console.log(response.json());
-      })
-    }
-  }
-
   const onToggle = isExpanded => {
     setExpandedSelect(isExpanded);
   };
@@ -99,6 +71,14 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     else {
       setSelectedConfig(selection);
       setExpandedSelect(false);
+    }
+  };
+
+  const createCache = () => {
+    if (selectedConfig != null) {
+      cacheService.createCacheByConfigName(cacheName, selectedConfig);
+    } else {
+      cacheService.createCacheWithConfiguration(cacheName, config);
     }
   };
 
