@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   ActionGroup,
-  Button, Expandable,
+  Button,
+  Expandable,
   Form,
   FormGroup,
   PageSection,
@@ -14,15 +15,16 @@ import {
   Title,
 } from '@patternfly/react-core';
 import {CubeIcon} from "@patternfly/react-icons";
-import {Link} from "react-router-dom";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
+  const choose: OptionSelect = {value: "Choose...", isPlaceholder: true};
   const cm = props.location.state.cacheManager;
-  const [name, setName] = useState('');
+  const [cacheName, setCacheName] = useState('');
   const [config, setConfig] = useState('');
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
-  const [expanded, setExpanded] = useState(false);
-  const [selected, setSelected] = useState('');
+  const [expandedSelect, setExpandedSelect] = useState(false);
+  const [selectedConfig, setSelectedConfig] = useState<undefined | OptionSelect>(choose);
+  const [configExpanded, setConfigExpanded] = useState(false);
 
   interface OptionSelect {
     value: string;
@@ -30,20 +32,25 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     isPlaceholder?: boolean
   }
 
-  fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
-    .then(response => response.json())
-    .then(data => {
-      let options: OptionSelect[] = [];
-      options.push({value: "Choose...", isPlaceholder: true})
-      data.cache_configuration_names.map(name => {
-        options.push({value: name})
+  useEffect(() => {
+    fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
+      .then(response => response.json())
+      .then(data => {
+        let options: OptionSelect[] = [];
+        options.push({value: "Choose...", isPlaceholder: true})
+        data.cache_configuration_names.map(name => {
+          options.push({value: name})
+        });
+        setConfigs(options);
       });
-      setConfigs(options);
-    });
+  }, []);
 
+  const onToggleConfigPanel = () => {
+    setConfigExpanded(!configExpanded);
+  };
 
   const handleChangeName = name => {
-    setName(name);
+    setCacheName(name);
   };
 
   const handleChangeConfig = config => {
@@ -51,39 +58,47 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   };
 
   const createCache = () => {
-    let headers = new Headers();
-    try {
-      JSON.parse(config);
-      headers.append('Content-Type', 'application/json');
-    } catch (e) {
-      console.log(e);
-      headers.append('Content-Type', 'application/xml');
+    if (selectedConfig == null) {
+      let headers = new Headers();
+      try {
+        JSON.parse(config);
+        headers.append('Content-Type', 'application/json');
+      } catch (e) {
+        console.log(e);
+        headers.append('Content-Type', 'application/xml');
+      }
+      fetch('http://localhost:11222/rest/v2/caches/' + cacheName, {
+        method: 'POST',
+        body: config,
+        headers: headers
+      }).then(function (response) {
+        // display error here somewhere
+        console.log(response.json());
+      })
+    } else {
+      fetch('http://localhost:11222/rest/v2/caches/' + cacheName + '?template=' + selectedConfig.value, {
+        method: 'POST'
+      }).then(function (response) {
+        // display error here somewhere
+        console.log(response.json());
+      })
     }
-    fetch('http://localhost:11222/rest/v2/caches/' + name, {
-      method: 'POST',
-      body: config,
-      headers: headers
-    }).then(function (response) {
-      // display error here somewhere
-      console.log(response.json());
-    })
   }
 
   const onToggle = isExpanded => {
-    setExpanded(isExpanded);
+    setExpandedSelect(isExpanded);
   };
 
   const clearSelection = () => {
-    setSelected('');
-    setExpanded(false);
+    setSelectedConfig(null);
+    setExpandedSelect(false);
   };
 
   const onSelect = (event, selection, isPlaceholder) => {
     if (isPlaceholder) clearSelection();
     else {
-      setSelected(selection);
-      setExpanded(false);
-      console.log('selected:', selection);
+      setSelectedConfig(selection);
+      setExpandedSelect(false);
     }
   };
 
@@ -103,21 +118,22 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
             id="cache-name"
             name="cache-name"
             aria-describedby="cache-name-helper"
-            value={name}
+            value={cacheName}
             onChange={handleChangeName}
           />
         </FormGroup>
         <FormGroup fieldId='cache-config-name'
-                   label="Select a template name">
-
+                   label="Template"
+                   helperText="Please choose a template or provide a new configuration"
+        >
           <Select
             toggleIcon={<CubeIcon/>}
             variant={SelectVariant.single}
             aria-label="Cache configs"
             onToggle={onToggle}
             onSelect={onSelect}
-            selections={selected}
-            isExpanded={expanded}
+            selections={selectedConfig}
+            isExpanded={expandedSelect}
             isDisabled={false}
           >
             {configs.map((option, index) => (
@@ -131,9 +147,8 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
           </Select>
 
         </FormGroup>
-        <Expandable toggleText="Provide a configuration" isExpanded={true}>
+        <Expandable toggleText="Provide a configuration" isExpanded={configExpanded} onToggle={onToggleConfigPanel}>
           <FormGroup label="Config"
-                     isRequired
                      fieldId="cache-config"
                      helperText="Please provide a cache config JSON or XML">
             <TextArea

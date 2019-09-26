@@ -5,7 +5,7 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionToggle,
+  AccordionToggle, Expandable,
   Label,
   PageSection,
   Stack,
@@ -48,7 +48,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <StackItem><Label>{cm.cache_manager_status}</Label></StackItem>
                 <StackItem>
                   <Link to={{
-                    pathname: '/caches',
+                    pathname: 'container/' + cm.name + '/caches/',
                     state: {
                       cacheManager: cm.name,
                       caches: cm.defined_caches
