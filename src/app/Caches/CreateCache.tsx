@@ -112,6 +112,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
             aria-label="Cache configs"
             onToggle={onToggle}
             onSelect={onSelect}
+            // @ts-ignore
             selections={selectedConfig}
             isExpanded={expandedSelect}
             isDisabled={false}

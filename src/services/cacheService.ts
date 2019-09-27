@@ -1,8 +1,45 @@
+/**
+ * Cache Service calls Infinispan endpoints related to Caches
+ * @author Katia Aresti
+ * @since 1.0
+ */
 class CacheService {
   endpoint: string;
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
+  }
+
+  public retrieveCacheDetail(cacheName: string, started: boolean): Promise<InfinispanCache> {
+    return fetch(this.endpoint + '/caches/' + cacheName + '/?action=size')
+      .then(response => response.json())
+      .then(size => fetch(this.endpoint + '/caches/' + cacheName + '/?action=config')
+        .then(response => response.json())
+        .then(config => <InfinispanCache>{
+            name: cacheName,
+            started: started,
+            size: size,
+            type: this.mapCacheType(config)
+          }
+        ).catch(error => <InfinispanCache>{
+          name: cacheName,
+          started: started,
+          size: size,
+          type: "unknown"
+        })
+      )
+  };
+
+  private mapCacheType(config: JSON): string {
+    let cacheType: string = 'unknown';
+    if (config.hasOwnProperty('distributed-cache')) {
+      cacheType = 'distributed';
+    } else if (config.hasOwnProperty('replicated-cache')) {
+      cacheType = 'replicated';
+    } else if (config.hasOwnProperty('local-cache')) {
+      cacheType = 'local';
+    }
+    return cacheType;
   }
 
   public createCacheByConfigName(cacheName: string, configName: string): Promise<String> {
@@ -28,7 +65,7 @@ class CacheService {
       method: 'POST',
       body: config,
       headers: headers
-    }).then(function (response) {
+    }).then(response => {
       // display error here somewhere
       console.log(response.json());
       return "";

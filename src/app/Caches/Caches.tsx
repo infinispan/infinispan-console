@@ -13,39 +13,17 @@ import {
   Title,
 } from '@patternfly/react-core';
 import {Link, Switch} from "react-router-dom";
+import cacheService from "../../services/cacheService";
 
 const Caches: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
   const cacheNames = props.location.state.caches;
   const [caches, setCaches] = useState<InfinispanCache[]>([]);
-
-
   useEffect(() => {
-    cacheNames.map(cacheName => {
-      fetch("http://localhost:11222/rest/v2/caches/" + cacheName.name + "/?action=size")
-        .then(response => response.json())
-        .then(size => {
-          fetch("http://localhost:11222/rest/v2/caches/" + cacheName.name + "/?action=config")
-            .then(response => response.json())
-            .then(config => {
-              let cacheType: string = 'unknown';
-              if (config.hasOwnProperty('distributed-cache')) {
-                cacheType = 'distributed';
-              } else if (config.hasOwnProperty('replicated-cache')) {
-                cacheType = 'replicated';
-              }
-              let cache: InfinispanCache = {
-                name: cacheName.name,
-                started: cacheName.started,
-                size: size,
-                type: cacheType
-              };
-              return cache;
-            }).then(cache => {
-            setCaches(prev => prev.concat(cache));
-          });
-        });
-    });
+    Promise.all(cacheNames
+      .map(cacheName => cacheService.retrieveCacheDetail(cacheName.name, cacheName.started)))
+    // @ts-ignore
+      .then(result => setCaches(result));
   }, []);
 
   return (
