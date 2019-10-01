@@ -90,14 +90,13 @@ interface CacheActivity {
   readMisses: number;
   removeHits: number;
   removeMisses: number;
-  puts: number;
 }
 
 interface CacheContent {
-  size?: number;
-  readWriteRatio?: number;
-  hitRatio?: number;
-  maxCapacity?: number
+  size: number;
+  readWriteRatio: number;
+  hitRatio: number;
+  maxCapacity: number
 }
 
 interface XSite {

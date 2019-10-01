@@ -30,17 +30,31 @@ class CacheService {
     return fetch(this.endpoint + '/caches/' + cacheName + '/?action=all')
       .then(response => response.json())
       .then(data => {
+          const cacheContent: CacheContent = {
+            size: data.size,
+            readWriteRatio: data.stats.averageReadTime,
+            hitRatio: 49.4,
+            maxCapacity: 458.4544
+          };
           const opsPerformance: OpsPerformance = {
             avgReads: data.stats.averageReadTime,
             avgRemoves: data.stats.averageRemoveTime,
             avgWrites: data.stats.averageWriteTime
+          }
+          const cacheActivity: CacheActivity = {
+            readHits: data.stats.hits,
+            readMisses: data.stats.misses,
+            removeHits: data.stats.removeHits,
+            removeMisses: data.stats.removeMisses,
           }
           return <DetailedInfinispanCache>{
             name: cacheName,
             started: data.started,
             size: data.size,
             type: this.mapCacheType(data),
-            opsPerformance: opsPerformance
+            opsPerformance: opsPerformance,
+            cacheActivity: cacheActivity,
+            cacheContent: cacheContent
           }
         }
       );
