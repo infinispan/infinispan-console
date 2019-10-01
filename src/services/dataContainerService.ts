@@ -9,20 +9,22 @@ class ContainerService {
     return fetch(this.endpoint + "/server/cache-managers/")
       .then(response => response.json())
       .then(names => Promise.all(names.map(name =>
-          fetch(this.endpoint + "/cache-managers/" + name)
-            .then(response => response.json())
-            .then(data => <CacheManager>{
-                name: data.name,
-                physical_addresses: data.physical_addresses,
-                coordinator: data.coordinator,
-                cluster_name: data.cluster_name,
-                cache_manager_status: data.cache_manager_status,
-                cluster_size: data.cluster_size,
-                defined_caches: data.defined_caches
-              }
-            )
-        ))
-      );
+        this.getCacheManager(name))));
+  };
+
+  public getCacheManager(name:string): Promise<CacheManager> {
+    return fetch(this.endpoint + '/cache-managers/' + name)
+      .then(response => response.json())
+      .then(data => <CacheManager>{
+        name: data.name,
+        physical_addresses: data.physical_addresses,
+        coordinator: data.coordinator,
+        cluster_name: data.cluster_name,
+        cache_manager_status: data.cache_manager_status,
+        cluster_size: data.cluster_size,
+        defined_caches: data.defined_caches,
+        cache_configuration_names: data.cache_configuration_names
+      });
   };
 }
 

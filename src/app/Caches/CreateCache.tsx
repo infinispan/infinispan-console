@@ -16,15 +16,19 @@ import {
 } from '@patternfly/react-core';
 import {CubeIcon} from "@patternfly/react-icons";
 import cacheService from "../../services/cacheService";
+import dataContainerService from "../../services/dataContainerService";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
   const [cacheName, setCacheName] = useState('');
+  const [validName, setValidName] = useState(true);
   const [config, setConfig] = useState('');
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
   const [expandedSelect, setExpandedSelect] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<null | string>(null);
+  const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
+  const [validConfig, setValidConfig] = useState(true);
 
   interface OptionSelect {
     value: string;
@@ -33,12 +37,10 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }
 
   useEffect(() => {
-    fetch("http://localhost:11222/rest/v2/cache-managers/" + cm)
-      .then(response => response.json())
-      .then(data => {
+    dataContainerService.getCacheManager(cm)
+      .then(cacheManager => {
         let options: OptionSelect[] = [];
-        options.push({value: "Choose...", isPlaceholder: true})
-        data.cache_configuration_names.map(name => {
+        cacheManager.cache_configuration_names.map(name => {
           options.push({value: name})
         });
         setConfigs(options);
@@ -46,7 +48,10 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }, []);
 
   const onToggleConfigPanel = () => {
-    setConfigExpanded(!configExpanded);
+    const expanded = !configExpanded;
+    setConfigExpanded(expanded);
+    setSelectedConfigDisabled(expanded);
+    setSelectedConfig(null);
   };
 
   const handleChangeName = name => {
@@ -74,14 +79,55 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     }
   };
 
+  const validateConfig = () => {
+    const trimmedConf = config.trim();
+    if (config.length == 0) {
+      return false;
+    }
+    let isJson = false;
+    let isXML = false;
+    try {
+      JSON.parse(trimmedConf);
+      isJson = true;
+    } catch (ex) {
+    }
+
+    try {
+      let oDOM = new DOMParser().parseFromString(trimmedConf, "text/xml");
+      if (oDOM.getElementsByTagName('parsererror').length == 0) {
+        isXML = true;
+      }
+    } catch (ex) {
+
+    }
+    return isJson || isXML;
+  };
+
   const createCache = () => {
-    if (selectedConfig != null) {
-      cacheService.createCacheByConfigName(cacheName, selectedConfig);
+    const name = cacheName.trim();
+    if (name.length == 0) {
+      setValidName(false);
     } else {
-      cacheService.createCacheWithConfiguration(cacheName, config);
+      setValidName(true);
+    }
+    if (selectedConfig == null && !validateConfig()) {
+      setValidConfig(false);
+    } else {
+      setValidConfig(true);
+    }
+
+    if (!validName || !validConfig) {
+      return;
+    }
+
+    if (selectedConfig != null) {
+      cacheService.createCacheByConfigName(name, selectedConfig);
+    } else {
+      cacheService.createCacheWithConfiguration(name, config);
     }
   };
 
+  const titleId = 'plain-typeahead-select-id';
   return (
     <PageSection>
       <Title size="lg"> Create a cache in <b>{cm}</b></Title>
@@ -100,22 +146,27 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
             aria-describedby="cache-name-helper"
             value={cacheName}
             onChange={handleChangeName}
+            isValid={validName}
           />
         </FormGroup>
         <FormGroup fieldId='cache-config-name'
                    label="Template"
                    helperText="Please choose a template or provide a new configuration"
         >
+          <span id={titleId} hidden>
+          Choose a configuration
+        </span>
           <Select
-            toggleIcon={<CubeIcon/>}
-            variant={SelectVariant.single}
+            toggleIcon={true && <CubeIcon/>}
+            variant={SelectVariant.typeahead}
             aria-label="Cache configs"
             onToggle={onToggle}
             onSelect={onSelect}
             // @ts-ignore
             selections={selectedConfig}
             isExpanded={expandedSelect}
-            isDisabled={false}
+            isDisabled={selectedConfigDisabled}
+            ariaLabelledBy={titleId}
           >
             {configs.map((option, index) => (
               <SelectOption
@@ -138,6 +189,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
               onChange={handleChangeConfig}
               name="cache-config"
               id="cache-config"
+              isValid={validConfig}
             />
           </FormGroup>
         </Expandable>

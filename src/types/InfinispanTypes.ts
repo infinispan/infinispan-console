@@ -4,12 +4,13 @@ interface Cluster {
 
 interface CacheManager {
   name: string;
-  physical_addresses: [];
+  physical_addresses: [string];
   coordinator: boolean;
   cluster_name: string;
   cache_manager_status: string
   cluster_size: number;
-  defined_caches: [];
+  defined_caches: [string];
+  cache_configuration_names:[string];
 }
 
 interface InfinispanServer {
