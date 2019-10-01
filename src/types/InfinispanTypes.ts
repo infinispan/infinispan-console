@@ -44,7 +44,7 @@ interface DetailedInfinispanCache {
   persisted?: boolean;
   transactional?: boolean;
   bounded?: boolean;
-  opsPerformance?: [OpsPerformance];
+  opsPerformance?: OpsPerformance;
   backupSites?: [XSite];
   cacheContent?: CacheContent;
   cacheActivity?: CacheActivity;

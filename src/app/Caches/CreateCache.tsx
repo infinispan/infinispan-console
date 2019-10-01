@@ -21,7 +21,6 @@ import {Link} from "react-router-dom";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
-  console.log(cm);
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
   const [config, setConfig] = useState('');

@@ -10,17 +10,38 @@ class CacheService {
     this.endpoint = endpoint;
   }
 
+  // currentNumberOfEntries: 0
+  // currentNumberOfEntriesInMemory: 0
+  // dataMemoryUsed: 0
+  // evictions: 0
+  // hits: 0
+  // misses: 0
+  // offHeapMemoryUsed: 0
+  // removeHits: 0
+  // removeMisses: 0
+  // requiredMinimumNumberOfNodes: 0
+  // retrievals: 0
+  // stores: 0
+  // timeSinceReset: 931
+  // timeSinceStart: 931
+  // totalNumberOfEntries: 0
+
   public retrieveFullDetail(cacheName: string): Promise<DetailedInfinispanCache> {
     return fetch(this.endpoint + '/caches/' + cacheName + '/?action=all')
-      .then(response => {
-        console.log(response.json());
-        return response.json();
-      })
-      .then(data => <DetailedInfinispanCache>{
-          name: cacheName,
-          started: data.started,
-          size: data.size,
-          type: this.mapCacheType(data)
+      .then(response => response.json())
+      .then(data => {
+          const opsPerformance: OpsPerformance = {
+            avgReads: data.stats.averageReadTime,
+            avgRemoves: data.stats.averageRemoveTime,
+            avgWrites: data.stats.averageWriteTime
+          }
+          return <DetailedInfinispanCache>{
+            name: cacheName,
+            started: data.started,
+            size: data.size,
+            type: this.mapCacheType(data),
+            opsPerformance: opsPerformance
+          }
         }
       );
   };
