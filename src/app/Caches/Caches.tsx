@@ -66,7 +66,10 @@ const Caches: React.FunctionComponent<any> = (props) => {
                 <StackItem isFilled>Size {cache.size}</StackItem>
                 <StackItem>
                   <Link to={{
-                    pathname: '/cache/' + cache.name
+                    pathname: '/cache/' + cache.name,
+                    state: {
+                      cacheName: cache.name,
+                    }
                   }}>Details</Link></StackItem>
               </Stack>
             </CardBody>

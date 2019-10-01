@@ -10,6 +10,21 @@ class CacheService {
     this.endpoint = endpoint;
   }
 
+  public retrieveFullDetail(cacheName: string): Promise<DetailedInfinispanCache> {
+    return fetch(this.endpoint + '/caches/' + cacheName + '/?action=all')
+      .then(response => {
+        console.log(response.json());
+        return response.json();
+      })
+      .then(data => <DetailedInfinispanCache>{
+          name: cacheName,
+          started: data.started,
+          size: data.size,
+          type: this.mapCacheType(data)
+        }
+      );
+  };
+
   public retrieveCacheDetail(cacheName: string, started: boolean): Promise<InfinispanCache> {
     return fetch(this.endpoint + '/caches/' + cacheName + '/?action=size')
       .then(response => response.json())
