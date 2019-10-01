@@ -50,8 +50,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                   <Link to={{
                     pathname: 'container/' + cm.name + '/caches/',
                     state: {
-                      cacheManager: cm.name,
-                      caches: cm.defined_caches
+                      cacheManager: cm.name
                     }
                   }}>Caches</Link>
                 </StackItem>

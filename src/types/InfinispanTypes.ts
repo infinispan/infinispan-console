@@ -9,8 +9,13 @@ interface CacheManager {
   cluster_name: string;
   cache_manager_status: string
   cluster_size: number;
-  defined_caches: [string];
+  defined_caches: [DefinedCache];
   cache_configuration_names:[string];
+}
+
+interface DefinedCache {
+  name: string;
+  started: boolean;
 }
 
 interface InfinispanServer {

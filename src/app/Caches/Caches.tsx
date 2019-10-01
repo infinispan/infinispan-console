@@ -20,16 +20,17 @@ import {
 import {Link} from "react-router-dom";
 import cacheService from "../../services/cacheService";
 import {CubesIcon, PlusCircleIcon} from "@patternfly/react-icons";
+import dataContainerService from "../../services/dataContainerService";
 
 const Caches: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
-  const cacheNames = props.location.state.caches;
   const [caches, setCaches] = useState<InfinispanCache[]>([]);
   useEffect(() => {
-    Promise.all(cacheNames
-      .map(cacheName => cacheService.retrieveCacheDetail(cacheName.name, cacheName.started)))
-    // @ts-ignore
-      .then(result => setCaches(result));
+    dataContainerService.getCacheManager(cm).then(cacheManager =>
+      Promise.all(cacheManager.defined_caches
+        .map(cacheName => cacheService.retrieveCacheDetail(cacheName.name, cacheName.started)))
+        .then(result => setCaches(result))
+    );
   }, []);
 
   function EmptyCaches() {
@@ -42,7 +43,7 @@ const Caches: React.FunctionComponent<any> = (props) => {
         There are no caches with those filters
       </EmptyStateBody>
       <Link to={{
-        pathname: '/caches/create',
+        pathname: '/create',
         state: {
           cacheManager: cm,
         }
@@ -55,7 +56,7 @@ const Caches: React.FunctionComponent<any> = (props) => {
   }
 
   function DisplayCaches() {
-    return <Grid>
+    return <Grid gutter='sm'>
       {caches.map(cache =>
         <GridItem id={'id-grid-item' + cache.name} span={3}>
           <Card id={'id-card' + cache.name}>
@@ -93,12 +94,12 @@ const Caches: React.FunctionComponent<any> = (props) => {
         <StackItem><Title id='caches-title' size="lg"><b>{cm}</b></Title></StackItem>
         <StackItem>
           <Link to={{
-            pathname: '/caches/create',
+            pathname: '/container/' + cm + '/caches/create',
             state: {
               cacheManager: cm,
             }
           }}>
-            <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon />}>
+            <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
               Create cache
             </Button>
           </Link>

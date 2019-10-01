@@ -17,9 +17,11 @@ import {
 import {CubeIcon} from "@patternfly/react-icons";
 import cacheService from "../../services/cacheService";
 import dataContainerService from "../../services/dataContainerService";
+import {Link} from "react-router-dom";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const cm = props.location.state.cacheManager;
+  console.log(cm);
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
   const [config, setConfig] = useState('');
@@ -196,7 +198,13 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
 
         <ActionGroup>
           <Button variant="primary" onClick={createCache}>Create</Button>
-          <Button variant="secondary">Cancel</Button>
+          <Link to={{
+            pathname: '/container/' + cm + '/caches',
+            state: {
+              cacheManager: cm
+            }
+          }}><Button variant="secondary" component="a" target="_blank">Cancel</Button>
+          </Link>
         </ActionGroup>
       </Form>
     </PageSection>
