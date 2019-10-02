@@ -5,14 +5,16 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionToggle, Expandable,
+  AccordionToggle,
+  Button,
   Label,
   PageSection,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import {ClusterIcon} from '@patternfly/react-icons'
+import {ClusterIcon, MonitoringIcon, VolumeIcon} from '@patternfly/react-icons'
 import {Link} from "react-router-dom";
+import { CatalogIcon } from '@patternfly/react-icons'
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cacheManagers, setCacheManagers] = useState<CacheManager[]>([]);
@@ -47,12 +49,29 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <StackItem>Physical Addresses: <b>{cm.physical_addresses}</b></StackItem>
                 <StackItem><Label>{cm.cache_manager_status}</Label></StackItem>
                 <StackItem>
-                  <Link to={{
-                    pathname: 'container/' + cm.name + '/caches/',
-                    state: {
-                      cacheManager: cm.name
-                    }
-                  }}>Caches</Link>
+                    <Link to={{
+                      pathname: 'container/' + cm.name + '/caches/',
+                      state: {
+                        cacheManager: cm.name
+                      }
+                    }}><Button variant="link" icon={<VolumeIcon/>}> Caches</Button>{' '}</Link>
+
+                    <Link to={{
+                      pathname: 'container/' + cm.name + '/configurations/',
+                      state: {
+                        cacheManager: cm.name
+                      }
+                    }}> <Button variant="link" icon={<CatalogIcon/>}>Configurations </Button>{' '}</Link>
+
+
+                    <Link to={{
+                      pathname: 'container/' + cm.name + '/stats/',
+                      state: {
+                        cacheManager: cm.name
+                      }
+                    }}><Button variant="link" icon={<MonitoringIcon/>}>Stats </Button>{' '}</Link>
+
+
                 </StackItem>
               </Stack>
             </AccordionContent>

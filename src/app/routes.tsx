@@ -11,6 +11,8 @@ import {Caches} from "@app/Caches/Caches";
 import {CreateCache} from "@app/Caches/CreateCache";
 import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
 import {DetailCache} from "@app/Caches/DetailCache";
+import {DetailStats} from "@app/CacheManagers/DetailStats";
+import {DetailConfigurations} from "@app/CacheManagers/DetailConfigurations";
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -27,7 +29,7 @@ const Support = (routeProps: RouteComponentProps) => {
           loadedComponent = (
             <PageSection aria-label="Loading Content Container">
               <div className="pf-l-bullseye">
-                <Alert title="Loading" className="pf-l-bullseye__item" />
+                <Alert title="Loading" className="pf-l-bullseye__item"/>
               </div>
             </PageSection>
           );
@@ -40,7 +42,7 @@ const Support = (routeProps: RouteComponentProps) => {
   );
 };
 
-const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, ...rest }) => {
+const RouteWithTitleUpdates = ({component: Component, isAsync = false, title, ...rest}) => {
   const lastNavigation = useLastLocation();
 
   function routeWithTitle(routeProps: RouteComponentProps) {
@@ -60,7 +62,7 @@ const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, .
     };
   }, []);
 
-  return <Route render={routeWithTitle} />;
+  return <Route render={routeWithTitle}/>;
 };
 
 export interface IAppRoute {
@@ -76,6 +78,15 @@ export interface IAppRoute {
 
 const routes: IAppRoute[] = [
   {
+    component: InfinispanServer,
+    exact: true,
+    icon: null,
+    label: 'Infinispan Server',
+    path: '/server',
+    title: 'Infinispan Server',
+    menu: true
+  },
+  {
     component: CacheManagers,
     exact: true,
     icon: null,
@@ -85,13 +96,22 @@ const routes: IAppRoute[] = [
     menu: true
   },
   {
-    component: InfinispanServer,
+    component: DetailStats,
     exact: true,
     icon: null,
-    label: 'Infinispan Server',
-    path: '/server',
-    title: 'Infinispan Server',
-    menu: true
+    label: 'Cache Manager Stats',
+    path: '/container/:containerName/stats',
+    title: 'Stats',
+    menu: false
+  },
+  {
+    component: DetailConfigurations,
+    exact: true,
+    icon: null,
+    label: 'Cache Manager Configurations',
+    path: '/container/:containerName/configurations',
+    title: 'Configurations',
+    menu: false
   },
   {
     component: Caches,
@@ -122,7 +142,7 @@ const routes: IAppRoute[] = [
   }
 ];
 
-export let isLogged:Boolean = true;
+export let isLogged: Boolean = true;
 
 export let user = {
   user: 'console',
@@ -131,7 +151,7 @@ export let user = {
 const AppRoutes = () => (
   <LastLocationProvider>
     <Switch>
-      {routes.map(({ path, exact, component, title, isAsync, icon}, idx) => (
+      {routes.map(({path, exact, component, title, isAsync, icon}, idx) => (
         <RouteWithTitleUpdates
           path={path}
           exact={exact}
@@ -142,9 +162,9 @@ const AppRoutes = () => (
           isAsync={isAsync}
         />
       ))}
-      <RouteWithTitleUpdates component={NotFound} title={'404 Page Not Found'} />
+      <RouteWithTitleUpdates component={NotFound} title={'404 Page Not Found'}/>
     </Switch>
   </LastLocationProvider>
 );
 
-export { AppRoutes, routes };
+export {AppRoutes, routes};

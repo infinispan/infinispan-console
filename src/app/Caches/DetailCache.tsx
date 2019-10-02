@@ -105,9 +105,8 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   function EntriesLifecycle() {
     return <Card>
       <CardHead>
-        <MemoryIcon/>
+        <MemoryIcon/> <Title size="xs">Entries lifecycle</Title>
       </CardHead>
-      <CardHeader>Entries lifecycle</CardHeader>
       <CardBody>
         <DisplayEntriesLifecycle/>
       </CardBody>

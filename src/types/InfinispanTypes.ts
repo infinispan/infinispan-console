@@ -13,6 +13,34 @@ interface CacheManager {
   cache_configuration_names:[string];
 }
 
+interface CacheManagerStats {
+  statistics_enabled: boolean;
+  number_of_entries?: number;
+  hit_ratio?: number;
+  read_write_ratio?: number;
+  time_since_start?: number;
+  time_since_reset?: number;
+  current_number_of_entries?: number;
+  current_number_of_entries_in_memory?: number;
+  total_number_of_entries?: number;
+  off_heap_memory_used?: number;
+  data_memory_used?: number;
+  stores?: number;
+  retrievals?: number;
+  hits?: number;
+  misses?: number;
+  remove_hits?: number;
+  remove_misses?: number;
+  evictions?: number;
+  average_read_time?: number;
+  average_read_time_nanos?: number;
+  average_write_time?: number;
+  average_write_time_nanos?: number;
+  average_remove_time?: number;
+  average_remove_time_nanos?: number;
+  required_minimum_number_of_nodes?: number;
+}
+
 interface DefinedCache {
   name: string;
   started: boolean;
@@ -24,6 +52,7 @@ interface InfinispanServer {
 
 interface CacheConfig {
   name: string;
+  config:string;
 }
 
 interface CmStats {
