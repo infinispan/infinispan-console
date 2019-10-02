@@ -47,6 +47,7 @@ class CacheService {
             removeHits: data.stats.removeHits,
             removeMisses: data.stats.removeMisses,
           }
+
           return <DetailedInfinispanCache>{
             name: cacheName,
             started: data.started,

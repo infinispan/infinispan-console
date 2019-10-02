@@ -17,6 +17,7 @@ import {
 } from '@patternfly/react-core';
 import cacheService from "../../services/cacheService";
 import {MemoryIcon, MonitoringIcon, PortIcon} from '@patternfly/react-icons'
+import { UnknownIcon } from '@patternfly/react-icons'
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
   const cacheName: string = props.location.state.cacheName;
@@ -43,7 +44,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
 
   const DisplayOpsPerformance = () => {
     return detail.opsPerformance == undefined ? <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={MonitoringIcon}/>
+        <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack height={10}>
         <StackItem><strong>Avg Reads:</strong> {detail.opsPerformance.avgReads} ms</StackItem>
@@ -67,7 +68,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
 
   const DisplayCachingActivity = () => {
     return detail.cacheActivity == undefined ? <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={PortIcon}/>
+        <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
         <StackItem><strong># READ hits	</strong> {detail.cacheActivity.readHits}</StackItem>
@@ -91,7 +92,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
 
   const DisplayCacheContent= () => {
     return detail.cacheContent == undefined ? <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={MemoryIcon}/>
+        <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
         <StackItem><strong># Entries	</strong> {detail.cacheContent.size}</StackItem>
@@ -100,10 +101,35 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
         <StackItem><strong>Max capacity	</strong> {detail.cacheContent.maxCapacity}</StackItem>
       </Stack>
   }
+
+  function EntriesLifecycle() {
+    return <Card>
+      <CardHead>
+        <MemoryIcon/>
+      </CardHead>
+      <CardHeader>Entries lifecycle</CardHeader>
+      <CardBody>
+        <DisplayEntriesLifecycle/>
+      </CardBody>
+    </Card>
+  }
+
+  const DisplayEntriesLifecycle= () => {
+    return detail.entriesLifecycle == undefined ? <EmptyState variant={EmptyStateVariant.small}>
+        <EmptyStateIcon icon={UnknownIcon}/>
+      </EmptyState> :
+      <Stack>
+        <StackItem><strong># Activations	</strong> {detail.entriesLifecycle.activations}</StackItem>
+        <StackItem><strong># Evictions	</strong> {detail.entriesLifecycle.evictions}</StackItem>
+        <StackItem><strong># Invalidations	</strong> {detail.entriesLifecycle.invalidations}</StackItem>
+        <StackItem><strong># Passivations	</strong> {detail.entriesLifecycle.passivations}</StackItem>
+      </Stack>
+  }
+
   return (
     <PageSection>
       <Title size="lg"> Cache <strong>{detail.name}</strong> </Title>
-      
+
       <Grid gutter="md">
         <GridItem span={4}>
           <CacheContent/>
@@ -114,7 +140,9 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
         <GridItem span={4}>
           <OperationsPerformance/>
         </GridItem>
-
+        <GridItem span={4}>
+          <EntriesLifecycle/>
+        </GridItem>
       </Grid>
 
     </PageSection>
