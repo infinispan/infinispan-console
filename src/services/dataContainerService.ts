@@ -39,7 +39,7 @@ class ContainerService {
       .then(response => response.json())
       .then(arr => arr.map(config => <CacheConfig>{
         name: config.name,
-        config: JSON.stringify(config.configuration)
+        config: JSON.stringify(config.configuration, undefined, 2)
       }));
   };
 }
