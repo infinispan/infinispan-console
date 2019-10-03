@@ -16,8 +16,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import cacheService from "../../services/cacheService";
-import {MemoryIcon, MonitoringIcon, PortIcon} from '@patternfly/react-icons'
-import { UnknownIcon } from '@patternfly/react-icons'
+import {MemoryIcon, MonitoringIcon, PortIcon, UnknownIcon} from '@patternfly/react-icons'
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
   const cacheName: string = props.location.state.cacheName;
@@ -25,12 +24,13 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName)
-      .then(detailedCache =>{
-        setDetail(detailedCache)});
+      .then(detailedCache => {
+        setDetail(detailedCache)
+      });
   }, []);
 
 
-  function OperationsPerformance(){
+  function OperationsPerformance() {
     return <Card>
       <CardHead>
         <MonitoringIcon/>
@@ -71,10 +71,10 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
-        <StackItem><strong># READ hits	</strong> {detail.cacheActivity.readHits}</StackItem>
-        <StackItem><strong># READ misses	</strong> {detail.cacheActivity.readMisses}</StackItem>
-        <StackItem><strong># REMOVE hits	</strong> {detail.cacheActivity.removeHits}</StackItem>
-        <StackItem><strong># REMOVE misses	</strong> {detail.cacheActivity.removeMisses}</StackItem>
+        <StackItem><strong># READ hits </strong> {detail.cacheActivity.readHits}</StackItem>
+        <StackItem><strong># READ misses </strong> {detail.cacheActivity.readMisses}</StackItem>
+        <StackItem><strong># REMOVE hits </strong> {detail.cacheActivity.removeHits}</StackItem>
+        <StackItem><strong># REMOVE misses </strong> {detail.cacheActivity.removeMisses}</StackItem>
       </Stack>
   }
 
@@ -85,43 +85,44 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
       </CardHead>
       <CardHeader>Cache content</CardHeader>
       <CardBody>
-          <DisplayCacheContent/>
+        <DisplayCacheContent/>
       </CardBody>
     </Card>
   }
 
-  const DisplayCacheContent= () => {
+  const DisplayCacheContent = () => {
     return detail.cacheContent == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
-        <StackItem><strong># Entries	</strong> {detail.cacheContent.size}</StackItem>
-        <StackItem><strong>READ/WRITE ration	</strong> {detail.cacheContent.readWriteRatio}</StackItem>
-        <StackItem><strong>HIT ration	</strong> {detail.cacheContent.hitRatio}</StackItem>
-        <StackItem><strong>Max capacity	</strong> {detail.cacheContent.maxCapacity}</StackItem>
+        <StackItem><strong># Entries </strong> {detail.cacheContent.size}</StackItem>
+        <StackItem><strong>READ/WRITE ration </strong> {detail.cacheContent.readWriteRatio}</StackItem>
+        <StackItem><strong>HIT ration </strong> {detail.cacheContent.hitRatio}</StackItem>
+        <StackItem><strong>Max capacity </strong> {detail.cacheContent.maxCapacity}</StackItem>
       </Stack>
   }
 
   function EntriesLifecycle() {
     return <Card>
       <CardHead>
-        <MemoryIcon/> <Title size="xs">Entries lifecycle</Title>
+        <MemoryIcon/>
       </CardHead>
+      <CardHeader><Title size="xs">Entries lifecycle</Title></CardHeader>
       <CardBody>
         <DisplayEntriesLifecycle/>
       </CardBody>
     </Card>
   }
 
-  const DisplayEntriesLifecycle= () => {
+  const DisplayEntriesLifecycle = () => {
     return detail.entriesLifecycle == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
-        <StackItem><strong># Activations	</strong> {detail.entriesLifecycle.activations}</StackItem>
-        <StackItem><strong># Evictions	</strong> {detail.entriesLifecycle.evictions}</StackItem>
-        <StackItem><strong># Invalidations	</strong> {detail.entriesLifecycle.invalidations}</StackItem>
-        <StackItem><strong># Passivations	</strong> {detail.entriesLifecycle.passivations}</StackItem>
+        <StackItem><strong># Activations </strong> {detail.entriesLifecycle.activations}</StackItem>
+        <StackItem><strong># Evictions </strong> {detail.entriesLifecycle.evictions}</StackItem>
+        <StackItem><strong># Invalidations </strong> {detail.entriesLifecycle.invalidations}</StackItem>
+        <StackItem><strong># Passivations </strong> {detail.entriesLifecycle.passivations}</StackItem>
       </Stack>
   }
 
