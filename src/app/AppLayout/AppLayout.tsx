@@ -50,7 +50,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
         {routes.map((route, idx) => {
           return route.menu ? (
             <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
-              <NavLink exact={true} to={route.path} activeClassName="pf-m-current">{route.label}</NavLink>
+              {route.icon} <NavLink exact={true} to={route.path} activeClassName="pf-m-current">{route.label}</NavLink>
             </NavItem>
           ) : ('');
         })}

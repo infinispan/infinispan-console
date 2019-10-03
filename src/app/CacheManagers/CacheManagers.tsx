@@ -15,6 +15,7 @@ import {
 import {ClusterIcon, MonitoringIcon, VolumeIcon} from '@patternfly/react-icons'
 import {Link} from "react-router-dom";
 import { CatalogIcon } from '@patternfly/react-icons'
+import { TopologyIcon } from '@patternfly/react-icons'
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cacheManagers, setCacheManagers] = useState<CacheManager[]>([]);
@@ -46,7 +47,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             >
               <Stack gutter="sm">
                 <StackItem><ClusterIcon/> {cm.cluster_name} size <b>{cm.cluster_size}</b></StackItem>
-                <StackItem>Physical Addresses: <b>{cm.physical_addresses}</b></StackItem>
+                <StackItem><TopologyIcon/> Physical Addresses: <b>{cm.physical_addresses}</b></StackItem>
                 <StackItem><Label>{cm.cache_manager_status}</Label></StackItem>
                 <StackItem>
                     <Link to={{

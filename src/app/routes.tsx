@@ -13,6 +13,8 @@ import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
 import {DetailCache} from "@app/Caches/DetailCache";
 import {DetailStats} from "@app/CacheManagers/DetailStats";
 import {DetailConfigurations} from "@app/CacheManagers/DetailConfigurations";
+import { ServerGroupIcon } from '@patternfly/react-icons'
+import { VolumeIcon } from '@patternfly/react-icons'
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -80,7 +82,7 @@ const routes: IAppRoute[] = [
   {
     component: InfinispanServer,
     exact: true,
-    icon: null,
+    icon: <ServerGroupIcon/>,
     label: 'Infinispan Server',
     path: '/server',
     title: 'Infinispan Server',
@@ -89,7 +91,7 @@ const routes: IAppRoute[] = [
   {
     component: CacheManagers,
     exact: true,
-    icon: null,
+    icon: <VolumeIcon/>,
     label: 'Containers',
     path: '/',
     title: 'Containers',
