@@ -3,28 +3,14 @@
  * @author Katia Aresti
  * @since 1.0
  */
+import utils from "./utils";
+
 class CacheService {
   endpoint: string;
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
   }
-
-  // currentNumberOfEntries: 0
-  // currentNumberOfEntriesInMemory: 0
-  // dataMemoryUsed: 0
-  // evictions: 0
-  // hits: 0
-  // misses: 0
-  // offHeapMemoryUsed: 0
-  // removeHits: 0
-  // removeMisses: 0
-  // requiredMinimumNumberOfNodes: 0
-  // retrievals: 0
-  // stores: 0
-  // timeSinceReset: 931
-  // timeSinceStart: 931
-  // totalNumberOfEntries: 0
 
   public retrieveFullDetail(cacheName: string): Promise<DetailedInfinispanCache> {
     return fetch(this.endpoint + '/caches/' + cacheName + '/?action=all')
@@ -124,6 +110,6 @@ class CacheService {
   };
 }
 
-const cacheService: CacheService = new CacheService("http://localhost:11222/rest/v2");
+const cacheService: CacheService = new CacheService(utils.endpoint());
 
 export default cacheService;

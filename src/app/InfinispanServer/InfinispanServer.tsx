@@ -6,7 +6,13 @@ import {useEffect} from "react";
 const InfinispanServer: React.FunctionComponent<any> = (props) => {
   const [version, setVersion] =  useState('');
   useEffect(() => {
-    fetch("http://localhost:11222/rest/v2/server/")
+    var misCabeceras = new Headers();
+    misCabeceras.append('Authorization', 'Basic ' + btoa(unescape(encodeURIComponent('kat:kat'))));
+
+    var miInit = { method: 'GET',
+      headers: misCabeceras};
+
+    fetch("http://localhost:11222/rest/v2/server/", miInit)
       .then(response => response.json())
       .then(data => {
         setVersion(data.version);

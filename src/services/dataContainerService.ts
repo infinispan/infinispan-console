@@ -1,3 +1,5 @@
+import utils from "./utils";
+
 class ContainerService {
   endpoint: string;
 
@@ -44,6 +46,6 @@ class ContainerService {
   };
 }
 
-const dataContainerService: ContainerService = new ContainerService("http://localhost:11222/rest/v2");
+const dataContainerService: ContainerService = new ContainerService(utils.endpoint());
 
 export default dataContainerService;
