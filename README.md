@@ -4,7 +4,6 @@ This is the front end application for the web console of the new Infinispan Serv
 
 This application is built using Patternfly 4 and React
 
-
 ## Quick-start
 ```bash
 npm install yarn -g # ensure you have yarn on your machine globally
