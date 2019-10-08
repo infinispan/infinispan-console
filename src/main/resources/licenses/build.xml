@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+  <target name="default">
+    <!-- console -->
+    <antcall target="licenses">
+      <param name="artifactListFile" value="${baseDir}/artifacts/console.txt"/>
+      <param name="targetDir"
+             value="${project.build.directory}/console/docs/licenses/${brand.prefix}/console"/>
+    </antcall>
+  </target>
+
+
+  <target name="licenses">
+
+    <mkdir dir="${targetDir}"/>
+
+    <copy file="${artifactListFile}" tofile="${targetDir}/artifacts.xml" overwrite="true"/>
+
+    <replaceregexp file="${targetDir}/artifacts.xml"
+                   match="([^:]*):([^:]*):([^:]*)"
+                   replace="&lt;artifact&gt;&lt;g&gt;\1&lt;/g&gt;&lt;a&gt;\2&lt;/a&gt;&lt;v&gt;\3&lt;/v&gt;&lt;/artifact&gt;"
+                   byline="true"/>
+
+    <replaceregexp file="${targetDir}/artifacts.xml"
+                   match="([^:]*):([^:]*)"
+                   replace="&lt;artifact&gt;&lt;p&gt;\1&lt;/p&gt;&lt;v&gt;\2&lt;/v&gt;&lt;/artifact&gt;"
+                   byline="true"/>
+
+    <replaceregexp file="${targetDir}/artifacts.xml" match="(.*)"
+                   replace="&lt;artifacts&gt;\1&lt;/artifacts&gt;"
+                   byline="false"
+                   flags="ms"/>
+
+    <xslt in="${targetDir}/artifacts.xml" out="${targetDir}/licenses.xml" style="${baseDir}/licenses-xml.xsl">
+      <param name="license_database" expression="license-database.xml"/>
+    </xslt>
+    <xslt in="${targetDir}/licenses.xml" out="${targetDir}/licenses.html" style="${baseDir}/licenses-html.xsl"/>
+    <xslt in="${targetDir}/licenses.xml" out="${targetDir}/licenses-list-raw.txt"
+          style="${baseDir}/licenses-list.xsl"/>
+
+
+    <loadfile srcfile="${targetDir}/licenses-list-raw.txt" property="licensesList">
+      <filterchain>
+        <sortfilter/>
+        <uniqfilter/>
+        <tokenfilter>
+          <filetokenizer/>
+          <replacestring from="&#xa;" to=","/>
+        </tokenfilter>
+      </filterchain>
+    </loadfile>
+
+    <echo message="${licensesList}" file="${targetDir}/licenses-list.txt" append="false"/>
+
+    <copy todir="${targetDir}" failonerror="true">
+      <fileset dir="${baseDir}/texts" includes="${licensesList}"/>
+      <fileset dir="${baseDir}" includes="licenses.css"/>
+    </copy>
+
+    <delete>
+      <fileset dir="${targetDir}" includes="artifacts.xml"/>
+      <fileset dir="${targetDir}" includes="licenses-list.txt"/>
+      <fileset dir="${targetDir}" includes="licenses-list-raw.txt"/>
+    </delete>
+
+  </target>
+</project>

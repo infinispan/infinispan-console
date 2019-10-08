@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.infinispan</groupId>
+  <artifactId>infinispan-console-ng</artifactId>
+  <version>10.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Infinispan Console Nh=g</name>
+  <description>Web Management Console for Infinispan</description>
+  <url>http://www.infinispan.org</url>
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>placeholder</id>
+      <name>See http://www.infinispan.org for a complete list of contributors</name>
+    </developer>
+  </developers>
+  <mailingLists>
+    <mailingList>
+      <name>Infinispan Issues</name>
+      <subscribe>https://lists.jboss.org/mailman/listinfo/infinispan-issues</subscribe>
+      <unsubscribe>https://lists.jboss.org/mailman/listinfo/infinispan-issues</unsubscribe>
+      <post>infinispan-issues@lists.jboss.org</post>
+      <archive>http://lists.jboss.org/pipermail/infinispan-issues/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Infinispan Developers</name>
+      <subscribe>https://lists.jboss.org/mailman/listinfo/infinispan-dev</subscribe>
+      <unsubscribe>https://lists.jboss.org/mailman/listinfo/infinispan-dev</unsubscribe>
+      <post>infinispan-dev@lists.jboss.org</post>
+      <archive>http://lists.jboss.org/pipermail/infinispan-dev/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:git@github.com:karesti/infinispan-console-ng.git</connection>
+    <developerConnection>scm:git:git@github.com:karesti/infinispan-console-ng.git</developerConnection>
+    <url>https://github.com/infinispan/infinispan-console-ng</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.jboss.org/browse/ISPN</url>
+  </issueManagement>
+  <ciManagement>
+    <system>TeamCity</system>
+    <url>http://ci.infinispan.org</url>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <address>infinispan-commits@lists.jboss.org</address>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>${jboss.releases.repo.id}</id>
+      <name>JBoss Release Repository</name>
+      <url>${jboss.releases.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+      <id>${jboss.snapshots.repo.id}</id>
+      <name>JBoss Snapshot Repository</name>
+      <url>${jboss.snapshots.repo.url}</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <properties>
+    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+    <jboss.releases.repo.id>jboss-releases-repository</jboss.releases.repo.id>
+    <jboss.releases.repo.url>https://repository.jboss.org/nexus</jboss.releases.repo.url>
+    <jboss.snapshots.repo.id>jboss-snapshots-repository</jboss.snapshots.repo.id>
+    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/
+    </jboss.snapshots.repo.url>
+    <branding.infinispan.shortName>infinispan</branding.infinispan.shortName>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.8.0</version>
+        <executions>
+          <execution>
+            <id>install node and yarn</id>
+            <goals>
+              <goal>install-node-and-yarn</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <nodeVersion>v12.9.1</nodeVersion>
+              <yarnVersion>v1.17.3</yarnVersion>
+
+              <!-- optional: where to download node from. Defaults to https://nodejs.org/dist/ -->
+              <!--              <nodeDownloadRoot>http://myproxy.example.org/nodejs/</nodeDownloadRoot>-->
+              <!-- optional: where to download yarn from. Defaults to https://github.com/yarnpkg/yarn/releases/download/ -->
+              <!--              <yarnDownloadRoot>http://myproxy.example.org/yarn/</yarnDownloadRoot>-->
+            </configuration>
+          </execution>
+          <execution>
+            <id>yarn install</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>webpack build</id>
+            <goals>
+              <goal>webpack</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>--config webpack.prod.js</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.6.1</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>dist</directory>
+              <directory>src/main/components</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <classesDirectory>dist</classesDirectory>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Build>$\{buildNumber}</Implementation-Build>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+
+          <nexusUrl>${jboss.releases.repo.url}</nexusUrl>
+          <serverId>${jboss.releases.repo.id}</serverId>
+        </configuration>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>generate-license-files</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="baseDir" value="${basedir}/src/main/resources/licenses"/>
+                <property name="project.build.directory" value="${project.build.directory}"/>
+                <property name="brand.prefix" value="${branding.infinispan.shortName}"/>
+                <ant antfile="${basedir}/src/main/resources/licenses/build.xml">
+                  <target name="default"/>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-license-files</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>${basedir}/src/main/resources/licenses/assembly/console.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>
