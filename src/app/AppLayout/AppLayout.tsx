@@ -37,7 +37,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
     <PageHeader
       logo="Infinispan"
       logoProps={logoProps}
-      toolbar="Logout"
+      toolbar=""
       showNavToggle={true}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
