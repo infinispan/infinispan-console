@@ -92,9 +92,9 @@ const routes: IAppRoute[] = [
     component: CacheManagers,
     exact: true,
     icon: <VolumeIcon/>,
-    label: 'Containers',
+    label: 'Data container',
     path: '/',
-    title: 'Containers',
+    title: 'Data container',
     menu: true
   },
   {
