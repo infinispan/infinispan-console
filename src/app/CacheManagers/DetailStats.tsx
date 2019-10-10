@@ -26,7 +26,6 @@ const DetailStats: React.FunctionComponent<any> = (props) => {
   useEffect(() => {
     dataContainerService.getCacheManagerStats(cm)
       .then(detailedStats => {
-        console.log(detailedStats);
         setDetail(detailedStats);
       });
   }, []);
