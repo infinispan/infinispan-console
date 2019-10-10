@@ -22,15 +22,7 @@ import {
   Tabs,
   Title,
 } from '@patternfly/react-core';
-import {
-  CatalogIcon,
-  ClusterIcon,
-  CubesIcon,
-  MonitoringIcon,
-  PendingIcon,
-  PlusCircleIcon,
-  TopologyIcon
-} from '@patternfly/react-icons'
+import {CatalogIcon, ClusterIcon, CubesIcon, MonitoringIcon, PendingIcon, PlusCircleIcon} from '@patternfly/react-icons'
 import cacheService from "../../services/cacheService";
 import {Link} from "react-router-dom";
 
@@ -58,15 +50,15 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
 
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);
-  }
+  };
 
-  function CachesContent() {
+  const CachesContent = () => {
     const isEmpty = caches.length == 0;
     if (isEmpty) {
       return <EmptyCaches/>;
     }
     return <CachesGrid/>;
-  }
+  };
 
   const EmptyCaches = () => {
     return <EmptyState variant={EmptyStateVariant.small}>
@@ -77,32 +69,27 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       <EmptyStateBody>
         There are no caches with those filters
       </EmptyStateBody>
-      <Link to={{
-        pathname: '/create',
-        state: {
-          cacheManager: cm,
-        }
-      }}>
-        <Button component="a" target="_blank" variant="primary">
-          Create cache
-        </Button>
-      </Link>
+      <CreateCacheButton/>
     </EmptyState>
-  }
+  };
+
+  const CreateCacheButton = () => {
+    return <Link to={{
+      pathname: '/caches/create',
+      state: {
+        cacheManager: cm,
+      }
+    }}>
+      <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
+        Create cache
+      </Button>
+    </Link>;
+  };
 
   const CachesGrid = () => {
-    return cm == undefined? <EmptyCaches/> : <Grid gutter='sm'>
+    return cm == undefined ? <EmptyCaches/> : <Grid gutter='sm'>
       <GridItem id='id-grid-buttons' span={12}>
-        <Link to={{
-          pathname: '/container/' + cm + '/caches/create',
-          state: {
-            cacheManager: cm,
-          }
-        }}>
-          <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
-            Create cache
-          </Button>
-        </Link>
+        <CreateCacheButton/>
         <Link to={{
           pathname: 'container/' + cm.name + '/configurations/',
           state: {
@@ -181,20 +168,20 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
 
   const DisplayTabs = () => {
     return <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
-      <Tab eventKey={0} title="Caches">
+      <Tab eventKey={0} title={caches.length + ' Caches'}>
         <CachesContent/>
       </Tab>
       <Tab eventKey={1} title="Global Statistics">
         <DisplayStats/>
       </Tab>
     </Tabs>
-  }
+  };
 
   const DisplayCacheManager = () => {
     return cm != undefined ?
       <Stack gutter="sm">
-        <StackItem><ClusterIcon/> {cm.cluster_name} size <b>{cm.cluster_size}</b></StackItem>
         <StackItem><Label>{cm.cache_manager_status}</Label></StackItem>
+        <StackItem><ClusterIcon/> {cm.cluster_name} size <b>{cm.cluster_size}</b></StackItem>
         <DisplayTabs/>
       </Stack> : <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={CubesIcon}/>
@@ -211,6 +198,6 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       <DisplayCacheManager/>
     </PageSection>
   );
-}
+};
 
 export {CacheManagers};

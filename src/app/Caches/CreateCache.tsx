@@ -38,7 +38,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }
 
   useEffect(() => {
-    dataContainerService.getCacheManager(cm)
+    dataContainerService.getCacheManager(cm.name)
       .then(cacheManager => {
         let options: OptionSelect[] = [];
         cacheManager.cache_configuration_names.map(name => {
@@ -131,7 +131,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const titleId = 'plain-typeahead-select-id';
   return (
     <PageSection>
-      <Title size="lg"> Create a cache in <b>{cm}</b></Title>
+      <Title size="lg"> Create a cache in <b>{cm.name}</b></Title>
       <Form>
         <FormGroup
           label="Name"
@@ -198,7 +198,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         <ActionGroup>
           <Button variant="primary" onClick={createCache}>Create</Button>
           <Link to={{
-            pathname: '/container/' + cm + '/caches',
+            pathname: '/container/' + cm.name + '/caches',
             state: {
               cacheManager: cm
             }
