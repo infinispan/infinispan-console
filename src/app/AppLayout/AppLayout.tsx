@@ -38,7 +38,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
       logo="Infinispan"
       logoProps={logoProps}
       toolbar=""
-      showNavToggle={true}
+      showNavToggle={false}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
@@ -71,7 +71,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
     <Page
       mainContainerId="primary-app-container"
       header={Header}
-      sidebar={Sidebar}
       onPageResize={onPageResize}
       skipToContent={PageSkipToContent}>
       {children}
