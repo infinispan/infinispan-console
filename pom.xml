@@ -118,13 +118,12 @@
             </configuration>
           </execution>
           <execution>
-            <id>webpack build</id>
+            <id>yarn build</id>
             <goals>
-              <goal>webpack</goal>
+              <goal>yarn</goal>
             </goals>
-            <phase>generate-resources</phase>
             <configuration>
-              <arguments>--config webpack.prod.js</arguments>
+              <arguments>build</arguments>
             </configuration>
           </execution>
         </executions>
