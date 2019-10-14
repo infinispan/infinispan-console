@@ -174,6 +174,10 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       <Tab eventKey={1} title="Global Statistics">
         <DisplayStats/>
       </Tab>
+      <Tab eventKey={2
+      } title="Clustering">
+        Clustering info
+      </Tab>
     </Tabs>
   };
 
