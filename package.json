@@ -64,9 +64,10 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "@patternfly/react-core": "^3.77.2",
-    "@patternfly/react-icons": "^3.10.15",
-    "@patternfly/react-styles": "^3.5.7",
+    "@patternfly/react-core": "^3.112.3",
+    "@patternfly/react-icons": "^3.14.7",
+    "@patternfly/react-styles": "^3.5.27",
+    "@patternfly/react-charts": "^5.0.13",
     "react-document-title": "^2.0.3",
     "react-router-dom": "^5.0.1",
     "react-router-last-location": "^2.0.1",

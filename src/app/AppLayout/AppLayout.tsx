@@ -1,16 +1,8 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
-import {
-  Nav,
-  NavList,
-  NavItem,
-  NavVariants,
-  Page,
-  PageHeader,
-  PageSidebar,
-  SkipToContent
-} from '@patternfly/react-core';
-import { routes } from '@app/routes';
+import {NavLink} from 'react-router-dom';
+import {Brand, Nav, NavItem, NavList, NavVariants, Page, PageHeader, SkipToContent} from '@patternfly/react-core';
+import {routes} from '@app/routes';
+import brand from '@app/assets/images/brand.svg';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -33,9 +25,10 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
   const onPageResize = (props: { mobileView: boolean; windowSize: number }) => {
     setIsMobileView(props.mobileView);
   };
+
   const Header = (
     <PageHeader
-      logo="Infinispan"
+      logo={<Brand src={brand} alt="Datagrid Management Console"/>}
       logoProps={logoProps}
       toolbar=""
       showNavToggle={false}
@@ -57,11 +50,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
       </NavList>
     </Nav>
   );
-  const Sidebar = (
-    <PageSidebar
-      nav={Navigation}
-      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen} />
-  );
   const PageSkipToContent = (
     <SkipToContent href="#primary-app-container">
       Skip to Content
@@ -78,4 +66,4 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
   );
 }
 
-export { AppLayout };
+export {AppLayout};
