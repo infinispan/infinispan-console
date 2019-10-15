@@ -27,12 +27,16 @@ class ContainerService {
           cache_manager_status: data.cache_manager_status,
           cluster_size: data.cluster_size,
           defined_caches: this.removeInternalCaches(data.defined_caches),
-          cache_configuration_names: data.cache_configuration_names
+          cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names)
         });
   };
 
   private removeInternalCaches(caches: DefinedCache[]) {
     return  caches.filter(cache => !cache.name.startsWith('___'));
+  }
+
+  private removeInternalTemplate(templates: string[]) {
+    return  templates.filter(template => !template.startsWith('___'));
   }
 
   public getCacheManagerStats(name: string): Promise<CacheManagerStats> {
