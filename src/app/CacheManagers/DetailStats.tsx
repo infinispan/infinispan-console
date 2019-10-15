@@ -39,7 +39,6 @@ const DetailStats: React.FunctionComponent<any> = (props) => {
         <EmptyStateBody>
           Statistics are not enabled in this Cache Manager.
           To activate statistics, set statistics=true in the cache manager configuration.
-          bla bla bla explain
         </EmptyStateBody>
       </EmptyState> :
       <Grid gutter="md">

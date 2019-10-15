@@ -2,7 +2,7 @@ import * as React from 'react';
 import {NavLink} from 'react-router-dom';
 import {Brand, Nav, NavItem, NavList, NavVariants, Page, PageHeader, SkipToContent} from '@patternfly/react-core';
 import {routes} from '@app/routes';
-import brand from '@app/assets/images/brand.svg';
+import brand from 'url-loader!@app/assets/images/brand.svg';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={brand} alt="Datagrid Management Console"/>}
+      logo={<Brand src={brand} alt="Datagrid Management Consoleeeeee"/>}
       logoProps={logoProps}
       toolbar=""
       showNavToggle={false}

@@ -15,6 +15,7 @@ class ContainerService {
   };
 
   public getCacheManager(name: string): Promise<CacheManager> {
+
     return fetch(this.endpoint + '/cache-managers/' + name)
       .then(response => response.json())
       .then(data =>
@@ -25,10 +26,14 @@ class ContainerService {
           cluster_name: data.cluster_name,
           cache_manager_status: data.cache_manager_status,
           cluster_size: data.cluster_size,
-          defined_caches: data.defined_caches,
+          defined_caches: this.removeInternalCaches(data.defined_caches),
           cache_configuration_names: data.cache_configuration_names
         });
   };
+
+  private removeInternalCaches(caches: DefinedCache[]) {
+    return  caches.filter(cache => !cache.name.startsWith('___'));
+  }
 
   public getCacheManagerStats(name: string): Promise<CacheManagerStats> {
     return fetch(this.endpoint + '/cache-managers/' + name + '/stats')
