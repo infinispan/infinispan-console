@@ -58,7 +58,6 @@ class ContainerService {
     return fetch(this.endpoint + '/cache-managers/' + name + '/caches')
       .then(response => response.json())
       .then(infos => infos
-        .filter(cacheInfo => cacheInfo.name.contains('___'))
         .map(cacheInfo => <CacheInfo>{
           name: cacheInfo.name,
           status: cacheInfo.status,
@@ -67,7 +66,7 @@ class ContainerService {
           simpleCache: cacheInfo.simpleCache,
           transactional: cacheInfo.transactional,
           persistent: cacheInfo.persistent
-        }));
+        }).filter(cacheInfo => !cacheInfo.name.startsWith('___')));
   }
 }
 
