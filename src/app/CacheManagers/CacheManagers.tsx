@@ -31,6 +31,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [activeTabKey, setActiveTabKey] = useState(0);
   const [stats, setStats] = useState<CacheManagerStats>({statistics_enabled: false},);
   const [caches, setCaches] = useState<CacheInfo[]>([]);
+  const [counters, setCounters] = useState<string[]>([]);
 
   useEffect(() => {
     dataContainerService.getCacheManagers()
@@ -57,6 +58,26 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     return <CachesGrid/>;
   };
 
+  const CountersContent = () => {
+    const isEmpty = counters.length == 0;
+    if (isEmpty) {
+      return <EmptyCounters/>;
+    }
+    return <EmptyCounters/>;
+  };
+
+  const EmptyCounters = () => {
+    return <EmptyState variant={EmptyStateVariant.small}>
+      <EmptyStateIcon icon={CubesIcon}/>
+      <Title headingLevel="h5" size="lg">
+        Empty
+      </Title>
+      <EmptyStateBody>
+        There are no counters
+      </EmptyStateBody>
+    </EmptyState>
+  };
+
   const EmptyCaches = () => {
     return <EmptyState variant={EmptyStateVariant.small}>
       <EmptyStateIcon icon={CubesIcon}/>
@@ -64,7 +85,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         Empty
       </Title>
       <EmptyStateBody>
-        There are no caches with those filters
+        There are no caches
       </EmptyStateBody>
       <CreateCacheButton/>
     </EmptyState>
@@ -95,7 +116,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         }}> <Button variant="link" icon={<CatalogIcon/>}>Configurations </Button>{' '}</Link>
       </GridItem>
       {caches.map(cache =>
-        <GridItem id={'id-grid-item' + cache.name} span={3}>
+        <GridItem id={'id-grid-item' + cache.name} span={4}>
           <Card id={'id-card' + cache.name}>
             <CardHeader id={'id-card-header' + cache.name}>{cache.name}</CardHeader>
             <CardBody id={'id-card-body' + cache.name}>
@@ -168,10 +189,13 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       <Tab eventKey={0} title={caches.length + ' Caches'}>
         <CachesContent/>
       </Tab>
-      <Tab eventKey={1} title="Global Statistics">
+      <Tab eventKey={1} title={counters.length + ' Counters'}>
+        <CountersContent/>
+      </Tab>
+      <Tab eventKey={2} title="Global Statistics">
         <DisplayStats/>
       </Tab>
-      <Tab eventKey={2
+      <Tab eventKey={3
       } title="Clustering">
         Clustering info
       </Tab>
