@@ -32,11 +32,11 @@ class ContainerService {
   };
 
   private removeInternalCaches(caches: DefinedCache[]) {
-    return  caches.filter(cache => !cache.name.startsWith('___'));
+    return caches.filter(cache => !cache.name.startsWith('___'));
   }
 
   private removeInternalTemplate(templates: string[]) {
-    return  templates.filter(template => !template.startsWith('___'));
+    return templates.filter(template => !template.startsWith('___'));
   }
 
   public getCacheManagerStats(name: string): Promise<CacheManagerStats> {
@@ -53,6 +53,22 @@ class ContainerService {
         config: JSON.stringify(config.configuration, undefined, 2)
       }));
   };
+
+  public getCaches(name: string): Promise<[CacheInfo]> {
+    return fetch(this.endpoint + '/cache-managers/' + name + '/caches')
+      .then(response => response.json())
+      .then(infos => infos
+        .filter(cacheInfo => cacheInfo.name.contains('___'))
+        .map(cacheInfo => <CacheInfo>{
+          name: cacheInfo.name,
+          status: cacheInfo.status,
+          type: cacheInfo.type,
+          size: cacheInfo.size,
+          simpleCache: cacheInfo.simpleCache,
+          transactional: cacheInfo.transactional,
+          persistent: cacheInfo.persistent
+        }));
+  }
 }
 
 const dataContainerService: ContainerService = new ContainerService(utils.endpoint());

@@ -30,7 +30,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
   const [activeTabKey, setActiveTabKey] = useState(0);
   const [stats, setStats] = useState<CacheManagerStats>({statistics_enabled: false},);
-  const [caches, setCaches] = useState<InfinispanCache[]>([]);
+  const [caches, setCaches] = useState<CacheInfo[]>([]);
 
   useEffect(() => {
     dataContainerService.getCacheManagers()
@@ -38,12 +38,9 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         if (cacheManagers.length > 0) {
           setCacheManager(cacheManagers[0]);
           dataContainerService.getCacheManagerStats(cacheManagers[0].name)
-            .then(detailedStats => {
-              setStats(detailedStats);
-            });
-          Promise.all(cacheManagers[0].defined_caches
-            .map(cacheName => cacheService.retrieveCacheDetail(cacheName.name, cacheName.started)))
-            .then(result => setCaches(result));
+            .then(detailedStats => setStats(detailedStats));
+          dataContainerService.getCaches(cacheManagers[0].name)
+            .then(caches => setCaches(caches));
         }
       });
   }, []);

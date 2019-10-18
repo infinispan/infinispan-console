@@ -10,7 +10,7 @@ interface CacheManager {
   cache_manager_status: string
   cluster_size: number;
   defined_caches: [DefinedCache];
-  cache_configuration_names:[string];
+  cache_configuration_names: [string];
 }
 
 interface CacheManagerStats {
@@ -52,7 +52,17 @@ interface InfinispanServer {
 
 interface CacheConfig {
   name: string;
-  config:string;
+  config: string;
+}
+
+interface CacheInfo {
+  status: string;
+  name: string;
+  type: string;
+  size: number;
+  simpleCache: boolean;
+  transactional: boolean;
+  persistent: boolean;
 }
 
 interface CmStats {
