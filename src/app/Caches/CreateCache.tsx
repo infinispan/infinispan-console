@@ -2,6 +2,9 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
   ActionGroup,
+  Alert,
+  AlertActionCloseButton,
+  AlertVariant,
   Button,
   Expandable,
   Form,
@@ -30,6 +33,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
   const [validConfig, setValidConfig] = useState(true);
+  const [cacheAlert, setCacheAlert] = useState({message: '', display: false});
 
   interface OptionSelect {
     value: string;
@@ -122,16 +126,33 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     }
 
     if (selectedConfig != null) {
-      cacheService.createCacheByConfigName(name, selectedConfig);
+      cacheService.createCacheByConfigName(name, selectedConfig)
+        .then(message => setCacheAlert({message: message, display: true}));
     } else {
-      cacheService.createCacheWithConfiguration(name, config);
+      cacheService.createCacheWithConfiguration(name, config)
+        .then(message => setCacheAlert({message: message, display: true}));
     }
+  };
+
+  const hideCreation = () => {
+    setCacheAlert({message: '', display: false});
+  };
+
+  const AlertPanel = () => {
+    return <React.Fragment>{cacheAlert.display ?
+      <Alert variant={cacheAlert.message == '' ? AlertVariant.success : AlertVariant.danger}
+             title={cacheAlert.message == '' ? 'Cache created correctly' : cacheAlert.message}
+             action={<AlertActionCloseButton onClose={hideCreation}/>}/> :
+      ''}
+    </React.Fragment>;
   };
 
   const titleId = 'plain-typeahead-select-id';
   return (
     <PageSection>
       <Title size="lg"> Create a cache in <b>{cm.name}</b></Title>
+      <AlertPanel/>
+
       <Form>
         <FormGroup
           label="Name"

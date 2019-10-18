@@ -79,17 +79,14 @@ class CacheService {
     return cacheType;
   }
 
-  public createCacheByConfigName(cacheName: string, configName: string): Promise<String> {
+  public createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
     return fetch('http://localhost:11222/rest/v2/caches/' + cacheName + '?template=' + configName, {
       method: 'POST'
-    }).then(function (response) {
-      // display error here somewhere
-      console.log(response.json());
-      return "";
-    })
+    }).then(response => response.ok? '': response.statusText)
+      .catch(error => error.toString());
   };
 
-  public createCacheWithConfiguration(cacheName: string, config: string): Promise<String> {
+  public createCacheWithConfiguration(cacheName: string, config: string): Promise<string> {
     let headers = new Headers();
     try {
       JSON.parse(config);
@@ -102,12 +99,10 @@ class CacheService {
       method: 'POST',
       body: config,
       headers: headers
-    }).then(response => {
-      // display error here somewhere
-      console.log(response.json());
-      return "";
     })
-  };
+      .then(response => response.ok? '': response.statusText)
+      .catch(error => error.toString());
+  }
 }
 
 const cacheService: CacheService = new CacheService(utils.endpoint());
