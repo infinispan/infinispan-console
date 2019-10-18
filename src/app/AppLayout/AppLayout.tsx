@@ -28,7 +28,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={brand} alt="Datagrid Management Consoleeeeee"/>}
+      logo={<Brand src={brand} alt="Datagrid Management Console"/>}
       logoProps={logoProps}
       toolbar=""
       showNavToggle={false}

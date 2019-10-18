@@ -218,12 +218,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
 
         <ActionGroup>
           <Button variant="primary" onClick={createCache}>Create</Button>
-          <Link to={{
-            pathname: '/container/' + cm.name + '/caches',
-            state: {
-              cacheManager: cm
-            }
-          }}><Button variant="secondary" component="a" target="_blank">Cancel</Button>
+          <Link to='/'><Button variant="secondary" component="a" target="_blank">Cancel</Button>
           </Link>
         </ActionGroup>
       </Form>
