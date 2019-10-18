@@ -14,17 +14,26 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  Label,
+  Label, Level, LevelItem,
   PageSection,
   Stack,
   StackItem,
   Tab,
   Tabs,
-  Title,
+  Title, Tooltip,
 } from '@patternfly/react-core';
-import {CatalogIcon, ClusterIcon, CubesIcon, MonitoringIcon, PendingIcon, PlusCircleIcon} from '@patternfly/react-icons'
-import cacheService from "../../services/cacheService";
+import {
+  CatalogIcon,
+  ClusterIcon,
+  CubesIcon, DegradedIcon,
+  InfoIcon, LockedIcon,
+  MonitoringIcon,
+  PendingIcon,
+  PlusCircleIcon, SaveIcon, ServiceIcon, VolumeIcon
+} from '@patternfly/react-icons'
+
 import {Link} from "react-router-dom";
+import {SecurityIcon} from '@patternfly/react-icons';
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -104,6 +113,16 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     </Link>;
   };
 
+  const CacheFeature: React.FunctionComponent<any> = (props) => {
+    return (<LevelItem>
+      <Tooltip position="right"
+      content={
+        <div>{props.tooltip}</div>
+      }>
+        {props.icon}
+      </Tooltip></LevelItem>);
+  };
+
   const CachesGrid = () => {
     return cm == undefined ? <EmptyCaches/> : <Grid gutter='sm'>
       <GridItem id='id-grid-buttons' span={12}>
@@ -118,10 +137,21 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       {caches.map(cache =>
         <GridItem id={'id-grid-item' + cache.name} span={4}>
           <Card id={'id-card' + cache.name}>
-            <CardHeader id={'id-card-header' + cache.name}>{cache.name}</CardHeader>
+            <CardHeader id={'id-card-header' + cache.name}>
+              <Grid>
+                <GridItem span={8}>{cache.name}</GridItem>
+                <GridItem span={4}>
+                  <Level>
+                    <LevelItem><CacheFeature icon={<SaveIcon/>} tooltip={'Persisted'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<ServiceIcon/>} tooltip={'Transactional'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<DegradedIcon/>} tooltip={'Has backups'}/></LevelItem>
+                  </Level>
+                </GridItem>
+              </Grid>
+            </CardHeader>
             <CardBody id={'id-card-body' + cache.name}>
               <Stack gutter="sm">
-                <StackItem><Badge>{cache.type}</Badge></StackItem>
+                <StackItem><Label>{cache.type}</Label></StackItem>
                 <StackItem isFilled>Size {cache.size}</StackItem>
                 <StackItem>
                   <Link to={{
@@ -129,7 +159,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                     state: {
                       cacheName: cache.name,
                     }
-                  }}>Details</Link></StackItem>
+                  }}><InfoIcon/> Display details</Link></StackItem>
               </Stack>
             </CardBody>
           </Card>
