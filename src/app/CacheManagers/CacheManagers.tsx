@@ -2,7 +2,6 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService'
 import {
-  Badge,
   Button,
   Card,
   CardBody,
@@ -14,26 +13,40 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  Label, Level, LevelItem,
+  Label,
+  Level,
+  LevelItem,
   PageSection,
   Stack,
   StackItem,
   Tab,
   Tabs,
-  Title, Tooltip,
+  Title,
+  Tooltip,
 } from '@patternfly/react-core';
 import {
   CatalogIcon,
   ClusterIcon,
-  CubesIcon, DegradedIcon,
-  InfoIcon, KeyIcon, LockedIcon,
+  CubesIcon,
+  DegradedIcon,
+  InfoIcon,
+  KeyIcon,
   MonitoringIcon,
   PendingIcon,
-  PlusCircleIcon, SaveIcon, ServiceIcon, Spinner2Icon, StorageDomainIcon, VolumeIcon
+  PlusCircleIcon,
+  SaveIcon,
+  ServiceIcon,
+  Spinner2Icon,
+  StorageDomainIcon
 } from '@patternfly/react-icons'
 
 import {Link} from "react-router-dom";
-import {SecurityIcon} from '@patternfly/react-icons';
+import {
+  chart_color_black_100,
+  chart_color_black_200,
+  chart_color_black_500,
+  chart_color_blue_500
+} from "@patternfly/react-tokens";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -116,11 +129,19 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const CacheFeature: React.FunctionComponent<any> = (props) => {
     return (<LevelItem>
       <Tooltip position="right"
-      content={
-        <div>{props.tooltip}</div>
-      }>
+               content={
+                 <div>{props.tooltip}</div>
+               }>
         {props.icon}
       </Tooltip></LevelItem>);
+  };
+
+  const hasFeatureColor = (feature) => {
+    if (feature) {
+      return chart_color_blue_500.value;
+    } else {
+      return chart_color_black_100.value;
+    }
   };
 
   const CachesGrid = () => {
@@ -142,12 +163,18 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <GridItem span={8}>{cache.name}</GridItem>
                 <GridItem span={4}>
                   <Level>
-                    <LevelItem><CacheFeature icon={<Spinner2Icon/>} tooltip={'Bounded'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<StorageDomainIcon/>} tooltip={'Indexed'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<SaveIcon/>} tooltip={'Persisted'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<ServiceIcon/>} tooltip={'Transactional'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<KeyIcon/>} tooltip={'Secured'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<DegradedIcon/>} tooltip={'Has remote backups'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<Spinner2Icon color={hasFeatureColor(cache.bounded)}/>}
+                                             tooltip={'Bounded'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<StorageDomainIcon color={hasFeatureColor(cache.indexed)}/>}
+                                             tooltip={'Indexed'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<SaveIcon color={hasFeatureColor(cache.persistent)}/>}
+                                             tooltip={'Persisted'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<ServiceIcon color={hasFeatureColor(cache.transactional)}/>}
+                                             tooltip={'Transactional'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<KeyIcon color={hasFeatureColor(cache.secured)}/>}
+                                             tooltip={'Secured'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<DegradedIcon color={hasFeatureColor(cache.hasRemoteBackup)}/>}
+                                             tooltip={'Has remote backups'}/></LevelItem>
                   </Level>
                 </GridItem>
               </Grid>
