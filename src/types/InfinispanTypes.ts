@@ -63,6 +63,10 @@ interface CacheInfo {
   simpleCache: boolean;
   transactional: boolean;
   persistent: boolean;
+  bounded:boolean;
+  secured:boolean;
+  indexed:boolean;
+  hasRemoteBackup:boolean;
 }
 
 interface CmStats {

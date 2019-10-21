@@ -26,10 +26,10 @@ import {
   CatalogIcon,
   ClusterIcon,
   CubesIcon, DegradedIcon,
-  InfoIcon, LockedIcon,
+  InfoIcon, KeyIcon, LockedIcon,
   MonitoringIcon,
   PendingIcon,
-  PlusCircleIcon, SaveIcon, ServiceIcon, VolumeIcon
+  PlusCircleIcon, SaveIcon, ServiceIcon, Spinner2Icon, StorageDomainIcon, VolumeIcon
 } from '@patternfly/react-icons'
 
 import {Link} from "react-router-dom";
@@ -142,9 +142,12 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <GridItem span={8}>{cache.name}</GridItem>
                 <GridItem span={4}>
                   <Level>
+                    <LevelItem><CacheFeature icon={<Spinner2Icon/>} tooltip={'Bounded'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<StorageDomainIcon/>} tooltip={'Indexed'}/></LevelItem>
                     <LevelItem><CacheFeature icon={<SaveIcon/>} tooltip={'Persisted'}/></LevelItem>
                     <LevelItem><CacheFeature icon={<ServiceIcon/>} tooltip={'Transactional'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<DegradedIcon/>} tooltip={'Has backups'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<KeyIcon/>} tooltip={'Secured'}/></LevelItem>
+                    <LevelItem><CacheFeature icon={<DegradedIcon/>} tooltip={'Has remote backups'}/></LevelItem>
                   </Level>
                 </GridItem>
               </Grid>
