@@ -60,7 +60,7 @@ class CacheService {
   }
 
   public createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
-    return fetch('http://localhost:11222/rest/v2/caches/' + cacheName + '?template=' + configName, {
+    return fetch(this.endpoint + '/caches/' + cacheName + '?template=' + configName, {
       method: 'POST'
     }).then(response => response.ok? '': response.statusText)
       .catch(error => error.toString());
@@ -75,7 +75,7 @@ class CacheService {
       console.log(e);
       headers.append('Content-Type', 'application/xml');
     }
-    return fetch('http://localhost:11222/rest/v2/caches/' + cacheName, {
+    return fetch(this.endpoint + '/caches/' + cacheName, {
       method: 'POST',
       body: config,
       headers: headers
