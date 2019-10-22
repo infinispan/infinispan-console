@@ -7,7 +7,6 @@ import {CacheManagers} from '@app/CacheManagers/CacheManagers';
 import {NotFound} from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
 import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
-import {Caches} from "@app/Caches/Caches";
 import {CreateCache} from "@app/Caches/CreateCache";
 import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
 import {DetailCache} from "@app/Caches/DetailCache";
@@ -113,15 +112,6 @@ const routes: IAppRoute[] = [
     label: 'Cache Manager Configurations',
     path: '/container/:containerName/configurations',
     title: 'Configurations',
-    menu: false
-  },
-  {
-    component: Caches,
-    exact: true,
-    icon: null,
-    label: 'Caches',
-    path: '/container/:containerName/caches',
-    title: 'Caches',
     menu: false
   },
   {

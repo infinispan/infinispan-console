@@ -13,7 +13,7 @@ class CacheService {
   }
 
   public retrieveFullDetail(cacheName: string): Promise<DetailedInfinispanCache> {
-    return fetch(this.endpoint + '/caches/' + cacheName + '/?action=all')
+    return fetch(this.endpoint + '/caches/' + cacheName)
       .then(response => response.json())
       .then(data => {
           const cacheContent: CacheContent = {
@@ -45,26 +45,6 @@ class CacheService {
           }
         }
       );
-  };
-
-  public retrieveCacheDetail(cacheName: string, started: boolean): Promise<InfinispanCache> {
-    return fetch(this.endpoint + '/caches/' + cacheName + '/?action=size')
-      .then(response => response.json())
-      .then(size => fetch(this.endpoint + '/caches/' + cacheName + '/?action=config')
-        .then(response => response.json())
-        .then(config => <InfinispanCache>{
-            name: cacheName,
-            started: started,
-            size: size,
-            type: this.mapCacheType(config)
-          }
-        ).catch(error => <InfinispanCache>{
-          name: cacheName,
-          started: started,
-          size: size,
-          type: "unknown"
-        })
-      )
   };
 
   private mapCacheType(config: JSON): string {
