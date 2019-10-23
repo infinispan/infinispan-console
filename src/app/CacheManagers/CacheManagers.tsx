@@ -244,7 +244,23 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       </Grid>
   };
 
+  const DisplayCluster = () => {
+    return cm == undefined ? <EmptyState variant={EmptyStateVariant.full}>
+      <EmptyStateIcon icon={CubesIcon}/>
+      <EmptyStateBody>
+        The cluster is empty
+      </EmptyStateBody>
+    </EmptyState> : <Grid gutter="md">
+      <GridItem span={12}><ClusterIcon/> <strong>{cm.cluster_name}</strong> of
+        size <strong>{cm.cluster_size}</strong></GridItem>
+    </Grid>;
+  };
+
   const DisplayTabs = () => {
+    let clusteringLabel = 'Cluster info';
+    if (cm != undefined) {
+      clusteringLabel = 'Cluster of ' + cm.cluster_size;
+    }
     return <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
       <Tab eventKey={0} title={caches.length + ' Caches'}>
         <CachesContent/>
@@ -255,9 +271,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       <Tab eventKey={2} title="Global Statistics">
         <DisplayStats/>
       </Tab>
-      <Tab eventKey={3
-      } title="Clustering">
-        Clustering info
+      <Tab eventKey={3} title={clusteringLabel}>
+        <DisplayCluster/>
       </Tab>
     </Tabs>
   };
@@ -265,8 +280,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const DisplayCacheManager = () => {
     return cm != undefined ?
       <Stack gutter="sm">
-        <StackItem><Label>{cm.cache_manager_status}</Label></StackItem>
-        <StackItem><ClusterIcon/> {cm.cluster_name} size <b>{cm.cluster_size}</b></StackItem>
+        <StackItem><strong>Id:</strong> {cm.name} is <Label>{cm.cache_manager_status}</Label></StackItem>
         <DisplayTabs/>
       </Stack> : <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={CubesIcon}/>
