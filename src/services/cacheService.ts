@@ -18,20 +18,16 @@ class CacheService {
       .then(data => {
           const cacheContent: CacheContent = {
             size: data.size,
-            readWriteRatio: data.stats.averageReadTime,
-            hitRatio: 49.4,
-            maxCapacity: 458.4544
+            currentNumberOfEntries: data.currentNumberOfEntries,
+            currentNumberOfEntriesInMemory: data.currentNumberOfEntriesInMemory,
+            totalNumberOfEntries: data.totalNumberOfEntries,
+            requiredMinimumNumberOfNodes: data.requiredMinimumNumberOfNodes
           };
+
           const opsPerformance: OpsPerformance = {
             avgReads: data.stats.averageReadTime,
             avgRemoves: data.stats.averageRemoveTime,
             avgWrites: data.stats.averageWriteTime
-          };
-          const cacheActivity: CacheActivity = {
-            readHits: data.stats.hits,
-            readMisses: data.stats.misses,
-            removeHits: data.stats.removeHits,
-            removeMisses: data.stats.removeMisses,
           };
 
           const cacheLoader: CacheLoader = {
@@ -39,7 +35,9 @@ class CacheService {
             misses: data.stats.misses,
             hits: data.stats.hits,
             retrievals: data.stats.retrievals,
-            stores: data.stats.stores
+            stores: data.stats.stores,
+            removeHits: data.stats.removeHits,
+            removeMisses: data.stats.removeMisses
           };
 
           return <DetailedInfinispanCache>{
@@ -48,7 +46,6 @@ class CacheService {
             size: data.size,
             type: this.mapCacheType(data),
             opsPerformance: opsPerformance,
-            cacheActivity: cacheActivity,
             cacheContent: cacheContent,
             cacheLoader: cacheLoader,
             persisted: false,
@@ -57,7 +54,11 @@ class CacheService {
             bounded: false,
             indexed: false,
             secured: false,
-            hasRemoteBackup: false
+            hasRemoteBackup: false,
+            timeSinceStart: data.stats.timeSinceStart,
+            timeSinceReset: data.stats.timeSinceReset,
+            indexingInProgress: false,
+            rehashInProgress: false
           }
         }
       );

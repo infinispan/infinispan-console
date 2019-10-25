@@ -3,17 +3,19 @@ import {useEffect, useState} from 'react';
 import {
   Card,
   CardBody,
-  CardHead,
   CardHeader,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
-  GridItem, Label, Level, LevelItem,
+  GridItem,
+  Label,
+  Level,
+  LevelItem,
   PageSection,
   Stack,
   StackItem,
-  Title, Tooltip,
+  Title,
 } from '@patternfly/react-core';
 import cacheService from "../../services/cacheService";
 import {
@@ -21,12 +23,14 @@ import {
   KeyIcon,
   MemoryIcon,
   MonitoringIcon,
-  PortIcon, SaveIcon, ServiceIcon,
+  SaveIcon,
+  ServiceIcon,
   Spinner2Icon,
   StorageDomainIcon,
   UnknownIcon
 } from '@patternfly/react-icons'
-import {c_label_BackgroundColor, chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
+import {chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
+import {ChartPie} from "@patternfly/react-charts";
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
   const emptyDetail: DetailedInfinispanCache = {
@@ -38,7 +42,11 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
     bounded: false,
     indexed: false,
     secured: false,
-    hasRemoteBackup: false
+    hasRemoteBackup: false,
+    rehashInProgress: false,
+    indexingInProgress: false,
+    timeSinceReset: 0,
+    timeSinceStart: 0
   };
 
   const cacheName: string = props.location.state.cacheName;
@@ -73,27 +81,6 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
       </Stack>
   };
 
-  const CachingActivity = () => {
-    return <Card>
-      <CardHeader><PortIcon/> {' ' + 'Caching activity'}</CardHeader>
-      <CardBody>
-        <DisplayCachingActivity/>
-      </CardBody>
-    </Card>
-  };
-
-  const DisplayCachingActivity = () => {
-    return detail.cacheActivity == undefined ? <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={UnknownIcon}/>
-      </EmptyState> :
-      <Stack>
-        <StackItem><strong># READ hits </strong> {detail.cacheActivity.readHits}</StackItem>
-        <StackItem><strong># READ misses </strong> {detail.cacheActivity.readMisses}</StackItem>
-        <StackItem><strong># REMOVE hits </strong> {detail.cacheActivity.removeHits}</StackItem>
-        <StackItem><strong># REMOVE misses </strong> {detail.cacheActivity.removeMisses}</StackItem>
-      </Stack>
-  };
-
   const CacheContent = () => {
     return <Card>
       <CardHeader> <MemoryIcon/> { ' ' + 'Cache content'}</CardHeader>
@@ -107,12 +94,32 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
     return detail.cacheContent == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
-      <Stack>
-        <StackItem><strong># Entries </strong> {detail.cacheContent.size}</StackItem>
-        <StackItem><strong>READ/WRITE ration </strong> {detail.cacheContent.readWriteRatio}</StackItem>
-        <StackItem><strong>HIT ration </strong> {detail.cacheContent.hitRatio}</StackItem>
-        <StackItem><strong>Max capacity </strong> {detail.cacheContent.maxCapacity}</StackItem>
-      </Stack>
+        <ChartPie
+            ariaDesc="Average number of pets"
+            ariaTitle="Pie chart example"
+            constrainToVisibleArea={true}
+            data={[{ x: 'Entries in memory', y: detail.cacheContent.currentNumberOfEntriesInMemory },
+              { x: 'Number of entries', y: detail.cacheContent.currentNumberOfEntries }]}
+            height={230}
+            labels={({ datum }) => `${datum.x}: ${datum.y}`}
+            legendData={[{ name: 'Cats: 35' }, { name: 'Dogs: 55' }, { name: 'Birds: 10' }]}
+            legendOrientation="vertical"
+            legendPosition="right"
+            padding={{
+              bottom: 20,
+              left: 20,
+              right: 140, // Adjusted to accommodate legend
+              top: 20
+            }}
+            width={350}
+        />
+      // <Stack>
+      //
+      //   <StackItem><strong>Current number of entries </strong> {detail.cacheContent.currentNumberOfEntries}</StackItem>
+      //   <StackItem><strong>Current number of entries in memory </strong> {detail.cacheContent.currentNumberOfEntriesInMemory}</StackItem>
+      //   <StackItem><strong>Total number of entries </strong> {detail.cacheContent.totalNumberOfEntries}</StackItem>
+      //   <StackItem><strong>Max capacity </strong> {detail.cacheContent.requiredMinimumNumberOfNodes}</StackItem>
+      // </Stack>
   };
 
   const CacheLoader = () => {
@@ -131,6 +138,8 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
       <Stack>
         <StackItem><strong># Hits </strong> {detail.cacheLoader.hits}</StackItem>
         <StackItem><strong># Misses </strong> {detail.cacheLoader.misses}</StackItem>
+        <StackItem><strong># Remove Hits </strong> {detail.cacheLoader.removeHits}</StackItem>
+        <StackItem><strong># Remove Misses </strong> {detail.cacheLoader.removeMisses}</StackItem>
         <StackItem><strong># Evictions </strong> {detail.cacheLoader.evictions}</StackItem>
         <StackItem><strong># Retrievals </strong> {detail.cacheLoader.retrievals}</StackItem>
         <StackItem><strong># Stores </strong> {detail.cacheLoader.stores}</StackItem>
@@ -179,9 +188,6 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
           <Grid gutter="md">
             <GridItem span={4}>
               <CacheContent/>
-            </GridItem>
-            <GridItem span={4}>
-              <CachingActivity/>
             </GridItem>
             <GridItem span={4}>
               <OperationsPerformance/>
