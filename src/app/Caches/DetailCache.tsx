@@ -9,18 +9,40 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
-  GridItem,
+  GridItem, Label, Level, LevelItem,
   PageSection,
   Stack,
   StackItem,
-  Title,
+  Title, Tooltip,
 } from '@patternfly/react-core';
 import cacheService from "../../services/cacheService";
-import {MemoryIcon, MonitoringIcon, PortIcon, UnknownIcon} from '@patternfly/react-icons'
+import {
+  DegradedIcon,
+  KeyIcon,
+  MemoryIcon,
+  MonitoringIcon,
+  PortIcon, SaveIcon, ServiceIcon,
+  Spinner2Icon,
+  StorageDomainIcon,
+  UnknownIcon
+} from '@patternfly/react-icons'
+import {c_label_BackgroundColor, chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
+  const emptyDetail: DetailedInfinispanCache = {
+    name: 'empty',
+    started: false,
+    type: '',
+    persistent: false,
+    transactional: false,
+    bounded: false,
+    indexed: false,
+    secured: false,
+    hasRemoteBackup: false
+  };
+
   const cacheName: string = props.location.state.cacheName;
-  const [detail, setDetail] = useState<DetailedInfinispanCache>({name: cacheName},);
+  const [detail, setDetail] = useState<DetailedInfinispanCache>(emptyDetail);
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName)
@@ -30,17 +52,14 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   }, []);
 
 
-  function OperationsPerformance() {
+  const OperationsPerformance = () => {
     return <Card>
-      <CardHead>
-        <MonitoringIcon/>
-      </CardHead>
-      <CardHeader>Operations Performance</CardHeader>
+      <CardHeader><MonitoringIcon/> {' ' + 'Operations Performance'}</CardHeader>
       <CardBody>
         <DisplayOpsPerformance/>
       </CardBody>
     </Card>
-  }
+  };
 
   const DisplayOpsPerformance = () => {
     return detail.opsPerformance == undefined ? <EmptyState variant={EmptyStateVariant.small}>
@@ -52,19 +71,16 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
         <StackItem><strong>Avg Removes</strong>: {detail.opsPerformance.avgRemoves} ms</StackItem>
         <StackItem>{'-'}</StackItem>
       </Stack>
-  }
+  };
 
-  function CachingActivity() {
+  const CachingActivity = () => {
     return <Card>
-      <CardHead>
-        <PortIcon/>
-      </CardHead>
-      <CardHeader>Caching activity</CardHeader>
+      <CardHeader><PortIcon/> {' ' + 'Caching activity'}</CardHeader>
       <CardBody>
         <DisplayCachingActivity/>
       </CardBody>
     </Card>
-  }
+  };
 
   const DisplayCachingActivity = () => {
     return detail.cacheActivity == undefined ? <EmptyState variant={EmptyStateVariant.small}>
@@ -76,19 +92,16 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
         <StackItem><strong># REMOVE hits </strong> {detail.cacheActivity.removeHits}</StackItem>
         <StackItem><strong># REMOVE misses </strong> {detail.cacheActivity.removeMisses}</StackItem>
       </Stack>
-  }
+  };
 
-  function CacheContent() {
+  const CacheContent = () => {
     return <Card>
-      <CardHead>
-        <MemoryIcon/>
-      </CardHead>
-      <CardHeader>Cache content</CardHeader>
+      <CardHeader> <MemoryIcon/> { ' ' + 'Cache content'}</CardHeader>
       <CardBody>
         <DisplayCacheContent/>
       </CardBody>
     </Card>
-  }
+  };
 
   const DisplayCacheContent = () => {
     return detail.cacheContent == undefined ? <EmptyState variant={EmptyStateVariant.small}>
@@ -100,52 +113,86 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
         <StackItem><strong>HIT ration </strong> {detail.cacheContent.hitRatio}</StackItem>
         <StackItem><strong>Max capacity </strong> {detail.cacheContent.maxCapacity}</StackItem>
       </Stack>
-  }
+  };
 
-  function EntriesLifecycle() {
+  const CacheLoader = () => {
     return <Card>
-      <CardHead>
-        <MemoryIcon/>
-      </CardHead>
-      <CardHeader><Title size="xs">Entries lifecycle</Title></CardHeader>
+      <CardHeader><MemoryIcon/> {' ' + 'Cache loading'}</CardHeader>
       <CardBody>
-        <DisplayEntriesLifecycle/>
+        <DisplayCacheLoader/>
       </CardBody>
     </Card>
-  }
+  };
 
-  const DisplayEntriesLifecycle = () => {
-    return detail.entriesLifecycle == undefined ? <EmptyState variant={EmptyStateVariant.small}>
+  const DisplayCacheLoader = () => {
+    return detail.cacheLoader == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
-        <StackItem><strong># Activations </strong> {detail.entriesLifecycle.activations}</StackItem>
-        <StackItem><strong># Evictions </strong> {detail.entriesLifecycle.evictions}</StackItem>
-        <StackItem><strong># Invalidations </strong> {detail.entriesLifecycle.invalidations}</StackItem>
-        <StackItem><strong># Passivations </strong> {detail.entriesLifecycle.passivations}</StackItem>
+        <StackItem><strong># Hits </strong> {detail.cacheLoader.hits}</StackItem>
+        <StackItem><strong># Misses </strong> {detail.cacheLoader.misses}</StackItem>
+        <StackItem><strong># Evictions </strong> {detail.cacheLoader.evictions}</StackItem>
+        <StackItem><strong># Retrievals </strong> {detail.cacheLoader.retrievals}</StackItem>
+        <StackItem><strong># Stores </strong> {detail.cacheLoader.stores}</StackItem>
       </Stack>
-  }
+  };
 
+  const CacheFeature: React.FunctionComponent<any> = (props) => {
+    return (<LevelItem>
+      <Label> {props.icon} {' ' + props.label}
+      </Label></LevelItem>);
+  };
+  const hasFeatureColor = (feature) => {
+    if (feature) {
+      return chart_color_blue_500.value;
+    } else {
+      return chart_color_black_100.value;
+    }
+  };
   return (
     <PageSection>
-      <Title size="lg"> Cache <strong>{detail.name}</strong> </Title>
-
-      <Grid gutter="md">
-        <GridItem span={4}>
-          <CacheContent/>
-        </GridItem>
-        <GridItem span={4}>
-          <CachingActivity/>
-        </GridItem>
-        <GridItem span={4}>
-          <OperationsPerformance/>
-        </GridItem>
-        <GridItem span={4}>
-          <EntriesLifecycle/>
-        </GridItem>
-      </Grid>
-
+      <Stack gutter={"lg"}>
+        <StackItem><Title size="lg"> Cache <strong>{detail.name}</strong> </Title></StackItem>
+        <StackItem>
+          <Level>
+            <LevelItem><CacheFeature icon={<Spinner2Icon/>}
+                                     color={hasFeatureColor(detail.bounded)}
+                                     label={'Bounded'}/></LevelItem>
+            <LevelItem><CacheFeature icon={<StorageDomainIcon/>}
+                                     color={hasFeatureColor(detail.indexed)}
+                                     label={'Indexed'}/></LevelItem>
+            <LevelItem><CacheFeature icon={<SaveIcon/>}
+                                     color={hasFeatureColor(detail.persistent)}
+                                     label={'Persisted'}/></LevelItem>
+            <LevelItem><CacheFeature icon={<ServiceIcon/>}
+                                     color={hasFeatureColor(detail.transactional)}
+                                     label={'Transactional'}/></LevelItem>
+            <LevelItem><CacheFeature icon={<KeyIcon/>}
+                                     color={hasFeatureColor(detail.secured)}
+                                     label={'Secured'}/></LevelItem>
+            <LevelItem><CacheFeature icon={<DegradedIcon />}
+                                     color={hasFeatureColor(detail.hasRemoteBackup)}
+                                     label={'Has remote backups'}/></LevelItem>
+          </Level>
+        </StackItem>
+        <StackItem>
+          <Grid gutter="md">
+            <GridItem span={4}>
+              <CacheContent/>
+            </GridItem>
+            <GridItem span={4}>
+              <CachingActivity/>
+            </GridItem>
+            <GridItem span={4}>
+              <OperationsPerformance/>
+            </GridItem>
+            <GridItem span={4}>
+              <CacheLoader/>
+            </GridItem>
+          </Grid></StackItem>
+      </Stack>
     </PageSection>
   );
-}
+};
+
 export {DetailCache};

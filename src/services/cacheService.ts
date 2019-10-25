@@ -26,13 +26,21 @@ class CacheService {
             avgReads: data.stats.averageReadTime,
             avgRemoves: data.stats.averageRemoveTime,
             avgWrites: data.stats.averageWriteTime
-          }
+          };
           const cacheActivity: CacheActivity = {
             readHits: data.stats.hits,
             readMisses: data.stats.misses,
             removeHits: data.stats.removeHits,
             removeMisses: data.stats.removeMisses,
-          }
+          };
+
+          const cacheLoader: CacheLoader = {
+            evictions: data.stats.evictions,
+            misses: data.stats.misses,
+            hits: data.stats.hits,
+            retrievals: data.stats.retrievals,
+            stores: data.stats.stores
+          };
 
           return <DetailedInfinispanCache>{
             name: cacheName,
@@ -41,7 +49,15 @@ class CacheService {
             type: this.mapCacheType(data),
             opsPerformance: opsPerformance,
             cacheActivity: cacheActivity,
-            cacheContent: cacheContent
+            cacheContent: cacheContent,
+            cacheLoader: cacheLoader,
+            persisted: false,
+            transactional: false,
+            persistent: false,
+            bounded: false,
+            indexed: false,
+            secured: false,
+            hasRemoteBackup: false
           }
         }
       );
@@ -62,7 +78,7 @@ class CacheService {
   public createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
     return fetch(this.endpoint + '/caches/' + cacheName + '?template=' + configName, {
       method: 'POST'
-    }).then(response => response.ok? '': response.statusText)
+    }).then(response => response.ok ? '' : response.statusText)
       .catch(error => error.toString());
   };
 
@@ -80,7 +96,7 @@ class CacheService {
       body: config,
       headers: headers
     })
-      .then(response => response.ok? '': response.statusText)
+      .then(response => response.ok ? '' : response.statusText)
       .catch(error => error.toString());
   }
 }

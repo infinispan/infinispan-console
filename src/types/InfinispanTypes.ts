@@ -80,22 +80,48 @@ interface InfinispanCache {
   type: string;
 }
 
+/**
+ * averageReadTime: 0
+ averageReadTimeNanos: 36350
+ averageRemoveTime: 0
+ averageRemoveTimeNanos: 0
+ averageWriteTime: 0
+ averageWriteTimeNanos: 115205
+ currentNumberOfEntries: 195
+ currentNumberOfEntriesInMemory: 195
+ dataMemoryUsed: 0
+ evictions: 0
+ hits: 2
+ misses: 0
+ offHeapMemoryUsed: 0
+ removeHits: 0
+ removeMisses: 0
+ requiredMinimumNumberOfNodes: 1
+ retrievals: 2
+ stores: 195
+ timeSinceReset: 37800
+ timeSinceStart: 37800
+ totalNumberOfEntries: 195
+ */
+
 interface DetailedInfinispanCache {
   name: string;
   started?: boolean;
-  type?: string;
-  persisted?: boolean;
-  transactional?: boolean;
-  bounded?: boolean;
+  type: string;
+  persistent: boolean;
+  transactional: boolean;
+  bounded: boolean;
+  indexed: boolean,
+  secured: boolean,
+  hasRemoteBackup: boolean,
   opsPerformance?: OpsPerformance;
   backupSites?: [XSite];
   cacheContent?: CacheContent;
   cacheActivity?: CacheActivity;
-  entriesLifecycle?: EntriesLifecycle;
   cacheLoader?: CacheLoader;
   locking?: Locking;
   memoryUsage?: MemoryUsage;
-}
+};
 
 interface MemoryUsage {
   maxJVM: number;
@@ -105,21 +131,16 @@ interface MemoryUsage {
 }
 
 interface CacheLoader {
-  loads: number;
+  hits: number;
   misses: number;
+  retrievals: number;
   stores: number;
+  evictions: number;
 }
 
 interface Locking {
   locksAvailable: number;
   locksHeld: number;
-}
-
-interface EntriesLifecycle {
-  activations: number;
-  evictions: number;
-  invalidations: number;
-  passivations: number;
 }
 
 interface OpsPerformance {

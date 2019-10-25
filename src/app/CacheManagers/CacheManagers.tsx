@@ -47,6 +47,7 @@ import {
   chart_color_black_500,
   chart_color_blue_500
 } from "@patternfly/react-tokens";
+import {DarkCyanColorTheme} from "@patternfly/react-charts/dist/js/components/ChartTheme/themes/dark/cyan-color-theme";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
