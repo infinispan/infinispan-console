@@ -5,3 +5,5 @@ stats.json
 coverage
 .idea
 yarn.lock
+target/
+node/
