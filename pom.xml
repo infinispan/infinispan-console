@@ -7,8 +7,8 @@
   <artifactId>infinispan-console-ng</artifactId>
   <version>10.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Infinispan Console Nh=g</name>
-  <description>Web Management Console for Infinispan</description>
+  <name>Infinispan Console Ng</name>
+  <description>The new Web Management Console for Infinispan</description>
   <url>http://www.infinispan.org</url>
   <organization>
     <name>JBoss, a division of Red Hat</name>
