@@ -115,17 +115,16 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   };
 
   const CreateCacheButton = () => {
-    return <span></span>;
-    // return <Link to={{
-    //   pathname: '/caches/create',
-    //   state: {
-    //     cacheManager: cm,
-    //   }
-    // }}>
-    //   <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
-    //     Create cache
-    //   </Button>
-    // </Link>;
+    return <Link to={{
+      pathname: '/caches/create',
+      state: {
+        cacheManager: cm,
+      }
+    }}>
+      <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
+        Create cache
+      </Button>
+    </Link>;
   };
 
   const CacheFeature: React.FunctionComponent<any> = (props) => {
