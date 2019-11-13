@@ -15,22 +15,27 @@ class ContainerService {
   };
 
   public getCacheManager(name: string): Promise<CacheManager> {
-
-    return fetch(this.endpoint + '/cache-managers/' + name)
+    let healthPromise: Promise<String> = fetch(this.endpoint + '/cache-managers/' + name + "/health")
       .then(response => response.json())
-      .then(data =>
-        <CacheManager>{
-          name: data.name,
-          physical_addresses: data.physical_addresses,
-          coordinator: data.coordinator,
-          cluster_name: data.cluster_name,
-          cache_manager_status: data.cache_manager_status,
-          cluster_size: data.cluster_size,
-          defined_caches: this.removeInternalCaches(data.defined_caches),
-          cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names),
-          cluster_members: data.cluster_members,
-          cluster_members_physical_addresses: data.cluster_members_physical_addresses
-        });
+      .then(data => data.cluster_health.health_status);
+
+    return healthPromise.then(heath =>
+      fetch(this.endpoint + '/cache-managers/' + name)
+        .then(response => response.json())
+        .then(data =>
+          <CacheManager>{
+            name: data.name,
+            physical_addresses: data.physical_addresses,
+            coordinator: data.coordinator,
+            cluster_name: data.cluster_name,
+            cache_manager_status: data.cache_manager_status,
+            cluster_size: data.cluster_size,
+            defined_caches: this.removeInternalCaches(data.defined_caches),
+            cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names),
+            cluster_members: data.cluster_members,
+            cluster_members_physical_addresses: data.cluster_members_physical_addresses,
+            health: heath
+          }));
   };
 
   private removeInternalCaches(caches: DefinedCache[]) {
