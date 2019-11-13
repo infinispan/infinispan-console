@@ -27,7 +27,8 @@ class ContainerService {
           cache_manager_status: data.cache_manager_status,
           cluster_size: data.cluster_size,
           defined_caches: this.removeInternalCaches(data.defined_caches),
-          cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names)
+          cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names),
+          cluster_members: data.cluster_members
         });
   };
 

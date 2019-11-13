@@ -255,6 +255,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     </EmptyState> : <Grid gutter="md">
       <GridItem span={12}><ClusterIcon/> <strong>{cm.cluster_name}</strong> of
         size <strong>{cm.cluster_size}</strong></GridItem>
+      <GridItem span={12}><strong>{cm.cluster_members}</strong></GridItem>
     </Grid>;
   };
 
