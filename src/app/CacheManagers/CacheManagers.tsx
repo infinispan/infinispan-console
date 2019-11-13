@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardHead,
   CardHeader,
   EmptyState,
   EmptyStateBody,
@@ -28,9 +27,10 @@ import {
   CatalogIcon,
   ClusterIcon,
   CubesIcon,
-  DegradedIcon,
+  DegradedIcon, FolderOpenIcon,
   InfoIcon,
-  KeyIcon, MemoryIcon,
+  KeyIcon,
+  MemoryIcon,
   MonitoringIcon,
   PendingIcon,
   PlusCircleIcon,
@@ -41,18 +41,21 @@ import {
 } from '@patternfly/react-icons'
 
 import {Link} from "react-router-dom";
-import {
-  chart_color_black_100,
-  chart_color_black_200,
-  chart_color_black_500,
-  chart_color_blue_500
-} from "@patternfly/react-tokens";
-import {DarkCyanColorTheme} from "@patternfly/react-charts/dist/js/components/ChartTheme/themes/dark/cyan-color-theme";
+import {chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
+import {ChartDonut} from "@patternfly/react-charts";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
   const [activeTabKey, setActiveTabKey] = useState(0);
-  const [stats, setStats] = useState<CacheManagerStats>({statistics_enabled: false},);
+  const [stats, setStats] = useState<CacheManagerStats>({statistics_enabled: false,
+    hits:-1,
+    retrievals: -1,
+    remove_misses: -1,
+    remove_hits: -1,
+    evictions: -1,
+    stores: -1,
+    misses: -1
+  });
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [counters, setCounters] = useState<string[]>([]);
 
@@ -200,6 +203,17 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   };
 
   const DisplayStats = () => {
+    const allOps = function () {
+      return stats != undefined && stats.statistics_enabled?
+        stats.hits +
+        stats.retrievals +
+        stats.remove_hits +
+        stats.remove_misses +
+        stats.stores +
+        stats.misses +
+        stats.evictions: 0;
+    };
+
     return !stats.statistics_enabled ? <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={CubesIcon}/>
         <Title headingLevel="h5" size="lg">
@@ -211,48 +225,87 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         </EmptyStateBody>
       </EmptyState> :
       <Grid gutter="md">
-        <GridItem span={4}>
+        <GridItem span={6}>
           <Card>
-            <CardHeader><PendingIcon/>{' ' + 'Cache manager lifecycle'}</CardHeader>
+            <CardHeader><MemoryIcon/>{' ' + 'Content'}</CardHeader>
             <CardBody>
               <Stack>
-                <StackItem><strong># Time since start </strong> {stats.time_since_start}</StackItem>
-                <StackItem><strong># Time since reset </strong> {stats.time_since_reset}</StackItem>
-                <StackItem>-</StackItem>
+                <StackItem><strong># Number of entries </strong> {stats.number_of_entries}</StackItem>
+                <StackItem><strong># Current number of entries in memory </strong> {stats.current_number_of_entries_in_memory}</StackItem>
+                <StackItem><strong># Total number of entries </strong> {stats.total_number_of_entries}</StackItem>
+                <StackItem><strong># Data memory used </strong> {stats.data_memory_used}</StackItem>
+                <StackItem><strong># Off heap memory used </strong> {stats.off_heap_memory_used}</StackItem>
               </Stack>
             </CardBody>
           </Card>
 
         </GridItem>
-        <GridItem span={4}>
+        <GridItem span={6}>
           <Card>
             <CardHeader><MonitoringIcon/> {' ' + ' Operations Performance\n'}</CardHeader>
             <CardBody>
               <Stack>
-                <StackItem><strong>Avg READS </strong> {stats.average_read_time}</StackItem>
-                <StackItem><strong>Avg REMOVES </strong> {stats.average_remove_time}</StackItem>
-                <StackItem><strong>Avg WRITES </strong> {stats.average_write_time}</StackItem>
+                <StackItem><strong># Avg READS </strong> {stats.average_read_time}</StackItem>
+                <StackItem><strong># Avg REMOVES </strong> {stats.average_remove_time}</StackItem>
+                <StackItem><strong># Avg WRITES </strong> {stats.average_write_time}</StackItem>
+                <StackItem><strong># Read/Write Ratio </strong> {stats.read_write_ratio}</StackItem>
+                <StackItem><strong># Hits Ratio </strong> {stats.hit_ratio}</StackItem>
               </Stack>
             </CardBody>
           </Card>
         </GridItem>
 
-        <GridItem span={4}>
+        <GridItem span={6}>
           <Card>
-            <CardHeader><MemoryIcon/> {' ' + 'Data loading'}</CardHeader>
+            <CardHeader><FolderOpenIcon/> {' ' + 'Data access'}</CardHeader>
             <CardBody>
-              <Stack>
-                <StackItem><strong># Hits (ratio) </strong> {stats.hits} ({stats.hit_ratio})</StackItem>
-                <StackItem><strong># Retrievals </strong> {stats.retrievals}</StackItem>
-                <StackItem><strong># Read/Write Ratio </strong> {stats.read_write_ratio}</StackItem>
-                <StackItem><strong># Stores </strong> {stats.stores}</StackItem>
-                <StackItem><strong># Remove hits </strong> {stats.remove_hits}</StackItem>
-                <StackItem><strong># Remove misses </strong> {stats.remove_misses}</StackItem>
-                <StackItem><strong># Evictions </strong> {stats.evictions}</StackItem>
-              </Stack>
+              <div style={{ height: '208px', width:'400px'}}>
+                <ChartDonut
+                  constrainToVisibleArea={true}
+                  data={[{ x: 'Hits', y: stats.hits },
+                    { x: 'Misses', y: stats.misses },
+                    { x: 'Stores', y: stats.stores },
+                    { x: 'Retrievals', y: stats.retrievals },
+                    { x: 'Remove Hits', y: stats.remove_hits },
+                    { x: 'Removes Misses', y: stats.remove_misses },
+                    { x: 'Evictions', y: stats.evictions}]}
+                  labels={({ datum }) => `${datum.x}: ${datum.y}%`}
+                  legendData={[
+                    { name: 'Hits: ' + stats.hits },
+                    { name: 'Misses: ' + stats.misses },
+                    { name: 'Retrievals: ' + stats.retrievals },
+                    { name: 'Stores: ' + stats.stores },
+                    { name: 'Remove Hits: ' + stats.remove_hits },
+                    { name: 'Remove Misses: ' + stats.remove_misses },
+                    { name: 'Evictions: ' + stats.evictions },
+                    ]}
+                  legendOrientation="vertical"
+                  legendPosition="right"
+                  padding={{
+                    bottom: 40,
+                    left: 80,
+                    right: 140, // Adjusted to accommodate legend
+                    top: 20
+                  }}
+                  subTitle="Data access"
+                  title={'' + allOps()}
+                  width={400}
+                />
+              </div>
             </CardBody>
           </Card>
 
+        </GridItem>
+        <GridItem span={6}>
+          <Card>
+            <CardHeader><PendingIcon/>{' ' + 'Cache manager lifecycle'}</CardHeader>
+            <CardBody>
+              <Stack style={{ height: '208px'}}>
+                <StackItem><strong># Time since start </strong> {stats.time_since_start}</StackItem>
+                <StackItem><strong># Time since reset </strong> {stats.time_since_reset}</StackItem>
+              </Stack>
+            </CardBody>
+          </Card>
         </GridItem>
       </Grid>
   };

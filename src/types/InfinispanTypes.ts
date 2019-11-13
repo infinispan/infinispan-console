@@ -12,32 +12,31 @@ interface CacheManager {
   health: string;
 }
 
-
 interface CacheManagerStats {
   statistics_enabled: boolean;
-  read_write_ratio?: number;
   time_since_start?: number;
   time_since_reset?: number;
   number_of_entries?: number;
+  current_number_of_entries_in_memory?: number;
   total_number_of_entries?: number;
   off_heap_memory_used?: number;
   data_memory_used?: number;
-  misses?: number;
-  remove_hits?: number;
-  remove_misses?: number;
-  evictions?: number;
+  required_minimum_number_of_nodes?: number;
   average_read_time?: number;
   average_read_time_nanos?: number;
   average_write_time?: number;
   average_write_time_nanos?: number;
   average_remove_time?: number;
   average_remove_time_nanos?: number;
-  required_minimum_number_of_nodes?: number;
-  hits?: number;
-  stores?: number;
-  current_number_of_entries_in_memory?: number;
   hit_ratio?: number;
-  retrievals?: number;
+  read_write_ratio?: number;
+  hits: number;
+  stores: number;
+  evictions: number;
+  retrievals: number;
+  misses: number;
+  remove_hits: number;
+  remove_misses: number;
 }
 
 interface DefinedCache {
@@ -107,16 +106,6 @@ interface Locking {
   locksAvailable: number;
   locksHeld: number;
 }
-
-
-/**
- * averageReadTime: 0,
- averageReadTimeNanos: 277204,
- averageWriteTime: 0,
- averageWriteTimeNanos: 164195,
- averageRemoveTime: 0,
- averageRemoveTimeNanos: 0,
- */
 
 interface OpsPerformance {
   avgReads: number;
