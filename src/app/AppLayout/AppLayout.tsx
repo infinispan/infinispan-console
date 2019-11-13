@@ -1,9 +1,6 @@
 import * as React from 'react';
-import {NavLink} from 'react-router-dom';
-import {Brand, Nav, NavItem, NavList, NavVariants, Page, PageHeader, SkipToContent} from '@patternfly/react-core';
-import brand from '!!url-loader!@app/assets/images/brand.svg';
+import {Brand, Page, PageHeader, SkipToContent} from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/infinispan_icon.svg';
-import {routes} from "@app/routes";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -38,19 +35,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
     />
   );
 
-  const Navigation = (
-    <Nav id="nav-primary-simple">
-      <NavList id="nav-list-simple" variant={NavVariants.simple}>
-        {routes.map((route, idx) => {
-          return route.menu ? (
-            <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
-              {route.icon} <NavLink exact={true} to={route.path} activeClassName="pf-m-current">{route.label}</NavLink>
-            </NavItem>
-          ) : ('');
-        })}
-      </NavList>
-    </Nav>
-  );
   const PageSkipToContent = (
     <SkipToContent href="#primary-app-container">
       Skip to Content
