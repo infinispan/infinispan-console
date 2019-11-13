@@ -15,29 +15,29 @@ interface CacheManager {
 
 interface CacheManagerStats {
   statistics_enabled: boolean;
-  read_write_ratio: number;
-  time_since_start: number;
-  time_since_reset: number;
-  number_of_entries: number;
-  total_number_of_entries: number;
-  off_heap_memory_used: number;
-  data_memory_used: number;
-  misses: number;
-  remove_hits: number;
-  remove_misses: number;
-  evictions: number;
-  average_read_time: number;
-  average_read_time_nanos: number;
-  average_write_time: number;
-  average_write_time_nanos: number;
-  average_remove_time: number;
-  average_remove_time_nanos: number;
-  required_minimum_number_of_nodes: number;
-  hits: number;
-  stores: number;
-  current_number_of_entries_in_memory: number;
-  hit_ratio: number;
-  retrievals: number;
+  read_write_ratio?: number;
+  time_since_start?: number;
+  time_since_reset?: number;
+  number_of_entries?: number;
+  total_number_of_entries?: number;
+  off_heap_memory_used?: number;
+  data_memory_used?: number;
+  misses?: number;
+  remove_hits?: number;
+  remove_misses?: number;
+  evictions?: number;
+  average_read_time?: number;
+  average_read_time_nanos?: number;
+  average_write_time?: number;
+  average_write_time_nanos?: number;
+  average_remove_time?: number;
+  average_remove_time_nanos?: number;
+  required_minimum_number_of_nodes?: number;
+  hits?: number;
+  stores?: number;
+  current_number_of_entries_in_memory?: number;
+  hit_ratio?: number;
+  retrievals?: number;
 }
 
 interface DefinedCache {
