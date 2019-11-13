@@ -284,7 +284,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                   padding={{
                     bottom: 40,
                     left: 80,
-                    right: 140, // Adjusted to accommodate legend
+                    right: 200, // Adjusted to accommodate legend
                     top: 20
                   }}
                   subTitle="Data access"
