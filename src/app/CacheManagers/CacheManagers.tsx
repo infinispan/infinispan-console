@@ -30,7 +30,7 @@ import {
   CubesIcon,
   DegradedIcon,
   InfoIcon,
-  KeyIcon,
+  KeyIcon, MemoryIcon,
   MonitoringIcon,
   PendingIcon,
   PlusCircleIcon,
@@ -211,12 +211,9 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         </EmptyStateBody>
       </EmptyState> :
       <Grid gutter="md">
-        <GridItem span={6}>
+        <GridItem span={4}>
           <Card>
-            <CardHead>
-              <PendingIcon/>
-            </CardHead>
-            <CardHeader>Cache manager lifecycle</CardHeader>
+            <CardHeader><PendingIcon/>{' ' + 'Cache manager lifecycle'}</CardHeader>
             <CardBody>
               <Stack>
                 <StackItem><strong># Time since start </strong> {stats.time_since_start}</StackItem>
@@ -227,20 +224,35 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           </Card>
 
         </GridItem>
-        <GridItem span={6}>
+        <GridItem span={4}>
           <Card>
-            <CardHead>
-              <MonitoringIcon/>
-            </CardHead>
-            <CardHeader>Average values</CardHeader>
+            <CardHeader><MonitoringIcon/> {' ' + ' Operations Performance\n'}</CardHeader>
             <CardBody>
               <Stack>
-                <StackItem><strong># Avg READS </strong> {stats.average_read_time}</StackItem>
-                <StackItem><strong># Avg REMOVES </strong> {stats.average_remove_time}</StackItem>
-                <StackItem><strong># Avg WRITES </strong> {stats.average_write_time}</StackItem>
+                <StackItem><strong>Avg READS </strong> {stats.average_read_time}</StackItem>
+                <StackItem><strong>Avg REMOVES </strong> {stats.average_remove_time}</StackItem>
+                <StackItem><strong>Avg WRITES </strong> {stats.average_write_time}</StackItem>
               </Stack>
             </CardBody>
           </Card>
+        </GridItem>
+
+        <GridItem span={4}>
+          <Card>
+            <CardHeader><MemoryIcon/> {' ' + 'Data loading'}</CardHeader>
+            <CardBody>
+              <Stack>
+                <StackItem><strong># Hits (ratio) </strong> {stats.hits} ({stats.hit_ratio})</StackItem>
+                <StackItem><strong># Retrievals </strong> {stats.retrievals}</StackItem>
+                <StackItem><strong># Read/Write Ratio </strong> {stats.read_write_ratio}</StackItem>
+                <StackItem><strong># Stores </strong> {stats.stores}</StackItem>
+                <StackItem><strong># Remove hits </strong> {stats.remove_hits}</StackItem>
+                <StackItem><strong># Remove misses </strong> {stats.remove_misses}</StackItem>
+                <StackItem><strong># Evictions </strong> {stats.evictions}</StackItem>
+              </Stack>
+            </CardBody>
+          </Card>
+
         </GridItem>
       </Grid>
   };
