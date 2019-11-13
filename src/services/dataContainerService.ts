@@ -28,7 +28,8 @@ class ContainerService {
           cluster_size: data.cluster_size,
           defined_caches: this.removeInternalCaches(data.defined_caches),
           cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names),
-          cluster_members: data.cluster_members
+          cluster_members: data.cluster_members,
+          cluster_members_physical_addresses: data.cluster_members_physical_addresses
         });
   };
 

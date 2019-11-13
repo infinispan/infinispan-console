@@ -8,6 +8,7 @@ interface CacheManager {
   defined_caches: [DefinedCache];
   cache_configuration_names: [string];
   cluster_members: [string];
+  cluster_members_physical_addresses: [string];
 }
 
 interface CacheManagerStats {
