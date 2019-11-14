@@ -8,19 +8,19 @@ class ContainerService {
   }
 
   public getCacheManagers(): Promise<CacheManager[]> {
-    return fetch(this.endpoint + "/server/cache-managers/")
+    return utils.restCall(this.endpoint + "/server/cache-managers/", 'GET')
       .then(response => response.json())
       .then(names => Promise.all(names.map(name =>
         this.getCacheManager(name))));
   };
 
   public getCacheManager(name: string): Promise<CacheManager> {
-    let healthPromise: Promise<String> = fetch(this.endpoint + '/cache-managers/' + name + "/health")
+    let healthPromise: Promise<String> = utils.restCall(this.endpoint + '/cache-managers/' + name + "/health", 'GET')
       .then(response => response.json())
       .then(data => data.cluster_health.health_status);
 
     return healthPromise.then(heath =>
-      fetch(this.endpoint + '/cache-managers/' + name)
+      utils.restCall(this.endpoint + '/cache-managers/' + name, 'GET')
         .then(response => response.json())
         .then(data =>
           <CacheManager>{
@@ -47,13 +47,13 @@ class ContainerService {
   }
 
   public getCacheManagerStats(name: string): Promise<CacheManagerStats> {
-    return fetch(this.endpoint + '/cache-managers/' + name + '/stats')
+    return utils.restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
       .then(response => response.json())
       .then(data => <CacheManagerStats>(data));
   };
 
   public getCacheManagerConfigurations(name: string): Promise<[CacheConfig]> {
-    return fetch(this.endpoint + '/cache-managers/' + name + '/cache-configs')
+    return utils.restCall(this.endpoint + '/cache-managers/' + name + '/cache-configs', 'GET')
       .then(response => response.json())
       .then(arr => arr.map(config => <CacheConfig>{
         name: config.name,
@@ -62,7 +62,7 @@ class ContainerService {
   };
 
   public getCaches(name: string): Promise<[CacheInfo]> {
-    return fetch(this.endpoint + '/cache-managers/' + name + '/caches')
+    return utils.restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
       .then(response => response.json())
       .then(infos => infos
         .map(cacheInfo => <CacheInfo>{

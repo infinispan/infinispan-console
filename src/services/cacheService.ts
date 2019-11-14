@@ -13,7 +13,7 @@ class CacheService {
   }
 
   public retrieveFullDetail(cacheName: string): Promise<DetailedInfinispanCache> {
-    return fetch(this.endpoint + '/caches/' + cacheName)
+    return utils.restCall(this.endpoint + '/caches/' + cacheName, 'GET')
       .then(response => response.json())
       .then(data => {
           const cacheContent: CacheContent = {
@@ -77,9 +77,8 @@ class CacheService {
   }
 
   public createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
-    return fetch(this.endpoint + '/caches/' + cacheName + '?template=' + configName, {
-      method: 'POST'
-    }).then(response => response.ok ? '' : response.statusText)
+    return utils.restCall(this.endpoint + '/caches/' + cacheName + '?template=' + configName, 'POST')
+      .then(response => response.ok ? '' : response.statusText)
       .catch(error => error.toString());
   };
 
@@ -92,11 +91,7 @@ class CacheService {
       console.log(e);
       headers.append('Content-Type', 'application/xml');
     }
-    return fetch(this.endpoint + '/caches/' + cacheName, {
-      method: 'POST',
-      body: config,
-      headers: headers
-    })
+    return utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config)
       .then(response => response.ok ? '' : response.statusText)
       .catch(error => error.toString());
   }
