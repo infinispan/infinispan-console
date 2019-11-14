@@ -8,7 +8,7 @@ interface IAppLayout {
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
   const logoProps = {
-    href: '/',
+    href: '/console',
     target: '_self'
   };
   const [isNavOpen, setIsNavOpen] = React.useState(true);
