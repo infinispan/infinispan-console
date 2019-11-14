@@ -16,8 +16,9 @@ class Utils {
 
   public restCall(url: string, method: string): Promise<Response> {
     let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
-
+    if (!this.isDevMode()) {
+      headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
+    }
     return fetch(url, {
       method: method,
       headers: headers
@@ -26,7 +27,7 @@ class Utils {
 
   public restCallWithBody(url: string, method: string, body: string): Promise<Response> {
     let headers = new Headers();
-    if(!this.isDevMode()) {
+    if (!this.isDevMode()) {
       headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
     }
 
