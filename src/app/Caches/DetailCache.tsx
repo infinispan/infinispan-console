@@ -83,7 +83,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
 
   const CacheContent = () => {
     return <Card>
-      <CardHeader> <MemoryIcon/> { ' ' + 'Cache content'}</CardHeader>
+      <CardHeader> <MemoryIcon/> {' ' + 'Cache content'}</CardHeader>
       <CardBody>
         <DisplayCacheContent/>
       </CardBody>
@@ -94,32 +94,13 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
     return detail.cacheContent == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
-        <ChartPie
-            ariaDesc="Average number of pets"
-            ariaTitle="Pie chart example"
-            constrainToVisibleArea={true}
-            data={[{ x: 'Entries in memory', y: detail.cacheContent.currentNumberOfEntriesInMemory },
-              { x: 'Number of entries', y: detail.cacheContent.currentNumberOfEntries }]}
-            height={230}
-            labels={({ datum }) => `${datum.x}: ${datum.y}`}
-            legendData={[{ name: 'Cats: 35' }, { name: 'Dogs: 55' }, { name: 'Birds: 10' }]}
-            legendOrientation="vertical"
-            legendPosition="right"
-            padding={{
-              bottom: 20,
-              left: 20,
-              right: 140, // Adjusted to accommodate legend
-              top: 20
-            }}
-            width={350}
-        />
-      // <Stack>
-      //
-      //   <StackItem><strong>Current number of entries </strong> {detail.cacheContent.currentNumberOfEntries}</StackItem>
-      //   <StackItem><strong>Current number of entries in memory </strong> {detail.cacheContent.currentNumberOfEntriesInMemory}</StackItem>
-      //   <StackItem><strong>Total number of entries </strong> {detail.cacheContent.totalNumberOfEntries}</StackItem>
-      //   <StackItem><strong>Max capacity </strong> {detail.cacheContent.requiredMinimumNumberOfNodes}</StackItem>
-      // </Stack>
+      <Stack>
+        <StackItem><strong>Current number of entries </strong> {detail.cacheContent.currentNumberOfEntries}</StackItem>
+        <StackItem><strong>Current number of entries in
+          memory </strong> {detail.cacheContent.currentNumberOfEntriesInMemory}</StackItem>
+        <StackItem><strong>Total number of entries </strong> {detail.cacheContent.totalNumberOfEntries}</StackItem>
+        <StackItem><strong>Max capacity </strong> {detail.cacheContent.requiredMinimumNumberOfNodes}</StackItem>
+      </Stack>
   };
 
   const CacheLoader = () => {
@@ -179,7 +160,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
             <LevelItem><CacheFeature icon={<KeyIcon/>}
                                      color={hasFeatureColor(detail.secured)}
                                      label={'Secured'}/></LevelItem>
-            <LevelItem><CacheFeature icon={<DegradedIcon />}
+            <LevelItem><CacheFeature icon={<DegradedIcon/>}
                                      color={hasFeatureColor(detail.hasRemoteBackup)}
                                      label={'Has remote backups'}/></LevelItem>
           </Level>
