@@ -25,10 +25,11 @@ class Utils {
     })
   }
 
-  public restCallWithBody(url: string, method: string, body: string): Promise<Response> {
+  public restCallWithBody(url: string, method: string, body: string, contentType: string): Promise<Response> {
     let headers = new Headers();
     if (!this.isDevMode()) {
       headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
+      headers.append('Content-Type', contentType);
     }
 
     return fetch(url, {

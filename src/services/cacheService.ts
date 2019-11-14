@@ -83,15 +83,13 @@ class CacheService {
   };
 
   public createCacheWithConfiguration(cacheName: string, config: string): Promise<string> {
-    let headers = new Headers();
+    let contentType = 'application/json';
     try {
       JSON.parse(config);
-      headers.append('Content-Type', 'application/json');
     } catch (e) {
-      console.log(e);
-      headers.append('Content-Type', 'application/xml');
+      contentType = 'application/xml';
     }
-    return utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config)
+    return utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config, contentType)
       .then(response => response.ok ? '' : response.statusText)
       .catch(error => error.toString());
   }
