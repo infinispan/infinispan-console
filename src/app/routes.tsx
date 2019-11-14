@@ -137,8 +137,8 @@ const routes: IAppRoute[] = [
 export let isLogged: Boolean = true;
 
 export let user = {
-  user: 'kat',
-  password: 'kat'
+  user: 'admin',
+  password: 'admin'
 }
 const AppRoutes = () => (
   <LastLocationProvider>
