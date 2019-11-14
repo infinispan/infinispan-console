@@ -20,12 +20,12 @@ pipeline {
             steps {
                 script {
                     def mvnHome = tool 'Maven'
-                    sh "${mvnHome}/bin/mvn clean install -DskipTests"
+                    sh "${mvnHome}/bin/mvn clean install"
                 }
             }
         }
 
-        
+
         stage('Deploy SNAPSHOT') {
             when {
                 branch 'master'
@@ -34,7 +34,7 @@ pipeline {
                 configFileProvider([configFile(fileId: 'maven-settings-with-deploy-snapshot', variable: 'MAVEN_SETTINGS')]) {
                     script {
                         def mvnHome = tool 'Maven'
-                        sh "${mvnHome}/bin/mvn deploy -s $MAVEN_SETTINGS -DskipTests"
+                        sh "${mvnHome}/bin/mvn deploy -s $MAVEN_SETTINGS"
                     }
                 }
             }

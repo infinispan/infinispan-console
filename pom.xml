@@ -3,9 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.infinispan</groupId>
+    <artifactId>infinispan-build-configuration-parent</artifactId>
+    <version>10.0.1.Final</version>
+  </parent>
+
   <groupId>org.infinispan</groupId>
   <artifactId>infinispan-console-ng</artifactId>
-  <version>10.0.0-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Infinispan Console Ng</name>
   <description>The new Web Management Console for Infinispan</description>
@@ -27,41 +33,10 @@
       <name>See http://www.infinispan.org for a complete list of contributors</name>
     </developer>
   </developers>
-  <mailingLists>
-    <mailingList>
-      <name>Infinispan Issues</name>
-      <subscribe>https://lists.jboss.org/mailman/listinfo/infinispan-issues</subscribe>
-      <unsubscribe>https://lists.jboss.org/mailman/listinfo/infinispan-issues</unsubscribe>
-      <post>infinispan-issues@lists.jboss.org</post>
-      <archive>http://lists.jboss.org/pipermail/infinispan-issues/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Infinispan Developers</name>
-      <subscribe>https://lists.jboss.org/mailman/listinfo/infinispan-dev</subscribe>
-      <unsubscribe>https://lists.jboss.org/mailman/listinfo/infinispan-dev</unsubscribe>
-      <post>infinispan-dev@lists.jboss.org</post>
-      <archive>http://lists.jboss.org/pipermail/infinispan-dev/</archive>
-    </mailingList>
-  </mailingLists>
-  <scm>
-    <connection>scm:git:git@github.com:karesti/infinispan-console-ng.git</connection>
-    <developerConnection>scm:git:git@github.com:karesti/infinispan-console-ng.git</developerConnection>
-    <url>https://github.com/infinispan/infinispan-console-ng</url>
-  </scm>
   <issueManagement>
     <system>jira</system>
     <url>https://issues.jboss.org/browse/ISPN</url>
   </issueManagement>
-  <ciManagement>
-    <system>TeamCity</system>
-    <url>http://ci.infinispan.org</url>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <address>infinispan-commits@lists.jboss.org</address>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <distributionManagement>
     <repository>
       <id>${jboss.releases.repo.id}</id>
@@ -75,17 +50,74 @@
     </snapshotRepository>
   </distributionManagement>
 
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://ci.infinispan.org</url>
+  </ciManagement>
+
+  <scm>
+    <connection>scm:git:git@github.com:infinispan/infinispan-console-ng.git</connection>
+    <developerConnection>scm:git:git@github.com:infinispan/infinispan-console-ng.git</developerConnection>
+    <url>https://github.com/infinispan/infinispan-console-ng</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <properties>
-    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-    <jboss.releases.repo.id>jboss-releases-repository</jboss.releases.repo.id>
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus</jboss.releases.repo.url>
-    <jboss.snapshots.repo.id>jboss-snapshots-repository</jboss.snapshots.repo.id>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/
-    </jboss.snapshots.repo.url>
+    <infinispan-console.brand.name>Infinispan Management Console</infinispan-console.brand.name>
     <branding.infinispan.shortName>infinispan</branding.infinispan.shortName>
+    <jboss.releases.nexus.url>https://repository.jboss.org/nexus</jboss.releases.nexus.url>
+    <jboss.releases.repo.id>jboss-releases-repository</jboss.releases.repo.id>
+    <jboss.releases.repo.url>${jboss.releases.nexus.url}/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
   </properties>
 
+  <profiles>
+    <profile>
+      <!-- nexus-staging-maven-plugin blocks maven-deploy-plugin -->
+      <id>nexus-staging</id>
+      <activation>
+        <property><name>!skipNexusStaging</name></property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>1.9.5</version>
+          <configuration>
+            <tag>${project.version}</tag>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.maven.source}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+          <configuration>
+            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            <stagingDescription>${infinispan-console.brand.name} ${project.version} release</stagingDescription>
+            <nexusUrl>${jboss.releases.nexus.url}</nexusUrl>
+            <serverId>${jboss.releases.repo.id}</serverId>
+            <stagingProfileId>2161b7b8da0080</stagingProfileId>
+            <stagingRepositoryId>${stagingRepositoryId}</stagingRepositoryId>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.github.eirslett</groupId>
@@ -101,11 +133,6 @@
             <configuration>
               <nodeVersion>v12.9.1</nodeVersion>
               <yarnVersion>v1.17.3</yarnVersion>
-
-              <!-- optional: where to download node from. Defaults to https://nodejs.org/dist/ -->
-              <!--              <nodeDownloadRoot>http://myproxy.example.org/nodejs/</nodeDownloadRoot>-->
-              <!-- optional: where to download yarn from. Defaults to https://github.com/yarnpkg/yarn/releases/download/ -->
-              <!--              <yarnDownloadRoot>http://myproxy.example.org/yarn/</yarnDownloadRoot>-->
             </configuration>
           </execution>
           <execution>
@@ -130,19 +157,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>2.6.1</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>dist</directory>
-              <directory>src/main/components</directory>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.1.2</version>
         <configuration>
@@ -157,19 +171,6 @@
           </archive>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.8</version>
-        <extensions>true</extensions>
-        <configuration>
-
-          <nexusUrl>${jboss.releases.repo.url}</nexusUrl>
-          <serverId>${jboss.releases.repo.id}</serverId>
-        </configuration>
-      </plugin>
-
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
