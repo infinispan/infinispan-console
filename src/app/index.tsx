@@ -12,7 +12,7 @@ const App: React.FunctionComponent = () => {
     return <InfinispanLogin/>
   } else {
     return <DocumentTitle title="Infinispan Console">
-      <Router>
+      <Router basename="/console">
         <AppLayout>
           <AppRoutes/>
         </AppLayout>
