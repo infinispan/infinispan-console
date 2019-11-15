@@ -78,7 +78,7 @@ interface DetailedInfinispanCache {
   has_remote_backup: boolean
   configuration: string;
   backupSites?: [XSite];
-  stats?: CacheStats
+  stats?: CacheStats;
 }
 
 interface CacheStats {
@@ -102,10 +102,20 @@ interface CacheStats {
   average_write_time_nanos: number;
   average_remove_time: number;
   average_remove_time_nanos: number;
-  required_minimum_number_of_nodes: number
+  required_minimum_number_of_nodes: number;
 }
 
 interface XSite {
   name: string;
   capacity?: number;
+}
+
+interface Task {
+  parameters: [string];
+  task_context_name: string;
+  task_operation_name: string;
+  name: string;
+  type: string;
+  execution_mode: string;
+  allowed_role: string;
 }

@@ -34,17 +34,18 @@ import {
   MemoryIcon,
   MonitoringIcon,
   PendingIcon,
-  PlusCircleIcon,
+  PlusCircleIcon, RegistryIcon,
   SaveIcon,
   ServiceIcon,
   Spinner2Icon,
-  StorageDomainIcon
+  StorageDomainIcon, VolumeIcon
 } from '@patternfly/react-icons'
 
 import {Link} from "react-router-dom";
-import {chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
+import {chart_color_black_100, chart_color_blue_400, chart_color_blue_500} from "@patternfly/react-tokens";
 import {ChartDonut} from "@patternfly/react-charts";
 import displayUtils from "../../services/displayUtils";
+import tasksService from "../../services/tasksService";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -61,7 +62,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   });
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [counters, setCounters] = useState<string[]>([]);
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     dataContainerService.getCacheManagers()
@@ -76,6 +77,9 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       });
   }, []);
 
+  useEffect(() => {
+    tasksService.getTasks().then(tasks => setTasks(tasks));
+  }, []);
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
@@ -93,7 +97,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     if (isEmpty) {
       return <EmptyTasks/>;
     }
-    return <EmptyTasks/>;
+    return <TasksGrid/>;
   };
 
   const EmptyTasks = () => {
@@ -106,6 +110,37 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         There are no tasks
       </EmptyStateBody>
     </EmptyState>
+  };
+
+  const TasksGrid = () => {
+    return <Grid gutter='sm' style={{paddingTop: 40}}>
+      {tasks.map(task =>
+        <GridItem span={4}>
+          <Card id={'id-task-' + task.name}>
+            <CardHeader id={'task-id-header-' + task.name}>
+              <Tooltip position="right"
+                       content={
+                         <div>{task.execution_mode == 'ONE_NODE'? 'One node execution mode' : 'All nodes execution mode'}</div>
+                       }>
+                {task.execution_mode == 'ONE_NODE' ?
+                  <VolumeIcon style={{color:chart_color_blue_400.value}}/> :
+                  <RegistryIcon/>}
+              </Tooltip>
+                <strong style={{color: chart_color_blue_400.value}}>{' ' + task.name}</strong>
+            </CardHeader>
+            <CardBody id={'task-id-nody-' + task.name}>
+              <Stack>
+                <StackItem><strong>Context name:</strong>{' ' + task.task_context_name}</StackItem>
+                <StackItem><strong>Operation name:</strong>{' ' + task.task_operation_name}</StackItem>
+                <StackItem><strong>Type:</strong>{' ' + task.type}</StackItem>
+                <StackItem><strong>Parameters:</strong>{task.parameters.map(param => <span>{' [' + param + ']'}</span>)}</StackItem>
+                <StackItem><strong>Allowed role:</strong>{task.allowed_role == null? ' empty' : ' ' + task.allowed_role}</StackItem>
+              </Stack>
+            </CardBody>
+          </Card>
+        </GridItem>
+      )}
+    </Grid>
   };
 
   const CountersContent = () => {
