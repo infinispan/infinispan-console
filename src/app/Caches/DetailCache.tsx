@@ -37,16 +37,16 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
     name: 'empty',
     started: false,
     type: '',
+    size: 0,
+    configuration: '',
     persistent: false,
     transactional: false,
     bounded: false,
     indexed: false,
     secured: false,
-    hasRemoteBackup: false,
-    rehashInProgress: false,
-    indexingInProgress: false,
-    timeSinceReset: 0,
-    timeSinceStart: 0
+    has_remote_backup: false,
+    rehash_in_progress: false,
+    indexing_in_progress: false,
   };
 
   const cacheName: string = props.location.state.cacheName;
@@ -70,13 +70,13 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   };
 
   const DisplayOpsPerformance = () => {
-    return detail.opsPerformance == undefined ? <EmptyState variant={EmptyStateVariant.small}>
+    return detail.stats == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack height={10}>
-        <StackItem><strong>Avg Reads:</strong> {detail.opsPerformance.avgReads} ms</StackItem>
-        <StackItem><strong>Avg Writes:</strong> {detail.opsPerformance.avgWrites} ms</StackItem>
-        <StackItem><strong>Avg Removes</strong>: {detail.opsPerformance.avgRemoves} ms</StackItem>
+        <StackItem><strong>Avg Reads:</strong> {detail.stats.average_read_time} ms</StackItem>
+        <StackItem><strong>Avg Writes:</strong> {detail.stats.average_write_time} ms</StackItem>
+        <StackItem><strong>Avg Removes</strong>: {detail.stats.average_remove_time} ms</StackItem>
         <StackItem>{'-'}</StackItem>
       </Stack>
   };
@@ -91,15 +91,15 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   };
 
   const DisplayCacheContent = () => {
-    return detail.cacheContent == undefined ? <EmptyState variant={EmptyStateVariant.small}>
+    return detail.stats == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
-        <StackItem><strong>Current number of entries </strong> {detail.cacheContent.currentNumberOfEntries}</StackItem>
+        <StackItem><strong>Current number of entries </strong> {detail.stats.current_number_of_entries}</StackItem>
         <StackItem><strong>Current number of entries in
-          memory </strong> {detail.cacheContent.currentNumberOfEntriesInMemory}</StackItem>
-        <StackItem><strong>Total number of entries </strong> {detail.cacheContent.totalNumberOfEntries}</StackItem>
-        <StackItem><strong>Max capacity </strong> {detail.cacheContent.requiredMinimumNumberOfNodes}</StackItem>
+          memory </strong> {detail.stats.current_number_of_entries_in_memory}</StackItem>
+        <StackItem><strong>Total number of entries </strong> {detail.stats.total_number_of_entries}</StackItem>
+        <StackItem><strong>Required Minimum number of nodes </strong> {detail.stats.required_minimum_number_of_nodes}</StackItem>
       </Stack>
   };
 
@@ -113,23 +113,23 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   };
 
   const DisplayCacheLoader = () => {
-    return detail.cacheLoader == undefined ? <EmptyState variant={EmptyStateVariant.small}>
+    return detail.stats == undefined ? <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={UnknownIcon}/>
       </EmptyState> :
       <Stack>
-        <StackItem><strong># Hits </strong> {detail.cacheLoader.hits}</StackItem>
-        <StackItem><strong># Misses </strong> {detail.cacheLoader.misses}</StackItem>
-        <StackItem><strong># Remove Hits </strong> {detail.cacheLoader.removeHits}</StackItem>
-        <StackItem><strong># Remove Misses </strong> {detail.cacheLoader.removeMisses}</StackItem>
-        <StackItem><strong># Evictions </strong> {detail.cacheLoader.evictions}</StackItem>
-        <StackItem><strong># Retrievals </strong> {detail.cacheLoader.retrievals}</StackItem>
-        <StackItem><strong># Stores </strong> {detail.cacheLoader.stores}</StackItem>
+        <StackItem><strong># Hits </strong> {detail.stats.hits}</StackItem>
+        <StackItem><strong># Misses </strong> {detail.stats.misses}</StackItem>
+        <StackItem><strong># Remove Hits </strong> {detail.stats.remove_hits}</StackItem>
+        <StackItem><strong># Remove Misses </strong> {detail.stats.remove_misses}</StackItem>
+        <StackItem><strong># Evictions </strong> {detail.stats.evictions}</StackItem>
+        <StackItem><strong># Retrievals </strong> {detail.stats.retrievals}</StackItem>
+        <StackItem><strong># Stores </strong> {detail.stats.stores}</StackItem>
       </Stack>
   };
 
   const CacheFeature: React.FunctionComponent<any> = (props) => {
     return (<LevelItem>
-      <Label> {props.icon} {' ' + props.label}
+      <Label color={props.color}> {props.icon} {' ' + props.label}
       </Label></LevelItem>);
   };
   const hasFeatureColor = (feature) => {
@@ -161,7 +161,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
                                      color={hasFeatureColor(detail.secured)}
                                      label={'Secured'}/></LevelItem>
             <LevelItem><CacheFeature icon={<DegradedIcon/>}
-                                     color={hasFeatureColor(detail.hasRemoteBackup)}
+                                     color={hasFeatureColor(detail.has_remote_backup)}
                                      label={'Has remote backups'}/></LevelItem>
           </Level>
         </StackItem>

@@ -65,60 +65,44 @@ interface CacheInfo {
 
 interface DetailedInfinispanCache {
   name: string;
-  started?: boolean;
+  started: boolean;
   type: string;
+  size: number;
+  rehash_in_progress: boolean;
+  indexing_in_progress: boolean;
+  bounded: boolean;
+  indexed: boolean;
   persistent: boolean;
   transactional: boolean;
-  bounded: boolean;
-  indexed: boolean,
-  secured: boolean,
-  hasRemoteBackup: boolean;
-  timeSinceStart: number;
-  timeSinceReset: number;
-  rehashInProgress: boolean;
-  indexingInProgress: boolean;
-  opsPerformance?: OpsPerformance;
+  secured: boolean;
+  has_remote_backup: boolean
+  configuration: string;
   backupSites?: [XSite];
-  cacheContent?: CacheContent;
-  cacheLoader?: CacheLoader;
-  locking?: Locking;
-  memoryUsage?: MemoryUsage;
+  stats?: CacheStats
 }
 
-interface MemoryUsage {
-  maxJVM: number;
-  maxOffHeap: number;
-  usedJVM: number;
-  usedOffHeap: number;
-}
-
-interface CacheLoader {
+interface CacheStats {
+  misses: number
+  time_since_start: number;
+  time_since_reset: number;
   hits: number;
-  misses: number;
-  retrievals: number;
+  current_number_of_entries: number;
+  current_number_of_entries_in_memory: number;
+  total_number_of_entries: number;
   stores: number;
+  off_heap_memory_used: number;
+  data_memory_used: number;
+  retrievals: number;
+  remove_hits: number;
+  remove_misses: number;
   evictions: number;
-  removeHits: number;
-  removeMisses: number;
-}
-
-interface Locking {
-  locksAvailable: number;
-  locksHeld: number;
-}
-
-interface OpsPerformance {
-  avgReads: number;
-  avgWrites: number;
-  avgRemoves: number;
-}
-
-interface CacheContent {
-  size: number;
-  currentNumberOfEntries: number;
-  currentNumberOfEntriesInMemory: number;
-  totalNumberOfEntries: number;
-  requiredMinimumNumberOfNodes: number;
+  average_read_time: number;
+  average_read_time_nanos: number;
+  average_write_time: number;
+  average_write_time_nanos: number;
+  average_remove_time: number;
+  average_remove_time_nanos: number;
+  required_minimum_number_of_nodes: number
 }
 
 interface XSite {

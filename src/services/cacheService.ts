@@ -16,53 +16,70 @@ class CacheService {
     return utils.restCall(this.endpoint + '/caches/' + cacheName, 'GET')
       .then(response => response.json())
       .then(data => {
-          const cacheContent: CacheContent = {
-            size: data.size,
-            currentNumberOfEntries: data.currentNumberOfEntries,
-            currentNumberOfEntriesInMemory: data.currentNumberOfEntriesInMemory,
-            totalNumberOfEntries: data.totalNumberOfEntries,
-            requiredMinimumNumberOfNodes: data.requiredMinimumNumberOfNodes
-          };
-
-          const opsPerformance: OpsPerformance = {
-            avgReads: data.stats.averageReadTime,
-            avgRemoves: data.stats.averageRemoveTime,
-            avgWrites: data.stats.averageWriteTime
-          };
-
-          const cacheLoader: CacheLoader = {
-            evictions: data.stats.evictions,
+          const cacheStats = <CacheStats>{
             misses: data.stats.misses,
+            time_since_start: data.stats.time_since_start,
+            time_since_reset: data.stats.time_since_reset,
             hits: data.stats.hits,
-            retrievals: data.stats.retrievals,
+            current_number_of_entries: data.stats.current_number_of_entries,
+            current_number_of_entries_in_memory: data.stats.current_number_of_entries_in_memory,
+            total_number_of_entries: data.stats.total_number_of_entries,
             stores: data.stats.stores,
-            removeHits: data.stats.removeHits,
-            removeMisses: data.stats.removeMisses
+            off_heap_memory_used: data.stats.off_heap_memory_used,
+            data_memory_used: data.stats.data_memory_used,
+            retrievals: data.stats.retrievals,
+            remove_hits: data.stats.remove_hits,
+            remove_misses: data.stats.remove_misses,
+            evictions: data.stats.evictions,
+            average_read_time: data.stats.average_read_time,
+            average_read_time_nanos: data.stats.average_read_time_nanos,
+            average_write_time: data.stats.average_write_time,
+            average_write_time_nanos: data.stats.average_write_time_nanos,
+            average_remove_time: data.stats.average_remove_time,
+            average_remove_time_nanos: data.stats.average_remove_time_nanos,
+            required_minimum_number_of_nodes: data.stats.required_minimum_number_of_nodes
           };
 
           return <DetailedInfinispanCache>{
             name: cacheName,
-            started: data.started,
-            size: data.size,
+            started: true,
             type: this.mapCacheType(data),
-            opsPerformance: opsPerformance,
-            cacheContent: cacheContent,
-            cacheLoader: cacheLoader,
-            persisted: false,
-            transactional: false,
-            persistent: false,
-            bounded: false,
-            indexed: false,
-            secured: false,
-            hasRemoteBackup: false,
-            timeSinceStart: data.stats.timeSinceStart,
-            timeSinceReset: data.stats.timeSinceReset,
-            indexingInProgress: false,
-            rehashInProgress: false
-          }
+            size: data.size,
+            rehash_in_progress: data.rehash_in_progress,
+            indexing_in_progress: data.indexing_in_progress,
+            bounded: data.bounded,
+            indexed: data.indexed,
+            persistent: data.persistent,
+            transactional: data.transactional,
+            secured: data.secured,
+            has_remote_backup: data.has_remote_backup,
+            configuration: data.configuration,
+            stats: cacheStats
+          };
         }
       );
   };
+
+  public async createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
+    return utils.restCall(this.endpoint + '/caches/' + cacheName + '?template=' + configName, 'POST')
+      .then(response => response.ok ? '' : response.statusText)
+      .catch(error => error.toString());
+  };
+
+  public async createCacheWithConfiguration(cacheName: string, config: string): Promise<string> {
+    let contentType = 'application/json';
+    try {
+      JSON.parse(config);
+    } catch (e) {
+      contentType = 'application/xml';
+    }
+    try {
+      const response = await utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config, contentType);
+      return response.ok ? '' : response.statusText;
+    } catch (error) {
+      return error.toString();
+    }
+  }
 
   private mapCacheType(config: JSON): string {
     let cacheType: string = 'unknown';
@@ -74,25 +91,7 @@ class CacheService {
       cacheType = 'local';
     }
     return cacheType;
-  }
-
-  public createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
-    return utils.restCall(this.endpoint + '/caches/' + cacheName + '?template=' + configName, 'POST')
-      .then(response => response.ok ? '' : response.statusText)
-      .catch(error => error.toString());
   };
-
-  public createCacheWithConfiguration(cacheName: string, config: string): Promise<string> {
-    let contentType = 'application/json';
-    try {
-      JSON.parse(config);
-    } catch (e) {
-      contentType = 'application/xml';
-    }
-    return utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config, contentType)
-      .then(response => response.ok ? '' : response.statusText)
-      .catch(error => error.toString());
-  }
 }
 
 const cacheService: CacheService = new CacheService(utils.endpoint());

@@ -17,9 +17,11 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
   const onNavToggleMobile = () => {
     setIsNavOpenMobile(!isNavOpenMobile);
   };
+
   const onNavToggle = () => {
     setIsNavOpen(!isNavOpen);
-  }
+  };
+
   const onPageResize = (props: { mobileView: boolean; windowSize: number }) => {
     setIsMobileView(props.mobileView);
   };
