@@ -63,6 +63,7 @@
   </scm>
 
   <properties>
+    <infinispan-console.brand.version>${project.version}</infinispan-console.brand.version>
     <infinispan-console.brand.name>Infinispan Management Console</infinispan-console.brand.name>
     <branding.infinispan.shortName>infinispan</branding.infinispan.shortName>
     <jboss.releases.nexus.url>https://repository.jboss.org/nexus</jboss.releases.nexus.url>
