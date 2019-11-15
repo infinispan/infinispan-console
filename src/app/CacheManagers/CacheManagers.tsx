@@ -41,14 +41,20 @@ import {
 } from '@patternfly/react-icons'
 
 import {Link} from "react-router-dom";
-import {chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
+import {
+  chart_color_black_100,
+  chart_color_blue_500,
+  chart_color_green_300,
+  chart_color_orange_300, chart_color_red_300
+} from "@patternfly/react-tokens";
 import {ChartDonut} from "@patternfly/react-charts";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
   const [activeTabKey, setActiveTabKey] = useState(0);
-  const [stats, setStats] = useState<CacheManagerStats>({statistics_enabled: false,
-    hits:-1,
+  const [stats, setStats] = useState<CacheManagerStats>({
+    statistics_enabled: false,
+    hits: -1,
     retrievals: -1,
     remove_misses: -1,
     remove_hits: -1,
@@ -204,14 +210,14 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
 
   const DisplayStats = () => {
     const allOps = function () {
-      return stats != undefined && stats.statistics_enabled?
+      return stats != undefined && stats.statistics_enabled ?
         stats.hits +
         stats.retrievals +
         stats.remove_hits +
         stats.remove_misses +
         stats.stores +
         stats.misses +
-        stats.evictions: 0;
+        stats.evictions : 0;
     };
 
     return !stats.statistics_enabled ? <EmptyState variant={EmptyStateVariant.full}>
@@ -231,7 +237,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             <CardBody>
               <Stack>
                 <StackItem><strong># Number of entries </strong> {stats.number_of_entries}</StackItem>
-                <StackItem><strong># Current number of entries in memory </strong> {stats.current_number_of_entries_in_memory}</StackItem>
+                <StackItem><strong># Current number of entries in
+                  memory </strong> {stats.current_number_of_entries_in_memory}</StackItem>
                 <StackItem><strong># Total number of entries </strong> {stats.total_number_of_entries}</StackItem>
                 <StackItem><strong># Data memory used </strong> {stats.data_memory_used}</StackItem>
                 <StackItem><strong># Off heap memory used </strong> {stats.off_heap_memory_used}</StackItem>
@@ -259,26 +266,26 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           <Card>
             <CardHeader><FolderOpenIcon/> {' ' + 'Data access'}</CardHeader>
             <CardBody>
-              <div style={{ height: '208px', width:'400px'}}>
+              <div style={{height: '208px', width: '400px'}}>
                 <ChartDonut
                   constrainToVisibleArea={true}
-                  data={[{ x: 'Hits', y: stats.hits },
-                    { x: 'Misses', y: stats.misses },
-                    { x: 'Stores', y: stats.stores },
-                    { x: 'Retrievals', y: stats.retrievals },
-                    { x: 'Remove Hits', y: stats.remove_hits },
-                    { x: 'Removes Misses', y: stats.remove_misses },
-                    { x: 'Evictions', y: stats.evictions}]}
-                  labels={({ datum }) => `${datum.x}: ${datum.y}%`}
+                  data={[{x: 'Hits', y: stats.hits},
+                    {x: 'Misses', y: stats.misses},
+                    {x: 'Stores', y: stats.stores},
+                    {x: 'Retrievals', y: stats.retrievals},
+                    {x: 'Remove Hits', y: stats.remove_hits},
+                    {x: 'Removes Misses', y: stats.remove_misses},
+                    {x: 'Evictions', y: stats.evictions}]}
+                  labels={({datum}) => `${datum.x}: ${datum.y}%`}
                   legendData={[
-                    { name: 'Hits: ' + stats.hits },
-                    { name: 'Misses: ' + stats.misses },
-                    { name: 'Retrievals: ' + stats.retrievals },
-                    { name: 'Stores: ' + stats.stores },
-                    { name: 'Remove Hits: ' + stats.remove_hits },
-                    { name: 'Remove Misses: ' + stats.remove_misses },
-                    { name: 'Evictions: ' + stats.evictions },
-                    ]}
+                    {name: 'Hits: ' + stats.hits},
+                    {name: 'Misses: ' + stats.misses},
+                    {name: 'Retrievals: ' + stats.retrievals},
+                    {name: 'Stores: ' + stats.stores},
+                    {name: 'Remove Hits: ' + stats.remove_hits},
+                    {name: 'Remove Misses: ' + stats.remove_misses},
+                    {name: 'Evictions: ' + stats.evictions},
+                  ]}
                   legendOrientation="vertical"
                   legendPosition="right"
                   padding={{
@@ -300,7 +307,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           <Card>
             <CardHeader><PendingIcon/>{' ' + 'Cache manager lifecycle'}</CardHeader>
             <CardBody>
-              <Stack style={{ height: '208px'}}>
+              <Stack style={{height: '208px'}}>
                 <StackItem><strong># Time since start </strong> {stats.time_since_start}</StackItem>
                 <StackItem><strong># Time since reset </strong> {stats.time_since_reset}</StackItem>
               </Stack>
@@ -311,18 +318,41 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   };
 
   const DisplayCluster = () => {
+    function healthColor(health: string): string {
+      let color;
+      switch (health) {
+        case 'HEALTHY':
+          color = chart_color_green_300.value;
+          break;
+        case 'HEALTHY_REBALANCING':
+          color = chart_color_orange_300.value;
+          break;
+        case 'DEGRADED':
+          color = chart_color_red_300.value;
+          break;
+        default:
+          color = chart_color_black_100.value;
+      }
+      return color;
+    }
+
     return cm == undefined ? <EmptyState variant={EmptyStateVariant.full}>
-      <EmptyStateIcon icon={CubesIcon}/>
-      <EmptyStateBody>
-        The cluster is empty
-      </EmptyStateBody>
-    </EmptyState> : <Grid gutter="md">
-      <GridItem span={12}><ClusterIcon/> <strong>{cm.cluster_name}</strong> of
-        size <strong>{cm.cluster_size}</strong></GridItem>
-      <GridItem span={12}><strong>{cm.health}</strong></GridItem>
-      <GridItem span={12}><strong>{cm.cluster_members}</strong></GridItem>
-      <GridItem span={12}><strong>{cm.cluster_members_physical_addresses}</strong></GridItem>
-    </Grid>;
+        <EmptyStateIcon icon={CubesIcon}/>
+        <EmptyStateBody>
+          The cluster is empty
+        </EmptyStateBody>
+      </EmptyState> :
+      <Card>
+        <CardHeader><ClusterIcon/> <strong>{' ' + cm.cluster_name}</strong></CardHeader>
+        <CardBody>
+          <Stack gutter="md">
+            <StackItem><Label style={{backgroundColor: healthColor(cm.health)}}>{cm.health}</Label></StackItem>
+            <StackItem>Size <strong>{cm.cluster_size}</strong></StackItem>
+            <StackItem><strong>{cm.cluster_members}</strong></StackItem>
+            <StackItem><strong>{cm.cluster_members_physical_addresses}</strong></StackItem>
+          </Stack>
+        </CardBody>
+      </Card>;
   };
 
   const DisplayTabs = () => {
