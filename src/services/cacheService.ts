@@ -82,13 +82,17 @@ class CacheService {
   }
 
   private mapCacheType(config: JSON): string {
-    let cacheType: string = 'unknown';
+    let cacheType: string = 'Unknown';
     if (config.hasOwnProperty('distributed-cache')) {
-      cacheType = 'distributed';
+      cacheType = 'Distributed';
     } else if (config.hasOwnProperty('replicated-cache')) {
-      cacheType = 'replicated';
+      cacheType = 'Replicated';
     } else if (config.hasOwnProperty('local-cache')) {
-      cacheType = 'local';
+      cacheType = 'Local';
+    } else if (config.hasOwnProperty('invalidation-cache')) {
+      cacheType = 'Invalidated';
+    } else if (config.hasOwnProperty('scattered-cache')) {
+      cacheType = 'Scattered';
     }
     return cacheType;
   };

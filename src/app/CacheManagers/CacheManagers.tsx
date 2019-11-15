@@ -188,7 +188,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             </CardHeader>
             <CardBody id={'id-card-body' + cache.name}>
               <Stack gutter="sm">
-                <StackItem><Label>{cache.type}</Label></StackItem>
+                <StackItem><Label
+                  style={{backgroundColor: displayUtils.cacheTypeColor(cache.type)}}>{cache.type}</Label></StackItem>
                 <StackItem isFilled>Size {cache.size}</StackItem>
                 <StackItem>
                   <Link to={{

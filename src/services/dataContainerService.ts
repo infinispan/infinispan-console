@@ -68,7 +68,7 @@ class ContainerService {
         .map(cacheInfo => <CacheInfo>{
           name: cacheInfo.name,
           status: cacheInfo.status,
-          type: cacheInfo.type,
+          type: this.mapCacheType(cacheInfo.type),
           size: cacheInfo.size,
           simpleCache: cacheInfo.simpleCache,
           transactional: cacheInfo.transactional,
@@ -79,6 +79,22 @@ class ContainerService {
           hasRemoteBackup: cacheInfo.has_remote_backup
         }).filter(cacheInfo => !cacheInfo.name.startsWith('___')));
   }
+
+  private mapCacheType(type: string) {
+    let cacheType: string = 'Unknown';
+    if (type == 'distributed-cache') {
+      cacheType = 'Distributed';
+    } else if (type == 'replicated-cache') {
+      cacheType = 'Replicated';
+    } else if (type == 'local-cache') {
+      cacheType = 'Local';
+    } else if (type == 'invalidation-cache') {
+      cacheType = 'Invalidated';
+    } else if (type == 'scattered-cache') {
+      cacheType = 'Scattered';
+    }
+    return cacheType;
+  };
 }
 
 const dataContainerService: ContainerService = new ContainerService(utils.endpoint());
