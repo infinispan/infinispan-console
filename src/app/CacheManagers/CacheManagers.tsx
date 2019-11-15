@@ -61,6 +61,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   });
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [counters, setCounters] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<string[]>([]);
 
   useEffect(() => {
     dataContainerService.getCacheManagers()
@@ -85,6 +86,26 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       return <EmptyCaches/>;
     }
     return <CachesGrid/>;
+  };
+
+  const TasksContent = () => {
+    const isEmpty = tasks.length == 0;
+    if (isEmpty) {
+      return <EmptyTasks/>;
+    }
+    return <EmptyTasks/>;
+  };
+
+  const EmptyTasks = () => {
+    return <EmptyState variant={EmptyStateVariant.small}>
+      <EmptyStateIcon icon={CubesIcon}/>
+      <Title headingLevel="h5" size="lg">
+        Empty
+      </Title>
+      <EmptyStateBody>
+        There are no tasks
+      </EmptyStateBody>
+    </EmptyState>
   };
 
   const CountersContent = () => {
@@ -348,10 +369,13 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       <Tab eventKey={1} title={counters.length + ' Counters'}>
         <CountersContent/>
       </Tab>
-      <Tab eventKey={2} title="Global Statistics">
+      <Tab eventKey={2} title={tasks.length + ' Tasks'}>
+        <TasksContent/>
+      </Tab>
+      <Tab eventKey={3} title="Global Statistics">
         <DisplayStats/>
       </Tab>
-      <Tab eventKey={3} title={clusteringLabel}>
+      <Tab eventKey={4} title={clusteringLabel}>
         <DisplayCluster/>
       </Tab>
     </Tabs>
