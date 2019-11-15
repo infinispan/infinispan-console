@@ -119,3 +119,17 @@ interface Task {
   execution_mode: string;
   allowed_role: string;
 }
+
+interface Counter {
+  name: string;
+  value: number;
+}
+
+interface CounterConfig {
+  name: string;
+  type: string;
+  initialValue: number;
+  storage: string;
+  lowerBound: number;
+  upperBound: number;
+}

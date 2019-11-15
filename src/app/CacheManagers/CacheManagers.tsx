@@ -46,6 +46,7 @@ import {chart_color_black_100, chart_color_blue_400, chart_color_blue_500} from 
 import {ChartDonut} from "@patternfly/react-charts";
 import displayUtils from "../../services/displayUtils";
 import tasksService from "../../services/tasksService";
+import countersService from "../../services/countersService";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -61,7 +62,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     misses: -1
   });
   const [caches, setCaches] = useState<CacheInfo[]>([]);
-  const [counters, setCounters] = useState<string[]>([]);
+  const [counters, setCounters] = useState<Counter[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
@@ -80,6 +81,11 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   useEffect(() => {
     tasksService.getTasks().then(tasks => setTasks(tasks));
   }, []);
+
+  useEffect(() => {
+    countersService.getCounters().then(counters => setCounters(counters));
+  }, []);
+
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
@@ -120,21 +126,23 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             <CardHeader id={'task-id-header-' + task.name}>
               <Tooltip position="right"
                        content={
-                         <div>{task.execution_mode == 'ONE_NODE'? 'One node execution mode' : 'All nodes execution mode'}</div>
+                         <div>{task.execution_mode == 'ONE_NODE' ? 'One node execution mode' : 'All nodes execution mode'}</div>
                        }>
                 {task.execution_mode == 'ONE_NODE' ?
-                  <VolumeIcon style={{color:chart_color_blue_400.value}}/> :
+                  <VolumeIcon style={{color: chart_color_blue_400.value}}/> :
                   <RegistryIcon/>}
               </Tooltip>
-                <strong style={{color: chart_color_blue_400.value}}>{' ' + task.name}</strong>
+              <strong style={{color: chart_color_blue_400.value}}>{' ' + task.name}</strong>
             </CardHeader>
             <CardBody id={'task-id-nody-' + task.name}>
               <Stack>
                 <StackItem><strong>Context name:</strong>{' ' + task.task_context_name}</StackItem>
                 <StackItem><strong>Operation name:</strong>{' ' + task.task_operation_name}</StackItem>
                 <StackItem><strong>Type:</strong>{' ' + task.type}</StackItem>
-                <StackItem><strong>Parameters:</strong>{task.parameters.map(param => <span>{' [' + param + ']'}</span>)}</StackItem>
-                <StackItem><strong>Allowed role:</strong>{task.allowed_role == null? ' empty' : ' ' + task.allowed_role}</StackItem>
+                <StackItem><strong>Parameters:</strong>{task.parameters.map(param => <span>{' [' + param + ']'}</span>)}
+                </StackItem>
+                <StackItem><strong>Allowed
+                  role:</strong>{task.allowed_role == null ? ' empty' : ' ' + task.allowed_role}</StackItem>
               </Stack>
             </CardBody>
           </Card>
@@ -148,7 +156,26 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     if (isEmpty) {
       return <EmptyCounters/>;
     }
-    return <EmptyCounters/>;
+    return <CountersGrid/>;
+  };
+
+  const CountersGrid = () => {
+    return <Grid gutter='sm' style={{paddingTop: 40}}>
+      {counters.map(counter =>
+        <GridItem span={4}>
+          <Card id={'id-counter-' + counter.name}>
+            <CardHeader id={'counter-id-header-' + counter.name}>
+              <strong style={{color: chart_color_blue_400.value}}>{' ' + counter.name}</strong>
+            </CardHeader>
+            <CardBody id={'counter-id-body-' + counter.name}>
+              <Stack>
+                <StackItem><strong>Value:</strong>{' ' + counter.value}</StackItem>
+              </Stack>
+            </CardBody>
+          </Card>
+        </GridItem>
+      )}
+    </Grid>
   };
 
   const EmptyCounters = () => {
