@@ -27,7 +27,8 @@ import {
   CatalogIcon,
   ClusterIcon,
   CubesIcon,
-  DegradedIcon, FolderOpenIcon,
+  DegradedIcon,
+  FolderOpenIcon,
   InfoIcon,
   KeyIcon,
   MemoryIcon,
@@ -41,13 +42,9 @@ import {
 } from '@patternfly/react-icons'
 
 import {Link} from "react-router-dom";
-import {
-  chart_color_black_100,
-  chart_color_blue_500,
-  chart_color_green_300,
-  chart_color_orange_300, chart_color_red_300
-} from "@patternfly/react-tokens";
+import {chart_color_black_100, chart_color_blue_500} from "@patternfly/react-tokens";
 import {ChartDonut} from "@patternfly/react-charts";
+import displayUtils from "../../services/displayUtils";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -318,24 +315,6 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   };
 
   const DisplayCluster = () => {
-    function healthColor(health: string): string {
-      let color;
-      switch (health) {
-        case 'HEALTHY':
-          color = chart_color_green_300.value;
-          break;
-        case 'HEALTHY_REBALANCING':
-          color = chart_color_orange_300.value;
-          break;
-        case 'DEGRADED':
-          color = chart_color_red_300.value;
-          break;
-        default:
-          color = chart_color_black_100.value;
-      }
-      return color;
-    }
-
     return cm == undefined ? <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={CubesIcon}/>
         <EmptyStateBody>
@@ -346,7 +325,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         <CardHeader><ClusterIcon/> <strong>{' ' + cm.cluster_name}</strong></CardHeader>
         <CardBody>
           <Stack gutter="md">
-            <StackItem><Label style={{backgroundColor: healthColor(cm.health)}}>{cm.health}</Label></StackItem>
+            <StackItem><Label
+              style={{backgroundColor: displayUtils.healthColor(cm.health)}}>{cm.health}</Label></StackItem>
             <StackItem>Size <strong>{cm.cluster_size}</strong></StackItem>
             <StackItem><strong>{cm.cluster_members}</strong></StackItem>
             <StackItem><strong>{cm.cluster_members_physical_addresses}</strong></StackItem>
