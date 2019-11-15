@@ -255,7 +255,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           </Card>
         </GridItem>
 
-        <GridItem span={6}>
+        <GridItem span={8}>
           <Card>
             <CardHeader><FolderOpenIcon/> {' ' + 'Data access'}</CardHeader>
             <CardBody>
@@ -296,7 +296,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           </Card>
 
         </GridItem>
-        <GridItem span={6}>
+        <GridItem span={4}>
           <Card>
             <CardHeader><PendingIcon/>{' ' + 'Cache manager lifecycle'}</CardHeader>
             <CardBody>
