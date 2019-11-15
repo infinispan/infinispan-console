@@ -7,7 +7,7 @@ This application is built using Patternfly 4 and React
 ## Quick-start
 ```bash
 npm install yarn -g # ensure you have yarn on your machine globally
-git clone https://github.com/karesti/infinispan-console-ng # clone the project
+git clone https://github.com/infinispan/infinispan-console-ng # clone the project
 cd infinispan-console-ng # navigate into the project directory
 yarn # install infinispan-console-ng dependencies
 yarn build # build the project
