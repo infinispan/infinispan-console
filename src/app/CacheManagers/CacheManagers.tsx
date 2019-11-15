@@ -383,10 +383,12 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
 
   const DisplayCacheManager = () => {
     return cm != undefined ?
-      <Stack gutter="sm">
-        <StackItem><strong>Id:</strong> {cm.name} is <Label>{cm.cache_manager_status}</Label></StackItem>
-        <DisplayTabs/>
-      </Stack> : <EmptyState variant={EmptyStateVariant.full}>
+      <Grid gutter="sm">
+        <GridItem span={3}><strong>Id:</strong> {' ' + cm.name}</GridItem>
+        <GridItem span={9}><strong>{'Status: '}</strong><Label
+          style={{backgroundColor: displayUtils.statusColor(cm.cache_manager_status)}}>{' ' + cm.cache_manager_status}</Label></GridItem>
+        <GridItem><DisplayTabs/></GridItem>
+      </Grid> : <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={CubesIcon}/>
         <Title headingLevel="h5" size="lg">
           Data container
