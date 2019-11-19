@@ -140,7 +140,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
 
   const AlertPanel = () => {
     return <React.Fragment>{cacheAlert.display ?
-      <Alert variant={cacheAlert.message == '' ? AlertVariant.success : AlertVariant.danger}
+      <Alert style={{margin:10}} variant={cacheAlert.message == '' ? AlertVariant.success : AlertVariant.danger}
              title={cacheAlert.message == '' ? 'Cache created correctly' : cacheAlert.message}
              action={<AlertActionCloseButton onClose={hideCreation}/>}/> :
       ''}
@@ -150,10 +150,9 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const titleId = 'plain-typeahead-select-id';
   return (
     <PageSection>
-      <Title size="lg"> Create a cache in <b>{cm.name}</b></Title>
+      <Title size="lg"> Create a cache in <b>{cm.name}</b> container</Title>
       <AlertPanel/>
-
-      <Form>
+      <Form style={{paddingTop: 10}}>
         <FormGroup
           label="Name"
           isRequired
