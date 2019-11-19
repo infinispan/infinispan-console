@@ -217,7 +217,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
 
         <ActionGroup>
           <Button variant="primary" onClick={createCache}>Create</Button>
-          <Link to='/'><Button variant="secondary" component="a" target="_blank">Cancel</Button>
+          <Link to='/'><Button variant="secondary" component="a" target="_blank">Back</Button>
           </Link>
         </ActionGroup>
       </Form>
