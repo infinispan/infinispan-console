@@ -311,7 +311,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           To activate statistics, set statistics=true in the configuration.
         </EmptyStateBody>
       </EmptyState> :
-      <Grid gutter="md">
+      <Grid gutter="md" style={{paddingTop: 40}}>
         <GridItem span={6}>
           <Card>
             <CardHeader><MemoryIcon/>{' ' + 'Content'}</CardHeader>
@@ -405,7 +405,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           The cluster is empty
         </EmptyStateBody>
       </EmptyState> :
-      <Card>
+      <Card style={{marginTop: 40}}>
         <CardHeader><ClusterIcon/> <strong>{' ' + cm.cluster_name}</strong></CardHeader>
         <CardBody>
           <Stack gutter="md">
