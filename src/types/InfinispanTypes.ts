@@ -30,13 +30,13 @@ interface CacheManagerStats {
   average_remove_time_nanos?: number;
   hit_ratio?: number;
   read_write_ratio?: number;
-  hits: number;
-  stores: number;
-  evictions: number;
-  retrievals: number;
-  misses: number;
-  remove_hits: number;
-  remove_misses: number;
+  hits?: number;
+  stores?: number;
+  evictions?: number;
+  retrievals?: number;
+  misses?: number;
+  remove_hits?: number;
+  remove_misses?: number;
 }
 
 interface DefinedCache {
