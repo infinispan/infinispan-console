@@ -82,7 +82,8 @@ interface DetailedInfinispanCache {
 }
 
 interface CacheStats {
-  misses: number
+  enabled: boolean;
+  misses: number;
   time_since_start: number;
   time_since_reset: number;
   hits: number;

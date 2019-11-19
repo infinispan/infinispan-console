@@ -17,6 +17,7 @@ class CacheService {
       .then(response => response.json())
       .then(data => {
           const cacheStats = <CacheStats>{
+            enabled: data.stats.current_number_of_entries == -1 ? false : true,
             misses: data.stats.misses,
             time_since_start: data.stats.time_since_start,
             time_since_reset: data.stats.time_since_reset,
