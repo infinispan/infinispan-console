@@ -72,7 +72,6 @@
     "react-document-title": "^2.0.3",
     "react-router-dom": "^5.0.1",
     "react-router-last-location": "^2.0.1",
-    "request": "^2.88.0",
     "yarn": "^1.19.1"
   }
 }
