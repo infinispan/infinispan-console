@@ -412,8 +412,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             <StackItem><Label
               style={{backgroundColor: displayUtils.healthColor(cm.health)}}>{cm.health}</Label></StackItem>
             <StackItem>Size <strong>{cm.cluster_size}</strong></StackItem>
-            <StackItem><strong>{cm.cluster_members}</strong></StackItem>
-            <StackItem><strong>{cm.cluster_members_physical_addresses}</strong></StackItem>
+            <StackItem><strong>{cm.cluster_members.map(mem => <span style={{marginRight:10}}>[{mem}]</span>)}</strong></StackItem>
+            <StackItem><strong>{cm.cluster_members_physical_addresses.map(add => <span style={{marginRight:10}}>[{add}]</span>)}</strong></StackItem>
           </Stack>
         </CardBody>
       </Card>;

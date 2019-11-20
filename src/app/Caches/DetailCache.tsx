@@ -31,7 +31,12 @@ import {
   StorageDomainIcon,
   UnknownIcon
 } from '@patternfly/react-icons'
-import {chart_color_black_200, chart_color_blue_300} from "@patternfly/react-tokens";
+import {
+  chart_color_black_200,
+  chart_color_blue_300,
+  chart_color_green_300,
+  chart_color_green_500
+} from "@patternfly/react-tokens";
 import {ChartDonut} from "@patternfly/react-charts";
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
@@ -53,6 +58,8 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
 
   const cacheName: string = props.location.state.cacheName;
   const [detail, setDetail] = useState<DetailedInfinispanCache>(emptyDetail);
+  const [xsite, setXsite] = useState<XSite[]>([]);
+
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName)
@@ -61,6 +68,12 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
       });
   }, []);
 
+  useEffect(() => {
+    cacheService.retrieveXSites(cacheName)
+      .then(xsites => {
+        setXsite(xsites)
+      });
+  }, []);
 
   const OperationsPerformance = () => {
     return <Card>
@@ -201,7 +214,10 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   return (
     <PageSection>
       <Stack gutter={"lg"}>
-        <StackItem><Title size="lg"> Cache <strong>{detail.name}</strong> </Title></StackItem>
+        <StackItem><Title size="lg"> Cache <strong>{detail.name}</strong>
+          {xsite.length > 0 ?
+            <span style={{marginLeft: 10}}>Backups <strong>{xsite.map(xsite => ' ' + xsite.name + ' - ' + xsite.status)}</strong></span> : ''}
+        </Title></StackItem>
         <StackItem>
           <Level>
             <LevelItem><CacheFeature icon={<Spinner2Icon/>}

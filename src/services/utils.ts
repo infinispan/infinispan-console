@@ -30,9 +30,8 @@ class Utils {
     let headers = new Headers();
     if (!this.isDevMode()) {
       //headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
-      headers.append('Content-Type', contentType);
     }
-
+    headers.append('Content-Type', contentType);
     return fetch(url, {
       method: method,
       headers: headers,

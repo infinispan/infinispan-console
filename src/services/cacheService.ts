@@ -97,6 +97,12 @@ class CacheService {
     }
     return cacheType;
   };
+
+  public async retrieveXSites(cacheName: string): Promise<XSite[]>{
+    return utils.restCall(this.endpoint + '/caches/' + cacheName + '/x-site/backups/', 'GET')
+      .then(response => response.json())
+      .then(data => [<XSite>{name: 'LON', status:'online'}]);
+  }
 }
 
 const cacheService: CacheService = new CacheService(utils.endpoint());

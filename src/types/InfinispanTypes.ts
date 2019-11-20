@@ -108,7 +108,7 @@ interface CacheStats {
 
 interface XSite {
   name: string;
-  capacity?: number;
+  status: string;
 }
 
 interface Task {
