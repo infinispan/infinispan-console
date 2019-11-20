@@ -82,6 +82,18 @@ class CacheService {
     }
   }
 
+  public async retrieveXSites(cacheName: string): Promise<XSite[]> {
+    return utils.restCall(this.endpoint + '/caches/' + cacheName + '/x-site/backups/', 'GET')
+      .then(response => response.json())
+      .then(data => {
+        let xsites: XSite[] = [];
+        for (const [key, value] of Object.entries(data)) {
+          xsites.push(<XSite>{name: key, status: value})
+        }
+        return xsites;
+      });
+  }
+
   private mapCacheType(config: JSON): string {
     let cacheType: string = 'Unknown';
     if (config.hasOwnProperty('distributed-cache')) {
@@ -97,12 +109,6 @@ class CacheService {
     }
     return cacheType;
   };
-
-  public async retrieveXSites(cacheName: string): Promise<XSite[]>{
-    return utils.restCall(this.endpoint + '/caches/' + cacheName + '/x-site/backups/', 'GET')
-      .then(response => response.json())
-      .then(data => [<XSite>{name: 'LON', status:'online'}]);
-  }
 }
 
 const cacheService: CacheService = new CacheService(utils.endpoint());
