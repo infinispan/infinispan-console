@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Brand, Page, PageHeader, SkipToContent} from '@patternfly/react-core';
-import icon from '!!url-loader!@app/assets/images/infinispan_icon.svg';
+import icon from '!!url-loader!@app/assets/images/brand.svg';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={icon} alt="Datagrid Management Console"/>}
+      logo={<Brand src={icon} alt="Datagrid Management Console" style={{width:600}}/>}
       logoProps={logoProps}
       toolbar=""
       showNavToggle={false}
