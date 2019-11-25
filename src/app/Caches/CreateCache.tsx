@@ -33,7 +33,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
   const [validConfig, setValidConfig] = useState(true);
-  const [cacheAlert, setCacheAlert] = useState({message: '', display: false});
+  const [cacheAlert, setCacheAlert] = useState({message: '', display: false, success: false});
 
   interface OptionSelect {
     value: string;
@@ -127,20 +127,20 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
 
     if (selectedConfig != null) {
       cacheService.createCacheByConfigName(name, selectedConfig)
-        .then(message => setCacheAlert({message: message, display: true}));
+        .then(message => setCacheAlert({message: message.message, success: message.success, display: true}));
     } else {
       cacheService.createCacheWithConfiguration(name, config)
-        .then(message => setCacheAlert({message: message, display: true}));
+        .then(message => setCacheAlert({message: message.message, success: message.success, display: true}));
     }
   };
 
   const hideCreation = () => {
-    setCacheAlert({message: '', display: false});
+    setCacheAlert({message: '', success: false, display: false});
   };
 
   const AlertPanel = () => {
     return <React.Fragment>{cacheAlert.display ?
-      <Alert style={{margin:10}} variant={cacheAlert.message == '' ? AlertVariant.success : AlertVariant.danger}
+      <Alert style={{margin:10}} variant={cacheAlert.success ? AlertVariant.success : AlertVariant.danger}
              title={cacheAlert.message == '' ? 'Cache created correctly' : cacheAlert.message}
              action={<AlertActionCloseButton onClose={hideCreation}/>}/> :
       ''}

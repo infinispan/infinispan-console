@@ -134,3 +134,8 @@ interface CounterConfig {
   lowerBound: number;
   upperBound: number;
 }
+
+interface ActionResponse {
+  message: string;
+  success: boolean;
+}

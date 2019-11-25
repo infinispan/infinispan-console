@@ -61,25 +61,34 @@ class CacheService {
       );
   };
 
-  public async createCacheByConfigName(cacheName: string, configName: string): Promise<string> {
+  public async createCacheByConfigName(cacheName: string, configName: string): Promise<ActionResponse> {
     return utils.restCall(this.endpoint + '/caches/' + cacheName + '?template=' + configName, 'POST')
-      .then(response => response.ok ? '' : response.statusText)
-      .catch(error => error.toString());
+      .then(response => response.text())
+      .then(text => text == '' ? <ActionResponse>{
+          message: 'Cache ' + cacheName + ' created with success',
+          success: true
+        }
+        : <ActionResponse>{message: text, success: false}
+      )
+      .catch(error => <ActionResponse>{message: error.toString(), success: false});
   };
 
-  public async createCacheWithConfiguration(cacheName: string, config: string): Promise<string> {
+  public async createCacheWithConfiguration(cacheName: string, config: string): Promise<ActionResponse> {
     let contentType = 'application/json';
     try {
       JSON.parse(config);
     } catch (e) {
       contentType = 'application/xml';
     }
-    try {
-      const response = await utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config, contentType);
-      return response.ok ? '' : response.statusText;
-    } catch (error) {
-      return error.toString();
-    }
+    return utils.restCallWithBody(this.endpoint + '/caches/' + cacheName, 'POST', config, contentType)
+      .then(response => response.text())
+      .then(text => text == '' ? <ActionResponse>{
+          message: 'Cache ' + cacheName + ' created with success',
+          success: true
+        }
+        : <ActionResponse>{message: text, success: false}
+      )
+      .catch(error => <ActionResponse>{message: error.toString(), success: false});
   }
 
   public async retrieveXSites(cacheName: string): Promise<XSite[]> {
