@@ -15,7 +15,7 @@ import {
   Label,
   Level,
   LevelItem,
-  PageSection,
+  PageSection, Pagination,
   Stack,
   StackItem,
   Tab,
@@ -47,6 +47,7 @@ import {ChartDonut} from "@patternfly/react-charts";
 import displayUtils from "../../services/displayUtils";
 import tasksService from "../../services/tasksService";
 import countersService from "../../services/countersService";
+import {CacheTableDisplay} from "@app/CacheManagers/CacheTableDisplay";
 
 const CacheManagers: React.FunctionComponent<any> = (props) => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -62,8 +63,23 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     misses: -1
   });
   const [caches, setCaches] = useState<CacheInfo[]>([]);
+  const [cachesPagination, setCachesPagination] = useState({page:1, perPage:6})
   const [counters, setCounters] = useState<Counter[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  const onSetPage = (_event, pageNumber) => {
+    setCachesPagination({
+      page: pageNumber,
+      perPage: cachesPagination.perPage
+    });
+  };
+
+  const onPerPageSelect = (_event, perPage) => {
+    setCachesPagination({
+      page: cachesPagination.page,
+      perPage: perPage
+    });
+  };
 
   useEffect(() => {
     dataContainerService.getCacheManagers()
@@ -243,14 +259,28 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
           state: {
             cacheManager: cm.name
           }
-        }}> <Button variant="link" icon={<CatalogIcon/>}>Configurations </Button>{' '}</Link>
+        }}> <Button variant="link" icon={<CatalogIcon/>}>Configurations </Button>{' '}
+        </Link>
+        <Pagination
+          itemCount={caches.length}
+          perPage={cachesPagination.perPage}
+          page={cachesPagination.page}
+          onSetPage={onSetPage}
+          widgetId="pagination-caches"
+          onPerPageSelect={onPerPageSelect}
+          perPageOptions={[]}
+          isCompact
+        />
       </GridItem>
       {caches.map(cache =>
-        <GridItem id={'id-grid-item' + cache.name} span={4}>
+        <GridItem id={'id-grid-item' + cache.name} span={6}>
           <Card id={'id-card' + cache.name}>
             <CardHeader id={'id-card-header' + cache.name}>
               <Grid>
-                <GridItem span={8}>{cache.name}</GridItem>
+                <GridItem span={8}><Label
+                  style={{backgroundColor: displayUtils.cacheTypeColor(cache.type), marginRight:15}}>
+                  {cache.type}</Label> {cache.name}
+                </GridItem>
                 <GridItem span={4}>
                   <Level>
                     <LevelItem><CacheFeature icon={<Spinner2Icon color={hasFeatureColor(cache.bounded)}/>}
@@ -271,16 +301,13 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             </CardHeader>
             <CardBody id={'id-card-body' + cache.name}>
               <Stack gutter="sm">
-                <StackItem><Label
-                  style={{backgroundColor: displayUtils.cacheTypeColor(cache.type)}}>{cache.type}</Label></StackItem>
-                <StackItem isFilled>Size {cache.size}</StackItem>
                 <StackItem>
                   <Link to={{
                     pathname: '/cache/' + cache.name,
                     state: {
                       cacheName: cache.name,
                     }
-                  }}><InfoIcon/> Display details</Link></StackItem>
+                  }}><InfoIcon/>More</Link></StackItem>
               </Stack>
             </CardBody>
           </Card>
@@ -426,7 +453,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     }
     return <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
       <Tab eventKey={0} title={caches.length + ' Caches'}>
-        <CachesContent/>
+        <CacheTableDisplay caches={caches}/>
       </Tab>
       <Tab eventKey={1} title={counters.length + ' Counters'}>
         <CountersContent/>
