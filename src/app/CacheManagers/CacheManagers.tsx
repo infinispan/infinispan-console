@@ -106,14 +106,6 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     setActiveTabKey(tabIndex);
   };
 
-  const CachesContent = () => {
-    const isEmpty = caches.length == 0;
-    if (isEmpty) {
-      return <EmptyCaches/>;
-    }
-    return <CachesGrid/>;
-  };
-
   const TasksContent = () => {
     const isEmpty = tasks.length == 0;
     if (isEmpty) {
@@ -204,116 +196,6 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         There are no counters
       </EmptyStateBody>
     </EmptyState>
-  };
-
-  const EmptyCaches = () => {
-    return <EmptyState variant={EmptyStateVariant.small}>
-      <EmptyStateIcon icon={CubesIcon}/>
-      <Title headingLevel="h5" size="lg">
-        Empty
-      </Title>
-      <EmptyStateBody>
-        There are no caches
-      </EmptyStateBody>
-      <CreateCacheButton/>
-    </EmptyState>
-  };
-
-  const CreateCacheButton = () => {
-    return <Link to={{
-      pathname: '/caches/create',
-      state: {
-        cacheManager: cm,
-      }
-    }}>
-      <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
-        Create cache
-      </Button>
-    </Link>;
-  };
-
-  const CacheFeature: React.FunctionComponent<any> = (props) => {
-    return (<LevelItem>
-      <Tooltip position="right"
-               content={
-                 <div>{props.tooltip}</div>
-               }>
-        {props.icon}
-      </Tooltip></LevelItem>);
-  };
-
-  const hasFeatureColor = (feature) => {
-    if (feature) {
-      return chart_color_blue_500.value;
-    } else {
-      return chart_color_black_100.value;
-    }
-  };
-
-  const CachesGrid = () => {
-    return cm == undefined ? <EmptyCaches/> : <Grid gutter='sm'>
-      <GridItem id='id-grid-buttons' span={12}>
-        <CreateCacheButton/>
-        <Link to={{
-          pathname: 'container/' + cm.name + '/configurations/',
-          state: {
-            cacheManager: cm.name
-          }
-        }}> <Button variant="link" icon={<CatalogIcon/>}>Configurations </Button>{' '}
-        </Link>
-        <Pagination
-          itemCount={caches.length}
-          perPage={cachesPagination.perPage}
-          page={cachesPagination.page}
-          onSetPage={onSetPage}
-          widgetId="pagination-caches"
-          onPerPageSelect={onPerPageSelect}
-          perPageOptions={[]}
-          isCompact
-        />
-      </GridItem>
-      {caches.map(cache =>
-        <GridItem id={'id-grid-item' + cache.name} span={6}>
-          <Card id={'id-card' + cache.name}>
-            <CardHeader id={'id-card-header' + cache.name}>
-              <Grid>
-                <GridItem span={8}><Label
-                  style={{backgroundColor: displayUtils.cacheTypeColor(cache.type), marginRight:15}}>
-                  {cache.type}</Label> {cache.name}
-                </GridItem>
-                <GridItem span={4}>
-                  <Level>
-                    <LevelItem><CacheFeature icon={<Spinner2Icon color={hasFeatureColor(cache.bounded)}/>}
-                                             tooltip={'Bounded'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<StorageDomainIcon color={hasFeatureColor(cache.indexed)}/>}
-                                             tooltip={'Indexed'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<SaveIcon color={hasFeatureColor(cache.persistent)}/>}
-                                             tooltip={'Persisted'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<ServiceIcon color={hasFeatureColor(cache.transactional)}/>}
-                                             tooltip={'Transactional'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<KeyIcon color={hasFeatureColor(cache.secured)}/>}
-                                             tooltip={'Secured'}/></LevelItem>
-                    <LevelItem><CacheFeature icon={<DegradedIcon color={hasFeatureColor(cache.hasRemoteBackup)}/>}
-                                             tooltip={'Has remote backups'}/></LevelItem>
-                  </Level>
-                </GridItem>
-              </Grid>
-            </CardHeader>
-            <CardBody id={'id-card-body' + cache.name}>
-              <Stack gutter="sm">
-                <StackItem>
-                  <Link to={{
-                    pathname: '/cache/' + cache.name,
-                    state: {
-                      cacheName: cache.name,
-                    }
-                  }}><InfoIcon/>More</Link></StackItem>
-              </Stack>
-            </CardBody>
-          </Card>
-        </GridItem>
-      )}
-    </Grid>;
   };
 
   const DisplayStats = () => {
@@ -453,7 +335,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     }
     return <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
       <Tab eventKey={0} title={caches.length + ' Caches'}>
-        <CacheTableDisplay caches={caches}/>
+        <CacheTableDisplay caches={caches} cacheManager={cm}/>
       </Tab>
       <Tab eventKey={1} title={counters.length + ' Counters'}>
         <CountersContent/>
