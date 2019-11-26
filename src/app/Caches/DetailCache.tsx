@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
+  Breadcrumb, BreadcrumbItem,
   Card,
   CardBody,
   CardHeader,
@@ -214,6 +215,14 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   return (
     <PageSection>
       <Stack gutter={"lg"}>
+        <StackItem>
+          <Breadcrumb>
+            <BreadcrumbItem to="/">Cluster manager</BreadcrumbItem>
+            <BreadcrumbItem to="#" isActive>
+              Cache detail
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </StackItem>
         <StackItem><Title size="lg"> Cache <strong>{detail.name}</strong>
           {xsite.length > 0 ?
             <span style={{marginLeft: 10}}>Backups <strong>{xsite.map(xsite => ' ' + xsite.name + ' - ' + xsite.status)}</strong></span> : ''}
