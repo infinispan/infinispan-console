@@ -129,7 +129,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const TasksGrid = () => {
     return <Grid gutter='sm' style={{paddingTop: 40}}>
       {tasks.map(task =>
-        <GridItem span={4}>
+        <GridItem key={task.name} span={4}>
           <Card id={'id-task-' + task.name}>
             <CardHeader id={'task-id-header-' + task.name}>
               <Tooltip position="right"
@@ -147,7 +147,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <StackItem><strong>Context name:</strong>{' ' + task.task_context_name}</StackItem>
                 <StackItem><strong>Operation name:</strong>{' ' + task.task_operation_name}</StackItem>
                 <StackItem><strong>Type:</strong>{' ' + task.type}</StackItem>
-                <StackItem><strong>Parameters:</strong>{task.parameters.map(param => <span>{' [' + param + ']'}</span>)}
+                <StackItem><strong>Parameters:</strong>{task.parameters.map((param, index) => <span key={index}>{' [' + param + ']'}</span>)}
                 </StackItem>
                 <StackItem><strong>Allowed
                   role:</strong>{task.allowed_role == null ? ' empty' : ' ' + task.allowed_role}</StackItem>
@@ -170,7 +170,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
   const CountersGrid = () => {
     return <Grid gutter='sm' style={{paddingTop: 40}}>
       {counters.map(counter =>
-        <GridItem span={4}>
+        <GridItem key={counter.name} span={4}>
           <Card id={'id-counter-' + counter.name}>
             <CardHeader id={'counter-id-header-' + counter.name}>
               <strong style={{color: chart_color_blue_400.value}}>{' ' + counter.name}</strong>
@@ -322,8 +322,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
             <StackItem><Label
               style={{backgroundColor: displayUtils.healthColor(cm.health)}}>{cm.health}</Label></StackItem>
             <StackItem>Size <strong>{cm.cluster_size}</strong></StackItem>
-            <StackItem><strong>{cm.cluster_members.map(mem => <span style={{marginRight:10}}>[{mem}]</span>)}</strong></StackItem>
-            <StackItem><strong>{cm.cluster_members_physical_addresses.map(add => <span style={{marginRight:10}}>[{add}]</span>)}</strong></StackItem>
+            <StackItem><strong>{cm.cluster_members.map(mem => <span key={mem} style={{marginRight:10}}>[{mem}]</span>)}</strong></StackItem>
+            <StackItem><strong>{cm.cluster_members_physical_addresses.map(add => <span key={add} style={{marginRight:10}}>[{add}]</span>)}</strong></StackItem>
           </Stack>
         </CardBody>
       </Card>;
