@@ -38,7 +38,7 @@ import {
   chart_color_green_300,
   chart_color_green_500
 } from "@patternfly/react-tokens";
-import {ChartDonut} from "@patternfly/react-charts";
+import {ChartDonut, ChartThemeColor} from "@patternfly/react-charts";
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
   const emptyDetail: DetailedInfinispanCache = {
@@ -172,6 +172,7 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
           subTitle="Data access"
           title={'' + all}
           width={400}
+          themeColor={ChartThemeColor.multiOrdered}
         />
       </div>
   };

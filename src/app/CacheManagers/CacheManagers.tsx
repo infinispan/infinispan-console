@@ -43,7 +43,7 @@ import {
 
 import {Link} from "react-router-dom";
 import {chart_color_black_100, chart_color_blue_400, chart_color_blue_500} from "@patternfly/react-tokens";
-import {ChartDonut} from "@patternfly/react-charts";
+import {ChartDonut, ChartThemeColor} from "@patternfly/react-charts";
 import displayUtils from "../../services/displayUtils";
 import tasksService from "../../services/tasksService";
 import countersService from "../../services/countersService";
@@ -287,6 +287,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                   subTitle="Data access"
                   title={'' + allOps()}
                   width={400}
+                  themeColor={ChartThemeColor.multiOrdered}
                 />
               </div>
             </CardBody>
