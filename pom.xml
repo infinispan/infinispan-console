@@ -10,10 +10,10 @@
   </parent>
 
   <groupId>org.infinispan</groupId>
-  <artifactId>infinispan-console-ng</artifactId>
+  <artifactId>infinispan-console</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Infinispan Console Ng</name>
+  <name>Infinispan Console</name>
   <description>The new Web Management Console for Infinispan</description>
   <url>http://www.infinispan.org</url>
   <organization>
@@ -56,9 +56,9 @@
   </ciManagement>
 
   <scm>
-    <connection>scm:git:git@github.com:infinispan/infinispan-console-ng.git</connection>
-    <developerConnection>scm:git:git@github.com:infinispan/infinispan-console-ng.git</developerConnection>
-    <url>https://github.com/infinispan/infinispan-console-ng</url>
+    <connection>scm:git:git@github.com:infinispan/infinispan-console.git</connection>
+    <developerConnection>scm:git:git@github.com:infinispan/infinispan-console.git</developerConnection>
+    <url>https://github.com/infinispan/infinispan-console</url>
     <tag>HEAD</tag>
   </scm>
 

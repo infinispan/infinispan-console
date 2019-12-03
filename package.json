@@ -1,5 +1,5 @@
 {
-  "name": "infinispan-console-ng",
+  "name": "infinispan-console",
   "version": "0.1.SNAPSHOT",
   "description": "The console for Infinispan/Red Hat Datagrid",
   "main": "index.js",

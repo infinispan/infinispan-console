@@ -1,4 +1,4 @@
-# Infinispan Console NG
+# Infinispan Console
 
 This is the front end application for the web console of the new Infinispan Server 10.x
 
@@ -7,9 +7,9 @@ This application is built using Patternfly 4 and React
 ## Quick-start
 ```bash
 npm install yarn -g # ensure you have yarn on your machine globally
-git clone https://github.com/infinispan/infinispan-console-ng # clone the project
-cd infinispan-console-ng # navigate into the project directory
-yarn # install infinispan-console-ng dependencies
+git clone https://github.com/infinispan/infinispan-console # clone the project
+cd infinispan-console # navigate into the project directory
+yarn # install infinispan-console dependencies
 yarn build # build the project
 yarn start # start the development server
 ```
