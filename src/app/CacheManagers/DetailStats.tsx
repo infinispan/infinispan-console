@@ -21,7 +21,16 @@ import {CubesIcon, MonitoringIcon, PendingIcon} from "@patternfly/react-icons";
 
 const DetailStats: React.FunctionComponent<any> = (props) => {
   const cm: string = props.location.state.cacheManager;
-  const [detail, setDetail] = useState<CacheManagerStats>({statistics_enabled: false},);
+  const [detail, setDetail] = useState<CacheManagerStats>({
+    statistics_enabled: false,
+    hits: -1,
+    stores: -1,
+    evictions: -1,
+    remove_misses: -1,
+    retrievals: -1,
+    misses: -1,
+    remove_hits: -1
+  },);
 
   useEffect(() => {
     dataContainerService.getCacheManagerStats(cm)

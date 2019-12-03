@@ -61,6 +61,15 @@ class ContainerService {
       }));
   };
 
+  public getCacheConfigurationTemplates(name: string): Promise<[CacheConfig]> {
+    return utils.restCall(this.endpoint + '/cache-managers/' + name + '/cache-configs/templates', 'GET')
+      .then(response => response.json())
+      .then(arr => arr.map(config => <CacheConfig>{
+        name: config.name,
+        config: JSON.stringify(config.configuration, undefined, 2)
+      }));
+  };
+
   public getCaches(name: string): Promise<[CacheInfo]> {
     return utils.restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
       .then(response => response.json())

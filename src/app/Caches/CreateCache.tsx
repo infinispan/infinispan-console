@@ -42,11 +42,11 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }
 
   useEffect(() => {
-    dataContainerService.getCacheManager(cm.name)
-      .then(cacheManager => {
+    dataContainerService.getCacheConfigurationTemplates(cm.name)
+      .then(templates => {
         let options: OptionSelect[] = [];
-        cacheManager.cache_configuration_names.map(name => {
-          options.push({value: name})
+        templates.forEach(template => {
+          options.push({value: template.name})
         });
         setConfigs(options);
       });
@@ -140,7 +140,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
 
   const AlertPanel = () => {
     return <React.Fragment>{cacheAlert.display ?
-      <Alert style={{margin:10}} variant={cacheAlert.success ? AlertVariant.success : AlertVariant.danger}
+      <Alert style={{margin: 10}} variant={cacheAlert.success ? AlertVariant.success : AlertVariant.danger}
              title={cacheAlert.message == '' ? 'Cache created correctly' : cacheAlert.message}
              action={<AlertActionCloseButton onClose={hideCreation}/>}/> :
       ''}
@@ -180,7 +180,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
           <Select
             toggleIcon={true && <CubeIcon/>}
             variant={SelectVariant.typeahead}
-            aria-label="Cache configs"
+            aria-label="Configuration templates"
             onToggle={onToggle}
             onSelect={onSelect}
             // @ts-ignore
