@@ -2,7 +2,6 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService'
 import {
-  Button,
   Card,
   CardBody,
   CardHeader,
@@ -13,9 +12,7 @@ import {
   Grid,
   GridItem,
   Label,
-  Level,
-  LevelItem,
-  PageSection, Pagination,
+  PageSection,
   Stack,
   StackItem,
   Tab,
@@ -24,32 +21,23 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import {
-  CatalogIcon,
-  ClusterIcon,
   CubesIcon,
-  DegradedIcon,
   FolderOpenIcon,
-  InfoIcon,
-  KeyIcon,
   MemoryIcon,
   MonitoringIcon,
   PendingIcon,
-  PlusCircleIcon, RegistryIcon,
-  SaveIcon,
-  ServiceIcon,
-  Spinner2Icon,
-  StorageDomainIcon, VolumeIcon
+  RegistryIcon,
+  VolumeIcon
 } from '@patternfly/react-icons'
-
-import {Link} from "react-router-dom";
-import {chart_color_black_100, chart_color_blue_400, chart_color_blue_500} from "@patternfly/react-tokens";
+import {chart_color_blue_400} from "@patternfly/react-tokens";
 import {ChartDonut, ChartThemeColor} from "@patternfly/react-charts";
 import displayUtils from "../../services/displayUtils";
 import tasksService from "../../services/tasksService";
 import countersService from "../../services/countersService";
 import {CacheTableDisplay} from "@app/CacheManagers/CacheTableDisplay";
+import {ClusterDisplay} from "@app/CacheManagers/ClusterDisplay";
 
-const CacheManagers: React.FunctionComponent<any> = (props) => {
+const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
   const [activeTabKey, setActiveTabKey] = useState(0);
   const [stats, setStats] = useState<CacheManagerStats>({
@@ -63,7 +51,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
     misses: -1
   });
   const [caches, setCaches] = useState<CacheInfo[]>([]);
-  const [cachesPagination, setCachesPagination] = useState({page:1, perPage:6})
+  const [cachesPagination, setCachesPagination] = useState({page: 1, perPage: 6})
   const [counters, setCounters] = useState<Counter[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -147,7 +135,8 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
                 <StackItem><strong>Context name:</strong>{' ' + task.task_context_name}</StackItem>
                 <StackItem><strong>Operation name:</strong>{' ' + task.task_operation_name}</StackItem>
                 <StackItem><strong>Type:</strong>{' ' + task.type}</StackItem>
-                <StackItem><strong>Parameters:</strong>{task.parameters.map((param, index) => <span key={index}>{' [' + param + ']'}</span>)}
+                <StackItem><strong>Parameters:</strong>{task.parameters.map((param, index) => <span
+                  key={index}>{' [' + param + ']'}</span>)}
                 </StackItem>
                 <StackItem><strong>Allowed
                   role:</strong>{task.allowed_role == null ? ' empty' : ' ' + task.allowed_role}</StackItem>
@@ -308,27 +297,6 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
       </Grid>
   };
 
-  const DisplayCluster = () => {
-    return cm == undefined ? <EmptyState variant={EmptyStateVariant.full}>
-        <EmptyStateIcon icon={CubesIcon}/>
-        <EmptyStateBody>
-          The cluster is empty
-        </EmptyStateBody>
-      </EmptyState> :
-      <Card style={{marginTop: 40}}>
-        <CardHeader><ClusterIcon/> <strong>{' ' + cm.cluster_name}</strong></CardHeader>
-        <CardBody>
-          <Stack gutter="md">
-            <StackItem><Label
-              style={{backgroundColor: displayUtils.healthColor(cm.health)}}>{cm.health}</Label></StackItem>
-            <StackItem>Size <strong>{cm.cluster_size}</strong></StackItem>
-            <StackItem><strong>{cm.cluster_members.map(mem => <span key={mem} style={{marginRight:10}}>[{mem}]</span>)}</strong></StackItem>
-            <StackItem><strong>{cm.cluster_members_physical_addresses.map(add => <span key={add} style={{marginRight:10}}>[{add}]</span>)}</strong></StackItem>
-          </Stack>
-        </CardBody>
-      </Card>;
-  };
-
   const DisplayTabs = () => {
     let clusteringLabel = 'Cluster info';
     if (cm != undefined) {
@@ -348,7 +316,7 @@ const CacheManagers: React.FunctionComponent<any> = (props) => {
         <DisplayStats/>
       </Tab>
       <Tab eventKey={4} title={clusteringLabel}>
-        <DisplayCluster/>
+        <ClusterDisplay cacheManager={cm}/>
       </Tab>
     </Tabs>
   };
