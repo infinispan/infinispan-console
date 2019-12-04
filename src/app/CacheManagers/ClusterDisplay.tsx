@@ -37,20 +37,26 @@ const ClusterDisplay = (props: { cacheManager: (undefined | CacheManager) }) => 
         <Grid gutter="md">
           <GridItem span={2}>
             <Stack>
-              <StackItem><ClusterIcon size={"xl"} style={{marginLeft:14, marginBottom: 10}}/></StackItem>
+              <StackItem><ClusterIcon size={"xl"} style={{marginLeft: 14, marginBottom: 10}}/></StackItem>
               <StackItem><Label
                 style={{backgroundColor: displayUtils.healthColor(cm.health)}}>{cm.health}</Label></StackItem>
             </Stack>
           </GridItem>
           <GridItem span={4}>
             <Stack>
-              <StackItem> <h1 style={{fontSize: 22}}>{cm.cluster_name}</h1></StackItem>
+              <StackItem><h1 style={{fontSize: 22}}>{cm.cluster_name}</h1></StackItem>
               <StackItem> {size}</StackItem>
             </Stack>
           </GridItem>
           <GridItem span={6}>
             <Gallery>
-              {cm.cluster_members.map(mem => <GalleryItem>{mem}</GalleryItem>)}
+              {cm.cluster_members.map((mem, index) =>
+                <GalleryItem>
+                  <Stack>
+                    <StackItem><strong>{mem}</strong></StackItem>
+                    <StackItem>{cm.cluster_members_physical_addresses[index]}</StackItem>
+                  </Stack>
+                </GalleryItem>)}
             </Gallery>
           </GridItem>
         </Grid>
