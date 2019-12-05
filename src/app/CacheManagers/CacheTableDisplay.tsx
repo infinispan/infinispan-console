@@ -6,11 +6,14 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant,
+  EmptyStateVariant, Grid, GridItem,
   Label,
   Level,
   LevelItem,
   Pagination,
+  Select,
+  SelectOption,
+  SelectVariant,
   Stack,
   StackItem,
   Title,
@@ -32,22 +35,29 @@ import {
 } from "@patternfly/react-icons";
 import {Link} from "react-router-dom";
 
-const CacheTableDisplay: React.FunctionComponent<any> = (props) => {
-  const allCaches: CacheInfo[] = props.caches;
+const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheInfo[], cacheManager: CacheManager }) => {
   const cacheManager: CacheManager = props.cacheManager;
-  const [cachesPagination, setCachesPagination] = useState({page: 1, perPage: 10})
-  const [columns, setColumns] = useState(
-    [{title: 'Name', transforms: [cellWidth(25)]},
-      {title: 'Type', transforms: [cellWidth(10)]},
-      {title: 'Features', transforms: [cellWidth(40)]},
-      {title: 'Actions', transforms: [cellWidth('max')]}])
-  ;
+  const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([...props.caches]);
+  const [cachesPagination, setCachesPagination] = useState({page: 1, perPage: 10});
+  const columns = [{title: 'Name', transforms: [cellWidth(25)]},
+    {title: 'Type', transforms: [cellWidth(10)]},
+    {title: 'Features', transforms: [cellWidth(40)]},
+    {title: 'Actions', transforms: [cellWidth('max')]}];
   const [rows, setRows] = useState<(string | any)[]>([]);
+  const [selectedCacheTypes, setSelectedCacheTypes] = useState<string[]>([]);
+  const [isExpandedCacheTypes, setIsExpandedCacheTypes] = useState<boolean>(false);
 
+  const cacheTypesOptions = [
+    <SelectOption key={0} value="Local"/>,
+    <SelectOption key={1} value="Replicated"/>,
+    <SelectOption key={2} value="Distributed"/>,
+    <SelectOption key={3} value="Invalidated"/>,
+    <SelectOption key={4} value="Scattered"/>
+  ];
 
   useEffect(() => {
       const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
-      updateRows(allCaches.slice(initSlice, initSlice + cachesPagination.perPage));
+      updateRows(filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage));
     },
     []);
 
@@ -57,7 +67,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props) => {
       perPage: cachesPagination.perPage
     });
     const initSlice = (pageNumber - 1) * cachesPagination.perPage;
-    updateRows(allCaches.slice(initSlice, initSlice + cachesPagination.perPage));
+    updateRows(filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
@@ -66,7 +76,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props) => {
       perPage: perPage
     });
     const initSlice = (cachesPagination.page - 1) * perPage;
-    updateRows(allCaches.slice(initSlice, initSlice + perPage));
+    updateRows(filteredCaches.slice(initSlice, initSlice + perPage));
   };
 
   const updateRows = (caches) => {
@@ -174,6 +184,24 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props) => {
       {props.type}</Label>);
   };
 
+  const onToggleCacheType = isExpanded => {
+    setIsExpandedCacheTypes(isExpanded);
+  };
+
+  const onSelectCacheType = (event, selection) => {
+    let actualSelection: string[] = [];
+
+    if (selectedCacheTypes.includes(selection)) {
+      actualSelection = selectedCacheTypes.filter(item => item !== selection);
+    } else {
+      actualSelection = [...selectedCacheTypes, selection];
+    }
+    let newFilteredCaches: CacheInfo[] = props.caches.filter(cacheInfo => actualSelection.length == 0 || actualSelection.find(type => type === cacheInfo.type));
+    updateRows(newFilteredCaches);
+    setSelectedCacheTypes(actualSelection);
+    setFilteredCaches(newFilteredCaches);
+  };
+
   return (
     <Stack>
       <StackItem>
@@ -187,15 +215,33 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props) => {
         </Link>
       </StackItem>
       <StackItem>
-        <Pagination
-          itemCount={allCaches.length}
-          perPage={cachesPagination.perPage}
-          page={cachesPagination.page}
-          onSetPage={onSetPage}
-          widgetId="pagination-caches"
-          onPerPageSelect={onPerPageSelect}
-          isCompact
-        />
+        <Grid style={{marginBottom:10}}>
+          <GridItem span={3}>
+            <Select
+              variant={SelectVariant.checkbox}
+              aria-label="Select cache type"
+              onToggle={onToggleCacheType}
+              onSelect={onSelectCacheType}
+              selections={selectedCacheTypes}
+              isExpanded={isExpandedCacheTypes}
+              placeholderText="Filter by cache type"
+              ariaLabelledBy="cache-type-filter-select-id"
+            >
+              {cacheTypesOptions}
+            </Select>
+          </GridItem>
+          <GridItem span={9}>
+            <Pagination
+              itemCount={filteredCaches.length}
+              perPage={cachesPagination.perPage}
+              page={cachesPagination.page}
+              onSetPage={onSetPage}
+              widgetId="pagination-caches"
+              onPerPageSelect={onPerPageSelect}
+              isCompact
+            />
+          </GridItem>
+        </Grid>
       </StackItem>
       <StackItem>
         <Table aria-label="Caches" cells={columns} rows={rows} className={'caches-table'}>
