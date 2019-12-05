@@ -6,7 +6,9 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant, Grid, GridItem,
+  EmptyStateVariant,
+  Grid,
+  GridItem,
   Label,
   Level,
   LevelItem,
@@ -39,13 +41,16 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
   const cacheManager: CacheManager = props.cacheManager;
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([...props.caches]);
   const [cachesPagination, setCachesPagination] = useState({page: 1, perPage: 10});
+  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [selectedCacheTypes, setSelectedCacheTypes] = useState<string[]>([]);
+  const [isExpandedCacheTypes, setIsExpandedCacheTypes] = useState<boolean>(false);
+  const [selectedCacheFeatures, setSelectedCacheFeatures] = useState<string[]>([]);
+  const [isExpandedCacheFeatures, setIsExpandedCacheFeatures] = useState<boolean>(false);
+
   const columns = [{title: 'Name', transforms: [cellWidth(25)]},
     {title: 'Type', transforms: [cellWidth(10)]},
     {title: 'Features', transforms: [cellWidth(40)]},
     {title: 'Actions', transforms: [cellWidth('max')]}];
-  const [rows, setRows] = useState<(string | any)[]>([]);
-  const [selectedCacheTypes, setSelectedCacheTypes] = useState<string[]>([]);
-  const [isExpandedCacheTypes, setIsExpandedCacheTypes] = useState<boolean>(false);
 
   const cacheTypesOptions = [
     <SelectOption key={0} value="Local"/>,
@@ -53,6 +58,15 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     <SelectOption key={2} value="Distributed"/>,
     <SelectOption key={3} value="Invalidated"/>,
     <SelectOption key={4} value="Scattered"/>
+  ];
+
+  const cacheFeaturesOptions = [
+    <SelectOption key={0} value="Bounded"/>,
+    <SelectOption key={1} value="Indexed"/>,
+    <SelectOption key={2} value="Persistent"/>,
+    <SelectOption key={3} value="Transactional"/>,
+    <SelectOption key={4} value="Secured"/>,
+    <SelectOption key={5} value="Has Remote Backup"/>
   ];
 
   useEffect(() => {
@@ -142,17 +156,16 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     }}><InfoIcon/>More</Link>);
   };
 
-  const CacheFeatures: React.FunctionComponent<any> = (props) => {
+  const hasFeatureColor = (feature: boolean) => {
+    if (feature) {
+      return chart_color_blue_500.value;
+    } else {
+      return chart_color_black_200.value;
+    }
+  };
+
+  const CacheFeatures = (props: { cache: CacheInfo }) => {
     const cache: CacheInfo = props.cache;
-
-    const hasFeatureColor = (feature) => {
-      if (feature) {
-        return chart_color_blue_500.value;
-      } else {
-        return chart_color_black_200.value;
-      }
-    };
-
     return (<Level>
       <LevelItem><CacheFeature icon={<Spinner2Icon color={hasFeatureColor(cache.bounded)}/>}
                                tooltip={'Bounded'}/></LevelItem>
@@ -169,7 +182,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     </Level>);
   };
 
-  const CacheFeature: React.FunctionComponent<any> = (props) => {
+  const CacheFeature = (props) => {
     return (<LevelItem>
       <Tooltip position="right"
                content={
@@ -179,7 +192,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
       </Tooltip></LevelItem>);
   };
 
-  const CacheType: React.FunctionComponent<any> = (props) => {
+  const CacheType = (props) => {
     return (<Label style={{backgroundColor: displayUtils.cacheTypeColor(props.type), marginRight: 15}}>
       {props.type}</Label>);
   };
@@ -196,9 +209,55 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     } else {
       actualSelection = [...selectedCacheTypes, selection];
     }
-    let newFilteredCaches: CacheInfo[] = props.caches.filter(cacheInfo => actualSelection.length == 0 || actualSelection.find(type => type === cacheInfo.type));
+    let newFilteredCaches: CacheInfo[] = props.caches.filter(cacheInfo => actualSelection.length == 0
+      || actualSelection.find(type => type === cacheInfo.type));
     updateRows(newFilteredCaches);
     setSelectedCacheTypes(actualSelection);
+    setFilteredCaches(newFilteredCaches);
+  };
+
+  const onToggleCacheFeature = isExpanded => {
+    setIsExpandedCacheFeatures(isExpanded);
+  };
+
+  const hasFeature = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
+    if (actualSelection.find(feature => feature === 'Transactional') && cacheInfo.transactional) {
+      return true;
+    }
+    if (actualSelection.find(feature => feature === 'Bounded') && cacheInfo.bounded) {
+      return true;
+    }
+
+    if (actualSelection.find(feature => feature === 'Indexed') && cacheInfo.indexed) {
+      return true;
+    }
+
+    if (actualSelection.find(feature => feature === 'Persistent') && cacheInfo.persistent) {
+      return true;
+    }
+
+    if (actualSelection.find(feature => feature === 'Secured') && cacheInfo.secured) {
+      return true;
+    }
+    if (actualSelection.find(feature => feature === 'Has Remote Backup') && cacheInfo.hasRemoteBackup) {
+      return true;
+    }
+    return false;
+  };
+
+
+  const onSelectCacheFeature = (event, selection) => {
+    let actualSelection: string[] = [];
+
+    if (selectedCacheFeatures.includes(selection)) {
+      actualSelection = selectedCacheFeatures.filter(item => item !== selection);
+    } else {
+      actualSelection = [...selectedCacheFeatures, selection];
+    }
+
+    let newFilteredCaches: CacheInfo[] = props.caches.filter(cacheInfo => actualSelection.length == 0 || hasFeature(cacheInfo, actualSelection));
+    updateRows(newFilteredCaches);
+    setSelectedCacheFeatures(actualSelection);
     setFilteredCaches(newFilteredCaches);
   };
 
@@ -215,7 +274,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
         </Link>
       </StackItem>
       <StackItem>
-        <Grid style={{marginBottom:10}}>
+        <Grid style={{marginBottom: 10}} gutter={"md"}>
           <GridItem span={3}>
             <Select
               variant={SelectVariant.checkbox}
@@ -230,7 +289,21 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
               {cacheTypesOptions}
             </Select>
           </GridItem>
-          <GridItem span={9}>
+          <GridItem span={3}>
+            <Select
+              variant={SelectVariant.checkbox}
+              aria-label="Select cache feature"
+              onToggle={onToggleCacheFeature}
+              onSelect={onSelectCacheFeature}
+              selections={selectedCacheFeatures}
+              isExpanded={isExpandedCacheFeatures}
+              placeholderText="Filter by cache feature"
+              ariaLabelledBy="cache-feature-filter-select-id"
+            >
+              {cacheFeaturesOptions}
+            </Select>
+          </GridItem>
+          <GridItem span={6}>
             <Pagination
               itemCount={filteredCaches.length}
               perPage={cachesPagination.perPage}
