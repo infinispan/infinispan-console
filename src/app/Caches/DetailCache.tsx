@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
-  Breadcrumb, BreadcrumbItem,
   Card,
   CardBody,
   CardHeader,
-  EmptyState, EmptyStateBody,
+  EmptyState,
+  EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
@@ -32,12 +32,7 @@ import {
   StorageDomainIcon,
   UnknownIcon
 } from '@patternfly/react-icons'
-import {
-  chart_color_black_200,
-  chart_color_blue_300,
-  chart_color_green_300,
-  chart_color_green_500
-} from "@patternfly/react-tokens";
+import {chart_color_black_200, chart_color_blue_300} from "@patternfly/react-tokens";
 import {ChartDonut, ChartThemeColor} from "@patternfly/react-charts";
 
 const DetailCache: React.FunctionComponent<any> = (props) => {
@@ -216,14 +211,6 @@ const DetailCache: React.FunctionComponent<any> = (props) => {
   return (
     <PageSection>
       <Stack gutter={"lg"}>
-        <StackItem>
-          <Breadcrumb>
-            <BreadcrumbItem to="/">Cluster manager</BreadcrumbItem>
-            <BreadcrumbItem to="#" isActive>
-              Cache detail
-            </BreadcrumbItem>
-          </Breadcrumb>
-        </StackItem>
         <StackItem><Title size="lg"> Cache <strong>{detail.name}</strong>
           {xsite.length > 0 ?
             <span style={{marginLeft: 10}}>Backups <strong>{xsite.map(xsite => ' ' + xsite.name + ' - ' + xsite.status)}</strong></span> : ''}
