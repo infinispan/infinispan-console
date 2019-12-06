@@ -9,7 +9,7 @@ import '@app/app.css';
 const App: React.FunctionComponent<any> = () => {
   return <DocumentTitle title="Infinispan Console">
     <Router basename="/console">
-      <AppLayout>
+      <AppLayout welcome={location.pathname === "/console/welcome/" || location.pathname === "/console/welcome"}>
         <AppRoutes/>
       </AppLayout>
     </Router>

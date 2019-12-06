@@ -10,7 +10,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src', 'index.html')
+      template: path.resolve(__dirname, 'src', 'index.html'),
+      filename: 'index.html'
     })
   ],
   module: {
@@ -27,6 +28,20 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.(svg|png|xml|webmanifest|ico)$/,
+        // only process modules with this loader
+        // if they live under a 'favicons' directory
+        include: [
+          path.resolve(__dirname, 'src/app/assets/favicons')
+        ],
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]'
+          }
+        }
       },
       {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
@@ -76,12 +91,13 @@ module.exports = {
       {
         test: /\.svg$/,
         // only process SVG modules with this loader when they don't live under a 'bgimages',
-        // 'fonts', or 'pficon' directory, those are handled with other loaders
+        // 'fonts', 'pficon' or 'favicons' directory, those are handled with other loaders
         include: input => (
           (input.indexOf(BG_IMAGES_DIRNAME) === -1) &&
           (input.indexOf('fonts') === -1) &&
           (input.indexOf('background-filter') === -1) &&
-          (input.indexOf('pficon') === -1)
+          (input.indexOf('pficon') === -1) &&
+          (input.indexOf('favicons') === -1)
         ),
         use: {
           loader: 'raw-loader',
@@ -91,7 +107,7 @@ module.exports = {
       {
         test: /\.(jpg|jpeg|png|gif)$/i,
         include: [
-          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'src/app/assets/images'),
           path.resolve(__dirname, 'node_modules/patternfly'),
           path.resolve(__dirname, 'node_modules/@patternfly/patternfly/assets/images'),
           path.resolve(__dirname, 'node_modules/@patternfly/react-styles/css/assets/images'),
@@ -114,6 +130,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
+    publicPath: '/console/',
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {

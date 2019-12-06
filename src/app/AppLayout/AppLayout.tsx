@@ -1,16 +1,19 @@
 import * as React from 'react';
 import {Brand, Page, PageHeader, SkipToContent} from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
+import {chart_color_blue_500} from "@patternfly/react-tokens";
 
 interface IAppLayout {
   children: React.ReactNode;
+  welcome: boolean;
 }
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
+const AppLayout: React.FunctionComponent<IAppLayout> = ({children, welcome}) => {
   const logoProps = {
     href: '/console/',
     target: '_self'
   };
+
   const [isNavOpen, setIsNavOpen] = React.useState(true);
   const [isMobileView, setIsMobileView] = React.useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = React.useState(false);
@@ -34,6 +37,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
       showNavToggle={false}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
+      style={{ backgroundColor:chart_color_blue_500.value}}
     />
   );
 
@@ -45,7 +49,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children}) => {
   return (
     <Page
       mainContainerId="primary-app-container"
-      header={Header}
+      header={welcome? null : Header}
       onPageResize={onPageResize}
       skipToContent={PageSkipToContent}>
       {children}

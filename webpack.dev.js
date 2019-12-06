@@ -14,10 +14,14 @@ module.exports = merge(common, {
     port: PORT,
     compress: true,
     inline: true,
-    historyApiFallback: true,
+    historyApiFallback: {
+      index:'/console/'
+    },
     hot: true,
     overlay: true,
-    open: true
+    open: true,
+    openPage: 'console',
+    serveIndex: true
   },
   module: {
     rules: [

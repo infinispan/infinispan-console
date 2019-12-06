@@ -8,7 +8,7 @@ import {NotFound} from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
 import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
 import {CreateCache} from "@app/Caches/CreateCache";
-import {InfinispanServer} from "@app/InfinispanServer/InfinispanServer";
+import {Welcome} from "@app/Welcome/Welcome";
 import {DetailCache} from "@app/Caches/DetailCache";
 import {DetailStats} from "@app/CacheManagers/DetailStats";
 import {DetailConfigurations} from "@app/CacheManagers/DetailConfigurations";
@@ -79,12 +79,12 @@ export interface IAppRoute {
 
 const routes: IAppRoute[] = [
   {
-    component: InfinispanServer,
+    component: Welcome,
     exact: true,
     icon: <ServerGroupIcon/>,
-    label: 'Infinispan Server',
-    path: '/server',
-    title: 'Infinispan Server',
+    label: 'Welcome to the server',
+    path: '/welcome',
+    title: 'Welcome to the server',
     menu: true
   },
   {
