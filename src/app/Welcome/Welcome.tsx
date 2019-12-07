@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import back from '!!url-loader!@app/assets/images/infinispan_login_background.svg';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo.svg';
 import {ApplicationsIcon, CatalogIcon, InfoIcon} from "@patternfly/react-icons";
+import utils from "../../services/utils";
 
 const Welcome: React.FunctionComponent<any> = (props) => {
 
@@ -33,7 +34,7 @@ const Welcome: React.FunctionComponent<any> = (props) => {
         backgroundImgAlt="Images"
         textContent={description}
         loginTitle="Welcome to the Infinispan Server"
-        footerListItems={<Link to={{pathname: '/'}} target='_blank'><Button>Go to the console</Button></Link>}
+        footerListItems={<Button href={utils.endpoint() + '/login?action=login'} component="a" variant={"control"}>Go to the console</Button>}
       >
         <Stack gutter={"md"}>
           <StackItem>Remotely connect to Infinispan with client applications.</StackItem>
