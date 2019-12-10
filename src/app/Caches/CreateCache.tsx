@@ -152,7 +152,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     <PageSection>
       <Title size="lg"> Create a cache in <b>{cm.name}</b> container</Title>
       <AlertPanel/>
-      <Form style={{paddingTop: 10}}>
+      <Form style={{paddingTop: 10}} onSubmit={e => { e.preventDefault(); }}>
         <FormGroup
           label="Name"
           isRequired
