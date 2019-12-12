@@ -49,6 +49,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
 
   const columns = [{title: 'Name', transforms: [cellWidth(25)]},
     {title: 'Type', transforms: [cellWidth(10)]},
+    {title: 'Health', transforms: [cellWidth(10)]},
     {title: 'Features', transforms: [cellWidth(40)]},
     {title: 'Actions', transforms: [cellWidth('max')]}];
 
@@ -93,7 +94,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     updateRows(filteredCaches.slice(initSlice, initSlice + perPage));
   };
 
-  const updateRows = (caches) => {
+  const updateRows = (caches: CacheInfo[]) => {
     let rows: { heightAuto: boolean, cells: (string | any)[] }[];
 
     if (caches.length == 0) {
@@ -124,6 +125,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
           heightAuto: true,
           cells: [cache.name,
             {title: <CacheType type={cache.type}/>},
+            {title: <CacheHealth type={cache.health}/>},
             {title: <CacheFeatures cache={cache}/>},
             {title: <CacheActionLinks name={cache.name}/>}]
         };
@@ -192,8 +194,13 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
       </Tooltip></LevelItem>);
   };
 
-  const CacheType = (props) => {
+  const CacheType = (props: { type: string }) => {
     return (<Label style={{backgroundColor: displayUtils.cacheTypeColor(props.type), marginRight: 15}}>
+      {props.type}</Label>);
+  };
+
+  const CacheHealth = (props: { type: string }) => {
+    return (<Label style={{backgroundColor: displayUtils.healthColor(props.type), marginRight: 15}}>
       {props.type}</Label>);
   };
 

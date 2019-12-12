@@ -53,7 +53,6 @@ interface CacheInfo {
   status: string;
   name: string;
   type: string;
-  size: number;
   simpleCache: boolean;
   transactional: boolean;
   persistent: boolean;
@@ -61,6 +60,7 @@ interface CacheInfo {
   secured: boolean;
   indexed: boolean;
   hasRemoteBackup: boolean;
+  health: string;
 }
 
 interface DetailedInfinispanCache {

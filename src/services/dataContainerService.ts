@@ -78,14 +78,14 @@ class ContainerService {
           name: cacheInfo.name,
           status: cacheInfo.status,
           type: this.mapCacheType(cacheInfo.type),
-          size: cacheInfo.size,
           simpleCache: cacheInfo.simpleCache,
           transactional: cacheInfo.transactional,
           persistent: cacheInfo.persistent,
           bounded: cacheInfo.bounded,
           secured: cacheInfo.secured,
           indexed: cacheInfo.indexed,
-          hasRemoteBackup: cacheInfo.has_remote_backup
+          hasRemoteBackup: cacheInfo.has_remote_backup,
+          health: cacheInfo.health
         }).filter(cacheInfo => !cacheInfo.name.startsWith('___')));
   }
 
