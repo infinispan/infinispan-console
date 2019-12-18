@@ -50,8 +50,8 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
   const columns = [{title: 'Name', transforms: [cellWidth(25)]},
     {title: 'Type', transforms: [cellWidth(10)]},
     {title: 'Health', transforms: [cellWidth(10)]},
-    {title: 'Features', transforms: [cellWidth(40)]},
-    {title: 'Actions', transforms: [cellWidth('max')]}];
+    {title: 'Features', transforms: [cellWidth('max')]}];
+    //TODO {title: 'Actions', transforms: [cellWidth('max')]}];
 
   const cacheTypesOptions = [
     <SelectOption key={0} value="Local"/>,
@@ -123,11 +123,11 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
       rows = caches.map(cache => {
         return {
           heightAuto: true,
-          cells: [cache.name,
+          cells: [{title: <CacheName name={cache.name}/>},
             {title: <CacheType type={cache.type}/>},
             {title: <CacheHealth type={cache.health}/>},
-            {title: <CacheFeatures cache={cache}/>},
-            {title: <CacheActionLinks name={cache.name}/>}]
+            {title: <CacheFeatures cache={cache}/>}]
+            //TODO {title: <CacheActionLinks name={cache.name}/>}]
         };
       });
     }
@@ -147,16 +147,16 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     </Link>;
   };
 
-  const CacheActionLinks: React.FunctionComponent<any> = (props) => {
-    const name: string = props.name;
-
-    return (<Link to={{
-      pathname: '/cache/' + name,
-      state: {
-        cacheName: name,
-      }
-    }}><InfoIcon/>More</Link>);
-  };
+  //TODO const CacheActionLinks: React.FunctionComponent<any> = (props) => {
+  //   const name: string = props.name;
+  //
+  //   return (<Link to={{
+  //     pathname: '/cache/' + name,
+  //     state: {
+  //       cacheName: name,
+  //     }
+  //   }}><InfoIcon/>More</Link>);
+  // };
 
   const hasFeatureColor = (feature: boolean) => {
     if (feature) {
@@ -192,6 +192,17 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
                }>
         {props.icon}
       </Tooltip></LevelItem>);
+  };
+
+  const CacheName = (props: { name: string }) => {
+    return (
+      <Link to={{
+          pathname: '/cache/' + props.name,
+          state: {
+            cacheName: props.name,
+          }
+      }}><Button variant={"link"}>{props.name}</Button></Link>
+    );
   };
 
   const CacheType = (props: { type: string }) => {
