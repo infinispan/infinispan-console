@@ -138,7 +138,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     return <Link to={{
       pathname: '/caches/create',
       state: {
-        cacheManager: cacheManager,
+        cm: cacheManager.name,
       }
     }}>
       <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
@@ -269,17 +269,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
   };
 
   return (
-    <Stack>
-      <StackItem>
-        <CreateCacheButton/>
-        <Link to={{
-          pathname: 'container/' + cacheManager.name + '/configurations/',
-          state: {
-            cacheManager: cacheManager.name
-          }
-        }}> <Button variant="link" icon={<CatalogIcon/>}>Configurations </Button>{' '}
-        </Link>
-      </StackItem>
+    <Stack style={{marginTop:10}}>
       <StackItem>
         <Grid style={{marginBottom: 10}} gutter={"md"}>
           <GridItem span={3}>

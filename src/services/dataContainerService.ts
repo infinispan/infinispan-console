@@ -7,6 +7,12 @@ class ContainerService {
     this.endpoint = endpoint;
   }
 
+  public getPrincipalCacheManagerName(): Promise<string> {
+    return utils.restCall(this.endpoint + "/server/cache-managers/", 'GET')
+      .then(response => response.json())
+      .then(names => names[0]);
+  };
+
   public getCacheManagers(): Promise<CacheManager[]> {
     return utils.restCall(this.endpoint + "/server/cache-managers/", 'GET')
       .then(response => response.json())

@@ -23,7 +23,7 @@ import dataContainerService from "../../services/dataContainerService";
 import {Link} from "react-router-dom";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
-  const cm = props.location.state.cacheManager;
+  const cmName = props.location.state.cm;
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
   const [config, setConfig] = useState('');
@@ -42,7 +42,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }
 
   useEffect(() => {
-    dataContainerService.getCacheConfigurationTemplates(cm.name)
+    dataContainerService.getCacheConfigurationTemplates(cmName)
       .then(templates => {
         let options: OptionSelect[] = [];
         templates.forEach(template => {
@@ -150,9 +150,11 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const titleId = 'plain-typeahead-select-id';
   return (
     <PageSection>
-      <Title size="lg"> Create a cache in <b>{cm.name}</b> container</Title>
+      <Title size="lg"> Create a cache in <b>{cmName}</b> container</Title>
       <AlertPanel/>
-      <Form style={{paddingTop: 10}} onSubmit={e => { e.preventDefault(); }}>
+      <Form style={{paddingTop: 10}} onSubmit={e => {
+        e.preventDefault();
+      }}>
         <FormGroup
           label="Name"
           isRequired

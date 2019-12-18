@@ -302,42 +302,52 @@ const CacheManagers = () => {
     if (cm != undefined) {
       clusteringLabel = 'Cluster of ' + cm.cluster_size;
     }
-    return <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
-      <Tab eventKey={0} title={caches.length + ' Caches'}>
-        <CacheTableDisplay caches={caches} cacheManager={cm}/>
-      </Tab>
-      <Tab eventKey={1} title={counters.length + ' Counters'}>
-        <CountersContent/>
-      </Tab>
-      <Tab eventKey={2} title={tasks.length + ' Tasks'}>
-        <TasksContent/>
-      </Tab>
-      <Tab eventKey={3} title="Global Statistics">
-        <DisplayStats/>
-      </Tab>
-      <Tab eventKey={4} title={clusteringLabel}>
-        <ClusterDisplay cacheManager={cm}/>
-      </Tab>
-    </Tabs>
+    return (
+      <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
+        <Tab eventKey={0} title={caches.length + ' Caches'}>
+          <CacheTableDisplay caches={caches} cacheManager={cm}/>
+        </Tab>
+        <Tab eventKey={1} title={counters.length + ' Counters'}>
+          <CountersContent/>
+        </Tab>
+        <Tab eventKey={2} title={tasks.length + ' Tasks'}>
+          <TasksContent/>
+        </Tab>
+        <Tab eventKey={3} title="Global Statistics">
+          <DisplayStats/>
+        </Tab>
+        <Tab eventKey={4} title={clusteringLabel}>
+          <ClusterDisplay cacheManager={cm}/>
+        </Tab>
+      </Tabs>
+    );
   };
 
   const DisplayCacheManager = () => {
-    return cm != undefined ?
+    if (cm === undefined) {
+      return (
+        <EmptyState variant={EmptyStateVariant.full}>
+          <EmptyStateIcon icon={CubesIcon}/>
+          <Title headingLevel="h5" size="lg">
+            Data container
+          </Title>
+          <EmptyStateBody>
+            Data container is empty
+          </EmptyStateBody>
+        </EmptyState>
+      );
+    }
+
+    return (
       <Grid gutter="sm">
         <GridItem span={3}><strong>Id:</strong> {' ' + cm.name}</GridItem>
         <GridItem span={9}><strong>{'Status: '}</strong><Label
           style={{backgroundColor: displayUtils.statusColor(cm.cache_manager_status)}}>{' ' + cm.cache_manager_status}</Label></GridItem>
         <GridItem><DisplayTabs/></GridItem>
-      </Grid> : <EmptyState variant={EmptyStateVariant.full}>
-        <EmptyStateIcon icon={CubesIcon}/>
-        <Title headingLevel="h5" size="lg">
-          Data container
-        </Title>
-        <EmptyStateBody>
-          Data container is empty
-        </EmptyStateBody>
-      </EmptyState>;
+      </Grid>
+    );
   };
+
   return (
     <PageSection>
       <DisplayCacheManager/>
