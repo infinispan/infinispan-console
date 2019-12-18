@@ -134,8 +134,6 @@ const routes: IAppRoute[] = [
   }
 ];
 
-export let isLogged: Boolean = true;
-
 export let user = {
   user: 'admin',
   password: 'admin'
