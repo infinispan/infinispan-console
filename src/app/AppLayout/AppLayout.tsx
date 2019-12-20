@@ -65,7 +65,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({children, welcome}) => 
     </DropdownItem>,
     <DropdownItem>
       <Link to={{
-        pathname: 'container/' + cacheManagerName + '/configurations/',
+        pathname: '/container/' + cacheManagerName + '/configurations/',
         state: {
           cacheManager: cacheManagerName
         }
