@@ -21,17 +21,10 @@ import {
   Title,
   Tooltip
 } from "@patternfly/react-core";
-import {
-  chart_color_black_100,
-  chart_color_black_200,
-  chart_color_blue_400,
-  chart_color_blue_500
-} from "@patternfly/react-tokens";
+import {chart_color_black_100, chart_color_blue_400} from "@patternfly/react-tokens";
 import displayUtils from "../../services/displayUtils";
 import {
-  CatalogIcon,
   DegradedIcon,
-  InfoIcon,
   KeyIcon,
   PlusCircleIcon,
   SaveIcon,
@@ -56,7 +49,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     {title: 'Type', transforms: [cellWidth(10)]},
     {title: 'Health', transforms: [cellWidth(10)]},
     {title: 'Features', transforms: [cellWidth('max')]}];
-    //TODO {title: 'Actions', transforms: [cellWidth('max')]}];
+  //TODO {title: 'Actions', transforms: [cellWidth('max')]}];
 
   const cacheTypesOptions = [
     <SelectOption key={0} value="Local"/>,
@@ -132,7 +125,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
             {title: <CacheType type={cache.type}/>},
             {title: <CacheHealth type={cache.health}/>},
             {title: <CacheFeatures cache={cache}/>}]
-            //TODO {title: <CacheActionLinks name={cache.name}/>}]
+          //TODO {title: <CacheActionLinks name={cache.name}/>}]
         };
       });
     }
@@ -202,10 +195,10 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
   const CacheName = (props: { name: string }) => {
     return (
       <Link to={{
-          pathname: '/cache/' + props.name,
-          state: {
-            cacheName: props.name,
-          }
+        pathname: '/cache/' + props.name,
+        state: {
+          cacheName: props.name,
+        }
       }}><Button variant={"link"}>{props.name}</Button></Link>
     );
   };
@@ -232,8 +225,15 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     } else {
       actualSelection = [...selectedCacheTypes, selection];
     }
-    let newFilteredCaches: CacheInfo[] = props.caches.filter(cacheInfo => actualSelection.length == 0
+
+    let caches = props.caches;
+    if (selectedCacheFeatures.length > 0) {
+      caches = caches.filter(cacheInfo => hasFeature(cacheInfo, selectedCacheFeatures));
+    }
+
+    let newFilteredCaches: CacheInfo[] = caches.filter(cacheInfo => actualSelection.length == 0
       || actualSelection.find(type => type === cacheInfo.type));
+
     updateRows(newFilteredCaches);
     setSelectedCacheTypes(actualSelection);
     setFilteredCaches(newFilteredCaches);
@@ -278,14 +278,19 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
       actualSelection = [...selectedCacheFeatures, selection];
     }
 
-    let newFilteredCaches: CacheInfo[] = props.caches.filter(cacheInfo => actualSelection.length == 0 || hasFeature(cacheInfo, actualSelection));
+    let caches = props.caches;
+    if (selectedCacheTypes.length > 0) {
+      caches = caches.filter(cacheInfo => selectedCacheTypes.find(type => type === cacheInfo.type));
+    }
+
+    let newFilteredCaches: CacheInfo[] = caches.filter(cacheInfo => actualSelection.length == 0 || hasFeature(cacheInfo, actualSelection));
     updateRows(newFilteredCaches);
     setSelectedCacheFeatures(actualSelection);
     setFilteredCaches(newFilteredCaches);
   };
 
   return (
-    <Stack style={{marginTop:10}}>
+    <Stack style={{marginTop: 10}}>
       <StackItem>
         <Grid style={{marginBottom: 10}} gutter={"md"}>
           <GridItem span={3}>
