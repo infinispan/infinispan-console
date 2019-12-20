@@ -21,7 +21,12 @@ import {
   Title,
   Tooltip
 } from "@patternfly/react-core";
-import {chart_color_black_200, chart_color_blue_500} from "@patternfly/react-tokens";
+import {
+  chart_color_black_100,
+  chart_color_black_200,
+  chart_color_blue_400,
+  chart_color_blue_500
+} from "@patternfly/react-tokens";
 import displayUtils from "../../services/displayUtils";
 import {
   CatalogIcon,
@@ -160,9 +165,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
 
   const hasFeatureColor = (feature: boolean) => {
     if (feature) {
-      return chart_color_blue_500.value;
+      return chart_color_blue_400.value;
     } else {
-      return chart_color_black_200.value;
+      return chart_color_black_100.value;
     }
   };
 
