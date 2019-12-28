@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActionGroup,
   Alert,
@@ -15,14 +15,14 @@ import {
   SelectVariant,
   TextArea,
   TextInput,
-  Title,
+  Title
 } from '@patternfly/react-core';
-import {CubeIcon} from "@patternfly/react-icons";
-import cacheService from "../../services/cacheService";
-import dataContainerService from "../../services/dataContainerService";
-import {Link} from "react-router-dom";
+import { CubeIcon } from '@patternfly/react-icons';
+import cacheService from '../../services/cacheService';
+import dataContainerService from '../../services/dataContainerService';
+import { Link } from 'react-router-dom';
 
-const CreateCache: React.FunctionComponent<any> = (props) => {
+const CreateCache: React.FunctionComponent<any> = props => {
   const cmName = props.location.state.cm;
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
@@ -33,20 +33,25 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
   const [validConfig, setValidConfig] = useState(true);
-  const [cacheAlert, setCacheAlert] = useState({message: '', display: false, success: false});
+  const [cacheAlert, setCacheAlert] = useState({
+    message: '',
+    display: false,
+    success: false
+  });
 
   interface OptionSelect {
     value: string;
     disabled?: boolean;
-    isPlaceholder?: boolean
+    isPlaceholder?: boolean;
   }
 
   useEffect(() => {
-    dataContainerService.getCacheConfigurationTemplates(cmName)
+    dataContainerService
+      .getCacheConfigurationTemplates(cmName)
       .then(templates => {
         let options: OptionSelect[] = [];
         templates.forEach(template => {
-          options.push({value: template.name})
+          options.push({ value: template.name });
         });
         setConfigs(options);
       });
@@ -94,17 +99,14 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     try {
       JSON.parse(trimmedConf);
       isJson = true;
-    } catch (ex) {
-    }
+    } catch (ex) {}
 
     try {
-      let oDOM = new DOMParser().parseFromString(trimmedConf, "text/xml");
+      let oDOM = new DOMParser().parseFromString(trimmedConf, 'text/xml');
       if (oDOM.getElementsByTagName('parsererror').length == 0) {
         isXML = true;
       }
-    } catch (ex) {
-
-    }
+    } catch (ex) {}
     return isJson || isXML;
   };
 
@@ -126,35 +128,69 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     }
 
     if (selectedConfig != null) {
-      cacheService.createCacheByConfigName(name, selectedConfig)
-        .then(message => setCacheAlert({message: message.message, success: message.success, display: true}));
+      cacheService
+        .createCacheByConfigName(name, selectedConfig)
+        .then(message =>
+          setCacheAlert({
+            message: message.message,
+            success: message.success,
+            display: true
+          })
+        );
     } else {
-      cacheService.createCacheWithConfiguration(name, config)
-        .then(message => setCacheAlert({message: message.message, success: message.success, display: true}));
+      cacheService
+        .createCacheWithConfiguration(name, config)
+        .then(message =>
+          setCacheAlert({
+            message: message.message,
+            success: message.success,
+            display: true
+          })
+        );
     }
   };
 
   const hideCreation = () => {
-    setCacheAlert({message: '', success: false, display: false});
+    setCacheAlert({ message: '', success: false, display: false });
   };
 
   const AlertPanel = () => {
-    return <React.Fragment>{cacheAlert.display ?
-      <Alert style={{margin: 10}} variant={cacheAlert.success ? AlertVariant.success : AlertVariant.danger}
-             title={cacheAlert.message == '' ? 'Cache created correctly' : cacheAlert.message}
-             action={<AlertActionCloseButton onClose={hideCreation}/>}/> :
-      ''}
-    </React.Fragment>;
+    return (
+      <React.Fragment>
+        {cacheAlert.display ? (
+          <Alert
+            style={{ margin: 10 }}
+            variant={
+              cacheAlert.success ? AlertVariant.success : AlertVariant.danger
+            }
+            title={
+              cacheAlert.message == ''
+                ? 'Cache created correctly'
+                : cacheAlert.message
+            }
+            action={<AlertActionCloseButton onClose={hideCreation} />}
+          />
+        ) : (
+          ''
+        )}
+      </React.Fragment>
+    );
   };
 
   const titleId = 'plain-typeahead-select-id';
   return (
     <PageSection>
-      <Title size="lg"> Create a cache in <b>{cmName}</b> container</Title>
-      <AlertPanel/>
-      <Form style={{paddingTop: 10}} onSubmit={e => {
-        e.preventDefault();
-      }}>
+      <Title size="lg">
+        {' '}
+        Create a cache in <b>{cmName}</b> container
+      </Title>
+      <AlertPanel />
+      <Form
+        style={{ paddingTop: 10 }}
+        onSubmit={e => {
+          e.preventDefault();
+        }}
+      >
         <FormGroup
           label="Name"
           isRequired
@@ -172,15 +208,16 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
             isValid={validName}
           />
         </FormGroup>
-        <FormGroup fieldId='cache-config-name'
-                   label="Template"
-                   helperText="Please choose a template or provide a new configuration"
+        <FormGroup
+          fieldId="cache-config-name"
+          label="Template"
+          helperText="Please choose a template or provide a new configuration"
         >
           <span id={titleId} hidden>
-          Choose a configuration
-        </span>
+            Choose a configuration
+          </span>
           <Select
-            toggleIcon={true && <CubeIcon/>}
+            toggleIcon={true && <CubeIcon />}
             variant={SelectVariant.typeahead}
             aria-label="Configuration templates"
             onToggle={onToggle}
@@ -200,12 +237,17 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
               />
             ))}
           </Select>
-
         </FormGroup>
-        <Expandable toggleText="Provide a configuration" isExpanded={configExpanded} onToggle={onToggleConfigPanel}>
-          <FormGroup label="Config"
-                     fieldId="cache-config"
-                     helperText="Please provide a cache config JSON or XML">
+        <Expandable
+          toggleText="Provide a configuration"
+          isExpanded={configExpanded}
+          onToggle={onToggleConfigPanel}
+        >
+          <FormGroup
+            label="Config"
+            fieldId="cache-config"
+            helperText="Please provide a cache config JSON or XML"
+          >
             <TextArea
               isRequired
               value={config}
@@ -218,12 +260,17 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         </Expandable>
 
         <ActionGroup>
-          <Button variant="primary" onClick={createCache}>Create</Button>
-          <Link to='/'><Button variant="secondary" component="a" target="_blank">Back</Button>
+          <Button variant="primary" onClick={createCache}>
+            Create
+          </Button>
+          <Link to="/">
+            <Button variant="secondary" component="a" target="_blank">
+              Back
+            </Button>
           </Link>
         </ActionGroup>
       </Form>
     </PageSection>
   );
-}
-export {CreateCache};
+};
+export { CreateCache };

@@ -1,4 +1,4 @@
-import {user} from "@app/routes";
+import { user } from '@app/routes';
 
 class Utils {
   public isDevMode(): boolean {
@@ -6,7 +6,6 @@ class Utils {
   }
 
   public endpoint(): string {
-
     if (this.isDevMode()) {
       return 'http://localhost:11222/rest/v2';
     } else {
@@ -23,10 +22,15 @@ class Utils {
       method: method,
       credentials: 'include',
       headers: headers
-    })
+    });
   }
 
-  public restCallWithBody(url: string, method: string, body: string, contentType: string): Promise<Response> {
+  public restCallWithBody(
+    url: string,
+    method: string,
+    body: string,
+    contentType: string
+  ): Promise<Response> {
     let headers = new Headers();
     if (!this.isDevMode()) {
       //headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
@@ -37,7 +41,7 @@ class Utils {
       headers: headers,
       credentials: 'include',
       body: body
-    })
+    });
   }
 }
 

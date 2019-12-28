@@ -1,19 +1,22 @@
 import * as React from 'react';
-import {Route, RouteComponentProps, Switch} from 'react-router-dom';
-import {Alert, PageSection} from '@patternfly/react-core';
-import {DynamicImport} from '@app/DynamicImport';
-import {accessibleRouteChangeHandler} from '@app/utils/utils';
-import {CacheManagers} from '@app/CacheManagers/CacheManagers';
-import {NotFound} from '@app/NotFound/NotFound';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { Alert, PageSection } from '@patternfly/react-core';
+import { DynamicImport } from '@app/DynamicImport';
+import { accessibleRouteChangeHandler } from '@app/utils/utils';
+import { CacheManagers } from '@app/CacheManagers/CacheManagers';
+import { NotFound } from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
-import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
-import {CreateCache} from "@app/Caches/CreateCache";
-import {Welcome} from "@app/Welcome/Welcome";
-import {DetailCache} from "@app/Caches/DetailCache";
-import {DetailStats} from "@app/CacheManagers/DetailStats";
-import {DetailConfigurations} from "@app/CacheManagers/DetailConfigurations";
-import { ServerGroupIcon } from '@patternfly/react-icons'
-import { VolumeIcon } from '@patternfly/react-icons'
+import {
+  LastLocationProvider,
+  useLastLocation
+} from 'react-router-last-location';
+import { CreateCache } from '@app/Caches/CreateCache';
+import { Welcome } from '@app/Welcome/Welcome';
+import { DetailCache } from '@app/Caches/DetailCache';
+import { DetailStats } from '@app/CacheManagers/DetailStats';
+import { DetailConfigurations } from '@app/CacheManagers/DetailConfigurations';
+import { ServerGroupIcon } from '@patternfly/react-icons';
+import { VolumeIcon } from '@patternfly/react-icons';
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -23,14 +26,17 @@ const getSupportModuleAsync = () => {
 const Support = (routeProps: RouteComponentProps) => {
   const lastNavigation = useLastLocation();
   return (
-    <DynamicImport load={getSupportModuleAsync()} focusContentAfterMount={lastNavigation !== null}>
+    <DynamicImport
+      load={getSupportModuleAsync()}
+      focusContentAfterMount={lastNavigation !== null}
+    >
       {(Component: any) => {
         let loadedComponent: any;
         if (Component === null) {
           loadedComponent = (
             <PageSection aria-label="Loading Content Container">
               <div className="pf-l-bullseye">
-                <Alert title="Loading" className="pf-l-bullseye__item"/>
+                <Alert title="Loading" className="pf-l-bullseye__item" />
               </div>
             </PageSection>
           );
@@ -43,7 +49,12 @@ const Support = (routeProps: RouteComponentProps) => {
   );
 };
 
-const RouteWithTitleUpdates = ({component: Component, isAsync = false, title, ...rest}) => {
+const RouteWithTitleUpdates = ({
+  component: Component,
+  isAsync = false,
+  title,
+  ...rest
+}) => {
   const lastNavigation = useLastLocation();
 
   function routeWithTitle(routeProps: RouteComponentProps) {
@@ -63,12 +74,14 @@ const RouteWithTitleUpdates = ({component: Component, isAsync = false, title, ..
     };
   }, []);
 
-  return <Route render={routeWithTitle}/>;
+  return <Route render={routeWithTitle} />;
 };
 
 export interface IAppRoute {
   label: string;
-  component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
+  component:
+    | React.ComponentType<RouteComponentProps<any>>
+    | React.ComponentType<any>;
   icon: any;
   exact?: boolean;
   path: string;
@@ -81,7 +94,7 @@ const routes: IAppRoute[] = [
   {
     component: Welcome,
     exact: true,
-    icon: <ServerGroupIcon/>,
+    icon: <ServerGroupIcon />,
     label: 'Welcome to the server',
     path: '/welcome',
     title: 'Welcome to the server',
@@ -90,7 +103,7 @@ const routes: IAppRoute[] = [
   {
     component: CacheManagers,
     exact: true,
-    icon: <VolumeIcon/>,
+    icon: <VolumeIcon />,
     label: 'Data container',
     path: '/',
     title: 'Data container',
@@ -137,11 +150,11 @@ const routes: IAppRoute[] = [
 export let user = {
   user: 'admin',
   password: 'admin'
-}
+};
 const AppRoutes = () => (
   <LastLocationProvider>
     <Switch>
-      {routes.map(({path, exact, component, title, isAsync, icon}, idx) => (
+      {routes.map(({ path, exact, component, title, isAsync, icon }, idx) => (
         <RouteWithTitleUpdates
           path={path}
           exact={exact}
@@ -152,9 +165,12 @@ const AppRoutes = () => (
           isAsync={isAsync}
         />
       ))}
-      <RouteWithTitleUpdates component={NotFound} title={'404 Page Not Found'}/>
+      <RouteWithTitleUpdates
+        component={NotFound}
+        title={'404 Page Not Found'}
+      />
     </Switch>
   </LastLocationProvider>
 );
 
-export {AppRoutes, routes};
+export { AppRoutes, routes };

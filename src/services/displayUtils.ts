@@ -12,7 +12,7 @@ import {
   chart_color_purple_200,
   chart_color_red_300,
   chart_color_red_400
-} from "@patternfly/react-tokens";
+} from '@patternfly/react-tokens';
 
 class DisplayUtils {
   public healthColor(health: string): string {
@@ -31,7 +31,7 @@ class DisplayUtils {
         color = chart_color_black_100.value;
     }
     return color;
-  };
+  }
 
   public cacheTypeColor(cacheType: string): string {
     let color;
@@ -55,7 +55,7 @@ class DisplayUtils {
         color = chart_color_black_100.value;
     }
     return color;
-  };
+  }
 
   public statusColor(componentStatus: string) {
     let color;
@@ -83,7 +83,7 @@ class DisplayUtils {
     }
     return color;
   }
-};
+}
 
 const displayUtils: DisplayUtils = new DisplayUtils();
 

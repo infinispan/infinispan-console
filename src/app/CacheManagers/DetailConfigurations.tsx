@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -11,15 +11,16 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import dataContainerService from "../../services/dataContainerService";
+import dataContainerService from '../../services/dataContainerService';
 
-const DetailConfigurations: React.FunctionComponent<any> = (props) => {
+const DetailConfigurations: React.FunctionComponent<any> = props => {
   const cm: string = props.location.state.cacheManager;
   const [configs, setConfigs] = useState<CacheConfig[]>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
 
   useEffect(() => {
-    dataContainerService.getCacheManagerConfigurations(cm)
+    dataContainerService
+      .getCacheManagerConfigurations(cm)
       .then(detailedStats => {
         setConfigs(detailedStats);
       });
@@ -28,16 +29,23 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   const toggle = id => {
     const index = expanded.indexOf(id);
     const newExpanded =
-      index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
+      index >= 0
+        ? [
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length)
+          ]
+        : [...expanded, id];
     setExpanded(newExpanded);
   };
 
-
   return (
     <PageSection>
-      <Title size="lg"> Configurations <strong>{cm}</strong> cache manager</Title>
+      <Title size="lg">
+        {' '}
+        Configurations <strong>{cm}</strong> cache manager
+      </Title>
       <Accordion asDefinitionList={false}>
-        {configs.map(config =>
+        {configs.map(config => (
           <AccordionItem>
             <AccordionToggle
               onClick={() => toggle(config.name + '-toggle')}
@@ -58,10 +66,9 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
               </TextContent>
             </AccordionContent>
           </AccordionItem>
-        )}
-
+        ))}
       </Accordion>
     </PageSection>
   );
-}
-export {DetailConfigurations};
+};
+export { DetailConfigurations };

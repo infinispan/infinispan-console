@@ -1,5 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader,} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader
+} from '@patternfly/react-table';
 import {
   Bullseye,
   Button,
@@ -20,9 +25,12 @@ import {
   StackItem,
   Title,
   Tooltip
-} from "@patternfly/react-core";
-import {chart_color_black_100, chart_color_blue_400} from "@patternfly/react-tokens";
-import displayUtils from "../../services/displayUtils";
+} from '@patternfly/react-core';
+import {
+  chart_color_black_100,
+  chart_color_blue_400
+} from '@patternfly/react-tokens';
+import displayUtils from '../../services/displayUtils';
 import {
   DegradedIcon,
   KeyIcon,
@@ -32,47 +40,64 @@ import {
   ServiceIcon,
   Spinner2Icon,
   StorageDomainIcon
-} from "@patternfly/react-icons";
-import {Link} from "react-router-dom";
+} from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
 
-const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheInfo[], cacheManager: CacheManager }) => {
+const CacheTableDisplay: React.FunctionComponent<any> = (props: {
+  caches: CacheInfo[];
+  cacheManager: CacheManager;
+}) => {
   const cacheManager: CacheManager = props.cacheManager;
-  const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([...props.caches]);
-  const [cachesPagination, setCachesPagination] = useState({page: 1, perPage: 10});
+  const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([
+    ...props.caches
+  ]);
+  const [cachesPagination, setCachesPagination] = useState({
+    page: 1,
+    perPage: 10
+  });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const [selectedCacheTypes, setSelectedCacheTypes] = useState<string[]>([]);
-  const [isExpandedCacheTypes, setIsExpandedCacheTypes] = useState<boolean>(false);
-  const [selectedCacheFeatures, setSelectedCacheFeatures] = useState<string[]>([]);
-  const [isExpandedCacheFeatures, setIsExpandedCacheFeatures] = useState<boolean>(false);
+  const [isExpandedCacheTypes, setIsExpandedCacheTypes] = useState<boolean>(
+    false
+  );
+  const [selectedCacheFeatures, setSelectedCacheFeatures] = useState<string[]>(
+    []
+  );
+  const [isExpandedCacheFeatures, setIsExpandedCacheFeatures] = useState<
+    boolean
+  >(false);
 
-  const columns = [{title: 'Name', transforms: [cellWidth(25)]},
-    {title: 'Type', transforms: [cellWidth(10)]},
-    {title: 'Health', transforms: [cellWidth(10)]},
-    {title: 'Features', transforms: [cellWidth('max')]}];
+  const columns = [
+    { title: 'Name', transforms: [cellWidth(25)] },
+    { title: 'Type', transforms: [cellWidth(10)] },
+    { title: 'Health', transforms: [cellWidth(10)] },
+    { title: 'Features', transforms: [cellWidth('max')] }
+  ];
   //TODO {title: 'Actions', transforms: [cellWidth('max')]}];
 
   const cacheTypesOptions = [
-    <SelectOption key={0} value="Local"/>,
-    <SelectOption key={1} value="Replicated"/>,
-    <SelectOption key={2} value="Distributed"/>,
-    <SelectOption key={3} value="Invalidated"/>,
-    <SelectOption key={4} value="Scattered"/>
+    <SelectOption key={0} value="Local" />,
+    <SelectOption key={1} value="Replicated" />,
+    <SelectOption key={2} value="Distributed" />,
+    <SelectOption key={3} value="Invalidated" />,
+    <SelectOption key={4} value="Scattered" />
   ];
 
   const cacheFeaturesOptions = [
-    <SelectOption key={0} value="Bounded"/>,
-    <SelectOption key={1} value="Indexed"/>,
-    <SelectOption key={2} value="Persistent"/>,
-    <SelectOption key={3} value="Transactional"/>,
-    <SelectOption key={4} value="Secured"/>,
-    <SelectOption key={5} value="Has Remote Backup"/>
+    <SelectOption key={0} value="Bounded" />,
+    <SelectOption key={1} value="Indexed" />,
+    <SelectOption key={2} value="Persistent" />,
+    <SelectOption key={3} value="Transactional" />,
+    <SelectOption key={4} value="Secured" />,
+    <SelectOption key={5} value="Has Remote Backup" />
   ];
 
   useEffect(() => {
-      const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
-      updateRows(filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage));
-    },
-    []);
+    const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
+    updateRows(
+      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage)
+    );
+  }, []);
 
   const onSetPage = (_event, pageNumber) => {
     setCachesPagination({
@@ -80,7 +105,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
       perPage: cachesPagination.perPage
     });
     const initSlice = (pageNumber - 1) * cachesPagination.perPage;
-    updateRows(filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage));
+    updateRows(
+      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage)
+    );
   };
 
   const onPerPageSelect = (_event, perPage) => {
@@ -93,38 +120,42 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
   };
 
   const updateRows = (caches: CacheInfo[]) => {
-    let rows: { heightAuto: boolean, cells: (string | any)[] }[];
+    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
 
     if (caches.length == 0) {
-      rows = [{
-        heightAuto: true,
-        cells: [
-          {
-            props: {colSpan: 8},
-            title: (
-              <Bullseye>
-                <EmptyState variant={EmptyStateVariant.small}>
-                  <EmptyStateIcon icon={SearchIcon}/>
-                  <Title headingLevel="h2" size="lg">
-                    No caches found
-                  </Title>
-                  <EmptyStateBody>
-                    <CreateCacheButton/>
-                  </EmptyStateBody>
-                </EmptyState>
-              </Bullseye>
-            )
-          },
-        ]
-      }]
+      rows = [
+        {
+          heightAuto: true,
+          cells: [
+            {
+              props: { colSpan: 8 },
+              title: (
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      No caches found
+                    </Title>
+                    <EmptyStateBody>
+                      <CreateCacheButton />
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              )
+            }
+          ]
+        }
+      ];
     } else {
       rows = caches.map(cache => {
         return {
           heightAuto: true,
-          cells: [{title: <CacheName name={cache.name}/>},
-            {title: <CacheType type={cache.type}/>},
-            {title: <CacheHealth type={cache.health}/>},
-            {title: <CacheFeatures cache={cache}/>}]
+          cells: [
+            { title: <CacheName name={cache.name} /> },
+            { title: <CacheType type={cache.type} /> },
+            { title: <CacheHealth type={cache.health} /> },
+            { title: <CacheFeatures cache={cache} /> }
+          ]
           //TODO {title: <CacheActionLinks name={cache.name}/>}]
         };
       });
@@ -133,16 +164,25 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
   };
 
   const CreateCacheButton = () => {
-    return <Link to={{
-      pathname: '/caches/create',
-      state: {
-        cm: cacheManager.name,
-      }
-    }}>
-      <Button component="a" target="_blank" variant="link" icon={<PlusCircleIcon/>}>
-        Create cache
-      </Button>
-    </Link>;
+    return (
+      <Link
+        to={{
+          pathname: '/caches/create',
+          state: {
+            cm: cacheManager.name
+          }
+        }}
+      >
+        <Button
+          component="a"
+          target="_blank"
+          variant="link"
+          icon={<PlusCircleIcon />}
+        >
+          Create cache
+        </Button>
+      </Link>
+    );
   };
 
   //TODO const CacheActionLinks: React.FunctionComponent<any> = (props) => {
@@ -166,51 +206,99 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
 
   const CacheFeatures = (props: { cache: CacheInfo }) => {
     const cache: CacheInfo = props.cache;
-    return (<Level>
-      <LevelItem><CacheFeature icon={<Spinner2Icon color={hasFeatureColor(cache.bounded)}/>}
-                               tooltip={'Bounded'}/></LevelItem>
-      <LevelItem><CacheFeature icon={<StorageDomainIcon color={hasFeatureColor(cache.indexed)}/>}
-                               tooltip={'Indexed'}/></LevelItem>
-      <LevelItem><CacheFeature icon={<SaveIcon color={hasFeatureColor(cache.persistent)}/>}
-                               tooltip={'Persisted'}/></LevelItem>
-      <LevelItem><CacheFeature icon={<ServiceIcon color={hasFeatureColor(cache.transactional)}/>}
-                               tooltip={'Transactional'}/></LevelItem>
-      <LevelItem><CacheFeature icon={<KeyIcon color={hasFeatureColor(cache.secured)}/>}
-                               tooltip={'Secured'}/></LevelItem>
-      <LevelItem><CacheFeature icon={<DegradedIcon color={hasFeatureColor(cache.hasRemoteBackup)}/>}
-                               tooltip={'Has remote backups'}/></LevelItem>
-    </Level>);
+    return (
+      <Level>
+        <LevelItem>
+          <CacheFeature
+            icon={<Spinner2Icon color={hasFeatureColor(cache.bounded)} />}
+            tooltip={'Bounded'}
+          />
+        </LevelItem>
+        <LevelItem>
+          <CacheFeature
+            icon={<StorageDomainIcon color={hasFeatureColor(cache.indexed)} />}
+            tooltip={'Indexed'}
+          />
+        </LevelItem>
+        <LevelItem>
+          <CacheFeature
+            icon={<SaveIcon color={hasFeatureColor(cache.persistent)} />}
+            tooltip={'Persisted'}
+          />
+        </LevelItem>
+        <LevelItem>
+          <CacheFeature
+            icon={<ServiceIcon color={hasFeatureColor(cache.transactional)} />}
+            tooltip={'Transactional'}
+          />
+        </LevelItem>
+        <LevelItem>
+          <CacheFeature
+            icon={<KeyIcon color={hasFeatureColor(cache.secured)} />}
+            tooltip={'Secured'}
+          />
+        </LevelItem>
+        <LevelItem>
+          <CacheFeature
+            icon={
+              <DegradedIcon color={hasFeatureColor(cache.hasRemoteBackup)} />
+            }
+            tooltip={'Has remote backups'}
+          />
+        </LevelItem>
+      </Level>
+    );
   };
 
-  const CacheFeature = (props) => {
-    return (<LevelItem>
-      <Tooltip position="right"
-               content={
-                 <div>{props.tooltip}</div>
-               }>
-        {props.icon}
-      </Tooltip></LevelItem>);
+  const CacheFeature = props => {
+    return (
+      <LevelItem>
+        <Tooltip position="right" content={<div>{props.tooltip}</div>}>
+          {props.icon}
+        </Tooltip>
+      </LevelItem>
+    );
   };
 
   const CacheName = (props: { name: string }) => {
     return (
-      <Link to={{
-        pathname: '/cache/' + props.name,
-        state: {
-          cacheName: props.name,
-        }
-      }}><Button variant={"link"}>{props.name}</Button></Link>
+      <Link
+        to={{
+          pathname: '/cache/' + props.name,
+          state: {
+            cacheName: props.name
+          }
+        }}
+      >
+        <Button variant={'link'}>{props.name}</Button>
+      </Link>
     );
   };
 
   const CacheType = (props: { type: string }) => {
-    return (<Label style={{backgroundColor: displayUtils.cacheTypeColor(props.type), marginRight: 15}}>
-      {props.type}</Label>);
+    return (
+      <Label
+        style={{
+          backgroundColor: displayUtils.cacheTypeColor(props.type),
+          marginRight: 15
+        }}
+      >
+        {props.type}
+      </Label>
+    );
   };
 
   const CacheHealth = (props: { type: string }) => {
-    return (<Label style={{backgroundColor: displayUtils.healthColor(props.type), marginRight: 15}}>
-      {props.type}</Label>);
+    return (
+      <Label
+        style={{
+          backgroundColor: displayUtils.healthColor(props.type),
+          marginRight: 15
+        }}
+      >
+        {props.type}
+      </Label>
+    );
   };
 
   const onToggleCacheType = isExpanded => {
@@ -228,11 +316,16 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
 
     let caches = props.caches;
     if (selectedCacheFeatures.length > 0) {
-      caches = caches.filter(cacheInfo => hasFeature(cacheInfo, selectedCacheFeatures));
+      caches = caches.filter(cacheInfo =>
+        hasFeature(cacheInfo, selectedCacheFeatures)
+      );
     }
 
-    let newFilteredCaches: CacheInfo[] = caches.filter(cacheInfo => actualSelection.length == 0
-      || actualSelection.find(type => type === cacheInfo.type));
+    let newFilteredCaches: CacheInfo[] = caches.filter(
+      cacheInfo =>
+        actualSelection.length == 0 ||
+        actualSelection.find(type => type === cacheInfo.type)
+    );
 
     updateRows(newFilteredCaches);
     setSelectedCacheTypes(actualSelection);
@@ -243,56 +336,83 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
     setIsExpandedCacheFeatures(isExpanded);
   };
 
-  const hasFeature = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
-    if (actualSelection.find(feature => feature === 'Transactional') && cacheInfo.transactional) {
+  const hasFeature = (
+    cacheInfo: CacheInfo,
+    actualSelection: string[]
+  ): boolean => {
+    if (
+      actualSelection.find(feature => feature === 'Transactional') &&
+      cacheInfo.transactional
+    ) {
       return true;
     }
-    if (actualSelection.find(feature => feature === 'Bounded') && cacheInfo.bounded) {
+    if (
+      actualSelection.find(feature => feature === 'Bounded') &&
+      cacheInfo.bounded
+    ) {
       return true;
     }
 
-    if (actualSelection.find(feature => feature === 'Indexed') && cacheInfo.indexed) {
+    if (
+      actualSelection.find(feature => feature === 'Indexed') &&
+      cacheInfo.indexed
+    ) {
       return true;
     }
 
-    if (actualSelection.find(feature => feature === 'Persistent') && cacheInfo.persistent) {
+    if (
+      actualSelection.find(feature => feature === 'Persistent') &&
+      cacheInfo.persistent
+    ) {
       return true;
     }
 
-    if (actualSelection.find(feature => feature === 'Secured') && cacheInfo.secured) {
+    if (
+      actualSelection.find(feature => feature === 'Secured') &&
+      cacheInfo.secured
+    ) {
       return true;
     }
-    if (actualSelection.find(feature => feature === 'Has Remote Backup') && cacheInfo.hasRemoteBackup) {
+    if (
+      actualSelection.find(feature => feature === 'Has Remote Backup') &&
+      cacheInfo.hasRemoteBackup
+    ) {
       return true;
     }
     return false;
   };
 
-
   const onSelectCacheFeature = (event, selection) => {
     let actualSelection: string[] = [];
 
     if (selectedCacheFeatures.includes(selection)) {
-      actualSelection = selectedCacheFeatures.filter(item => item !== selection);
+      actualSelection = selectedCacheFeatures.filter(
+        item => item !== selection
+      );
     } else {
       actualSelection = [...selectedCacheFeatures, selection];
     }
 
     let caches = props.caches;
     if (selectedCacheTypes.length > 0) {
-      caches = caches.filter(cacheInfo => selectedCacheTypes.find(type => type === cacheInfo.type));
+      caches = caches.filter(cacheInfo =>
+        selectedCacheTypes.find(type => type === cacheInfo.type)
+      );
     }
 
-    let newFilteredCaches: CacheInfo[] = caches.filter(cacheInfo => actualSelection.length == 0 || hasFeature(cacheInfo, actualSelection));
+    let newFilteredCaches: CacheInfo[] = caches.filter(
+      cacheInfo =>
+        actualSelection.length == 0 || hasFeature(cacheInfo, actualSelection)
+    );
     updateRows(newFilteredCaches);
     setSelectedCacheFeatures(actualSelection);
     setFilteredCaches(newFilteredCaches);
   };
 
   return (
-    <Stack style={{marginTop: 10}}>
+    <Stack style={{ marginTop: 10 }}>
       <StackItem>
-        <Grid style={{marginBottom: 10}} gutter={"md"}>
+        <Grid style={{ marginBottom: 10 }} gutter={'md'}>
           <GridItem span={3}>
             <Select
               variant={SelectVariant.checkbox}
@@ -335,13 +455,18 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: { caches: CacheI
         </Grid>
       </StackItem>
       <StackItem>
-        <Table aria-label="Caches" cells={columns} rows={rows} className={'caches-table'}>
-          <TableHeader/>
-          <TableBody/>
+        <Table
+          aria-label="Caches"
+          cells={columns}
+          rows={rows}
+          className={'caches-table'}
+        >
+          <TableHeader />
+          <TableBody />
         </Table>
       </StackItem>
     </Stack>
   );
 };
 
-export {CacheTableDisplay};
+export { CacheTableDisplay };

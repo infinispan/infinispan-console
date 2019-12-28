@@ -11,7 +11,7 @@ import {
   EmptyStateSecondaryActions
 } from '@patternfly/react-core';
 
-const Support: React.FunctionComponent<any> = (props) => {
+const Support: React.FunctionComponent<any> = props => {
   return (
     <PageSection>
       <EmptyState variant={EmptyStateVariant.full}>
@@ -20,8 +20,9 @@ const Support: React.FunctionComponent<any> = (props) => {
           Empty State (Stub Support Module)
         </Title>
         <EmptyStateBody>
-          This represents an the empty state pattern in Patternfly 4. Hopefully it's simple enough to use but flexible
-          enough to meet a variety of needs.
+          This represents an the empty state pattern in Patternfly 4. Hopefully
+          it's simple enough to use but flexible enough to meet a variety of
+          needs.
         </EmptyStateBody>
         <Button variant="primary">Primary Action</Button>
         <EmptyStateSecondaryActions>
@@ -35,6 +36,6 @@ const Support: React.FunctionComponent<any> = (props) => {
       </EmptyState>
     </PageSection>
   );
-}
+};
 
 export { Support };

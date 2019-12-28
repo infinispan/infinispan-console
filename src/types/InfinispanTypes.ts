@@ -3,7 +3,7 @@ interface CacheManager {
   physical_addresses: [string];
   coordinator: boolean;
   cluster_name: string;
-  cache_manager_status: string
+  cache_manager_status: string;
   cluster_size: number;
   defined_caches: [DefinedCache];
   cache_configuration_names: [string];
@@ -75,7 +75,7 @@ interface DetailedInfinispanCache {
   persistent: boolean;
   transactional: boolean;
   secured: boolean;
-  has_remote_backup: boolean
+  has_remote_backup: boolean;
   configuration: string;
   backupSites?: [XSite];
   stats?: CacheStats;
