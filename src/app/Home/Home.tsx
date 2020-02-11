@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -10,14 +11,24 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
+  Level,
+  LevelItem,
   PageSection,
-  Stack,
-  StackItem,
-  Title
+  Text,
+  TextContent,
+  TextList,
+  TextListItem,
+  TextListItemVariants,
+  TextListVariants,
+  TextVariants,
+  Title,
+  Tooltip,
+  TooltipPosition
 } from '@patternfly/react-core';
-import {CubesIcon, FolderOpenIcon, MemoryIcon, MonitoringIcon, PendingIcon} from '@patternfly/react-icons';
+import {ArrowIcon, CubesIcon, OutlinedQuestionCircleIcon} from '@patternfly/react-icons';
 import {ChartDonut, ChartThemeColor} from "@patternfly/react-charts";
 import dataContainerService from "../../services/dataContainerService";
+import {Link} from "react-router-dom";
 
 const Home: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -55,84 +66,71 @@ const Home: React.FunctionComponent<any> = props => {
         : 0;
     };
 
-    return !stats.statistics_enabled ? (
-      <EmptyState variant={EmptyStateVariant.full}>
-        <EmptyStateIcon icon={CubesIcon}/>
-        <Title headingLevel="h5" size="lg">
-          Statistics are not enabled
-        </Title>
-        <EmptyStateBody>
-          Statistics are not enabled in this Cache Manager. To activate
-          statistics, set statistics=true in the configuration.
-        </EmptyStateBody>
-      </EmptyState>
-    ) : (
-      <Grid gutter="md" style={{paddingTop: 40}}>
-        <GridItem span={6}>
-          <Card>
-            <CardHeader>
-              <MemoryIcon/>
-              {' ' + 'Content'}
-            </CardHeader>
-            <CardBody>
-              <Stack>
-                <StackItem>
-                  <strong># Number of entries </strong>{' '}
-                  {stats.number_of_entries}
-                </StackItem>
-                <StackItem>
-                  <strong># Current number of entries in memory </strong>{' '}
-                  {stats.current_number_of_entries_in_memory}
-                </StackItem>
-                <StackItem>
-                  <strong># Total number of entries </strong>{' '}
-                  {stats.total_number_of_entries}
-                </StackItem>
-                <StackItem>
-                  <strong># Data memory used </strong> {stats.data_memory_used}
-                </StackItem>
-                <StackItem>
-                  <strong># Off heap memory used </strong>{' '}
-                  {stats.off_heap_memory_used}
-                </StackItem>
-              </Stack>
-            </CardBody>
-          </Card>
-        </GridItem>
-        <GridItem span={6}>
-          <Card>
-            <CardHeader>
-              <MonitoringIcon/> {' ' + ' Operations Performance\n'}
-            </CardHeader>
-            <CardBody>
-              <Stack>
-                <StackItem>
-                  <strong># Avg READS </strong> {stats.average_read_time}
-                </StackItem>
-                <StackItem>
-                  <strong># Avg REMOVES </strong> {stats.average_remove_time}
-                </StackItem>
-                <StackItem>
-                  <strong># Avg WRITES </strong> {stats.average_write_time}
-                </StackItem>
-                <StackItem>
-                  <strong># Read/Write Ratio </strong> {stats.read_write_ratio}
-                </StackItem>
-                <StackItem>
-                  <strong># Hits Ratio </strong> {stats.hit_ratio}
-                </StackItem>
-              </Stack>
-            </CardBody>
-          </Card>
-        </GridItem>
+    const CardTitle = (props: { title: string, toolTip: string }) => {
+      return (
+        <TextContent>
+          <Text component={TextVariants.h2}>
+            {props.title} <Tooltip
+            position={TooltipPosition.top}
+            content={
+              <div>{props.toolTip}</div>
+            }
+          ><OutlinedQuestionCircleIcon style={{fontSize:15}}/></Tooltip>
+          </Text>
+        </TextContent>
+      );
+    };
 
-        <GridItem span={8}>
+    if (!stats.statistics_enabled) {
+      return (
+        <EmptyState variant={EmptyStateVariant.full}>
+          <EmptyStateIcon icon={CubesIcon}/>
+          <Title headingLevel="h5" size="lg">
+            Statistics are not enabled
+          </Title>
+          <EmptyStateBody>
+            Statistics are not enabled. To activate
+            statistics, set statistics=true in the configuration.
+          </EmptyStateBody>
+        </EmptyState>
+      )
+    }
+    return (
+      <Grid gutter="md" style={{paddingTop: 40}}>
+        <GridItem span={6} rowSpan={2}>
           <Card>
             <CardHeader>
-              <FolderOpenIcon/> {' ' + 'Data access'}
+              <Level>
+                <LevelItem><CardTitle title={'Cluster Content'} toolTip={'Statistics for all caches'}/></LevelItem>
+                <LevelItem>
+                  <Link to={{pathname: '/cluster'}}>
+                    <Button variant="link" icon={<ArrowIcon/>}>View all caches</Button>
+                  </Link>
+                </LevelItem>
+              </Level>
             </CardHeader>
             <CardBody>
-              <div style={{height: '208px', width: '400px'}}>
+              <TextContent>
+                <TextList component={TextListVariants.dl}>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.number_of_entries}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Number of entries</TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dt}>{stats.current_number_of_entries_in_memory}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Current number of entries in memory</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.total_number_of_entries}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Total number of entries</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.data_memory_used}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Data memory used</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.off_heap_memory_used}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Off heap memory used</TextListItem>
+                </TextList>
+              </TextContent>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle title={'Data access'} toolTip={'Data access for all caches'}/></CardHeader>
+            <CardBody style={{paddingBottom: 50}}>
+              <div style={{height: '208px', width: '450px'}}>
                 <ChartDonut
                   constrainToVisibleArea={true}
                   data={[
@@ -171,21 +169,53 @@ const Home: React.FunctionComponent<any> = props => {
             </CardBody>
           </Card>
         </GridItem>
-        <GridItem span={4}>
+        <GridItem span={6}>
           <Card>
             <CardHeader>
-              <PendingIcon/>
-              {' ' + 'Cache manager lifecycle'}
+              <CardTitle title={'Operations Performance'} toolTip={'Average values for all caches in milliseconds'}/>
             </CardHeader>
             <CardBody>
-              <Stack style={{height: '208px'}}>
-                <StackItem>
-                  <strong># Time since start </strong> {stats.time_since_start}
-                </StackItem>
-                <StackItem>
-                  <strong># Time since reset </strong> {stats.time_since_reset}
-                </StackItem>
-              </Stack>
+              <TextContent>
+                <TextList component={TextListVariants.dl}>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.average_read_time}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Avg READS</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.average_remove_time}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Avg REMOVES</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.average_write_time}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Avg WRITES</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.read_write_ratio}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Read/Write Ratio</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.hit_ratio}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Hits Ratio</TextListItem>
+                </TextList>
+              </TextContent>
+            </CardBody>
+          </Card>
+        </GridItem>
+
+        <GridItem span={6}>
+          <Card>
+            <CardHeader>
+              <Level>
+                <LevelItem>
+                  <CardTitle title={'Cache Manager Lifecycle'} toolTip={'Lifecycle values are in milliseconds'}/>
+                </LevelItem>
+                <LevelItem>
+                  <Link to={{pathname: '/cluster-status'}}>
+                    <Button variant="link" icon={<ArrowIcon/>}>View Cluster Status</Button>
+                  </Link>
+                </LevelItem>
+              </Level>
+            </CardHeader>
+            <CardBody>
+              <TextContent style={{height: '208px'}}>
+                <TextList component={TextListVariants.dl}>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.time_since_start}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Time since start</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>{stats.time_since_reset}</TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>Time since reset</TextListItem>
+                </TextList>
+              </TextContent>
             </CardBody>
           </Card>
         </GridItem>
@@ -193,8 +223,20 @@ const Home: React.FunctionComponent<any> = props => {
     );
   };
 
+  const descriptionText = () => {
+    if (stats.statistics_enabled) {
+      return 'JMX statistics are globally enabled';
+    } else {
+      return 'Explicitly enable JMX statistics globally to display them';
+    }
+  };
+
   return (
     <PageSection>
+      <TextContent>
+        <Text component={TextVariants.h1}>Global statistics</Text>
+        <Text component={TextVariants.p}>{descriptionText()}</Text>
+      </TextContent>
       <DisplayStats/>
     </PageSection>
   );
