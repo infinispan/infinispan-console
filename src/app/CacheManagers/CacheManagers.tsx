@@ -11,16 +11,29 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  Label,
   PageSection,
   Stack,
   StackItem,
   Tab,
   Tabs,
+  Text,
+  TextContent,
+  TextVariants,
   Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem,
   Tooltip
 } from '@patternfly/react-core';
-import {CubesIcon, RegistryIcon, VolumeIcon} from '@patternfly/react-icons';
+import {
+  CubesIcon,
+  ErrorCircleOIcon,
+  InProgressIcon,
+  OffIcon,
+  OkIcon,
+  RegistryIcon,
+  VolumeIcon
+} from '@patternfly/react-icons';
 import {chart_color_blue_400} from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
@@ -232,35 +245,71 @@ const CacheManagers = () => {
           <Title headingLevel="h5" size="lg">
             Data container
           </Title>
-          <EmptyStateBody>Data container is empty</EmptyStateBody>
+          <EmptyStateBody>The data container is empty</EmptyStateBody>
         </EmptyState>
       );
     }
 
     return (
-      <Grid gutter="sm">
-        <GridItem span={3}>
-          <strong>Id:</strong> {' ' + cm.name}
-        </GridItem>
-        <GridItem span={9}>
-          <strong>{'Status: '}</strong>
-          <Label
-            style={{
-              backgroundColor: displayUtils.statusColor(cm.cache_manager_status)
-            }}
-          >
-            {' ' + cm.cache_manager_status}
-          </Label>
-        </GridItem>
-        <GridItem>
-          <DisplayTabs/>
-        </GridItem>
-      </Grid>
+      <DisplayTabs/>
     );
   };
 
+  const DisplayStatusIcon = (props: { status: string }) => {
+    let icon;
+    switch (props.status) {
+      case 'STOPPING':
+        icon = <OffIcon/>;
+        break;
+      case 'RUNNING':
+        icon = <OkIcon/>;
+        break;
+      case 'INSTANTIATED':
+        icon = <OkIcon/>;
+        break;
+      case 'INITIALIZING':
+        icon = <InProgressIcon/>
+        break;
+      case 'FAILED':
+        icon = <ErrorCircleOIcon/>
+        break;
+      case 'TERMINATED':
+        icon = <OffIcon/>;
+        break;
+      default:
+        icon = <OkIcon/>;
+    }
+
+    return (
+      icon
+    );
+  };
+
+
+  let title = 'Data container is empty';
+  let status = '';
+  if (cm !== undefined) {
+    title = displayUtils.capitalize(cm.name);
+    status = cm.cache_manager_status;
+  }
   return (
     <PageSection>
+      <Toolbar style={{paddingBottom: 20}}>
+        <ToolbarGroup>
+          <ToolbarItem><TextContent><Text component={TextVariants.h1}>{title}</Text></TextContent></ToolbarItem>
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <ToolbarItem> <TextContent><Text component={TextVariants.h3} style={{
+            paddingRight: 10,
+            color: displayUtils.statusColor(status)
+          }}><DisplayStatusIcon
+            status={status}/></Text></TextContent></ToolbarItem>
+          <ToolbarItem>
+            <TextContent><Text component={TextVariants.h3}
+                               style={{color: displayUtils.statusColor(status)}}>{displayUtils.capitalize(status)}</Text></TextContent>
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
       <DisplayCacheManager/>
     </PageSection>
   );

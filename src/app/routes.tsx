@@ -1,22 +1,18 @@
 import * as React from 'react';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { Alert, PageSection } from '@patternfly/react-core';
-import { DynamicImport } from '@app/DynamicImport';
-import { accessibleRouteChangeHandler } from '@app/utils/utils';
-import { CacheManagers } from '@app/CacheManagers/CacheManagers';
-import { NotFound } from '@app/NotFound/NotFound';
+import {Route, RouteComponentProps, Switch} from 'react-router-dom';
+import {Alert, PageSection} from '@patternfly/react-core';
+import {DynamicImport} from '@app/DynamicImport';
+import {accessibleRouteChangeHandler} from '@app/utils/utils';
+import {CacheManagers} from '@app/CacheManagers/CacheManagers';
+import {NotFound} from '@app/NotFound/NotFound';
 import DocumentTitle from 'react-document-title';
-import {
-  LastLocationProvider,
-  useLastLocation
-} from 'react-router-last-location';
-import { CreateCache } from '@app/Caches/CreateCache';
-import { Welcome } from '@app/Welcome/Welcome';
-import { DetailCache } from '@app/Caches/DetailCache';
-import { DetailStats } from '@app/CacheManagers/DetailStats';
-import { DetailConfigurations } from '@app/CacheManagers/DetailConfigurations';
-import { ServerGroupIcon } from '@patternfly/react-icons';
-import { VolumeIcon } from '@patternfly/react-icons';
+import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
+import {CreateCache} from '@app/Caches/CreateCache';
+import {Welcome} from '@app/Welcome/Welcome';
+import {DetailCache} from '@app/Caches/DetailCache';
+import {DetailStats} from '@app/CacheManagers/DetailStats';
+import {DetailConfigurations} from '@app/CacheManagers/DetailConfigurations';
+import {ServerGroupIcon, VolumeIcon} from '@patternfly/react-icons';
 import {Home} from "@app/Home/Home";
 import {ClusterStatus} from "@app/ClusterStatus/ClusterStatus";
 
@@ -38,7 +34,7 @@ const Support = (routeProps: RouteComponentProps) => {
           loadedComponent = (
             <PageSection aria-label="Loading Content Container">
               <div className="pf-l-bullseye">
-                <Alert title="Loading" className="pf-l-bullseye__item" />
+                <Alert title="Loading" className="pf-l-bullseye__item"/>
               </div>
             </PageSection>
           );
@@ -52,11 +48,11 @@ const Support = (routeProps: RouteComponentProps) => {
 };
 
 const RouteWithTitleUpdates = ({
-  component: Component,
-  isAsync = false,
-  title,
-  ...rest
-}) => {
+                                 component: Component,
+                                 isAsync = false,
+                                 title,
+                                 ...rest
+                               }) => {
   const lastNavigation = useLastLocation();
 
   function routeWithTitle(routeProps: RouteComponentProps) {
@@ -76,7 +72,7 @@ const RouteWithTitleUpdates = ({
     };
   }, []);
 
-  return <Route render={routeWithTitle} />;
+  return <Route render={routeWithTitle}/>;
 };
 
 export interface IAppRoute {
@@ -96,7 +92,7 @@ const routes: IAppRoute[] = [
   {
     component: Welcome,
     exact: true,
-    icon: <ServerGroupIcon />,
+    icon: <ServerGroupIcon/>,
     label: 'Welcome to the server',
     path: '/welcome',
     title: 'Welcome to the server',
@@ -105,7 +101,7 @@ const routes: IAppRoute[] = [
   {
     component: Home,
     exact: true,
-    icon: <ServerGroupIcon />,
+    icon: <ServerGroupIcon/>,
     label: 'Home',
     path: '/',
     title: 'Home',
@@ -114,7 +110,7 @@ const routes: IAppRoute[] = [
   {
     component: CacheManagers,
     exact: true,
-    icon: <VolumeIcon />,
+    icon: <VolumeIcon/>,
     label: 'Cluster',
     path: '/cluster',
     title: 'Cluster',
@@ -123,7 +119,7 @@ const routes: IAppRoute[] = [
   {
     component: ClusterStatus,
     exact: true,
-    icon: <VolumeIcon />,
+    icon: <VolumeIcon/>,
     label: 'Cluster status',
     path: '/cluster-status',
     title: 'Cluster Status',
@@ -174,7 +170,7 @@ export let user = {
 const AppRoutes = () => (
   <LastLocationProvider>
     <Switch>
-      {routes.map(({ path, exact, component, title, isAsync, icon }, idx) => (
+      {routes.map(({path, exact, component, title, isAsync, icon}, idx) => (
         <RouteWithTitleUpdates
           path={path}
           exact={exact}
@@ -193,4 +189,4 @@ const AppRoutes = () => (
   </LastLocationProvider>
 );
 
-export { AppRoutes, routes };
+export {AppRoutes, routes};

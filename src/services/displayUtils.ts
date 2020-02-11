@@ -13,6 +13,7 @@ import {
   chart_color_red_300,
   chart_color_red_400
 } from '@patternfly/react-tokens';
+import {OkIcon} from "@patternfly/react-icons";
 
 class DisplayUtils {
   public healthColor(health: string): string {
@@ -100,6 +101,10 @@ class DisplayUtils {
         color = chart_color_black_100.value;
     }
     return color;
+  }
+
+  public capitalize(value: string) {
+    return value.charAt(0).toUpperCase() + value.slice(1).toLocaleLowerCase();
   }
 }
 
