@@ -34,7 +34,7 @@ import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import dataContainerService from '../../services/dataContainerService';
 import { Link } from 'react-router-dom';
 
-const Home: React.FunctionComponent<any> = props => {
+const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
     undefined
   );
@@ -115,7 +115,7 @@ const Home: React.FunctionComponent<any> = props => {
                   />
                 </LevelItem>
                 <LevelItem>
-                  <Link to={{ pathname: '/cluster' }}>
+                  <Link to={{ pathname: '/' }}>
                     <Button variant="link" icon={<ArrowIcon />}>
                       View all caches
                     </Button>
@@ -316,4 +316,4 @@ const Home: React.FunctionComponent<any> = props => {
   );
 };
 
-export { Home };
+export { GlobalStats };

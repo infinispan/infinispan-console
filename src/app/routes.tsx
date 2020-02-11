@@ -16,7 +16,7 @@ import { DetailCache } from '@app/Caches/DetailCache';
 import { DetailStats } from '@app/CacheManagers/DetailStats';
 import { DetailConfigurations } from '@app/CacheManagers/DetailConfigurations';
 import { ServerGroupIcon, VolumeIcon } from '@patternfly/react-icons';
-import { Home } from '@app/Home/Home';
+import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
 
 let routeFocusTimer: number;
@@ -102,21 +102,21 @@ const routes: IAppRoute[] = [
     menu: false
   },
   {
-    component: Home,
-    exact: true,
-    icon: <ServerGroupIcon />,
-    label: 'Home',
-    path: '/',
-    title: 'Home',
-    menu: true
-  },
-  {
     component: CacheManagers,
     exact: true,
     icon: <VolumeIcon />,
-    label: 'Cluster',
-    path: '/cluster',
-    title: 'Cluster',
+    label: 'Data container',
+    path: '/',
+    title: 'Data container',
+    menu: true
+  },
+  {
+    component: GlobalStats,
+    exact: true,
+    icon: <ServerGroupIcon />,
+    label: 'Global Statistics',
+    path: '/global-stats',
+    title: 'Global Statistics',
     menu: true
   },
   {
