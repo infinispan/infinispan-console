@@ -33,6 +33,24 @@ class DisplayUtils {
     return color;
   }
 
+  public healthLabel(health: string): string {
+    let label;
+    switch (health) {
+      case 'HEALTHY':
+        label = 'Healthy';
+        break;
+      case 'HEALTHY_REBALANCING':
+        label = 'Rebalancing';
+        break;
+      case 'DEGRADED':
+        label = 'Degraded';
+        break;
+      default:
+        label = 'Unknown';
+    }
+    return label;
+  }
+
   public cacheTypeColor(cacheType: string): string {
     let color;
     switch (cacheType) {
