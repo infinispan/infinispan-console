@@ -13,7 +13,7 @@ import {
   chart_color_red_300,
   chart_color_red_400
 } from '@patternfly/react-tokens';
-import {OkIcon} from "@patternfly/react-icons";
+import { OkIcon } from '@patternfly/react-icons';
 
 class DisplayUtils {
   public healthColor(health: string): string {

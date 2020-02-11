@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -25,13 +25,19 @@ import {
   Tooltip,
   TooltipPosition
 } from '@patternfly/react-core';
-import {ArrowIcon, CubesIcon, OutlinedQuestionCircleIcon} from '@patternfly/react-icons';
-import {ChartDonut, ChartThemeColor} from "@patternfly/react-charts";
-import dataContainerService from "../../services/dataContainerService";
-import {Link} from "react-router-dom";
+import {
+  ArrowIcon,
+  CubesIcon,
+  OutlinedQuestionCircleIcon
+} from '@patternfly/react-icons';
+import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import dataContainerService from '../../services/dataContainerService';
+import { Link } from 'react-router-dom';
 
 const Home: React.FunctionComponent<any> = props => {
-  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(undefined);
+  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
+    undefined
+  );
   const [stats, setStats] = useState<CacheManagerStats>({
     statistics_enabled: false,
     hits: -1,
@@ -54,28 +60,29 @@ const Home: React.FunctionComponent<any> = props => {
   }, []);
 
   const DisplayStats = () => {
-    const allOps = function () {
+    const allOps = function() {
       return stats != undefined && stats.statistics_enabled
         ? stats.hits +
-        stats.retrievals +
-        stats.remove_hits +
-        stats.remove_misses +
-        stats.stores +
-        stats.misses +
-        stats.evictions
+            stats.retrievals +
+            stats.remove_hits +
+            stats.remove_misses +
+            stats.stores +
+            stats.misses +
+            stats.evictions
         : 0;
     };
 
-    const CardTitle = (props: { title: string, toolTip: string }) => {
+    const CardTitle = (props: { title: string; toolTip: string }) => {
       return (
         <TextContent>
           <Text component={TextVariants.h2}>
-            {props.title} <Tooltip
-            position={TooltipPosition.top}
-            content={
-              <div>{props.toolTip}</div>
-            }
-          ><OutlinedQuestionCircleIcon style={{fontSize:15}}/></Tooltip>
+            {props.title}{' '}
+            <Tooltip
+              position={TooltipPosition.top}
+              content={<div>{props.toolTip}</div>}
+            >
+              <OutlinedQuestionCircleIcon style={{ fontSize: 15 }} />
+            </Tooltip>
           </Text>
         </TextContent>
       );
@@ -84,27 +91,34 @@ const Home: React.FunctionComponent<any> = props => {
     if (!stats.statistics_enabled) {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon}/>
+          <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h5" size="lg">
             Statistics are not enabled
           </Title>
           <EmptyStateBody>
-            Statistics are not enabled. To activate
-            statistics, set statistics=true in the configuration.
+            Statistics are not enabled. To activate statistics, set
+            statistics=true in the configuration.
           </EmptyStateBody>
         </EmptyState>
-      )
+      );
     }
     return (
-      <Grid gutter="md" style={{paddingTop: 40}}>
+      <Grid gutter="md" style={{ paddingTop: 40 }}>
         <GridItem span={6} rowSpan={2}>
           <Card>
             <CardHeader>
               <Level>
-                <LevelItem><CardTitle title={'Cluster Content'} toolTip={'Statistics for all caches'}/></LevelItem>
                 <LevelItem>
-                  <Link to={{pathname: '/cluster'}}>
-                    <Button variant="link" icon={<ArrowIcon/>}>View all caches</Button>
+                  <CardTitle
+                    title={'Cluster Content'}
+                    toolTip={'Statistics for all caches'}
+                  />
+                </LevelItem>
+                <LevelItem>
+                  <Link to={{ pathname: '/cluster' }}>
+                    <Button variant="link" icon={<ArrowIcon />}>
+                      View all caches
+                    </Button>
                   </Link>
                 </LevelItem>
               </Level>
@@ -112,45 +126,69 @@ const Home: React.FunctionComponent<any> = props => {
             <CardBody>
               <TextContent>
                 <TextList component={TextListVariants.dl}>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.number_of_entries}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Number of entries</TextListItem>
-                  <TextListItem
-                    component={TextListItemVariants.dt}>{stats.current_number_of_entries_in_memory}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Current number of entries in memory</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.total_number_of_entries}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Total number of entries</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.data_memory_used}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Data memory used</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.off_heap_memory_used}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Off heap memory used</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.number_of_entries}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Number of entries
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.current_number_of_entries_in_memory}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Current number of entries in memory
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.total_number_of_entries}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Total number of entries
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.data_memory_used}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Data memory used
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.off_heap_memory_used}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Off heap memory used
+                  </TextListItem>
                 </TextList>
               </TextContent>
             </CardBody>
           </Card>
           <Card>
-            <CardHeader><CardTitle title={'Data access'} toolTip={'Data access for all caches'}/></CardHeader>
-            <CardBody style={{paddingBottom: 50}}>
-              <div style={{height: '208px', width: '450px'}}>
+            <CardHeader>
+              <CardTitle
+                title={'Data access'}
+                toolTip={'Data access for all caches'}
+              />
+            </CardHeader>
+            <CardBody style={{ paddingBottom: 50 }}>
+              <div style={{ height: '208px', width: '450px' }}>
                 <ChartDonut
                   constrainToVisibleArea={true}
                   data={[
-                    {x: 'Hits', y: stats.hits},
-                    {x: 'Misses', y: stats.misses},
-                    {x: 'Stores', y: stats.stores},
-                    {x: 'Retrievals', y: stats.retrievals},
-                    {x: 'Remove Hits', y: stats.remove_hits},
-                    {x: 'Removes Misses', y: stats.remove_misses},
-                    {x: 'Evictions', y: stats.evictions}
+                    { x: 'Hits', y: stats.hits },
+                    { x: 'Misses', y: stats.misses },
+                    { x: 'Stores', y: stats.stores },
+                    { x: 'Retrievals', y: stats.retrievals },
+                    { x: 'Remove Hits', y: stats.remove_hits },
+                    { x: 'Removes Misses', y: stats.remove_misses },
+                    { x: 'Evictions', y: stats.evictions }
                   ]}
-                  labels={({datum}) => `${datum.x}: ${datum.y}%`}
+                  labels={({ datum }) => `${datum.x}: ${datum.y}%`}
                   legendData={[
-                    {name: 'Hits: ' + stats.hits},
-                    {name: 'Misses: ' + stats.misses},
-                    {name: 'Retrievals: ' + stats.retrievals},
-                    {name: 'Stores: ' + stats.stores},
-                    {name: 'Remove Hits: ' + stats.remove_hits},
-                    {name: 'Remove Misses: ' + stats.remove_misses},
-                    {name: 'Evictions: ' + stats.evictions}
+                    { name: 'Hits: ' + stats.hits },
+                    { name: 'Misses: ' + stats.misses },
+                    { name: 'Retrievals: ' + stats.retrievals },
+                    { name: 'Stores: ' + stats.stores },
+                    { name: 'Remove Hits: ' + stats.remove_hits },
+                    { name: 'Remove Misses: ' + stats.remove_misses },
+                    { name: 'Evictions: ' + stats.evictions }
                   ]}
                   legendOrientation="vertical"
                   legendPosition="right"
@@ -172,21 +210,44 @@ const Home: React.FunctionComponent<any> = props => {
         <GridItem span={6}>
           <Card>
             <CardHeader>
-              <CardTitle title={'Operations Performance'} toolTip={'Average values for all caches in milliseconds'}/>
+              <CardTitle
+                title={'Operations Performance'}
+                toolTip={'Average values for all caches in milliseconds'}
+              />
             </CardHeader>
             <CardBody>
               <TextContent>
                 <TextList component={TextListVariants.dl}>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.average_read_time}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Avg READS</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.average_remove_time}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Avg REMOVES</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.average_write_time}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Avg WRITES</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.read_write_ratio}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Read/Write Ratio</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.hit_ratio}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Hits Ratio</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.average_read_time}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Avg READS
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.average_remove_time}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Avg REMOVES
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.average_write_time}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Avg WRITES
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.read_write_ratio}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Read/Write Ratio
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.hit_ratio}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Hits Ratio
+                  </TextListItem>
                 </TextList>
               </TextContent>
             </CardBody>
@@ -198,22 +259,35 @@ const Home: React.FunctionComponent<any> = props => {
             <CardHeader>
               <Level>
                 <LevelItem>
-                  <CardTitle title={'Cache Manager Lifecycle'} toolTip={'Lifecycle values are in milliseconds'}/>
+                  <CardTitle
+                    title={'Cache Manager Lifecycle'}
+                    toolTip={'Lifecycle values are in milliseconds'}
+                  />
                 </LevelItem>
                 <LevelItem>
-                  <Link to={{pathname: '/cluster-status'}}>
-                    <Button variant="link" icon={<ArrowIcon/>}>View Cluster Status</Button>
+                  <Link to={{ pathname: '/cluster-status' }}>
+                    <Button variant="link" icon={<ArrowIcon />}>
+                      View Cluster Status
+                    </Button>
                   </Link>
                 </LevelItem>
               </Level>
             </CardHeader>
             <CardBody>
-              <TextContent style={{height: '208px'}}>
+              <TextContent style={{ height: '208px' }}>
                 <TextList component={TextListVariants.dl}>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.time_since_start}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Time since start</TextListItem>
-                  <TextListItem component={TextListItemVariants.dt}>{stats.time_since_reset}</TextListItem>
-                  <TextListItem component={TextListItemVariants.dd}>Time since reset</TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.time_since_start}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Time since start
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {stats.time_since_reset}
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dd}>
+                    Time since reset
+                  </TextListItem>
                 </TextList>
               </TextContent>
             </CardBody>
@@ -237,9 +311,9 @@ const Home: React.FunctionComponent<any> = props => {
         <Text component={TextVariants.h1}>Global statistics</Text>
         <Text component={TextVariants.p}>{descriptionText()}</Text>
       </TextContent>
-      <DisplayStats/>
+      <DisplayStats />
     </PageSection>
   );
 };
 
-export {Home};
+export { Home };

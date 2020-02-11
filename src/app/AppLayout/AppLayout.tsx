@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Brand,
   Nav,
@@ -12,10 +12,10 @@ import {
   SkipToContent
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {chart_color_blue_500} from '@patternfly/react-tokens';
-import {NavLink} from 'react-router-dom';
+import { chart_color_blue_500 } from '@patternfly/react-tokens';
+import { NavLink } from 'react-router-dom';
 import dataContainerService from '../../services/dataContainerService';
-import {routes} from "@app/routes";
+import { routes } from '@app/routes';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -23,9 +23,9 @@ interface IAppLayout {
 }
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({
-                                                          children,
-                                                          welcome
-                                                        }) => {
+  children,
+  welcome
+}) => {
   const logoProps = {
     href: '/console/',
     target: '_self'
@@ -57,17 +57,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const Header = (
     <PageHeader
       logo={
-        <Brand
-          src={icon}
-          alt="Management Console"
-          style={{width: 600}}
-        />
+        <Brand src={icon} alt="Management Console" style={{ width: 600 }} />
       }
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
-      style={{backgroundColor: chart_color_blue_500.value}}
+      style={{ backgroundColor: chart_color_blue_500.value }}
     />
   );
 
@@ -78,21 +74,31 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const Navigation = (
     <Nav id="nav-primary-simple" theme="dark">
       <NavList id="nav-list-simple" variant={NavVariants.default}>
-        {routes.map((route, idx) => route.menu && route.label && (
-          <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
-            <NavLink exact to={route.path} activeClassName="pf-m-current">{route.label}</NavLink>
-          </NavItem>
-        ))}
+        {routes.map(
+          (route, idx) =>
+            route.menu &&
+            route.label && (
+              <NavItem
+                key={`${route.label}-${idx}`}
+                id={`${route.label}-${idx}`}
+              >
+                <NavLink exact to={route.path} activeClassName="pf-m-current">
+                  {route.label}
+                </NavLink>
+              </NavItem>
+            )
+        )}
       </NavList>
     </Nav>
   );
 
   const Sidebar = (
     <PageSidebar
-      style={{backgroundColor: chart_color_blue_500.value}}
+      style={{ backgroundColor: chart_color_blue_500.value }}
       theme="dark"
       nav={Navigation}
-      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen}/>
+      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen}
+    />
   );
 
   return (
@@ -108,4 +114,4 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   );
 };
 
-export {AppLayout};
+export { AppLayout };

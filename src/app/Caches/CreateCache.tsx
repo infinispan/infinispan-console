@@ -128,25 +128,21 @@ const CreateCache: React.FunctionComponent<any> = props => {
     }
 
     if (selectedConfig != null) {
-      cacheService
-        .createCacheByConfigName(name, selectedConfig)
-        .then(message =>
-          setCacheAlert({
-            message: message.message,
-            success: message.success,
-            display: true
-          })
-        );
+      cacheService.createCacheByConfigName(name, selectedConfig).then(message =>
+        setCacheAlert({
+          message: message.message,
+          success: message.success,
+          display: true
+        })
+      );
     } else {
-      cacheService
-        .createCacheWithConfiguration(name, config)
-        .then(message =>
-          setCacheAlert({
-            message: message.message,
-            success: message.success,
-            display: true
-          })
-        );
+      cacheService.createCacheWithConfiguration(name, config).then(message =>
+        setCacheAlert({
+          message: message.message,
+          success: message.success,
+          display: true
+        })
+      );
     }
   };
 

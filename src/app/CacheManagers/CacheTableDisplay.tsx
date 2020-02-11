@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  textCenter
+} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -21,10 +27,10 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import {chart_color_green_300} from '@patternfly/react-tokens';
+import { chart_color_green_300 } from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
-import {OkIcon, PlusCircleIcon, SearchIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
+import { OkIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -46,35 +52,69 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const [selectedCacheFeatures, setSelectedCacheFeatures] = useState<string[]>(
     []
   );
-  const [isExpandedCacheFeatures, setIsExpandedCacheFeatures] = useState<boolean>(false);
+  const [isExpandedCacheFeatures, setIsExpandedCacheFeatures] = useState<
+    boolean
+  >(false);
 
   const columns = [
-    {title: 'Name', transforms: [cellWidth(25), textCenter]},
-    {title: 'Type', transforms: [cellWidth(10), textCenter], cellTransforms: [textCenter]},
-    {title: 'Health', transforms: [cellWidth(10), textCenter], cellTransforms: [textCenter]},
-    {title: 'Bounded', transforms: [cellWidth(10), textCenter], cellTransforms: [textCenter]},
-    {title: 'Indexed', transforms: [textCenter], cellTransforms: [textCenter]},
-    {title: 'Persisted', transforms: [textCenter], cellTransforms: [textCenter]},
-    {title: 'Transactional', transforms: [textCenter], cellTransforms: [textCenter]},
-    {title: 'Secured', transforms: [textCenter], cellTransforms: [textCenter]},
-    {title: 'Remote backups', transforms: [textCenter], cellTransforms: [textCenter]},
+    { title: 'Name', transforms: [cellWidth(25), textCenter] },
+    {
+      title: 'Type',
+      transforms: [cellWidth(10), textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Health',
+      transforms: [cellWidth(10), textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Bounded',
+      transforms: [cellWidth(10), textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Indexed',
+      transforms: [textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Persisted',
+      transforms: [textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Transactional',
+      transforms: [textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Secured',
+      transforms: [textCenter],
+      cellTransforms: [textCenter]
+    },
+    {
+      title: 'Remote backups',
+      transforms: [textCenter],
+      cellTransforms: [textCenter]
+    }
   ];
 
   const cacheTypesOptions = [
-    <SelectOption key={0} value="Local"/>,
-    <SelectOption key={1} value="Replicated"/>,
-    <SelectOption key={2} value="Distributed"/>,
-    <SelectOption key={3} value="Invalidated"/>,
-    <SelectOption key={4} value="Scattered"/>
+    <SelectOption key={0} value="Local" />,
+    <SelectOption key={1} value="Replicated" />,
+    <SelectOption key={2} value="Distributed" />,
+    <SelectOption key={3} value="Invalidated" />,
+    <SelectOption key={4} value="Scattered" />
   ];
 
   const cacheFeaturesOptions = [
-    <SelectOption key={0} value="Bounded"/>,
-    <SelectOption key={1} value="Indexed"/>,
-    <SelectOption key={2} value="Persistent"/>,
-    <SelectOption key={3} value="Transactional"/>,
-    <SelectOption key={4} value="Secured"/>,
-    <SelectOption key={5} value="Has Remote Backup"/>
+    <SelectOption key={0} value="Bounded" />,
+    <SelectOption key={1} value="Indexed" />,
+    <SelectOption key={2} value="Persistent" />,
+    <SelectOption key={3} value="Transactional" />,
+    <SelectOption key={4} value="Secured" />,
+    <SelectOption key={5} value="Has Remote Backup" />
   ];
 
   useEffect(() => {
@@ -113,16 +153,16 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           heightAuto: true,
           cells: [
             {
-              props: {colSpan: 8},
+              props: { colSpan: 8 },
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon}/>
+                    <EmptyStateIcon icon={SearchIcon} />
                     <Title headingLevel="h2" size="lg">
                       No caches found
                     </Title>
                     <EmptyStateBody>
-                      <CreateCacheButton/>
+                      <CreateCacheButton />
                     </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
@@ -136,15 +176,15 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
         return {
           heightAuto: true,
           cells: [
-            {title: <CacheName name={cache.name}/>},
-            {title: <CacheType type={cache.type}/>},
-            {title: <CacheHealth health={cache.health}/>},
-            {title: <CacheFeature isPresent={cache.bounded}/>},
-            {title: <CacheFeature isPresent={cache.indexed}/>},
-            {title: <CacheFeature isPresent={cache.persistent}/>},
-            {title: <CacheFeature isPresent={cache.transactional}/>},
-            {title: <CacheFeature isPresent={cache.secured}/>},
-            {title: <CacheFeature isPresent={cache.hasRemoteBackup}/>}
+            { title: <CacheName name={cache.name} /> },
+            { title: <CacheType type={cache.type} /> },
+            { title: <CacheHealth health={cache.health} /> },
+            { title: <CacheFeature isPresent={cache.bounded} /> },
+            { title: <CacheFeature isPresent={cache.indexed} /> },
+            { title: <CacheFeature isPresent={cache.persistent} /> },
+            { title: <CacheFeature isPresent={cache.transactional} /> },
+            { title: <CacheFeature isPresent={cache.secured} /> },
+            { title: <CacheFeature isPresent={cache.hasRemoteBackup} /> }
           ]
           //TODO {title: <CacheActionLinks name={cache.name}/>}]
         };
@@ -167,7 +207,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           component="a"
           target="_blank"
           variant="link"
-          icon={<PlusCircleIcon/>}
+          icon={<PlusCircleIcon />}
         >
           Create cache
         </Button>
@@ -177,11 +217,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
 
   const CacheFeature = (props: { isPresent: boolean }) => {
     if (!props.isPresent) {
-      return <span/>;
+      return <span />;
     }
-    return (
-      <OkIcon color={chart_color_green_300.value}/>
-    );
+    return <OkIcon color={chart_color_green_300.value} />;
   };
 
   const CacheName = (props: { name: string }) => {
@@ -215,7 +253,10 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const CacheHealth = (props: { health: string }) => {
     return (
       <TextContent>
-        <Text component={TextVariants.h5} style={{color: displayUtils.healthColor(props.health)}}>
+        <Text
+          component={TextVariants.h5}
+          style={{ color: displayUtils.healthColor(props.health) }}
+        >
           {displayUtils.healthLabel(props.health)}
         </Text>
       </TextContent>
@@ -331,9 +372,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   };
 
   return (
-    <Stack style={{marginTop: 10}}>
+    <Stack style={{ marginTop: 10 }}>
       <StackItem>
-        <Grid style={{marginBottom: 10}} gutter={'md'}>
+        <Grid style={{ marginBottom: 10 }} gutter={'md'}>
           <GridItem span={2}>
             <Select
               variant={SelectVariant.checkbox}
@@ -362,22 +403,29 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
               {cacheFeaturesOptions}
             </Select>
           </GridItem>
-          <GridItem span={2}><Link to={{
-            pathname: '/container/' + cacheManager.name + '/configurations/',
-            state: {
-              cacheManager: cacheManager.name
-            }
-          }}>
-            <Button variant={"link"}>Configurations</Button>
-          </Link></GridItem>
           <GridItem span={2}>
-            <Link to={{
-              pathname: '/caches/create',
-              state: {
-                cm: cacheManager.name,
-              }
-            }}>
-              <Button variant={"primary"}>Create Cache</Button>
+            <Link
+              to={{
+                pathname:
+                  '/container/' + cacheManager.name + '/configurations/',
+                state: {
+                  cacheManager: cacheManager.name
+                }
+              }}
+            >
+              <Button variant={'link'}>Configurations</Button>
+            </Link>
+          </GridItem>
+          <GridItem span={2}>
+            <Link
+              to={{
+                pathname: '/caches/create',
+                state: {
+                  cm: cacheManager.name
+                }
+              }}
+            >
+              <Button variant={'primary'}>Create Cache</Button>
             </Link>
           </GridItem>
           <GridItem span={4}>
@@ -400,12 +448,12 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           rows={rows}
           className={'caches-table'}
         >
-          <TableHeader/>
-          <TableBody/>
+          <TableHeader />
+          <TableBody />
         </Table>
       </StackItem>
     </Stack>
   );
 };
 
-export {CacheTableDisplay};
+export { CacheTableDisplay };

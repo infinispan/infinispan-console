@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -16,26 +16,27 @@ import {
   Stack,
   StackItem
 } from '@patternfly/react-core';
-import {ClusterIcon, CubesIcon} from '@patternfly/react-icons';
-import dataContainerService from "../../services/dataContainerService";
-import displayUtils from "../../services/displayUtils";
+import { ClusterIcon, CubesIcon } from '@patternfly/react-icons';
+import dataContainerService from '../../services/dataContainerService';
+import displayUtils from '../../services/displayUtils';
 
 const ClusterStatus: React.FunctionComponent<any> = props => {
-  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(undefined);
+  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
+    undefined
+  );
   useEffect(() => {
     dataContainerService.getCacheManagers().then(cacheManagers => {
       if (cacheManagers.length > 0) {
         setCacheManager(cacheManagers[0]);
       }
-    })
+    });
   }, []);
-
 
   const DisplayClusterStatus = () => {
     if (!cacheManager) {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon}/>
+          <EmptyStateIcon icon={CubesIcon} />
           <EmptyStateBody>The cluster is empty</EmptyStateBody>
         </EmptyState>
       );
@@ -45,7 +46,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
         ? cacheManager.cluster_size + ' members'
         : cacheManager.cluster_size + ' member';
     return (
-      <Card style={{marginTop: 40}}>
+      <Card style={{ marginTop: 40 }}>
         <CardBody>
           <Grid>
             <GridItem span={2}>
@@ -53,13 +54,15 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
                 <StackItem>
                   <ClusterIcon
                     size={'xl'}
-                    style={{marginLeft: 14, marginBottom: 10}}
+                    style={{ marginLeft: 14, marginBottom: 10 }}
                   />
                 </StackItem>
                 <StackItem>
                   <Label
                     style={{
-                      backgroundColor: displayUtils.healthColor(cacheManager.health)
+                      backgroundColor: displayUtils.healthColor(
+                        cacheManager.health
+                      )
                     }}
                   >
                     {cacheManager.health}
@@ -70,7 +73,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
             <GridItem span={2}>
               <Stack>
                 <StackItem>
-                  <h1 style={{fontSize: 22}}>{cacheManager.cluster_name}</h1>
+                  <h1 style={{ fontSize: 22 }}>{cacheManager.cluster_name}</h1>
                 </StackItem>
                 <StackItem> {size}</StackItem>
               </Stack>
@@ -99,9 +102,9 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
 
   return (
     <PageSection>
-      <DisplayClusterStatus/>
+      <DisplayClusterStatus />
     </PageSection>
   );
 };
 
-export {ClusterStatus};
+export { ClusterStatus };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Card,
@@ -34,11 +34,11 @@ import {
   RegistryIcon,
   VolumeIcon
 } from '@patternfly/react-icons';
-import {chart_color_blue_400} from '@patternfly/react-tokens';
+import { chart_color_blue_400 } from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
-import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
+import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 
 const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -91,15 +91,15 @@ const CacheManagers = () => {
   const TasksContent = () => {
     const isEmpty = tasks.length == 0;
     if (isEmpty) {
-      return <EmptyTasks/>;
+      return <EmptyTasks />;
     }
-    return <TasksGrid/>;
+    return <TasksGrid />;
   };
 
   const EmptyTasks = () => {
     return (
       <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon}/>
+        <EmptyStateIcon icon={CubesIcon} />
         <Title headingLevel="h5" size="lg">
           Empty
         </Title>
@@ -110,7 +110,7 @@ const CacheManagers = () => {
 
   const TasksGrid = () => {
     return (
-      <Grid gutter="sm" style={{paddingTop: 40}}>
+      <Grid gutter="sm" style={{ paddingTop: 40 }}>
         {tasks.map(task => (
           <GridItem key={task.name} span={4}>
             <Card id={'id-task-' + task.name}>
@@ -126,12 +126,12 @@ const CacheManagers = () => {
                   }
                 >
                   {task.execution_mode == 'ONE_NODE' ? (
-                    <VolumeIcon style={{color: chart_color_blue_400.value}}/>
+                    <VolumeIcon style={{ color: chart_color_blue_400.value }} />
                   ) : (
-                    <RegistryIcon/>
+                    <RegistryIcon />
                   )}
                 </Tooltip>
-                <strong style={{color: chart_color_blue_400.value}}>
+                <strong style={{ color: chart_color_blue_400.value }}>
                   {' ' + task.name}
                 </strong>
               </CardHeader>
@@ -173,19 +173,19 @@ const CacheManagers = () => {
   const CountersContent = () => {
     const isEmpty = counters.length == 0;
     if (isEmpty) {
-      return <EmptyCounters/>;
+      return <EmptyCounters />;
     }
-    return <CountersGrid/>;
+    return <CountersGrid />;
   };
 
   const CountersGrid = () => {
     return (
-      <Grid gutter="sm" style={{paddingTop: 40}}>
+      <Grid gutter="sm" style={{ paddingTop: 40 }}>
         {counters.map(counter => (
           <GridItem key={counter.name} span={4}>
             <Card id={'id-counter-' + counter.name}>
               <CardHeader id={'counter-id-header-' + counter.name}>
-                <strong style={{color: chart_color_blue_400.value}}>
+                <strong style={{ color: chart_color_blue_400.value }}>
                   {' ' + counter.name}
                 </strong>
               </CardHeader>
@@ -207,7 +207,7 @@ const CacheManagers = () => {
   const EmptyCounters = () => {
     return (
       <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon}/>
+        <EmptyStateIcon icon={CubesIcon} />
         <Title headingLevel="h5" size="lg">
           Empty
         </Title>
@@ -215,7 +215,6 @@ const CacheManagers = () => {
       </EmptyState>
     );
   };
-
 
   const DisplayTabs = () => {
     let clusteringLabel = 'Cluster info';
@@ -225,13 +224,13 @@ const CacheManagers = () => {
     return (
       <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
         <Tab eventKey={0} title={caches.length + ' Caches'}>
-          <CacheTableDisplay caches={caches} cacheManager={cm}/>
+          <CacheTableDisplay caches={caches} cacheManager={cm} />
         </Tab>
         <Tab eventKey={1} title={counters.length + ' Counters'}>
-          <CountersContent/>
+          <CountersContent />
         </Tab>
         <Tab eventKey={2} title={tasks.length + ' Tasks'}>
-          <TasksContent/>
+          <TasksContent />
         </Tab>
       </Tabs>
     );
@@ -241,7 +240,7 @@ const CacheManagers = () => {
     if (cm === undefined) {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon}/>
+          <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h5" size="lg">
             Data container
           </Title>
@@ -250,41 +249,36 @@ const CacheManagers = () => {
       );
     }
 
-    return (
-      <DisplayTabs/>
-    );
+    return <DisplayTabs />;
   };
 
   const DisplayStatusIcon = (props: { status: string }) => {
     let icon;
     switch (props.status) {
       case 'STOPPING':
-        icon = <OffIcon/>;
+        icon = <OffIcon />;
         break;
       case 'RUNNING':
-        icon = <OkIcon/>;
+        icon = <OkIcon />;
         break;
       case 'INSTANTIATED':
-        icon = <OkIcon/>;
+        icon = <OkIcon />;
         break;
       case 'INITIALIZING':
-        icon = <InProgressIcon/>
+        icon = <InProgressIcon />;
         break;
       case 'FAILED':
-        icon = <ErrorCircleOIcon/>
+        icon = <ErrorCircleOIcon />;
         break;
       case 'TERMINATED':
-        icon = <OffIcon/>;
+        icon = <OffIcon />;
         break;
       default:
-        icon = <OkIcon/>;
+        icon = <OkIcon />;
     }
 
-    return (
-      icon
-    );
+    return icon;
   };
-
 
   let title = 'Data container is empty';
   let status = '';
@@ -294,25 +288,44 @@ const CacheManagers = () => {
   }
   return (
     <PageSection>
-      <Toolbar style={{paddingBottom: 20}}>
+      <Toolbar style={{ paddingBottom: 20 }}>
         <ToolbarGroup>
-          <ToolbarItem><TextContent><Text component={TextVariants.h1}>{title}</Text></TextContent></ToolbarItem>
+          <ToolbarItem>
+            <TextContent>
+              <Text component={TextVariants.h1}>{title}</Text>
+            </TextContent>
+          </ToolbarItem>
         </ToolbarGroup>
         <ToolbarGroup>
-          <ToolbarItem> <TextContent><Text component={TextVariants.h3} style={{
-            paddingRight: 10,
-            color: displayUtils.statusColor(status)
-          }}><DisplayStatusIcon
-            status={status}/></Text></TextContent></ToolbarItem>
           <ToolbarItem>
-            <TextContent><Text component={TextVariants.h3}
-                               style={{color: displayUtils.statusColor(status)}}>{displayUtils.capitalize(status)}</Text></TextContent>
+            {' '}
+            <TextContent>
+              <Text
+                component={TextVariants.h3}
+                style={{
+                  paddingRight: 10,
+                  color: displayUtils.statusColor(status)
+                }}
+              >
+                <DisplayStatusIcon status={status} />
+              </Text>
+            </TextContent>
+          </ToolbarItem>
+          <ToolbarItem>
+            <TextContent>
+              <Text
+                component={TextVariants.h3}
+                style={{ color: displayUtils.statusColor(status) }}
+              >
+                {displayUtils.capitalize(status)}
+              </Text>
+            </TextContent>
           </ToolbarItem>
         </ToolbarGroup>
       </Toolbar>
-      <DisplayCacheManager/>
+      <DisplayCacheManager />
     </PageSection>
   );
 };
 
-export {CacheManagers};
+export { CacheManagers };
