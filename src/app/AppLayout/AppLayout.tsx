@@ -1,24 +1,19 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Brand,
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  KebabToggle, Nav, NavItem, NavList, NavVariants,
+  Nav,
+  NavItem,
+  NavList,
+  NavVariants,
   Page,
-  PageHeader, PageSidebar,
-  SkipToContent,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
+  PageHeader,
+  PageSidebar,
+  SkipToContent
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { chart_color_blue_500 } from '@patternfly/react-tokens';
-import { css } from '@patternfly/react-styles';
-import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
-import {Link, NavLink} from 'react-router-dom';
+import {chart_color_blue_500} from '@patternfly/react-tokens';
+import {NavLink} from 'react-router-dom';
 import dataContainerService from '../../services/dataContainerService';
 import {routes} from "@app/routes";
 
@@ -28,9 +23,9 @@ interface IAppLayout {
 }
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({
-  children,
-  welcome
-}) => {
+                                                          children,
+                                                          welcome
+                                                        }) => {
   const logoProps = {
     href: '/console/',
     target: '_self'
@@ -39,7 +34,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isMobileView, setIsMobileView] = useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [cacheManagerName, setCacheManagerName] = useState('');
 
   useEffect(() => {
@@ -60,88 +54,20 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
     setIsMobileView(props.mobileView);
   };
 
-  const userDropdownItems = [
-    <DropdownItem>
-      {' '}
-      <Link
-        to={{
-          pathname: '/caches/create',
-          state: {
-            cm: cacheManagerName
-          }
-        }}
-      >
-        <Button variant="link">Create cache</Button>
-      </Link>
-    </DropdownItem>,
-    <DropdownItem>
-      <Link
-        to={{
-          pathname: '/container/' + cacheManagerName + '/configurations/',
-          state: {
-            cacheManager: cacheManagerName
-          }
-        }}
-      >
-        {' '}
-        <Button variant="link">Display Configurations</Button>{' '}
-      </Link>
-    </DropdownItem>
-  ];
-
-  const onDropdownSelect = event => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const onDropdownToggle = isDropdownOpen => {
-    setIsDropdownOpen(isDropdownOpen);
-  };
-
-  const PageToolbar = (
-    <Toolbar>
-      <ToolbarGroup>
-        <ToolbarItem
-          className={css(
-            accessibleStyles.screenReader,
-            accessibleStyles.visible
-          )}
-        >
-          <Dropdown
-            isPlain
-            position="right"
-            onSelect={onDropdownSelect}
-            isOpen={isDropdownOpen}
-            toggle={
-              isMobileView ? (
-                <KebabToggle onToggle={onDropdownToggle} />
-              ) : (
-                <DropdownToggle onToggle={onDropdownToggle}>
-                  Data management
-                </DropdownToggle>
-              )
-            }
-            dropdownItems={userDropdownItems}
-          />
-        </ToolbarItem>
-      </ToolbarGroup>
-    </Toolbar>
-  );
-
   const Header = (
     <PageHeader
       logo={
         <Brand
           src={icon}
-          alt="Datagrid Management Console"
-          style={{ width: 600 }}
+          alt="Management Console"
+          style={{width: 600}}
         />
       }
       logoProps={logoProps}
-      toolbar={PageToolbar}
       showNavToggle={true}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
-      style={{ backgroundColor: chart_color_blue_500.value }}
+      style={{backgroundColor: chart_color_blue_500.value}}
     />
   );
 
@@ -163,10 +89,10 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
 
   const Sidebar = (
     <PageSidebar
-      style={{backgroundColor:chart_color_blue_500.value}}
+      style={{backgroundColor: chart_color_blue_500.value}}
       theme="dark"
       nav={Navigation}
-      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen} />
+      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen}/>
   );
 
   return (
@@ -182,4 +108,4 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   );
 };
 
-export { AppLayout };
+export {AppLayout};
