@@ -17,6 +17,8 @@ import { DetailStats } from '@app/CacheManagers/DetailStats';
 import { DetailConfigurations } from '@app/CacheManagers/DetailConfigurations';
 import { ServerGroupIcon } from '@patternfly/react-icons';
 import { VolumeIcon } from '@patternfly/react-icons';
+import {Home} from "@app/Home/Home";
+import {ClusterStatus} from "@app/ClusterStatus/ClusterStatus";
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -98,15 +100,33 @@ const routes: IAppRoute[] = [
     label: 'Welcome to the server',
     path: '/welcome',
     title: 'Welcome to the server',
+    menu: false
+  },
+  {
+    component: Home,
+    exact: true,
+    icon: <ServerGroupIcon />,
+    label: 'Home',
+    path: '/',
+    title: 'Home',
     menu: true
   },
   {
     component: CacheManagers,
     exact: true,
     icon: <VolumeIcon />,
-    label: 'Data container',
-    path: '/',
-    title: 'Data container',
+    label: 'Cluster',
+    path: '/cluster',
+    title: 'Cluster',
+    menu: true
+  },
+  {
+    component: ClusterStatus,
+    exact: true,
+    icon: <VolumeIcon />,
+    label: 'Cluster status',
+    path: '/cluster-status',
+    title: 'Cluster Status',
     menu: true
   },
   {

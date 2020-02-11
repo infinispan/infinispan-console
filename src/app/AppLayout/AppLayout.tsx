@@ -6,9 +6,9 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
-  KebabToggle,
+  KebabToggle, Nav, NavItem, NavList, NavVariants,
   Page,
-  PageHeader,
+  PageHeader, PageSidebar,
   SkipToContent,
   Toolbar,
   ToolbarGroup,
@@ -18,8 +18,9 @@ import icon from '!!url-loader!@app/assets/images/brand.svg';
 import { chart_color_blue_500 } from '@patternfly/react-tokens';
 import { css } from '@patternfly/react-styles';
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
-import { Link } from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import dataContainerService from '../../services/dataContainerService';
+import {routes} from "@app/routes";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -137,7 +138,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
       }
       logoProps={logoProps}
       toolbar={PageToolbar}
-      showNavToggle={false}
+      showNavToggle={true}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
       style={{ backgroundColor: chart_color_blue_500.value }}
@@ -147,12 +148,34 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const PageSkipToContent = (
     <SkipToContent href="#primary-app-container">Skip to Content</SkipToContent>
   );
+
+  const Navigation = (
+    <Nav id="nav-primary-simple" theme="dark">
+      <NavList id="nav-list-simple" variant={NavVariants.default}>
+        {routes.map((route, idx) => route.menu && route.label && (
+          <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
+            <NavLink exact to={route.path} activeClassName="pf-m-current">{route.label}</NavLink>
+          </NavItem>
+        ))}
+      </NavList>
+    </Nav>
+  );
+
+  const Sidebar = (
+    <PageSidebar
+      style={{backgroundColor:chart_color_blue_500.value}}
+      theme="dark"
+      nav={Navigation}
+      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen} />
+  );
+
   return (
     <Page
       mainContainerId="primary-app-container"
       header={welcome ? null : Header}
       onPageResize={onPageResize}
       skipToContent={PageSkipToContent}
+      sidebar={welcome ? null : Sidebar}
     >
       {children}
     </Page>
