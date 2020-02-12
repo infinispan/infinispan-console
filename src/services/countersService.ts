@@ -20,7 +20,7 @@ class CountersService {
     let counter: Promise<Counter> = utils
       .restCall(this.endpoint + '/counters/' + name, 'GET')
       .then(response => response.json())
-      .then(value => <Counter>{name: name, value: value});
+      .then(value => <Counter>{ name: name, value: value });
 
     let counterConfig: Promise<CounterConfig> = this.getCounterConfig(name);
     let promises = Promise.all([counter, counterConfig]);
@@ -28,7 +28,7 @@ class CountersService {
     // combine config into counter
     return promises.then(data => {
       data[0].config = data[1];
-      return data[0]
+      return data[0];
     });
   }
 
@@ -46,7 +46,7 @@ class CountersService {
             initialValue: weakCounter['initial-value'],
             storage: weakCounter.storage,
             concurrencyLevel: weakCounter['concurrency-level']
-          }
+          };
         } else {
           const strongCounter = value['strong-counter'];
           counterConfig = <CounterConfig>{
@@ -55,8 +55,8 @@ class CountersService {
             initialValue: strongCounter['initial-value'],
             storage: strongCounter.storage,
             lowerBound: strongCounter['lower-bound'],
-            upperBound: strongCounter['upper-bound'],
-          }
+            upperBound: strongCounter['upper-bound']
+          };
         }
         return counterConfig;
       });

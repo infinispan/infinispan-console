@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { ReactComponentElement, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  Badge,
   Card,
   CardBody,
   CardHeader,
@@ -10,9 +11,6 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  Label,
-  Level,
-  LevelItem,
   PageSection,
   Stack,
   StackItem,
@@ -38,10 +36,6 @@ import {
   StorageDomainIcon,
   UnknownIcon
 } from '@patternfly/react-icons';
-import {
-  chart_color_black_200,
-  chart_color_blue_300
-} from '@patternfly/react-tokens';
 import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
@@ -70,12 +64,11 @@ const DetailCache: React.FunctionComponent<any> = props => {
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName).then(detailedCache => {
       setDetail(detailedCache);
-    });
-  }, []);
-
-  useEffect(() => {
-    cacheService.retrieveXSites(cacheName).then(xsites => {
-      setXsite(xsites);
+      if (detailedCache.has_remote_backup) {
+        cacheService.retrieveXSites(cacheName).then(xsites => {
+          setXsite(xsites);
+        });
+      }
     });
   }, []);
 
@@ -290,6 +283,26 @@ const DetailCache: React.FunctionComponent<any> = props => {
     );
   };
 
+  const NoFeature = () => {
+    if (
+      detail.bounded ||
+      detail.indexed ||
+      detail.persistent ||
+      detail.transactional ||
+      detail.secured ||
+      detail.has_remote_backup
+    ) {
+      return <span />;
+    }
+    return (
+      <TextContent style={{ paddingLeft: 10 }}>
+        <Text component={TextVariants.h3}>
+          There are no features in this cache
+        </Text>
+      </TextContent>
+    );
+  };
+
   const CacheFeature = props => {
     if (!props.feature) {
       return <span />;
@@ -338,17 +351,33 @@ const DetailCache: React.FunctionComponent<any> = props => {
       <Stack gutter={'lg'}>
         <StackItem>
           <TextContent>
-            <Text component={TextVariants.h1}>Cache {detail.name}</Text>
+            <Text component={TextVariants.h1}>
+              {' '}
+              Cache {detail.name}
+              <Badge
+                style={{
+                  backgroundColor: displayUtils.cacheTypeColor(detail.type),
+                  verticalAlign: 'middle',
+                  marginLeft: 10,
+                  fontSize: 15
+                }}
+              >
+                {detail.type}
+              </Badge>
+            </Text>
           </TextContent>
         </StackItem>
         <StackItem>
           <ToolbarGroup>
             <ToolbarItem>
               <TextContent>
-                <Text component={TextVariants.h3}>
+                <Text component={TextVariants.h3} style={{ marginLeft: 10 }}>
                   <strong>Features:</strong>
                 </Text>
               </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
+              <NoFeature />
             </ToolbarItem>
             <ToolbarItem>
               <CacheFeature

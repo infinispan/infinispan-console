@@ -241,8 +241,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     return (
       <Badge
         style={{
-          backgroundColor: displayUtils.cacheTypeColor(props.type),
-          marginRight: 15
+          backgroundColor: displayUtils.cacheTypeColor(props.type)
         }}
       >
         {props.type}

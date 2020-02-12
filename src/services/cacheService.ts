@@ -49,7 +49,7 @@ class CacheService {
         return <DetailedInfinispanCache>{
           name: cacheName,
           started: true,
-          type: this.mapCacheType(data),
+          type: this.mapCacheType(data.configuration),
           size: data.size,
           rehash_in_progress: data.rehash_in_progress,
           indexing_in_progress: data.indexing_in_progress,

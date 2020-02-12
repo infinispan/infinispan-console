@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  textCenter
+} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -12,8 +18,8 @@ import {
   StackItem,
   Title
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
-import displayUtils from "../../services/displayUtils";
+import { SearchIcon } from '@patternfly/react-icons';
+import displayUtils from '../../services/displayUtils';
 
 const CounterTableDisplay: React.FunctionComponent<any> = (props: {
   counters: Counter[];
@@ -31,7 +37,7 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
   const [rows, setRows] = useState<(string | any)[]>([]);
 
   const columns = [
-    { title: 'Name'},
+    { title: 'Name' },
     {
       title: 'Type'
     },
@@ -47,7 +53,8 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
   ];
 
   useEffect(() => {
-    const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
+    const initSlice =
+      (countersPagination.page - 1) * countersPagination.perPage;
     updateRows(
       filteredCounters.slice(initSlice, initSlice + countersPagination.perPage)
     );
@@ -118,7 +125,7 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
         return {
           heightAuto: true,
           cells: [
-            {title: counter.name },
+            { title: counter.name },
             { title: <CounterType type={counter.config.type} /> },
             { title: counter.value },
             { title: counter.config.initialValue },
