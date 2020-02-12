@@ -298,7 +298,6 @@ const CacheManagers = () => {
         </ToolbarGroup>
         <ToolbarGroup>
           <ToolbarItem>
-            {' '}
             <TextContent>
               <Text
                 component={TextVariants.h3}

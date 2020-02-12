@@ -13,14 +13,13 @@ import {
   chart_color_red_300,
   chart_color_red_400
 } from '@patternfly/react-tokens';
-import { OkIcon } from '@patternfly/react-icons';
 
 class DisplayUtils {
   public healthColor(health: string): string {
     let color;
     switch (health) {
       case 'HEALTHY':
-        color = chart_color_green_300.value;
+        color = chart_color_black_500.value;
         break;
       case 'HEALTHY_REBALANCING':
         color = chart_color_orange_300.value;
@@ -29,7 +28,7 @@ class DisplayUtils {
         color = chart_color_red_300.value;
         break;
       default:
-        color = chart_color_black_100.value;
+        color = chart_color_black_500.value;
     }
     return color;
   }

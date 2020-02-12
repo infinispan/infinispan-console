@@ -8,10 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
-const CardTitle: React.FunctionComponent<any> = (props: {
-  title: string;
-  toolTip: string;
-}) => {
+const CardTitle = (props: { title: string; toolTip: string }) => {
   return (
     <TextContent>
       <Text component={TextVariants.h2}>

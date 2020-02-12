@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { ReactComponentElement, useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -23,7 +23,9 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title
+  Title,
+  ToolbarGroup,
+  ToolbarItem
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import {
@@ -42,6 +44,7 @@ import {
 } from '@patternfly/react-tokens';
 import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import { CardTitle } from '@app/Common/CardTitle';
+import displayUtils from '../../services/displayUtils';
 
 const DetailCache: React.FunctionComponent<any> = props => {
   const emptyDetail: DetailedInfinispanCache = {
@@ -287,14 +290,14 @@ const DetailCache: React.FunctionComponent<any> = props => {
     );
   };
 
-  const CacheFeature: React.FunctionComponent<any> = props => {
+  const CacheFeature = props => {
+    if (!props.feature) {
+      return <span />;
+    }
     return (
-      <LevelItem>
-        <Label style={{ backgroundColor: props.color }}>
-          {' '}
-          {props.icon} {' ' + props.label}
-        </Label>
-      </LevelItem>
+      <TextContent style={{ paddingLeft: 10 }}>
+        <Text component={TextVariants.h3}>[{props.label}]</Text>
+      </TextContent>
     );
   };
 
@@ -330,13 +333,6 @@ const DetailCache: React.FunctionComponent<any> = props => {
     );
   };
 
-  const hasFeatureColor = feature => {
-    if (feature) {
-      return chart_color_blue_300.value;
-    } else {
-      return chart_color_black_200.value;
-    }
-  };
   return (
     <PageSection>
       <Stack gutter={'lg'}>
@@ -346,50 +342,57 @@ const DetailCache: React.FunctionComponent<any> = props => {
           </TextContent>
         </StackItem>
         <StackItem>
-          <Level>
-            <LevelItem>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h3}>
+                  <strong>Features:</strong>
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheFeature
                 icon={<Spinner2Icon />}
-                color={hasFeatureColor(detail.bounded)}
+                feature={detail.bounded}
                 label={'Bounded'}
               />
-            </LevelItem>
-            <LevelItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheFeature
                 icon={<StorageDomainIcon />}
-                color={hasFeatureColor(detail.indexed)}
+                feature={detail.indexed}
                 label={'Indexed'}
               />
-            </LevelItem>
-            <LevelItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheFeature
                 icon={<SaveIcon />}
-                color={hasFeatureColor(detail.persistent)}
+                feature={detail.persistent}
                 label={'Persisted'}
               />
-            </LevelItem>
-            <LevelItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheFeature
                 icon={<ServiceIcon />}
-                color={hasFeatureColor(detail.transactional)}
+                feature={detail.transactional}
                 label={'Transactional'}
               />
-            </LevelItem>
-            <LevelItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheFeature
                 icon={<KeyIcon />}
-                color={hasFeatureColor(detail.secured)}
+                feature={detail.secured}
                 label={'Secured'}
               />
-            </LevelItem>
-            <LevelItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheFeature
                 icon={<DegradedIcon />}
-                color={hasFeatureColor(detail.has_remote_backup)}
+                feature={detail.has_remote_backup}
                 label={'Has remote backups'}
               />
-            </LevelItem>
-          </Level>
+            </ToolbarItem>
+          </ToolbarGroup>
         </StackItem>
         <StackItem>
           <CacheStats />
