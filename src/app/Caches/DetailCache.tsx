@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
   Badge,
+  Breadcrumb,
+  BreadcrumbItem,
   Card,
   CardBody,
   CardHeader,
@@ -348,6 +350,10 @@ const DetailCache: React.FunctionComponent<any> = props => {
 
   return (
     <PageSection>
+      <Breadcrumb>
+        <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
+        <BreadcrumbItem isActive>Cache detail</BreadcrumbItem>
+      </Breadcrumb>
       <Stack gutter={'lg'}>
         <StackItem>
           <TextContent>

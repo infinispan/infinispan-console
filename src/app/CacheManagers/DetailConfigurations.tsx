@@ -4,7 +4,10 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionToggle, Badge,
+  AccordionToggle,
+  Badge,
+  Breadcrumb,
+  BreadcrumbItem,
   PageSection,
   Text,
   TextContent,
@@ -12,7 +15,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import dataContainerService from '../../services/dataContainerService';
-import displayUtils from "../../services/displayUtils";
+import displayUtils from '../../services/displayUtils';
 
 const DetailConfigurations: React.FunctionComponent<any> = props => {
   const cm: string = props.location.state.cacheManager;
@@ -41,10 +44,14 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
 
   return (
     <PageSection>
+      <Breadcrumb>
+        <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
+        <BreadcrumbItem isActive>Cache configurations</BreadcrumbItem>
+      </Breadcrumb>
       <TextContent>
-      <Text component={TextVariants.h1}>
-        Configurations <strong>{cm}</strong> cache manager
-      </Text>
+        <Text component={TextVariants.h1}>
+          Configurations <strong>{cm}</strong> cache manager
+        </Text>
       </TextContent>
       <Accordion asDefinitionList={false}>
         {configs.map(config => (
