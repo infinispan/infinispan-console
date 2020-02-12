@@ -13,7 +13,6 @@ import {
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailCache } from '@app/Caches/DetailCache';
-import { DetailStats } from '@app/CacheManagers/DetailStats';
 import { DetailConfigurations } from '@app/CacheManagers/DetailConfigurations';
 import { ServerGroupIcon, VolumeIcon } from '@patternfly/react-icons';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
@@ -127,15 +126,6 @@ const routes: IAppRoute[] = [
     path: '/cluster-status',
     title: 'Cluster Status',
     menu: true
-  },
-  {
-    component: DetailStats,
-    exact: true,
-    icon: null,
-    label: 'Cache Manager Stats',
-    path: '/container/:containerName/stats',
-    title: 'Stats',
-    menu: false
   },
   {
     component: DetailConfigurations,
