@@ -52,7 +52,8 @@ class ContainerService {
                 data.cluster_members,
                 data.cluster_members_physical_addresses
               ),
-              health: heath
+              health: heath,
+              local_site: data.local_site
             }
         )
     );

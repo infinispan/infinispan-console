@@ -9,6 +9,7 @@ interface CacheManager {
   cache_configuration_names: [string];
   cluster_members: [ClusterMember];
   health: string;
+  local_site?: string;
 }
 
 interface ClusterMember {

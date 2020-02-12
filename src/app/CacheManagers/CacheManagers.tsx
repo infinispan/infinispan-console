@@ -123,9 +123,11 @@ const CacheManagers = () => {
 
   let title = 'Data container is empty';
   let status = '';
+  let localSiteName = '';
   if (cm !== undefined) {
     title = displayUtils.capitalize(cm.name);
     status = cm.cache_manager_status;
+    localSiteName = cm.local_site ? '(site ' + cm.local_site + ')' : '';
   }
   return (
     <PageSection>
@@ -133,7 +135,9 @@ const CacheManagers = () => {
         <ToolbarGroup>
           <ToolbarItem>
             <TextContent>
-              <Text component={TextVariants.h1}>{title}</Text>
+              <Text component={TextVariants.h1}>
+                <strong>{title}</strong> {localSiteName}
+              </Text>
             </TextContent>
           </ToolbarItem>
         </ToolbarGroup>
@@ -155,7 +159,10 @@ const CacheManagers = () => {
             <TextContent>
               <Text
                 component={TextVariants.h3}
-                style={{ color: displayUtils.statusColor(status) }}
+                style={{
+                  paddingRight: 10,
+                  color: displayUtils.statusColor(status)
+                }}
               >
                 {displayUtils.capitalize(status)}
               </Text>
