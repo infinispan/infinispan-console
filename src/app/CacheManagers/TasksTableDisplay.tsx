@@ -107,7 +107,7 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
     return (
       <TextContent>
         {props.params.map((param, index) => (
-          <Text component={TextVariants.p}>{' [' + param + ']'}</Text>
+          <Text key={param + index} component={TextVariants.p}>{' [' + param + ']'}</Text>
         ))}
       </TextContent>
     );
