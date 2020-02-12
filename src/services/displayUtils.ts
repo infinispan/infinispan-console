@@ -1,5 +1,4 @@
 import {
-  chart_color_black_100,
   chart_color_black_300,
   chart_color_black_400,
   chart_color_black_500,
@@ -8,6 +7,7 @@ import {
   chart_color_cyan_400,
   chart_color_gold_300,
   chart_color_green_300,
+  chart_color_green_500,
   chart_color_orange_300,
   chart_color_purple_200,
   chart_color_red_300,
@@ -15,11 +15,15 @@ import {
 } from '@patternfly/react-tokens';
 
 class DisplayUtils {
-  public healthColor(health: string): string {
+  public healthColor(health: string | undefined): string {
+    if (health === undefined) {
+      return chart_color_black_500.value;
+    }
+
     let color;
     switch (health) {
       case 'HEALTHY':
-        color = chart_color_black_500.value;
+        color = chart_color_green_300.value;
         break;
       case 'HEALTHY_REBALANCING':
         color = chart_color_orange_300.value;
@@ -33,7 +37,11 @@ class DisplayUtils {
     return color;
   }
 
-  public healthLabel(health: string): string {
+  public healthLabel(health: string | undefined): string {
+    if (health === undefined) {
+      return '-';
+    }
+
     let label;
     switch (health) {
       case 'HEALTHY':
@@ -129,7 +137,9 @@ class DisplayUtils {
     return color;
   }
 
-  public capitalize(value: string) {
+  public capitalize(value: string | undefined): string {
+    if (value === undefined) return '';
+
     return value.charAt(0).toUpperCase() + value.slice(1).toLocaleLowerCase();
   }
 }

@@ -1,4 +1,6 @@
 import utils from './utils';
+import { GalleryItem, Stack, StackItem } from '@patternfly/react-core';
+import * as React from 'react';
 
 class ContainerService {
   endpoint: string;
@@ -46,9 +48,10 @@ class ContainerService {
               cache_configuration_names: this.removeInternalTemplate(
                 data.cache_configuration_names
               ),
-              cluster_members: data.cluster_members,
-              cluster_members_physical_addresses:
-                data.cluster_members_physical_addresses,
+              cluster_members: this.clusterMembers(
+                data.cluster_members,
+                data.cluster_members_physical_addresses
+              ),
               health: heath
             }
         )
@@ -146,6 +149,19 @@ class ContainerService {
       cacheType = 'Scattered';
     }
     return cacheType;
+  }
+
+  private clusterMembers(
+    cluster_members: [string],
+    cluster_members_physical_addresses: [string]
+  ): ClusterMember[] {
+    return cluster_members.map(
+      (mem, index) =>
+        <ClusterMember>{
+          name: mem,
+          physical_address: cluster_members_physical_addresses[index]
+        }
+    );
   }
 }
 

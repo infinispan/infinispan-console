@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Bullseye,
   Card,
   CardBody,
   EmptyState,
@@ -13,24 +14,188 @@ import {
   GridItem,
   Label,
   PageSection,
+  Pagination,
   Stack,
-  StackItem
+  StackItem,
+  Text,
+  TextContent,
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem
 } from '@patternfly/react-core';
-import { ClusterIcon, CubesIcon } from '@patternfly/react-icons';
+import {
+  ClusterIcon,
+  CubesIcon,
+  ErrorCircleOIcon,
+  InProgressIcon,
+  OffIcon,
+  OkIcon,
+  RebalanceIcon,
+  SearchIcon
+} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
 import displayUtils from '../../services/displayUtils';
+import { chart_color_green_300 } from '@patternfly/react-tokens';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 
 const ClusterStatus: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
     undefined
   );
+  const [filteredClusterMembers, setFilteredClusterMembers] = useState<
+    ClusterMember[]
+  >([]);
+  const [clusterMembersPagination, setClusterMembersPagination] = useState({
+    page: 1,
+    perPage: 10
+  });
+
+  const [rows, setRows] = useState<(string | any)[]>([]);
+
+  const columns = [
+    { title: 'Id' },
+    {
+      title: 'Ip'
+    }
+  ];
+
+  useEffect(() => {
+    const initSlice =
+      (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
+    updateRows(
+      filteredClusterMembers.slice(
+        initSlice,
+        initSlice + clusterMembersPagination.perPage
+      )
+    );
+  }, []);
+
+  const onSetPage = (_event, pageNumber) => {
+    setClusterMembersPagination({
+      page: pageNumber,
+      perPage: clusterMembersPagination.perPage
+    });
+    const initSlice = (pageNumber - 1) * clusterMembersPagination.perPage;
+    updateRows(
+      filteredClusterMembers.slice(
+        initSlice,
+        initSlice + clusterMembersPagination.perPage
+      )
+    );
+  };
+
+  const onPerPageSelect = (_event, perPage) => {
+    setClusterMembersPagination({
+      page: clusterMembersPagination.page,
+      perPage: perPage
+    });
+    const initSlice = (clusterMembersPagination.page - 1) * perPage;
+    updateRows(filteredClusterMembers.slice(initSlice, initSlice + perPage));
+  };
+
+  const updateRows = (clusterMembers: ClusterMember[]) => {
+    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
+
+    if (clusterMembers.length == 0) {
+      rows = [
+        {
+          heightAuto: true,
+          cells: [
+            {
+              props: { colSpan: 8 },
+              title: (
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      There are no cluster members
+                    </Title>
+                    <EmptyStateBody>
+                      Are you connected to a Cluster?
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              )
+            }
+          ]
+        }
+      ];
+    } else {
+      rows = clusterMembers.map(member => {
+        return {
+          heightAuto: true,
+          cells: [{ title: member.name }, { title: member.physical_address }]
+          //TODO {title: <ClusterMembersActionLinks name={member.name}/>}]
+        };
+      });
+    }
+    setRows(rows);
+  };
+
   useEffect(() => {
     dataContainerService.getCacheManagers().then(cacheManagers => {
       if (cacheManagers.length > 0) {
         setCacheManager(cacheManagers[0]);
+        setFilteredClusterMembers(cacheManagers[0].cluster_members);
+        updateRows(cacheManagers[0].cluster_members);
       }
     });
   }, []);
+
+  const DisplayClusterStatusHeader = () => {
+    let sizeLabel: string = '0 members in use';
+    if (cacheManager) {
+      sizeLabel =
+        cacheManager.cluster_size > 1
+          ? cacheManager.cluster_size + ' members in use'
+          : cacheManager.cluster_size + ' member in use';
+    }
+    return (
+      <React.Fragment>
+        <TextContent>
+          <Text component={TextVariants.h1}>Cluster status</Text>
+        </TextContent>
+        <Toolbar style={{ paddingBottom: 20 }}>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  style={{
+                    paddingRight: 10,
+                    color: chart_color_green_300.value
+                  }}
+                >
+                  <DisplayHealthIcon health={status} />
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  style={{
+                    paddingRight: 10,
+                    fontWeight: 'bolder',
+                    color: displayUtils.healthColor(cacheManager?.health)
+                  }}
+                >
+                  {displayUtils.capitalize(cacheManager?.health)}
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h3}>| {sizeLabel}</Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarGroup>
+        </Toolbar>
+      </React.Fragment>
+    );
+  };
 
   const DisplayClusterStatus = () => {
     if (!cacheManager) {
@@ -41,67 +206,60 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
         </EmptyState>
       );
     }
-    let size =
-      cacheManager.cluster_size > 1
-        ? cacheManager.cluster_size + ' members'
-        : cacheManager.cluster_size + ' member';
     return (
-      <Card style={{ marginTop: 40 }}>
-        <CardBody>
-          <Grid>
-            <GridItem span={2}>
-              <Stack>
-                <StackItem>
-                  <ClusterIcon
-                    size={'xl'}
-                    style={{ marginLeft: 14, marginBottom: 10 }}
-                  />
-                </StackItem>
-                <StackItem>
-                  <Label
-                    style={{
-                      backgroundColor: displayUtils.healthColor(
-                        cacheManager.health
-                      )
-                    }}
-                  >
-                    {cacheManager.health}
-                  </Label>
-                </StackItem>
-              </Stack>
-            </GridItem>
-            <GridItem span={2}>
-              <Stack>
-                <StackItem>
-                  <h1 style={{ fontSize: 22 }}>{cacheManager.cluster_name}</h1>
-                </StackItem>
-                <StackItem> {size}</StackItem>
-              </Stack>
-            </GridItem>
-            <GridItem span={8}>
-              <Gallery>
-                {cacheManager.cluster_members.map((mem, index) => (
-                  <GalleryItem>
-                    <Stack>
-                      <StackItem>
-                        <strong>{mem}</strong>
-                      </StackItem>
-                      <StackItem>
-                        {cacheManager.cluster_members_physical_addresses[index]}
-                      </StackItem>
-                    </Stack>
-                  </GalleryItem>
-                ))}
-              </Gallery>
-            </GridItem>
-          </Grid>
-        </CardBody>
-      </Card>
+      <Stack>
+        <StackItem>
+          <Pagination
+            itemCount={filteredClusterMembers.length}
+            perPage={clusterMembersPagination.perPage}
+            page={clusterMembersPagination.page}
+            onSetPage={onSetPage}
+            widgetId="pagination-cluster-members"
+            onPerPageSelect={onPerPageSelect}
+            isCompact
+          />
+        </StackItem>
+        <StackItem>
+          <Table
+            aria-label="Tasks"
+            cells={columns}
+            rows={rows}
+            className={'tasks-table'}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+        </StackItem>
+      </Stack>
     );
+  };
+
+  const DisplayHealthIcon = (props: { health: string | undefined }) => {
+    if (props.health === undefined) {
+      return <OffIcon />;
+    }
+
+    let icon;
+    switch (props.health) {
+      case 'HEALTHY':
+        icon = <OkIcon />;
+        break;
+      case 'HEALTHY_REBALANCING':
+        icon = <RebalanceIcon />;
+        break;
+      case 'DEGRADED':
+        icon = <ErrorCircleOIcon />;
+        break;
+      default:
+        icon = <OkIcon />;
+    }
+
+    return icon;
   };
 
   return (
     <PageSection>
+      <DisplayClusterStatusHeader />
       <DisplayClusterStatus />
     </PageSection>
   );
