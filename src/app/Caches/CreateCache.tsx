@@ -13,17 +13,21 @@ import {
   Select,
   SelectOption,
   SelectVariant,
+  Text,
   TextArea,
+  TextContent,
   TextInput,
+  TextVariants,
   Title
 } from '@patternfly/react-core';
 import { CubeIcon } from '@patternfly/react-icons';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
 import { Link } from 'react-router-dom';
+import displayUtils from '../../services/displayUtils';
 
 const CreateCache: React.FunctionComponent<any> = props => {
-  const cmName = props.location.state.cm;
+  const cmName: string = props.location.state.cacheManager;
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
   const [config, setConfig] = useState('');
@@ -174,12 +178,17 @@ const CreateCache: React.FunctionComponent<any> = props => {
   };
 
   const titleId = 'plain-typeahead-select-id';
+  let title = 'Data container is empty';
+  if (cmName !== undefined) {
+    title = displayUtils.capitalize(cmName);
+  }
   return (
     <PageSection>
-      <Title size="lg">
-        {' '}
-        Create a cache in <b>{cmName}</b> container
-      </Title>
+      <TextContent>
+        <Text component={TextVariants.h1}>
+          Create a cache in <b>{title}</b>
+        </Text>
+      </TextContent>
       <AlertPanel />
       <Form
         style={{ paddingTop: 10 }}

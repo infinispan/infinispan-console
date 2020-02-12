@@ -161,9 +161,6 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
                     <Title headingLevel="h2" size="lg">
                       No caches found
                     </Title>
-                    <EmptyStateBody>
-                      <CreateCacheButton />
-                    </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
               )
@@ -191,28 +188,6 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       });
     }
     setRows(rows);
-  };
-
-  const CreateCacheButton = () => {
-    return (
-      <Link
-        to={{
-          pathname: '/caches/create',
-          state: {
-            cm: cacheManager.name
-          }
-        }}
-      >
-        <Button
-          component="a"
-          target="_blank"
-          variant="link"
-          icon={<PlusCircleIcon />}
-        >
-          Create cache
-        </Button>
-      </Link>
-    );
   };
 
   const CacheFeature = (props: { isPresent: boolean }) => {
@@ -418,9 +393,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           <GridItem span={2}>
             <Link
               to={{
-                pathname: '/caches/create',
+                pathname: '/container/' + cacheManager.name + '/caches/create',
                 state: {
-                  cm: cacheManager.name
+                  cacheManager: cacheManager.name
                 }
               }}
             >

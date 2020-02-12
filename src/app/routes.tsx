@@ -141,7 +141,7 @@ const routes: IAppRoute[] = [
     exact: true,
     icon: null,
     label: 'Caches',
-    path: '/caches/create',
+    path: '/container/:containerName/caches/create',
     title: 'Caches',
     menu: false
   },

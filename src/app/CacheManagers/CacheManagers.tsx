@@ -35,26 +35,8 @@ const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
   const [activeTabKey, setActiveTabKey] = useState(0);
   const [caches, setCaches] = useState<CacheInfo[]>([]);
-  const [cachesPagination, setCachesPagination] = useState({
-    page: 1,
-    perPage: 6
-  });
   const [counters, setCounters] = useState<Counter[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
-
-  const onSetPage = (_event, pageNumber) => {
-    setCachesPagination({
-      page: pageNumber,
-      perPage: cachesPagination.perPage
-    });
-  };
-
-  const onPerPageSelect = (_event, perPage) => {
-    setCachesPagination({
-      page: cachesPagination.page,
-      perPage: perPage
-    });
-  };
 
   useEffect(() => {
     dataContainerService.getCacheManagers().then(cacheManagers => {
