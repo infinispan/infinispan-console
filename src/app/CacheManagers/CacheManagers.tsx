@@ -2,18 +2,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
-  Card,
-  CardBody,
-  CardHeader,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Grid,
-  GridItem,
   PageSection,
-  Stack,
-  StackItem,
   Tab,
   Tabs,
   Text,
@@ -22,24 +15,21 @@ import {
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem,
-  Tooltip
+  ToolbarItem
 } from '@patternfly/react-core';
 import {
   CubesIcon,
   ErrorCircleOIcon,
   InProgressIcon,
   OffIcon,
-  OkIcon,
-  RegistryIcon,
-  VolumeIcon
+  OkIcon
 } from '@patternfly/react-icons';
-import { chart_color_blue_400 } from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
+import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
 
 const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -89,134 +79,6 @@ const CacheManagers = () => {
     setActiveTabKey(tabIndex);
   };
 
-  const TasksContent = () => {
-    const isEmpty = tasks.length == 0;
-    if (isEmpty) {
-      return <EmptyTasks />;
-    }
-    return <TasksGrid />;
-  };
-
-  const EmptyTasks = () => {
-    return (
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h5" size="lg">
-          Empty
-        </Title>
-        <EmptyStateBody>There are no tasks</EmptyStateBody>
-      </EmptyState>
-    );
-  };
-
-  const TasksGrid = () => {
-    return (
-      <Grid gutter="sm" style={{ paddingTop: 40 }}>
-        {tasks.map(task => (
-          <GridItem key={task.name} span={4}>
-            <Card id={'id-task-' + task.name}>
-              <CardHeader id={'task-id-header-' + task.name}>
-                <Tooltip
-                  position="right"
-                  content={
-                    <div>
-                      {task.execution_mode == 'ONE_NODE'
-                        ? 'One node execution mode'
-                        : 'All nodes execution mode'}
-                    </div>
-                  }
-                >
-                  {task.execution_mode == 'ONE_NODE' ? (
-                    <VolumeIcon style={{ color: chart_color_blue_400.value }} />
-                  ) : (
-                    <RegistryIcon />
-                  )}
-                </Tooltip>
-                <strong style={{ color: chart_color_blue_400.value }}>
-                  {' ' + task.name}
-                </strong>
-              </CardHeader>
-              <CardBody id={'task-id-nody-' + task.name}>
-                <Stack>
-                  <StackItem>
-                    <strong>Context name:</strong>
-                    {' ' + task.task_context_name}
-                  </StackItem>
-                  <StackItem>
-                    <strong>Operation name:</strong>
-                    {' ' + task.task_operation_name}
-                  </StackItem>
-                  <StackItem>
-                    <strong>Type:</strong>
-                    {' ' + task.type}
-                  </StackItem>
-                  <StackItem>
-                    <strong>Parameters:</strong>
-                    {task.parameters.map((param, index) => (
-                      <span key={index}>{' [' + param + ']'}</span>
-                    ))}
-                  </StackItem>
-                  <StackItem>
-                    <strong>Allowed role:</strong>
-                    {task.allowed_role == null
-                      ? ' empty'
-                      : ' ' + task.allowed_role}
-                  </StackItem>
-                </Stack>
-              </CardBody>
-            </Card>
-          </GridItem>
-        ))}
-      </Grid>
-    );
-  };
-
-  const CountersContent = () => {
-    const isEmpty = counters.length == 0;
-    if (isEmpty) {
-      return <EmptyCounters />;
-    }
-    return <CountersGrid />;
-  };
-
-  const CountersGrid = () => {
-    return (
-      <Grid gutter="sm" style={{ paddingTop: 40 }}>
-        {counters.map(counter => (
-          <GridItem key={counter.name} span={4}>
-            <Card id={'id-counter-' + counter.name}>
-              <CardHeader id={'counter-id-header-' + counter.name}>
-                <strong style={{ color: chart_color_blue_400.value }}>
-                  {' ' + counter.name}
-                </strong>
-              </CardHeader>
-              <CardBody id={'counter-id-body-' + counter.name}>
-                <Stack>
-                  <StackItem>
-                    <strong>Value:</strong>
-                    {' ' + counter.value}
-                  </StackItem>
-                </Stack>
-              </CardBody>
-            </Card>
-          </GridItem>
-        ))}
-      </Grid>
-    );
-  };
-
-  const EmptyCounters = () => {
-    return (
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h5" size="lg">
-          Empty
-        </Title>
-        <EmptyStateBody>There are no counters</EmptyStateBody>
-      </EmptyState>
-    );
-  };
-
   const DisplayTabs = () => {
     return (
       <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
@@ -227,7 +89,7 @@ const CacheManagers = () => {
           <CounterTableDisplay counters={counters} cacheManager={cm} />
         </Tab>
         <Tab eventKey={2} title={tasks.length + ' Tasks'}>
-          <TasksContent />
+          <TasksTableDisplay tasks={tasks} cacheManager={cm} />
         </Tab>
       </Tabs>
     );

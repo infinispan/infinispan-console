@@ -70,7 +70,7 @@ class DisplayUtils {
         color = chart_color_black_300.value;
         break;
       default:
-        color = chart_color_black_100.value;
+        color = chart_color_black_500.value;
     }
     return color;
   }
@@ -85,7 +85,19 @@ class DisplayUtils {
         color = chart_color_cyan_300.value;
         break;
       default:
-        color = chart_color_black_100.value;
+        color = chart_color_black_500.value;
+    }
+    return color;
+  }
+
+  public taskTypeColor(counterType: string): string {
+    let color;
+    switch (counterType) {
+      case 'AdminServerTask':
+        color = chart_color_blue_200.value;
+        break;
+      default:
+        color = chart_color_gold_300.value;
     }
     return color;
   }
@@ -112,7 +124,7 @@ class DisplayUtils {
         color = chart_color_black_500.value;
         break;
       default:
-        color = chart_color_black_100.value;
+        color = chart_color_black_500.value;
     }
     return color;
   }
