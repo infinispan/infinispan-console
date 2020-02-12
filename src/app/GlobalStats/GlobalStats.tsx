@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Button,
   Card,
@@ -21,18 +21,13 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title,
-  Tooltip,
-  TooltipPosition
+  Title
 } from '@patternfly/react-core';
-import {
-  ArrowIcon,
-  CubesIcon,
-  OutlinedQuestionCircleIcon
-} from '@patternfly/react-icons';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
+import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
 import dataContainerService from '../../services/dataContainerService';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import {CardTitle} from "@app/Common/CardTitle";
 
 const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -60,38 +55,22 @@ const GlobalStats: React.FunctionComponent<any> = props => {
   }, []);
 
   const DisplayStats = () => {
-    const allOps = function() {
+    const allOps = function () {
       return stats != undefined && stats.statistics_enabled
         ? stats.hits +
-            stats.retrievals +
-            stats.remove_hits +
-            stats.remove_misses +
-            stats.stores +
-            stats.misses +
-            stats.evictions
+        stats.retrievals +
+        stats.remove_hits +
+        stats.remove_misses +
+        stats.stores +
+        stats.misses +
+        stats.evictions
         : 0;
-    };
-
-    const CardTitle = (props: { title: string; toolTip: string }) => {
-      return (
-        <TextContent>
-          <Text component={TextVariants.h2}>
-            {props.title}{' '}
-            <Tooltip
-              position={TooltipPosition.top}
-              content={<div>{props.toolTip}</div>}
-            >
-              <OutlinedQuestionCircleIcon style={{ fontSize: 15 }} />
-            </Tooltip>
-          </Text>
-        </TextContent>
-      );
     };
 
     if (!stats.statistics_enabled) {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon} />
+          <EmptyStateIcon icon={CubesIcon}/>
           <Title headingLevel="h5" size="lg">
             Statistics are not enabled
           </Title>
@@ -103,7 +82,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
       );
     }
     return (
-      <Grid gutter="md" style={{ paddingTop: 40 }}>
+      <Grid gutter="md" style={{paddingTop: 40}}>
         <GridItem span={6} rowSpan={2}>
           <Card>
             <CardHeader>
@@ -115,8 +94,8 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                   />
                 </LevelItem>
                 <LevelItem>
-                  <Link to={{ pathname: '/' }}>
-                    <Button variant="link" icon={<ArrowIcon />}>
+                  <Link to={{pathname: '/'}}>
+                    <Button variant="link" icon={<ArrowIcon/>}>
                       View all caches
                     </Button>
                   </Link>
@@ -167,28 +146,28 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                 toolTip={'Data access for all caches'}
               />
             </CardHeader>
-            <CardBody style={{ paddingBottom: 50 }}>
-              <div style={{ height: '208px', width: '450px' }}>
+            <CardBody style={{paddingBottom: 50}}>
+              <div style={{height: '208px', width: '450px'}}>
                 <ChartDonut
                   constrainToVisibleArea={true}
                   data={[
-                    { x: 'Hits', y: stats.hits },
-                    { x: 'Misses', y: stats.misses },
-                    { x: 'Stores', y: stats.stores },
-                    { x: 'Retrievals', y: stats.retrievals },
-                    { x: 'Remove Hits', y: stats.remove_hits },
-                    { x: 'Removes Misses', y: stats.remove_misses },
-                    { x: 'Evictions', y: stats.evictions }
+                    {x: 'Hits', y: stats.hits},
+                    {x: 'Misses', y: stats.misses},
+                    {x: 'Stores', y: stats.stores},
+                    {x: 'Retrievals', y: stats.retrievals},
+                    {x: 'Remove Hits', y: stats.remove_hits},
+                    {x: 'Removes Misses', y: stats.remove_misses},
+                    {x: 'Evictions', y: stats.evictions}
                   ]}
-                  labels={({ datum }) => `${datum.x}: ${datum.y}%`}
+                  labels={({datum}) => `${datum.x}: ${datum.y}%`}
                   legendData={[
-                    { name: 'Hits: ' + stats.hits },
-                    { name: 'Misses: ' + stats.misses },
-                    { name: 'Retrievals: ' + stats.retrievals },
-                    { name: 'Stores: ' + stats.stores },
-                    { name: 'Remove Hits: ' + stats.remove_hits },
-                    { name: 'Remove Misses: ' + stats.remove_misses },
-                    { name: 'Evictions: ' + stats.evictions }
+                    {name: 'Hits: ' + stats.hits},
+                    {name: 'Misses: ' + stats.misses},
+                    {name: 'Retrievals: ' + stats.retrievals},
+                    {name: 'Stores: ' + stats.stores},
+                    {name: 'Remove Hits: ' + stats.remove_hits},
+                    {name: 'Remove Misses: ' + stats.remove_misses},
+                    {name: 'Evictions: ' + stats.evictions}
                   ]}
                   legendOrientation="vertical"
                   legendPosition="right"
@@ -265,8 +244,8 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                   />
                 </LevelItem>
                 <LevelItem>
-                  <Link to={{ pathname: '/cluster-status' }}>
-                    <Button variant="link" icon={<ArrowIcon />}>
+                  <Link to={{pathname: '/cluster-status'}}>
+                    <Button variant="link" icon={<ArrowIcon/>}>
                       View Cluster Status
                     </Button>
                   </Link>
@@ -274,7 +253,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
               </Level>
             </CardHeader>
             <CardBody>
-              <TextContent style={{ height: '208px' }}>
+              <TextContent style={{height: '208px'}}>
                 <TextList component={TextListVariants.dl}>
                   <TextListItem component={TextListItemVariants.dt}>
                     {stats.time_since_start}
@@ -311,9 +290,9 @@ const GlobalStats: React.FunctionComponent<any> = props => {
         <Text component={TextVariants.h1}>Global statistics</Text>
         <Text component={TextVariants.p}>{descriptionText()}</Text>
       </TextContent>
-      <DisplayStats />
+      <DisplayStats/>
     </PageSection>
   );
 };
 
-export { GlobalStats };
+export {GlobalStats};
