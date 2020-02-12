@@ -124,6 +124,7 @@ interface Task {
 interface Counter {
   name: string;
   value: number;
+  config: CounterConfig;
 }
 
 interface CounterConfig {
@@ -131,8 +132,9 @@ interface CounterConfig {
   type: string;
   initialValue: number;
   storage: string;
-  lowerBound: number;
-  upperBound: number;
+  lowerBound?: number;
+  upperBound?: number;
+  concurrencyLevel?: number;
 }
 
 interface ActionResponse {

@@ -75,6 +75,21 @@ class DisplayUtils {
     return color;
   }
 
+  public counterTypeColor(counterType: string): string {
+    let color;
+    switch (counterType) {
+      case 'Strong':
+        color = chart_color_blue_200.value;
+        break;
+      case 'Weak':
+        color = chart_color_cyan_300.value;
+        break;
+      default:
+        color = chart_color_black_100.value;
+    }
+    return color;
+  }
+
   public statusColor(componentStatus: string) {
     let color;
     switch (componentStatus) {

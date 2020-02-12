@@ -39,6 +39,7 @@ import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
+import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
 
 const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
@@ -217,17 +218,13 @@ const CacheManagers = () => {
   };
 
   const DisplayTabs = () => {
-    let clusteringLabel = 'Cluster info';
-    if (cm != undefined) {
-      clusteringLabel = 'Cluster of ' + cm.cluster_size;
-    }
     return (
       <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
         <Tab eventKey={0} title={caches.length + ' Caches'}>
           <CacheTableDisplay caches={caches} cacheManager={cm} />
         </Tab>
         <Tab eventKey={1} title={counters.length + ' Counters'}>
-          <CountersContent />
+          <CounterTableDisplay counters={counters} cacheManager={cm} />
         </Tab>
         <Tab eventKey={2} title={tasks.length + ' Tasks'}>
           <TasksContent />
