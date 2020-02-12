@@ -4,3 +4,7 @@ html, body, #root {
 
 .caches-table{
 }
+
+.pf-c-nav {
+  --pf-c-nav--m-dark__item--m-current--BackgroundColor: #004B95;
+}
