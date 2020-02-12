@@ -57,10 +57,10 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   >(false);
 
   const columns = [
-    { title: 'Name', transforms: [cellWidth(25), textCenter] },
+    { title: 'Name', transforms: [cellWidth(20), textCenter] },
     {
       title: 'Type',
-      transforms: [cellWidth(10), textCenter],
+      transforms: [cellWidth(20), textCenter],
       cellTransforms: [textCenter]
     },
     {
@@ -70,7 +70,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     },
     {
       title: 'Bounded',
-      transforms: [cellWidth(10), textCenter],
+      transforms: [textCenter],
       cellTransforms: [textCenter]
     },
     {
@@ -383,7 +383,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
               onSelect={onSelectCacheType}
               selections={selectedCacheTypes}
               isExpanded={isExpandedCacheTypes}
-              placeholderText="Cache type"
+              placeholderText="Types"
               ariaLabelledBy="cache-type-filter-select-id"
             >
               {cacheTypesOptions}
@@ -397,7 +397,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
               onSelect={onSelectCacheFeature}
               selections={selectedCacheFeatures}
               isExpanded={isExpandedCacheFeatures}
-              placeholderText="Cache feature"
+              placeholderText="Features"
               ariaLabelledBy="cache-feature-filter-select-id"
             >
               {cacheFeaturesOptions}
