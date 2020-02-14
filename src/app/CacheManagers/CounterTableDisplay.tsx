@@ -139,7 +139,7 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
   };
 
   return (
-    <Stack style={{ marginTop: 10 }}>
+    <Stack>
       <StackItem>
         <Pagination
           itemCount={filteredCounters.length}
@@ -150,8 +150,6 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
           onPerPageSelect={onPerPageSelect}
           isCompact
         />
-      </StackItem>
-      <StackItem>
         <Table
           aria-label="Counters"
           cells={columns}

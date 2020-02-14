@@ -5,7 +5,8 @@ import {
   chart_color_blue_200,
   chart_color_cyan_300,
   chart_color_cyan_400,
-  chart_color_gold_300, chart_color_green_300,
+  chart_color_gold_300,
+  chart_color_green_300,
   chart_color_orange_300,
   chart_color_purple_200,
   chart_color_red_300,
@@ -22,7 +23,9 @@ class DisplayUtils {
     let color;
     switch (health) {
       case 'HEALTHY':
-        color = isIcon? chart_color_green_300.value : chart_global_label_Fill.value;
+        color = isIcon
+          ? chart_color_green_300.value
+          : chart_global_label_Fill.value;
         break;
       case 'HEALTHY_REBALANCING':
         color = chart_color_orange_300.value;
@@ -116,7 +119,9 @@ class DisplayUtils {
         color = chart_color_black_400.value;
         break;
       case 'RUNNING':
-        color = isIcon? chart_color_green_300.value : chart_global_label_Fill.value;
+        color = isIcon
+          ? chart_color_green_300.value
+          : chart_global_label_Fill.value;
         break;
       case 'INSTANTIATED':
         color = chart_color_cyan_400.value;

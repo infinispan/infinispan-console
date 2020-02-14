@@ -107,7 +107,9 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
     return (
       <TextContent>
         {props.params.map((param, index) => (
-          <Text key={param + index} component={TextVariants.p}>{' [' + param + ']'}</Text>
+          <Text key={param + index} component={TextVariants.p}>
+            {' [' + param + ']'}
+          </Text>
         ))}
       </TextContent>
     );
@@ -171,7 +173,7 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
   };
 
   return (
-    <Stack style={{ marginTop: 10 }}>
+    <Stack>
       <StackItem>
         <Pagination
           itemCount={filteredTasks.length}
@@ -182,8 +184,6 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
           onPerPageSelect={onPerPageSelect}
           isCompact
         />
-      </StackItem>
-      <StackItem>
         <Table
           aria-label="Tasks"
           cells={columns}

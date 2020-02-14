@@ -7,6 +7,7 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   PageSection,
+  PageSectionVariants,
   Tab,
   Tabs,
   Text,
@@ -130,49 +131,53 @@ const CacheManagers = () => {
     localSiteName = cm.local_site ? '(site ' + cm.local_site + ')' : '';
   }
   return (
-    <PageSection>
-      <Toolbar style={{ paddingBottom: 20 }}>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <TextContent>
-              <Text component={TextVariants.h1}>
-                <strong>{title}</strong> {localSiteName}
-              </Text>
-            </TextContent>
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <TextContent>
-              <Text
-                component={TextVariants.h3}
-                style={{
-                  paddingRight: 10,
-                  color: displayUtils.statusColor(status, true)
-                }}
-              >
-                <DisplayStatusIcon status={status} />
-              </Text>
-            </TextContent>
-          </ToolbarItem>
-          <ToolbarItem>
-            <TextContent>
-              <Text
-                component={TextVariants.h3}
-                style={{
-                  paddingRight: 10,
-                  fontWeight: 'bolder',
-                  color: displayUtils.statusColor(status, false)
-                }}
-              >
-                {displayUtils.capitalize(status)}
-              </Text>
-            </TextContent>
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-      <DisplayCacheManager />
-    </PageSection>
+    <React.Fragment>
+      <PageSection variant={PageSectionVariants.light}>
+        <Toolbar>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h1}>
+                  <strong>{title}</strong> {localSiteName}
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarGroup>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  style={{
+                    paddingRight: 10,
+                    color: displayUtils.statusColor(status, true)
+                  }}
+                >
+                  <DisplayStatusIcon status={status} />
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  style={{
+                    paddingRight: 10,
+                    fontWeight: 'bolder',
+                    color: displayUtils.statusColor(status, false)
+                  }}
+                >
+                  {displayUtils.capitalize(status)}
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarGroup>
+        </Toolbar>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light}>
+        <DisplayCacheManager />
+      </PageSection>
+    </React.Fragment>
   );
 };
 

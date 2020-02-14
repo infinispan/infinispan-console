@@ -25,12 +25,21 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarItem,
+  ToolbarSection
 } from '@patternfly/react-core';
 import { chart_color_green_300 } from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
 import { OkIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
+import {
+  DataToolbar,
+  DataToolbarContent,
+  DataToolbarItem
+} from '@patternfly/react-core/dist/js/experimental';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -60,12 +69,12 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     { title: 'Name', transforms: [cellWidth(20), textCenter] },
     {
       title: 'Type',
-      transforms: [cellWidth(20), textCenter],
+      transforms: [cellWidth(30), textCenter],
       cellTransforms: [textCenter]
     },
     {
       title: 'Health',
-      transforms: [cellWidth(10), textCenter],
+      transforms: [cellWidth(20), textCenter],
       cellTransforms: [textCenter]
     },
     {
@@ -346,76 +355,84 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   };
 
   return (
-    <Stack style={{ marginTop: 10 }}>
+    <Stack>
       <StackItem>
-        <Grid style={{ marginBottom: 10 }} gutter={'md'}>
-          <GridItem span={2}>
-            <Select
-              variant={SelectVariant.checkbox}
-              aria-label="Select cache type"
-              onToggle={onToggleCacheType}
-              onSelect={onSelectCacheType}
-              selections={selectedCacheTypes}
-              isExpanded={isExpandedCacheTypes}
-              placeholderText="Types"
-              ariaLabelledBy="cache-type-filter-select-id"
-            >
-              {cacheTypesOptions}
-            </Select>
-          </GridItem>
-          <GridItem span={2}>
-            <Select
-              variant={SelectVariant.checkbox}
-              aria-label="Select cache feature"
-              onToggle={onToggleCacheFeature}
-              onSelect={onSelectCacheFeature}
-              selections={selectedCacheFeatures}
-              isExpanded={isExpandedCacheFeatures}
-              placeholderText="Features"
-              ariaLabelledBy="cache-feature-filter-select-id"
-            >
-              {cacheFeaturesOptions}
-            </Select>
-          </GridItem>
-          <GridItem span={2}>
-            <Link
-              to={{
-                pathname:
-                  '/container/' + cacheManager.name + '/configurations/',
-                state: {
-                  cacheManager: cacheManager.name
-                }
-              }}
-            >
-              <Button variant={'link'}>Configurations</Button>
-            </Link>
-          </GridItem>
-          <GridItem span={2}>
-            <Link
-              to={{
-                pathname: '/container/' + cacheManager.name + '/caches/create',
-                state: {
-                  cacheManager: cacheManager.name
-                }
-              }}
-            >
-              <Button variant={'primary'}>Create Cache</Button>
-            </Link>
-          </GridItem>
-          <GridItem span={4}>
-            <Pagination
-              itemCount={filteredCaches.length}
-              perPage={cachesPagination.perPage}
-              page={cachesPagination.page}
-              onSetPage={onSetPage}
-              widgetId="pagination-caches"
-              onPerPageSelect={onPerPageSelect}
-              isCompact
-            />
-          </GridItem>
-        </Grid>
+        <Toolbar>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <Select
+                variant={SelectVariant.checkbox}
+                aria-label="Select cache type"
+                onToggle={onToggleCacheType}
+                onSelect={onSelectCacheType}
+                selections={selectedCacheTypes}
+                isExpanded={isExpandedCacheTypes}
+                placeholderText="Filter by type"
+                ariaLabelledBy="cache-type-filter-select-id"
+              >
+                {cacheTypesOptions}
+              </Select>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Select
+                variant={SelectVariant.checkbox}
+                aria-label="Select cache feature"
+                onToggle={onToggleCacheFeature}
+                onSelect={onSelectCacheFeature}
+                selections={selectedCacheFeatures}
+                isExpanded={isExpandedCacheFeatures}
+                placeholderText="Filter by feature"
+                ariaLabelledBy="cache-feature-filter-select-id"
+              >
+                {cacheFeaturesOptions}
+              </Select>
+            </ToolbarItem>
+            <ToolbarItem>
+              <DataToolbar id="space-item">
+                <DataToolbarContent>
+                  <DataToolbarItem variant="separator"></DataToolbarItem>
+                </DataToolbarContent>
+              </DataToolbar>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Link
+                to={{
+                  pathname:
+                    '/container/' + cacheManager.name + '/caches/create',
+                  state: {
+                    cacheManager: cacheManager.name
+                  }
+                }}
+              >
+                <Button variant={'primary'}>Create Cache</Button>
+              </Link>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Link
+                to={{
+                  pathname:
+                    '/container/' + cacheManager.name + '/configurations/',
+                  state: {
+                    cacheManager: cacheManager.name
+                  }
+                }}
+              >
+                <Button variant={'link'}>Configurations</Button>
+              </Link>
+            </ToolbarItem>
+          </ToolbarGroup>
+        </Toolbar>
       </StackItem>
       <StackItem>
+        <Pagination
+          itemCount={filteredCaches.length}
+          perPage={cachesPagination.perPage}
+          page={cachesPagination.page}
+          onSetPage={onSetPage}
+          widgetId="pagination-caches"
+          onPerPageSelect={onPerPageSelect}
+          isCompact
+        />
         <Table
           aria-label="Caches"
           cells={columns}
