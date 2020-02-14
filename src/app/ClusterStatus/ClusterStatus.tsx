@@ -55,9 +55,9 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   const [rows, setRows] = useState<(string | any)[]>([]);
 
   const columns = [
-    { title: 'Id' },
+    { title: 'Name' },
     {
-      title: 'Ip'
+      title: 'Physical address'
     }
   ];
 
