@@ -65,13 +65,34 @@ const CacheManagers = () => {
   const DisplayTabs = () => {
     return (
       <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
-        <Tab eventKey={0} title={caches.length + ' Caches'}>
+        <Tab
+          eventKey={0}
+          title={
+            <>
+              <strong>{caches.length}</strong> Caches
+            </>
+          }
+        >
           <CacheTableDisplay caches={caches} cacheManager={cm} />
         </Tab>
-        <Tab eventKey={1} title={counters.length + ' Counters'}>
+        <Tab
+          eventKey={1}
+          title={
+            <>
+              <strong>{counters.length}</strong> Counters
+            </>
+          }
+        >
           <CounterTableDisplay counters={counters} cacheManager={cm} />
         </Tab>
-        <Tab eventKey={2} title={tasks.length + ' Tasks'}>
+        <Tab
+          eventKey={2}
+          title={
+            <>
+              <strong>{tasks.length}</strong> Tasks
+            </>
+          }
+        >
           <TasksTableDisplay tasks={tasks} cacheManager={cm} />
         </Tab>
       </Tabs>
