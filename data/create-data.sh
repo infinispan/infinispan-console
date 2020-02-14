@@ -31,6 +31,10 @@ do
 done
 
 echo "= Create some counters"
-curl -XPOST  -u use:pass -H "Content-Type: application/json" -d "@weakCounter.json" http://localhost:11222/rest/v2/counters/weak1
-curl -XPOST  -u use:pass -H "Content-Type: application/json" -d "@strongCounter.json" http://localhost:11222/rest/v2/counters/strong1
+for i in {1..50}
+do
+  curl -XPOST  -u use:pass -H "Content-Type: application/json" -d "@weakCounter.json" "http://localhost:11222/rest/v2/counters/weak-$i"
+  curl -XPOST  -u use:pass -H "Content-Type: application/json" -d "@strongCounter.json" "http://localhost:11222/rest/v2/counters/strong-$i"
+done
+
 echo "= End"
