@@ -244,7 +244,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                   />
                 </LevelItem>
                 <LevelItem>
-                  <Link to={{ pathname: '/cluster-status' }}>
+                  <Link to={{ pathname: '/cluster-membership' }}>
                     <Button variant="link" icon={<ArrowIcon />}>
                       View Cluster Status
                     </Button>

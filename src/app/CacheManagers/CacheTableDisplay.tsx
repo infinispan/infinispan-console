@@ -229,7 +229,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       <TextContent>
         <Text
           component={TextVariants.h5}
-          style={{ color: displayUtils.healthColor(props.health) }}
+          style={{ color: displayUtils.healthColor(props.health, false) }}
         >
           {displayUtils.healthLabel(props.health)}
         </Text>

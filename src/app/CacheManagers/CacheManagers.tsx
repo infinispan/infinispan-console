@@ -148,7 +148,7 @@ const CacheManagers = () => {
                 component={TextVariants.h3}
                 style={{
                   paddingRight: 10,
-                  color: displayUtils.statusColor(status)
+                  color: displayUtils.statusColor(status, true)
                 }}
               >
                 <DisplayStatusIcon status={status} />
@@ -161,7 +161,8 @@ const CacheManagers = () => {
                 component={TextVariants.h3}
                 style={{
                   paddingRight: 10,
-                  color: displayUtils.statusColor(status)
+                  fontWeight: 'bolder',
+                  color: displayUtils.statusColor(status, false)
                 }}
               >
                 {displayUtils.capitalize(status)}

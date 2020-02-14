@@ -104,9 +104,9 @@ const routes: IAppRoute[] = [
     component: CacheManagers,
     exact: true,
     icon: <VolumeIcon />,
-    label: 'Data container',
+    label: 'Data Container',
     path: '/',
-    title: 'Data container',
+    title: 'Data Container',
     menu: true
   },
   {
@@ -122,9 +122,9 @@ const routes: IAppRoute[] = [
     component: ClusterStatus,
     exact: true,
     icon: <VolumeIcon />,
-    label: 'Cluster status',
-    path: '/cluster-status',
-    title: 'Cluster Status',
+    label: 'Cluster Membership',
+    path: '/cluster-membership',
+    title: 'Cluster Membership',
     menu: true
   },
   {

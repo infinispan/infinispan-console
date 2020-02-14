@@ -144,7 +144,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
     });
   }, []);
 
-  const DisplayClusterStatusHeader = () => {
+  const DisplayClusterMembershipHeader = () => {
     let sizeLabel: string = '0 members in use';
     if (cacheManager) {
       sizeLabel =
@@ -155,7 +155,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
     return (
       <React.Fragment>
         <TextContent>
-          <Text component={TextVariants.h1}>Cluster status</Text>
+          <Text component={TextVariants.h1}>Cluster Membership</Text>
         </TextContent>
         <Toolbar style={{ paddingBottom: 20 }}>
           <ToolbarGroup>
@@ -165,7 +165,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
                   component={TextVariants.h3}
                   style={{
                     paddingRight: 10,
-                    color: chart_color_green_300.value
+                    color: displayUtils.healthColor(cacheManager?.health, true)
                   }}
                 >
                   <DisplayHealthIcon health={status} />
@@ -179,7 +179,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
                   style={{
                     paddingRight: 10,
                     fontWeight: 'bolder',
-                    color: displayUtils.healthColor(cacheManager?.health)
+                    color: displayUtils.healthColor(cacheManager?.health, false)
                   }}
                 >
                   {displayUtils.capitalize(cacheManager?.health)}
@@ -259,7 +259,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
 
   return (
     <PageSection>
-      <DisplayClusterStatusHeader />
+      <DisplayClusterMembershipHeader />
       <DisplayClusterStatus />
     </PageSection>
   );
