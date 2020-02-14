@@ -14,6 +14,7 @@ import {
   Level,
   LevelItem,
   PageSection,
+  PageSectionVariants,
   Text,
   TextContent,
   TextList,
@@ -82,7 +83,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
       );
     }
     return (
-      <Grid gutter="md" style={{ paddingTop: 40 }}>
+      <Grid gutter="md">
         <GridItem span={6} rowSpan={2}>
           <Card>
             <CardHeader>
@@ -285,13 +286,17 @@ const GlobalStats: React.FunctionComponent<any> = props => {
   };
 
   return (
-    <PageSection>
-      <TextContent>
-        <Text component={TextVariants.h1}>Global statistics</Text>
-        <Text component={TextVariants.p}>{descriptionText()}</Text>
-      </TextContent>
-      <DisplayStats />
-    </PageSection>
+    <React.Fragment>
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component={TextVariants.h1}>Global statistics</Text>
+          <Text component={TextVariants.p}>{descriptionText()}</Text>
+        </TextContent>
+      </PageSection>
+      <PageSection>
+        <DisplayStats />
+      </PageSection>
+    </React.Fragment>
   );
 };
 

@@ -16,14 +16,17 @@ import {
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
+  Tooltip,
+  TooltipPosition
 } from '@patternfly/react-core';
 import {
   CubesIcon,
   ErrorCircleOIcon,
   InProgressIcon,
   OffIcon,
-  OkIcon
+  OkIcon,
+  OutlinedQuestionCircleIcon
 } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
@@ -149,21 +152,24 @@ const CacheManagers = () => {
   if (cm !== undefined) {
     title = displayUtils.capitalize(cm.name);
     status = cm.cache_manager_status;
-    localSiteName = cm.local_site ? '(site ' + cm.local_site + ')' : '';
+    localSiteName = cm.local_site ? '| Site ' + cm.local_site : '';
   }
-  return (
-    <React.Fragment>
+
+  const DisplayCacheManagerHeader = () => {
+    return (
       <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component={TextVariants.h1}>
+            Data container - {title}
+            <Tooltip
+              position={TooltipPosition.top}
+              content={<div>Data container name</div>}
+            >
+              <OutlinedQuestionCircleIcon style={{ paddingLeft: 10 }} />
+            </Tooltip>
+          </Text>
+        </TextContent>
         <Toolbar>
-          <ToolbarGroup>
-            <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h1}>
-                  <strong>{title}</strong> {localSiteName}
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-          </ToolbarGroup>
           <ToolbarGroup>
             <ToolbarItem>
               <TextContent>
@@ -192,9 +198,19 @@ const CacheManagers = () => {
                 </Text>
               </TextContent>
             </ToolbarItem>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h3}>{localSiteName}</Text>
+              </TextContent>
+            </ToolbarItem>
           </ToolbarGroup>
         </Toolbar>
       </PageSection>
+    );
+  };
+  return (
+    <React.Fragment>
+      <DisplayCacheManagerHeader />
       <PageSection variant={PageSectionVariants.light}>
         <DisplayCacheManager />
       </PageSection>

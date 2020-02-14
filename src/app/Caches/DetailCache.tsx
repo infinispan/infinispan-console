@@ -14,6 +14,7 @@ import {
   Grid,
   GridItem,
   PageSection,
+  PageSectionVariants,
   Stack,
   StackItem,
   Text,
@@ -349,91 +350,87 @@ const DetailCache: React.FunctionComponent<any> = props => {
   };
 
   return (
-    <PageSection>
-      <Breadcrumb>
-        <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
-        <BreadcrumbItem isActive>Cache detail</BreadcrumbItem>
-      </Breadcrumb>
-      <Stack gutter={'lg'}>
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.h1}>
-              {' '}
-              Cache {detail.name}
-              <Badge
-                style={{
-                  backgroundColor: displayUtils.cacheTypeColor(detail.type),
-                  verticalAlign: 'middle',
-                  marginLeft: 10,
-                  fontSize: 15
-                }}
-              >
-                {detail.type}
-              </Badge>
-            </Text>
-          </TextContent>
-        </StackItem>
-        <StackItem>
-          <ToolbarGroup>
-            <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h3} style={{ marginLeft: 10 }}>
-                  <strong>Features:</strong>
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-            <ToolbarItem>
-              <NoFeature />
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheFeature
-                icon={<Spinner2Icon />}
-                feature={detail.bounded}
-                label={'Bounded'}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheFeature
-                icon={<StorageDomainIcon />}
-                feature={detail.indexed}
-                label={'Indexed'}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheFeature
-                icon={<SaveIcon />}
-                feature={detail.persistent}
-                label={'Persisted'}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheFeature
-                icon={<ServiceIcon />}
-                feature={detail.transactional}
-                label={'Transactional'}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheFeature
-                icon={<KeyIcon />}
-                feature={detail.secured}
-                label={'Secured'}
-              />
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheFeature
-                icon={<DegradedIcon />}
-                feature={detail.has_remote_backup}
-                label={'Has remote backups'}
-              />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </StackItem>
-        <StackItem>
-          <CacheStats />
-        </StackItem>
-      </Stack>
-    </PageSection>
+    <React.Fragment>
+      <PageSection variant={PageSectionVariants.light}>
+        <Breadcrumb>
+          <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
+          <BreadcrumbItem isActive>Cache detail</BreadcrumbItem>
+        </Breadcrumb>
+        <TextContent>
+          <Text component={TextVariants.h1}>
+            {' '}
+            Cache {detail.name}
+            <Badge
+              style={{
+                backgroundColor: displayUtils.cacheTypeColor(detail.type),
+                verticalAlign: 'middle',
+                marginLeft: 10,
+                fontSize: 15
+              }}
+            >
+              {detail.type}
+            </Badge>
+          </Text>
+        </TextContent>
+        <ToolbarGroup>
+          <ToolbarItem>
+            <TextContent>
+              <Text component={TextVariants.h3} style={{ marginLeft: 10 }}>
+                <strong>Features:</strong>
+              </Text>
+            </TextContent>
+          </ToolbarItem>
+          <ToolbarItem>
+            <NoFeature />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              icon={<Spinner2Icon />}
+              feature={detail.bounded}
+              label={'Bounded'}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              icon={<StorageDomainIcon />}
+              feature={detail.indexed}
+              label={'Indexed'}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              icon={<SaveIcon />}
+              feature={detail.persistent}
+              label={'Persisted'}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              icon={<ServiceIcon />}
+              feature={detail.transactional}
+              label={'Transactional'}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              icon={<KeyIcon />}
+              feature={detail.secured}
+              label={'Secured'}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              icon={<DegradedIcon />}
+              feature={detail.has_remote_backup}
+              label={'Has remote backups'}
+            />
+          </ToolbarItem>
+        </ToolbarGroup>
+      </PageSection>
+      <PageSection>
+        <CacheStats />
+      </PageSection>
+    </React.Fragment>
   );
 };
 

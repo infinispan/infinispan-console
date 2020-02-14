@@ -14,6 +14,7 @@ import {
   GridItem,
   Label,
   PageSection,
+  PageSectionVariants,
   Pagination,
   Stack,
   StackItem,
@@ -153,11 +154,11 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
           : cacheManager.cluster_size + ' member in use';
     }
     return (
-      <React.Fragment>
+      <PageSection variant={PageSectionVariants.light}>
         <TextContent>
           <Text component={TextVariants.h1}>Cluster Membership</Text>
         </TextContent>
-        <Toolbar style={{ paddingBottom: 20 }}>
+        <Toolbar>
           <ToolbarGroup>
             <ToolbarItem>
               <TextContent>
@@ -193,7 +194,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
             </ToolbarItem>
           </ToolbarGroup>
         </Toolbar>
-      </React.Fragment>
+      </PageSection>
     );
   };
 
@@ -258,10 +259,12 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   };
 
   return (
-    <PageSection>
+    <React.Fragment>
       <DisplayClusterMembershipHeader />
-      <DisplayClusterStatus />
-    </PageSection>
+      <PageSection variant={PageSectionVariants.light}>
+        <DisplayClusterStatus />
+      </PageSection>
+    </React.Fragment>
   );
 };
 
