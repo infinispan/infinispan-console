@@ -69,7 +69,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     { title: 'Name', transforms: [cellWidth(20), textCenter] },
     {
       title: 'Type',
-      transforms: [cellWidth(30), textCenter],
+      transforms: [cellWidth(20), textCenter],
       cellTransforms: [textCenter]
     },
     {
@@ -78,32 +78,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       cellTransforms: [textCenter]
     },
     {
-      title: 'Bounded',
-      transforms: [textCenter],
-      cellTransforms: [textCenter]
-    },
-    {
-      title: 'Indexed',
-      transforms: [textCenter],
-      cellTransforms: [textCenter]
-    },
-    {
-      title: 'Persisted',
-      transforms: [textCenter],
-      cellTransforms: [textCenter]
-    },
-    {
-      title: 'Transactional',
-      transforms: [textCenter],
-      cellTransforms: [textCenter]
-    },
-    {
-      title: 'Secured',
-      transforms: [textCenter],
-      cellTransforms: [textCenter]
-    },
-    {
-      title: 'Remote backups',
+      title: 'Features',
       transforms: [textCenter],
       cellTransforms: [textCenter]
     }
@@ -185,12 +160,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
             { title: <CacheName name={cache.name} /> },
             { title: <CacheType type={cache.type} /> },
             { title: <CacheHealth health={cache.health} /> },
-            { title: <CacheFeature isPresent={cache.bounded} /> },
-            { title: <CacheFeature isPresent={cache.indexed} /> },
-            { title: <CacheFeature isPresent={cache.persistent} /> },
-            { title: <CacheFeature isPresent={cache.transactional} /> },
-            { title: <CacheFeature isPresent={cache.secured} /> },
-            { title: <CacheFeature isPresent={cache.hasRemoteBackup} /> }
+            { title: <CacheFeatures cacheInfo={cache} /> }
           ]
           //TODO {title: <CacheActionLinks name={cache.name}/>}]
         };
@@ -199,11 +169,63 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     setRows(rows);
   };
 
-  const CacheFeature = (props: { isPresent: boolean }) => {
+  const CacheFeatures = (props: { cacheInfo: CacheInfo }) => {
+    return (
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarItem>
+            <CacheFeature
+              name={'Bounded'}
+              isPresent={props.cacheInfo.bounded}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              name={'Indexed'}
+              isPresent={props.cacheInfo.indexed}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              name={'Persisted'}
+              isPresent={props.cacheInfo.persistent}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              name={'Transactional'}
+              isPresent={props.cacheInfo.transactional}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              name={'Secured'}
+              isPresent={props.cacheInfo.secured}
+            />
+          </ToolbarItem>
+          <ToolbarItem>
+            <CacheFeature
+              name={'Backups'}
+              isPresent={props.cacheInfo.hasRemoteBackup}
+            />
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
+    );
+  };
+
+  const CacheFeature = (props: { name: string; isPresent: boolean }) => {
     if (!props.isPresent) {
       return <span />;
     }
-    return <OkIcon color={chart_color_green_300.value} />;
+
+    return (
+      <TextContent>
+        <Text component={TextVariants.small} style={{ paddingRight: 10 }}>
+          <OkIcon color={chart_color_green_300.value} /> {props.name}
+        </Text>
+      </TextContent>
+    );
   };
 
   const CacheName = (props: { name: string }) => {
