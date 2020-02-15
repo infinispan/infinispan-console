@@ -9,7 +9,7 @@ class TasksService {
 
   public getTasks(): Promise<Task[]> {
     return utils
-      .restCall(this.endpoint + '/tasks/', 'GET')
+      .restCall(this.endpoint + '/tasks?type=user', 'GET')
       .then(response => response.json())
       .then(tasks =>
         tasks.map(
