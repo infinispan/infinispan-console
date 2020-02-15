@@ -121,9 +121,9 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
         toggleTextCollapsed="View"
         key={name + '-config-value'}
       >
-        <TextContent>
-          <Text component={TextVariants.p}>
-            <pre id={props.name + '-json'}>{props.config}</pre>
+        <TextContent key={props.name + '-config-text-content'}>
+          <Text component={TextVariants.pre} key={props.name + '-config-text'}>
+            {props.config}
           </Text>
         </TextContent>
       </Expandable>
