@@ -13,7 +13,7 @@ import {
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailCache } from '@app/Caches/DetailCache';
-import { DetailConfigurations } from '@app/CacheManagers/DetailConfigurations';
+import { DetailConfigurations } from '@app/Caches/DetailConfigurations';
 import { ServerGroupIcon, VolumeIcon } from '@patternfly/react-icons';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';

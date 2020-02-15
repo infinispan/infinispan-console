@@ -417,7 +417,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
                   }
                 }}
               >
-                <Button variant={'link'}>Configurations</Button>
+                <Button variant={'link'}>Configuration templates</Button>
               </Link>
             </ToolbarItem>
           </ToolbarGroup>
