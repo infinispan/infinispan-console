@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  textCenter
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
   Button,
   EmptyState,
-  EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Grid,
-  GridItem,
+  Flex,
+  FlexItem,
   Pagination,
   Select,
   SelectOption,
@@ -28,18 +21,13 @@ import {
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem,
-  ToolbarSection
+  ToolbarItem
 } from '@patternfly/react-core';
-import { chart_color_green_300 } from '@patternfly/react-tokens';
+import {chart_color_green_300} from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
-import { OkIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
-import { Link } from 'react-router-dom';
-import {
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem
-} from '@patternfly/react-core/dist/js/experimental';
+import {OkIcon, SearchIcon} from '@patternfly/react-icons';
+import {Link} from 'react-router-dom';
+import {DataToolbar, DataToolbarContent, DataToolbarItem} from '@patternfly/react-core/dist/js/experimental';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -171,46 +159,44 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
 
   const CacheFeatures = (props: { cacheInfo: CacheInfo }) => {
     return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem>
+      <Flex>
+          <FlexItem>
             <CacheFeature
               name={'Bounded'}
               isPresent={props.cacheInfo.bounded}
             />
-          </ToolbarItem>
-          <ToolbarItem>
+          </FlexItem>
+          <FlexItem>
             <CacheFeature
               name={'Indexed'}
               isPresent={props.cacheInfo.indexed}
             />
-          </ToolbarItem>
-          <ToolbarItem>
+          </FlexItem>
+          <FlexItem>
             <CacheFeature
               name={'Persisted'}
               isPresent={props.cacheInfo.persistent}
             />
-          </ToolbarItem>
-          <ToolbarItem>
+          </FlexItem>
+          <FlexItem>
             <CacheFeature
               name={'Transactional'}
               isPresent={props.cacheInfo.transactional}
             />
-          </ToolbarItem>
-          <ToolbarItem>
+          </FlexItem>
+          <FlexItem>
             <CacheFeature
               name={'Secured'}
               isPresent={props.cacheInfo.secured}
             />
-          </ToolbarItem>
-          <ToolbarItem>
+          </FlexItem>
+          <FlexItem>
             <CacheFeature
               name={'Backups'}
               isPresent={props.cacheInfo.hasRemoteBackup}
             />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
+          </FlexItem>
+      </Flex>
     );
   };
 
@@ -259,7 +245,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     return (
       <TextContent>
         <Text
-          component={TextVariants.h5}
+          component={TextVariants.p}
           style={{ color: displayUtils.healthColor(props.health, false) }}
         >
           {displayUtils.healthLabel(props.health)}

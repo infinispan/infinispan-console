@@ -1,6 +1,9 @@
 echo "= Init create data"
 echo "= Delete caches"
 curl -XDELETE  http://localhost:11222/rest/v2/caches/users
+curl -XDELETE  http://localhost:11222/rest/v2/caches/managers
+curl -XDELETE  http://localhost:11222/rest/v2/caches/programmers
+curl -XDELETE  http://localhost:11222/rest/v2/caches/seniors
 curl -XDELETE  http://localhost:11222/rest/v2/caches/people
 curl -XDELETE  http://localhost:11222/rest/v2/caches/example
 curl -XDELETE  http://localhost:11222/rest/v2/caches/local_users
@@ -11,6 +14,9 @@ curl -XDELETE  http://localhost:11222/rest/v2/caches/xsite-transactional
 
 echo "= Create caches"
 curl -XPOST  http://localhost:11222/rest/v2/caches/users?template=org.infinispan.DIST_ASYNC
+curl -XPOST  http://localhost:11222/rest/v2/caches/managers?template=org.infinispan.REPL_SYNC
+curl -XPOST  http://localhost:11222/rest/v2/caches/programmers?template=org.infinispan.LOCAL
+curl -XPOST  http://localhost:11222/rest/v2/caches/seniors?template=org.infinispan.LOCAL
 curl -XPOST  http://localhost:11222/rest/v2/caches/people?template=org.infinispan.REPL_ASYNC
 curl -XPOST  http://localhost:11222/rest/v2/caches/example?template=org.infinispan.DIST_SYNC
 curl -XPOST  http://localhost:11222/rest/v2/caches/local_users?template=org.infinispan.LOCAL
