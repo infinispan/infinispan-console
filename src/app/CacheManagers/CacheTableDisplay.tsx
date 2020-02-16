@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  textCenter
+} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -23,11 +29,15 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
-import {chart_color_green_300} from '@patternfly/react-tokens';
+import { chart_color_green_300 } from '@patternfly/react-tokens';
 import displayUtils from '../../services/displayUtils';
-import {OkIcon, SearchIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
-import {DataToolbar, DataToolbarContent, DataToolbarItem} from '@patternfly/react-core/dist/js/experimental';
+import { OkIcon, SearchIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
+import {
+  DataToolbar,
+  DataToolbarContent,
+  DataToolbarItem
+} from '@patternfly/react-core/dist/js/experimental';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -160,42 +170,33 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const CacheFeatures = (props: { cacheInfo: CacheInfo }) => {
     return (
       <Flex>
-          <FlexItem>
-            <CacheFeature
-              name={'Bounded'}
-              isPresent={props.cacheInfo.bounded}
-            />
-          </FlexItem>
-          <FlexItem>
-            <CacheFeature
-              name={'Indexed'}
-              isPresent={props.cacheInfo.indexed}
-            />
-          </FlexItem>
-          <FlexItem>
-            <CacheFeature
-              name={'Persisted'}
-              isPresent={props.cacheInfo.persistent}
-            />
-          </FlexItem>
-          <FlexItem>
-            <CacheFeature
-              name={'Transactional'}
-              isPresent={props.cacheInfo.transactional}
-            />
-          </FlexItem>
-          <FlexItem>
-            <CacheFeature
-              name={'Secured'}
-              isPresent={props.cacheInfo.secured}
-            />
-          </FlexItem>
-          <FlexItem>
-            <CacheFeature
-              name={'Backups'}
-              isPresent={props.cacheInfo.hasRemoteBackup}
-            />
-          </FlexItem>
+        <FlexItem>
+          <CacheFeature name={'Bounded'} isPresent={props.cacheInfo.bounded} />
+        </FlexItem>
+        <FlexItem>
+          <CacheFeature name={'Indexed'} isPresent={props.cacheInfo.indexed} />
+        </FlexItem>
+        <FlexItem>
+          <CacheFeature
+            name={'Persisted'}
+            isPresent={props.cacheInfo.persistent}
+          />
+        </FlexItem>
+        <FlexItem>
+          <CacheFeature
+            name={'Transactional'}
+            isPresent={props.cacheInfo.transactional}
+          />
+        </FlexItem>
+        <FlexItem>
+          <CacheFeature name={'Secured'} isPresent={props.cacheInfo.secured} />
+        </FlexItem>
+        <FlexItem>
+          <CacheFeature
+            name={'Backups'}
+            isPresent={props.cacheInfo.hasRemoteBackup}
+          />
+        </FlexItem>
       </Flex>
     );
   };

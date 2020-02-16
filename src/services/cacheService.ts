@@ -135,17 +135,20 @@ class CacheService {
       });
   }
 
-  public async retrieveConfig(cacheName: string) : Promise<CacheConfig> {
-    return utils.restCall(
-      this.endpoint + '/caches/' + cacheName + '?action=config',
-      'GET'
-    )
+  public async retrieveConfig(cacheName: string): Promise<CacheConfig> {
+    return utils
+      .restCall(
+        this.endpoint + '/caches/' + cacheName + '?action=config',
+        'GET'
+      )
       .then(response => response.json())
-      .then(data =>
-        <CacheConfig>{
+      .then(
+        data =>
+          <CacheConfig>{
             name: cacheName,
             config: JSON.stringify(data)
-      });
+          }
+      );
   }
 
   private mapCacheType(config: JSON): string {

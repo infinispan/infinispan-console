@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import {
   Badge,
   Breadcrumb,
-  BreadcrumbItem, Button,
+  BreadcrumbItem,
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -14,7 +15,9 @@ import {
   Grid,
   GridItem,
   PageSection,
-  PageSectionVariants, Popover, PopoverPosition,
+  PageSectionVariants,
+  Popover,
+  PopoverPosition,
   Stack,
   StackItem,
   Text,
@@ -24,9 +27,11 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title, Toolbar,
+  Title,
+  Toolbar,
   ToolbarGroup,
-  ToolbarItem, ToolbarSection
+  ToolbarItem,
+  ToolbarSection
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import {
@@ -63,7 +68,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
   const cacheName: string = props.location.state.cacheName;
   const [detail, setDetail] = useState<DetailedInfinispanCache>(emptyDetail);
   const [xsite, setXsite] = useState<XSite[]>([]);
-  const [config, setConfig] = useState<undefined|CacheConfig>(undefined);
+  const [config, setConfig] = useState<undefined | CacheConfig>(undefined);
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName).then(detailedCache => {
@@ -310,7 +315,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
     );
   };
 
-  const CacheFeature = (props: {feature:boolean, label:string}) => {
+  const CacheFeature = (props: { feature: boolean; label: string }) => {
     if (!props.feature) {
       return <span />;
     }
@@ -376,54 +381,42 @@ const DetailCache: React.FunctionComponent<any> = props => {
           </Text>
         </TextContent>
         <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <TextContent>
-              <Text component={TextVariants.h3}>
-                <strong>Features:</strong>
-              </Text>
-            </TextContent>
-          </ToolbarItem>
-          <ToolbarItem>
-            <NoFeature />
-          </ToolbarItem>
-          <ToolbarItem>
-            <CacheFeature
-              feature={detail.bounded}
-              label={'Bounded'}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <CacheFeature
-              feature={detail.indexed}
-              label={'Indexed'}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <CacheFeature
-              feature={detail.persistent}
-              label={'Persisted'}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <CacheFeature
-              feature={detail.transactional}
-              label={'Transactional'}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <CacheFeature
-              feature={detail.secured}
-              label={'Secured'}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <CacheFeature
-              feature={detail.has_remote_backup}
-              label={'Backups'}
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h3}>
+                  <strong>Features:</strong>
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
+              <NoFeature />
+            </ToolbarItem>
+            <ToolbarItem>
+              <CacheFeature feature={detail.bounded} label={'Bounded'} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <CacheFeature feature={detail.indexed} label={'Indexed'} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <CacheFeature feature={detail.persistent} label={'Persisted'} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <CacheFeature
+                feature={detail.transactional}
+                label={'Transactional'}
+              />
+            </ToolbarItem>
+            <ToolbarItem>
+              <CacheFeature feature={detail.secured} label={'Secured'} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <CacheFeature
+                feature={detail.has_remote_backup}
+                label={'Backups'}
+              />
+            </ToolbarItem>
+          </ToolbarGroup>
         </Toolbar>
       </PageSection>
       <PageSection>
