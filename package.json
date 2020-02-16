@@ -1,6 +1,6 @@
 {
   "name": "infinispan-console",
-  "version": "0.1.SNAPSHOT",
+  "version": "0.4.SNAPSHOT",
   "description": "The console for Infinispan/Red Hat Datagrid",
   "main": "index.js",
   "repository": "https://github.com/patternfly/patternfly-react-seed.git",
