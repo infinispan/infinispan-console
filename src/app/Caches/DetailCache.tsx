@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   Badge,
   Breadcrumb,
-  BreadcrumbItem,
+  BreadcrumbItem, Button,
   Card,
   CardBody,
   CardHeader,
@@ -14,7 +14,7 @@ import {
   Grid,
   GridItem,
   PageSection,
-  PageSectionVariants,
+  PageSectionVariants, Popover, PopoverPosition,
   Stack,
   StackItem,
   Text,
@@ -24,9 +24,9 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title,
+  Title, Toolbar,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem, ToolbarSection
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import {
@@ -63,6 +63,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
   const cacheName: string = props.location.state.cacheName;
   const [detail, setDetail] = useState<DetailedInfinispanCache>(emptyDetail);
   const [xsite, setXsite] = useState<XSite[]>([]);
+  const [config, setConfig] = useState<undefined|CacheConfig>(undefined);
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName).then(detailedCache => {
@@ -70,6 +71,9 @@ const DetailCache: React.FunctionComponent<any> = props => {
       if (detailedCache.has_remote_backup) {
         cacheService.retrieveXSites(cacheName).then(xsites => {
           setXsite(xsites);
+        });
+        cacheService.retrieveConfig(cacheName).then(config => {
+          setConfig(config);
         });
       }
     });
@@ -306,7 +310,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
     );
   };
 
-  const CacheFeature = props => {
+  const CacheFeature = (props: {feature:boolean, label:string}) => {
     if (!props.feature) {
       return <span />;
     }
@@ -358,7 +362,6 @@ const DetailCache: React.FunctionComponent<any> = props => {
         </Breadcrumb>
         <TextContent>
           <Text component={TextVariants.h1}>
-            {' '}
             Cache {detail.name}
             <Badge
               style={{
@@ -372,10 +375,11 @@ const DetailCache: React.FunctionComponent<any> = props => {
             </Badge>
           </Text>
         </TextContent>
+        <Toolbar>
         <ToolbarGroup>
           <ToolbarItem>
             <TextContent>
-              <Text component={TextVariants.h3} style={{ marginLeft: 10 }}>
+              <Text component={TextVariants.h3}>
                 <strong>Features:</strong>
               </Text>
             </TextContent>
@@ -385,47 +389,42 @@ const DetailCache: React.FunctionComponent<any> = props => {
           </ToolbarItem>
           <ToolbarItem>
             <CacheFeature
-              icon={<Spinner2Icon />}
               feature={detail.bounded}
               label={'Bounded'}
             />
           </ToolbarItem>
           <ToolbarItem>
             <CacheFeature
-              icon={<StorageDomainIcon />}
               feature={detail.indexed}
               label={'Indexed'}
             />
           </ToolbarItem>
           <ToolbarItem>
             <CacheFeature
-              icon={<SaveIcon />}
               feature={detail.persistent}
               label={'Persisted'}
             />
           </ToolbarItem>
           <ToolbarItem>
             <CacheFeature
-              icon={<ServiceIcon />}
               feature={detail.transactional}
               label={'Transactional'}
             />
           </ToolbarItem>
           <ToolbarItem>
             <CacheFeature
-              icon={<KeyIcon />}
               feature={detail.secured}
               label={'Secured'}
             />
           </ToolbarItem>
           <ToolbarItem>
             <CacheFeature
-              icon={<DegradedIcon />}
               feature={detail.has_remote_backup}
-              label={'Has remote backups'}
+              label={'Backups'}
             />
           </ToolbarItem>
         </ToolbarGroup>
+        </Toolbar>
       </PageSection>
       <PageSection>
         <CacheStats />
