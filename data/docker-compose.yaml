@@ -5,7 +5,7 @@ networks:
     driver: bridge
 services:
   infinispan-server-lon-1:
-    image: infinispan/server
+    image: infinispan/server:10.1.2.Final
     ports:
       - "11222:11222"
     container_name: ispn-lon-1
@@ -15,31 +15,10 @@ services:
       - ${PWD}:/user-config
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON
   infinispan-server-lon-2:
-    image: infinispan/server
+    image: infinispan/server:10.1.2.Final
     ports:
-      - "11322:11222"
+      - "11221:11222"
     container_name: ispn-lon-2
-    networks:
-      - mynetwork
-    volumes:
-      - ${PWD}:/user-config
-    command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON
-  infinispan-server-lon-3:
-    image: infinispan/server
-    ports:
-      - "11422:11222"
-    container_name: ispn-lon-3
-    networks:
-      - mynetwork
-    volumes:
-      - ${PWD}:/user-config
-    command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON
-
-  infinispan-server-lon-4:
-    image: infinispan/server
-    ports:
-      - "11522:11222"
-    container_name: ispn-lon-4
     networks:
       - mynetwork
     volumes:
@@ -47,12 +26,9 @@ services:
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON
 
   infinispan-server-nyc-1:
-    image: infinispan/server
-    environment:
-      - USER=Titus Bramble
-      - PASS=Shambles
+    image: infinispan/server:10.1.2.Final
     ports:
-      - "12222:11222"
+      - "32221:11222"
     container_name: ispn-nyc-1
     networks:
       - mynetwork
@@ -60,9 +36,9 @@ services:
       - ${PWD}:/user-config
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.15 -Drelay.site=NYC
   infinispan-server-nyc-2:
-    image: infinispan/server
+    image: infinispan/server:10.1.2.Final
     ports:
-      - "12322:11222"
+      - "32222:11222"
     container_name: ispn-nyc-2
     networks:
       - mynetwork
