@@ -29,6 +29,7 @@ import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import dataContainerService from '../../services/dataContainerService';
 import { Link } from 'react-router-dom';
 import { CardTitle } from '@app/Common/CardTitle';
+import displayUtils from '../../services/displayUtils';
 
 const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -107,31 +108,33 @@ const GlobalStats: React.FunctionComponent<any> = props => {
               <TextContent>
                 <TextList component={TextListVariants.dl}>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.number_of_entries}
+                    {displayUtils.formatNumber(stats.number_of_entries)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Number of entries
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.current_number_of_entries_in_memory}
+                    {displayUtils.formatNumber(
+                      stats.current_number_of_entries_in_memory
+                    )}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Current number of entries in memory
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.total_number_of_entries}
+                    {displayUtils.formatNumber(stats.total_number_of_entries)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Total number of entries
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.data_memory_used}
+                    {displayUtils.formatNumber(stats.data_memory_used)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Data memory used
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.off_heap_memory_used}
+                    {displayUtils.formatNumber(stats.off_heap_memory_used)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Off heap memory used
@@ -162,13 +165,33 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                   ]}
                   labels={({ datum }) => `${datum.x}: ${datum.y}%`}
                   legendData={[
-                    { name: 'Hits: ' + stats.hits },
-                    { name: 'Misses: ' + stats.misses },
-                    { name: 'Retrievals: ' + stats.retrievals },
-                    { name: 'Stores: ' + stats.stores },
-                    { name: 'Remove Hits: ' + stats.remove_hits },
-                    { name: 'Remove Misses: ' + stats.remove_misses },
-                    { name: 'Evictions: ' + stats.evictions }
+                    { name: 'Hits: ' + displayUtils.formatNumber(stats.hits) },
+                    {
+                      name: 'Misses: ' + displayUtils.formatNumber(stats.misses)
+                    },
+                    {
+                      name:
+                        'Retrievals: ' +
+                        displayUtils.formatNumber(stats.retrievals)
+                    },
+                    {
+                      name: 'Stores: ' + displayUtils.formatNumber(stats.stores)
+                    },
+                    {
+                      name:
+                        'Remove Hits: ' +
+                        displayUtils.formatNumber(stats.remove_hits)
+                    },
+                    {
+                      name:
+                        'Remove Misses: ' +
+                        displayUtils.formatNumber(stats.remove_misses)
+                    },
+                    {
+                      name:
+                        'Evictions: ' +
+                        displayUtils.formatNumber(stats.evictions)
+                    }
                   ]}
                   legendOrientation="vertical"
                   legendPosition="right"
@@ -199,31 +222,31 @@ const GlobalStats: React.FunctionComponent<any> = props => {
               <TextContent>
                 <TextList component={TextListVariants.dl}>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.average_read_time}
+                    {displayUtils.formatNumber(stats.average_read_time)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Avg READS
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.average_remove_time}
+                    {displayUtils.formatNumber(stats.average_remove_time)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Avg REMOVES
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.average_write_time}
+                    {displayUtils.formatNumber(stats.average_write_time)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Avg WRITES
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.read_write_ratio}
+                    {displayUtils.formatNumber(stats.read_write_ratio)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Read/Write Ratio
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.hit_ratio}
+                    {displayUtils.formatNumber(stats.hit_ratio)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Hits Ratio
@@ -257,13 +280,13 @@ const GlobalStats: React.FunctionComponent<any> = props => {
               <TextContent style={{ height: '208px' }}>
                 <TextList component={TextListVariants.dl}>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.time_since_start}
+                    {displayUtils.formatNumber(stats.time_since_start)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Time since start
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
-                    {stats.time_since_reset}
+                    {displayUtils.formatNumber(stats.time_since_reset)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
                     Time since reset

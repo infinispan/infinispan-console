@@ -113,19 +113,19 @@ const DetailCache: React.FunctionComponent<any> = props => {
       <TextContent>
         <TextList component={TextListVariants.dl}>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.average_read_time}
+            {displayUtils.formatNumber(detail.stats.average_read_time)}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Avg Reads
           </TextListItem>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.average_write_time}
+            {displayUtils.formatNumber(detail.stats.average_write_time)}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Avg Writes
           </TextListItem>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.average_remove_time}
+            {displayUtils.formatNumber(detail.stats.average_remove_time)}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Avg Removes
@@ -165,25 +165,29 @@ const DetailCache: React.FunctionComponent<any> = props => {
       <TextContent>
         <TextList component={TextListVariants.dl}>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.current_number_of_entries}
+            {displayUtils.formatNumber(detail.stats.current_number_of_entries)}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Current number of entries
           </TextListItem>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.current_number_of_entries_in_memory}
+            {displayUtils.formatNumber(
+              detail.stats.current_number_of_entries_in_memory
+            )}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Current number of entries in memory
           </TextListItem>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.total_number_of_entries}
+            {displayUtils.formatNumber(detail.stats.total_number_of_entries)}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Total number of entries
           </TextListItem>
           <TextListItem component={TextListItemVariants.dt}>
-            {detail.stats.required_minimum_number_of_nodes}
+            {displayUtils.formatNumber(
+              detail.stats.required_minimum_number_of_nodes
+            )}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             Required Minimum number of nodes
@@ -245,13 +249,33 @@ const DetailCache: React.FunctionComponent<any> = props => {
           ]}
           labels={({ datum }) => `${datum.x}: ${datum.y}%`}
           legendData={[
-            { name: 'Hits: ' + detail.stats.hits },
-            { name: 'Misses: ' + detail.stats.misses },
-            { name: 'Retrievals: ' + detail.stats.retrievals },
-            { name: 'Stores: ' + detail.stats.stores },
-            { name: 'Remove Hits: ' + detail.stats.remove_hits },
-            { name: 'Remove Misses: ' + detail.stats.remove_misses },
-            { name: 'Evictions: ' + detail.stats.evictions }
+            { name: 'Hits: ' + displayUtils.formatNumber(detail.stats.hits) },
+            {
+              name: 'Misses: ' + displayUtils.formatNumber(detail.stats.misses)
+            },
+            {
+              name:
+                'Retrievals: ' +
+                displayUtils.formatNumber(detail.stats.retrievals)
+            },
+            {
+              name: 'Stores: ' + displayUtils.formatNumber(detail.stats.stores)
+            },
+            {
+              name:
+                'Remove Hits: ' +
+                displayUtils.formatNumber(detail.stats.remove_hits)
+            },
+            {
+              name:
+                'Remove Misses: ' +
+                displayUtils.formatNumber(detail.stats.remove_misses)
+            },
+            {
+              name:
+                'Evictions: ' +
+                displayUtils.formatNumber(detail.stats.evictions)
+            }
           ]}
           legendOrientation="vertical"
           legendPosition="right"
@@ -306,11 +330,11 @@ const DetailCache: React.FunctionComponent<any> = props => {
     ) {
       return <span />;
     }
+    const message = 'There are no features in cache';
+
     return (
       <TextContent style={{ paddingLeft: 10 }}>
-        <Text component={TextVariants.h3}>
-          There are no features in this cache
-        </Text>
+        <Text component={TextVariants.h3}>{message}</Text>
       </TextContent>
     );
   };
@@ -328,15 +352,18 @@ const DetailCache: React.FunctionComponent<any> = props => {
 
   const CacheStats = () => {
     if (detail.stats == undefined || !detail.stats.enabled) {
+      const message = detail.name + ' cache has not statistics enabled';
+
       return (
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel="h5" size="lg">
-            Statistics are not enabled
+            Statistics
           </Title>
           <EmptyStateBody>
-            <strong>{detail.name + ' '}</strong> cache has not statistics
-            enabled
+            <TextContent>
+              <Text component={TextVariants.p}>{message}</Text>
+            </TextContent>
           </EmptyStateBody>
         </EmptyState>
       );

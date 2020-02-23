@@ -13,6 +13,7 @@ import {
   chart_color_red_400,
   chart_global_label_Fill
 } from '@patternfly/react-tokens';
+import { number } from 'prop-types';
 
 class DisplayUtils {
   public healthColor(health: string | undefined, isIcon: boolean): string {
@@ -145,6 +146,12 @@ class DisplayUtils {
     if (value === undefined) return '';
 
     return value.charAt(0).toUpperCase() + value.slice(1).toLocaleLowerCase();
+  }
+
+  public formatNumber(digit: number | undefined): string {
+    if (!digit) return '0';
+
+    return digit.toLocaleString('en', { maximumFractionDigits: 2 });
   }
 }
 
