@@ -1,5 +1,3 @@
-import { user } from '@app/routes';
-
 class Utils {
   public isDevMode(): boolean {
     return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -15,9 +13,6 @@ class Utils {
 
   public restCall(url: string, method: string): Promise<Response> {
     let headers = new Headers();
-    if (!this.isDevMode()) {
-      //headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
-    }
     return fetch(url, {
       method: method,
       credentials: 'include',
@@ -32,9 +27,6 @@ class Utils {
     contentType: string
   ): Promise<Response> {
     let headers = new Headers();
-    if (!this.isDevMode()) {
-      //headers.set('Authorization', 'Basic ' + btoa(user.user + ":" + user.password));
-    }
     headers.append('Content-Type', contentType);
     return fetch(url, {
       method: method,

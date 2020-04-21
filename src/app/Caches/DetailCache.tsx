@@ -58,7 +58,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
   const [detail, setDetail] = useState<DetailedInfinispanCache>(emptyDetail);
   const [xsite, setXsite] = useState<XSite[]>([]);
   const [config, setConfig] = useState<undefined | CacheConfig>(undefined);
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState(1);
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName).then(detailedCache => {

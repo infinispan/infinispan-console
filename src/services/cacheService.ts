@@ -12,6 +12,11 @@ class CacheService {
     this.endpoint = endpoint;
   }
 
+  /**
+   * Retrieves all the properties to be displayed in the cache detail in a single rest call
+   *
+   * @param cacheName
+   */
   public retrieveFullDetail(
     cacheName: string
   ): Promise<DetailedInfinispanCache> {
@@ -27,7 +32,7 @@ class CacheService {
           hits: data.stats.hits,
           current_number_of_entries: data.stats.current_number_of_entries,
           current_number_of_entries_in_memory:
-            data.stats.current_number_of_entries_in_memory,
+          data.stats.current_number_of_entries_in_memory,
           total_number_of_entries: data.stats.total_number_of_entries,
           stores: data.stats.stores,
           off_heap_memory_used: data.stats.off_heap_memory_used,
@@ -43,7 +48,7 @@ class CacheService {
           average_remove_time: data.stats.average_remove_time,
           average_remove_time_nanos: data.stats.average_remove_time_nanos,
           required_minimum_number_of_nodes:
-            data.stats.required_minimum_number_of_nodes
+          data.stats.required_minimum_number_of_nodes
         };
 
         return <DetailedInfinispanCache>{
@@ -65,29 +70,31 @@ class CacheService {
       });
   }
 
+  /**
+   * Creates a cache by configuration name.
+   * The template must be present in the server
+   *
+   * @param cacheName, the cache name
+   * @param configName, the template name
+   */
   public async createCacheByConfigName(
     cacheName: string,
     configName: string
   ): Promise<ActionResponse> {
-    return utils
-      .restCall(
-        this.endpoint + '/caches/' + cacheName + '?template=' + configName,
-        'POST'
-      )
-      .then(response => response.text())
-      .then(text =>
-        text == ''
-          ? <ActionResponse>{
-              message: 'Cache ' + cacheName + ' created with success',
-              success: true
-            }
-          : <ActionResponse>{ message: text, success: false }
-      )
-      .catch(
-        error => <ActionResponse>{ message: error.toString(), success: false }
-      );
+    let createCachePromise = utils.restCall(
+      this.endpoint + '/caches/' + cacheName + '?template=' + configName,
+      'POST'
+    );
+    return this.handleCreateCacheResult(cacheName, createCachePromise);
   }
 
+  /**
+   * Create a cache with the configuration provided.
+   * Config can be in json or xml format
+   *
+   * @param cacheName, the cache name
+   * @param config, the configuration to send in the body
+   */
   public async createCacheWithConfiguration(
     cacheName: string,
     config: string
@@ -98,24 +105,46 @@ class CacheService {
     } catch (e) {
       contentType = 'application/xml';
     }
-    return utils
-      .restCallWithBody(
-        this.endpoint + '/caches/' + cacheName,
-        'POST',
-        config,
-        contentType
-      )
-      .then(response => response.text())
-      .then(text =>
-        text == ''
-          ? <ActionResponse>{
-              message: 'Cache ' + cacheName + ' created with success',
-              success: true
-            }
-          : <ActionResponse>{ message: text, success: false }
-      )
-      .catch(
-        error => <ActionResponse>{ message: error.toString(), success: false }
+    let createCachePromise = utils.restCallWithBody(
+      this.endpoint + '/caches/' + cacheName,
+      'POST',
+      config,
+      contentType
+    );
+    return this.handleCreateCacheResult(cacheName, createCachePromise);
+  }
+
+  /**
+   * If the response is ok, the cache has been created
+   *
+   * @param cacheName, the cache name to be created
+   * @param response, cache creation response
+   */
+  private async handleCreateCacheResult(
+    cacheName: string,
+    response: Promise<Response>
+  ): Promise<ActionResponse> {
+    return response
+      .then(response => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw response;
+      })
+      .then(text => {
+        return <ActionResponse>{
+          message:
+            text == '' ? 'Cache ' + cacheName + ' created with success' : text,
+          success: true
+        };
+      })
+      .catch(err =>
+        err
+          .text()
+          .then(
+            errorMessage =>
+              <ActionResponse>{ message: errorMessage, success: false }
+          )
       );
   }
 
@@ -146,7 +175,7 @@ class CacheService {
         data =>
           <CacheConfig>{
             name: cacheName,
-            config: JSON.stringify(data, null, 2)
+            config: JSON.stringify(data)
           }
       );
   }
