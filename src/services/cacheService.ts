@@ -1,5 +1,6 @@
 /**
  * Cache Service calls Infinispan endpoints related to Caches
+ *
  * @author Katia Aresti
  * @since 1.0
  */
@@ -12,6 +13,11 @@ class CacheService {
     this.endpoint = endpoint;
   }
 
+  /**
+   * Retrieves all the properties to be displayed in the cache detail in a single rest call
+   *
+   * @param cacheName
+   */
   public retrieveFullDetail(
     cacheName: string
   ): Promise<DetailedInfinispanCache> {
@@ -65,29 +71,33 @@ class CacheService {
       });
   }
 
+  /**
+   * Creates a cache by configuration name.
+   * The template must be present in the server
+   *
+   * @param cacheName, the cache name
+   * @param configName, the template name
+   */
   public async createCacheByConfigName(
     cacheName: string,
     configName: string
   ): Promise<ActionResponse> {
-    return utils
+
+    let createCachePromise = utils
       .restCall(
         this.endpoint + '/caches/' + cacheName + '?template=' + configName,
         'POST'
-      )
-      .then(response => response.text())
-      .then(text =>
-        text == ''
-          ? <ActionResponse>{
-              message: 'Cache ' + cacheName + ' created with success',
-              success: true
-            }
-          : <ActionResponse>{ message: text, success: false }
-      )
-      .catch(
-        error => <ActionResponse>{ message: error.toString(), success: false }
       );
+    return this.handleCreateCacheResult(cacheName, createCachePromise);
   }
 
+  /**
+   * Create a cache with the configuration provided.
+   * Config can be in json or xml format
+   *
+   * @param cacheName, the cache name
+   * @param config, the configuration to send in the body
+   */
   public async createCacheWithConfiguration(
     cacheName: string,
     config: string
@@ -98,24 +108,44 @@ class CacheService {
     } catch (e) {
       contentType = 'application/xml';
     }
-    return utils
+    let createCachePromise = utils
       .restCallWithBody(
         this.endpoint + '/caches/' + cacheName,
         'POST',
         config,
         contentType
-      )
-      .then(response => response.text())
-      .then(text =>
-        text == ''
-          ? <ActionResponse>{
-              message: 'Cache ' + cacheName + ' created with success',
-              success: true
-            }
-          : <ActionResponse>{ message: text, success: false }
-      )
-      .catch(
-        error => <ActionResponse>{ message: error.toString(), success: false }
+      );
+    return this.handleCreateCacheResult(cacheName, createCachePromise);
+  }
+
+  /**
+   * If the response is ok, the cache has been created
+   *
+   * @param cacheName, the cache name to be created
+   * @param response, cache creation response
+   */
+  private async handleCreateCacheResult(cacheName: string, response: Promise<Response>):Promise<ActionResponse> {
+    return response.then(response => {
+      if (response.ok) {
+        return response.text();
+      }
+      throw response;
+    })
+      .then(text => {
+        let sucessMsg =
+          text == '' ? 'Cache ' + cacheName + ' created with success' : text;
+        return <ActionResponse>{
+          message: sucessMsg,
+          success: true
+        };
+      })
+      .catch(err =>
+        err
+          .text()
+          .then(
+            errorMessage =>
+              <ActionResponse>{ message: errorMessage, success: false }
+          )
       );
   }
 
