@@ -4,10 +4,11 @@ import {
   Badge,
   Breadcrumb,
   BreadcrumbItem,
-  Button,
   Card,
   CardBody,
   CardHeader,
+  ClipboardCopy,
+  ClipboardCopyVariant,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -16,10 +17,8 @@ import {
   GridItem,
   PageSection,
   PageSectionVariants,
-  Popover,
-  PopoverPosition,
-  Stack,
-  StackItem,
+  Tab,
+  Tabs,
   Text,
   TextContent,
   TextList,
@@ -30,20 +29,10 @@ import {
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem,
-  ToolbarSection
+  ToolbarItem
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import {
-  CubesIcon,
-  DegradedIcon,
-  KeyIcon,
-  SaveIcon,
-  ServiceIcon,
-  Spinner2Icon,
-  StorageDomainIcon,
-  UnknownIcon
-} from '@patternfly/react-icons';
+import { CubesIcon, UnknownIcon } from '@patternfly/react-icons';
 import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
@@ -69,20 +58,25 @@ const DetailCache: React.FunctionComponent<any> = props => {
   const [detail, setDetail] = useState<DetailedInfinispanCache>(emptyDetail);
   const [xsite, setXsite] = useState<XSite[]>([]);
   const [config, setConfig] = useState<undefined | CacheConfig>(undefined);
+  const [activeTabKey, setActiveTabKey] = useState(0);
 
   useEffect(() => {
     cacheService.retrieveFullDetail(cacheName).then(detailedCache => {
       setDetail(detailedCache);
+      cacheService.retrieveConfig(cacheName).then(config => {
+        setConfig(config);
+      });
       if (detailedCache.has_remote_backup) {
         cacheService.retrieveXSites(cacheName).then(xsites => {
           setXsite(xsites);
         });
-        cacheService.retrieveConfig(cacheName).then(config => {
-          setConfig(config);
-        });
       }
     });
   }, []);
+
+  const handleTabClick = (event, tabIndex) => {
+    setActiveTabKey(tabIndex);
+  };
 
   const OperationsPerformance = () => {
     return (
@@ -370,7 +364,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
     }
 
     return (
-      <Grid gutter="md">
+      <Grid gutter="md" style={{ marginTop: 10 }}>
         <GridItem span={6} rowSpan={2}>
           <CacheContent />
           <CacheLoader />
@@ -385,8 +379,8 @@ const DetailCache: React.FunctionComponent<any> = props => {
     );
   };
 
-  return (
-    <React.Fragment>
+  const CacheDetailHeader = () => {
+    return (
       <PageSection variant={PageSectionVariants.light}>
         <Breadcrumb>
           <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
@@ -446,9 +440,53 @@ const DetailCache: React.FunctionComponent<any> = props => {
           </ToolbarGroup>
         </Toolbar>
       </PageSection>
-      <PageSection>
-        <CacheStats />
+    );
+  };
+
+  const CacheTabs = () => {
+    return (
+      <PageSection variant={PageSectionVariants.light}>
+        <Tabs
+          mountOnEnter
+          isFilled
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+        >
+          {/*<Tab*/}
+          {/*  eventKey={0}*/}
+          {/*  title="Entries"*/}
+          {/*>*/}
+          {/*  Entries*/}
+          {/*</Tab>*/}
+          <Tab eventKey={0} title="Configuration">
+            <TextContent key={config?.name + '-config-text-content'}>
+              <Text
+                component={TextVariants.pre}
+                key={config?.name + '-config-text'}
+              >
+                {config?.config}
+              </Text>
+              <ClipboardCopy
+                isReadOnly
+                isCode
+                variant={ClipboardCopyVariant.inline}
+              >
+                {config?.config}
+              </ClipboardCopy>
+            </TextContent>
+          </Tab>
+          <Tab eventKey={1} title="Metrics">
+            <CacheStats />
+          </Tab>
+        </Tabs>
       </PageSection>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <CacheDetailHeader />
+      <CacheTabs />
     </React.Fragment>
   );
 };
