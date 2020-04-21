@@ -146,7 +146,7 @@ class CacheService {
         data =>
           <CacheConfig>{
             name: cacheName,
-            config: JSON.stringify(data)
+            config: JSON.stringify(data, null, 2)
           }
       );
   }
