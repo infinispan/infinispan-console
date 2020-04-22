@@ -20,18 +20,9 @@ import {
   Title,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem,
-  Tooltip,
-  TooltipPosition
+  ToolbarItem
 } from '@patternfly/react-core';
-import {
-  CubesIcon,
-  ErrorCircleOIcon,
-  InProgressIcon,
-  OffIcon,
-  OkIcon,
-  OutlinedQuestionCircleIcon
-} from '@patternfly/react-icons';
+import {CubesIcon, ErrorCircleOIcon, InProgressIcon, OffIcon, OkIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
@@ -50,7 +41,6 @@ const CacheManagers = () => {
   const [showCounters, setShowCounters] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
 
-  // TODO REFACTOR
   useEffect(() => {
     dataContainerService.getCacheManagers().then(cacheManagers => {
         setCacheManager(cacheManagers[0]);
@@ -154,7 +144,7 @@ const CacheManagers = () => {
   if (cm !== undefined) {
     title = displayUtils.capitalize(cm.name);
     status = cm.cache_manager_status;
-    localSiteName = cm.local_site ? '| Site ' + cm.local_site : '';
+    localSiteName = cm.local_site ?  cm.local_site + ' site' : '';
   }
 
   const DisplayCacheManagerHeader = () => {
@@ -167,57 +157,40 @@ const CacheManagers = () => {
         </TextContent>
       );
     }
-
     return (
-      <React.Fragment>
-        <TextContent>
-          <Text component={TextVariants.h1}>
-            Data container - {title}
-            <Tooltip
-              position={TooltipPosition.top}
-              content={<div>Data container name</div>}
-            >
-              <OutlinedQuestionCircleIcon style={{ paddingLeft: 10 }} />
-            </Tooltip>
-          </Text>
-        </TextContent>
-        <Toolbar>
-          <ToolbarGroup>
-            <ToolbarItem>
-              <TextContent>
-                <Text
-                  component={TextVariants.h3}
-                  style={{
-                    paddingRight: 10,
-                    color: displayUtils.statusColor(status, true)
-                  }}
-                >
-                  <DisplayStatusIcon status={status} />
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-            <ToolbarItem>
-              <TextContent>
-                <Text
-                  component={TextVariants.h3}
-                  style={{
-                    paddingRight: 10,
-                    fontWeight: 'bolder',
-                    color: displayUtils.statusColor(status, false)
-                  }}
-                >
-                  {displayUtils.capitalize(status)}
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-            <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h3}>{localSiteName}</Text>
-              </TextContent>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </Toolbar>
-      </React.Fragment>
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarItem>
+            <TextContent>
+              <Text component={TextVariants.h1}>{title}</Text>
+            </TextContent>
+          </ToolbarItem>
+          <ToolbarItem>
+            <TextContent>
+              <Text
+                component={TextVariants.p}
+                className="status-icon"
+                style={{
+                  color: displayUtils.statusColor(status, true)
+                }}
+              >
+                <DisplayStatusIcon status={status} />
+              </Text>
+            </TextContent>
+          </ToolbarItem>
+          <ToolbarItem>
+            <TextContent>
+              <Text
+                component={TextVariants.p}
+                className="status-label"
+                style={{color: displayUtils.statusColor(status, false)}}
+              >
+                {displayUtils.capitalize(status)} | {localSiteName}
+              </Text>
+            </TextContent>
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
     );
   };
   return (
