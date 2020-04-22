@@ -47,6 +47,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([
     ...props.caches
   ]);
+
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
     perPage: 10

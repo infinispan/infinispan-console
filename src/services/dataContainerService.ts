@@ -1,6 +1,4 @@
 import utils from './utils';
-import { GalleryItem, Stack, StackItem } from '@patternfly/react-core';
-import * as React from 'react';
 
 class ContainerService {
   endpoint: string;
@@ -19,7 +17,12 @@ class ContainerService {
   public getCacheManagers(): Promise<CacheManager[]> {
     return utils
       .restCall(this.endpoint + '/server/cache-managers/', 'GET')
-      .then(response => response.json())
+      .then(response => {
+        if(response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
       .then(names =>
         Promise.all(names.map(name => this.getCacheManager(name)))
       );
@@ -110,7 +113,7 @@ class ContainerService {
       );
   }
 
-  public getCaches(name: string): Promise<[CacheInfo]> {
+  public async getCaches(name: string): Promise<[CacheInfo]> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
       .then(response => response.json())
