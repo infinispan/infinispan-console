@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
+  Card,
+  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  Nav,
+  NavItem,
+  NavList,
+  NavVariants,
   PageSection,
   PageSectionVariants,
-  Tab,
-  Tabs,
   Text,
   TextContent,
   TextVariants,
@@ -31,25 +35,29 @@ import {
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
-import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
-import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
-import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
+import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
+import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
+import {Spinner} from "@patternfly/react-core/dist/js/experimental";
 
 const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState('0');
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [counters, setCounters] = useState<Counter[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [showCaches, setShowCaches] = useState(false);
+  const [showCounters, setShowCounters] = useState(false);
+  const [showTasks, setShowTasks] = useState(false);
 
+  // TODO REFACTOR
   useEffect(() => {
     dataContainerService.getCacheManagers().then(cacheManagers => {
-      if (cacheManagers.length > 0) {
         setCacheManager(cacheManagers[0]);
-        dataContainerService
-          .getCaches(cacheManagers[0].name)
-          .then(caches => setCaches(caches));
-      }
+        dataContainerService.getCaches(cacheManagers[0].name).then(caches => {
+            setCaches(caches);
+            setShowCaches(true);
+        });
     });
   }, []);
 
@@ -61,49 +69,34 @@ const CacheManagers = () => {
     countersService.getCounters().then(counters => setCounters(counters));
   }, []);
 
-  const handleTabClick = (event, tabIndex) => {
+  const handleTabClick = (nav) => {
+    let tabIndex = nav.itemId;
     setActiveTabKey(tabIndex);
+    setShowCaches(tabIndex == '0');
+    setShowCounters(tabIndex == '1');
+    setShowTasks(tabIndex == '2');
   };
 
-  const DisplayTabs = () => {
+  const DisplayCacheManagerTabs = () => {
     return (
-      <Tabs isFilled activeKey={activeTabKey} onSelect={handleTabClick}>
-        <Tab
-          eventKey={0}
-          title={
-            <>
-              <strong>{caches.length}</strong> Caches
-            </>
-          }
-        >
-          <CacheTableDisplay caches={caches} cacheManager={cm} />
-        </Tab>
-        <Tab
-          eventKey={1}
-          title={
-            <>
-              <strong>{counters.length}</strong> Counters
-            </>
-          }
-        >
-          <CounterTableDisplay counters={counters} cacheManager={cm} />
-        </Tab>
-        <Tab
-          eventKey={2}
-          title={
-            <>
-              <strong>{tasks.length}</strong> Tasks
-            </>
-          }
-        >
-          <TasksTableDisplay tasks={tasks} cacheManager={cm} />
-        </Tab>
-      </Tabs>
+      <Nav onSelect={handleTabClick}>
+        <NavList variant={NavVariants.tertiary}>
+          <NavItem key="nav-item-0" itemId="0" isActive={activeTabKey === '0'}>
+            <strong>{caches.length}</strong> Caches
+          </NavItem>
+          <NavItem key="nav-item-1" itemId="1" isActive={activeTabKey === '1'}>
+            <strong>{counters.length}</strong> Counters
+          </NavItem>
+          <NavItem key="nav-item-2" itemId="2" isActive={activeTabKey === '2'}>
+            <strong>{tasks.length}</strong> Tasks
+          </NavItem>
+        </NavList>
+      </Nav>
     );
   };
 
-  const DisplayCacheManager = () => {
-    if (cm === undefined) {
+  const DisplayCacheManagerSelectedContent = () => {
+    if (!cm) {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
           <EmptyStateIcon icon={CubesIcon} />
@@ -115,7 +108,16 @@ const CacheManagers = () => {
       );
     }
 
-    return <DisplayTabs />;
+    return (
+      <Card>
+        <CardBody>
+          {!showCaches && !showCounters && !showTasks && cm && <Spinner size="xl"/>}
+          {showCaches && cm && <CacheTableDisplay caches={caches} cacheManager={cm}/>}
+          {showCounters && cm && <CounterTableDisplay counters={counters} cacheManager={cm} />}
+          {showTasks && cm && <TasksTableDisplay tasks={tasks} cacheManager={cm} />}
+        </CardBody>
+      </Card>
+    );
   };
 
   const DisplayStatusIcon = (props: { status: string }) => {
@@ -156,8 +158,18 @@ const CacheManagers = () => {
   }
 
   const DisplayCacheManagerHeader = () => {
+    if (!cm) {
+      return (
+        <TextContent>
+          <Text component={TextVariants.h1}>
+            Data container
+          </Text>
+        </TextContent>
+      );
+    }
+
     return (
-      <PageSection variant={PageSectionVariants.light}>
+      <React.Fragment>
         <TextContent>
           <Text component={TextVariants.h1}>
             Data container - {title}
@@ -205,14 +217,19 @@ const CacheManagers = () => {
             </ToolbarItem>
           </ToolbarGroup>
         </Toolbar>
-      </PageSection>
+      </React.Fragment>
     );
   };
   return (
     <React.Fragment>
-      <DisplayCacheManagerHeader />
       <PageSection variant={PageSectionVariants.light}>
-        <DisplayCacheManager />
+        <DisplayCacheManagerHeader />
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light}>
+        <DisplayCacheManagerTabs />
+      </PageSection>
+      <PageSection variant={PageSectionVariants.default}>
+        <DisplayCacheManagerSelectedContent/>
       </PageSection>
     </React.Fragment>
   );

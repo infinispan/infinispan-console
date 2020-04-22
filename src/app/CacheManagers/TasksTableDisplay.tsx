@@ -77,19 +77,6 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
     updateRows(filteredTasks.slice(initSlice, initSlice + perPage));
   };
 
-  const CounterType = (props: { type: string }) => {
-    return (
-      <Badge
-        style={{
-          backgroundColor: displayUtils.counterTypeColor(props.type),
-          marginRight: 15
-        }}
-      >
-        {props.type}
-      </Badge>
-    );
-  };
-
   const TaskType = (props: { type: string }) => {
     return (
       <Badge
