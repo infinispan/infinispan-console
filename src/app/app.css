@@ -5,6 +5,9 @@ html, body, #root {
 .caches-table{
 }
 
+.pf-c-brand {
+
+}
 .pf-c-nav {
-  --pf-c-nav--m-dark__item--m-current--BackgroundColor: #004B95;
+  /*--pf-c-nav--m-dark__item--m-current--BackgroundColor: #004B95;*/
 }

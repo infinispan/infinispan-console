@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Brand,
   Nav,
@@ -12,9 +12,10 @@ import {
   SkipToContent
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { chart_color_blue_500 } from '@patternfly/react-tokens';
-import { NavLink } from 'react-router-dom';
-import { routes } from '@app/routes';
+import {NavLink} from 'react-router-dom';
+import dataContainerService from '../../services/dataContainerService';
+import {routes} from '@app/routes';
+import {chart_color_black_500, chart_color_blue_500} from "@patternfly/react-tokens";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -33,6 +34,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isMobileView, setIsMobileView] = useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
+  const [cacheManagerName, setCacheManagerName] = useState('');
+
+  useEffect(() => {
+    dataContainerService
+      .getPrincipalCacheManagerName()
+      .then(name => setCacheManagerName(name));
+  }, []);
 
   const onNavToggleMobile = () => {
     setIsNavOpenMobile(!isNavOpenMobile);
@@ -49,13 +57,12 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const Header = (
     <PageHeader
       logo={
-        <Brand src={icon} alt="Management Console" style={{ width: 600 }} />
+        <Brand src={icon} alt="Server Management Console" style={{ width: 600 }} />
       }
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
-      style={{ backgroundColor: chart_color_blue_500.value }}
     />
   );
 
@@ -86,7 +93,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
 
   const Sidebar = (
     <PageSidebar
-      style={{ backgroundColor: chart_color_blue_500.value }}
       theme="dark"
       nav={Navigation}
       isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen}
