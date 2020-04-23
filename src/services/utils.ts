@@ -1,3 +1,5 @@
+import {Either, left, right} from "./either";
+
 class Utils {
   public isDevMode(): boolean {
     return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -9,6 +11,10 @@ class Utils {
     } else {
       return window.location.origin.toString() + '/rest/v2';
     }
+  }
+
+  public isEither(either: Either<any, any>): either is Either<any, any> {
+    return (either as Either<any, any>).value !== undefined;
   }
 
   public restCall(url: string, method: string): Promise<Response> {
