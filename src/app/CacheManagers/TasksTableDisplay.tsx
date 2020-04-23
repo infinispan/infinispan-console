@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {Table, TableBody, TableHeader} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -10,19 +10,17 @@ import {
   Pagination,
   Stack,
   StackItem,
-  TextContent,
   Text,
-  Title,
-  TextVariants
+  TextContent,
+  TextVariants,
+  Title
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 
 const TasksTableDisplay: React.FunctionComponent<any> = (props: {
-  tasks: Task[];
-  cacheManager: CacheManager;
+  tasks: Task[]
 }) => {
-  const cacheManager: CacheManager = props.cacheManager;
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([...props.tasks]);
 
   const [tasksPagination, setTasksPagination] = useState({

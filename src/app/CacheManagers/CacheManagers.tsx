@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
+  Alert, AlertVariant,
   Card,
   CardBody,
   EmptyState,
@@ -32,7 +33,10 @@ import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
 import {Spinner} from "@patternfly/react-core/dist/js/experimental";
 
 const CacheManagers = () => {
-  const [cm, setCacheManager] = useState<undefined | CacheManager>(undefined);
+  const [error, setError] = useState<undefined | string>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [cmName, setCacheManagerName] = useState<undefined | string>();
+  const [cm, setCacheManager] = useState<undefined | CacheManager>();
   const [activeTabKey, setActiveTabKey] = useState('0');
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [counters, setCounters] = useState<Counter[]>([]);
@@ -42,21 +46,27 @@ const CacheManagers = () => {
   const [showTasks, setShowTasks] = useState(false);
 
   useEffect(() => {
-    dataContainerService.getCacheManagers().then(cacheManagers => {
-        setCacheManager(cacheManagers[0]);
-        dataContainerService.getCaches(cacheManagers[0].name).then(caches => {
-            setCaches(caches);
+    dataContainerService.getDefaultCacheManager().then(eitherCm => {
+      if(eitherCm.isRight()) {
+        const cmName = eitherCm.value.name;
+        setCacheManagerName(cmName);
+        setCacheManager(eitherCm.value);
+        dataContainerService.getCaches(cmName).then(eitherCaches => {
+          setLoading(false);
+          if(eitherCaches.isRight()) {
+            setCaches(eitherCaches.value);
             setShowCaches(true);
+          } else {
+            setError(eitherCaches.value.message);
+          }
         });
+        tasksService.getTasks().then(tasks => setTasks(tasks));
+        countersService.getCounters().then(counters => setCounters(counters));
+      } else {
+        setLoading(false);
+        setError(eitherCm.value.message);
+      }
     });
-  }, []);
-
-  useEffect(() => {
-    tasksService.getTasks().then(tasks => setTasks(tasks));
-  }, []);
-
-  useEffect(() => {
-    countersService.getCounters().then(counters => setCounters(counters));
   }, []);
 
   const handleTabClick = (nav) => {
@@ -68,6 +78,10 @@ const CacheManagers = () => {
   };
 
   const DisplayCacheManagerTabs = () => {
+    if(loading || error) {
+      return <span/>;
+    }
+
     return (
       <Nav onSelect={handleTabClick}>
         <NavList variant={NavVariants.tertiary}>
@@ -86,25 +100,14 @@ const CacheManagers = () => {
   };
 
   const DisplayCacheManagerSelectedContent = () => {
-    if (!cm) {
-      return (
-        <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon} />
-          <Title headingLevel="h5" size="lg">
-            Data container
-          </Title>
-          <EmptyStateBody>The data container is empty</EmptyStateBody>
-        </EmptyState>
-      );
-    }
-
     return (
       <Card>
         <CardBody>
-          {!showCaches && !showCounters && !showTasks && cm && <Spinner size="xl"/>}
-          {showCaches && cm && <CacheTableDisplay caches={caches} cacheManager={cm}/>}
-          {showCounters && cm && <CounterTableDisplay counters={counters} cacheManager={cm} />}
-          {showTasks && cm && <TasksTableDisplay tasks={tasks} cacheManager={cm} />}
+          {!loading && error && <Alert title={error} variant={AlertVariant.danger} isInline />}
+          {loading && <Spinner size="xl"/>}
+          {showCaches && cmName && !error && <CacheTableDisplay caches={caches} cmName={cmName}/>}
+          {showCounters && cmName && !error && <CounterTableDisplay counters={counters} />}
+          {showTasks && cmName && !error && <TasksTableDisplay tasks={tasks} />}
         </CardBody>
       </Card>
     );
@@ -144,7 +147,7 @@ const CacheManagers = () => {
   if (cm !== undefined) {
     title = displayUtils.capitalize(cm.name);
     status = cm.cache_manager_status;
-    localSiteName = cm.local_site ?  cm.local_site + ' site' : '';
+    localSiteName = cm.local_site ?  '| ' + cm.local_site + ' site' : '';
   }
 
   const DisplayCacheManagerHeader = () => {
@@ -185,7 +188,7 @@ const CacheManagers = () => {
                 className="status-label"
                 style={{color: displayUtils.statusColor(status, false)}}
               >
-                {displayUtils.capitalize(status)} | {localSiteName}
+                {displayUtils.capitalize(status)} {localSiteName}
               </Text>
             </TextContent>
           </ToolbarItem>

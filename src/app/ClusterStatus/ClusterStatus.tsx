@@ -136,11 +136,11 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   };
 
   useEffect(() => {
-    dataContainerService.getCacheManagers().then(cacheManagers => {
-      if (cacheManagers.length > 0) {
-        setCacheManager(cacheManagers[0]);
-        setFilteredClusterMembers(cacheManagers[0].cluster_members);
-        updateRows(cacheManagers[0].cluster_members);
+    dataContainerService.getDefaultCacheManager().then(eitherDefaultCm => {
+      if (eitherDefaultCm.isRight()) {
+        setCacheManager(eitherDefaultCm.value);
+        setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
+        updateRows(eitherDefaultCm.value.cluster_members);
       }
     });
   }, []);

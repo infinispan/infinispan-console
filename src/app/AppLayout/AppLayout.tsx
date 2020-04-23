@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {
   Brand,
   Nav,
@@ -13,9 +13,7 @@ import {
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import {NavLink} from 'react-router-dom';
-import dataContainerService from '../../services/dataContainerService';
 import {routes} from '@app/routes';
-import {chart_color_black_500, chart_color_blue_500} from "@patternfly/react-tokens";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -34,13 +32,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isMobileView, setIsMobileView] = useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
-  const [cacheManagerName, setCacheManagerName] = useState('');
-
-  useEffect(() => {
-    dataContainerService
-      .getPrincipalCacheManagerName()
-      .then(name => setCacheManagerName(name));
-  }, []);
 
   const onNavToggleMobile = () => {
     setIsNavOpenMobile(!isNavOpenMobile);

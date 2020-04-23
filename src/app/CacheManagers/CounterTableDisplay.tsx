@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  textCenter
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {Table, TableBody, TableHeader} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -17,14 +12,12 @@ import {
   StackItem,
   Title
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 
 const CounterTableDisplay: React.FunctionComponent<any> = (props: {
-  counters: Counter[];
-  cacheManager: CacheManager;
+  counters: Counter[]
 }) => {
-  const cacheManager: CacheManager = props.cacheManager;
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([
     ...props.counters
   ]);
