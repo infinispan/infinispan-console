@@ -29,7 +29,7 @@ import { Link } from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
 
 const CreateCache: React.FunctionComponent<any> = props => {
-  const cmName: string = props.location.state.cacheManager;
+  const cmName: string = props.location.state.cmName;
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
   const [config, setConfig] = useState('');

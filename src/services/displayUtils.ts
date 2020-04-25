@@ -9,11 +9,10 @@ import {
   chart_color_green_300,
   chart_color_orange_300,
   chart_color_purple_200,
-  chart_color_red_300,
+  chart_color_red_100,
   chart_color_red_400,
   chart_global_label_Fill
 } from '@patternfly/react-tokens';
-import { number } from 'prop-types';
 
 class DisplayUtils {
   public healthColor(health: string | undefined, isIcon: boolean): string {
@@ -32,7 +31,7 @@ class DisplayUtils {
         color = chart_color_orange_300.value;
         break;
       case 'DEGRADED':
-        color = chart_color_red_300.value;
+        color = chart_color_red_100.value;
         break;
       default:
         color = chart_color_black_500.value;

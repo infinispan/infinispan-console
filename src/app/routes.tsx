@@ -132,7 +132,7 @@ const routes: IAppRoute[] = [
     exact: true,
     icon: null,
     label: 'Cache Manager Configurations',
-    path: '/container/:containerName/configurations',
+    path: '/container/:cmName/configurations',
     title: 'Configurations',
     menu: false
   },
@@ -141,7 +141,7 @@ const routes: IAppRoute[] = [
     exact: true,
     icon: null,
     label: 'Caches',
-    path: '/container/:containerName/caches/create',
+    path: '/container/:cmName/caches/create',
     title: 'Caches',
     menu: false
   },
