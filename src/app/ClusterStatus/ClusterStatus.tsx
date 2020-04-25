@@ -1,18 +1,11 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Bullseye,
-  Card,
-  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Gallery,
-  GalleryItem,
-  Grid,
-  GridItem,
-  Label,
   PageSection,
   PageSectionVariants,
   Pagination,
@@ -26,20 +19,11 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
-import {
-  ClusterIcon,
-  CubesIcon,
-  ErrorCircleOIcon,
-  InProgressIcon,
-  OffIcon,
-  OkIcon,
-  RebalanceIcon,
-  SearchIcon
-} from '@patternfly/react-icons';
+import {CubesIcon, ErrorCircleOIcon, OffIcon, OkIcon, RebalanceIcon, SearchIcon} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
 import displayUtils from '../../services/displayUtils';
-import { chart_color_green_300 } from '@patternfly/react-tokens';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import {global_spacer_sm} from '@patternfly/react-tokens';
+import {Table, TableBody, TableHeader} from '@patternfly/react-table';
 
 const ClusterStatus: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -165,7 +149,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
                 <Text
                   component={TextVariants.h3}
                   style={{
-                    paddingRight: 10,
+                    paddingRight:  global_spacer_sm.value,
                     color: displayUtils.healthColor(cacheManager?.health, true)
                   }}
                 >
@@ -178,7 +162,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
                 <Text
                   component={TextVariants.h3}
                   style={{
-                    paddingRight: 10,
+                    paddingRight:  global_spacer_sm.value,
                     fontWeight: 'bolder',
                     color: displayUtils.healthColor(cacheManager?.health, false)
                   }}

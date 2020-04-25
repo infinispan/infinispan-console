@@ -17,6 +17,7 @@ import {
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
+import {global_spacer_md} from "@patternfly/react-tokens";
 
 const TasksTableDisplay: React.FunctionComponent<any> = (props: {
   tasks: Task[]
@@ -80,7 +81,7 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
       <Badge
         style={{
           backgroundColor: displayUtils.taskTypeColor(props.type),
-          marginRight: 15
+          marginRight: global_spacer_md.value
         }}
       >
         {props.type}

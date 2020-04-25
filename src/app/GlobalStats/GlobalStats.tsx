@@ -32,6 +32,7 @@ import { Link } from 'react-router-dom';
 import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
 import {Spinner} from "@patternfly/react-core/dist/js/experimental";
+import {global_spacer_2xl} from "@patternfly/react-tokens";
 
 const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -184,7 +185,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                 toolTip={'Data access for all caches'}
               />
             </CardHeader>
-            <CardBody style={{ paddingBottom: 50 }}>
+            <CardBody style={{ paddingBottom: global_spacer_2xl.value }}>
               <div style={{ height: '208px', width: '450px' }}>
                 <ChartDonut
                   constrainToVisibleArea={true}
