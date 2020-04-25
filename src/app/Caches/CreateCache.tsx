@@ -275,7 +275,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
             Create
           </Button>
           <Link to="/">
-            <Button variant="secondary" component="a" target="_blank">
+            <Button variant="secondary" target="_blank">
               Back
             </Button>
           </Link>
