@@ -27,6 +27,7 @@ import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
 import { Link } from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
+import {global_spacer_md} from "@patternfly/react-tokens";
 
 const CreateCache: React.FunctionComponent<any> = props => {
   const cmName: string = props.location.state.cmName;
@@ -161,7 +162,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
       <React.Fragment>
         {cacheAlert.display ? (
           <Alert
-            style={{ margin: 10 }}
+            style={{ margin: global_spacer_md.value }}
             variant={
               cacheAlert.success ? AlertVariant.success : AlertVariant.danger
             }
@@ -197,7 +198,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
       </TextContent>
       <AlertPanel />
       <Form
-        style={{ paddingTop: 10 }}
+        style={{ paddingTop: global_spacer_md.value }}
         onSubmit={e => {
           e.preventDefault();
         }}

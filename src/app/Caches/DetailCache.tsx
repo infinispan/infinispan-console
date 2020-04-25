@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Badge,
   Breadcrumb,
@@ -32,10 +32,11 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import { CubesIcon, UnknownIcon } from '@patternfly/react-icons';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
-import { CardTitle } from '@app/Common/CardTitle';
+import {CubesIcon, UnknownIcon} from '@patternfly/react-icons';
+import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
+import {CardTitle} from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
+import {global_spacer_sm} from "@patternfly/react-tokens";
 
 const DetailCache: React.FunctionComponent<any> = props => {
   const emptyDetail: DetailedInfinispanCache = {
@@ -327,7 +328,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
     const message = 'There are no features in cache';
 
     return (
-      <TextContent style={{ paddingLeft: 10 }}>
+      <TextContent style={{ paddingLeft: global_spacer_sm.value }}>
         <Text component={TextVariants.h3}>{message}</Text>
       </TextContent>
     );
@@ -338,7 +339,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
       return <span />;
     }
     return (
-      <TextContent style={{ paddingLeft: 10 }}>
+      <TextContent style={{ paddingLeft: global_spacer_sm.value }}>
         <Text component={TextVariants.h3}>[{props.label}]</Text>
       </TextContent>
     );
@@ -364,7 +365,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
     }
 
     return (
-      <Grid gutter="md" style={{ marginTop: 10 }}>
+      <Grid gutter="md" style={{ marginTop: global_spacer_sm.value }}>
         <GridItem span={6} rowSpan={2}>
           <CacheContent />
           <CacheLoader />
