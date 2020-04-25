@@ -7,8 +7,8 @@ import {
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
-  Flex,
-  FlexItem, Level, LevelItem,
+  Level,
+  LevelItem,
   Pagination,
   Select,
   SelectGroup,
@@ -135,49 +135,35 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     setRows(rows);
   };
 
-  const CacheFeatures = (props: { cacheInfo: CacheInfo }) => {
-    return (
-      <Flex>
-        <FlexItem>
-          <CacheFeature name={'Bounded'} isPresent={props.cacheInfo.bounded} />
-        </FlexItem>
-        <FlexItem>
-          <CacheFeature name={'Indexed'} isPresent={props.cacheInfo.indexed} />
-        </FlexItem>
-        <FlexItem>
-          <CacheFeature
-            name={'Persisted'}
-            isPresent={props.cacheInfo.persistent}
-          />
-        </FlexItem>
-        <FlexItem>
-          <CacheFeature
-            name={'Transactional'}
-            isPresent={props.cacheInfo.transactional}
-          />
-        </FlexItem>
-        <FlexItem>
-          <CacheFeature name={'Secured'} isPresent={props.cacheInfo.secured} />
-        </FlexItem>
-        <FlexItem>
-          <CacheFeature
-            name={'Backups'}
-            isPresent={props.cacheInfo.hasRemoteBackup}
-          />
-        </FlexItem>
-      </Flex>
-    );
+  const appendFeature = (features: string,  feature: string) : string => {
+    return features + (features.length > 0 ? ' / ' : '') + feature;
   };
 
-  const CacheFeature = (props: { name: string; isPresent: boolean }) => {
-    if (!props.isPresent) {
-      return <span />;
-    }
+  const CacheFeatures = (props: { cacheInfo: CacheInfo }) => {
+    let features = '';
 
+    if(props.cacheInfo.bounded) {
+      features = appendFeature(features, "Bounded");
+    }
+    if(props.cacheInfo.indexed) {
+      features = appendFeature(features, "Indexed");
+    }
+    if(props.cacheInfo.persistent) {
+      features= appendFeature(features, "Persistent");
+    }
+    if(props.cacheInfo.transactional) {
+      features = appendFeature(features, "Transactional");
+    }
+    if(props.cacheInfo.secured) {
+      features = appendFeature(features, "Secured");
+    }
+    if(props.cacheInfo.hasRemoteBackup) {
+      features = appendFeature(features, "Backups");
+    }
     return (
       <TextContent>
-        <Text component={TextVariants.small} style={{ paddingRight: 10 }}>
-         {props.name}
+        <Text component={TextVariants.small}>
+          {features}
         </Text>
       </TextContent>
     );
@@ -215,7 +201,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       <TextContent>
         <Text
           component={TextVariants.p}
-          style={{ color: displayUtils.healthColor(props.health, false) }}
+          style={{ color: displayUtils.healthColor(props.health, false)}}
         >
           {displayUtils.healthLabel(props.health)}
         </Text>
@@ -381,7 +367,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
                       pathname:
                         '/container/' + props.cmName + '/caches/create',
                       state: {
-                        cacheManager: props.cmName
+                        cmName: props.cmName
                       }
                     }}
                   >
@@ -394,7 +380,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
                       pathname:
                         '/container/' + props.cmName + '/configurations/',
                       state: {
-                        cacheManager: props.cmName
+                        cmName: props.cmName
                       }
                     }}
                   >

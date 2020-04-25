@@ -27,7 +27,7 @@ import {
 } from '@patternfly/react-table';
 
 const DetailConfigurations: React.FunctionComponent<any> = props => {
-  const cm: string = props.location.state.cacheManager;
+  const cm: string = props.location.state.cmName;
   const [cacheConfigs, setCacheConfigs] = useState<CacheConfig[]>([]);
   const [pageConfigsPagination, setCacheConfigsPagination] = useState({
     page: 1,
