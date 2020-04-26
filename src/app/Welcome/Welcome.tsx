@@ -3,19 +3,15 @@ import {
   BackgroundImage,
   BackgroundImageSrc,
   Button,
+  ListVariant,
   LoginPage,
   Page,
   Stack,
   StackItem
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
 import back from '!!url-loader!@app/assets/images/infinispan_login_background.svg';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo.svg';
-import {
-  ApplicationsIcon,
-  CatalogIcon,
-  InfoIcon
-} from '@patternfly/react-icons';
+import {ApplicationsIcon, CatalogIcon, InfoIcon} from '@patternfly/react-icons';
 import utils from '../../services/utils';
 
 const Welcome: React.FunctionComponent<any> = props => {
@@ -88,7 +84,7 @@ const Welcome: React.FunctionComponent<any> = props => {
     <Page>
       <BackgroundImage src={images} />
       <LoginPage
-        footerListVariants="inline"
+        footerListVariants={ListVariant.inline}
         brandImgSrc={icon}
         brandImgAlt="Infinispan logo"
         backgroundImgSrc={images}

@@ -10,8 +10,9 @@ import {
   chart_color_orange_300,
   chart_color_purple_200,
   chart_color_red_100,
-  chart_color_red_400,
-  chart_global_label_Fill
+  chart_global_label_Fill,
+  global_danger_color_100, global_success_color_100,
+  global_warning_color_100
 } from '@patternfly/react-tokens';
 
 class DisplayUtils {
@@ -116,24 +117,24 @@ class DisplayUtils {
     let color;
     switch (componentStatus) {
       case 'STOPPING':
-        color = chart_color_black_400.value;
+        color = chart_global_label_Fill.value;
         break;
       case 'RUNNING':
         color = isIcon
-          ? chart_color_green_300.value
+          ? global_success_color_100.value
           : chart_global_label_Fill.value;
         break;
       case 'INSTANTIATED':
-        color = chart_color_cyan_400.value;
+        color = chart_global_label_Fill.value;
         break;
       case 'INITIALIZING':
-        color = chart_color_orange_300.value;
+        color = global_warning_color_100.value;
         break;
       case 'FAILED':
-        color = chart_color_red_400.value;
+        color = global_danger_color_100.value;
         break;
       case 'TERMINATED':
-        color = chart_color_black_500.value;
+        color = chart_global_label_Fill.value;
         break;
       default:
         color = chart_color_black_500.value;

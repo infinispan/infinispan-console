@@ -2,13 +2,13 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
-  Alert, AlertVariant,
+  Alert,
+  AlertVariant,
   Card,
   CardBody,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
+  DataToolbar,
+  DataToolbarContent,
+  DataToolbarItem,
   Nav,
   NavItem,
   NavList,
@@ -17,13 +17,8 @@ import {
   PageSectionVariants,
   Text,
   TextContent,
-  TextVariants,
-  Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
+  TextVariants
 } from '@patternfly/react-core';
-import {CubesIcon, ErrorCircleOIcon, InProgressIcon, OffIcon, OkIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
@@ -31,6 +26,8 @@ import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
 import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
 import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
 import {Spinner} from "@patternfly/react-core/dist/js/experimental";
+import {Status} from "@app/Common/Status";
+import {global_spacer_sm} from "@patternfly/react-tokens";
 
 const CacheManagers = () => {
   const [error, setError] = useState<undefined | string>();
@@ -77,7 +74,7 @@ const CacheManagers = () => {
     setShowTasks(tabIndex == '2');
   };
 
-  const DisplayCacheManagerTabs = () => {
+  const CacheManagerTabs = () => {
     if(loading || error) {
       return <span/>;
     }
@@ -113,34 +110,6 @@ const CacheManagers = () => {
     );
   };
 
-  const DisplayStatusIcon = (props: { status: string }) => {
-    let icon;
-    switch (props.status) {
-      case 'STOPPING':
-        icon = <OffIcon />;
-        break;
-      case 'RUNNING':
-        icon = <OkIcon />;
-        break;
-      case 'INSTANTIATED':
-        icon = <OkIcon />;
-        break;
-      case 'INITIALIZING':
-        icon = <InProgressIcon />;
-        break;
-      case 'FAILED':
-        icon = <ErrorCircleOIcon />;
-        break;
-      case 'TERMINATED':
-        icon = <OffIcon />;
-        break;
-      default:
-        icon = <OkIcon />;
-    }
-
-    return icon;
-  };
-
   let title = 'Data container is empty';
   let status = '';
   let localSiteName = '';
@@ -153,7 +122,7 @@ const CacheManagers = () => {
   const DisplayCacheManagerHeader = () => {
     if (!cm) {
       return (
-        <TextContent>
+        <TextContent id="cluster-manager-header">
           <Text component={TextVariants.h1}>
             Data container
           </Text>
@@ -161,48 +130,26 @@ const CacheManagers = () => {
       );
     }
     return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <TextContent>
-              <Text component={TextVariants.h1}>{title}</Text>
-            </TextContent>
-          </ToolbarItem>
-          <ToolbarItem>
-            <TextContent>
-              <Text
-                component={TextVariants.p}
-                className="status-icon"
-                style={{
-                  color: displayUtils.statusColor(status, true)
-                }}
-              >
-                <DisplayStatusIcon status={status} />
-              </Text>
-            </TextContent>
-          </ToolbarItem>
-          <ToolbarItem>
-            <TextContent>
-              <Text
-                component={TextVariants.p}
-                className="status-label"
-                style={{color: displayUtils.statusColor(status, false)}}
-              >
-                {displayUtils.capitalize(status)} {localSiteName}
-              </Text>
-            </TextContent>
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
+      <React.Fragment>
+        <DataToolbar id="cluster-manager-header">
+          <DataToolbarContent style={{paddingLeft:0}}>
+            <DataToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h1}>{title} {localSiteName}</Text>
+              </TextContent>
+            </DataToolbarItem>
+            <DataToolbarItem style={{marginBottom:global_spacer_sm.value}}><Status status={status} /></DataToolbarItem>
+            {/*<DataToolbarItem variant="separator"></DataToolbarItem>*/}
+          </DataToolbarContent>
+        </DataToolbar>
+        <CacheManagerTabs/>
+      </React.Fragment>
     );
   };
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DisplayCacheManagerHeader />
-      </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
-        <DisplayCacheManagerTabs />
       </PageSection>
       <PageSection variant={PageSectionVariants.default}>
         <DisplayCacheManagerSelectedContent/>
