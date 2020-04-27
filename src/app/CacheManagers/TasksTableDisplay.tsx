@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Table, TableBody, TableHeader} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -15,12 +15,12 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
-import {global_spacer_md} from "@patternfly/react-tokens";
+import { global_spacer_md } from '@patternfly/react-tokens';
 
 const TasksTableDisplay: React.FunctionComponent<any> = (props: {
-  tasks: Task[]
+  tasks: Task[];
 }) => {
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([...props.tasks]);
 
@@ -76,23 +76,23 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
     updateRows(filteredTasks.slice(initSlice, initSlice + perPage));
   };
 
-  const TaskType = (props: { type: string }) => {
+  const taskType = (type: string) => {
     return (
       <Badge
         style={{
-          backgroundColor: displayUtils.taskTypeColor(props.type),
+          backgroundColor: displayUtils.taskTypeColor(type),
           marginRight: global_spacer_md.value
         }}
       >
-        {props.type}
+        {type}
       </Badge>
     );
   };
 
-  const TaskParameters = (props: { params: [string] }) => {
+  const taskParameters = (params: [string]) => {
     return (
       <TextContent>
-        {props.params.map((param, index) => (
+        {params.map((param, index) => (
           <Text key={param + index} component={TextVariants.p}>
             {' [' + param + ']'}
           </Text>
@@ -101,13 +101,13 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
     );
   };
 
-  const TaskAllowedRole = (props: { allowedRole: string }) => {
-    if (props.allowedRole == null || props.allowedRole.trim().length == 0) {
+  const taskAllowedRoles = (allowedRole: string) => {
+    if (allowedRole == null || allowedRole.trim().length == 0) {
       return <TextContent>-</TextContent>;
     }
     return (
       <TextContent>
-        <Text component={TextVariants.p}>{props.allowedRole}</Text>
+        <Text component={TextVariants.p}>{allowedRole}</Text>
       </TextContent>
     );
   };
@@ -127,11 +127,8 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
                   <EmptyState variant={EmptyStateVariant.small}>
                     <EmptyStateIcon icon={SearchIcon} />
                     <Title headingLevel="h2" size="lg">
-                      There are no tasks
+                      No tasks found
                     </Title>
-                    <EmptyStateBody>
-                      Create one using REST endpoint, HotRod or the CLI
-                    </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
               )
@@ -145,11 +142,11 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
           heightAuto: true,
           cells: [
             { title: task.name },
-            { title: <TaskType type={task.type} /> },
+            { title: taskType(task.type) },
             { title: task.task_context_name },
             { title: task.task_operation_name },
-            { title: <TaskParameters params={task.parameters} /> },
-            { title: <TaskAllowedRole allowedRole={task.allowed_role} /> }
+            { title: taskParameters(task.parameters) },
+            { title: taskAllowedRoles(task.allowed_role) }
           ]
           //TODO {title: <TasksActionLinks name={task.name}/>}]
         };

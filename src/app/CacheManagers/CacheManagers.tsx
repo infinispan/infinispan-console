@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Alert,
@@ -22,12 +22,12 @@ import {
 import displayUtils from '../../services/displayUtils';
 import tasksService from '../../services/tasksService';
 import countersService from '../../services/countersService';
-import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
-import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
-import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
-import {Spinner} from "@patternfly/react-core/dist/js/experimental";
-import {Status} from "@app/Common/Status";
-import {global_spacer_sm} from "@patternfly/react-tokens";
+import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
+import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
+import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import { Spinner } from '@patternfly/react-core/dist/js/experimental';
+import { Status } from '@app/Common/Status';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 
 const CacheManagers = () => {
   const [error, setError] = useState<undefined | string>();
@@ -44,13 +44,13 @@ const CacheManagers = () => {
 
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherCm => {
-      if(eitherCm.isRight()) {
+      if (eitherCm.isRight()) {
         const cmName = eitherCm.value.name;
         setCacheManagerName(cmName);
         setCacheManager(eitherCm.value);
         dataContainerService.getCaches(cmName).then(eitherCaches => {
           setLoading(false);
-          if(eitherCaches.isRight()) {
+          if (eitherCaches.isRight()) {
             setCaches(eitherCaches.value);
             setShowCaches(true);
           } else {
@@ -66,7 +66,7 @@ const CacheManagers = () => {
     });
   }, []);
 
-  const handleTabClick = (nav) => {
+  const handleTabClick = nav => {
     let tabIndex = nav.itemId;
     setActiveTabKey(tabIndex);
     setShowCaches(tabIndex == '0');
@@ -74,9 +74,9 @@ const CacheManagers = () => {
     setShowTasks(tabIndex == '2');
   };
 
-  const CacheManagerTabs = () => {
-    if(loading || error) {
-      return <span/>;
+  const buildTabs = () => {
+    if (loading || error) {
+      return <span />;
     }
 
     return (
@@ -96,14 +96,20 @@ const CacheManagers = () => {
     );
   };
 
-  const DisplayCacheManagerSelectedContent = () => {
+  const buildSelectedContent = () => {
     return (
       <Card>
         <CardBody>
-          {!loading && error && <Alert title={error} variant={AlertVariant.danger} isInline />}
-          {loading && <Spinner size="xl"/>}
-          {showCaches && cmName && !error && <CacheTableDisplay caches={caches} cmName={cmName}/>}
-          {showCounters && cmName && !error && <CounterTableDisplay counters={counters} />}
+          {!loading && error && (
+            <Alert title={error} variant={AlertVariant.danger} isInline />
+          )}
+          {loading && <Spinner size="xl" />}
+          {showCaches && cmName && !error && (
+            <CacheTableDisplay caches={caches} cmName={cmName} />
+          )}
+          {showCounters && cmName && !error && (
+            <CounterTableDisplay counters={counters} />
+          )}
           {showTasks && cmName && !error && <TasksTableDisplay tasks={tasks} />}
         </CardBody>
       </Card>
@@ -116,43 +122,44 @@ const CacheManagers = () => {
   if (cm !== undefined) {
     title = displayUtils.capitalize(cm.name);
     status = cm.cache_manager_status;
-    localSiteName = cm.local_site ?  '| ' + cm.local_site + ' site' : '';
+    localSiteName = cm.local_site ? '| ' + cm.local_site + ' site' : '';
   }
 
-  const DisplayCacheManagerHeader = () => {
+  let buildHeader = () => {
     if (!cm) {
       return (
         <TextContent id="cluster-manager-header">
-          <Text component={TextVariants.h1}>
-            Data container
-          </Text>
+          <Text component={TextVariants.h1}>Data container</Text>
         </TextContent>
       );
     }
     return (
-      <React.Fragment>
-        <DataToolbar id="cluster-manager-header">
-          <DataToolbarContent style={{paddingLeft:0}}>
-            <DataToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h1}>{title} {localSiteName}</Text>
-              </TextContent>
-            </DataToolbarItem>
-            <DataToolbarItem style={{marginBottom:global_spacer_sm.value}}><Status status={status} /></DataToolbarItem>
-            {/*<DataToolbarItem variant="separator"></DataToolbarItem>*/}
-          </DataToolbarContent>
-        </DataToolbar>
-        <CacheManagerTabs/>
-      </React.Fragment>
+      <DataToolbar id="cluster-manager-header">
+        <DataToolbarContent style={{ paddingLeft: 0 }}>
+          <DataToolbarItem>
+            <TextContent>
+              <Text component={TextVariants.h1}>
+                {title} {localSiteName}
+              </Text>
+            </TextContent>
+          </DataToolbarItem>
+          <DataToolbarItem style={{ marginBottom: global_spacer_sm.value }}>
+            <Status status={status} />
+          </DataToolbarItem>
+          {/*<DataToolbarItem variant="separator"></DataToolbarItem>*/}
+        </DataToolbarContent>
+      </DataToolbar>
     );
   };
+
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <DisplayCacheManagerHeader />
+        {buildHeader()}
+        {buildTabs()}
       </PageSection>
       <PageSection variant={PageSectionVariants.default}>
-        <DisplayCacheManagerSelectedContent/>
+        {buildSelectedContent()}
       </PageSection>
     </React.Fragment>
   );

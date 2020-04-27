@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   Brand,
   Nav,
@@ -12,8 +12,8 @@ import {
   SkipToContent
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {NavLink} from 'react-router-dom';
-import {routes} from '@app/routes';
+import { NavLink } from 'react-router-dom';
+import { routes } from '@app/routes';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -48,7 +48,11 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const Header = (
     <PageHeader
       logo={
-        <Brand src={icon} alt="Server Management Console" style={{ width: 600 }} />
+        <Brand
+          src={icon}
+          alt="Server Management Console"
+          style={{ width: 600 }}
+        />
       }
       logoProps={logoProps}
       showNavToggle={true}

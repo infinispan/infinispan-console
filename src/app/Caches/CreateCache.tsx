@@ -27,7 +27,7 @@ import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
 import { Link } from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
-import {global_spacer_md} from "@patternfly/react-tokens";
+import { global_spacer_md } from '@patternfly/react-tokens';
 
 const CreateCache: React.FunctionComponent<any> = props => {
   const cmName: string = props.location.state.cmName;

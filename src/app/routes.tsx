@@ -5,7 +5,6 @@ import { DynamicImport } from '@app/DynamicImport';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 import { CacheManagers } from '@app/CacheManagers/CacheManagers';
 import { NotFound } from '@app/NotFound/NotFound';
-import DocumentTitle from 'react-document-title';
 import {
   LastLocationProvider,
   useLastLocation
@@ -17,6 +16,7 @@ import { DetailConfigurations } from '@app/Caches/DetailConfigurations';
 import { ServerGroupIcon, VolumeIcon } from '@patternfly/react-icons';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
+import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -49,52 +49,60 @@ const Support = (routeProps: RouteComponentProps) => {
   );
 };
 
-const RouteWithTitleUpdates = ({
-  component: Component,
-  isAsync = false,
-  title,
-  ...rest
-}) => {
+// a custom hook for sending focus to the primary content container
+// after a view has loaded so that subsequent press of tab key
+// sends focus directly to relevant content
+const useA11yRouteChange = (isAsync: boolean) => {
   const lastNavigation = useLastLocation();
-
-  function routeWithTitle(routeProps: RouteComponentProps) {
-    return (
-      <DocumentTitle title={title}>
-        <Component {...rest} {...routeProps} />
-      </DocumentTitle>
-    );
-  }
-
   React.useEffect(() => {
     if (!isAsync && lastNavigation !== null) {
       routeFocusTimer = accessibleRouteChangeHandler();
     }
     return () => {
-      clearTimeout(routeFocusTimer);
+      window.clearTimeout(routeFocusTimer);
     };
-  }, []);
+  }, [isAsync, lastNavigation]);
+};
+
+const RouteWithTitleUpdates = ({
+  component: Component,
+  isAsync = false,
+  title,
+  ...rest
+}: IAppRoute) => {
+  useA11yRouteChange(isAsync);
+  useDocumentTitle(title);
+
+  function routeWithTitle(routeProps: RouteComponentProps) {
+    return <Component {...rest} {...routeProps} />;
+  }
 
   return <Route render={routeWithTitle} />;
 };
 
+const PageNotFound = ({ title }: { title: string }) => {
+  useDocumentTitle(title);
+  return <Route component={NotFound} />;
+};
+
 export interface IAppRoute {
-  label: string;
+  label?: string;
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   component:
     | React.ComponentType<RouteComponentProps<any>>
     | React.ComponentType<any>;
-  icon: any;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   exact?: boolean;
   path: string;
   title: string;
   isAsync?: boolean;
-  menu: boolean;
+  menu?: boolean;
 }
 
 const routes: IAppRoute[] = [
   {
     component: Welcome,
     exact: true,
-    icon: <ServerGroupIcon />,
     label: 'Welcome to the server',
     path: '/welcome',
     title: 'Welcome to the server',
@@ -103,7 +111,6 @@ const routes: IAppRoute[] = [
   {
     component: CacheManagers,
     exact: true,
-    icon: <VolumeIcon />,
     label: 'Data Container',
     path: '/',
     title: 'Data Container',
@@ -112,7 +119,6 @@ const routes: IAppRoute[] = [
   {
     component: GlobalStats,
     exact: true,
-    icon: <ServerGroupIcon />,
     label: 'Global Statistics',
     path: '/global-stats',
     title: 'Global Statistics',
@@ -121,7 +127,6 @@ const routes: IAppRoute[] = [
   {
     component: ClusterStatus,
     exact: true,
-    icon: <VolumeIcon />,
     label: 'Cluster Membership',
     path: '/cluster-membership',
     title: 'Cluster Membership',
@@ -130,7 +135,6 @@ const routes: IAppRoute[] = [
   {
     component: DetailConfigurations,
     exact: true,
-    icon: null,
     label: 'Cache Manager Configurations',
     path: '/container/:cmName/configurations',
     title: 'Configurations',
@@ -139,7 +143,6 @@ const routes: IAppRoute[] = [
   {
     component: CreateCache,
     exact: true,
-    icon: null,
     label: 'Caches',
     path: '/container/:cmName/caches/create',
     title: 'Caches',
@@ -148,7 +151,6 @@ const routes: IAppRoute[] = [
   {
     component: DetailCache,
     exact: true,
-    icon: null,
     label: 'Caches',
     path: '/cache/:name',
     title: 'Cache',
@@ -163,21 +165,17 @@ export let user = {
 const AppRoutes = () => (
   <LastLocationProvider>
     <Switch>
-      {routes.map(({ path, exact, component, title, isAsync, icon }, idx) => (
+      {routes.map(({ path, exact, component, title, isAsync }, idx) => (
         <RouteWithTitleUpdates
           path={path}
           exact={exact}
           component={component}
           key={idx}
-          icon={icon}
           title={title}
           isAsync={isAsync}
         />
       ))}
-      <RouteWithTitleUpdates
-        component={NotFound}
-        title={'404 Page Not Found'}
-      />
+      <PageNotFound title="404 Page Not Found" />
     </Switch>
   </LastLocationProvider>
 );

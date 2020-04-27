@@ -1,4 +1,4 @@
-import {Either, left, right} from "./either";
+import { Either, left, right } from './either';
 
 class Utils {
   public isDevMode(): boolean {
@@ -14,7 +14,7 @@ class Utils {
   }
 
   public isEither(either: Either<any, any>): either is Either<any, any> {
-    return (either as Either<any, any>).value !== undefined;
+    return (either as Eiclther<any, any>).value !== undefined;
   }
 
   public restCall(url: string, method: string): Promise<Response> {

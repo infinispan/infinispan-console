@@ -1,5 +1,5 @@
 import utils from './utils';
-import {Either, left, right} from "./either";
+import { Either, left, right } from './either';
 
 class ContainerService {
   endpoint: string;
@@ -8,31 +8,35 @@ class ContainerService {
     this.endpoint = endpoint;
   }
 
-  public getDefaultCacheManager(): Promise<Either<ActionResponse, CacheManager>> {
+  public getDefaultCacheManager(): Promise<
+    Either<ActionResponse, CacheManager>
+  > {
     return utils
       .restCall(this.endpoint + '/server/cache-managers/', 'GET')
       .then(response => {
-        if(response.ok) {
+        if (response.ok) {
           return response.json();
         }
         throw response;
-      }).then(names => Promise.all(names.map(name => this.getCacheManager(name)))
-        .then(cacheManagers => right(cacheManagers[0]))
-        .catch(err =>
-          err
-            .text()
-            .then(
-              errorMessage =>
-                left(<ActionResponse>{message: errorMessage, success: false})
-            )
-        ));
+      })
+      .then(names =>
+        Promise.all(names.map(name => this.getCacheManager(name)))
+          .then(cacheManagers => right(cacheManagers[0]))
+          .catch(err =>
+            err
+              .text()
+              .then(errorMessage =>
+                left(<ActionResponse>{ message: errorMessage, success: false })
+              )
+          )
+      );
   }
 
   private getCacheManager(name: string): Promise<CacheManager> {
     let healthPromise: Promise<String> = utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/health', 'GET')
       .then(response => {
-        if(response.ok) {
+        if (response.ok) {
           return response.json();
         }
         throw response;
@@ -43,7 +47,7 @@ class ContainerService {
       utils
         .restCall(this.endpoint + '/cache-managers/' + name, 'GET')
         .then(response => {
-          if(response.ok) {
+          if (response.ok) {
             return response.json();
           }
           throw response;
@@ -123,40 +127,44 @@ class ContainerService {
       );
   }
 
-  public async getCaches(name: string): Promise<Either<ActionResponse, [CacheInfo]>> {
+  public async getCaches(
+    name: string
+  ): Promise<Either<ActionResponse, [CacheInfo]>> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
       .then(response => {
-        if(response.ok) {
+        if (response.ok) {
           return response.json();
         }
         throw response;
       })
       .then(infos =>
-        right(infos
-          .map(
-            cacheInfo =>
-              <CacheInfo>{
-                name: cacheInfo.name,
-                status: cacheInfo.status,
-                type: this.mapCacheType(cacheInfo.type),
-                simpleCache: cacheInfo.simpleCache,
-                transactional: cacheInfo.transactional,
-                persistent: cacheInfo.persistent,
-                bounded: cacheInfo.bounded,
-                secured: cacheInfo.secured,
-                indexed: cacheInfo.indexed,
-                hasRemoteBackup: cacheInfo.has_remote_backup,
-                health: cacheInfo.health
-              }
-          )
-          .filter(cacheInfo => !cacheInfo.name.startsWith('___')))
-      ).catch(err =>
+        right(
+          infos
+            .map(
+              cacheInfo =>
+                <CacheInfo>{
+                  name: cacheInfo.name,
+                  status: cacheInfo.status,
+                  type: this.mapCacheType(cacheInfo.type),
+                  simpleCache: cacheInfo.simpleCache,
+                  transactional: cacheInfo.transactional,
+                  persistent: cacheInfo.persistent,
+                  bounded: cacheInfo.bounded,
+                  secured: cacheInfo.secured,
+                  indexed: cacheInfo.indexed,
+                  hasRemoteBackup: cacheInfo.has_remote_backup,
+                  health: cacheInfo.health
+                }
+            )
+            .filter(cacheInfo => !cacheInfo.name.startsWith('___'))
+        )
+      )
+      .catch(err =>
         err
           .text()
-          .then(
-            errorMessage =>
-              left(<ActionResponse>{message: errorMessage, success: false})
+          .then(errorMessage =>
+            left(<ActionResponse>{ message: errorMessage, success: false })
           )
       );
   }
