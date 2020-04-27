@@ -2,7 +2,26 @@
 
 This is the front end application for the web console of the new Infinispan Server 10.x
 
-This application is built using Patternfly 4 and React
+This application is built using [Patternfly 4 and React](https://www.patternfly.org/v4/get-started/developers)
+
+## Before you start
+This project needs a standalone infinispan server running locally.
+The Infinispan server exposes the [REST API](https://infinispan.org/docs/dev/titles/rest/rest.html) 
+that is used in this console.
+
+In production, this console is built as a dependency using maven. This dependency is added to the infinispan
+server bundle, so the console is served from the server in production.
+
+### Use Docker
+
+To run the latest development release version, run 11.0
+
+```bash
+ docker run -it -p 11222:11222 -e USER="user" -e PASS="pass" infinispan/server:11.0
+```
+
+### Direct download
+You can always download the server from the [Infinispan website](https://infinispan.org/download/)
 
 ## Quick-start
 ```bash
