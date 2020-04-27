@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Badge,
   Breadcrumb,
@@ -32,11 +32,11 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import {CubesIcon, UnknownIcon} from '@patternfly/react-icons';
-import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
-import {CardTitle} from '@app/Common/CardTitle';
+import { CubesIcon, UnknownIcon } from '@patternfly/react-icons';
+import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
-import {global_spacer_sm} from "@patternfly/react-tokens";
+import { global_spacer_sm } from '@patternfly/react-tokens';
 
 const DetailCache: React.FunctionComponent<any> = props => {
   const emptyDetail: DetailedInfinispanCache = {

@@ -11,7 +11,11 @@ import {
 } from '@patternfly/react-core';
 import back from '!!url-loader!@app/assets/images/infinispan_login_background.svg';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo.svg';
-import {ApplicationsIcon, CatalogIcon, InfoIcon} from '@patternfly/react-icons';
+import {
+  ApplicationsIcon,
+  CatalogIcon,
+  InfoIcon
+} from '@patternfly/react-icons';
 import utils from '../../services/utils';
 
 const Welcome: React.FunctionComponent<any> = props => {

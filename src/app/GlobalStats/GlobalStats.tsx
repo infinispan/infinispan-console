@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  Alert, AlertVariant,
+  Alert,
+  AlertVariant,
   Button,
   Card,
   CardBody,
@@ -31,8 +32,8 @@ import dataContainerService from '../../services/dataContainerService';
 import { Link } from 'react-router-dom';
 import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
-import {Spinner} from "@patternfly/react-core/dist/js/experimental";
-import {global_spacer_2xl} from "@patternfly/react-tokens";
+import { Spinner } from '@patternfly/react-core/dist/js/experimental';
+import { global_spacer_2xl } from '@patternfly/react-tokens';
 
 const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -53,47 +54,48 @@ const GlobalStats: React.FunctionComponent<any> = props => {
 
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherDefaultCm => {
-        if(eitherDefaultCm.isRight()) {
-          setCacheManager(eitherDefaultCm.value);
-          dataContainerService
-            .getCacheManagerStats(eitherDefaultCm.value.name)
-            .then(detailedStats => {
-              setStats(detailedStats);
-              setLoading(false);
-            });
-        } else {
-          setError(eitherDefaultCm.value.message);
-          setLoading(false);
-        }
-
+      if (eitherDefaultCm.isRight()) {
+        setCacheManager(eitherDefaultCm.value);
+        dataContainerService
+          .getCacheManagerStats(eitherDefaultCm.value.name)
+          .then(detailedStats => {
+            setStats(detailedStats);
+            setLoading(false);
+          });
+      } else {
+        setError(eitherDefaultCm.value.message);
+        setLoading(false);
+      }
     });
   }, []);
 
   const allOps = () => {
-    if(stats?.statistics_enabled) {
-      return stats.hits +
+    if (stats?.statistics_enabled) {
+      return (
+        stats.hits +
         stats.retrievals +
         stats.remove_hits +
         stats.remove_misses +
         stats.stores +
         stats.misses +
         stats.evictions
+      );
     }
     return 0;
   };
 
-  const DisplayStats = () => {
-    if(loading && !error) {
+  const buildStats = () => {
+    if (loading && !error) {
       return (
         <Card>
-        <CardBody>
-          <Spinner size="xl"/>
-        </CardBody>
-      </Card>
+          <CardBody>
+            <Spinner size="xl" />
+          </CardBody>
+        </Card>
       );
     }
 
-    if(error) {
+    if (error) {
       return (
         <Card>
           <CardBody>
@@ -351,9 +353,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
           <Text component={TextVariants.p}>{descriptionText()}</Text>
         </TextContent>
       </PageSection>
-      <PageSection>
-        <DisplayStats />
-      </PageSection>
+      <PageSection>{buildStats()}</PageSection>
     </React.Fragment>
   );
 };

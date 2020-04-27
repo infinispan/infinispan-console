@@ -1,45 +1,126 @@
 import {
   chart_color_black_300,
-  chart_color_black_400,
   chart_color_black_500,
   chart_color_blue_200,
   chart_color_cyan_300,
-  chart_color_cyan_400,
   chart_color_gold_300,
-  chart_color_green_300,
-  chart_color_orange_300,
   chart_color_purple_200,
-  chart_color_red_100,
   chart_global_label_Fill,
-  global_danger_color_100, global_success_color_100,
+  global_danger_color_100,
+  global_success_color_100,
   global_warning_color_100
 } from '@patternfly/react-tokens';
+import { AlertVariant } from '@patternfly/react-core';
 
+/**
+ * Utility class to manage display features
+ *
+ * @author Katia Aresti
+ */
 class DisplayUtils {
+  /**
+   * Get the status color
+   * @param componentStatus
+   * @param isIcon
+   */
+  public statusColor(componentStatus: string | undefined, isIcon: boolean) {
+    let color;
+    if (!componentStatus) {
+      return chart_global_label_Fill.value;
+    }
+
+    if (!isIcon) {
+      return chart_global_label_Fill.value;
+    }
+
+    switch (componentStatus) {
+      case 'STOPPING':
+        color = chart_global_label_Fill.value;
+        break;
+      case 'RUNNING':
+        color = global_success_color_100.value;
+        break;
+      case 'INSTANTIATED':
+        color = chart_global_label_Fill.value;
+        break;
+      case 'INITIALIZING':
+        color = global_warning_color_100.value;
+        break;
+      case 'FAILED':
+        color = global_danger_color_100.value;
+        break;
+      case 'TERMINATED':
+        color = chart_global_label_Fill.value;
+        break;
+      default:
+        color = chart_global_label_Fill.value;
+    }
+    return color;
+  }
+
+  public statusAlterVariant(status: string): AlertVariant {
+    let variant;
+    switch (status) {
+      case 'STOPPING':
+        variant = AlertVariant.warning;
+        break;
+      case 'RUNNING':
+        variant = AlertVariant.success;
+        break;
+      case 'INSTANTIATED':
+        variant = AlertVariant.warning;
+        break;
+      case 'INITIALIZING':
+        variant = AlertVariant.warning;
+        break;
+      case 'FAILED':
+        variant = AlertVariant.danger;
+        break;
+      case 'TERMINATED':
+        variant = AlertVariant.info;
+        break;
+      default:
+        variant = AlertVariant.warning;
+    }
+    return variant;
+  }
+
+  /**
+   * Get the health color
+   * @param health, string value
+   * @param isIcon, color depends on the icon as well
+   */
   public healthColor(health: string | undefined, isIcon: boolean): string {
-    if (health === undefined) {
-      return chart_color_black_500.value;
+    if (!health) {
+      return chart_global_label_Fill.value;
+    }
+
+    if (!isIcon) {
+      return chart_global_label_Fill.value;
     }
 
     let color;
     switch (health) {
       case 'HEALTHY':
-        color = isIcon
-          ? chart_color_green_300.value
-          : chart_global_label_Fill.value;
+        color = global_success_color_100.value;
         break;
       case 'HEALTHY_REBALANCING':
-        color = chart_color_orange_300.value;
+        color = global_warning_color_100.value;
         break;
       case 'DEGRADED':
-        color = chart_color_red_100.value;
+        color = global_danger_color_100.value;
         break;
       default:
-        color = chart_color_black_500.value;
+        color = chart_global_label_Fill.value;
     }
     return color;
   }
 
+  /**
+   * Used to display a healh label instead of the backend value
+   *
+   * @param health
+   */
   public healthLabel(health: string | undefined): string {
     if (health === undefined) {
       return '-';
@@ -60,6 +141,29 @@ class DisplayUtils {
         label = 'Unknown';
     }
     return label;
+  }
+
+  public healthAlertVariant(health: string | undefined): AlertVariant {
+    if (!health) {
+      return AlertVariant.warning;
+    }
+
+    let variant;
+
+    switch (health) {
+      case 'HEALTHY':
+        variant = AlertVariant.success;
+        break;
+      case 'HEALTHY_REBALANCING':
+        variant = AlertVariant.warning;
+        break;
+      case 'DEGRADED':
+        variant = AlertVariant.danger;
+        break;
+      default:
+        variant = AlertVariant.warning;
+    }
+    return variant;
   }
 
   public cacheTypeColor(cacheType: string): string {
@@ -109,35 +213,6 @@ class DisplayUtils {
         break;
       default:
         color = chart_color_gold_300.value;
-    }
-    return color;
-  }
-
-  public statusColor(componentStatus: string, isIcon: boolean) {
-    let color;
-    switch (componentStatus) {
-      case 'STOPPING':
-        color = chart_global_label_Fill.value;
-        break;
-      case 'RUNNING':
-        color = isIcon
-          ? global_success_color_100.value
-          : chart_global_label_Fill.value;
-        break;
-      case 'INSTANTIATED':
-        color = chart_global_label_Fill.value;
-        break;
-      case 'INITIALIZING':
-        color = global_warning_color_100.value;
-        break;
-      case 'FAILED':
-        color = global_danger_color_100.value;
-        break;
-      case 'TERMINATED':
-        color = chart_global_label_Fill.value;
-        break;
-      default:
-        color = chart_color_black_500.value;
     }
     return color;
   }

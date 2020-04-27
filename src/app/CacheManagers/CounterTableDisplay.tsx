@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Table, TableBody, TableHeader} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -12,11 +12,12 @@ import {
   StackItem,
   Title
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
+import { global_spacer_md } from '@patternfly/react-tokens';
 
 const CounterTableDisplay: React.FunctionComponent<any> = (props: {
-  counters: Counter[]
+  counters: Counter[];
 }) => {
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([
     ...props.counters
@@ -72,15 +73,15 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
     updateRows(filteredCounters.slice(initSlice, initSlice + perPage));
   };
 
-  const CounterType = (props: { type: string }) => {
+  const counterType = (type: string) => {
     return (
       <Badge
         style={{
-          backgroundColor: displayUtils.counterTypeColor(props.type),
-          marginRight: 15
+          backgroundColor: displayUtils.counterTypeColor(type),
+          marginRight: global_spacer_md.value
         }}
       >
-        {props.type}
+        {type}
       </Badge>
     );
   };
@@ -118,7 +119,7 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
           heightAuto: true,
           cells: [
             { title: counter.name },
-            { title: <CounterType type={counter.config.type} /> },
+            { title: counterType(counter.config.type) },
             { title: counter.value },
             { title: counter.config.initialValue },
             { title: counter.config.storage }
