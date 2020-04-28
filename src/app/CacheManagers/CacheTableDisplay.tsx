@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  textCenter
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -14,31 +8,20 @@ import {
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
-  Level,
-  LevelItem,
   Pagination,
   Select,
   SelectGroup,
   SelectOption,
   SelectVariant,
-  Stack,
-  StackItem,
   Text,
   TextContent,
   TextVariants,
-  Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
+  Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import { Link } from 'react-router-dom';
-import {
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem
-} from '@patternfly/react-core/dist/js/experimental';
+import {FilterIcon, SearchIcon} from '@patternfly/react-icons';
+import {Link} from 'react-router-dom';
+import {DataToolbar, DataToolbarContent, DataToolbarItem} from '@patternfly/react-core/dist/js/experimental';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -331,81 +314,67 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   };
 
   return (
-    <Stack>
-      <StackItem>
-        <Level>
-          <LevelItem>
-            <Toolbar>
-              <ToolbarGroup>
-                <ToolbarItem>
-                  <Select
-                    variant={SelectVariant.checkbox}
-                    onToggle={onToggle}
-                    onSelect={onSelect}
-                    onClear={onClear}
-                    selections={selected}
-                    isExpanded={isExpanded}
-                    placeholderText="Filter"
-                    ariaLabelledBy={'Filter'}
-                    toggleIcon={<FilterIcon />}
-                    maxHeight={200}
-                    width={250}
-                    isGrouped
-                  >
-                    {options}
-                  </Select>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <DataToolbar id="space-item">
-                    <DataToolbarContent>
-                      <DataToolbarItem
-                        variant={DataToolbarItemVariant.separator}
-                      ></DataToolbarItem>
-                    </DataToolbarContent>
-                  </DataToolbar>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Link
-                    to={{
-                      pathname: '/container/' + props.cmName + '/caches/create',
-                      state: {
-                        cmName: props.cmName
-                      }
-                    }}
-                  >
-                    <Button variant={'primary'}>Create Cache</Button>
-                  </Link>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Link
-                    to={{
-                      pathname:
-                        '/container/' + props.cmName + '/configurations/',
-                      state: {
-                        cmName: props.cmName
-                      }
-                    }}
-                  >
-                    <Button variant={'link'}>Configuration templates</Button>
-                  </Link>
-                </ToolbarItem>
-              </ToolbarGroup>
-            </Toolbar>
-          </LevelItem>
-          <LevelItem>
-            <Pagination
-              itemCount={filteredCaches.length}
-              perPage={cachesPagination.perPage}
-              page={cachesPagination.page}
-              onSetPage={onSetPage}
-              widgetId="pagination-caches"
-              onPerPageSelect={onPerPageSelect}
-              isCompact
-            />
-          </LevelItem>
-        </Level>
-      </StackItem>
-      <StackItem>
+      <React.Fragment>
+        <DataToolbar id="cache-table-toolbar">
+          <DataToolbarContent>
+            <DataToolbarItem>
+              <Select
+                variant={SelectVariant.checkbox}
+                onToggle={onToggle}
+                onSelect={onSelect}
+                onClear={onClear}
+                selections={selected}
+                isExpanded={isExpanded}
+                placeholderText="Filter"
+                ariaLabelledBy={'Filter'}
+                toggleIcon={<FilterIcon />}
+                maxHeight={200}
+                width={250}
+                isGrouped
+              >
+                {options}
+              </Select>
+            </DataToolbarItem>
+            <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
+            <DataToolbarItem>
+              <Link
+                to={{
+                  pathname: '/container/' + props.cmName + '/caches/create',
+                  state: {
+                    cmName: props.cmName
+                  }
+                }}
+              >
+                <Button variant={'primary'}>Create Cache</Button>
+              </Link>
+            </DataToolbarItem>
+            <DataToolbarItem>
+              <Link
+                to={{
+                  pathname:
+                    '/container/' + props.cmName + '/configurations/',
+                  state: {
+                    cmName: props.cmName
+                  }
+                }}
+              >
+                <Button variant={'link'}>Configuration templates</Button>
+              </Link>
+            </DataToolbarItem>
+            <DataToolbarItem variant={DataToolbarItemVariant.pagination} breakpointMods={[{modifier: 'align-right', breakpoint:'md'}]}>
+              <Pagination
+                itemCount={filteredCaches.length}
+                perPage={cachesPagination.perPage}
+                page={cachesPagination.page}
+                onSetPage={onSetPage}
+                widgetId="pagination-caches"
+                onPerPageSelect={onPerPageSelect}
+                isCompact
+              />
+            </DataToolbarItem>
+          </DataToolbarContent>
+        </DataToolbar>
+
         <Table
           aria-label="Caches"
           cells={columns}
@@ -415,8 +384,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           <TableHeader />
           <TableBody />
         </Table>
-      </StackItem>
-    </Stack>
+      </React.Fragment>
   );
 };
 
