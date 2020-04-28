@@ -4,6 +4,7 @@ import {
   Badge,
   Bullseye,
   Button,
+  DataToolbarGroup,
   DataToolbarItemVariant,
   EmptyState,
   EmptyStateIcon,
@@ -22,6 +23,12 @@ import displayUtils from '../../services/displayUtils';
 import {FilterIcon, SearchIcon} from '@patternfly/react-icons';
 import {Link} from 'react-router-dom';
 import {DataToolbar, DataToolbarContent, DataToolbarItem} from '@patternfly/react-core/dist/js/experimental';
+import {
+  global_FontSize_md,
+  global_FontSize_sm,
+  global_FontWeight_light,
+  global_FontWeight_normal, global_palette_blue_50, global_spacer_sm, global_spacer_xs
+} from "@patternfly/react-tokens";
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -178,7 +185,13 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     return (
       <Badge
         style={{
-          backgroundColor: displayUtils.cacheTypeColor(type)
+          backgroundColor: displayUtils.cacheTypeColor(type),
+          color: displayUtils.cacheTypeColorLabel(type),
+          fontSize: global_FontSize_sm.value,
+          fontWeight: "lighter",
+          padding: global_spacer_xs.value,
+          paddingRight: global_spacer_sm.value,
+          paddingLeft: global_spacer_sm.value,
         }}
       >
         {type}
@@ -219,65 +232,6 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     return actualSelection.filter(s => ref.includes(s));
   }
 
-  const options = [
-    <SelectGroup label="Cache type" key="group1">
-      <SelectOption key={0} value="Local" />
-      <SelectOption key={1} value="Replicated" />
-      <SelectOption key={2} value="Distributed" />
-      <SelectOption key={3} value="Invalidated" />
-      <SelectOption key={4} value="Scattered" />
-    </SelectGroup>,
-    <SelectGroup label="Feature" key="group2">
-      <SelectOption key={5} value="Bounded" />
-      <SelectOption key={6} value="Indexed" />
-      <SelectOption key={7} value="Persistent" />
-      <SelectOption key={8} value="Transactional" />
-      <SelectOption key={9} value="Secured" />
-      <SelectOption key={10} value="Backups" />
-    </SelectGroup>
-  ];
-
-  const onSelect = (event, selection) => {
-    let actualSelection: string[] = [];
-
-    if (selected.includes(selection)) {
-      actualSelection = selected.filter(item => item !== selection);
-    } else {
-      actualSelection = [...selected, selection];
-    }
-
-    let newFilteredCaches: CacheInfo[] = props.caches;
-
-    if (actualSelection.length > 0) {
-      let filterFeatures = extract(actualSelection, cacheFeatures);
-      let filterCacheType = extract(actualSelection, cacheTypes);
-
-      if (filterCacheType.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
-          isCacheType(cacheInfo, filterCacheType)
-        );
-      }
-
-      if (filterFeatures.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
-          hasFeatures(cacheInfo, filterFeatures)
-        );
-      }
-    }
-
-    updateRows(newFilteredCaches);
-    setSelected(actualSelection);
-    setFilteredCaches(newFilteredCaches);
-  };
-
-  const onToggle = isExpanded => {
-    setIsExpanded(isExpanded);
-  };
-
-  const onClear = () => {
-    setSelected([]);
-  };
-
   const isCacheType = (
     cacheInfo: CacheInfo,
     actualSelection: string[]
@@ -313,76 +267,159 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     return false;
   };
 
-  return (
-      <React.Fragment>
-        <DataToolbar id="cache-table-toolbar">
-          <DataToolbarContent>
-            <DataToolbarItem>
+  const filterCaches = (actualSelection: string[]) => {
+    let newFilteredCaches: CacheInfo[] = props.caches;
+
+    if (actualSelection.length > 0) {
+      let filterFeatures = extract(actualSelection, cacheFeatures);
+      let filterCacheType = extract(actualSelection, cacheTypes);
+
+      if (filterCacheType.length > 0) {
+        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
+          isCacheType(cacheInfo, filterCacheType)
+        );
+      }
+
+      if (filterFeatures.length > 0) {
+        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
+          hasFeatures(cacheInfo, filterFeatures)
+        );
+      }
+    }
+    return newFilteredCaches;
+  }
+
+  const onSelectFilter = (event, selection) => {
+    let actualSelection: string[] = [];
+
+    if (selected.includes(selection)) {
+      actualSelection = selected.filter(item => item !== selection);
+    } else {
+      actualSelection = [...selected, selection];
+    }
+
+    let newFilteredCaches = filterCaches(actualSelection);
+
+    updateRows(newFilteredCaches);
+    setSelected(actualSelection);
+    setFilteredCaches(newFilteredCaches);
+  };
+
+  const onToggleFilter = isExpanded => {
+    setIsExpanded(isExpanded);
+  };
+
+  const onDeleteFilters = () => {
+    setSelected([]);
+  };
+
+  const buildCreateCacheButton = () => {
+    return (
+      <Link
+      to={{
+        pathname: '/container/' + props.cmName + '/caches/create',
+        state: {
+          cmName: props.cmName
+        }
+      }}
+    >
+      <Button variant={'primary'}>Create Cache</Button>
+    </Link>
+    );
+  }
+
+  const buildViewConfigurationsButton = () => {
+    return (
+      <Link
+      to={{
+        pathname:
+          '/container/' + props.cmName + '/configurations/',
+        state: {
+          cmName: props.cmName
+        }
+      }}
+    >
+      <Button variant={'link'}>Configuration templates</Button>
+    </Link>
+    );
+  }
+
+  const options = [
+    <SelectGroup label="Cache type" key="group1">
+      <SelectOption key={0} value="Local" />
+      <SelectOption key={1} value="Replicated" />
+      <SelectOption key={2} value="Distributed" />
+      <SelectOption key={3} value="Invalidated" />
+      <SelectOption key={4} value="Scattered" />
+    </SelectGroup>,
+    <SelectGroup label="Feature" key="group2">
+      <SelectOption key={5} value="Bounded" />
+      <SelectOption key={6} value="Indexed" />
+      <SelectOption key={7} value="Persistent" />
+      <SelectOption key={8} value="Transactional" />
+      <SelectOption key={9} value="Secured" />
+      <SelectOption key={10} value="Backups" />
+    </SelectGroup>
+  ];
+
+  const buildFilter = () => {
+    return (
+      // <DataToolbarToggleGroup toggleIcon={<FilterIcon/>}  breakpoint="md" >
+      //  {/*<DataToolbarGroup variant="filter-group">*/}
+      //     <DataToolbarFilter chips={selected} deleteChip={onDeleteChip} deleteChipGroup={onDeleteFilters} categoryName="Status">
+            <DataToolbarGroup variant="filter-group">
               <Select
                 variant={SelectVariant.checkbox}
-                onToggle={onToggle}
-                onSelect={onSelect}
-                onClear={onClear}
+                aria-label="Filter"
+                onToggle={onToggleFilter}
+                onSelect={onSelectFilter}
                 selections={selected}
                 isExpanded={isExpanded}
-                placeholderText="Filter"
-                ariaLabelledBy={'Filter'}
-                toggleIcon={<FilterIcon />}
+                toggleIcon={<FilterIcon/>}
                 maxHeight={200}
                 width={250}
-                isGrouped
+                placeholderText="Filter"
+                isGrouped={true}
               >
                 {options}
               </Select>
-            </DataToolbarItem>
+            </DataToolbarGroup>
+      // {/*    </DataToolbarFilter>*/}
+      // {/*</DataToolbarToggleGroup>*/}
+    );
+  }
+
+  const buildPagination = () => {
+    return (
+      <Pagination
+      itemCount={filteredCaches.length}
+      perPage={cachesPagination.perPage}
+      page={cachesPagination.page}
+      onSetPage={onSetPage}
+      widgetId="pagination-caches"
+      onPerPageSelect={onPerPageSelect}
+      isCompact />
+    );
+  }
+
+  return (
+      <React.Fragment>
+        <DataToolbar id="cache-table-toolbar" collapseListedFiltersBreakpoint='xl'>
+          <DataToolbarContent>
+            <DataToolbarItem variant={DataToolbarItemVariant["search-filter"]}>{buildFilter()}</DataToolbarItem>
             <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
-            <DataToolbarItem>
-              <Link
-                to={{
-                  pathname: '/container/' + props.cmName + '/caches/create',
-                  state: {
-                    cmName: props.cmName
-                  }
-                }}
-              >
-                <Button variant={'primary'}>Create Cache</Button>
-              </Link>
-            </DataToolbarItem>
-            <DataToolbarItem>
-              <Link
-                to={{
-                  pathname:
-                    '/container/' + props.cmName + '/configurations/',
-                  state: {
-                    cmName: props.cmName
-                  }
-                }}
-              >
-                <Button variant={'link'}>Configuration templates</Button>
-              </Link>
-            </DataToolbarItem>
-            <DataToolbarItem variant={DataToolbarItemVariant.pagination} breakpointMods={[{modifier: 'align-right', breakpoint:'md'}]}>
-              <Pagination
-                itemCount={filteredCaches.length}
-                perPage={cachesPagination.perPage}
-                page={cachesPagination.page}
-                onSetPage={onSetPage}
-                widgetId="pagination-caches"
-                onPerPageSelect={onPerPageSelect}
-                isCompact
-              />
+            <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
+            <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
+            <DataToolbarItem variant={DataToolbarItemVariant.pagination}
+                             breakpointMods={[{modifier: 'align-right', breakpoint: 'md'}]}>
+              {buildPagination()}
             </DataToolbarItem>
           </DataToolbarContent>
         </DataToolbar>
 
-        <Table
-          aria-label="Caches"
-          cells={columns}
-          rows={rows}
-          className={'caches-table'}
-        >
-          <TableHeader />
-          <TableBody />
+        <Table aria-label="Caches" cells={columns} rows={rows} className={'caches-table'}>
+          <TableHeader/>
+          <TableBody/>
         </Table>
       </React.Fragment>
   );
