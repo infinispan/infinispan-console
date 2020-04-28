@@ -472,7 +472,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
                 isCode
                 variant={ClipboardCopyVariant.inline}
               >
-                {config? config.config : 'loading'}
+                {config ? config.config : 'loading'}
               </ClipboardCopy>
             </TextContent>
           </Tab>

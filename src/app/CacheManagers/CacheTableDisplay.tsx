@@ -1,9 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  textCenter
+} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
-  Button, ButtonVariant, Chip, ChipGroup, ChipGroupToolbarItem,
+  Button,
+  ButtonVariant,
+  Chip,
+  ChipGroup,
+  ChipGroupToolbarItem,
   DataToolbarGroup,
   DataToolbarItemVariant,
   EmptyState,
@@ -20,15 +30,22 @@ import {
   Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {FilterIcon, SearchIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
-import {DataToolbar, DataToolbarContent, DataToolbarItem} from '@patternfly/react-core/dist/js/experimental';
+import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
+import {
+  DataToolbar,
+  DataToolbarContent,
+  DataToolbarItem
+} from '@patternfly/react-core/dist/js/experimental';
 import {
   global_FontSize_md,
   global_FontSize_sm,
   global_FontWeight_light,
-  global_FontWeight_normal, global_palette_blue_50, global_spacer_sm, global_spacer_xs
-} from "@patternfly/react-tokens";
+  global_FontWeight_normal,
+  global_palette_blue_50,
+  global_spacer_sm,
+  global_spacer_xs
+} from '@patternfly/react-tokens';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   caches: CacheInfo[];
@@ -190,10 +207,10 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           backgroundColor: displayUtils.cacheTypeColor(type),
           color: displayUtils.cacheTypeColorLabel(type),
           fontSize: global_FontSize_sm.value,
-          fontWeight: "lighter",
+          fontWeight: 'lighter',
           padding: global_spacer_xs.value,
           paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value,
+          paddingLeft: global_spacer_sm.value
         }}
       >
         {type}
@@ -289,14 +306,14 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       }
     }
     return newFilteredCaches;
-  }
+  };
 
   const updateChips = (actualSelection: string[]) => {
     let filterFeatures = extract(actualSelection, cacheFeatures);
     let filterCacheType = extract(actualSelection, cacheTypes);
     setChipsCacheFeature(filterFeatures);
     setChipsCacheType(filterCacheType);
-  }
+  };
 
   const deleteItem = id => {
     let actualSelection: string[] = selected.filter(item => item !== id);
@@ -305,7 +322,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     updateRows(newFilteredCaches);
     setSelected(actualSelection);
     setFilteredCaches(newFilteredCaches);
-  }
+  };
 
   const onSelectFilter = (event, selection) => {
     let actualSelection: string[] = [];
@@ -339,33 +356,32 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const buildCreateCacheButton = () => {
     return (
       <Link
-      to={{
-        pathname: '/container/' + props.cmName + '/caches/create',
-        state: {
-          cmName: props.cmName
-        }
-      }}
-    >
-      <Button variant={'primary'}>Create Cache</Button>
-    </Link>
+        to={{
+          pathname: '/container/' + props.cmName + '/caches/create',
+          state: {
+            cmName: props.cmName
+          }
+        }}
+      >
+        <Button variant={'primary'}>Create Cache</Button>
+      </Link>
     );
-  }
+  };
 
   const buildViewConfigurationsButton = () => {
     return (
       <Link
-      to={{
-        pathname:
-          '/container/' + props.cmName + '/configurations/',
-        state: {
-          cmName: props.cmName
-        }
-      }}
-    >
-      <Button variant={'link'}>Configuration templates</Button>
-    </Link>
+        to={{
+          pathname: '/container/' + props.cmName + '/configurations/',
+          state: {
+            cmName: props.cmName
+          }
+        }}
+      >
+        <Button variant={'link'}>Configuration templates</Button>
+      </Link>
     );
-  }
+  };
 
   const options = [
     <SelectGroup label="Cache type" key="group1">
@@ -387,89 +403,113 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
 
   const buildFilter = () => {
     return (
-            <DataToolbarGroup variant="filter-group">
-              <Select
-                variant={SelectVariant.checkbox}
-                aria-label="Filter"
-                onToggle={onToggleFilter}
-                onSelect={onSelectFilter}
-                selections={selected}
-                isExpanded={isExpanded}
-                toggleIcon={<FilterIcon/>}
-                maxHeight={200}
-                width={250}
-                placeholderText="Filter"
-                isGrouped={true}
-              >
-                {options}
-              </Select>
-            </DataToolbarGroup>
+      <DataToolbarGroup variant="filter-group">
+        <Select
+          variant={SelectVariant.checkbox}
+          aria-label="Filter"
+          onToggle={onToggleFilter}
+          onSelect={onSelectFilter}
+          selections={selected}
+          isExpanded={isExpanded}
+          toggleIcon={<FilterIcon />}
+          maxHeight={200}
+          width={250}
+          placeholderText="Filter"
+          isGrouped={true}
+        >
+          {options}
+        </Select>
+      </DataToolbarGroup>
     );
-  }
+  };
 
   const buildPagination = () => {
     return (
       <Pagination
-      itemCount={filteredCaches.length}
-      perPage={cachesPagination.perPage}
-      page={cachesPagination.page}
-      onSetPage={onSetPage}
-      widgetId="pagination-caches"
-      onPerPageSelect={onPerPageSelect}
-      isCompact />
+        itemCount={filteredCaches.length}
+        perPage={cachesPagination.perPage}
+        page={cachesPagination.page}
+        onSetPage={onSetPage}
+        widgetId="pagination-caches"
+        onPerPageSelect={onPerPageSelect}
+        isCompact
+      />
     );
-  }
+  };
 
   const displayClearAll = () => {
-    if(chipsCacheFeature.length == 0 && chipsCacheType.length == 0) {
+    if (chipsCacheFeature.length == 0 && chipsCacheType.length == 0) {
       return '';
     }
 
     return (
-      <Button variant={ButtonVariant.link} isInline onClick={onDeleteAllFilters}>Clear all</Button>
+      <Button
+        variant={ButtonVariant.link}
+        isInline
+        onClick={onDeleteAllFilters}
+      >
+        Clear all
+      </Button>
     );
-  }
+  };
 
   return (
-      <React.Fragment>
-        <DataToolbar id="cache-table-toolbar" collapseListedFiltersBreakpoint='xl'>
-          <DataToolbarContent>
-              <DataToolbarItem variant={DataToolbarItemVariant["search-filter"]}>{buildFilter()}</DataToolbarItem>
-              <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
-              <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
-              <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
-              <DataToolbarItem variant={DataToolbarItemVariant.pagination}
-                               breakpointMods={[{modifier: 'align-right', breakpoint: 'md'}]}>
-                {buildPagination()}
-              </DataToolbarItem>
-          </DataToolbarContent>
-          <DataToolbarContent>
-              <DataToolbarItem>
-                <ChipGroup withToolbar>
-                  <ChipGroupToolbarItem key="chips-types" categoryName="Cache Type">
-                    {chipsCacheType.map(chip =>
-                      <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
-                        {chip}
-                      </Chip>
-                    )}
-                  </ChipGroupToolbarItem>
-                  <ChipGroupToolbarItem key="chips-features" categoryName="Features">
-                    {chipsCacheFeature.map(chip =>
-                      <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
-                        {chip}
-                      </Chip>
-                    )}
-                  </ChipGroupToolbarItem>
-                </ChipGroup>
-              </DataToolbarItem>
-              <DataToolbarItem>{displayClearAll()}</DataToolbarItem>
-          </DataToolbarContent>
-        </DataToolbar>
-        <Table aria-label="Caches" cells={columns} rows={rows} className={'caches-table'}>
-          <TableHeader/>
-          <TableBody/>
-        </Table>
-      </React.Fragment>
+    <React.Fragment>
+      <DataToolbar
+        id="cache-table-toolbar"
+        collapseListedFiltersBreakpoint="xl"
+      >
+        <DataToolbarContent>
+          <DataToolbarItem variant={DataToolbarItemVariant['search-filter']}>
+            {buildFilter()}
+          </DataToolbarItem>
+          <DataToolbarItem
+            variant={DataToolbarItemVariant.separator}
+          ></DataToolbarItem>
+          <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
+          <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
+          <DataToolbarItem
+            variant={DataToolbarItemVariant.pagination}
+            breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}
+          >
+            {buildPagination()}
+          </DataToolbarItem>
+        </DataToolbarContent>
+        <DataToolbarContent>
+          <DataToolbarItem>
+            <ChipGroup withToolbar>
+              <ChipGroupToolbarItem key="chips-types" categoryName="Cache Type">
+                {chipsCacheType.map(chip => (
+                  <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                    {chip}
+                  </Chip>
+                ))}
+              </ChipGroupToolbarItem>
+              <ChipGroupToolbarItem
+                key="chips-features"
+                categoryName="Features"
+              >
+                {chipsCacheFeature.map(chip => (
+                  <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                    {chip}
+                  </Chip>
+                ))}
+              </ChipGroupToolbarItem>
+            </ChipGroup>
+          </DataToolbarItem>
+          <DataToolbarItem>{displayClearAll()}</DataToolbarItem>
+        </DataToolbarContent>
+      </DataToolbar>
+      <Table
+        aria-label="Caches"
+        cells={columns}
+        rows={rows}
+        className={'caches-table'}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
+    </React.Fragment>
   );
 };
 

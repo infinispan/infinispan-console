@@ -8,16 +8,18 @@ import {
   chart_color_cyan_500,
   chart_color_gold_100,
   chart_color_gold_300,
-  chart_color_gold_500, chart_color_orange_500,
+  chart_color_gold_500,
+  chart_color_orange_500,
   chart_color_purple_500,
   chart_global_label_Fill,
-  global_danger_color_100, global_palette_black_100,
+  global_danger_color_100,
+  global_palette_black_100,
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
   global_warning_color_100
 } from '@patternfly/react-tokens';
-import {AlertVariant} from '@patternfly/react-core';
+import { AlertVariant } from '@patternfly/react-core';
 
 /**
  * Utility class to manage display features
