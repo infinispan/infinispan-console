@@ -3,7 +3,7 @@ import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/
 import {
   Badge,
   Bullseye,
-  Button,
+  Button, ButtonVariant, Chip, ChipGroup, ChipGroupToolbarItem,
   DataToolbarGroup,
   DataToolbarItemVariant,
   EmptyState,
@@ -45,6 +45,8 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const [rows, setRows] = useState<(string | any)[]>([]);
 
   const [selected, setSelected] = useState<string[]>([]);
+  const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
+  const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const columns = [
@@ -289,6 +291,22 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     return newFilteredCaches;
   }
 
+  const updateChips = (actualSelection: string[]) => {
+    let filterFeatures = extract(actualSelection, cacheFeatures);
+    let filterCacheType = extract(actualSelection, cacheTypes);
+    setChipsCacheFeature(filterFeatures);
+    setChipsCacheType(filterCacheType);
+  }
+
+  const deleteItem = id => {
+    let actualSelection: string[] = selected.filter(item => item !== id);
+    let newFilteredCaches = filterCaches(actualSelection);
+    updateChips(actualSelection);
+    updateRows(newFilteredCaches);
+    setSelected(actualSelection);
+    setFilteredCaches(newFilteredCaches);
+  }
+
   const onSelectFilter = (event, selection) => {
     let actualSelection: string[] = [];
 
@@ -298,6 +316,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       actualSelection = [...selected, selection];
     }
 
+    updateChips(actualSelection);
     let newFilteredCaches = filterCaches(actualSelection);
 
     updateRows(newFilteredCaches);
@@ -309,8 +328,12 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     setIsExpanded(isExpanded);
   };
 
-  const onDeleteFilters = () => {
+  const onDeleteAllFilters = () => {
+    setChipsCacheFeature([]);
+    setChipsCacheType([]);
     setSelected([]);
+    updateRows(props.caches);
+    setFilteredCaches(props.caches);
   };
 
   const buildCreateCacheButton = () => {
@@ -364,9 +387,6 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
 
   const buildFilter = () => {
     return (
-      // <DataToolbarToggleGroup toggleIcon={<FilterIcon/>}  breakpoint="md" >
-      //  {/*<DataToolbarGroup variant="filter-group">*/}
-      //     <DataToolbarFilter chips={selected} deleteChip={onDeleteChip} deleteChipGroup={onDeleteFilters} categoryName="Status">
             <DataToolbarGroup variant="filter-group">
               <Select
                 variant={SelectVariant.checkbox}
@@ -384,8 +404,6 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
                 {options}
               </Select>
             </DataToolbarGroup>
-      // {/*    </DataToolbarFilter>*/}
-      // {/*</DataToolbarToggleGroup>*/}
     );
   }
 
@@ -402,21 +420,51 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     );
   }
 
+  const displayClearAll = () => {
+    if(chipsCacheFeature.length == 0 && chipsCacheType.length == 0) {
+      return '';
+    }
+
+    return (
+      <Button variant={ButtonVariant.link} isInline onClick={onDeleteAllFilters}>Clear all</Button>
+    );
+  }
+
   return (
       <React.Fragment>
         <DataToolbar id="cache-table-toolbar" collapseListedFiltersBreakpoint='xl'>
           <DataToolbarContent>
-            <DataToolbarItem variant={DataToolbarItemVariant["search-filter"]}>{buildFilter()}</DataToolbarItem>
-            <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
-            <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
-            <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
-            <DataToolbarItem variant={DataToolbarItemVariant.pagination}
-                             breakpointMods={[{modifier: 'align-right', breakpoint: 'md'}]}>
-              {buildPagination()}
-            </DataToolbarItem>
+              <DataToolbarItem variant={DataToolbarItemVariant["search-filter"]}>{buildFilter()}</DataToolbarItem>
+              <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
+              <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
+              <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
+              <DataToolbarItem variant={DataToolbarItemVariant.pagination}
+                               breakpointMods={[{modifier: 'align-right', breakpoint: 'md'}]}>
+                {buildPagination()}
+              </DataToolbarItem>
+          </DataToolbarContent>
+          <DataToolbarContent>
+              <DataToolbarItem>
+                <ChipGroup withToolbar>
+                  <ChipGroupToolbarItem key="chips-types" categoryName="Cache Type">
+                    {chipsCacheType.map(chip =>
+                      <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                        {chip}
+                      </Chip>
+                    )}
+                  </ChipGroupToolbarItem>
+                  <ChipGroupToolbarItem key="chips-features" categoryName="Features">
+                    {chipsCacheFeature.map(chip =>
+                      <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                        {chip}
+                      </Chip>
+                    )}
+                  </ChipGroupToolbarItem>
+                </ChipGroup>
+              </DataToolbarItem>
+              <DataToolbarItem>{displayClearAll()}</DataToolbarItem>
           </DataToolbarContent>
         </DataToolbar>
-
         <Table aria-label="Caches" cells={columns} rows={rows} className={'caches-table'}>
           <TableHeader/>
           <TableBody/>
