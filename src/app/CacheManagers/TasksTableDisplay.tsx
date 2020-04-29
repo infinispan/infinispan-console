@@ -18,11 +18,13 @@ import {
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import { global_spacer_md } from '@patternfly/react-tokens';
+import tasksService from '../../services/tasksService';
 
 const TasksTableDisplay: React.FunctionComponent<any> = (props: {
-  tasks: Task[];
+  setTasksCount: (number) => void;
 }) => {
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([...props.tasks]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
   const [tasksPagination, setTasksPagination] = useState({
     page: 1,
@@ -50,10 +52,13 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
   ];
 
   useEffect(() => {
-    const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
-    updateRows(
-      filteredTasks.slice(initSlice, initSlice + tasksPagination.perPage)
-    );
+    tasksService.getTasks().then(tasks => {
+      setTasks(tasks);
+      setFilteredTasks(tasks);
+      props.setTasksCount(tasks.length);
+      const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
+      updateRows(tasks.slice(initSlice, initSlice + tasksPagination.perPage));
+    });
   }, []);
 
   const onSetPage = (_event, pageNumber) => {
@@ -127,8 +132,11 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
                   <EmptyState variant={EmptyStateVariant.small}>
                     <EmptyStateIcon icon={SearchIcon} />
                     <Title headingLevel="h2" size="lg">
-                      No tasks found
+                      There are no tasks
                     </Title>
+                    <EmptyStateBody>
+                      Create one using REST endpoint, HotRod or the CLI
+                    </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
               )

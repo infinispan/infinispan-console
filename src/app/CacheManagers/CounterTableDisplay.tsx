@@ -15,13 +15,13 @@ import {
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import { global_spacer_md } from '@patternfly/react-tokens';
+import countersService from '../../services/countersService';
 
 const CounterTableDisplay: React.FunctionComponent<any> = (props: {
-  counters: Counter[];
+  setCountersCount: (number) => void;
 }) => {
-  const [filteredCounters, setFilteredCounters] = useState<Counter[]>([
-    ...props.counters
-  ]);
+  const [counters, setCounters] = useState<Counter[]>([]);
+  const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
 
   const [countersPagination, setCountersPagination] = useState({
     page: 1,
@@ -46,11 +46,16 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
   ];
 
   useEffect(() => {
-    const initSlice =
-      (countersPagination.page - 1) * countersPagination.perPage;
-    updateRows(
-      filteredCounters.slice(initSlice, initSlice + countersPagination.perPage)
-    );
+    countersService.getCounters().then(counters => {
+      setCounters(counters);
+      setFilteredCounters(counters);
+      props.setCountersCount(counters.length);
+      const initSlice =
+        (countersPagination.page - 1) * countersPagination.perPage;
+      updateRows(
+        counters.slice(initSlice, initSlice + countersPagination.perPage)
+      );
+    });
   }, []);
 
   const onSetPage = (_event, pageNumber) => {

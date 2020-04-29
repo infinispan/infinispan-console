@@ -59,7 +59,7 @@ import dataContainerService from '../../services/dataContainerService';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   cmName: string;
-  setCachesCount: (number) => void
+  setCachesCount: (number) => void;
 }) => {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
@@ -112,11 +112,14 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
         props.setCachesCount(eitherCaches.value.length);
         const initSlice =
           (cachesPagination.page - 1) * cachesPagination.perPage;
-        updateRows(eitherCaches.value.slice(
+        updateRows(
+          eitherCaches.value.slice(
             initSlice,
             initSlice + cachesPagination.perPage
-          )
-        , false, undefined);
+          ),
+          false,
+          undefined
+        );
       } else {
         updateRows([], false, eitherCaches.value.message);
       }
@@ -130,7 +133,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     });
     const initSlice = (pageNumber - 1) * cachesPagination.perPage;
     updateRows(
-      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage), false, undefined
+      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage),
+      false,
+      undefined
     );
   };
 
@@ -140,10 +145,14 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       perPage: perPage
     });
     const initSlice = (cachesPagination.page - 1) * perPage;
-    updateRows(filteredCaches.slice(initSlice, initSlice + perPage), false, undefined);
+    updateRows(
+      filteredCaches.slice(initSlice, initSlice + perPage),
+      false,
+      undefined
+    );
   };
 
-  const emptyOrLoading = (loading?:boolean, error?:(string | undefined)) => {
+  const emptyOrLoading = (loading?: boolean, error?: string | undefined) => {
     if (loading) {
       return (
         <Bullseye>
@@ -184,7 +193,11 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     );
   };
 
-  const updateRows = (caches: CacheInfo[], loading?: boolean, error?: (undefined | string)) => {
+  const updateRows = (
+    caches: CacheInfo[],
+    loading?: boolean,
+    error?: undefined | string
+  ) => {
     let currentRows: {
       heightAuto: boolean;
       cells: (string | any)[];
@@ -326,7 +339,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
 
   const extract = (actualSelection: string[], ref: string[]): string[] => {
     return actualSelection.filter(s => ref.includes(s));
-  }
+  };
 
   const isCacheType = (
     cacheInfo: CacheInfo,
