@@ -7,6 +7,7 @@ import {
   textCenter
 } from '@patternfly/react-table';
 import {
+  Alert,
   Badge,
   Bullseye,
   Button,
@@ -17,8 +18,12 @@ import {
   DataToolbarGroup,
   DataToolbarItemVariant,
   EmptyState,
+  EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  Form,
+  FormGroup,
+  Modal,
   Pagination,
   Select,
   SelectGroup,
@@ -26,46 +31,48 @@ import {
   SelectVariant,
   Text,
   TextContent,
+  TextInput,
   TextVariants,
   Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
+import {
+  ExclamationCircleIcon,
+  FilterIcon,
+  SearchIcon
+} from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import {
   DataToolbar,
   DataToolbarContent,
-  DataToolbarItem
+  DataToolbarItem,
+  Spinner
 } from '@patternfly/react-core/dist/js/experimental';
 import {
-  global_FontSize_md,
+  global_danger_color_100,
   global_FontSize_sm,
-  global_FontWeight_light,
-  global_FontWeight_normal,
-  global_palette_blue_50,
   global_spacer_sm,
   global_spacer_xs
 } from '@patternfly/react-tokens';
+import cacheService from '../../services/cacheService';
+import dataContainerService from '../../services/dataContainerService';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
-  caches: CacheInfo[];
   cmName: string;
+  setCachesCount: (number) => void
 }) => {
-  const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([
-    ...props.caches
-  ]);
-
+  const [caches, setCaches] = useState<CacheInfo[]>([]);
+  const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
     perPage: 10
   });
-  const [rows, setRows] = useState<(string | any)[]>([]);
-
+  const [rows, setRows] = useState<any[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
   const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
+  const [deleteCacheName, setDeleteCacheName] = useState<string>('');
   const columns = [
     { title: 'Name', transforms: [cellWidth(20), textCenter] },
     {
@@ -85,12 +92,36 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     }
   ];
 
+  const actions = [
+    {
+      title: 'Delete',
+      onClick: (event, rowId, rowData, extra) =>
+        openDeleteCacheModal(rowData.cells[0].cacheName)
+    }
+  ];
+
   useEffect(() => {
-    const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
-    updateRows(
-      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage)
-    );
+    loadCaches();
   }, []);
+
+  const loadCaches = () => {
+    dataContainerService.getCaches(props.cmName).then(eitherCaches => {
+      if (eitherCaches.isRight()) {
+        setCaches(eitherCaches.value);
+        setFilteredCaches(eitherCaches.value);
+        props.setCachesCount(eitherCaches.value.length);
+        const initSlice =
+          (cachesPagination.page - 1) * cachesPagination.perPage;
+        updateRows(eitherCaches.value.slice(
+            initSlice,
+            initSlice + cachesPagination.perPage
+          )
+        , false, undefined);
+      } else {
+        updateRows([], false, eitherCaches.value.message);
+      }
+    });
+  };
 
   const onSetPage = (_event, pageNumber) => {
     setCachesPagination({
@@ -99,7 +130,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     });
     const initSlice = (pageNumber - 1) * cachesPagination.perPage;
     updateRows(
-      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage)
+      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage), false, undefined
     );
   };
 
@@ -109,48 +140,91 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       perPage: perPage
     });
     const initSlice = (cachesPagination.page - 1) * perPage;
-    updateRows(filteredCaches.slice(initSlice, initSlice + perPage));
+    updateRows(filteredCaches.slice(initSlice, initSlice + perPage), false, undefined);
   };
 
-  const updateRows = (caches: CacheInfo[]) => {
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
+  const emptyOrLoading = (loading?:boolean, error?:(string | undefined)) => {
+    if (loading) {
+      return (
+        <Bullseye>
+          <Spinner size="xl" />
+        </Bullseye>
+      );
+    }
+
+    if (error) {
+      return (
+        <Bullseye>
+          <EmptyState variant={EmptyStateVariant.small}>
+            <EmptyStateIcon
+              icon={ExclamationCircleIcon}
+              color={global_danger_color_100.value}
+            />
+            <Title headingLevel="h2" size="lg">
+              Unable to connect
+            </Title>
+            <EmptyStateBody>
+              There was an error retrieving data. Check your connection and try
+              again.
+            </EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
+      );
+    }
+
+    return (
+      <Bullseye>
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={SearchIcon} />
+          <Title headingLevel="h2" size="lg">
+            No caches found
+          </Title>
+        </EmptyState>
+      </Bullseye>
+    );
+  };
+
+  const updateRows = (caches: CacheInfo[], loading?: boolean, error?: (undefined | string)) => {
+    let currentRows: {
+      heightAuto: boolean;
+      cells: (string | any)[];
+      type: string;
+      disableActions: boolean;
+    }[];
 
     if (caches.length == 0) {
-      rows = [
+      currentRows = [
         {
           heightAuto: true,
+          type: 'empty',
+          disableActions: true,
           cells: [
             {
               props: { colSpan: 8 },
-              title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      No caches found
-                    </Title>
-                  </EmptyState>
-                </Bullseye>
-              )
+              title: emptyOrLoading(loading, error)
             }
           ]
         }
       ];
     } else {
-      rows = caches.map(cacheInfo => {
+      currentRows = caches.map(cacheInfo => {
         return {
           heightAuto: true,
+          type: '',
+          disableActions: false,
           cells: [
-            { title: displayCacheName(cacheInfo.name) },
+            {
+              cacheName: cacheInfo.name,
+              title: displayCacheName(cacheInfo.name)
+            },
             { title: displayCacheType(cacheInfo.type) },
             { title: displayHealth(cacheInfo.health) },
             { title: displayCacheFeatures(cacheInfo) }
           ]
-          //TODO {title: <CacheActionLinks name={cache.name}/>}]
         };
       });
     }
-    setRows(rows);
+    setRows(currentRows);
   };
 
   const appendFeature = (features: string, feature: string): string => {
@@ -188,6 +262,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   const displayCacheName = (name: string) => {
     return (
       <Link
+        key={name}
         to={{
           pathname: '/cache/' + name,
           state: {
@@ -195,7 +270,9 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           }
         }}
       >
-        <Button variant={'link'}>{name}</Button>
+        <Button key={'link-' + name} variant={'link'}>
+          {name}
+        </Button>
       </Link>
     );
   };
@@ -247,7 +324,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     'Backups'
   ];
 
-  function extract(actualSelection: string[], ref: string[]): string[] {
+  const extract = (actualSelection: string[], ref: string[]): string[] => {
     return actualSelection.filter(s => ref.includes(s));
   }
 
@@ -287,7 +364,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   };
 
   const filterCaches = (actualSelection: string[]) => {
-    let newFilteredCaches: CacheInfo[] = props.caches;
+    let newFilteredCaches: CacheInfo[] = caches;
 
     if (actualSelection.length > 0) {
       let filterFeatures = extract(actualSelection, cacheFeatures);
@@ -349,8 +426,8 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     setChipsCacheFeature([]);
     setChipsCacheType([]);
     setSelected([]);
-    updateRows(props.caches);
-    setFilteredCaches(props.caches);
+    updateRows(caches);
+    setFilteredCaches(caches);
   };
 
   const buildCreateCacheButton = () => {
@@ -453,6 +530,52 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
     );
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState(true);
+  const [cacheNameFormValue, setCacheNameFormValue] = useState('');
+  const openDeleteCacheModal = (cacheName: string) => {
+    setIsModalOpen(true);
+    setDeleteCacheName(cacheName);
+  };
+
+  const clearDeleteCacheModal = () => {
+    setIsModalOpen(false);
+    setIsValidCacheNameValue(true);
+    setCacheNameFormValue('');
+    setDeleteCacheName('');
+  };
+
+  const handleCacheNameToDeleteInputChange = value => {
+    setCacheNameFormValue(value);
+  };
+
+  const handleDeleteButton = () => {
+    let trim = cacheNameFormValue.trim();
+    setCacheNameFormValue(trim);
+    if (trim.length == 0) {
+      setIsValidCacheNameValue(false);
+      return;
+    }
+
+    let validCacheName = trim === deleteCacheName;
+    setIsValidCacheNameValue(validCacheName);
+    if (validCacheName) {
+      cacheService.deleteCache(deleteCacheName).then(result => {
+        clearDeleteCacheModal();
+        if (result.success) {
+          setFilteredCaches(
+            filteredCaches.filter(
+              cacheInfo => cacheInfo.name !== deleteCacheName
+            )
+          );
+          loadCaches();
+        } else {
+          // TODO ERROR ALERT HANDLING
+        }
+      });
+    }
+  };
+
   return (
     <React.Fragment>
       <DataToolbar
@@ -505,10 +628,56 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
         cells={columns}
         rows={rows}
         className={'caches-table'}
+        actions={actions}
       >
         <TableHeader />
         <TableBody />
       </Table>
+
+      <Modal
+        className="pf-m-redhat-font"
+        width={'50%'}
+        isOpen={isModalOpen}
+        title="Delete Cache?"
+        onClose={clearDeleteCacheModal}
+        isFooterLeftAligned
+        aria-label="Delete cache modal"
+        description={
+          <TextContent>
+            <Text>
+              This action will permanently delete cache{' '}
+              <strong>'{deleteCacheName}'</strong> and all it's data.
+              <br />
+              This cannot be undone.
+            </Text>
+          </TextContent>
+        }
+        actions={[
+          <Button key="confirm" variant="primary" onClick={handleDeleteButton}>
+            Delete
+          </Button>,
+          <Button key="cancel" variant="link" onClick={clearDeleteCacheModal}>
+            Cancel
+          </Button>
+        ]}
+      >
+        <Form>
+          <FormGroup
+            label="Type the CACHE NAME to confirm"
+            helperTextInvalid="Cache names do not match"
+            fieldId="age"
+            isValid={isValidCacheNameValue}
+          >
+            <TextInput
+              isValid={isValidCacheNameValue}
+              value={cacheNameFormValue}
+              id="age"
+              aria-describedby="age-helper"
+              onChange={handleCacheNameToDeleteInputChange}
+            />
+          </FormGroup>
+        </Form>
+      </Modal>
     </React.Fragment>
   );
 };
