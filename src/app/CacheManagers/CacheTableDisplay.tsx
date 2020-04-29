@@ -7,7 +7,7 @@ import {
   textCenter
 } from '@patternfly/react-table';
 import {
-  Alert,
+  AlertVariant,
   Badge,
   Bullseye,
   Button,
@@ -59,7 +59,8 @@ import dataContainerService from '../../services/dataContainerService';
 
 const CacheTableDisplay: React.FunctionComponent<any> = (props: {
   cmName: string;
-  setCachesCount: (number) => void;
+  setCachesCount: (count: number) => void;
+  displayAlert: (message: string, type: AlertVariant) => void;
 }) => {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
@@ -581,9 +582,10 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
               cacheInfo => cacheInfo.name !== deleteCacheName
             )
           );
+          props.displayAlert(result.message, AlertVariant.success);
           loadCaches();
         } else {
-          // TODO ERROR ALERT HANDLING
+          props.displayAlert(result.message, AlertVariant.danger);
         }
       });
     }
@@ -591,10 +593,7 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
 
   return (
     <React.Fragment>
-      <DataToolbar
-        id="cache-table-toolbar"
-        collapseListedFiltersBreakpoint="xl"
-      >
+      <DataToolbar id="cache-table-toolbar">
         <DataToolbarContent>
           <DataToolbarItem variant={DataToolbarItemVariant['search-filter']}>
             {buildFilter()}
@@ -666,7 +665,12 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
           </TextContent>
         }
         actions={[
-          <Button key="confirm" variant="primary" onClick={handleDeleteButton}>
+          <Button
+            key="confirm"
+            variant={ButtonVariant.danger}
+            onClick={handleDeleteButton}
+            isDisabled={cacheNameFormValue == ''}
+          >
             Delete
           </Button>,
           <Button key="cancel" variant="link" onClick={clearDeleteCacheModal}>
