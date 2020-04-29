@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Alert,
+  AlertActionCloseButton,
+  AlertGroup,
   AlertVariant,
   Card,
   CardBody,
@@ -20,14 +22,17 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import tasksService from '../../services/tasksService';
-import countersService from '../../services/countersService';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
 import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
 import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { Status } from '@app/Common/Status';
 import { global_spacer_sm } from '@patternfly/react-tokens';
+
+interface IAlertMessage {
+  message: string;
+  variant: AlertVariant;
+}
 
 const CacheManagers = () => {
   const [error, setError] = useState<undefined | string>(undefined);
@@ -86,6 +91,35 @@ const CacheManagers = () => {
     );
   };
 
+  const [alert, setAlert] = useState<IAlertMessage>({
+    message: '',
+    variant: AlertVariant.default
+  });
+
+  const displayAlert = (message: string, alertVariant: AlertVariant) => {
+    setAlert({ message: message, variant: alertVariant });
+  };
+  const hideAlert = () => {
+    setAlert({ message: '', variant: AlertVariant.default });
+  };
+
+  const buildAlert = () => {
+    if (alert.message == '') {
+      return '';
+    }
+
+    return (
+      <AlertGroup isToast>
+        <Alert
+          isLiveRegion
+          title={alert.message}
+          variant={alert.variant}
+          action={<AlertActionCloseButton onClose={hideAlert} />}
+        />
+      </AlertGroup>
+    );
+  };
+
   const buildSelectedContent = () => {
     return (
       <Card>
@@ -98,6 +132,7 @@ const CacheManagers = () => {
             <CacheTableDisplay
               cmName={cmName}
               setCachesCount={setCachesCount}
+              displayAlert={displayAlert}
             />
           )}
           {showCounters && cmName && !error && (
@@ -150,6 +185,7 @@ const CacheManagers = () => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
+        {buildAlert()}
         {buildHeader()}
         {buildTabs()}
       </PageSection>
