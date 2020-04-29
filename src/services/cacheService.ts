@@ -4,6 +4,7 @@
  * @since 1.0
  */
 import utils from './utils';
+import { Either } from './either';
 
 class CacheService {
   endpoint: string;
@@ -85,7 +86,11 @@ class CacheService {
       this.endpoint + '/caches/' + cacheName + '?template=' + configName,
       'POST'
     );
-    return this.handleCreateCacheResult(cacheName, createCachePromise);
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Cache ' + cacheName + ' created with success with ' + configName,
+      createCachePromise
+    );
   }
 
   /**
@@ -111,17 +116,43 @@ class CacheService {
       config,
       contentType
     );
-    return this.handleCreateCacheResult(cacheName, createCachePromise);
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Cache ' +
+        cacheName +
+        ' created with success with the provided configuration',
+      createCachePromise
+    );
+  }
+
+  /**
+   * Delete cache by name
+   *
+   * @param cacheName, to be deleted if such exists
+   */
+  public async deleteCache(cacheName: string): Promise<ActionResponse> {
+    let deleteCachePromise = utils.restCall(
+      this.endpoint + '/caches/' + cacheName,
+      'DELETE'
+    );
+
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Cache ' + cacheName + ' has been deleted',
+      deleteCachePromise
+    );
   }
 
   /**
    * If the response is ok, the cache has been created
    *
    * @param cacheName, the cache name to be created
+   * @param successMessage, string message for success
    * @param response, cache creation response
    */
-  private async handleCreateCacheResult(
+  private async handleCRUDActionResponse(
     cacheName: string,
+    successMessage: string,
     response: Promise<Response>
   ): Promise<ActionResponse> {
     return response
@@ -133,8 +164,7 @@ class CacheService {
       })
       .then(text => {
         return <ActionResponse>{
-          message:
-            text == '' ? 'Cache ' + cacheName + ' created with success' : text,
+          message: text == '' ? successMessage : text,
           success: true
         };
       })
@@ -148,6 +178,11 @@ class CacheService {
       );
   }
 
+  /**
+   * Retrieve backups sites for a cache
+   *
+   * @param cacheName
+   */
   public async retrieveXSites(cacheName: string): Promise<XSite[]> {
     return utils
       .restCall(
@@ -164,6 +199,11 @@ class CacheService {
       });
   }
 
+  /**
+   * Retrieve cache configuration
+   *
+   * @param cacheName
+   */
   public async retrieveConfig(cacheName: string): Promise<CacheConfig> {
     return utils
       .restCall(

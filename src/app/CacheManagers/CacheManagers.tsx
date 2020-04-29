@@ -30,12 +30,12 @@ import { Status } from '@app/Common/Status';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 
 const CacheManagers = () => {
-  const [error, setError] = useState<undefined | string>();
+  const [error, setError] = useState<undefined | string>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [cmName, setCacheManagerName] = useState<undefined | string>();
   const [cm, setCacheManager] = useState<undefined | CacheManager>();
   const [activeTabKey, setActiveTabKey] = useState('0');
-  const [caches, setCaches] = useState<CacheInfo[]>([]);
+  const [cachesCount, setCachesCount] = useState<number>(0);
   const [counters, setCounters] = useState<Counter[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showCaches, setShowCaches] = useState(false);
@@ -44,23 +44,15 @@ const CacheManagers = () => {
 
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherCm => {
+      setLoading(false);
       if (eitherCm.isRight()) {
         const cmName = eitherCm.value.name;
         setCacheManagerName(cmName);
         setCacheManager(eitherCm.value);
-        dataContainerService.getCaches(cmName).then(eitherCaches => {
-          setLoading(false);
-          if (eitherCaches.isRight()) {
-            setCaches(eitherCaches.value);
-            setShowCaches(true);
-          } else {
-            setError(eitherCaches.value.message);
-          }
-        });
+        setShowCaches(true);
         tasksService.getTasks().then(tasks => setTasks(tasks));
         countersService.getCounters().then(counters => setCounters(counters));
       } else {
-        setLoading(false);
         setError(eitherCm.value.message);
       }
     });
@@ -83,7 +75,7 @@ const CacheManagers = () => {
       <Nav onSelect={handleTabClick}>
         <NavList variant={NavVariants.tertiary}>
           <NavItem key="nav-item-0" itemId="0" isActive={activeTabKey === '0'}>
-            <strong>{caches.length}</strong> Caches
+            <strong>{cachesCount}</strong> Caches
           </NavItem>
           <NavItem key="nav-item-1" itemId="1" isActive={activeTabKey === '1'}>
             <strong>{counters.length}</strong> Counters
@@ -105,7 +97,7 @@ const CacheManagers = () => {
           )}
           {loading && <Spinner size="xl" />}
           {showCaches && cmName && !error && (
-            <CacheTableDisplay caches={caches} cmName={cmName} />
+            <CacheTableDisplay cmName={cmName} setCachesCount={setCachesCount}/>
           )}
           {showCounters && cmName && !error && (
             <CounterTableDisplay counters={counters} />
