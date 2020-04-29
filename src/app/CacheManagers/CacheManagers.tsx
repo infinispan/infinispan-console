@@ -36,8 +36,8 @@ const CacheManagers = () => {
   const [cm, setCacheManager] = useState<undefined | CacheManager>();
   const [activeTabKey, setActiveTabKey] = useState('0');
   const [cachesCount, setCachesCount] = useState<number>(0);
-  const [counters, setCounters] = useState<Counter[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [countersCount, setCountersCount] = useState<number>(0);
+  const [tasksCount, setTasksCount] = useState<number>(0);
   const [showCaches, setShowCaches] = useState(false);
   const [showCounters, setShowCounters] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
@@ -50,8 +50,6 @@ const CacheManagers = () => {
         setCacheManagerName(cmName);
         setCacheManager(eitherCm.value);
         setShowCaches(true);
-        tasksService.getTasks().then(tasks => setTasks(tasks));
-        countersService.getCounters().then(counters => setCounters(counters));
       } else {
         setError(eitherCm.value.message);
       }
@@ -78,10 +76,10 @@ const CacheManagers = () => {
             <strong>{cachesCount}</strong> Caches
           </NavItem>
           <NavItem key="nav-item-1" itemId="1" isActive={activeTabKey === '1'}>
-            <strong>{counters.length}</strong> Counters
+            <strong>{countersCount}</strong> Counters
           </NavItem>
           <NavItem key="nav-item-2" itemId="2" isActive={activeTabKey === '2'}>
-            <strong>{tasks.length}</strong> Tasks
+            <strong>{tasksCount}</strong> Tasks
           </NavItem>
         </NavList>
       </Nav>
@@ -97,12 +95,17 @@ const CacheManagers = () => {
           )}
           {loading && <Spinner size="xl" />}
           {showCaches && cmName && !error && (
-            <CacheTableDisplay cmName={cmName} setCachesCount={setCachesCount}/>
+            <CacheTableDisplay
+              cmName={cmName}
+              setCachesCount={setCachesCount}
+            />
           )}
           {showCounters && cmName && !error && (
-            <CounterTableDisplay counters={counters} />
+            <CounterTableDisplay setCountersCount={setCountersCount} />
           )}
-          {showTasks && cmName && !error && <TasksTableDisplay tasks={tasks} />}
+          {showTasks && cmName && !error && (
+            <TasksTableDisplay setTasksCount={setTasksCount} />
+          )}
         </CardBody>
       </Card>
     );
