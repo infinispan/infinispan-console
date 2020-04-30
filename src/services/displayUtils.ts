@@ -1,14 +1,10 @@
 import {
   chart_color_black_100,
   chart_color_black_500,
-  chart_color_blue_200,
   chart_color_blue_500,
   chart_color_cyan_100,
-  chart_color_cyan_300,
   chart_color_cyan_500,
   chart_color_gold_100,
-  chart_color_gold_300,
-  chart_color_gold_500,
   chart_color_orange_500,
   chart_color_purple_500,
   chart_global_label_Fill,
@@ -19,7 +15,7 @@ import {
   global_success_color_100,
   global_warning_color_100
 } from '@patternfly/react-tokens';
-import { AlertVariant } from '@patternfly/react-core';
+import {AlertVariant} from '@patternfly/react-core';
 
 /**
  * Utility class to manage display features
@@ -227,10 +223,10 @@ class DisplayUtils {
     let color;
     switch (counterType) {
       case 'Strong':
-        color = chart_color_blue_200.value;
+        color = chart_color_cyan_100.value;
         break;
       case 'Weak':
-        color = chart_color_cyan_300.value;
+        color = global_palette_blue_50.value;
         break;
       default:
         color = chart_color_black_500.value;
@@ -242,10 +238,10 @@ class DisplayUtils {
     let color;
     switch (counterType) {
       case 'AdminServerTask':
-        color = chart_color_blue_200.value;
+        color = chart_color_cyan_100.value;
         break;
       default:
-        color = chart_color_gold_300.value;
+        color = global_palette_blue_50.value;
     }
     return color;
   }
