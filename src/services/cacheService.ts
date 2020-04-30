@@ -59,13 +59,18 @@ class CacheService {
           size: data.size,
           rehash_in_progress: data.rehash_in_progress,
           indexing_in_progress: data.indexing_in_progress,
-          bounded: data.bounded,
-          indexed: data.indexed,
-          persistent: data.persistent,
-          transactional: data.transactional,
-          secured: data.secured,
-          has_remote_backup: data.has_remote_backup,
-          configuration: data.configuration,
+          features: <Features>{
+            bounded: data.bounded,
+            indexed: data.indexed,
+            persistent: data.persistent,
+            transactional: data.transactional,
+            secured: data.secured,
+            hasRemoteBackup: data.has_remote_backup
+          },
+          configuration: <CacheConfig>{
+            name: cacheName,
+            config: JSON.stringify(data.configuration, null, 2)
+          },
           stats: cacheStats
         };
       });

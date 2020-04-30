@@ -257,6 +257,34 @@ class DisplayUtils {
 
     return digit.toLocaleString('en', { maximumFractionDigits: 2 });
   }
+
+  public createFeaturesString(features: Features): string {
+    let featuresString = '';
+
+    if (features.bounded) {
+      featuresString = this.appendFeature(featuresString, 'Bounded');
+    }
+    if (features.indexed) {
+      featuresString = this.appendFeature(featuresString, 'Indexed');
+    }
+    if (features.persistent) {
+      featuresString = this.appendFeature(featuresString, 'Persistent');
+    }
+    if (features.transactional) {
+      featuresString = this.appendFeature(featuresString, 'Transactional');
+    }
+    if (features.secured) {
+      featuresString = this.appendFeature(featuresString, 'Secured');
+    }
+    if (features.hasRemoteBackup) {
+      featuresString = this.appendFeature(featuresString, 'Backups');
+    }
+    return featuresString;
+  }
+
+  private appendFeature = (features: string, feature: string): string => {
+    return features + (features.length > 0 ? ' / ' : '') + feature;
+  };
 }
 
 const displayUtils: DisplayUtils = new DisplayUtils();
