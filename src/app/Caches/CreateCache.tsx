@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActionGroup,
   Breadcrumb,
@@ -18,13 +18,13 @@ import {
   TextInput,
   TextVariants
 } from '@patternfly/react-core';
-import {CubeIcon} from '@patternfly/react-icons';
+import { CubeIcon } from '@patternfly/react-icons';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
-import {global_spacer_md} from '@patternfly/react-tokens';
-import {useApiAlert} from "@app/utils/useApiAlert";
+import { global_spacer_md } from '@patternfly/react-tokens';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 const CreateCache: React.FunctionComponent<any> = props => {
   const { addAlert } = useApiAlert();
@@ -51,7 +51,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
       .then(templates => {
         let options: OptionSelect[] = [];
         templates.forEach(template => {
-          options.push({ value: template.name});
+          options.push({ value: template.name });
         });
         setConfigs(options);
       });
@@ -124,10 +124,12 @@ const CreateCache: React.FunctionComponent<any> = props => {
     }
 
     if (selectedConfig != '') {
-      cacheService.createCacheByConfigName(name, selectedConfig)
+      cacheService
+        .createCacheByConfigName(name, selectedConfig)
         .then(actionResponse => addAlert(actionResponse));
     } else {
-      cacheService.createCacheWithConfiguration(name, config)
+      cacheService
+        .createCacheWithConfiguration(name, config)
         .then(actionResponse => addAlert(actionResponse));
     }
   };

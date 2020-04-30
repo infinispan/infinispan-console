@@ -1,10 +1,10 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 
-const emptyAlert: ActionResponse = {message: '', success: true};
+const emptyAlert: ActionResponse = { message: '', success: true };
 
 const initialAlertState = {
-  alert: {message: '', success: true},
-  addAlert: (alert:ActionResponse) => {},
+  alert: { message: '', success: true },
+  addAlert: (alert: ActionResponse) => {},
   removeAlert: () => {}
 };
 
@@ -24,7 +24,7 @@ const APIAlertProvider = ({ children }) => {
 
   const contextValue = {
     alert,
-    addAlert: useCallback(addAlert,[]),
+    addAlert: useCallback(addAlert, []),
     removeAlert: useCallback(removeAlert, [])
   };
 
@@ -35,4 +35,4 @@ const APIAlertProvider = ({ children }) => {
   );
 };
 
-export {APIAlertProvider};
+export { APIAlertProvider };

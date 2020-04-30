@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  textCenter
+} from '@patternfly/react-table';
 import {
   AlertVariant,
   Badge,
@@ -30,9 +36,18 @@ import {
   Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {ExclamationCircleIcon, FilterIcon, SearchIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
-import {DataToolbar, DataToolbarContent, DataToolbarItem, Spinner} from '@patternfly/react-core/dist/js/experimental';
+import {
+  ExclamationCircleIcon,
+  FilterIcon,
+  SearchIcon
+} from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
+import {
+  DataToolbar,
+  DataToolbarContent,
+  DataToolbarItem,
+  Spinner
+} from '@patternfly/react-core/dist/js/experimental';
 import {
   global_danger_color_100,
   global_FontSize_sm,
@@ -42,7 +57,7 @@ import {
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import {useApiAlert} from "@app/utils/useApiAlert";
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 const CacheTableDisplay = (props: {
   cmName: string;
@@ -645,14 +660,14 @@ const CacheTableDisplay = (props: {
           <FormGroup
             label="Type the CACHE NAME to confirm"
             helperTextInvalid="Cache names do not match"
-            fieldId="age"
+            fieldId="cache-to-delete"
             isValid={isValidCacheNameValue}
           >
             <TextInput
               isValid={isValidCacheNameValue}
               value={cacheNameFormValue}
-              id="age"
-              aria-describedby="age-helper"
+              id="cache-to-delete"
+              aria-describedby="cache-to-delete-helper"
               onChange={handleCacheNameToDeleteInputChange}
             />
           </FormGroup>
