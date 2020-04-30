@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Card,
@@ -18,13 +18,13 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
-import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
-import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
-import {Spinner} from '@patternfly/react-core/dist/js/experimental';
-import {Status} from '@app/Common/Status';
-import {global_spacer_sm} from '@patternfly/react-tokens';
-import {useApiAlert} from "@app/utils/useApiAlert";
+import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
+import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
+import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import { Spinner } from '@patternfly/react-core/dist/js/experimental';
+import { Status } from '@app/Common/Status';
+import { global_spacer_sm } from '@patternfly/react-tokens';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 const CacheManagers = () => {
   const { addAlert } = useApiAlert();

@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useState } from 'react';
 import {
-  Alert, AlertActionCloseButton, AlertGroup,
+  Alert,
+  AlertActionCloseButton,
+  AlertGroup,
   Brand,
   Nav,
   NavItem,
@@ -15,8 +17,8 @@ import {
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import { NavLink } from 'react-router-dom';
 import { routes } from '@app/routes';
-import {APIAlertProvider} from "@app/providers/APIAlertProvider";
-import {ActionResponseAlert} from "@app/Common/ActionResponseAlert";
+import { APIAlertProvider } from '@app/providers/APIAlertProvider';
+import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -99,7 +101,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
 
   return (
     <APIAlertProvider>
-      <ActionResponseAlert/>
+      <ActionResponseAlert />
       <Page
         mainContainerId="primary-app-container"
         header={welcome ? null : Header}

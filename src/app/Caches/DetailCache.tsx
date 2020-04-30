@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Breadcrumb,
   BreadcrumbItem,
   Card,
@@ -25,7 +24,6 @@ import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { CacheMetrics } from '@app/Caches/CacheMetrics';
 import { CacheEntries } from '@app/Caches/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/CacheConfiguration';
-import { Health } from '@app/Common/Health';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 
 const DetailCache: React.FunctionComponent<any> = props => {
@@ -35,7 +33,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
     undefined
   );
   const [xSite, setXSite] = useState<XSite[]>([]);
-  const [activeTabKey, setActiveTabKey] = useState('2');
+  const [activeTabKey, setActiveTabKey] = useState('0');
   const [showEntries, setShowEntries] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showMetrics, setShowMetrics] = useState(false);
@@ -44,8 +42,8 @@ const DetailCache: React.FunctionComponent<any> = props => {
     cacheService.retrieveFullDetail(cacheName).then(detailedCache => {
       setLoading(false);
       setDetail(detailedCache);
-      setActiveTabKey('2');
-      setShowMetrics(true);
+      setActiveTabKey('0');
+      setShowEntries(true);
       if (detailedCache.features.hasRemoteBackup) {
         cacheService.retrieveXSites(cacheName).then(xsites => {
           setXSite(xsites);

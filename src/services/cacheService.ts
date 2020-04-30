@@ -149,6 +149,59 @@ class CacheService {
   }
 
   /**
+   * Add entry
+   *
+   * @param cacheName
+   * @param key
+   * @param keyContentType
+   * @param value
+   * @param valueContentType
+   * @param maxIdle
+   * @param timeToLive
+   * @param flags
+   */
+  public async addEntry(
+    cacheName: string,
+    key: string,
+    keyContentType: string,
+    value: string,
+    valueContentType: string,
+    maxIdle: string,
+    timeToLive: string,
+    flags: string[]
+  ): Promise<ActionResponse> {
+    let headers = new Headers();
+    if (keyContentType.length > 0) {
+      headers.append('Key-Content-Type', keyContentType);
+    }
+    if (valueContentType.length > 0) {
+      headers.append('Content-Type', valueContentType);
+    }
+    if (timeToLive.length > 0) {
+      headers.append('timeToLiveSeconds', timeToLive);
+    }
+    if (maxIdle.length > 0) {
+      headers.append('maxIdleTimeSeconds', maxIdle);
+    }
+    if (flags.length > 0) {
+      headers.append('flags', flags.join(','));
+    }
+
+    let promise = fetch(this.endpoint + '/caches/' + cacheName + '/' + key, {
+      method: 'POST',
+      headers: headers,
+      credentials: 'include',
+      body: value
+    });
+
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'A new entry has been added to cache ' + cacheName,
+      promise
+    );
+  }
+
+  /**
    * If the response is ok, the cache has been created
    *
    * @param cacheName, the cache name to be created

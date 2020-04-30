@@ -7,11 +7,13 @@ import {
   TooltipPosition
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import { css } from '@patternfly/react-styles';
+import styles from '@patternfly/react-styles/css/components/Form/form';
 
 const CardTitle = (props: { title: string; toolTip: string }) => {
   return (
     <TextContent>
-      <Text component={TextVariants.h2}>
+      <Text className={css(styles.formLabel)}>
         {props.title}{' '}
         <Tooltip
           position={TooltipPosition.top}
