@@ -54,18 +54,22 @@ interface CacheConfig {
   config: string;
 }
 
-interface CacheInfo {
-  status: string;
-  name: string;
-  type: string;
-  simpleCache: boolean;
+interface Features {
   transactional: boolean;
   persistent: boolean;
   bounded: boolean;
   secured: boolean;
   indexed: boolean;
   hasRemoteBackup: boolean;
+}
+
+interface CacheInfo {
+  status: string;
+  name: string;
+  type: string;
+  simpleCache: boolean;
   health: string;
+  features: Features;
 }
 
 interface DetailedInfinispanCache {
@@ -75,13 +79,8 @@ interface DetailedInfinispanCache {
   size: number;
   rehash_in_progress: boolean;
   indexing_in_progress: boolean;
-  bounded: boolean;
-  indexed: boolean;
-  persistent: boolean;
-  transactional: boolean;
-  secured: boolean;
-  has_remote_backup: boolean;
-  configuration: string;
+  features: Features;
+  configuration: CacheConfig;
   backupSites?: [XSite];
   stats?: CacheStats;
 }

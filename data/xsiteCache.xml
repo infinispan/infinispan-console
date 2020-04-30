@@ -1,11 +1,11 @@
 <infinispan>
   <cache-container>
     <replicated-cache name="xsiteCache" statistics="true">
-      <backups>
-        <backup site="LON" strategy="SYNC" failure-policy="WARN" timeout="12003">
-          <state-transfer chunk-size="098" timeout="7654" max-retries="321" wait-time="0101"/>
-        </backup>
-      </backups>
+<!--      <backups>-->
+<!--        <backup site="LON" strategy="SYNC" failure-policy="WARN" timeout="12003">-->
+<!--          <state-transfer chunk-size="098" timeout="7654" max-retries="321" wait-time="0101"/>-->
+<!--        </backup>-->
+<!--      </backups>-->
     </replicated-cache>
   </cache-container>
 </infinispan>

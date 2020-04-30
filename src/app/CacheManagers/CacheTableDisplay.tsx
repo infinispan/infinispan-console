@@ -41,6 +41,7 @@ import {
 } from '@patternfly/react-tokens';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
+import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import {useApiAlert} from "@app/utils/useApiAlert";
 
 const CacheTableDisplay = (props: {
@@ -218,7 +219,9 @@ const CacheTableDisplay = (props: {
               cacheName: cacheInfo.name,
               title: displayCacheName(cacheInfo.name)
             },
-            { title: displayCacheType(cacheInfo.type) },
+            {
+              title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} />
+            },
             { title: displayHealth(cacheInfo.health) },
             { title: displayCacheFeatures(cacheInfo) }
           ]
@@ -228,34 +231,12 @@ const CacheTableDisplay = (props: {
     setRows(currentRows);
   };
 
-  const appendFeature = (features: string, feature: string): string => {
-    return features + (features.length > 0 ? ' / ' : '') + feature;
-  };
-
   const displayCacheFeatures = (cacheInfo: CacheInfo) => {
-    let features = '';
-
-    if (cacheInfo.bounded) {
-      features = appendFeature(features, 'Bounded');
-    }
-    if (cacheInfo.indexed) {
-      features = appendFeature(features, 'Indexed');
-    }
-    if (cacheInfo.persistent) {
-      features = appendFeature(features, 'Persistent');
-    }
-    if (cacheInfo.transactional) {
-      features = appendFeature(features, 'Transactional');
-    }
-    if (cacheInfo.secured) {
-      features = appendFeature(features, 'Secured');
-    }
-    if (cacheInfo.hasRemoteBackup) {
-      features = appendFeature(features, 'Backups');
-    }
     return (
       <TextContent>
-        <Text component={TextVariants.small}>{features}</Text>
+        <Text component={TextVariants.small}>
+          {displayUtils.createFeaturesString(cacheInfo.features)}
+        </Text>
       </TextContent>
     );
   };
@@ -275,24 +256,6 @@ const CacheTableDisplay = (props: {
           {name}
         </Button>
       </Link>
-    );
-  };
-
-  const displayCacheType = (type: string) => {
-    return (
-      <Badge
-        style={{
-          backgroundColor: displayUtils.cacheTypeColor(type),
-          color: displayUtils.cacheTypeColorLabel(type),
-          fontSize: global_FontSize_sm.value,
-          fontWeight: 'lighter',
-          padding: global_spacer_xs.value,
-          paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value
-        }}
-      >
-        {type}
-      </Badge>
     );
   };
 
@@ -340,25 +303,34 @@ const CacheTableDisplay = (props: {
     cacheInfo: CacheInfo,
     actualSelection: string[]
   ): boolean => {
-    if (actualSelection.includes('Transactional') && cacheInfo.transactional) {
+    if (
+      actualSelection.includes('Transactional') &&
+      cacheInfo.features.transactional
+    ) {
       return true;
     }
-    if (actualSelection.includes('Bounded') && cacheInfo.bounded) {
-      return true;
-    }
-
-    if (actualSelection.includes('Indexed') && cacheInfo.indexed) {
-      return true;
-    }
-
-    if (actualSelection.includes('Persistent') && cacheInfo.persistent) {
+    if (actualSelection.includes('Bounded') && cacheInfo.features.bounded) {
       return true;
     }
 
-    if (actualSelection.includes('Secured') && cacheInfo.secured) {
+    if (actualSelection.includes('Indexed') && cacheInfo.features.indexed) {
       return true;
     }
-    if (actualSelection.includes('Backups') && cacheInfo.hasRemoteBackup) {
+
+    if (
+      actualSelection.includes('Persistent') &&
+      cacheInfo.features.persistent
+    ) {
+      return true;
+    }
+
+    if (actualSelection.includes('Secured') && cacheInfo.features.secured) {
+      return true;
+    }
+    if (
+      actualSelection.includes('Backups') &&
+      cacheInfo.features.hasRemoteBackup
+    ) {
       return true;
     }
     return false;

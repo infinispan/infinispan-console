@@ -148,12 +148,14 @@ class ContainerService {
                   status: cacheInfo.status,
                   type: this.mapCacheType(cacheInfo.type),
                   simpleCache: cacheInfo.simpleCache,
-                  transactional: cacheInfo.transactional,
-                  persistent: cacheInfo.persistent,
-                  bounded: cacheInfo.bounded,
-                  secured: cacheInfo.secured,
-                  indexed: cacheInfo.indexed,
-                  hasRemoteBackup: cacheInfo.has_remote_backup,
+                  features: <Features>{
+                    transactional: cacheInfo.transactional,
+                    persistent: cacheInfo.persistent,
+                    bounded: cacheInfo.bounded,
+                    secured: cacheInfo.secured,
+                    indexed: cacheInfo.indexed,
+                    hasRemoteBackup: cacheInfo.has_remote_backup
+                  },
                   health: cacheInfo.health
                 }
             )
