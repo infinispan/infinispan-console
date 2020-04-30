@@ -57,10 +57,11 @@ import {
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
 
-const CacheTableDisplay: React.FunctionComponent<any> = (props: {
+const CacheTableDisplay = (props: {
   cmName: string;
   setCachesCount: (count: number) => void;
   displayAlert: (message: string, type: AlertVariant) => void;
+  isVisible: boolean;
 }) => {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
@@ -590,6 +591,10 @@ const CacheTableDisplay: React.FunctionComponent<any> = (props: {
       });
     }
   };
+
+  if (!props.isVisible) {
+    return <span />;
+  }
 
   return (
     <React.Fragment>

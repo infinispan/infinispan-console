@@ -14,11 +14,18 @@ import {
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import {
+  chart_color_blue_500,
+  global_FontSize_sm,
+  global_spacer_md,
+  global_spacer_sm,
+  global_spacer_xs
+} from '@patternfly/react-tokens';
 import countersService from '../../services/countersService';
 
-const CounterTableDisplay: React.FunctionComponent<any> = (props: {
+const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;
+  isVisible: boolean;
 }) => {
   const [counters, setCounters] = useState<Counter[]>([]);
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
@@ -83,7 +90,13 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
       <Badge
         style={{
           backgroundColor: displayUtils.counterTypeColor(type),
-          marginRight: global_spacer_md.value
+          color: chart_color_blue_500.value,
+          fontSize: global_FontSize_sm.value,
+          fontWeight: 'lighter',
+          marginRight: global_spacer_md.value,
+          padding: global_spacer_xs.value,
+          paddingRight: global_spacer_sm.value,
+          paddingLeft: global_spacer_sm.value
         }}
       >
         {type}
@@ -135,6 +148,10 @@ const CounterTableDisplay: React.FunctionComponent<any> = (props: {
     }
     setRows(rows);
   };
+
+  if (!props.isVisible) {
+    return <span />;
+  }
 
   return (
     <Stack>

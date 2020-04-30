@@ -17,11 +17,18 @@ import {
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import {
+  chart_color_blue_500,
+  global_FontSize_sm,
+  global_spacer_md,
+  global_spacer_sm,
+  global_spacer_xs
+} from '@patternfly/react-tokens';
 import tasksService from '../../services/tasksService';
 
-const TasksTableDisplay: React.FunctionComponent<any> = (props: {
+const TasksTableDisplay = (props: {
   setTasksCount: (number) => void;
+  isVisible: boolean;
 }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -86,7 +93,13 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
       <Badge
         style={{
           backgroundColor: displayUtils.taskTypeColor(type),
-          marginRight: global_spacer_md.value
+          fontSize: global_FontSize_sm.value,
+          color: chart_color_blue_500.value,
+          fontWeight: 'lighter',
+          marginRight: global_spacer_md.value,
+          padding: global_spacer_xs.value,
+          paddingRight: global_spacer_sm.value,
+          paddingLeft: global_spacer_sm.value
         }}
       >
         {type}
@@ -162,6 +175,10 @@ const TasksTableDisplay: React.FunctionComponent<any> = (props: {
     }
     setRows(rows);
   };
+
+  if (!props.isVisible) {
+    return <span />;
+  }
 
   return (
     <Stack>

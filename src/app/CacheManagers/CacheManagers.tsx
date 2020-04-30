@@ -128,18 +128,25 @@ const CacheManagers = () => {
             <Alert title={error} variant={AlertVariant.danger} isInline />
           )}
           {loading && <Spinner size="xl" />}
-          {showCaches && cmName && !error && (
+          {cmName && !error && (
             <CacheTableDisplay
               cmName={cmName}
               setCachesCount={setCachesCount}
               displayAlert={displayAlert}
+              isVisible={showCaches}
             />
           )}
-          {showCounters && cmName && !error && (
-            <CounterTableDisplay setCountersCount={setCountersCount} />
+          {cmName && !error && (
+            <CounterTableDisplay
+              setCountersCount={setCountersCount}
+              isVisible={showCounters}
+            />
           )}
-          {showTasks && cmName && !error && (
-            <TasksTableDisplay setTasksCount={setTasksCount} />
+          {cmName && !error && (
+            <TasksTableDisplay
+              setTasksCount={setTasksCount}
+              isVisible={showTasks}
+            />
           )}
         </CardBody>
       </Card>
@@ -176,7 +183,6 @@ const CacheManagers = () => {
           <DataToolbarItem style={{ marginBottom: global_spacer_sm.value }}>
             <Status status={status} />
           </DataToolbarItem>
-          {/*<DataToolbarItem variant="separator"></DataToolbarItem>*/}
         </DataToolbarContent>
       </DataToolbar>
     );
