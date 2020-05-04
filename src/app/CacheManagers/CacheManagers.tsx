@@ -1,11 +1,7 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant,
   Card,
   CardBody,
   DataToolbar,
@@ -22,20 +18,16 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
-import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
-import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
-import { Spinner } from '@patternfly/react-core/dist/js/experimental';
-import { Status } from '@app/Common/Status';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-
-interface IAlertMessage {
-  message: string;
-  variant: AlertVariant;
-}
+import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
+import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
+import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
+import {Spinner} from '@patternfly/react-core/dist/js/experimental';
+import {Status} from '@app/Common/Status';
+import {global_spacer_sm} from '@patternfly/react-tokens';
+import {useApiAlert} from "@app/utils/useApiAlert";
 
 const CacheManagers = () => {
-  const [error, setError] = useState<undefined | string>(undefined);
+  const { addAlert } = useApiAlert();
   const [loading, setLoading] = useState<boolean>(true);
   const [cmName, setCacheManagerName] = useState<undefined | string>();
   const [cm, setCacheManager] = useState<undefined | CacheManager>();
@@ -56,7 +48,7 @@ const CacheManagers = () => {
         setCacheManager(eitherCm.value);
         setShowCaches(true);
       } else {
-        setError(eitherCm.value.message);
+        addAlert(eitherCm.value);
       }
     });
   }, []);
@@ -70,7 +62,7 @@ const CacheManagers = () => {
   };
 
   const buildTabs = () => {
-    if (loading || error) {
+    if (loading) {
       return <span />;
     }
 
@@ -91,58 +83,25 @@ const CacheManagers = () => {
     );
   };
 
-  const [alert, setAlert] = useState<IAlertMessage>({
-    message: '',
-    variant: AlertVariant.default
-  });
-
-  const displayAlert = (message: string, alertVariant: AlertVariant) => {
-    setAlert({ message: message, variant: alertVariant });
-  };
-  const hideAlert = () => {
-    setAlert({ message: '', variant: AlertVariant.default });
-  };
-
-  const buildAlert = () => {
-    if (alert.message == '') {
-      return '';
-    }
-
-    return (
-      <AlertGroup isToast>
-        <Alert
-          isLiveRegion
-          title={alert.message}
-          variant={alert.variant}
-          action={<AlertActionCloseButton onClose={hideAlert} />}
-        />
-      </AlertGroup>
-    );
-  };
-
   const buildSelectedContent = () => {
     return (
       <Card>
         <CardBody>
-          {!loading && error && (
-            <Alert title={error} variant={AlertVariant.danger} isInline />
-          )}
           {loading && <Spinner size="xl" />}
-          {cmName && !error && (
+          {cmName && (
             <CacheTableDisplay
               cmName={cmName}
               setCachesCount={setCachesCount}
-              displayAlert={displayAlert}
               isVisible={showCaches}
             />
           )}
-          {cmName && !error && (
+          {cmName && (
             <CounterTableDisplay
               setCountersCount={setCountersCount}
               isVisible={showCounters}
             />
           )}
-          {cmName && !error && (
+          {cmName && (
             <TasksTableDisplay
               setTasksCount={setTasksCount}
               isVisible={showTasks}
@@ -191,7 +150,6 @@ const CacheManagers = () => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        {buildAlert()}
         {buildHeader()}
         {buildTabs()}
       </PageSection>

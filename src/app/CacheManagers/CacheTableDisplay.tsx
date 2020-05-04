@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  textCenter
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, textCenter} from '@patternfly/react-table';
 import {
   AlertVariant,
   Badge,
@@ -36,18 +30,9 @@ import {
   Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {
-  ExclamationCircleIcon,
-  FilterIcon,
-  SearchIcon
-} from '@patternfly/react-icons';
-import { Link } from 'react-router-dom';
-import {
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
-  Spinner
-} from '@patternfly/react-core/dist/js/experimental';
+import {ExclamationCircleIcon, FilterIcon, SearchIcon} from '@patternfly/react-icons';
+import {Link} from 'react-router-dom';
+import {DataToolbar, DataToolbarContent, DataToolbarItem, Spinner} from '@patternfly/react-core/dist/js/experimental';
 import {
   global_danger_color_100,
   global_FontSize_sm,
@@ -56,13 +41,14 @@ import {
 } from '@patternfly/react-tokens';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
+import {useApiAlert} from "@app/utils/useApiAlert";
 
 const CacheTableDisplay = (props: {
   cmName: string;
   setCachesCount: (count: number) => void;
-  displayAlert: (message: string, type: AlertVariant) => void;
   isVisible: boolean;
 }) => {
+  const { addAlert } = useApiAlert();
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
@@ -575,18 +561,18 @@ const CacheTableDisplay = (props: {
     let validCacheName = trim === deleteCacheName;
     setIsValidCacheNameValue(validCacheName);
     if (validCacheName) {
-      cacheService.deleteCache(deleteCacheName).then(result => {
+      cacheService.deleteCache(deleteCacheName).then(actionResponse => {
         clearDeleteCacheModal();
-        if (result.success) {
+        if (actionResponse.success) {
           setFilteredCaches(
             filteredCaches.filter(
               cacheInfo => cacheInfo.name !== deleteCacheName
             )
           );
-          props.displayAlert(result.message, AlertVariant.success);
+          addAlert(actionResponse);
           loadCaches();
         } else {
-          props.displayAlert(result.message, AlertVariant.danger);
+          addAlert(actionResponse);
         }
       });
     }

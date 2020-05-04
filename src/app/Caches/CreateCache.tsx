@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   ActionGroup,
-  Alert,
-  AlertActionCloseButton,
-  AlertVariant,
   Breadcrumb,
   BreadcrumbItem,
   Button,
@@ -19,17 +16,18 @@ import {
   TextArea,
   TextContent,
   TextInput,
-  TextVariants,
-  Title
+  TextVariants
 } from '@patternfly/react-core';
-import { CubeIcon } from '@patternfly/react-icons';
+import {CubeIcon} from '@patternfly/react-icons';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import {global_spacer_md} from '@patternfly/react-tokens';
+import {useApiAlert} from "@app/utils/useApiAlert";
 
 const CreateCache: React.FunctionComponent<any> = props => {
+  const { addAlert } = useApiAlert();
   const cmName: string = props.location.state.cmName;
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState(true);
@@ -40,11 +38,6 @@ const CreateCache: React.FunctionComponent<any> = props => {
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
   const [validConfig, setValidConfig] = useState(true);
-  const [cacheAlert, setCacheAlert] = useState({
-    message: '',
-    display: false,
-    success: false
-  });
 
   interface OptionSelect {
     value: string;
@@ -135,49 +128,12 @@ const CreateCache: React.FunctionComponent<any> = props => {
     }
 
     if (selectedConfig != null) {
-      cacheService.createCacheByConfigName(name, selectedConfig).then(message =>
-        setCacheAlert({
-          message: message.message,
-          success: message.success,
-          display: true
-        })
-      );
+      cacheService.createCacheByConfigName(name, selectedConfig)
+        .then(actionResponse => addAlert(actionResponse));
     } else {
-      cacheService.createCacheWithConfiguration(name, config).then(message =>
-        setCacheAlert({
-          message: message.message,
-          success: message.success,
-          display: true
-        })
-      );
+      cacheService.createCacheWithConfiguration(name, config)
+        .then(actionResponse => addAlert(actionResponse));
     }
-  };
-
-  const hideCreation = () => {
-    setCacheAlert({ message: '', success: false, display: false });
-  };
-
-  const AlertPanel = () => {
-    return (
-      <React.Fragment>
-        {cacheAlert.display ? (
-          <Alert
-            style={{ margin: global_spacer_md.value }}
-            variant={
-              cacheAlert.success ? AlertVariant.success : AlertVariant.danger
-            }
-            title={
-              cacheAlert.message == ''
-                ? 'Cache created correctly'
-                : cacheAlert.message
-            }
-            action={<AlertActionCloseButton onClose={hideCreation} />}
-          />
-        ) : (
-          ''
-        )}
-      </React.Fragment>
-    );
   };
 
   const titleId = 'plain-typeahead-select-id';
@@ -196,7 +152,6 @@ const CreateCache: React.FunctionComponent<any> = props => {
           Create a cache in <b>{title}</b>
         </Text>
       </TextContent>
-      <AlertPanel />
       <Form
         style={{ paddingTop: global_spacer_md.value }}
         onSubmit={e => {
