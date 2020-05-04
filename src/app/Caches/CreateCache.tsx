@@ -34,7 +34,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
   const [config, setConfig] = useState('');
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
   const [expandedSelect, setExpandedSelect] = useState(false);
-  const [selectedConfig, setSelectedConfig] = useState<null | string>(null);
+  const [selectedConfig, setSelectedConfig] = useState<string>('');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
   const [validConfig, setValidConfig] = useState(true);
@@ -51,7 +51,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
       .then(templates => {
         let options: OptionSelect[] = [];
         templates.forEach(template => {
-          options.push({ value: template.name });
+          options.push({ value: template.name});
         });
         setConfigs(options);
       });
@@ -61,7 +61,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
     const expanded = !configExpanded;
     setConfigExpanded(expanded);
     setSelectedConfigDisabled(expanded);
-    setSelectedConfig(null);
+    setSelectedConfig('');
   };
 
   const handleChangeName = name => {
@@ -70,6 +70,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
 
   const handleChangeConfig = config => {
     setConfig(config);
+    setValidConfig(true);
   };
 
   const onToggle = isExpanded => {
@@ -77,7 +78,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
   };
 
   const clearSelection = () => {
-    setSelectedConfig(null);
+    setSelectedConfig('');
     setExpandedSelect(false);
   };
 
@@ -112,22 +113,17 @@ const CreateCache: React.FunctionComponent<any> = props => {
 
   const createCache = () => {
     const name = cacheName.trim();
-    if (name.length == 0) {
-      setValidName(false);
-    } else {
-      setValidName(true);
-    }
-    if (selectedConfig == null && !validateConfig()) {
-      setValidConfig(false);
-    } else {
-      setValidConfig(true);
-    }
+    let isValidName = name.length > 0;
+    let isValidConfig = selectedConfig != '' || validateConfig();
 
-    if (!validName || !validConfig) {
+    setValidName(isValidName);
+    setValidConfig(isValidConfig);
+
+    if (!isValidName || !isValidConfig) {
       return;
     }
 
-    if (selectedConfig != null) {
+    if (selectedConfig != '') {
       cacheService.createCacheByConfigName(name, selectedConfig)
         .then(actionResponse => addAlert(actionResponse));
     } else {
@@ -163,6 +159,8 @@ const CreateCache: React.FunctionComponent<any> = props => {
           isRequired
           fieldId="cache-name"
           helperText="Please provide a cache name"
+          isValid={validName}
+          helperTextInvalid="Cache name is mandatory"
         >
           <TextInput
             isRequired
@@ -179,12 +177,11 @@ const CreateCache: React.FunctionComponent<any> = props => {
           fieldId="cache-config-name"
           label="Template"
           helperText="Please choose a template or provide a new configuration"
+          isValid={validConfig}
+          helperTextInvalid="Either choose a template or provide a configuration"
         >
-          <span id={titleId} hidden>
-            Choose a configuration
-          </span>
           <Select
-            toggleIcon={true && <CubeIcon />}
+            toggleIcon={<CubeIcon />}
             variant={SelectVariant.typeahead}
             aria-label="Configuration templates"
             onToggle={onToggle}
@@ -194,6 +191,8 @@ const CreateCache: React.FunctionComponent<any> = props => {
             isExpanded={expandedSelect}
             isDisabled={selectedConfigDisabled}
             ariaLabelledBy={titleId}
+            placeholderText="Choose a template"
+            onClear={clearSelection}
           >
             {configs.map((option, index) => (
               <SelectOption
@@ -214,6 +213,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
             label="Config"
             fieldId="cache-config"
             helperText="Please provide a cache config JSON or XML"
+            helperTextInvalid="Either choose a template or provide a configuration"
           >
             <TextArea
               isRequired
