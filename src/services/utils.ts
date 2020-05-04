@@ -96,8 +96,15 @@ class Utils {
    * @param url
    * @param method
    */
-  public restCall(url: string, method: string): Promise<Response> {
+  public restCall(
+    url: string,
+    method: string,
+    accept?: string
+  ): Promise<Response> {
     let headers = new Headers();
+    if (accept && accept.length > 0) {
+      headers.append('Accept', accept);
+    }
     return fetch(url, {
       method: method,
       credentials: 'include',

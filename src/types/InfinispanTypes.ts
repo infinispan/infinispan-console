@@ -72,6 +72,11 @@ interface CacheInfo {
   features: Features;
 }
 
+interface CacheEntry {
+  key: string;
+  value: string;
+}
+
 interface DetailedInfinispanCache {
   name: string;
   started: boolean;

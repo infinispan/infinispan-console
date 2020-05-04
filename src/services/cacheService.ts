@@ -4,7 +4,7 @@
  * @since 1.0
  */
 import utils from './utils';
-import { Either } from './either';
+import { Either, left, right } from './either';
 
 class CacheService {
   endpoint: string;
@@ -201,6 +201,39 @@ class CacheService {
     );
   }
 
+  /**
+   * Get entry by key
+   * @param cacheName
+   * @param key
+   * @param keyContentType
+   * @return Entry or ActionResponse
+   */
+  public async getEntry(
+    cacheName: string,
+    key: string,
+    keyContentType?: string
+  ): Promise<Either<ActionResponse, CacheEntry>> {
+    return utils
+      .restCall(
+        this.endpoint + '/caches/' + cacheName + '/' + key,
+        'GET',
+        'application/json;q=0.8'
+      )
+      .then(response => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw response;
+      })
+      .then(data => right(<CacheEntry>{ key: key, value: data }))
+      .catch(err =>
+        err
+          .text()
+          .then(errorMessage =>
+            left(<ActionResponse>{ message: errorMessage, success: false })
+          )
+      );
+  }
   /**
    * If the response is ok, the cache has been created
    *
