@@ -139,6 +139,18 @@ const AddEntryForm = (props: {
     setSelection(selection, false, setValueContentType);
   };
 
+  const onClearKeyContentType = () => {
+    setKeyContentType(selectSingleElementInitialState);
+  };
+
+  const onClearValueContentType = () => {
+    setValueContentType(selectSingleElementInitialState);
+  };
+
+  const onClearFlagsSelection = () => {
+    setFlags(flagsInitialState);
+  };
+
   const onSelectFlags = (event, selection) => {
     let prevSelectedFlags: SelectOptionObject[] = flags.selected as SelectOptionObject[];
 
@@ -158,10 +170,6 @@ const AddEntryForm = (props: {
     stateDispatch(prevState => {
       return { ...prevState, expanded: expanded, selected: selection };
     });
-  };
-
-  const onClearFlagsSelection = () => {
-    setFlags(flagsInitialState);
   };
 
   const onChangeKey = value => {
@@ -294,7 +302,7 @@ const AddEntryForm = (props: {
         <Button key="putEntryButton" onClick={handleAddEntryButton}>
           Add
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button key="cancel" variant="link" onClick={onClose}>
           Cancel
         </Button>
       ]}
@@ -419,10 +427,10 @@ const AddEntryForm = (props: {
               aria-label="Select Flags"
               onToggle={onToggleFlags}
               onSelect={onSelectFlags}
+              onClear={onClearFlagsSelection}
               selections={flags.selected}
               isExpanded={flags.expanded}
               placeholderText="Flags"
-              onClear={onClearFlagsSelection}
               maxHeight={150}
             >
               {flagsOptions()}
@@ -440,6 +448,7 @@ const AddEntryForm = (props: {
               aria-label="Select Key Content Type"
               onToggle={onToggleKeyContentType}
               onSelect={onSelectKeyContentType}
+              onClear={onClearKeyContentType}
               selections={keyContentType.selected}
               isExpanded={keyContentType.expanded}
             >
@@ -459,6 +468,7 @@ const AddEntryForm = (props: {
               aria-label="Select Value Content Type"
               onToggle={onToggleValueContentType}
               onSelect={onSelectValueContentType}
+              onClear={onClearValueContentType}
               selections={valueContentType.selected}
               isExpanded={valueContentType.expanded}
             >
