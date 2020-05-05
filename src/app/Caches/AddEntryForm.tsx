@@ -213,7 +213,7 @@ const AddEntryForm = (props: {
     stateDispatch: React.Dispatch<React.SetStateAction<IField>>
   ): boolean => {
     const isEmpty = value.trim().length == 0;
-    const isValid = isEmpty ? true : /^\d+$/.test(value);
+    const isValid = isEmpty ? true : !isNaN(Number(value));
     if (isValid) {
       stateDispatch({
         value: value,
@@ -355,43 +355,6 @@ const AddEntryForm = (props: {
           }}
         >
           <FormGroup
-            label="Key content type"
-            fieldId="key-content-type-helper"
-            helperText={keyContentType.helperText}
-            placeholder="Key content type"
-          >
-            <Select
-              placeholderText="Select a key content type"
-              variant={SelectVariant.typeahead}
-              aria-label="Select Key Content Type"
-              onToggle={onToggleKeyContentType}
-              onSelect={onSelectKeyContentType}
-              selections={keyContentType.selected}
-              isExpanded={keyContentType.expanded}
-            >
-              {keyContentTypeOptions()}
-            </Select>
-          </FormGroup>
-
-          <FormGroup
-            label="Value content type"
-            helperTextInvalid="Value content type is mandatory"
-            fieldId="value-content-type-helper"
-            helperText={valueContentType.helperText}
-          >
-            <Select
-              placeholderText="Select a value content type"
-              variant={SelectVariant.typeahead}
-              aria-label="Select Value Content Type"
-              onToggle={onToggleValueContentType}
-              onSelect={onSelectValueContentType}
-              selections={valueContentType.selected}
-              isExpanded={valueContentType.expanded}
-            >
-              {valueContentTypeOptions()}
-            </Select>
-          </FormGroup>
-          <FormGroup
             label={
               <MoreInfoTooltip
                 label="Max Idle:"
@@ -463,6 +426,43 @@ const AddEntryForm = (props: {
               maxHeight={150}
             >
               {flagsOptions()}
+            </Select>
+          </FormGroup>
+          <FormGroup
+            label="Key content type"
+            fieldId="key-content-type-helper"
+            helperText={keyContentType.helperText}
+            placeholder="Key content type"
+          >
+            <Select
+              placeholderText="Select a key content type"
+              variant={SelectVariant.typeahead}
+              aria-label="Select Key Content Type"
+              onToggle={onToggleKeyContentType}
+              onSelect={onSelectKeyContentType}
+              selections={keyContentType.selected}
+              isExpanded={keyContentType.expanded}
+            >
+              {keyContentTypeOptions()}
+            </Select>
+          </FormGroup>
+
+          <FormGroup
+            label="Value content type"
+            helperTextInvalid="Value content type is mandatory"
+            fieldId="value-content-type-helper"
+            helperText={valueContentType.helperText}
+          >
+            <Select
+              placeholderText="Select a value content type"
+              variant={SelectVariant.typeahead}
+              aria-label="Select Value Content Type"
+              onToggle={onToggleValueContentType}
+              onSelect={onSelectValueContentType}
+              selections={valueContentType.selected}
+              isExpanded={valueContentType.expanded}
+            >
+              {valueContentTypeOptions()}
             </Select>
           </FormGroup>
         </Form>
