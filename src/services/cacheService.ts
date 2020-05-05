@@ -3,8 +3,8 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils from './utils';
-import { Either, left, right } from './either';
+import utils, {KeyContentType, ValueContentType} from './utils';
+import {Either, left, right} from './either';
 
 class CacheService {
   endpoint: string;
@@ -163,19 +163,21 @@ class CacheService {
   public async addEntry(
     cacheName: string,
     key: string,
-    keyContentType: string,
+    keyContentType: KeyContentType,
     value: string,
-    valueContentType: string,
+    valueContentType: ValueContentType,
     maxIdle: string,
     timeToLive: string,
     flags: string[]
   ): Promise<ActionResponse> {
     let headers = new Headers();
-    if (keyContentType.length > 0) {
-      headers.append('Key-Content-Type', keyContentType);
+    if (keyContentType) {
+      let keyContentTypeHeader = this.keyContentTypeHeader(keyContentType);
+      headers.append('Key-Content-Type', keyContentTypeHeader);
     }
-    if (valueContentType.length > 0) {
-      headers.append('Content-Type', valueContentType);
+    if (valueContentType) {
+      let valueContentTypeHeader;
+      headers.append('Content-Type', valueContentType.toString());
     }
     if (timeToLive.length > 0) {
       headers.append('timeToLiveSeconds', timeToLive);
@@ -199,6 +201,22 @@ class CacheService {
       'A new entry has been added to cache ' + cacheName,
       promise
     );
+  }
+
+  /**
+   * Calculate the key content type header value to send ot the REST API
+   * @param keyContentType
+   */
+  private keyContentTypeHeader(keyContentType: KeyContentType) {
+    let keyContentTypeHeader: string = KeyContentType[keyContentType.valueOf()];
+    if (keyContentType == KeyContentType.StringContentType ||
+      KeyContentType.DoubleContentType ||
+      KeyContentType.IntegerContentType ||
+      KeyContentType.LongContentType ||
+      KeyContentType.BooleanContentType) {
+      keyContentTypeHeader = 'application/x-java-object;type=' + keyContentTypeHeader;
+    }
+    return keyContentTypeHeader;
   }
 
   /**
