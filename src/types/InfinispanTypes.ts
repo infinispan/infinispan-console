@@ -75,7 +75,14 @@ interface CacheInfo {
 interface CacheEntry {
   key: string;
   value: string;
-  etag?
+  timeToLive?: string;
+  maxIdle?: string;
+  created?: string;
+  lastModified?: string;
+  lastUsed?: string;
+  expires?: string;
+  cacheControl?: string;
+  eTag?: string;
 }
 
 interface DetailedInfinispanCache {

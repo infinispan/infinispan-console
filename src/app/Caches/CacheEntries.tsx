@@ -19,6 +19,7 @@ import { SearchIcon } from '@patternfly/react-icons';
 import { AddEntryForm } from '@app/Caches/AddEntryForm';
 import cacheService from '../../services/cacheService';
 import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
@@ -30,8 +31,36 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
   };
 
   const [rows, setRows] = useState<any[]>([]);
-  const columns = [{ title: 'Key' }, { title: 'Value' }];
-
+  const columns = [
+    { title: 'Key' },
+    { title: 'Value' },
+    {
+      title: (
+        <MoreInfoTooltip
+          label="Time to live"
+          toolTip={
+            'The number of seconds before the entry is automatically deleted.'
+          }
+        />
+      )
+    },
+    {
+      title: (
+        <MoreInfoTooltip
+          label="Max Idle"
+          toolTip={
+            'The number of seconds that entries can be idle. ' +
+            'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
+            'the entry is automatically deleted.'
+          }
+        />
+      )
+    },
+    { title: 'Created' },
+    { title: 'Last used' },
+    { title: 'Last modified' },
+    { title: 'Expires' }
+  ];
   const updateRows = (entries: CacheEntry[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
 
@@ -41,7 +70,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
           heightAuto: true,
           cells: [
             {
-              props: { colSpan: 2 },
+              props: { colSpan: 8 },
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
@@ -60,7 +89,16 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
       rows = entries.map(entry => {
         return {
           heightAuto: true,
-          cells: [{ title: entry.key }, { title: entry.value }]
+          cells: [
+            { title: entry.key },
+            { title: entry.value },
+            { title: entry.timeToLive ? entry.timeToLive : 'Forever' },
+            { title: entry.maxIdle ? entry.maxIdle : 'Forever' },
+            { title: entry.created },
+            { title: entry.lastUsed },
+            { title: entry.lastModified },
+            { title: entry.expires }
+          ]
         };
       });
     }
@@ -79,7 +117,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
   };
 
   const searchEntryByKey = () => {
-    if(keyToSearch.length == 0) {
+    if (keyToSearch.length == 0) {
       return;
     }
 

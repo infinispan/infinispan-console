@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
+  Alert,
+  AlertVariant,
   Button,
   Expandable,
   Form,
@@ -10,12 +12,12 @@ import {
   SelectVariant,
   TextInput
 } from '@patternfly/react-core';
-import {Flags, KeyContentType, ValueContentType} from '../../services/utils';
-import {SelectOptionObject} from '@patternfly/react-core/src/components/Select/SelectOption';
-import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import { Flags, KeyContentType, ValueContentType } from '../../services/utils';
+import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
+import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import cacheService from '../../services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {global_spacer_md} from '@patternfly/react-tokens';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { global_spacer_md } from '@patternfly/react-tokens';
 
 interface IField {
   value: string;
@@ -78,6 +80,7 @@ const AddEntryForm = (props: {
     helperText: 'Select flags'
   };
 
+  const [error, setError] = useState<string | undefined>(undefined);
   const [key, setKey] = useState<IField>(keyInitialState);
   const [keyContentType, setKeyContentType] = useState<ISelectField>(
     selectSingleElementInitialState
@@ -244,6 +247,7 @@ const AddEntryForm = (props: {
 
   const handleAddEntryButton = () => {
     let isValid = true;
+    setError(undefined);
     isValid = validateRequiredField(key.value, 'Key', setKey) && isValid;
     isValid = validateRequiredField(value.value, 'Value', setValue) && isValid;
     isValid =
@@ -267,22 +271,31 @@ const AddEntryForm = (props: {
         .addEntry(
           props.cacheName,
           key.value,
-          selectedKeyContentType == ''? undefined : KeyContentType[selectedKeyContentType],
+          selectedKeyContentType == ''
+            ? undefined
+            : KeyContentType[selectedKeyContentType],
           value.value,
-          selectedValueContentType == ''? undefined : ValueContentType[selectedValueContentType],
+          selectedValueContentType == ''
+            ? undefined
+            : ValueContentType[selectedValueContentType],
           maxIdleField.value,
           timeToLiveField.value,
           flags.selected as string[]
         )
         .then(response => {
-          addAlert(response);
-          onClose();
+          if (response.success) {
+            addAlert(response);
+            onClose();
+          } else {
+            setError(response.message);
+          }
         });
     }
   };
 
   const onClose = () => {
     props.closeModal();
+    setError(undefined);
     setKey(keyInitialState);
     setValue(valueInitialState);
     setKeyContentType(selectSingleElementInitialState);
@@ -316,6 +329,10 @@ const AddEntryForm = (props: {
         }}
         style={{ marginBottom: global_spacer_md.value }}
       >
+        {error && (
+          <Alert variant={AlertVariant.danger} isInline title={error} />
+        )}
+
         <FormGroup label="Cache name" isRequired fieldId="cache-name">
           <TextInput
             isDisabled
@@ -368,6 +385,33 @@ const AddEntryForm = (props: {
           <FormGroup
             label={
               <MoreInfoTooltip
+                label="Time to live:"
+                toolTip={
+                  'Sets the number of seconds before ' +
+                  'the entry is automatically deleted. If you do not set this parameter, ' +
+                  'Infinispan uses the default value from the configuration. ' +
+                  'If you set a negative value, the entry is never deleted.\n' +
+                  '\n'
+                }
+              />
+            }
+            type="number"
+            helperText={timeToLiveField.helperText}
+            helperTextInvalid={timeToLiveField.invalidText}
+            fieldId="timeToLive"
+            validated={timeToLiveField.validated}
+          >
+            <TextInput
+              validated={timeToLiveField.validated}
+              value={timeToLiveField.value}
+              id="timeToLive"
+              aria-describedby="timeToLive-helper"
+              onChange={onChangeTimeToLive}
+            />
+          </FormGroup>
+          <FormGroup
+            label={
+              <MoreInfoTooltip
                 label="Max Idle:"
                 toolTip={
                   'Sets the number of seconds that entries can be idle. ' +
@@ -391,33 +435,6 @@ const AddEntryForm = (props: {
               id="maxIdle"
               aria-describedby="maxIdle-helper"
               onChange={onChangeMaxIdle}
-            />
-          </FormGroup>
-          <FormGroup
-            label={
-              <MoreInfoTooltip
-                label="Time to live:"
-                toolTip={
-                  'Sets the number of seconds before ' +
-                  'the entry is automatically deleted. If you do not set this parameter, ' +
-                  'Infinispan uses the default value from the configuration. ' +
-                  'If you set a negative value, the entry is never deleted.\n' +
-                  '\n'
-                }
-              />
-            }
-            type="number"
-            helperText={timeToLiveField.helperText}
-            helperTextInvalid={timeToLiveField.invalidText}
-            fieldId="timeToLive"
-            validated={timeToLiveField.validated}
-          >
-            <TextInput
-              validated={timeToLiveField.validated}
-              value={timeToLiveField.value}
-              id="timeToLive"
-              aria-describedby="timeToLive-helper"
-              onChange={onChangeTimeToLive}
             />
           </FormGroup>
           <FormGroup
