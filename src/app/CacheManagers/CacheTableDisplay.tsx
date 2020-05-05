@@ -72,6 +72,7 @@ const CacheTableDisplay = (props: {
     perPage: 10
   });
   const [rows, setRows] = useState<any[]>([]);
+  const [actions, setActions] = useState<any[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
   const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
@@ -96,7 +97,7 @@ const CacheTableDisplay = (props: {
     }
   ];
 
-  const actions = [
+  const cachesActions = [
     {
       title: 'Delete',
       onClick: (event, rowId, rowData, extra) =>
@@ -223,6 +224,7 @@ const CacheTableDisplay = (props: {
           ]
         }
       ];
+      setActions([]);
     } else {
       currentRows = caches.map(cacheInfo => {
         return {
@@ -242,6 +244,7 @@ const CacheTableDisplay = (props: {
           ]
         };
       });
+      setActions(cachesActions);
     }
     setRows(currentRows);
   };
