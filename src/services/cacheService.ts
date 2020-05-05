@@ -259,14 +259,17 @@ class CacheService {
           success: true
         };
       })
-      .catch(err =>
-        err
-          .text()
-          .then(
-            errorMessage =>
-              <ActionResponse>{ message: errorMessage, success: false }
-          )
-      );
+      .catch(err => {
+        if(err.text()){
+          return err
+            .text()
+            .then(
+              errorMessage =>
+                <ActionResponse>{ message: errorMessage, success: false }
+            )
+        }
+        return <ActionResponse>{ message: err.text, success: false }
+      });
   }
 
   /**
