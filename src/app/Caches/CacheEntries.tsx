@@ -21,15 +21,27 @@ import cacheService from '../../services/cacheService';
 import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import {ClearAllEntries} from "@app/Caches/ClearAllEntries";
+import {DeleteEntry} from "@app/Caches/DeleteEntry";
+import set = Reflect.set;
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
 }) => {
   const [isAddEntryFormOpen, setAddEntryFormOpen] = useState<boolean>(false);
+  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
+  const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [keyToSearch, setKeyToSearch] = useState<string>('');
-
   const [rows, setRows] = useState<any[]>([]);
+  const [actions, setActions] = useState<any[]>([]);
+
+  const entryActions = [
+    {
+      title: 'Delete',
+      onClick: (event, rowId, rowData, extra) =>
+        onClickDeleteEntryButton(rowData.cells[0].title)
+    }
+  ];
 
   const columns = [
     { title: 'Key' },
@@ -85,6 +97,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
           ]
         }
       ];
+      setActions([]);
     } else {
       rows = entries.map(entry => {
         return {
@@ -101,6 +114,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
           ]
         };
       });
+      setActions(entryActions);
     }
     setRows(rows);
   };
@@ -113,12 +127,23 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     setClearAllModalOpen(true);
   };
 
+  const onClickDeleteEntryButton = (entryKey: string) => {
+    setDeleteEntryModalOpen(true);
+    setKeyToDelete(entryKey);
+  };
+
   const closeAddEntryFormModal = () => {
     setAddEntryFormOpen(false);
   };
 
   const closeClearAllEntryModal = () => {
     setClearAllModalOpen(false);
+    searchEntryByKey();
+  };
+
+  const closeDeleteEntryModal = () => {
+    setDeleteEntryModalOpen(false);
+    setKeyToDelete('');
     searchEntryByKey();
   };
 
@@ -195,6 +220,10 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
         isModalOpen={isAddEntryFormOpen}
         closeModal={closeAddEntryFormModal}
       />
+      <DeleteEntry cacheName={props.cacheName}
+                   entryKey={keyToDelete}
+                   isModalOpen={isDeleteEntryModalOpen}
+                   closeModal={closeDeleteEntryModal}/>
       <ClearAllEntries cacheName={props.cacheName}
                        isModalOpen={isClearAllModalOpen}
                        closeModal={closeClearAllEntryModal}/>
@@ -202,6 +231,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
         aria-label="Entries"
         cells={columns}
         rows={rows}
+        actions={actions}
         className={'entries-table'}
       >
         <TableHeader />

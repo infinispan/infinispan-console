@@ -296,6 +296,26 @@ class CacheService {
     );
   }
 
+
+  /**
+   * Delete entry from cache
+   *
+   * @param cacheName, cache name
+   * @param entryKey, entry key
+   */
+  public async deleteEntry(cacheName: string, entryKey: string) :Promise<ActionResponse> {
+    let deleteEntryPromise = utils.restCall(
+      this.endpoint + '/caches/' + cacheName + '/' + entryKey,
+      'DELETE'
+    );
+
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Entry ' + entryKey + ' has been deleted',
+      deleteEntryPromise
+    );
+  }
+
   /**
    * If the response is ok, the cache has been created
    *
