@@ -278,6 +278,24 @@ class CacheService {
           )
       );
   }
+
+  /**
+   * Clear cache
+   * @param cacheName, the name of the cache
+   */
+  public async clear(cacheName: string) :Promise<ActionResponse> {
+    let clearPromise = utils.restCall(
+      this.endpoint + '/caches/' + cacheName + '?action=clear',
+      'GET'
+    );
+
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Cache ' + cacheName + ' has been cleared',
+      clearPromise
+    );
+  }
+
   /**
    * If the response is ok, the cache has been created
    *
