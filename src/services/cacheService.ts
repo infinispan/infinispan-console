@@ -3,8 +3,8 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, {KeyContentType, ValueContentType} from './utils';
-import {Either, left, right} from './either';
+import utils, { KeyContentType, ValueContentType } from './utils';
+import { Either, left, right } from './either';
 
 class CacheService {
   endpoint: string;
@@ -209,12 +209,15 @@ class CacheService {
    */
   private keyContentTypeHeader(keyContentType: KeyContentType) {
     let keyContentTypeHeader: string = KeyContentType[keyContentType.valueOf()];
-    if (keyContentType == KeyContentType.StringContentType ||
+    if (
+      keyContentType == KeyContentType.StringContentType ||
       KeyContentType.DoubleContentType ||
       KeyContentType.IntegerContentType ||
       KeyContentType.LongContentType ||
-      KeyContentType.BooleanContentType) {
-      keyContentTypeHeader = 'application/x-java-object;type=' + keyContentTypeHeader;
+      KeyContentType.BooleanContentType
+    ) {
+      keyContentTypeHeader =
+        'application/x-java-object;type=' + keyContentTypeHeader;
     }
     return keyContentTypeHeader;
   }
@@ -239,11 +242,34 @@ class CacheService {
       )
       .then(response => {
         if (response.ok) {
-          return response.text();
+          return response.json().then(json => {
+            const timeToLive = response.headers.get('timeToLiveSeconds');
+            const maxIdleTimeSeconds = response.headers.get(
+              'maxIdleTimeSeconds'
+            );
+            const created = response.headers.get('created');
+            const lastUsed = response.headers.get('lastUsed');
+            const lastModified = response.headers.get('Last-Modified');
+            const expires = response.headers.get('Expires');
+            const cacheControl = response.headers.get('Cache-Control');
+            const etag = response.headers.get('Etag');
+            return <CacheEntry>{
+              key: key,
+              value: json,
+              timeToLive: timeToLive,
+              maxIdleTimeSeconds: maxIdleTimeSeconds,
+              created: created,
+              lastUsed: lastUsed,
+              lastModified: lastModified,
+              expires: expires,
+              cacheControl: cacheControl,
+              eTag: etag
+            };
+          });
         }
         throw response;
       })
-      .then(data => right(<CacheEntry>{ key: key, value: data }))
+      .then(data => right(data))
       .catch(err =>
         err
           .text()
@@ -278,15 +304,16 @@ class CacheService {
         };
       })
       .catch(err => {
-        if(err.text()){
-          return err
-            .text()
-            .then(
-              errorMessage =>
-                <ActionResponse>{ message: errorMessage, success: false }
-            )
+        if (err instanceof TypeError) {
+          return <ActionResponse>{ message: err.message, success: false };
         }
-        return <ActionResponse>{ message: err.text, success: false }
+
+        return err
+          .text()
+          .then(
+            errorMessage =>
+              <ActionResponse>{ message: errorMessage, success: false }
+          );
       });
   }
 

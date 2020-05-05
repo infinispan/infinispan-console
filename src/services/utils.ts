@@ -17,7 +17,7 @@ export enum KeyContentType {
 export enum ValueContentType {
   JSON = 'application/json',
   XML = 'application/xml',
-  TEXT = 'text/plain',
+  TEXT = 'text/plain'
 }
 
 export enum Flags {
