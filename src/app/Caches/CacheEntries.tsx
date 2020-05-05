@@ -20,17 +20,17 @@ import { AddEntryForm } from '@app/Caches/AddEntryForm';
 import cacheService from '../../services/cacheService';
 import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import {ClearAllEntries} from "@app/Caches/ClearAllEntries";
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
 }) => {
   const [isAddEntryFormOpen, setAddEntryFormOpen] = useState<boolean>(false);
+  const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [keyToSearch, setKeyToSearch] = useState<string>('');
-  const onClickAddEntryButton = () => {
-    setAddEntryFormOpen(true);
-  };
 
   const [rows, setRows] = useState<any[]>([]);
+
   const columns = [
     { title: 'Key' },
     { title: 'Value' },
@@ -105,8 +105,21 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     setRows(rows);
   };
 
+  const onClickAddEntryButton = () => {
+    setAddEntryFormOpen(true);
+  };
+
+  const onClickClearAllButton = () => {
+    setClearAllModalOpen(true);
+  };
+
   const closeAddEntryFormModal = () => {
     setAddEntryFormOpen(false);
+  };
+
+  const closeClearAllEntryModal = () => {
+    setClearAllModalOpen(false);
+    searchEntryByKey();
   };
 
   const onChangeKeySearch = value => {
@@ -169,19 +182,22 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
             >
               Add entry
             </Button>
-            <AddEntryForm
-              cacheName={props.cacheName}
-              isModalOpen={isAddEntryFormOpen}
-              closeModal={closeAddEntryFormModal}
-            />
           </DataToolbarItem>
           <DataToolbarItem>
-            <Button variant={ButtonVariant.link} isDisabled>
+            <Button variant={ButtonVariant.link} onClick={onClickClearAllButton}>
               Clear all entries
             </Button>
           </DataToolbarItem>
         </DataToolbarContent>
       </DataToolbar>
+      <AddEntryForm
+        cacheName={props.cacheName}
+        isModalOpen={isAddEntryFormOpen}
+        closeModal={closeAddEntryFormModal}
+      />
+      <ClearAllEntries cacheName={props.cacheName}
+                       isModalOpen={isClearAllModalOpen}
+                       closeModal={closeClearAllEntryModal}/>
       <Table
         aria-label="Entries"
         cells={columns}
