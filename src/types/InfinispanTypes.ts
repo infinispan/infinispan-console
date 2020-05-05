@@ -75,6 +75,7 @@ interface CacheInfo {
 interface CacheEntry {
   key: string;
   value: string;
+  etag?
 }
 
 interface DetailedInfinispanCache {

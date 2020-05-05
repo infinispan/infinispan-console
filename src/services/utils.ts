@@ -4,19 +4,20 @@
  * @author Katia Aresti
  */
 export enum KeyContentType {
+  OctetStream = 'application/octet-stream',
+  OctetStreamHex = 'application/octet-stream; encoding=hex',
   StringContentType = 'java.lang.String',
   DoubleContentType = 'java.lang.Double',
   IntegerContentType = 'java.lang.Integer',
   LongContentType = 'java.lang.Long',
+  BooleanContentType = 'java.lang.Boolean',
   BytesType = 'Bytes'
 }
 
 export enum ValueContentType {
-  StringContentType = 'java.lang.String',
-  DoubleContentType = 'java.lang.Double',
-  IntegerContentType = 'java.lang.Integer',
-  LongContentType = 'java.lang.Long',
-  BytesType = 'Bytes'
+  JSON = 'application/json',
+  XML = 'application/xml',
+  TEXT = 'text/plain',
 }
 
 export enum Flags {

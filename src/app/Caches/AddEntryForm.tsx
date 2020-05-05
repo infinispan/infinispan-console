@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Button,
   Expandable,
@@ -10,12 +10,12 @@ import {
   SelectVariant,
   TextInput
 } from '@patternfly/react-core';
-import { Flags, KeyContentType, ValueContentType } from '../../services/utils';
-import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import {Flags, KeyContentType, ValueContentType} from '../../services/utils';
+import {SelectOptionObject} from '@patternfly/react-core/src/components/Select/SelectOption';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 import cacheService from '../../services/cacheService';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_spacer_md } from '@patternfly/react-tokens';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {global_spacer_md} from '@patternfly/react-tokens';
 
 interface IField {
   value: string;
@@ -54,7 +54,7 @@ const AddEntryForm = (props: {
   const selectSingleElementInitialState: ISelectField = {
     selected: '',
     expanded: false,
-    helperText: 'Select content type. String is the default value'
+    helperText: 'Select content type.'
   };
   const maxIdleInitialState: IField = {
     value: '',
@@ -259,14 +259,17 @@ const AddEntryForm = (props: {
         setTimeToLiveField
       ) && isValid;
 
+    let selectedKeyContentType = keyContentType.selected as string;
+    let selectedValueContentType = valueContentType.selected as string;
+
     if (isValid) {
       cacheService
         .addEntry(
           props.cacheName,
           key.value,
-          keyContentType.selected as string,
+          selectedKeyContentType == ''? undefined : KeyContentType[selectedKeyContentType],
           value.value,
-          valueContentType.selected as string,
+          selectedValueContentType == ''? undefined : ValueContentType[selectedValueContentType],
           maxIdleField.value,
           timeToLiveField.value,
           flags.selected as string[]
