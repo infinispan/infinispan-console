@@ -56,10 +56,10 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
         />
       )
     },
+    { title: 'Expires' },
     { title: 'Created' },
     { title: 'Last used' },
-    { title: 'Last modified' },
-    { title: 'Expires' }
+    { title: 'Last modified' }
   ];
   const updateRows = (entries: CacheEntry[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
@@ -94,10 +94,10 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
             { title: entry.value },
             { title: entry.timeToLive ? entry.timeToLive : 'Forever' },
             { title: entry.maxIdle ? entry.maxIdle : 'Forever' },
+            { title: entry.expires? entry.expires : 'Never'  },
             { title: entry.created },
             { title: entry.lastUsed },
-            { title: entry.lastModified },
-            { title: entry.expires }
+            { title: entry.lastModified }
           ]
         };
       });
