@@ -75,10 +75,14 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     if (value.length == 0) {
       setRows([]);
     }
-    setKeyToSearch(value);
+    setKeyToSearch(value.trim());
   };
 
   const searchEntryByKey = () => {
+    if(keyToSearch.length == 0) {
+      return;
+    }
+
     cacheService.getEntry(props.cacheName, keyToSearch).then(response => {
       if (response.isRight()) {
         updateRows([response.value]);
