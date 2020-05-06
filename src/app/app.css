@@ -25,3 +25,7 @@ html, body, #root {
 .pf-c-dropdown__menu-item {
   cursor: pointer;
 }
+
+.pf-c-select__menu {
+  scroll-behavior: smooth;
+}

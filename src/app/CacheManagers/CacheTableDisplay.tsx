@@ -471,7 +471,6 @@ const CacheTableDisplay = (props: {
 
   const buildFilter = () => {
     return (
-      <DataToolbarGroup variant="filter-group">
         <Select
           variant={SelectVariant.checkbox}
           aria-label="Filter"
@@ -487,7 +486,6 @@ const CacheTableDisplay = (props: {
         >
           {options}
         </Select>
-      </DataToolbarGroup>
     );
   };
 
@@ -576,12 +574,8 @@ const CacheTableDisplay = (props: {
     <React.Fragment>
       <DataToolbar id="cache-table-toolbar">
         <DataToolbarContent>
-          <DataToolbarItem variant={DataToolbarItemVariant['search-filter']}>
-            {buildFilter()}
-          </DataToolbarItem>
-          <DataToolbarItem
-            variant={DataToolbarItemVariant.separator}
-          ></DataToolbarItem>
+          <DataToolbarItem>{buildFilter()}</DataToolbarItem>
+          <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
           <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
           <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
           <DataToolbarItem
