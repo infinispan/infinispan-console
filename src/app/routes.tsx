@@ -97,6 +97,7 @@ export interface IAppRoute {
   title: string;
   isAsync?: boolean;
   menu?: boolean;
+  subRoutes?: string[];
 }
 
 const routes: IAppRoute[] = [
@@ -114,7 +115,8 @@ const routes: IAppRoute[] = [
     label: 'Data Container',
     path: '/',
     title: 'Data Container',
-    menu: true
+    menu: true,
+    subRoutes:['container', 'cache']
   },
   {
     component: GlobalStats,
