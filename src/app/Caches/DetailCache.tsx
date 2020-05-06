@@ -62,13 +62,11 @@ const DetailCache: React.FunctionComponent<any> = props => {
     }
 
     return (
-      <Card>
-        <CardBody>
-          {showEntries && <CacheEntries cacheName={cacheName} />}
-          {showConfig && <CacheConfiguration config={detail.configuration} />}
-          {showMetrics && <CacheMetrics stats={detail.stats} xSite={xSite} />}
-        </CardBody>
-      </Card>
+      <React.Fragment>
+        {showEntries && <CacheEntries cacheName={cacheName} />}
+        {showConfig && <CacheConfiguration config={detail.configuration} />}
+        {showMetrics && <CacheMetrics stats={detail.stats} xSite={xSite} />}
+      </React.Fragment>
     );
   };
 

@@ -23,7 +23,8 @@ import {
   cellWidth,
   Table,
   TableBody,
-  TableHeader
+  TableHeader,
+  TableVariant
 } from '@patternfly/react-table';
 
 const DetailConfigurations: React.FunctionComponent<any> = props => {
@@ -154,6 +155,7 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
           isCompact
         />
         <Table
+          variant={TableVariant.compact}
           aria-label="Cache configurations"
           cells={columns}
           rows={rows}

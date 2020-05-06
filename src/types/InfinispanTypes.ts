@@ -158,3 +158,9 @@ interface ActionResponse {
   message: string;
   success: boolean;
 }
+
+interface Activity {
+  entryKey: string;
+  action: string;
+  date: Date;
+}

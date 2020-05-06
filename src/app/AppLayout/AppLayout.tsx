@@ -16,6 +16,8 @@ import {NavLink} from 'react-router-dom';
 import {routes} from '@app/routes';
 import {APIAlertProvider} from '@app/providers/APIAlertProvider';
 import {ActionResponseAlert} from '@app/Common/ActionResponseAlert';
+import {RecentActivityProvider} from '@app/providers/RecentActivityContextProvider';
+
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -102,18 +104,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
     </Nav>
   );
 
-  const isActive = (match, location) => {
-    console.log("mierda");
-    console.log(location);
-    if (!match) {
-      return false;
-    }
-
-    // only consider an event active if its event id is an odd number
-    const eventID = parseInt(match.params.eventID);
-    return !isNaN(eventID) && eventID % 2 === 1;
-  };
-
   const Sidebar = (
     <PageSidebar
       theme="dark"
@@ -124,16 +114,18 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
 
   return (
     <APIAlertProvider>
-      <ActionResponseAlert />
-      <Page
-        mainContainerId="primary-app-container"
-        header={welcome ? null : Header}
-        onPageResize={onPageResize}
-        skipToContent={PageSkipToContent}
-        sidebar={welcome ? null : Sidebar}
-      >
-        {children}
-      </Page>
+      <RecentActivityProvider>
+        <ActionResponseAlert />
+        <Page
+          mainContainerId="primary-app-container"
+          header={welcome ? null : Header}
+          onPageResize={onPageResize}
+          skipToContent={PageSkipToContent}
+          sidebar={welcome ? null : Sidebar}
+        >
+          {children}
+        </Page>
+      </RecentActivityProvider>
     </APIAlertProvider>
   );
 };

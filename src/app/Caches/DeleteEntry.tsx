@@ -1,7 +1,14 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, TextContent, Text} from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  TextContent,
+  Text
+} from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 /**
  * Delete entry modal
@@ -13,12 +20,19 @@ const DeleteEntry = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
+  const { pushActivity } = useRecentActivity();
 
   const onClickDeleteButton = () => {
-    cacheService.deleteEntry(props.cacheName, props.entryKey)
-      .then(actionResponse =>{
+    cacheService
+      .deleteEntry(props.cacheName, props.entryKey)
+      .then(actionResponse => {
         props.closeModal();
         addAlert(actionResponse);
+        pushActivity({
+          entryKey: props.entryKey,
+          action: 'Delete',
+          date: new Date()
+        });
       });
   };
 
@@ -44,15 +58,16 @@ const DeleteEntry = (props: {
         </Button>
       ]}
     >
-        <TextContent>
-          <Text>
-            This action will permanently delete the key{' '}
-            <strong>'{props.entryKey}'</strong> from the cache <strong>{props.cacheName}</strong>.
-            <br />
-            You can always recreate the entry after.
-          </Text>
-        </TextContent>
-      </Modal>
+      <TextContent>
+        <Text>
+          This action will permanently delete the key{' '}
+          <strong>'{props.entryKey}'</strong> from the cache{' '}
+          <strong>{props.cacheName}</strong>.
+          <br />
+          You can always recreate the entry after.
+        </Text>
+      </TextContent>
+    </Modal>
   );
 };
 

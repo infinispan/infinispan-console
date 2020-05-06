@@ -4,6 +4,7 @@ import {
   Table,
   TableBody,
   TableHeader,
+  TableVariant,
   textCenter
 } from '@patternfly/react-table';
 import {
@@ -622,6 +623,7 @@ const CacheTableDisplay = (props: {
         rows={rows}
         className={'caches-table'}
         actions={actions}
+        variant={TableVariant.compact}
       >
         <TableHeader />
         <TableBody />

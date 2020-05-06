@@ -283,7 +283,7 @@ class CacheService {
    * Clear cache
    * @param cacheName, the name of the cache
    */
-  public async clear(cacheName: string) :Promise<ActionResponse> {
+  public async clear(cacheName: string): Promise<ActionResponse> {
     let clearPromise = utils.restCall(
       this.endpoint + '/caches/' + cacheName + '?action=clear',
       'GET'
@@ -296,14 +296,16 @@ class CacheService {
     );
   }
 
-
   /**
    * Delete entry from cache
    *
    * @param cacheName, cache name
    * @param entryKey, entry key
    */
-  public async deleteEntry(cacheName: string, entryKey: string) :Promise<ActionResponse> {
+  public async deleteEntry(
+    cacheName: string,
+    entryKey: string
+  ): Promise<ActionResponse> {
     let deleteEntryPromise = utils.restCall(
       this.endpoint + '/caches/' + cacheName + '/' + entryKey,
       'DELETE'
