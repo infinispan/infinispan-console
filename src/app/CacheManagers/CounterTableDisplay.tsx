@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant
+} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -170,6 +175,7 @@ const CounterTableDisplay = (props: {
           cells={columns}
           rows={rows}
           className={'counters-table'}
+          variant={TableVariant.compact}
         >
           <TableHeader />
           <TableBody />

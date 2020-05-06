@@ -1,34 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Bullseye,
   Button,
   ButtonVariant,
+  Card,
+  CardBody,
   DataToolbar,
   DataToolbarContent,
   DataToolbarItem,
   EmptyState,
-  EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   InputGroup,
-  StackItem,
   TextInput,
   Title
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import { AddEntryForm } from '@app/Caches/AddEntryForm';
 import cacheService from '../../services/cacheService';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant
+} from '@patternfly/react-table';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import {ClearAllEntries} from "@app/Caches/ClearAllEntries";
-import {DeleteEntry} from "@app/Caches/DeleteEntry";
-import set = Reflect.set;
+import { ClearAllEntries } from '@app/Caches/ClearAllEntries';
+import { DeleteEntry } from '@app/Caches/DeleteEntry';
+import { RecentActivityTable } from '@app/Caches/RecentActivityTable';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
 }) => {
+  const { activities } = useRecentActivity();
   const [isAddEntryFormOpen, setAddEntryFormOpen] = useState<boolean>(false);
-  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
+  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
+    false
+  );
   const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [keyToSearch, setKeyToSearch] = useState<string>('');
@@ -107,7 +116,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
             { title: entry.value },
             { title: entry.timeToLive ? entry.timeToLive : 'Forever' },
             { title: entry.maxIdle ? entry.maxIdle : 'Forever' },
-            { title: entry.expires? entry.expires : 'Never'  },
+            { title: entry.expires ? entry.expires : 'Never' },
             { title: entry.created },
             { title: entry.lastUsed },
             { title: entry.lastModified }
@@ -176,67 +185,80 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
 
   return (
     <React.Fragment>
-      <DataToolbar id="cache-entries-toolbar">
-        <DataToolbarContent>
-          <DataToolbarItem>
-            <InputGroup>
-              <TextInput
-                name="textSearchByKey"
-                id="textSearchByKey"
-                type="search"
-                aria-label="search by key textfield"
-                placeholder={'Get by key'}
-                size={50}
-                onChange={onChangeKeySearch}
-                onKeyPress={searchEntryOnKeyPress}
-              />
-              <Button
-                variant="control"
-                aria-label="search button for search input"
-                onClick={searchEntryByKey}
-              >
-                <SearchIcon />
-              </Button>
-            </InputGroup>
-          </DataToolbarItem>
-          <DataToolbarItem>
-            <Button
-              key="add-entry-button"
-              variant={ButtonVariant.primary}
-              onClick={onClickAddEntryButton}
-            >
-              Add entry
-            </Button>
-          </DataToolbarItem>
-          <DataToolbarItem>
-            <Button variant={ButtonVariant.link} onClick={onClickClearAllButton}>
-              Clear all entries
-            </Button>
-          </DataToolbarItem>
-        </DataToolbarContent>
-      </DataToolbar>
-      <AddEntryForm
-        cacheName={props.cacheName}
-        isModalOpen={isAddEntryFormOpen}
-        closeModal={closeAddEntryFormModal}
-      />
-      <DeleteEntry cacheName={props.cacheName}
-                   entryKey={keyToDelete}
-                   isModalOpen={isDeleteEntryModalOpen}
-                   closeModal={closeDeleteEntryModal}/>
-      <ClearAllEntries cacheName={props.cacheName}
-                       isModalOpen={isClearAllModalOpen}
-                       closeModal={closeClearAllEntryModal}/>
-      <Table
-        aria-label="Entries"
-        cells={columns}
-        rows={rows}
-        actions={actions}
-        className={'entries-table'}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+      <Card>
+        <CardBody>
+          <DataToolbar id="cache-entries-toolbar">
+            <DataToolbarContent>
+              <DataToolbarItem>
+                <InputGroup>
+                  <TextInput
+                    name="textSearchByKey"
+                    id="textSearchByKey"
+                    type="search"
+                    aria-label="search by key textfield"
+                    placeholder={'Get by key'}
+                    size={50}
+                    onChange={onChangeKeySearch}
+                    onKeyPress={searchEntryOnKeyPress}
+                  />
+                  <Button
+                    variant="control"
+                    aria-label="search button for search input"
+                    onClick={searchEntryByKey}
+                  >
+                    <SearchIcon />
+                  </Button>
+                </InputGroup>
+              </DataToolbarItem>
+              <DataToolbarItem>
+                <Button
+                  key="add-entry-button"
+                  variant={ButtonVariant.primary}
+                  onClick={onClickAddEntryButton}
+                >
+                  Add entry
+                </Button>
+              </DataToolbarItem>
+              <DataToolbarItem>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={onClickClearAllButton}
+                >
+                  Clear all entries
+                </Button>
+              </DataToolbarItem>
+            </DataToolbarContent>
+          </DataToolbar>
+          <AddEntryForm
+            cacheName={props.cacheName}
+            isModalOpen={isAddEntryFormOpen}
+            closeModal={closeAddEntryFormModal}
+          />
+          <DeleteEntry
+            cacheName={props.cacheName}
+            entryKey={keyToDelete}
+            isModalOpen={isDeleteEntryModalOpen}
+            closeModal={closeDeleteEntryModal}
+          />
+          <ClearAllEntries
+            cacheName={props.cacheName}
+            isModalOpen={isClearAllModalOpen}
+            closeModal={closeClearAllEntryModal}
+          />
+          <Table
+            variant={TableVariant.compact}
+            aria-label="Entries"
+            cells={columns}
+            rows={rows}
+            actions={actions}
+            className={'entries-table'}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+        </CardBody>
+      </Card>
+      <RecentActivityTable />
     </React.Fragment>
   );
 };

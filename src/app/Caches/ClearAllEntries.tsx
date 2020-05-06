@@ -1,7 +1,14 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, TextContent, Text} from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  TextContent,
+  Text
+} from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 /**
  * Clear all entries modal
@@ -11,14 +18,15 @@ const ClearAllEntries = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
+  const { pushActivity } = useRecentActivity();
   const { addAlert } = useApiAlert();
 
-  const onClickDeleteButton = () => {
-    cacheService.clear(props.cacheName)
-      .then(actionResponse =>{
-        props.closeModal();
-        addAlert(actionResponse);
-      });
+  const onClickClearAllEntriesButton = () => {
+    cacheService.clear(props.cacheName).then(actionResponse => {
+      addAlert(actionResponse);
+      pushActivity({ entryKey: '*', action: 'Clear all', date: new Date() });
+      props.closeModal();
+    });
   };
 
   return (
@@ -34,7 +42,7 @@ const ClearAllEntries = (props: {
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
-          onClick={onClickDeleteButton}
+          onClick={onClickClearAllEntriesButton}
         >
           Clear
         </Button>,
@@ -43,14 +51,15 @@ const ClearAllEntries = (props: {
         </Button>
       ]}
     >
-        <TextContent>
-          <Text>
-            This action will permanently clear all entries in <strong>{props.cacheName}</strong>.
-            <br />
-            This cannot be undone.
-          </Text>
-        </TextContent>
-      </Modal>
+      <TextContent>
+        <Text>
+          This action will permanently clear all entries in{' '}
+          <strong>{props.cacheName}</strong>.
+          <br />
+          This cannot be undone.
+        </Text>
+      </TextContent>
+    </Modal>
   );
 };
 

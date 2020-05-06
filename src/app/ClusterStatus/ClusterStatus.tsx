@@ -26,7 +26,12 @@ import {
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon } from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant
+} from '@patternfly/react-table';
 import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { Health } from '@app/Common/Health';
 
@@ -223,6 +228,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
             </StackItem>
             <StackItem>
               <Table
+                variant={TableVariant.compact}
                 aria-label="Tasks"
                 cells={columns}
                 rows={rows}

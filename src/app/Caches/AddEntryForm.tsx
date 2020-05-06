@@ -18,6 +18,7 @@ import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import cacheService from '../../services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 interface IField {
   value: string;
@@ -39,6 +40,8 @@ const AddEntryForm = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
+  const { pushActivity } = useRecentActivity();
+
   const keyInitialState: IField = {
     value: '',
     isValid: false,
@@ -285,6 +288,12 @@ const AddEntryForm = (props: {
         .then(response => {
           if (response.success) {
             addAlert(response);
+            let activity: Activity = {
+              entryKey: key.value,
+              action: 'Add',
+              date: new Date()
+            };
+            pushActivity(activity);
             onClose();
           } else {
             setError(response.message);
