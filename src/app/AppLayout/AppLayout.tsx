@@ -1,9 +1,6 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useState} from 'react';
 import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
   Brand,
   Nav,
   NavItem,
@@ -15,10 +12,10 @@ import {
   SkipToContent
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { NavLink } from 'react-router-dom';
-import { routes } from '@app/routes';
-import { APIAlertProvider } from '@app/providers/APIAlertProvider';
-import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
+import {NavLink} from 'react-router-dom';
+import {routes} from '@app/routes';
+import {APIAlertProvider} from '@app/providers/APIAlertProvider';
+import {ActionResponseAlert} from '@app/Common/ActionResponseAlert';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -81,7 +78,21 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
                 key={`${route.label}-${idx}`}
                 id={`${route.label}-${idx}`}
               >
-                <NavLink exact to={route.path} activeClassName="pf-m-current">
+                <NavLink exact to={route.path} activeClassName="pf-m-current" isActive={(match, location) => {
+                  if (match) {
+                    return true;
+                  }
+                  let isSubRoute = false;
+                  if(route.subRoutes != null) {
+                    for (let i = 0; i < route.subRoutes.length; i++) {
+                      if (location.pathname.includes(route.subRoutes[i])) {
+                        isSubRoute = true;
+                        break;
+                      }
+                    }
+                  }
+                  return isSubRoute;
+                }}>
                   {route.label}
                 </NavLink>
               </NavItem>
@@ -90,6 +101,18 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
       </NavList>
     </Nav>
   );
+
+  const isActive = (match, location) => {
+    console.log("mierda");
+    console.log(location);
+    if (!match) {
+      return false;
+    }
+
+    // only consider an event active if its event id is an odd number
+    const eventID = parseInt(match.params.eventID);
+    return !isNaN(eventID) && eventID % 2 === 1;
+  };
 
   const Sidebar = (
     <PageSidebar
