@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -34,8 +34,9 @@ interface ISelectField {
   helperText: string;
 }
 
-const AddEntryForm = (props: {
+const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
+  keyToEdit: string;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -84,6 +85,7 @@ const AddEntryForm = (props: {
   };
 
   const [error, setError] = useState<string | undefined>(undefined);
+  const [isEdition, setIsEdition] = useState<boolean>(false);
   const [key, setKey] = useState<IField>(keyInitialState);
   const [keyContentType, setKeyContentType] = useState<ISelectField>(
     selectSingleElementInitialState
@@ -97,6 +99,44 @@ const AddEntryForm = (props: {
     timeToLiveInitialState
   );
   const [flags, setFlags] = useState<ISelectField>(flagsInitialState);
+
+  useEffect(() => {
+    if (props.keyToEdit == '') {
+      setIsEdition(false);
+    } else {
+      setIsEdition(true);
+      cacheService
+        .getEntry(props.cacheName, props.keyToEdit)
+        .then(eitherResponse => {
+          if (eitherResponse.isRight()) {
+            setKey(prevState => {
+              return { ...prevState, value: eitherResponse.value.key };
+            });
+            setValue(prevState => {
+              return { ...prevState, value: eitherResponse.value.value };
+            });
+            if (eitherResponse.value.maxIdle) {
+              setMaxIdleField(prevState => {
+                return {
+                  ...prevState,
+                  value: eitherResponse.value.maxIdle as string
+                };
+              });
+            }
+            if (eitherResponse.value.timeToLive) {
+              setTimeToLiveField(prevState => {
+                return {
+                  ...prevState,
+                  value: eitherResponse.value.timeToLive as string
+                };
+              });
+            }
+          } else {
+            setError(eitherResponse.value.message);
+          }
+        });
+    }
+  }, [props.isModalOpen]);
 
   const keyContentTypeOptions = () => {
     return Object.keys(KeyContentType).map(key => (
@@ -248,7 +288,7 @@ const AddEntryForm = (props: {
     return isValid;
   };
 
-  const handleAddEntryButton = () => {
+  const handleAddOrUpdateEntryButton = () => {
     let isValid = true;
     setError(undefined);
     isValid = validateRequiredField(key.value, 'Key', setKey) && isValid;
@@ -271,7 +311,7 @@ const AddEntryForm = (props: {
 
     if (isValid) {
       cacheService
-        .addEntry(
+        .createOrUpdate(
           props.cacheName,
           key.value,
           selectedKeyContentType == ''
@@ -283,14 +323,15 @@ const AddEntryForm = (props: {
             : ValueContentType[selectedValueContentType],
           maxIdleField.value,
           timeToLiveField.value,
-          flags.selected as string[]
+          flags.selected as string[],
+          !isEdition
         )
         .then(response => {
           if (response.success) {
             addAlert(response);
             let activity: Activity = {
               entryKey: key.value,
-              action: 'Add',
+              action: isEdition ? 'Edit' : 'Add',
               date: new Date()
             };
             pushActivity(activity);
@@ -319,13 +360,13 @@ const AddEntryForm = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title="Add a new entry"
+      title={isEdition ? 'Edit entry' : 'Add new entry'}
       onClose={onClose}
       isFooterLeftAligned
-      aria-label="Add new entry modal"
+      aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
       actions={[
-        <Button key="putEntryButton" onClick={handleAddEntryButton}>
-          Add
+        <Button key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
+          {isEdition ? 'Edit' : 'Add'}
         </Button>,
         <Button key="cancel" variant="link" onClick={onClose}>
           Cancel
@@ -342,7 +383,12 @@ const AddEntryForm = (props: {
           <Alert variant={AlertVariant.danger} isInline title={error} />
         )}
 
-        <FormGroup label="Cache name" isRequired fieldId="cache-name">
+        <FormGroup
+          label="Cache name"
+          isRequired
+          fieldId="cache-name"
+          disabled={true}
+        >
           <TextInput
             isDisabled
             value={props.cacheName}
@@ -357,6 +403,7 @@ const AddEntryForm = (props: {
           helperTextInvalid={key.invalidText}
           fieldId="key-entry"
           validated={key.validated}
+          disabled={isEdition}
         >
           <TextInput
             isRequired
@@ -365,6 +412,7 @@ const AddEntryForm = (props: {
             id="key-entry"
             aria-describedby="key-entry-helper"
             onChange={onChangeKey}
+            isDisabled={isEdition}
           />
         </FormGroup>
         <FormGroup
@@ -384,6 +432,61 @@ const AddEntryForm = (props: {
             onChange={onChangeValue}
           />
         </FormGroup>
+        <FormGroup
+          label={
+            <MoreInfoTooltip
+              label="Time to live:"
+              toolTip={
+                'Sets the number of seconds before ' +
+                'the entry is automatically deleted. If you do not set this parameter, ' +
+                'Infinispan uses the default value from the configuration. ' +
+                'If you set a negative value, the entry is never deleted.\n' +
+                '\n'
+              }
+            />
+          }
+          type="number"
+          helperText={timeToLiveField.helperText}
+          helperTextInvalid={timeToLiveField.invalidText}
+          fieldId="timeToLive"
+          validated={timeToLiveField.validated}
+        >
+          <TextInput
+            validated={timeToLiveField.validated}
+            value={timeToLiveField.value}
+            id="timeToLive"
+            aria-describedby="timeToLive-helper"
+            onChange={onChangeTimeToLive}
+          />
+        </FormGroup>
+        <FormGroup
+          label={
+            <MoreInfoTooltip
+              label="Max Idle:"
+              toolTip={
+                'Sets the number of seconds that entries can be idle. ' +
+                'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
+                'the entry is automatically deleted. If you do not set this parameter, ' +
+                'Infinispan uses the default value from the configuration. ' +
+                'If you set a negative value, the entry is never deleted.\n' +
+                '\n'
+              }
+            />
+          }
+          type="number"
+          helperText={maxIdleField.helperText}
+          helperTextInvalid={maxIdleField.invalidText}
+          fieldId="maxIdle"
+          validated={maxIdleField.validated}
+        >
+          <TextInput
+            validated={maxIdleField.validated}
+            value={maxIdleField.value}
+            id="maxIdle"
+            aria-describedby="maxIdle-helper"
+            onChange={onChangeMaxIdle}
+          />
+        </FormGroup>
       </Form>
       <Expandable toggleText="Advanced options">
         <Form
@@ -391,61 +494,6 @@ const AddEntryForm = (props: {
             e.preventDefault();
           }}
         >
-          <FormGroup
-            label={
-              <MoreInfoTooltip
-                label="Time to live:"
-                toolTip={
-                  'Sets the number of seconds before ' +
-                  'the entry is automatically deleted. If you do not set this parameter, ' +
-                  'Infinispan uses the default value from the configuration. ' +
-                  'If you set a negative value, the entry is never deleted.\n' +
-                  '\n'
-                }
-              />
-            }
-            type="number"
-            helperText={timeToLiveField.helperText}
-            helperTextInvalid={timeToLiveField.invalidText}
-            fieldId="timeToLive"
-            validated={timeToLiveField.validated}
-          >
-            <TextInput
-              validated={timeToLiveField.validated}
-              value={timeToLiveField.value}
-              id="timeToLive"
-              aria-describedby="timeToLive-helper"
-              onChange={onChangeTimeToLive}
-            />
-          </FormGroup>
-          <FormGroup
-            label={
-              <MoreInfoTooltip
-                label="Max Idle:"
-                toolTip={
-                  'Sets the number of seconds that entries can be idle. ' +
-                  'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
-                  'the entry is automatically deleted. If you do not set this parameter, ' +
-                  'Infinispan uses the default value from the configuration. ' +
-                  'If you set a negative value, the entry is never deleted.\n' +
-                  '\n'
-                }
-              />
-            }
-            type="number"
-            helperText={maxIdleField.helperText}
-            helperTextInvalid={maxIdleField.invalidText}
-            fieldId="maxIdle"
-            validated={maxIdleField.validated}
-          >
-            <TextInput
-              validated={maxIdleField.validated}
-              value={maxIdleField.value}
-              id="maxIdle"
-              aria-describedby="maxIdle-helper"
-              onChange={onChangeMaxIdle}
-            />
-          </FormGroup>
           <FormGroup
             label="Flags:"
             fieldId="flags-helper"
@@ -470,6 +518,7 @@ const AddEntryForm = (props: {
             fieldId="key-content-type-helper"
             helperText={keyContentType.helperText}
             placeholder="Key content type"
+            disabled={isEdition}
           >
             <Select
               placeholderText="Select a key content type"
@@ -480,6 +529,7 @@ const AddEntryForm = (props: {
               onClear={onClearKeyContentType}
               selections={keyContentType.selected}
               isExpanded={keyContentType.expanded}
+              isDisabled={isEdition}
             >
               {keyContentTypeOptions()}
             </Select>
@@ -510,4 +560,4 @@ const AddEntryForm = (props: {
   );
 };
 
-export { AddEntryForm };
+export { CreateOrUpdateEntryForm };

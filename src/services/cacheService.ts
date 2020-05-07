@@ -160,7 +160,7 @@ class CacheService {
    * @param timeToLive
    * @param flags
    */
-  public async addEntry(
+  public async createOrUpdate(
     cacheName: string,
     key: string,
     keyContentType: KeyContentType,
@@ -168,7 +168,8 @@ class CacheService {
     valueContentType: ValueContentType,
     maxIdle: string,
     timeToLive: string,
-    flags: string[]
+    flags: string[],
+    create: boolean
   ): Promise<ActionResponse> {
     let headers = new Headers();
     if (keyContentType) {
@@ -190,15 +191,18 @@ class CacheService {
     }
 
     let promise = fetch(this.endpoint + '/caches/' + cacheName + '/' + key, {
-      method: 'POST',
+      method: create ? 'POST' : 'PUT',
       headers: headers,
       credentials: 'include',
       body: value
     });
 
+    let message = create
+      ? 'A new entry has been added to cache '
+      : 'The entry has been updated in cache ';
     return this.handleCRUDActionResponse(
       cacheName,
-      'A new entry has been added to cache ' + cacheName,
+      message + cacheName,
       promise
     );
   }

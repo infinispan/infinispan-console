@@ -116,7 +116,7 @@ const routes: IAppRoute[] = [
     path: '/',
     title: 'Data Container',
     menu: true,
-    subRoutes:['container', 'cache']
+    subRoutes: ['container', 'cache']
   },
   {
     component: GlobalStats,
