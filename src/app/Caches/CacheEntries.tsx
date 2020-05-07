@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Bullseye,
   Button,
@@ -16,7 +16,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
-import { AddEntryForm } from '@app/Caches/AddEntryForm';
+import { CreateOrUpdateEntryForm } from '@app/Caches/CreateOrUpdateEntryForm';
 import cacheService from '../../services/cacheService';
 import {
   Table,
@@ -34,17 +34,26 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
 }) => {
   const { activities } = useRecentActivity();
-  const [isAddEntryFormOpen, setAddEntryFormOpen] = useState<boolean>(false);
+  const [
+    isCreateOrUpdateEntryFormOpen,
+    setCreateOrUpdateEntryFormOpen
+  ] = useState<boolean>(false);
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
     false
   );
   const [keyToDelete, setKeyToDelete] = useState<string>('');
+  const [keyToEdit, setKeyToEdit] = useState<string>('');
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [keyToSearch, setKeyToSearch] = useState<string>('');
   const [rows, setRows] = useState<any[]>([]);
   const [actions, setActions] = useState<any[]>([]);
 
   const entryActions = [
+    {
+      title: 'Edit',
+      onClick: (event, rowId, rowData, extra) =>
+        onClickEditEntryButton(rowData.cells[0].title)
+    },
     {
       title: 'Delete',
       onClick: (event, rowId, rowData, extra) =>
@@ -129,11 +138,17 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
   };
 
   const onClickAddEntryButton = () => {
-    setAddEntryFormOpen(true);
+    setKeyToEdit('');
+    setCreateOrUpdateEntryFormOpen(true);
   };
 
   const onClickClearAllButton = () => {
     setClearAllModalOpen(true);
+  };
+
+  const onClickEditEntryButton = (entryKey: string) => {
+    setKeyToEdit(entryKey);
+    setCreateOrUpdateEntryFormOpen(true);
   };
 
   const onClickDeleteEntryButton = (entryKey: string) => {
@@ -141,8 +156,10 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     setKeyToDelete(entryKey);
   };
 
-  const closeAddEntryFormModal = () => {
-    setAddEntryFormOpen(false);
+  const closeCreateOrEditEntryFormModal = () => {
+    searchEntryByKey();
+    setKeyToEdit('');
+    setCreateOrUpdateEntryFormOpen(false);
   };
 
   const closeClearAllEntryModal = () => {
@@ -229,10 +246,11 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
               </DataToolbarItem>
             </DataToolbarContent>
           </DataToolbar>
-          <AddEntryForm
+          <CreateOrUpdateEntryForm
             cacheName={props.cacheName}
-            isModalOpen={isAddEntryFormOpen}
-            closeModal={closeAddEntryFormModal}
+            keyToEdit={keyToEdit}
+            isModalOpen={isCreateOrUpdateEntryFormOpen}
+            closeModal={closeCreateOrEditEntryFormModal}
           />
           <DeleteEntry
             cacheName={props.cacheName}
