@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonVariant,
   Modal,
   TextContent,
-  Text, Form, FormGroup, TextInput
+  Text,
+  Form,
+  FormGroup,
+  TextInput
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
@@ -76,7 +79,11 @@ const DeleteCache = (props: {
         >
           Delete
         </Button>,
-        <Button key="cancel" variant="link" onClick={() => clearDeleteCacheModal(false)}>
+        <Button
+          key="cancel"
+          variant="link"
+          onClick={() => clearDeleteCacheModal(false)}
+        >
           Cancel
         </Button>
       ]}

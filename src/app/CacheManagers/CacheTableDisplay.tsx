@@ -1,6 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
 import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+  textCenter
+} from '@patternfly/react-table';
+import {
+  Badge,
   Bullseye,
   Button,
   ButtonVariant,
@@ -9,6 +17,7 @@ import {
   ChipGroupToolbarItem,
   DataToolbarGroup,
   DataToolbarItemVariant,
+  DropdownSeparator,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -24,14 +33,34 @@ import {
   Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {ExclamationCircleIcon, FilterIcon, SearchIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
-import {DataToolbar, DataToolbarContent, DataToolbarItem, Spinner} from '@patternfly/react-core/dist/js/experimental';
-import {global_danger_color_100} from '@patternfly/react-tokens';
+import {
+  ExclamationCircleIcon,
+  FilterIcon,
+  SearchIcon
+} from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
+import {
+  DataToolbar,
+  DataToolbarContent,
+  DataToolbarItem,
+  Spinner
+} from '@patternfly/react-core/dist/js/experimental';
+import { global_danger_color_100 } from '@patternfly/react-tokens';
 import dataContainerService from '../../services/dataContainerService';
-import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {DeleteCache} from "@app/CacheManagers/DeleteCache";
+import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { DeleteCache } from '@app/CacheManagers/DeleteCache';
+import { IgnoreCache } from '@app/CacheManagers/IgnoreCache';
+import {
+  IExtraData,
+  IRowData
+} from '@patternfly/react-table/src/components/Table/Table';
+
+interface IgnoreCache {
+  cacheName: string;
+  modalOpen: boolean;
+  action: 'ignore' | 'undo';
+}
 
 const CacheTableDisplay = (props: {
   cmName: string;
@@ -46,13 +75,18 @@ const CacheTableDisplay = (props: {
     perPage: 10
   });
   const [rows, setRows] = useState<any[]>([]);
-  const [actions, setActions] = useState<any[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
   const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
+  const [chipsCacheStatus, setChipsCacheStatus] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isDeleteCacheModalOpen, setDeleteCacheModalOpen] = useState(false);
   const [deleteCacheName, setDeleteCacheName] = useState<string>('');
+  const [ignoreCache, setIgnoreCache] = useState<IgnoreCache>({
+    cacheName: '',
+    action: 'ignore',
+    modalOpen: false
+  });
   const columns = [
     { title: 'Name', transforms: [cellWidth(20), textCenter] },
     {
@@ -69,34 +103,85 @@ const CacheTableDisplay = (props: {
       title: 'Features',
       transforms: [textCenter],
       cellTransforms: [textCenter]
+    },
+    {
+      // Will display 'ignored' if the cache is ignored
+      title: '',
+      transforms: [cellWidth(15), textCenter],
+      cellTransforms: [textCenter]
     }
   ];
 
-  const cachesActions = [
-    {
-      title: 'Delete',
-      onClick: (event, rowId, rowData, extra) =>
-        openDeleteCacheModal(rowData.cells[0].cacheName)
+  const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
+    if (rowData.size == 0) {
+      return [];
     }
-  ];
+
+    // @ts-ignore
+    if (rowData.cells[0].isIgnored) {
+      return [
+        {
+          title: 'Undo ignore',
+          onClick: (event, rowId, rowData, extra) =>
+            openIgnoreCacheModal(
+              rowData.cells[0].cacheName,
+              rowData.cells[0].isIgnored
+            )
+        }
+      ];
+    }
+
+    return [
+      {
+        title: 'Ignore',
+        onClick: (event, rowId, rowData, extra) =>
+          openIgnoreCacheModal(
+            rowData.cells[0].cacheName,
+            rowData.cells[0].isIgnored
+          )
+      },
+      {
+        title: 'Delete',
+        onClick: (event, rowId, rowData, extra) =>
+          openDeleteCacheModal(rowData.cells[0].cacheName)
+      }
+    ];
+  };
 
   useEffect(() => {
-    if(props.isVisible) {
+    if (props.isVisible) {
       loadCaches();
     }
   }, [props.isVisible]);
 
+  const isCacheIgnored = (cacheInfo: CacheInfo): boolean => {
+    return cacheInfo.status == 'Ignored';
+  };
+
   const closeDeleteModal = (deleteDone: boolean) => {
-    if(deleteDone) {
+    if (deleteDone) {
       setFilteredCaches(
-        filteredCaches.filter(
-          cacheInfo => cacheInfo.name !== deleteCacheName
-        )
+        filteredCaches.filter(cacheInfo => cacheInfo.name !== deleteCacheName)
       );
       loadCaches();
     }
     setDeleteCacheName('');
     setDeleteCacheModalOpen(false);
+  };
+
+  const closeIgnoreModal = (ignoreDone: boolean) => {
+    if (ignoreDone) {
+      loadCaches();
+    }
+    setIgnoreCache({ cacheName: '', modalOpen: false, action: 'ignore' });
+  };
+
+  const openIgnoreCacheModal = (cacheName: string, ignored: boolean) => {
+    setIgnoreCache({
+      cacheName: cacheName,
+      modalOpen: true,
+      action: ignored ? 'undo' : 'ignore'
+    });
   };
 
   const openDeleteCacheModal = (cacheName: string) => {
@@ -213,13 +298,12 @@ const CacheTableDisplay = (props: {
           disableActions: true,
           cells: [
             {
-              props: { colSpan: 8 },
+              props: { colSpan: 9 },
               title: emptyOrLoading(loading, error)
             }
           ]
         }
       ];
-      setActions([]);
     } else {
       currentRows = caches.map(cacheInfo => {
         return {
@@ -229,17 +313,18 @@ const CacheTableDisplay = (props: {
           cells: [
             {
               cacheName: cacheInfo.name,
-              title: displayCacheName(cacheInfo.name)
+              isIgnored: isCacheIgnored(cacheInfo),
+              title: displayCacheName(cacheInfo)
             },
             {
               title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} />
             },
             { title: displayHealth(cacheInfo.health) },
-            { title: displayCacheFeatures(cacheInfo) }
+            { title: displayCacheFeatures(cacheInfo) },
+            { title: displayIfIgnored(cacheInfo) }
           ]
         };
       });
-      setActions(cachesActions);
     }
     setRows(currentRows);
   };
@@ -254,11 +339,38 @@ const CacheTableDisplay = (props: {
     );
   };
 
-  const displayCacheName = (name: string) => {
+  const displayIfIgnored = (cacheInfo: CacheInfo) => {
+    if (!isCacheIgnored(cacheInfo)) {
+      return '';
+    }
+
     return (
-      <Link key={name} to={'/cache/' + name}>
-        <Button key={'link-' + name} variant={'link'}>
-          {name}
+      <Badge key={`ignore-${cacheInfo.name}`} isRead>
+        {displayUtils.capitalize(cacheInfo.status)}
+      </Badge>
+    );
+  };
+
+  const displayCacheName = (cacheInfo: CacheInfo) => {
+    if (isCacheIgnored(cacheInfo)) {
+      return (
+        <Button
+          key={`detail-button-${cacheInfo.name}`}
+          variant={ButtonVariant.link}
+          isDisabled={true}
+        >
+          {cacheInfo.name}
+        </Button>
+      );
+    }
+
+    return (
+      <Link key={cacheInfo.name} to={'/cache/' + cacheInfo.name}>
+        <Button
+          key={`detail-button-${cacheInfo.name}`}
+          variant={ButtonVariant.link}
+        >
+          {cacheInfo.name}
         </Button>
       </Link>
     );
@@ -293,8 +405,17 @@ const CacheTableDisplay = (props: {
     'Backups'
   ];
 
+  const cacheStatus = ['Ignored'];
+
   const extract = (actualSelection: string[], ref: string[]): string[] => {
     return actualSelection.filter(s => ref.includes(s));
+  };
+
+  const isCacheStatus = (
+    cacheInfo: CacheInfo,
+    actualSelection: string[]
+  ): boolean => {
+    return actualSelection.includes(cacheInfo.status);
   };
 
   const isCacheType = (
@@ -345,8 +466,15 @@ const CacheTableDisplay = (props: {
     let newFilteredCaches: CacheInfo[] = caches;
 
     if (actualSelection.length > 0) {
+      let filterStatus = extract(actualSelection, cacheStatus);
       let filterFeatures = extract(actualSelection, cacheFeatures);
       let filterCacheType = extract(actualSelection, cacheTypes);
+
+      if (filterStatus.length > 0) {
+        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
+          isCacheStatus(cacheInfo, filterStatus)
+        );
+      }
 
       if (filterCacheType.length > 0) {
         newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
@@ -366,8 +494,10 @@ const CacheTableDisplay = (props: {
   const updateChips = (actualSelection: string[]) => {
     let filterFeatures = extract(actualSelection, cacheFeatures);
     let filterCacheType = extract(actualSelection, cacheTypes);
+    let filterCacheStatus = extract(actualSelection, cacheStatus);
     setChipsCacheFeature(filterFeatures);
     setChipsCacheType(filterCacheType);
+    setChipsCacheStatus(filterCacheStatus);
   };
 
   const deleteItem = id => {
@@ -403,6 +533,7 @@ const CacheTableDisplay = (props: {
   const onDeleteAllFilters = () => {
     setChipsCacheFeature([]);
     setChipsCacheType([]);
+    setChipsCacheStatus([]);
     setSelected([]);
     updateRows(caches);
     setFilteredCaches(caches);
@@ -438,24 +569,6 @@ const CacheTableDisplay = (props: {
     );
   };
 
-  const options = [
-    <SelectGroup label="Cache type" key="group1">
-      <SelectOption key={0} value="Local" />
-      <SelectOption key={1} value="Replicated" />
-      <SelectOption key={2} value="Distributed" />
-      <SelectOption key={3} value="Invalidated" />
-      <SelectOption key={4} value="Scattered" />
-    </SelectGroup>,
-    <SelectGroup label="Feature" key="group2">
-      <SelectOption key={5} value="Bounded" />
-      <SelectOption key={6} value="Indexed" />
-      <SelectOption key={7} value="Persistent" />
-      <SelectOption key={8} value="Transactional" />
-      <SelectOption key={9} value="Secured" />
-      <SelectOption key={10} value="Backups" />
-    </SelectGroup>
-  ];
-
   const buildFilter = () => {
     return (
       <DataToolbarGroup variant="filter-group">
@@ -472,7 +585,22 @@ const CacheTableDisplay = (props: {
           placeholderText="Filter"
           isGrouped={true}
         >
-          {options}
+          <SelectGroup label="Cache type" key="group1">
+            <SelectOption key={0} value="Local" />
+            <SelectOption key={1} value="Replicated" />
+            <SelectOption key={2} value="Distributed" />
+            <SelectOption key={3} value="Invalidated" />
+            <SelectOption key={4} value="Scattered" />
+          </SelectGroup>
+          <SelectGroup label="Feature" key="group2">
+            <SelectOption key={5} value="Bounded" />
+            <SelectOption key={6} value="Indexed" />
+            <SelectOption key={7} value="Persistent" />
+            <SelectOption key={8} value="Transactional" />
+            <SelectOption key={9} value="Secured" />
+            <SelectOption key={10} value="Backups" />
+            <SelectOption key={11} value="Ignored" />
+          </SelectGroup>
         </Select>
       </DataToolbarGroup>
     );
@@ -551,6 +679,13 @@ const CacheTableDisplay = (props: {
                   </Chip>
                 ))}
               </ChipGroupToolbarItem>
+              <ChipGroupToolbarItem key="chip-status" categoryName="Status">
+                {chipsCacheStatus.map(chip => (
+                  <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                    {chip}
+                  </Chip>
+                ))}
+              </ChipGroupToolbarItem>
             </ChipGroup>
           </DataToolbarItem>
           <DataToolbarItem>{displayClearAll()}</DataToolbarItem>
@@ -561,13 +696,24 @@ const CacheTableDisplay = (props: {
         cells={columns}
         rows={rows}
         className={'caches-table'}
-        actions={actions}
+        actionResolver={actionResolver}
         variant={TableVariant.compact}
       >
         <TableHeader />
         <TableBody />
       </Table>
-      <DeleteCache cacheName={deleteCacheName} isModalOpen={isDeleteCacheModalOpen} closeModal={closeDeleteModal}/>
+      <DeleteCache
+        cacheName={deleteCacheName}
+        isModalOpen={isDeleteCacheModalOpen}
+        closeModal={closeDeleteModal}
+      />
+      <IgnoreCache
+        cmName={props.cmName}
+        cacheName={ignoreCache.cacheName}
+        isModalOpen={ignoreCache.modalOpen}
+        action={ignoreCache.action}
+        closeModal={closeIgnoreModal}
+      />
     </React.Fragment>
   );
 };

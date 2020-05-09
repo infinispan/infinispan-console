@@ -168,6 +168,56 @@ class CacheService {
   }
 
   /**
+   * Ignore cache by name
+   *
+   * @param cacheName, to be deleted if such exists
+   */
+  public async ignoreCache(
+    cacheManager: string,
+    cacheName: string
+  ): Promise<ActionResponse> {
+    let ignoreCachePromise = utils.restCall(
+      this.endpoint +
+        '/server/ignored-caches/' +
+        cacheManager +
+        '/' +
+        cacheName,
+      'POST'
+    );
+
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Cache ' + cacheName + ' has been ignored',
+      ignoreCachePromise
+    );
+  }
+
+  /**
+   * Undo ignore cache by name
+   *
+   * @param cacheName, to be deleted if such exists
+   */
+  public async undoIgnoreCache(
+    cacheManager: string,
+    cacheName: string
+  ): Promise<ActionResponse> {
+    let ignoreCachePromise = utils.restCall(
+      this.endpoint +
+        '/server/ignored-caches/' +
+        cacheManager +
+        '/' +
+        cacheName,
+      'DELETE'
+    );
+
+    return this.handleCRUDActionResponse(
+      cacheName,
+      'Cache ' + cacheName + ' is not ignored',
+      ignoreCachePromise
+    );
+  }
+
+  /**
    * Add entry
    *
    * @param cacheName
