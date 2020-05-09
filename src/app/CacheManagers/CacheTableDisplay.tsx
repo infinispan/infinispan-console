@@ -1,15 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter} from '@patternfly/react-table';
 import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-  textCenter
-} from '@patternfly/react-table';
-import {
-  AlertVariant,
-  Badge,
   Bullseye,
   Button,
   ButtonVariant,
@@ -22,9 +13,6 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Form,
-  FormGroup,
-  Modal,
   Pagination,
   Select,
   SelectGroup,
@@ -32,33 +20,18 @@ import {
   SelectVariant,
   Text,
   TextContent,
-  TextInput,
   TextVariants,
   Title
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {
-  ExclamationCircleIcon,
-  FilterIcon,
-  SearchIcon
-} from '@patternfly/react-icons';
-import { Link } from 'react-router-dom';
-import {
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
-  Spinner
-} from '@patternfly/react-core/dist/js/experimental';
-import {
-  global_danger_color_100,
-  global_FontSize_sm,
-  global_spacer_sm,
-  global_spacer_xs
-} from '@patternfly/react-tokens';
-import cacheService from '../../services/cacheService';
+import {ExclamationCircleIcon, FilterIcon, SearchIcon} from '@patternfly/react-icons';
+import {Link} from 'react-router-dom';
+import {DataToolbar, DataToolbarContent, DataToolbarItem, Spinner} from '@patternfly/react-core/dist/js/experimental';
+import {global_danger_color_100} from '@patternfly/react-tokens';
 import dataContainerService from '../../services/dataContainerService';
-import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import { useApiAlert } from '@app/utils/useApiAlert';
+import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {DeleteCache} from "@app/CacheManagers/DeleteCache";
 
 const CacheTableDisplay = (props: {
   cmName: string;
@@ -78,6 +51,7 @@ const CacheTableDisplay = (props: {
   const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
   const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isDeleteCacheModalOpen, setDeleteCacheModalOpen] = useState(false);
   const [deleteCacheName, setDeleteCacheName] = useState<string>('');
   const columns = [
     { title: 'Name', transforms: [cellWidth(20), textCenter] },
@@ -107,8 +81,28 @@ const CacheTableDisplay = (props: {
   ];
 
   useEffect(() => {
-    loadCaches();
-  }, []);
+    if(props.isVisible) {
+      loadCaches();
+    }
+  }, [props.isVisible]);
+
+  const closeDeleteModal = (deleteDone: boolean) => {
+    if(deleteDone) {
+      setFilteredCaches(
+        filteredCaches.filter(
+          cacheInfo => cacheInfo.name !== deleteCacheName
+        )
+      );
+      loadCaches();
+    }
+    setDeleteCacheName('');
+    setDeleteCacheModalOpen(false);
+  };
+
+  const openDeleteCacheModal = (cacheName: string) => {
+    setDeleteCacheModalOpen(true);
+    setDeleteCacheName(cacheName);
+  };
 
   const loadCaches = () => {
     dataContainerService.getCaches(props.cmName).then(eitherCaches => {
@@ -514,53 +508,6 @@ const CacheTableDisplay = (props: {
     );
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState(true);
-  const [cacheNameFormValue, setCacheNameFormValue] = useState('');
-  const openDeleteCacheModal = (cacheName: string) => {
-    setIsModalOpen(true);
-    setDeleteCacheName(cacheName);
-  };
-
-  const clearDeleteCacheModal = () => {
-    setIsModalOpen(false);
-    setIsValidCacheNameValue(true);
-    setCacheNameFormValue('');
-    setDeleteCacheName('');
-  };
-
-  const handleCacheNameToDeleteInputChange = value => {
-    setCacheNameFormValue(value);
-  };
-
-  const handleDeleteButton = () => {
-    let trim = cacheNameFormValue.trim();
-    setCacheNameFormValue(trim);
-    if (trim.length == 0) {
-      setIsValidCacheNameValue(false);
-      return;
-    }
-
-    let validCacheName = trim === deleteCacheName;
-    setIsValidCacheNameValue(validCacheName);
-    if (validCacheName) {
-      cacheService.deleteCache(deleteCacheName).then(actionResponse => {
-        clearDeleteCacheModal();
-        if (actionResponse.success) {
-          setFilteredCaches(
-            filteredCaches.filter(
-              cacheInfo => cacheInfo.name !== deleteCacheName
-            )
-          );
-          addAlert(actionResponse);
-          loadCaches();
-        } else {
-          addAlert(actionResponse);
-        }
-      });
-    }
-  };
-
   if (!props.isVisible) {
     return <span />;
   }
@@ -620,56 +567,7 @@ const CacheTableDisplay = (props: {
         <TableHeader />
         <TableBody />
       </Table>
-
-      <Modal
-        className="pf-m-redhat-font"
-        width={'50%'}
-        isOpen={isModalOpen}
-        title="Delete Cache?"
-        onClose={clearDeleteCacheModal}
-        isFooterLeftAligned
-        aria-label="Delete cache modal"
-        description={
-          <TextContent>
-            <Text>
-              This action will permanently delete cache{' '}
-              <strong>'{deleteCacheName}'</strong> and all it's data.
-              <br />
-              This cannot be undone.
-            </Text>
-          </TextContent>
-        }
-        actions={[
-          <Button
-            key="confirm"
-            variant={ButtonVariant.danger}
-            onClick={handleDeleteButton}
-            isDisabled={cacheNameFormValue == ''}
-          >
-            Delete
-          </Button>,
-          <Button key="cancel" variant="link" onClick={clearDeleteCacheModal}>
-            Cancel
-          </Button>
-        ]}
-      >
-        <Form>
-          <FormGroup
-            label="Type the CACHE NAME to confirm"
-            helperTextInvalid="Cache names do not match"
-            fieldId="cache-to-delete"
-            isValid={isValidCacheNameValue}
-          >
-            <TextInput
-              isValid={isValidCacheNameValue}
-              value={cacheNameFormValue}
-              id="cache-to-delete"
-              aria-describedby="cache-to-delete-helper"
-              onChange={handleCacheNameToDeleteInputChange}
-            />
-          </FormGroup>
-        </Form>
-      </Modal>
+      <DeleteCache cacheName={deleteCacheName} isModalOpen={isDeleteCacheModalOpen} closeModal={closeDeleteModal}/>
     </React.Fragment>
   );
 };
