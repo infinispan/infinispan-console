@@ -29,6 +29,7 @@ const DeleteEntry = (props: {
         props.closeModal();
         addAlert(actionResponse);
         pushActivity({
+          cacheName: props.cacheName,
           entryKey: props.entryKey,
           action: 'Delete',
           date: new Date()

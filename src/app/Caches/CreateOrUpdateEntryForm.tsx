@@ -330,6 +330,7 @@ const CreateOrUpdateEntryForm = (props: {
           if (response.success) {
             addAlert(response);
             let activity: Activity = {
+              cacheName: props.cacheName,
               entryKey: key.value,
               action: isEdition ? 'Edit' : 'Add',
               date: new Date()

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   Bullseye,
   EmptyState,
   EmptyStateBody,
@@ -26,6 +24,7 @@ import {
   TableHeader,
   TableVariant
 } from '@patternfly/react-table';
+import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 
 const DetailConfigurations: React.FunctionComponent<any> = props => {
   const cm: string = props.location.state.cmName;
@@ -131,17 +130,14 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
     );
   };
 
+  const pageTitle = 'Configuration templates';
+
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Breadcrumb>
-          <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
-          <BreadcrumbItem isActive>
-            Cache configurations templates
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <DataContainerBreadcrumb currentPage={pageTitle} />
         <TextContent>
-          <Text component={TextVariants.h1}>Configuration templates</Text>
+          <Text component={TextVariants.h1}>{pageTitle}</Text>
         </TextContent>
       </PageSection>
       <PageSection variant={PageSectionVariants.light}>

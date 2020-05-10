@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Card,
-  CardBody,
   DataToolbar,
   DataToolbarContent,
   DataToolbarItem,
@@ -25,6 +21,7 @@ import { CacheMetrics } from '@app/Caches/CacheMetrics';
 import { CacheEntries } from '@app/Caches/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
+import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 
 const DetailCache: React.FunctionComponent<any> = props => {
   const cacheName: string = props.location.state.cacheName;
@@ -147,10 +144,7 @@ const DetailCache: React.FunctionComponent<any> = props => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Breadcrumb>
-          <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
-          <BreadcrumbItem isActive>Cache detail</BreadcrumbItem>
-        </Breadcrumb>
+        <DataContainerBreadcrumb currentPage="Cache detail" />
         {buildCacheHeader()}
         {!loading && buildTabs()}
       </PageSection>

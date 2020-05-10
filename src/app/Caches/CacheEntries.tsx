@@ -276,7 +276,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
           </Table>
         </CardBody>
       </Card>
-      <RecentActivityTable />
+      <RecentActivityTable cacheName={props.cacheName} />
     </React.Fragment>
   );
 };

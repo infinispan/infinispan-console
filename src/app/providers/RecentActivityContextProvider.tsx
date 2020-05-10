@@ -1,21 +1,27 @@
 import React, { useCallback, useState } from 'react';
 
 const initialActivityState = {
-  activities: [] as Activity[],
+  activities: new Map(),
   pushActivity: (activity: Activity) => {}
 };
 
 export const RecentActivityContext = React.createContext(initialActivityState);
 
 const RecentActivityProvider = ({ children }) => {
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<Map<string, Activity[]>>(
+    new Map()
+  );
 
-  const pushActivity = activity => {
+  const pushActivity = (activity: Activity) => {
     let currentActivities = activities;
-    if (currentActivities.length == 10) {
-      currentActivities.shift();
+    if (currentActivities[activity.cacheName] == null) {
+      currentActivities[activity.cacheName] = [];
     }
-    currentActivities.unshift(activity);
+
+    if (currentActivities[activity.cacheName].length == 10) {
+      currentActivities[activity.cacheName].shift();
+    }
+    currentActivities[activity.cacheName].unshift(activity);
     setActivities(currentActivities);
   };
 
