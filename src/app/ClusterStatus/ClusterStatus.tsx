@@ -214,31 +214,25 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
     return (
       <Card>
         <CardBody>
-          <Stack>
-            <StackItem>
-              <Pagination
-                itemCount={filteredClusterMembers.length}
-                perPage={clusterMembersPagination.perPage}
-                page={clusterMembersPagination.page}
-                onSetPage={onSetPage}
-                widgetId="pagination-cluster-members"
-                onPerPageSelect={onPerPageSelect}
-                isCompact
-              />
-            </StackItem>
-            <StackItem>
-              <Table
-                variant={TableVariant.compact}
-                aria-label="Tasks"
-                cells={columns}
-                rows={rows}
-                className={'tasks-table'}
-              >
-                <TableHeader />
-                <TableBody />
-              </Table>
-            </StackItem>
-          </Stack>
+          <Pagination
+            itemCount={filteredClusterMembers.length}
+            perPage={clusterMembersPagination.perPage}
+            page={clusterMembersPagination.page}
+            onSetPage={onSetPage}
+            widgetId="pagination-cluster-members"
+            onPerPageSelect={onPerPageSelect}
+            isCompact
+          />
+          <Table
+            variant={TableVariant.compact}
+            aria-label="Tasks"
+            cells={columns}
+            rows={rows}
+            className={'tasks-table'}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
         </CardBody>
       </Card>
     );

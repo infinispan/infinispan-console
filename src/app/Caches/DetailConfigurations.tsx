@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
   Bullseye,
+  Card,
+  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -140,26 +142,30 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
           <Text component={TextVariants.h1}>{pageTitle}</Text>
         </TextContent>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
-        <Pagination
-          itemCount={cacheConfigs.length}
-          perPage={pageConfigsPagination.perPage}
-          page={pageConfigsPagination.page}
-          onSetPage={onSetPage}
-          widgetId="pagination-configs"
-          onPerPageSelect={onPerPageSelect}
-          isCompact
-        />
-        <Table
-          variant={TableVariant.compact}
-          aria-label="Cache configurations"
-          cells={columns}
-          rows={rows}
-          className={'configs-table'}
-        >
-          <TableHeader />
-          <TableBody />
-        </Table>
+      <PageSection>
+        <Card>
+          <CardBody>
+            <Pagination
+              itemCount={cacheConfigs.length}
+              perPage={pageConfigsPagination.perPage}
+              page={pageConfigsPagination.page}
+              onSetPage={onSetPage}
+              widgetId="pagination-configs"
+              onPerPageSelect={onPerPageSelect}
+              isCompact
+            />
+            <Table
+              variant={TableVariant.compact}
+              aria-label="Cache configurations"
+              cells={columns}
+              rows={rows}
+              className={'configs-table'}
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          </CardBody>
+        </Card>
       </PageSection>
     </React.Fragment>
   );

@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import {
   ActionGroup,
   Button,
+  Card,
+  CardBody,
   Expandable,
   Form,
   FormGroup,
   PageSection,
+  PageSectionVariants,
   Select,
   SelectOption,
   SelectVariant,
@@ -139,103 +142,108 @@ const CreateCache: React.FunctionComponent<any> = props => {
     title = displayUtils.capitalize(cmName);
   }
   return (
-    <PageSection>
-      <DataContainerBreadcrumb currentPage="Create cache" />
-      <TextContent>
-        <Text component={TextVariants.h1}>
-          Create a cache in <b>{title}</b>
-        </Text>
-      </TextContent>
-      <Form
-        style={{ paddingTop: global_spacer_md.value }}
-        onSubmit={e => {
-          e.preventDefault();
-        }}
-      >
-        <FormGroup
-          label="Name"
-          isRequired
-          fieldId="cache-name"
-          helperText="Please provide a cache name"
-          isValid={validName}
-          helperTextInvalid="Cache name is mandatory"
-        >
-          <TextInput
-            isRequired
-            type="text"
-            id="cache-name"
-            name="cache-name"
-            aria-describedby="cache-name-helper"
-            value={cacheName}
-            onChange={handleChangeName}
-            isValid={validName}
-          />
-        </FormGroup>
-        <FormGroup
-          fieldId="cache-config-name"
-          label="Template"
-          helperText="Please choose a template or provide a new configuration"
-          isValid={validConfig}
-          helperTextInvalid="Either choose a template or provide a configuration"
-        >
-          <Select
-            toggleIcon={<CubeIcon />}
-            variant={SelectVariant.typeahead}
-            aria-label="Configuration templates"
-            onToggle={onToggle}
-            onSelect={onSelect}
-            // @ts-ignore
-            selections={selectedConfig}
-            isExpanded={expandedSelect}
-            isDisabled={selectedConfigDisabled}
-            ariaLabelledBy={titleId}
-            placeholderText="Choose a template"
-            onClear={clearSelection}
-          >
-            {configs.map((option, index) => (
-              <SelectOption
-                isDisabled={option.disabled}
-                key={index}
-                value={option.value}
-                isPlaceholder={option.isPlaceholder}
-              />
-            ))}
-          </Select>
-        </FormGroup>
-        <Expandable
-          toggleText="Provide a configuration"
-          isExpanded={configExpanded}
-          onToggle={onToggleConfigPanel}
-        >
-          <FormGroup
-            label="Config"
-            fieldId="cache-config"
-            helperText="Please provide a cache config JSON or XML"
-            helperTextInvalid="Either choose a template or provide a configuration"
-          >
-            <TextArea
-              isRequired
-              value={config}
-              onChange={handleChangeConfig}
-              name="cache-config"
-              id="cache-config"
-              isValid={validConfig}
-            />
-          </FormGroup>
-        </Expandable>
+    <React.Fragment>
+      <PageSection variant={PageSectionVariants.light}>
+        <DataContainerBreadcrumb currentPage="Create cache" />
+        <TextContent>
+          <Text component={TextVariants.h1}>Create a cache in {title}</Text>
+        </TextContent>
+      </PageSection>
+      <PageSection>
+        <Card>
+          <CardBody>
+            <Form
+              onSubmit={e => {
+                e.preventDefault();
+              }}
+            >
+              <FormGroup
+                label="Name"
+                isRequired
+                fieldId="cache-name"
+                helperText="Please provide a cache name"
+                isValid={validName}
+                helperTextInvalid="Cache name is mandatory"
+              >
+                <TextInput
+                  isRequired
+                  type="text"
+                  id="cache-name"
+                  name="cache-name"
+                  aria-describedby="cache-name-helper"
+                  value={cacheName}
+                  onChange={handleChangeName}
+                  isValid={validName}
+                />
+              </FormGroup>
+              <FormGroup
+                fieldId="cache-config-name"
+                label="Template"
+                helperText="Please choose a template or provide a new configuration"
+                isValid={validConfig}
+                helperTextInvalid="Either choose a template or provide a configuration"
+              >
+                <Select
+                  toggleIcon={<CubeIcon />}
+                  variant={SelectVariant.typeahead}
+                  aria-label="Configuration templates"
+                  onToggle={onToggle}
+                  onSelect={onSelect}
+                  // @ts-ignore
+                  selections={selectedConfig}
+                  isExpanded={expandedSelect}
+                  isDisabled={selectedConfigDisabled}
+                  ariaLabelledBy={titleId}
+                  placeholderText="Choose a template"
+                  onClear={clearSelection}
+                >
+                  {configs.map((option, index) => (
+                    <SelectOption
+                      isDisabled={option.disabled}
+                      key={index}
+                      value={option.value}
+                      isPlaceholder={option.isPlaceholder}
+                    />
+                  ))}
+                </Select>
+              </FormGroup>
+              <Expandable
+                toggleText="Provide a configuration"
+                isExpanded={configExpanded}
+                onToggle={onToggleConfigPanel}
+              >
+                <FormGroup
+                  label="Config"
+                  fieldId="cache-config"
+                  helperText="Please provide a cache config JSON or XML"
+                  helperTextInvalid="Either choose a template or provide a configuration"
+                >
+                  <TextArea
+                    isRequired
+                    value={config}
+                    onChange={handleChangeConfig}
+                    name="cache-config"
+                    id="cache-config"
+                    isValid={validConfig}
+                  />
+                </FormGroup>
+              </Expandable>
 
-        <ActionGroup>
-          <Button variant="primary" onClick={createCache}>
-            Create
-          </Button>
-          <Link to="/">
-            <Button variant="secondary" target="_blank">
-              Back
-            </Button>
-          </Link>
-        </ActionGroup>
-      </Form>
-    </PageSection>
+              <ActionGroup>
+                <Button variant="primary" onClick={createCache}>
+                  Create
+                </Button>
+                <Link to="/">
+                  <Button variant="secondary" target="_blank">
+                    Back
+                  </Button>
+                </Link>
+              </ActionGroup>
+            </Form>
+          </CardBody>
+        </Card>
+      </PageSection>
+    </React.Fragment>
   );
 };
 export { CreateCache };
