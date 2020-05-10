@@ -24,7 +24,12 @@ const ClearAllEntries = (props: {
   const onClickClearAllEntriesButton = () => {
     cacheService.clear(props.cacheName).then(actionResponse => {
       addAlert(actionResponse);
-      pushActivity({ entryKey: '*', action: 'Clear all', date: new Date() });
+      pushActivity({
+        cacheName: props.cacheName,
+        entryKey: '*',
+        action: 'Clear all',
+        date: new Date()
+      });
       props.closeModal();
     });
   };

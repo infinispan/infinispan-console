@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
 
-const RecentActivityTable = () => {
+const RecentActivityTable = (props: { cacheName: string }) => {
   const { activities } = useRecentActivity();
 
   const columns = [
@@ -27,7 +27,8 @@ const RecentActivityTable = () => {
   ];
 
   const buildRows = () => {
-    if (activities.length == 0) {
+    let cacheActivities: Activity[] = activities[props.cacheName];
+    if (cacheActivities == null || cacheActivities.length == 0) {
       return [
         {
           heightAuto: true,
@@ -49,7 +50,7 @@ const RecentActivityTable = () => {
       ];
     }
 
-    return activities.map(activity => {
+    return cacheActivities.map(activity => {
       return {
         heightAuto: true,
         cells: [

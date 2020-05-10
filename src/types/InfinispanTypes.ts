@@ -160,6 +160,7 @@ interface ActionResponse {
 }
 
 interface Activity {
+  cacheName: string;
   entryKey: string;
   action: string;
   date: Date;

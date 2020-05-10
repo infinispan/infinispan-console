@@ -2,8 +2,6 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
   ActionGroup,
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
   Expandable,
   Form,
@@ -25,6 +23,7 @@ import { Link } from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 
 const CreateCache: React.FunctionComponent<any> = props => {
   const { addAlert } = useApiAlert();
@@ -141,10 +140,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
   }
   return (
     <PageSection>
-      <Breadcrumb>
-        <BreadcrumbItem to="/console">Data container</BreadcrumbItem>
-        <BreadcrumbItem isActive>Create cache</BreadcrumbItem>
-      </Breadcrumb>
+      <DataContainerBreadcrumb currentPage="Create cache" />
       <TextContent>
         <Text component={TextVariants.h1}>
           Create a cache in <b>{title}</b>

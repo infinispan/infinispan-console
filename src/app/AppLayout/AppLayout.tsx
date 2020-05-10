@@ -17,6 +17,7 @@ import { routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
+import { useHistory } from 'react-router';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -27,9 +28,11 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   children,
   welcome
 }) => {
+  const history = useHistory();
+
   const logoProps = {
-    href: '/console/',
-    target: '_self'
+    target: '_self',
+    onClick: () => history.push('/')
   };
 
   const [isNavOpen, setIsNavOpen] = useState(true);
