@@ -34,6 +34,7 @@ import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
 import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { global_spacer_2xl } from '@patternfly/react-tokens';
+import { TableErrorState } from '@app/Common/TableErrorState';
 
 const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -99,7 +100,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
       return (
         <Card>
           <CardBody>
-            <Alert title={error} variant={AlertVariant.danger} isInline />}
+            <TableErrorState error={error} />
           </CardBody>
         </Card>
       );
@@ -107,16 +108,20 @@ const GlobalStats: React.FunctionComponent<any> = props => {
 
     if (!loading && !error && !stats.statistics_enabled) {
       return (
-        <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon} />
-          <Title headingLevel="h5" size="lg">
-            Statistics are not enabled
-          </Title>
-          <EmptyStateBody>
-            Statistics are not enabled. To activate statistics, set
-            statistics=true in the configuration.
-          </EmptyStateBody>
-        </EmptyState>
+        <Card>
+          <CardBody>
+            <EmptyState variant={EmptyStateVariant.full}>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h5" size="lg">
+                Statistic disabled
+              </Title>
+              <EmptyStateBody>
+                Statistics are disabled. To enable statistics, set
+                statistics=true in the configuration.
+              </EmptyStateBody>
+            </EmptyState>
+          </CardBody>
+        </Card>
       );
     }
 

@@ -24,7 +24,11 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import { CubesIcon, SearchIcon } from '@patternfly/react-icons';
+import {
+  CubesIcon,
+  ExclamationCircleIcon,
+  SearchIcon
+} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Table,
@@ -34,8 +38,12 @@ import {
 } from '@patternfly/react-table';
 import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { Health } from '@app/Common/Health';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { global_danger_color_200 } from '@patternfly/react-tokens';
+import { TableErrorState } from '@app/Common/TableErrorState';
 
 const ClusterStatus: React.FunctionComponent<any> = props => {
+  const { addAlert } = useApiAlert();
   const [error, setError] = useState<undefined | string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -59,6 +67,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   /* Fetch cache manager data */
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherDefaultCm => {
+      setLoading(false);
       if (eitherDefaultCm.isRight()) {
         setCacheManager(eitherDefaultCm.value);
         setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
@@ -66,7 +75,6 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
       } else {
         setError(eitherDefaultCm.value.message);
       }
-      setLoading(false);
     });
   }, []);
 
@@ -79,7 +87,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
         initSlice + clusterMembersPagination.perPage
       )
     );
-  }, []);
+  }, [error, cacheManager]);
 
   const onSetPage = (_event, pageNumber) => {
     setClusterMembersPagination({
@@ -120,14 +128,13 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
 
   const updateRows = (clusterMembers: ClusterMember[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-
     if (clusterMembers.length == 0) {
       rows = [
         {
           heightAuto: true,
           cells: [
             {
-              props: { colSpan: 8 },
+              props: { colSpan: 2 },
               title: buildEmptyState()
             }
           ]
@@ -197,7 +204,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
       return (
         <Card>
           <CardBody>
-            <Alert title={error} variant={AlertVariant.danger} isInline />}
+            <TableErrorState error={error} />
           </CardBody>
         </Card>
       );
@@ -211,6 +218,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
         </EmptyState>
       );
     }
+
     return (
       <Card>
         <CardBody>
@@ -225,10 +233,9 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
           />
           <Table
             variant={TableVariant.compact}
-            aria-label="Tasks"
+            aria-label="Cluster status table"
             cells={columns}
             rows={rows}
-            className={'tasks-table'}
           >
             <TableHeader />
             <TableBody />

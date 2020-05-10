@@ -8,6 +8,9 @@ class ContainerService {
     this.endpoint = endpoint;
   }
 
+  /**
+   * For now there is a single cache manager
+   */
   public getDefaultCacheManager(): Promise<
     Either<ActionResponse, CacheManager>
   > {
@@ -19,17 +22,24 @@ class ContainerService {
         }
         throw response;
       })
-      .then(names =>
-        Promise.all(names.map(name => this.getCacheManager(name)))
-          .then(cacheManagers => right(cacheManagers[0]))
-          .catch(err =>
-            err
-              .text()
-              .then(errorMessage =>
-                left(<ActionResponse>{ message: errorMessage, success: false })
-              )
-          )
-      );
+      .then(names => this.getCacheManager(names[0]).then(cm => right(cm)))
+      .catch(err => {
+        if (err instanceof Response) {
+          return err
+            .text()
+            .then(errorMessage =>
+              left(<ActionResponse>{ message: errorMessage, success: false })
+            );
+        }
+        let errorMessage = 'Something went wrong. Check the logs.';
+        if(err != null) {
+          errorMessage = err.toString().includes('Failed to fetch') ? 'Failed to connect': err.toString();
+        }
+        return left(<ActionResponse>{
+          message: errorMessage,
+          success: false
+        });
+      });
   }
 
   private getCacheManager(name: string): Promise<CacheManager> {
@@ -84,14 +94,16 @@ class ContainerService {
     return templates.filter(template => !template.startsWith('___'));
   }
 
-  public getCacheManagerStats(name: string): Promise<CacheManagerStats> {
+  public async getCacheManagerStats(name: string): Promise<CacheManagerStats> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
       .then(response => response.json())
       .then(data => <CacheManagerStats>data);
   }
 
-  public getCacheManagerConfigurations(name: string): Promise<[CacheConfig]> {
+  public async getCacheManagerConfigurations(
+    name: string
+  ): Promise<[CacheConfig]> {
     return utils
       .restCall(
         this.endpoint + '/cache-managers/' + name + '/cache-configs',
@@ -109,7 +121,9 @@ class ContainerService {
       );
   }
 
-  public getCacheConfigurationTemplates(name: string): Promise<[CacheConfig]> {
+  public async getCacheConfigurationTemplates(
+    name: string
+  ): Promise<[CacheConfig]> {
     return utils
       .restCall(
         this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
