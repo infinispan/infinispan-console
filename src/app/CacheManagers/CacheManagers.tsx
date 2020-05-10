@@ -25,10 +25,12 @@ import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { Status } from '@app/Common/Status';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { TableErrorState } from '@app/Common/TableErrorState';
 
 const CacheManagers = () => {
   const { addAlert } = useApiAlert();
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [cmName, setCacheManagerName] = useState<undefined | string>();
   const [cm, setCacheManager] = useState<undefined | CacheManager>();
   const [activeTabKey, setActiveTabKey] = useState('0');
@@ -48,7 +50,7 @@ const CacheManagers = () => {
         setCacheManager(eitherCm.value);
         setShowCaches(true);
       } else {
-        addAlert(eitherCm.value);
+        setError(eitherCm.value.message);
       }
     });
   }, []);
@@ -62,7 +64,7 @@ const CacheManagers = () => {
   };
 
   const buildTabs = () => {
-    if (loading) {
+    if (loading || error) {
       return <span />;
     }
 
@@ -84,10 +86,29 @@ const CacheManagers = () => {
   };
 
   const buildSelectedContent = () => {
+    if (loading) {
+      return (
+        <Card>
+          <CardBody>
+            <Spinner size="xl" />
+          </CardBody>
+        </Card>
+      );
+    }
+
+    if (error) {
+      return (
+        <Card>
+          <CardBody>
+            <TableErrorState error={error} />
+          </CardBody>
+        </Card>
+      );
+    }
+
     return (
       <Card>
         <CardBody>
-          {loading && <Spinner size="xl" />}
           {cmName && (
             <CacheTableDisplay
               cmName={cmName}
