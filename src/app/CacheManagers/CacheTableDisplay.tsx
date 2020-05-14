@@ -262,15 +262,7 @@ const CacheTableDisplay = (props: {
 
   const displayCacheName = (name: string) => {
     return (
-      <Link
-        key={name}
-        to={{
-          pathname: '/cache/' + name,
-          state: {
-            cacheName: name
-          }
-        }}
-      >
+      <Link key={name} to={'/cache/' + name}>
         <Button key={'link-' + name} variant={'link'}>
           {name}
         </Button>

@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Bullseye,
+  Card, CardBody,
   DataToolbar,
   DataToolbarContent,
   DataToolbarItem,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Nav,
   NavItem,
   NavList,
@@ -12,7 +18,8 @@ import {
   PageSectionVariants,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
+  Title
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import displayUtils from '../../services/displayUtils';
@@ -22,10 +29,15 @@ import { CacheEntries } from '@app/Caches/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import { useLocation } from 'react-router';
+import { global_danger_color_200 } from '@patternfly/react-tokens';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
-const DetailCache: React.FunctionComponent<any> = props => {
-  const cacheName: string = props.location.state.cacheName;
+const DetailCache = props => {
+  let location = useLocation();
+  const [cacheName, setCacheName] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [detail, setDetail] = useState<DetailedInfinispanCache | undefined>(
     undefined
   );
@@ -36,33 +48,59 @@ const DetailCache: React.FunctionComponent<any> = props => {
   const [showMetrics, setShowMetrics] = useState(false);
 
   useEffect(() => {
-    cacheService.retrieveFullDetail(cacheName).then(detailedCache => {
+    let locationCacheName = location.pathname.substr(7);
+    setCacheName(locationCacheName);
+  }, [location]);
+
+  useEffect(() => {
+    cacheService.retrieveFullDetail(cacheName).then(eitherDetail => {
       setLoading(false);
-      setDetail(detailedCache);
-      setActiveTabKey('0');
-      setShowEntries(true);
-      if (detailedCache.features.hasRemoteBackup) {
-        cacheService.retrieveXSites(cacheName).then(xsites => {
-          setXSite(xsites);
-        });
+      if (eitherDetail.isRight()) {
+        setDetail(eitherDetail.value);
+        setActiveTabKey('0');
+        setShowEntries(true);
+        if (eitherDetail.value.features.hasRemoteBackup) {
+          cacheService.retrieveXSites(cacheName).then(xsites => {
+            setXSite(xsites);
+          });
+        }
+      } else {
+        setError(eitherDetail.value.message);
       }
     });
-  }, []);
+  }, [cacheName]);
 
   const buildDetailContent = () => {
     if (!detail && loading) {
       return <Spinner size="xl" />;
     }
 
-    if (!detail) {
-      return <Spinner size="xl" />;
+    if (error && !detail) {
+      return (
+        <Card>
+          <CardBody>
+            <Bullseye>
+              <EmptyState variant={EmptyStateVariant.small}>
+                <EmptyStateIcon
+                  icon={ExclamationCircleIcon}
+                  color={global_danger_color_200.value}
+                />
+                <Title headingLevel="h2" size="lg">
+                  Error retrieving cache {cacheName}
+                </Title>
+                <EmptyStateBody>{error}</EmptyStateBody>
+              </EmptyState>
+            </Bullseye>
+          </CardBody>
+        </Card>
+      );
     }
 
     return (
       <React.Fragment>
         {showEntries && <CacheEntries cacheName={cacheName} />}
-        {showConfig && <CacheConfiguration config={detail.configuration} />}
-        {showMetrics && <CacheMetrics stats={detail.stats} xSite={xSite} />}
+        {showConfig && <CacheConfiguration config={detail?.configuration} />}
+        {showMetrics && <CacheMetrics stats={detail?.stats} xSite={xSite} />}
       </React.Fragment>
     );
   };

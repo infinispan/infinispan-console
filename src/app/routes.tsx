@@ -13,7 +13,6 @@ import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailCache } from '@app/Caches/DetailCache';
 import { DetailConfigurations } from '@app/Caches/DetailConfigurations';
-import { ServerGroupIcon, VolumeIcon } from '@patternfly/react-icons';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
 import { useDocumentTitle } from '@app/utils/useDocumentTitle';
@@ -153,8 +152,8 @@ const routes: IAppRoute[] = [
   {
     component: DetailCache,
     exact: true,
-    label: 'Caches',
-    path: '/cache/:name',
+    label: 'Cache',
+    path: '/cache/:cacheName',
     title: 'Cache',
     menu: false
   }
