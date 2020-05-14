@@ -5,7 +5,7 @@ const common = require("./webpack.common.js");
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || "9000";
 
-module.exports = merge(common, {
+module.exports = merge(common('development'), {
   mode: "development",
   devtool: "eval-source-map",
   devServer: {
@@ -36,6 +36,7 @@ module.exports = merge(common, {
           path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/esm/@patternfly/patternfly'),
           path.resolve(__dirname, 'node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css'),
           path.resolve(__dirname, 'node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'),
+          path.resolve(__dirname, 'node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css')
         ],
         use: ["style-loader", "css-loader"]
       }

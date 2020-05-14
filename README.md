@@ -28,32 +28,37 @@ You can always download the server from the [Infinispan website](https://infinis
 npm install yarn -g # ensure you have yarn on your machine globally
 git clone https://github.com/infinispan/infinispan-console # clone the project
 cd infinispan-console # navigate into the project directory
-yarn # install infinispan-console dependencies
-yarn build # build the project
-yarn start # start the development server
+npm install # install infinispan-consoledependencies
+npm run start:dev # start the development server
 ```
 ## Development Scripts
 
 Install development/build dependencies
-`yarn`
+`npm install`
 
 Start the development server
-`yarn start`
+`npm run start:dev`
 
-Run a production build
-`yarn build`
+Run a production build (outputs to "dist" dir)
+`npm run build`
 
 Run the test suite
-`yarn test`
+`npm run test`
 
 Run the linter
-`yarn lint`
+`npm run lint`
 
 Run the code formatter
-`yarn format`
+`npm run format`
 
 Launch a tool to inspect the bundle size
-`yarn bundle-profile:analyze`
+`npm run bundle-profile:analyze`
+
+## Build de maven dependency
+
+This console is built and released as a maven dependency used in the infinispan server.
+
+`mvn clean install` 
 
 ## Configurations
 * [TypeScript Config](./tsconfig.json)
