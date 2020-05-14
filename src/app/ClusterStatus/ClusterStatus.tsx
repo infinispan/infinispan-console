@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  Alert,
-  AlertVariant,
   Bullseye,
   Card,
   CardBody,
@@ -17,8 +15,6 @@ import {
   PageSection,
   PageSectionVariants,
   Pagination,
-  Stack,
-  StackItem,
   Text,
   TextContent,
   TextVariants,
