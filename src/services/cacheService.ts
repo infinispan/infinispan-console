@@ -20,10 +20,15 @@ class CacheService {
    */
   public retrieveFullDetail(
     cacheName: string
-  ): Promise<DetailedInfinispanCache> {
+  ): Promise<Either<ActionResponse, DetailedInfinispanCache>> {
     return utils
       .restCall(this.endpoint + '/caches/' + cacheName, 'GET')
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
       .then(data => {
         const cacheStats = <CacheStats>{
           enabled: data.stats.current_number_of_entries == -1 ? false : true,
@@ -52,7 +57,7 @@ class CacheService {
             data.stats.required_minimum_number_of_nodes
         };
 
-        return <DetailedInfinispanCache>{
+        return right(<DetailedInfinispanCache>{
           name: cacheName,
           started: true,
           type: this.mapCacheType(data.configuration),
@@ -72,7 +77,21 @@ class CacheService {
             config: JSON.stringify(data.configuration, null, 2)
           },
           stats: cacheStats
-        };
+        });
+      })
+      .catch(err => {
+        if (err instanceof Response) {
+          return err
+            .text()
+            .then(errorMessage =>
+              left(<ActionResponse>{ message: errorMessage, success: false })
+            );
+        }
+
+        return left(<ActionResponse>{
+          message: err.toString(),
+          success: false
+        });
       });
   }
 
