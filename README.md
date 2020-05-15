@@ -27,7 +27,6 @@ You can always download the server from the [Infinispan website](https://infinis
 
 ## Quick-start
 ```bash
-npm install yarn -g # ensure you have yarn on your machine globally
 git clone https://github.com/infinispan/infinispan-console # clone the project
 cd infinispan-console # navigate into the project directory
 npm install # install infinispan-consoledependencies
