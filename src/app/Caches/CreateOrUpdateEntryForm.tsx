@@ -12,27 +12,15 @@ import {
   SelectVariant,
   TextInput
 } from '@patternfly/react-core';
-import { Flags, KeyContentType, ValueContentType } from '../../services/utils';
+import { Flags, KeyContentType, ValueContentType} from '../../services/utils';
+import { IField, ISelectField} from '../../services/formUtils';
 import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import cacheService from '../../services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-
-interface IField {
-  value: string;
-  isValid: boolean;
-  invalidText: string;
-  helperText: string;
-  validated: 'success' | 'error' | 'default';
-}
-
-interface ISelectField {
-  selected: string | SelectOptionObject | (string | SelectOptionObject)[];
-  expanded: boolean;
-  helperText: string;
-}
+import formUtils from "../../services/formUtils";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -219,88 +207,34 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const onChangeKey = value => {
-    validateRequiredField(value, 'Key', setKey);
+    formUtils.validateRequiredField(value, 'Key', setKey);
   };
 
   const onChangeValue = value => {
-    validateRequiredField(value, 'Value', setValue);
+    formUtils.validateRequiredField(value, 'Value', setValue);
   };
 
   const onChangeMaxIdle = value => {
-    validateNotRequiredNumericField(value, 'Max idle', setMaxIdleField);
+    formUtils.validateNotRequiredNumericField(value, 'Max idle', setMaxIdleField);
   };
 
   const onChangeTimeToLive = value => {
-    validateNotRequiredNumericField(value, 'Time to live', setTimeToLiveField);
-  };
-
-  const validateRequiredField = (
-    value: string,
-    fieldName: string,
-    stateDispatch: React.Dispatch<React.SetStateAction<IField>>
-  ): boolean => {
-    const trimmedValue = value.trim();
-    const isValid = trimmedValue.length > 0;
-    if (isValid) {
-      stateDispatch({
-        value: trimmedValue,
-        isValid: isValid,
-        invalidText: '',
-        helperText: fieldName + ' is valid',
-        validated: 'success'
-      });
-    } else {
-      stateDispatch({
-        value: trimmedValue,
-        isValid: isValid,
-        invalidText: fieldName + ' is required',
-        helperText: 'Validating...',
-        validated: 'error'
-      });
-    }
-    return isValid;
-  };
-
-  const validateNotRequiredNumericField = (
-    value: string,
-    fieldName: string,
-    stateDispatch: React.Dispatch<React.SetStateAction<IField>>
-  ): boolean => {
-    const isEmpty = value.trim().length == 0;
-    const isValid = isEmpty ? true : !isNaN(Number(value));
-    if (isValid) {
-      stateDispatch({
-        value: value,
-        isValid: isValid,
-        invalidText: '',
-        helperText: fieldName + ' is valid',
-        validated: isEmpty ? 'default' : 'success'
-      });
-    } else {
-      stateDispatch({
-        value: value,
-        isValid: isValid,
-        invalidText: fieldName + ' has to be a number',
-        helperText: 'Validating...',
-        validated: 'error'
-      });
-    }
-    return isValid;
+    formUtils.validateNotRequiredNumericField(value, 'Time to live', setTimeToLiveField);
   };
 
   const handleAddOrUpdateEntryButton = () => {
     let isValid = true;
     setError(undefined);
-    isValid = validateRequiredField(key.value, 'Key', setKey) && isValid;
-    isValid = validateRequiredField(value.value, 'Value', setValue) && isValid;
+    isValid = formUtils.validateRequiredField(key.value, 'Key', setKey) && isValid;
+    isValid = formUtils.validateRequiredField(value.value, 'Value', setValue) && isValid;
     isValid =
-      validateNotRequiredNumericField(
+      formUtils.validateNotRequiredNumericField(
         maxIdleField.value,
         'Max idle',
         setMaxIdleField
       ) && isValid;
     isValid =
-      validateNotRequiredNumericField(
+      formUtils.validateNotRequiredNumericField(
         timeToLiveField.value,
         'Time to live',
         setTimeToLiveField
