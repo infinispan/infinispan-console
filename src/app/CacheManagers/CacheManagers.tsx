@@ -21,6 +21,7 @@ import displayUtils from '../../services/displayUtils';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
 import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import {ProtobufSchemasDisplay} from "@app/CacheManagers/ProtobufSchemasDisplay";
 import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { Status } from '@app/Common/Status';
 import { global_spacer_sm } from '@patternfly/react-tokens';
@@ -37,9 +38,11 @@ const CacheManagers = () => {
   const [cachesCount, setCachesCount] = useState<number>(0);
   const [countersCount, setCountersCount] = useState<number>(0);
   const [tasksCount, setTasksCount] = useState<number>(0);
+  const [protoSchemasCount, setProtoSchemasCount] = useState<number>(0);
   const [showCaches, setShowCaches] = useState(false);
   const [showCounters, setShowCounters] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
+  const [showSerializationContext, setShowSerializationContext] = useState(false);
 
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherCm => {
@@ -61,6 +64,7 @@ const CacheManagers = () => {
     setShowCaches(tabIndex == '0');
     setShowCounters(tabIndex == '1');
     setShowTasks(tabIndex == '2');
+    setShowSerializationContext(tabIndex == '3');
   };
 
   const buildTabs = () => {
@@ -79,6 +83,9 @@ const CacheManagers = () => {
           </NavItem>
           <NavItem key="nav-item-2" itemId="2" isActive={activeTabKey === '2'}>
             <strong>{tasksCount}</strong> Tasks
+          </NavItem>
+          <NavItem key="nav-item-3" itemId="3" isActive={activeTabKey === '3'}>
+            <strong>{protoSchemasCount}</strong> Protobuf Schemas
           </NavItem>
         </NavList>
       </Nav>
@@ -126,6 +133,12 @@ const CacheManagers = () => {
             <TasksTableDisplay
               setTasksCount={setTasksCount}
               isVisible={showTasks}
+            />
+          )}
+          {cmName && (
+            <ProtobufSchemasDisplay
+              setProtoSchemasCount={setProtoSchemasCount}
+              isVisible={showSerializationContext}
             />
           )}
         </CardBody>

@@ -165,3 +165,13 @@ interface Activity {
   action: string;
   date: Date;
 }
+
+interface ProtoError {
+  message: string;
+  cause: string;
+}
+
+interface ProtoSchema {
+  name: string;
+  error?: ProtoError;
+}

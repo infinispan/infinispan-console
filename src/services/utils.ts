@@ -3,6 +3,8 @@
  *
  * @author Katia Aresti
  */
+import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
+
 export enum KeyContentType {
   OctetStream = 'application/octet-stream',
   OctetStreamHex = 'application/octet-stream; encoding=hex',

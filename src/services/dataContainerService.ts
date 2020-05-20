@@ -1,5 +1,6 @@
 import utils from './utils';
 import { Either, left, right } from './either';
+import displayUtils from './displayUtils';
 
 class ContainerService {
   endpoint: string;
@@ -32,8 +33,10 @@ class ContainerService {
             );
         }
         let errorMessage = 'Something went wrong. Check the logs.';
-        if(err != null) {
-          errorMessage = err.toString().includes('Failed to fetch') ? 'Failed to connect': err.toString();
+        if (err != null) {
+          errorMessage = err.toString().includes('Failed to fetch')
+            ? 'Failed to connect'
+            : err.toString();
         }
         return left(<ActionResponse>{
           message: errorMessage,
@@ -159,7 +162,7 @@ class ContainerService {
               cacheInfo =>
                 <CacheInfo>{
                   name: cacheInfo.name,
-                  status: cacheInfo.status,
+                  status: displayUtils.capitalize(cacheInfo.status),
                   type: this.mapCacheType(cacheInfo.type),
                   simpleCache: cacheInfo.simpleCache,
                   features: <Features>{
