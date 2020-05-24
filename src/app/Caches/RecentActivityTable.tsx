@@ -63,7 +63,7 @@ const RecentActivityTable = (props: { cacheName: string }) => {
   };
 
   return (
-    <Card style={{ marginTop: global_spacer_md.value }}>
+    <Card style={{ marginTop: global_spacer_md.value}}>
       <CardHeader>Recent Activity</CardHeader>
       <CardBody>
         <Table

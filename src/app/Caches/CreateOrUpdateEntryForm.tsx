@@ -9,7 +9,7 @@ import {
   Modal,
   Select,
   SelectOption,
-  SelectVariant,
+  SelectVariant, TextArea,
   TextInput
 } from '@patternfly/react-core';
 import { Flags, KeyContentType, ValueContentType} from '../../services/utils';
@@ -225,36 +225,32 @@ const CreateOrUpdateEntryForm = (props: {
   const handleAddOrUpdateEntryButton = () => {
     let isValid = true;
     setError(undefined);
-    isValid = formUtils.validateRequiredField(key.value, 'Key', setKey) && isValid;
-    isValid = formUtils.validateRequiredField(value.value, 'Value', setValue) && isValid;
+    isValid = formUtils.validateRequiredField(key.value.trim(), 'Key', setKey) && isValid;
+    isValid = formUtils.validateRequiredField(value.value.trim(), 'Value', setValue) && isValid;
     isValid =
       formUtils.validateNotRequiredNumericField(
-        maxIdleField.value,
+        maxIdleField.value.trim(),
         'Max idle',
         setMaxIdleField
       ) && isValid;
     isValid =
       formUtils.validateNotRequiredNumericField(
-        timeToLiveField.value,
+        timeToLiveField.value.trim(),
         'Time to live',
         setTimeToLiveField
       ) && isValid;
 
-    let selectedKeyContentType = keyContentType.selected as string;
-    let selectedValueContentType = valueContentType.selected as string;
+    let selectedKeyContentType = keyContentType.selected as KeyContentType;
+    let selectedValueContentType = valueContentType.selected as ValueContentType;
 
     if (isValid) {
       cacheService
         .createOrUpdate(
           props.cacheName,
           key.value,
-          selectedKeyContentType == ''
-            ? undefined
-            : KeyContentType[selectedKeyContentType],
+          selectedKeyContentType,
           value.value,
-          selectedValueContentType == ''
-            ? undefined
-            : ValueContentType[selectedValueContentType],
+          selectedValueContentType,
           maxIdleField.value,
           timeToLiveField.value,
           flags.selected as string[],
@@ -332,7 +328,21 @@ const CreateOrUpdateEntryForm = (props: {
           />
         </FormGroup>
         <FormGroup
-          label="Key"
+          label={
+            <MoreInfoTooltip
+              label="Key:"
+              toolTip={
+                'The key can contain simple values but also JSON ' +
+                'that are automatically converted to and from Protostream. \n' +
+                'When writing JSON documents, a special field `_type` must be present.\n' +
+                '{\n' +
+                '   "_type": "Person",\n' +
+                '   "name": "user1",\n' +
+                '   "age": 32\n' +
+                '}'
+              }
+            />
+          }
           isRequired
           helperText={key.helperText}
           helperTextInvalid={key.invalidText}
@@ -340,25 +350,37 @@ const CreateOrUpdateEntryForm = (props: {
           validated={key.validated}
           disabled={isEdition}
         >
-          <TextInput
+          <TextArea
             isRequired
             validated={key.validated}
             value={key.value}
             id="key-entry"
             aria-describedby="key-entry-helper"
             onChange={onChangeKey}
-            isDisabled={isEdition}
+            disabled={isEdition}
           />
         </FormGroup>
         <FormGroup
-          label="Value"
+          label={<MoreInfoTooltip
+            label="Value:"
+            toolTip={
+              'The value can contain simple values but also JSON ' +
+              'that are automatically converted to and from Protostream.\n ' +
+              'When writing JSON documents, a special field _type must be present.\n' +
+              '{\n' +
+              '   "_type": "Person",\n' +
+              '   "name": "user1",\n' +
+              '   "age": 32\n' +
+              '}'
+            }
+          />}
           isRequired
           helperText={value.helperText}
           helperTextInvalid={value.invalidText}
           fieldId="value-entry"
           validated={value.validated}
         >
-          <TextInput
+          <TextArea
             isRequired
             validated={value.validated}
             value={value.value}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Bullseye,
   Button,
@@ -15,20 +15,19 @@ import {
   TextInput,
   Title
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
-import { CreateOrUpdateEntryForm } from '@app/Caches/CreateOrUpdateEntryForm';
+import {SearchIcon} from '@patternfly/react-icons';
+import {CreateOrUpdateEntryForm} from '@app/Caches/CreateOrUpdateEntryForm';
 import cacheService from '../../services/cacheService';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant
-} from '@patternfly/react-table';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { ClearAllEntries } from '@app/Caches/ClearAllEntries';
-import { DeleteEntry } from '@app/Caches/DeleteEntry';
-import { RecentActivityTable } from '@app/Caches/RecentActivityTable';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
+import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import {ClearAllEntries} from '@app/Caches/ClearAllEntries';
+import {DeleteEntry} from '@app/Caches/DeleteEntry';
+import {RecentActivityTable} from '@app/Caches/RecentActivityTable';
+import {useRecentActivity} from '@app/utils/useRecentActivity';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {global_BackgroundColor_100} from "@patternfly/react-tokens";
+import displayUtils from "../../services/displayUtils";
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
@@ -122,7 +121,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
           heightAuto: true,
           cells: [
             { title: entry.key },
-            { title: entry.value },
+            { title: displayValue(entry.value) },
             { title: entry.timeToLive ? entry.timeToLive : 'Forever' },
             { title: entry.maxIdle ? entry.maxIdle : 'Forever' },
             { title: entry.expires ? entry.expires : 'Never' },
@@ -136,6 +135,16 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     }
     setRows(rows);
   };
+
+  const displayValue = (value: string) => {
+    return (
+          <SyntaxHighlighter wrapLines={false} style={githubGist}
+                             useInlineStyles={true}
+                             customStyle={{backgroundColor: global_BackgroundColor_100.value}}>
+            {displayUtils.displayValue(value)}
+          </SyntaxHighlighter>
+    );
+  }
 
   const onClickAddEntryButton = () => {
     setKeyToEdit('');
@@ -202,9 +211,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
 
   return (
     <React.Fragment>
-      <Card>
-        <CardBody>
-          <DataToolbar id="cache-entries-toolbar">
+          <DataToolbar id="cache-entries-toolbar" style={{paddingLeft: 0}}>
             <DataToolbarContent>
               <DataToolbarItem>
                 <InputGroup>
@@ -263,20 +270,22 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
             isModalOpen={isClearAllModalOpen}
             closeModal={closeClearAllEntryModal}
           />
-          <Table
-            variant={TableVariant.compact}
-            aria-label="Entries"
-            cells={columns}
-            rows={rows}
-            actions={actions}
-            className={'entries-table'}
-          >
-            <TableHeader />
-            <TableBody />
-          </Table>
-        </CardBody>
-      </Card>
-      <RecentActivityTable cacheName={props.cacheName} />
+          <Card>
+          <CardBody>
+            <Table
+              variant={TableVariant.compact}
+              aria-label="Entries"
+              cells={columns}
+              rows={rows}
+              actions={actions}
+              className={'entries-table'}
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          </CardBody>
+          </Card>
+          <RecentActivityTable cacheName={props.cacheName} />
     </React.Fragment>
   );
 };

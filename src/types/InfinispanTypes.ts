@@ -166,6 +166,11 @@ interface Activity {
   date: Date;
 }
 
+interface SearchResut {
+  total: number;
+  values: string[];
+}
+
 interface ProtoError {
   message: string;
   cause: string;

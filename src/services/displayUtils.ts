@@ -282,6 +282,15 @@ class DisplayUtils {
     return featuresString;
   }
 
+  public displayValue(value: string): string {
+    try {
+      let parse = JSON.stringify(JSON.parse(value), null, 2);
+      return parse;
+    } catch (err) {
+      return value;
+    }
+  }
+
   private appendFeature = (features: string, feature: string): string => {
     return features + (features.length > 0 ? ' / ' : '') + feature;
   };
