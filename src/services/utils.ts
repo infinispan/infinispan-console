@@ -110,6 +110,17 @@ class Utils {
       headers: headers
     });
   }
+
+  public isJSONObject(value: string): boolean {
+    try {
+      JSON.parse(value);
+      console.log(value);
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
 }
 
 const utils: Utils = new Utils();

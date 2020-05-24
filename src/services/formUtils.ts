@@ -48,11 +48,10 @@ class FormUtils {
     fieldName: string,
     stateDispatch: React.Dispatch<React.SetStateAction<IField>>
   ): boolean => {
-    const trimmedValue = value.trim();
-    const isValid = trimmedValue.length > 0;
+    const isValid = value.trim().length > 0;
     if (isValid) {
       stateDispatch({
-        value: trimmedValue,
+        value: value,
         isValid: isValid,
         invalidText: '',
         helperText: fieldName + ' is valid',
@@ -60,7 +59,7 @@ class FormUtils {
       });
     } else {
       stateDispatch({
-        value: trimmedValue,
+        value: value,
         isValid: isValid,
         invalidText: fieldName + ' is required',
         helperText: 'Validating...',

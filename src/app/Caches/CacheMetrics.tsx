@@ -8,7 +8,7 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
-  GridItem,
+  GridItem, Spinner,
   Text,
   TextContent,
   TextList,
@@ -24,12 +24,14 @@ import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import { CubesIcon } from '@patternfly/react-icons';
 
 const CacheMetrics: React.FunctionComponent<any> = (props: {
-  stats: CacheStats;
+  stats: (CacheStats|undefined);
   xSite: XSite[];
 }) => {
   const buildOperationsPerformanceCard = () => {
     if (!props.stats) {
-      return '';
+      return (
+        <Spinner size={'md'}/>
+        );
     }
 
     return (
@@ -235,7 +237,7 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
     );
   };
 
-  if (!props.stats.enabled) {
+  if (!props.stats?.enabled) {
     const message = 'Statistics not enabled';
 
     return (

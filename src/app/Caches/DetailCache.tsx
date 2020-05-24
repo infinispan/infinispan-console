@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Bullseye,
-  Card, CardBody,
+  Card,
+  CardBody,
   DataToolbar,
   DataToolbarContent,
   DataToolbarItem,
@@ -10,12 +11,10 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Nav,
-  NavItem,
-  NavList,
-  NavVariants,
   PageSection,
   PageSectionVariants,
+  Tab,
+  Tabs,
   Text,
   TextContent,
   TextVariants,
@@ -23,29 +22,28 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import displayUtils from '../../services/displayUtils';
-import { Spinner } from '@patternfly/react-core/dist/js/experimental';
-import { CacheMetrics } from '@app/Caches/CacheMetrics';
-import { CacheEntries } from '@app/Caches/CacheEntries';
-import { CacheConfiguration } from '@app/Caches/CacheConfiguration';
-import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { useLocation } from 'react-router';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import {Spinner} from '@patternfly/react-core/dist/js/experimental';
+import {CacheMetrics} from '@app/Caches/CacheMetrics';
+import {CacheEntries} from '@app/Caches/CacheEntries';
+import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
+import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
+import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
+import {useLocation} from 'react-router';
+import {global_danger_color_200} from '@patternfly/react-tokens';
+import {ExclamationCircleIcon} from '@patternfly/react-icons';
+import {QueryEntries} from "@app/Caches/QueryEntries";
 
 const DetailCache = props => {
   let location = useLocation();
+  const [activeTabKey1, setActiveTabKey1] = useState< number | string>(0);
+  const [activeTabKey2, setActiveTabKey2] = useState< number | string>(10);
   const [cacheName, setCacheName] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string>('');
   const [detail, setDetail] = useState<DetailedInfinispanCache | undefined>(
     undefined
   );
   const [xSite, setXSite] = useState<XSite[]>([]);
-  const [activeTabKey, setActiveTabKey] = useState('0');
-  const [showEntries, setShowEntries] = useState(false);
-  const [showConfig, setShowConfig] = useState(false);
-  const [showMetrics, setShowMetrics] = useState(false);
 
   useEffect(() => {
     let locationCacheName = location.pathname.substr(7);
@@ -53,12 +51,12 @@ const DetailCache = props => {
   }, [location]);
 
   useEffect(() => {
+    if(cacheName == '') return;
+
     cacheService.retrieveFullDetail(cacheName).then(eitherDetail => {
       setLoading(false);
       if (eitherDetail.isRight()) {
         setDetail(eitherDetail.value);
-        setActiveTabKey('0');
-        setShowEntries(true);
         if (eitherDetail.value.features.hasRemoteBackup) {
           cacheService.retrieveXSites(cacheName).then(xsites => {
             setXSite(xsites);
@@ -71,11 +69,10 @@ const DetailCache = props => {
   }, [cacheName]);
 
   const buildDetailContent = () => {
-    if (!detail && loading) {
+    if (loading) {
       return <Spinner size="xl" />;
     }
-
-    if (error && !detail) {
+    if (error.length > 0) {
       return (
         <Card>
           <CardBody>
@@ -97,33 +94,30 @@ const DetailCache = props => {
     }
 
     return (
-      <React.Fragment>
-        {showEntries && <CacheEntries cacheName={cacheName} />}
-        {showConfig && <CacheConfiguration config={detail?.configuration} />}
-        {showMetrics && <CacheMetrics stats={detail?.stats} xSite={xSite} />}
-      </React.Fragment>
-    );
-  };
-
-  const buildTabs = () => {
-    if (loading) {
-      return '';
-    }
-
-    return (
-      <Nav onSelect={handleTabClick}>
-        <NavList variant={NavVariants.tertiary}>
-          <NavItem key="nav-item-0" itemId="0" isActive={activeTabKey === '0'}>
-            Entries
-          </NavItem>
-          <NavItem key="nav-item-1" itemId="1" isActive={activeTabKey === '1'}>
-            Configuration
-          </NavItem>
-          <NavItem key="nav-item-2" itemId="2" isActive={activeTabKey === '2'}>
-            Metrics
-          </NavItem>
-        </NavList>
-      </Nav>
+      <Card>
+        <CardBody>
+        <Tabs activeKey={activeTabKey1}
+              onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}>
+          <Tab eventKey={0} title="Entries">
+            <Tabs activeKey={activeTabKey2} isSecondary
+                  onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}>
+              <Tab eventKey={10} title="Entries by key">
+                <CacheEntries cacheName={cacheName} />
+              </Tab>
+              <Tab eventKey={11} title="Query values">
+                <QueryEntries cacheName={cacheName} />
+              </Tab>
+            </Tabs>
+          </Tab>
+          <Tab eventKey={1} title="Configuration">
+            <CacheConfiguration config={detail?.configuration} />
+          </Tab>
+          <Tab eventKey={2} title="Metrics">
+            <CacheMetrics stats={detail?.stats} xSite={xSite} />
+          </Tab>
+        </Tabs>
+        </CardBody>
+      </Card>
     );
   };
 
@@ -171,20 +165,11 @@ const DetailCache = props => {
     );
   };
 
-  const handleTabClick = nav => {
-    let tabIndex = nav.itemId;
-    setActiveTabKey(tabIndex);
-    setShowEntries(tabIndex == '0');
-    setShowConfig(tabIndex == '1');
-    setShowMetrics(tabIndex == '2');
-  };
-
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb currentPage="Cache detail" />
         {buildCacheHeader()}
-        {!loading && buildTabs()}
       </PageSection>
       <PageSection>{buildDetailContent()}</PageSection>
     </React.Fragment>

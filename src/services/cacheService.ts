@@ -5,6 +5,7 @@
  */
 import utils, { KeyContentType, ValueContentType } from './utils';
 import { Either, left, right } from './either';
+import displayUtils from './displayUtils';
 
 class CacheService {
   endpoint: string;
@@ -80,16 +81,22 @@ class CacheService {
         });
       })
       .catch(err => {
+        const errorMessage =
+          'Unable to retrieve cache detail of cache ' + cacheName;
         if (err instanceof Response) {
-          return err
-            .text()
-            .then(errorMessage =>
-              left(<ActionResponse>{ message: errorMessage, success: false })
-            );
+          return err.text().then(errResponse => {
+            if (errResponse == '') {
+              errResponse = errorMessage;
+            }
+            return left(<ActionResponse>{
+              message: errResponse,
+              success: false
+            });
+          });
         }
 
         return left(<ActionResponse>{
-          message: err.toString(),
+          message: err.toString() == '' ? errorMessage : err.toString(),
           success: false
         });
       });
@@ -245,10 +252,15 @@ class CacheService {
       let keyContentTypeHeader = this.keyContentTypeHeader(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
     }
+
     if (valueContentType) {
-      let valueContentTypeHeader;
-      headers.append('Content-Type', valueContentType.toString());
+      headers.append('Content-Type', valueContentType);
+    } else {
+      if (utils.isJSONObject(value)) {
+        headers.append('Content-Type', ValueContentType.JSON);
+      }
     }
+
     if (timeToLive.length > 0) {
       headers.append('timeToLiveSeconds', timeToLive);
     }
@@ -281,7 +293,6 @@ class CacheService {
    * @param keyContentType
    */
   private keyContentTypeHeader(keyContentType: KeyContentType) {
-    let keyContentTypeHeader: string = KeyContentType[keyContentType.valueOf()];
     if (
       keyContentType == KeyContentType.StringContentType ||
       KeyContentType.DoubleContentType ||
@@ -289,10 +300,9 @@ class CacheService {
       KeyContentType.LongContentType ||
       KeyContentType.BooleanContentType
     ) {
-      keyContentTypeHeader =
-        'application/x-java-object;type=' + keyContentTypeHeader;
+      return 'application/x-java-object;type=' + keyContentType.toString();
     }
-    return keyContentTypeHeader;
+    return keyContentType.toString();
   }
 
   /**
@@ -315,7 +325,7 @@ class CacheService {
       )
       .then(response => {
         if (response.ok) {
-          return response.json().then(json => {
+          return response.text().then(value => {
             const timeToLive = response.headers.get('timeToLiveSeconds');
             const maxIdleTimeSeconds = response.headers.get(
               'maxIdleTimeSeconds'
@@ -328,7 +338,7 @@ class CacheService {
             const etag = response.headers.get('Etag');
             return <CacheEntry>{
               key: key,
-              value: json,
+              value: value,
               timeToLive: timeToLive,
               maxIdleTimeSeconds: maxIdleTimeSeconds,
               created: created,
@@ -472,6 +482,81 @@ class CacheService {
       );
   }
 
+  /**
+   * Search entries by query
+   *
+   * @param cacheName
+   * @param query
+   * @return SearchResult or ActionResponse
+   */
+  public async searchValues(
+    cacheName: string,
+    query: string,
+    maxResults: number,
+    offset: number
+  ): Promise<Either<ActionResponse, SearchResut>> {
+    return utils
+      .restCall(
+        this.endpoint +
+          '/caches/' +
+          cacheName +
+          '?action=search' +
+          '&query=' +
+          query +
+          '&max_results=' +
+          maxResults +
+          '&offset=' +
+          offset * maxResults,
+        'GET',
+        'application/json;q=0.8'
+      )
+      .then(response => {
+        if (response.ok) {
+          return response.json().then(
+            json =>
+              <SearchResut>{
+                total: json.total_results,
+                values: json.hits.map(hit => JSON.stringify(hit.hit, null, 2))
+              }
+          );
+        }
+        throw response;
+      })
+      .then(data => right(data))
+      .catch(err => {
+        if (err instanceof TypeError) {
+          return left(<ActionResponse>{
+            message: 'Unable to query. ' + err.message,
+            success: false
+          });
+        }
+
+        if (err instanceof Response) {
+          if (err.status == 400) {
+            return err
+              .json()
+              .then(jsonError =>
+                left(<ActionResponse>{
+                  message:
+                    jsonError.error.message + '\n' + jsonError.error.cause,
+                  success: false
+                })
+              );
+          }
+
+          return err
+            .text()
+            .then(errorMessage =>
+              left(<ActionResponse>{ message: errorMessage, success: false })
+            );
+        }
+        return left(<ActionResponse>{
+          message: 'Unable to query',
+          success: false
+        });
+      });
+  }
+
   private mapCacheType(config: JSON): string {
     let cacheType: string = 'Unknown';
     if (config.hasOwnProperty('distributed-cache')) {
@@ -486,6 +571,15 @@ class CacheService {
       cacheType = 'Scattered';
     }
     return cacheType;
+  }
+
+  private isJson(str: any): boolean {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 }
 
