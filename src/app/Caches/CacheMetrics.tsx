@@ -36,12 +36,7 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
 
     return (
       <Card>
-        <CardHeader>
-          <CardTitle
-            title={'Operations Performance'}
-            toolTip={'Average values for this cache in milliseconds'}
-          />
-        </CardHeader>
+        <CardHeader>Operations Performance</CardHeader>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
@@ -63,7 +58,6 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
               <TextListItem component={TextListItemVariants.dd}>
                 Avg Removes
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>-</TextListItem>
             </TextList>
           </TextContent>
         </CardBody>
@@ -159,19 +153,14 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
     );
   };
 
-  const buildCacheContentCard = () => {
+  const buildEntriesCard = () => {
     if (!props.stats) {
       return '';
     }
 
     return (
       <Card>
-        <CardHeader>
-          <CardTitle
-            title={'Cache Content'}
-            toolTip={'Statistics this cache'}
-          />
-        </CardHeader>
+        <CardHeader>Entries</CardHeader>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
@@ -184,26 +173,13 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
                 Current number of entries
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(
-                  props.stats.current_number_of_entries_in_memory
-                )}
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                Current number of entries in memory
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(props.stats.total_number_of_entries)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 Total number of entries
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(
-                  props.stats.required_minimum_number_of_nodes
-                )}
-              </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Required Minimum number of nodes
+                -
               </TextListItem>
             </TextList>
           </TextContent>
@@ -212,25 +188,39 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
     );
   };
 
-  const buildXSiteCard = () => {
-    if (props.xSite.length == 0) {
+  const buildMemoryCard = () => {
+    if (!props.stats) {
       return '';
     }
 
     return (
-      <Card style={{ height: 280 }}>
+      <Card>
         <CardHeader>
-          <CardTitle
-            title={'Backups'}
-            toolTip={'Remote backups for this cache'}
-          />
+          Memory
         </CardHeader>
         <CardBody>
           <TextContent>
-            {props.xSite.map(xsite => {
-              let label = xsite.name + ' - ' + xsite.status;
-              return <Text component={TextVariants.p}>{label}</Text>;
-            })}
+            <TextList component={TextListVariants.dl}>
+              <TextListItem component={TextListItemVariants.dt}>
+                {displayUtils.formatNumber(
+                  props.stats.current_number_of_entries_in_memory
+                )}
+              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>
+                Current number of entries in memory
+              </TextListItem>
+              <TextListItem component={TextListItemVariants.dt}>
+                {displayUtils.formatNumber(
+                  props.stats.data_memory_used
+                )}
+              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>
+                Total memory in use
+              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>
+                -
+              </TextListItem>
+            </TextList>
           </TextContent>
         </CardBody>
       </Card>
@@ -257,12 +247,17 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
 
   return (
     <Grid hasGutter={true}>
-      <GridItem span={6} rowSpan={2}>
-        {buildCacheContentCard()}
-        {buildCacheLoaderCard()}
+      <GridItem span={4}>
+        {buildEntriesCard()}
       </GridItem>
-      <GridItem span={6}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={6}>{buildXSiteCard()}</GridItem>
+      <GridItem span={4}>
+        {buildMemoryCard()}
+      </GridItem>
+      <GridItem span={4}>
+        {buildOperationsPerformanceCard()}
+      </GridItem>
+      {/*<GridItem span={6}>{buildOperationsPerformanceCard()}</GridItem>*/}
+      {/*<GridItem span={6}>{buildXSiteCard()}</GridItem>*/}
     </Grid>
   );
 };
