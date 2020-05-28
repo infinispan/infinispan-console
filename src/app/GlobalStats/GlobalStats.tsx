@@ -23,13 +23,13 @@ import {
   TextListVariants,
   TextVariants,
   Title,
-  Spinner
+  Spinner, CardTitle
 } from '@patternfly/react-core';
 import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
 import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
 import dataContainerService from '../../services/dataContainerService';
 import {Link} from 'react-router-dom';
-import {CardTitle} from '@app/Common/CardTitle';
+import {CustomCardTitle} from '@app/Common/CustomCardTitle';
 import displayUtils from '../../services/displayUtils';
 import {global_spacer_2xl} from '@patternfly/react-tokens';
 import {TableErrorState} from '@app/Common/TableErrorState';
@@ -127,10 +127,10 @@ const GlobalStats: React.FunctionComponent<any> = props => {
       <Grid hasGutter={true}>
         <GridItem span={6} rowSpan={2}>
           <Card>
-            <CardHeader>
+            <CardTitle>
               <Level>
                 <LevelItem>
-                  <CardTitle
+                  <CustomCardTitle
                     title={'Cluster Content'}
                     toolTip={'Statistics for all caches'}
                   />
@@ -143,7 +143,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                   </Link>
                 </LevelItem>
               </Level>
-            </CardHeader>
+            </CardTitle>
             <CardBody>
               <TextContent>
                 <TextList component={TextListVariants.dl}>
@@ -184,12 +184,12 @@ const GlobalStats: React.FunctionComponent<any> = props => {
             </CardBody>
           </Card>
           <Card>
-            <CardHeader>
-              <CardTitle
+            <CardTitle>
+              <CustomCardTitle
                 title={'Data access'}
                 toolTip={'Data access for all caches'}
               />
-            </CardHeader>
+            </CardTitle>
             <CardBody style={{ paddingBottom: global_spacer_2xl.value }}>
               <div style={{ height: '208px', width: '450px' }}>
                 <ChartDonut
@@ -252,12 +252,12 @@ const GlobalStats: React.FunctionComponent<any> = props => {
         </GridItem>
         <GridItem span={6}>
           <Card>
-            <CardHeader>
-              <CardTitle
+            <CardTitle>
+              <CustomCardTitle
                 title={'Operations Performance'}
                 toolTip={'Average values for all caches in milliseconds'}
               />
-            </CardHeader>
+            </CardTitle>
             <CardBody>
               <TextContent>
                 <TextList component={TextListVariants.dl}>
@@ -299,10 +299,10 @@ const GlobalStats: React.FunctionComponent<any> = props => {
 
         <GridItem span={6}>
           <Card>
-            <CardHeader>
+            <CardTitle>
               <Level>
                 <LevelItem>
-                  <CardTitle
+                  <CustomCardTitle
                     title={'Cache Manager Lifecycle'}
                     toolTip={'Lifecycle values are in milliseconds'}
                   />
@@ -315,7 +315,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                   </Link>
                 </LevelItem>
               </Level>
-            </CardHeader>
+            </CardTitle>
             <CardBody>
               <TextContent style={{ height: '208px' }}>
                 <TextList component={TextListVariants.dl}>

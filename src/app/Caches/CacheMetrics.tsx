@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Card,
   CardBody,
   CardHeader,
+  CardTitle,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
-  GridItem, Spinner,
+  GridItem,
   Text,
   TextContent,
   TextList,
@@ -18,42 +19,73 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import { CardTitle } from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
-import { CubesIcon } from '@patternfly/react-icons';
+import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
+import {CubesIcon} from '@patternfly/react-icons';
+import cacheService from "../../services/cacheService";
+import {QueryMetrics} from "@app/Caches/QueryMetrics";
 
-const CacheMetrics: React.FunctionComponent<any> = (props: {
-  stats: (CacheStats|undefined);
-  xSite: XSite[];
+const CacheMetrics = (props: {
+  cacheName: string,
+  display: boolean
 }) => {
+
+  const [stats, setStats] = useState<CacheStats| undefined>(undefined);
+  const [statsError, setStatsError] = useState<string| undefined>(undefined);
+  const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
+  const [queryStats, setQueryStats] = useState<QueryStats | undefined>();
+  const [queryStatsLoading, setQueryStatsLoading] = useState<boolean>(true);
+  const [queryStatsError, setQueryStatsError] = useState<string>('');
+
+  useEffect(() => {
+    cacheService.retrieveFullDetail(props.cacheName).then(eitherStats => {
+      setQueryStatsLoading(false);
+      if(eitherStats.isRight()) {
+        setStats(eitherStats.value.stats);
+        let loadQueryStats = eitherStats.value.stats.enabled && eitherStats.value.features.indexed;
+        setDisplayQueryStats(loadQueryStats);
+        if(loadQueryStats) {
+          // Retrieve query stats only if stats are enabled and the cache is indexed
+          cacheService.retrieveQueryStats(props.cacheName).then(eitherStats => {
+            setQueryStatsLoading(false);
+            if(eitherStats.isRight()) {
+              setQueryStats(eitherStats.value);
+            } else  {
+              setQueryStatsError(eitherStats.value.message);
+            }
+          })
+        }
+      } else  {
+        setStatsError(eitherStats.value.message);
+      }
+    })
+  }, [props.display])
+
   const buildOperationsPerformanceCard = () => {
-    if (!props.stats) {
-      return (
-        <Spinner size={'md'}/>
-        );
+    if (!stats) {
+      return '';
     }
 
     return (
       <Card>
-        <CardHeader>Operations Performance</CardHeader>
+        <CardTitle>Operations Performance</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(props.stats.average_read_time)}
+                {displayUtils.formatNumber(stats.average_read_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 Avg Reads
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(props.stats.average_write_time)}
+                {displayUtils.formatNumber(stats.average_write_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 Avg Writes
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(props.stats.average_remove_time)}
+                {displayUtils.formatNumber(stats.average_remove_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 Avg Removes
@@ -65,73 +97,77 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
     );
   };
 
+  const buildQueryStats = () => {
+    if(!displayQueryStats) {
+      return ;
+    }
+    return (
+        <QueryMetrics cacheName={props.cacheName} stats={queryStats} error={queryStatsError} loading={queryStatsLoading}/>
+    );
+  }
+
   const buildCacheLoaderCard = () => {
-    if (!props.stats) {
+    if (!stats) {
       return '';
     }
 
     let all =
-      props.stats.hits +
-      props.stats.retrievals +
-      props.stats.remove_hits +
-      props.stats.remove_misses +
-      props.stats.stores +
-      props.stats.misses +
-      props.stats.evictions;
+      stats.hits +
+      stats.retrievals +
+      stats.remove_hits +
+      stats.remove_misses +
+      stats.stores +
+      stats.misses +
+      stats.evictions;
 
     return (
       <Card>
-        <CardHeader>
-          <CardTitle
-            title={'Data access'}
-            toolTip={'Data access for this cache'}
-          />
-        </CardHeader>
+        <CardTitle>Data access</CardTitle>
         <CardBody>
-          <div style={{ height: '208px', width: '400px' }}>
+          <div style={{height: '208px', width: '400px'}}>
             <ChartDonut
               constrainToVisibleArea={true}
               data={[
-                { x: 'Hits', y: props.stats.hits },
-                { x: 'Misses', y: props.stats.misses },
-                { x: 'Stores', y: props.stats.stores },
-                { x: 'Retrievals', y: props.stats.retrievals },
-                { x: 'Remove Hits', y: props.stats.remove_hits },
-                { x: 'Removes Misses', y: props.stats.remove_misses },
-                { x: 'Evictions', y: props.stats.evictions }
+                {x: 'Hits', y: stats.hits},
+                {x: 'Misses', y: stats.misses},
+                {x: 'Stores', y: stats.stores},
+                {x: 'Retrievals', y: stats.retrievals},
+                {x: 'Remove Hits', y: stats.remove_hits},
+                {x: 'Removes Misses', y: stats.remove_misses},
+                {x: 'Evictions', y: stats.evictions}
               ]}
-              labels={({ datum }) => `${datum.x}: ${datum.y}%`}
+              labels={({datum}) => `${datum.x}: ${datum.y}%`}
               legendData={[
                 {
-                  name: 'Hits: ' + displayUtils.formatNumber(props.stats.hits)
+                  name: 'Hits: ' + displayUtils.formatNumber(stats.hits)
                 },
                 {
                   name:
-                    'Misses: ' + displayUtils.formatNumber(props.stats.misses)
+                    'Misses: ' + displayUtils.formatNumber(stats.misses)
                 },
                 {
                   name:
                     'Retrievals: ' +
-                    displayUtils.formatNumber(props.stats.retrievals)
+                    displayUtils.formatNumber(stats.retrievals)
                 },
                 {
                   name:
-                    'Stores: ' + displayUtils.formatNumber(props.stats.stores)
+                    'Stores: ' + displayUtils.formatNumber(stats.stores)
                 },
                 {
                   name:
                     'Remove Hits: ' +
-                    displayUtils.formatNumber(props.stats.remove_hits)
+                    displayUtils.formatNumber(stats.remove_hits)
                 },
                 {
                   name:
                     'Remove Misses: ' +
-                    displayUtils.formatNumber(props.stats.remove_misses)
+                    displayUtils.formatNumber(stats.remove_misses)
                 },
                 {
                   name:
                     'Evictions: ' +
-                    displayUtils.formatNumber(props.stats.evictions)
+                    displayUtils.formatNumber(stats.evictions)
                 }
               ]}
               legendOrientation="vertical"
@@ -154,29 +190,29 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
   };
 
   const buildEntriesCard = () => {
-    if (!props.stats) {
+    if (!stats) {
       return '';
     }
 
     return (
       <Card>
-        <CardHeader>Entries</CardHeader>
+        <CardTitle>Entries</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(
-                  props.stats.current_number_of_entries
+                  stats.current_number_of_entries
                 )}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Current number of entries
+                Current number
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(props.stats.total_number_of_entries)}
+                {displayUtils.formatNumber(stats.total_number_of_entries)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Total number of entries
+                Total number
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 -
@@ -189,33 +225,31 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
   };
 
   const buildMemoryCard = () => {
-    if (!props.stats) {
+    if (!stats) {
       return '';
     }
 
     return (
       <Card>
-        <CardHeader>
-          Memory
-        </CardHeader>
+        <CardTitle>Memory</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(
-                  props.stats.current_number_of_entries_in_memory
+                  stats.current_number_of_entries_in_memory
                 )}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Current number of entries in memory
+                Current number
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(
-                  props.stats.data_memory_used
+                  stats.data_memory_used
                 )}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Total memory in use
+                Total in use
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 -
@@ -227,12 +261,12 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
     );
   };
 
-  if (!props.stats?.enabled) {
+  if (!stats?.enabled) {
     const message = 'Statistics not enabled';
 
     return (
       <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon} />
+        <EmptyStateIcon icon={CubesIcon}/>
         <Title headingLevel="h5" size="lg">
           Statistics
         </Title>
@@ -242,6 +276,12 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
           </TextContent>
         </EmptyStateBody>
       </EmptyState>
+    );
+  }
+
+  if(!props.display) {
+    return (
+      <span/>
     );
   }
 
@@ -256,10 +296,16 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
       <GridItem span={4}>
         {buildOperationsPerformanceCard()}
       </GridItem>
-      {/*<GridItem span={6}>{buildOperationsPerformanceCard()}</GridItem>*/}
-      {/*<GridItem span={6}>{buildXSiteCard()}</GridItem>*/}
+      <GridItem span={6}>
+        {buildCacheLoaderCard()}
+      </GridItem>
+      <GridItem span={6}>
+        {buildQueryStats()}
+      </GridItem>
+
+
     </Grid>
   );
 };
 
-export { CacheMetrics };
+export {CacheMetrics};
