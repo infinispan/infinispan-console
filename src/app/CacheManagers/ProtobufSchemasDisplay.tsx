@@ -193,11 +193,13 @@ const ProtobufSchemasDisplay = (props: {
       if(editSchemaName == '' || editSchemaName != name) {
         setEditSchemaName(name);
       } else {
+        setEditSchemaName('');
         if(!schemasContent.has(name) || schemasContent.get(name) == '') {
           return;
         }
         protobufService.createOrUpdateSchema(name, schemasContent.get(name) as string, false).then(eitherCreate => {
           addAlert(eitherCreate.value);
+          loadSchemas();
         })
       }
     };
