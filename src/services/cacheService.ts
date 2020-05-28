@@ -5,7 +5,6 @@
  */
 import utils, { KeyContentType, ValueContentType } from './utils';
 import { Either, left, right } from './either';
-import displayUtils from './displayUtils';
 
 class CacheService {
   endpoint: string;
@@ -32,7 +31,7 @@ class CacheService {
       })
       .then(data => {
         const cacheStats = <CacheStats>{
-          enabled: data.stats.current_number_of_entries == -1 ? false : true,
+          enabled: data.statistics,
           misses: data.stats.misses,
           time_since_start: data.stats.time_since_start,
           time_since_reset: data.stats.time_since_reset,
@@ -635,6 +634,76 @@ class CacheService {
     );
   }
 
+  public async retrieveQueryStats(
+    cacheName: string
+  ): Promise<Either<ActionResponse, QueryStats>> {
+    return utils
+      .restCall(
+        this.endpoint + '/caches/' + cacheName + '/search/query/stats',
+        'GET'
+      )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then(data =>
+        right(<QueryStats>{
+          search_query_execution_count: data.search_query_execution_count,
+          search_query_total_time: data.search_query_total_time,
+          search_query_execution_max_time: data.search_query_execution_max_time,
+          search_query_execution_avg_time: data.search_query_execution_avg_time,
+          object_loading_total_time: data.object_loading_total_time,
+          object_loading_execution_max_time:
+            data.object_loading_execution_max_time,
+          object_loading_execution_avg_time:
+            data.object_loading_execution_avg_time,
+          objects_loaded_count: data.objects_loaded_count,
+          search_query_execution_max_time_query_string:
+            data.search_query_execution_max_time_query_string
+        })
+      )
+      .catch(err => {
+        if (err instanceof TypeError) {
+          return left(<ActionResponse>{ message: err.message, success: false });
+        }
+
+        return err
+          .text()
+          .then(errorMessage =>
+            left(<ActionResponse>{ message: errorMessage, success: false })
+          );
+      });
+  }
+
+  /**
+   * Clears the cache query statistics
+   *
+   * @param cacheName
+   */
+  public async clearQueryStats(cacheName: string): Promise<ActionResponse> {
+    return utils
+      .restCall(
+        this.endpoint +
+          '/caches/' +
+          cacheName +
+          '/search/query/stats?action=clear',
+        'GET'
+      )
+      .then(response => {
+        let message = '';
+        if (response.ok) {
+          message = 'Query stats of cache ' + cacheName + ' have been cleared';
+        } else {
+          message = 'Unable to clear query stats of cache ' + cacheName;
+        }
+
+        return <ActionResponse>{ message: message, success: response.ok };
+      })
+      .catch(err => <ActionResponse>{ message: err.message, success: false });
+  }
+
   private mapCacheType(config: JSON): string {
     let cacheType: string = 'Unknown';
     if (config.hasOwnProperty('distributed-cache')) {
@@ -649,15 +718,6 @@ class CacheService {
       cacheType = 'Scattered';
     }
     return cacheType;
-  }
-
-  private isJson(str: any): boolean {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
   }
 }
 

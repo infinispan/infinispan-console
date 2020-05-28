@@ -95,7 +95,7 @@ interface DetailedInfinispanCache {
   features: Features;
   configuration: CacheConfig;
   backupSites?: [XSite];
-  stats?: CacheStats;
+  stats: CacheStats;
 }
 
 interface CacheStats {
@@ -121,6 +121,18 @@ interface CacheStats {
   average_remove_time: number;
   average_remove_time_nanos: number;
   required_minimum_number_of_nodes: number;
+}
+
+interface QueryStats {
+  search_query_execution_count: number;
+  search_query_total_time: number;
+  search_query_execution_max_time: number;
+  search_query_execution_avg_time: number;
+  object_loading_total_time: number;
+  object_loading_execution_max_time: number;
+  object_loading_execution_avg_time: number;
+  objects_loaded_count: number;
+  search_query_execution_max_time_query_string: string;
 }
 
 interface XSite {

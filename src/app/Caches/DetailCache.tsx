@@ -8,7 +8,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant,
+  EmptyStateVariant, Nav, NavItem, NavList,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -34,11 +34,12 @@ import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {useLocation} from 'react-router';
-import {global_danger_color_200, global_spacer_md} from '@patternfly/react-tokens';
+import {global_danger_color_200, global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
 import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from "@app/Caches/QueryEntries";
 import {RecentActivityTable} from "@app/Caches/RecentActivityTable";
 import {Link} from "react-router-dom";
+import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
 
 const DetailCache = props => {
   let location = useLocation();
@@ -84,6 +85,7 @@ const DetailCache = props => {
   const buildEntriesTabContent = () => {
     return (
           <Tabs unmountOnExit
+                isSecondary={false}
                 activeKey={activeTabKey2}
                 aria-label="Entries tab"
                 component={TabsComponent.nav}
@@ -93,8 +95,8 @@ const DetailCache = props => {
               <CacheEntries cacheName={cacheName} load={loadCacheDetail}/>
               <RecentActivityTable cacheName={cacheName} />
             </Tab>
-            <Tab eventKey={11} title={<TabTitleText>Query Values</TabTitleText>} >
-              <QueryEntries cacheName={cacheName}/>
+            <Tab eventKey={11} title={<TabTitleText><MoreInfoTooltip label={'Query Values'} toolTip={'Use Ickle query language'}/></TabTitleText>} >
+              <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)}/>
             </Tab>
           </Tabs>
     )
@@ -125,7 +127,7 @@ const DetailCache = props => {
       <React.Fragment>
           {activeTabKey1 == 0 ?  buildEntriesTabContent() : ''}
           {activeTabKey1 == 1 ?  <CacheConfiguration config={detail?.configuration}/> : ''}
-          {activeTabKey1 == 2 ?  <CacheMetrics stats={detail?.stats} xSite={xSite}/> : ''}
+          {activeTabKey1 == 2 ?  <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2}/> : ''}
       </React.Fragment>
     );
   };
@@ -254,8 +256,10 @@ const DetailCache = props => {
           </ToolbarGroup>
           {buildShowMorePanel()}
         </Toolbar>
-        <Tabs isBox={true}
+        <Tabs isBox={false}
               activeKey={activeTabKey1}
+              isSecondary={true}
+              component={TabsComponent.nav}
               onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}>
           <Tab eventKey={0} title={'Entries (' + displayUtils.formatNumber(detail?.size) + ')'}></Tab>
           <Tab eventKey={1} title={'Configuration'}/>
@@ -267,7 +271,7 @@ const DetailCache = props => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light} style={{marginBottom: 0, paddingBottom: 0}}>
+      <PageSection variant={PageSectionVariants.light} style={{paddingBottom:0}}>
         <DataContainerBreadcrumb currentPage="Cache detail" />
         {buildCacheHeader()}
       </PageSection>
