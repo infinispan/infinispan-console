@@ -8,7 +8,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant,
+  EmptyStateVariant, Expandable, Flex, FlexItem,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -30,7 +30,7 @@ import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {useLocation} from 'react-router';
 import {global_danger_color_200} from '@patternfly/react-tokens';
-import {ExclamationCircleIcon} from '@patternfly/react-icons';
+import {AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from "@app/Caches/QueryEntries";
 import {RecentActivityTable} from "@app/Caches/RecentActivityTable";
 
@@ -123,6 +123,19 @@ const DetailCache = props => {
     );
   };
 
+  const buildIndexManage = () => {
+    if (!detail?.features.indexed)
+      return;
+    return (
+      <React.Fragment>
+        <FlexItem>
+          <Badge isRead>Indexed</Badge>
+        </FlexItem>
+        <FlexItem><Button variant={ButtonVariant.link}>Manage</Button></FlexItem>
+      </React.Fragment>
+    );
+  }
+
   const buildCacheHeader = () => {
     if (!detail && loading) {
       return (
@@ -155,12 +168,22 @@ const DetailCache = props => {
               <CacheTypeBadge cacheType={detail.type} small={false} />
             </ToolbarItem>
             <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h4}>
-                  {displayUtils.createFeaturesString(detail.features)}
-                </Text>
-              </TextContent>
-            </ToolbarItem>
+              <ToolbarItem>
+                <Expandable toggleTextExpanded={'Show less'} toggleTextCollapsed={'Show more'}>
+                  <Flex>
+                    <FlexItem>
+                      <TextContent>
+                        <Text component={TextVariants.h4}>
+                          {displayUtils.createFeaturesString(detail.features)}
+                        </Text>
+                      </TextContent>
+                    </FlexItem>
+                  </Flex>
+                  <Flex>
+                    {buildIndexManage()}
+                  </Flex>
+                </Expandable>
+              </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
         <Tabs isBox={true}
