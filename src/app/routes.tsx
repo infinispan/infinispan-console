@@ -16,6 +16,7 @@ import { DetailConfigurations } from '@app/Caches/DetailConfigurations';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
 import { useDocumentTitle } from '@app/utils/useDocumentTitle';
+import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -147,6 +148,14 @@ const routes: IAppRoute[] = [
     label: 'Caches',
     path: '/container/:cmName/caches/create',
     title: 'Caches',
+    menu: false
+  },
+  {
+    component: IndexManagement,
+    exact: true,
+    label: 'Index management',
+    path: '/cache/:cmName/indexation',
+    title: 'Index management',
     menu: false
   },
   {

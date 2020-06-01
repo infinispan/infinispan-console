@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
+  Badge,
   Bullseye,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
+  Button,
+  ButtonVariant,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant, Expandable, Flex, FlexItem,
+  EmptyStateVariant,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -19,7 +19,12 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title, Card, CardBody
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import displayUtils from '../../services/displayUtils';
@@ -29,10 +34,11 @@ import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {useLocation} from 'react-router';
-import {global_danger_color_200} from '@patternfly/react-tokens';
-import {AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
+import {global_danger_color_200, global_spacer_md} from '@patternfly/react-tokens';
+import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from "@app/Caches/QueryEntries";
 import {RecentActivityTable} from "@app/Caches/RecentActivityTable";
+import {Link} from "react-router-dom";
 
 const DetailCache = props => {
   let location = useLocation();
@@ -44,6 +50,7 @@ const DetailCache = props => {
   const [detail, setDetail] = useState<DetailedInfinispanCache | undefined>(
     undefined
   );
+  const [displayShowMore, setDisplayShowMore] = useState<boolean>(false);
   const [xSite, setXSite] = useState<XSite[]>([]);
 
   useEffect(() => {
@@ -123,17 +130,91 @@ const DetailCache = props => {
     );
   };
 
+  const buildRebalancing = () => {
+    if(!detail?.rehash_in_progress) {
+      return (
+        <ToolbarItem>
+          <Badge isRead>Rebalanced</Badge>
+        </ToolbarItem>
+      );
+    }
+    return (
+      <ToolbarItem>
+        <Spinner size={'md'}/> Rebalancing
+      </ToolbarItem>
+    );
+  }
+
+
   const buildIndexManage = () => {
     if (!detail?.features.indexed)
       return;
     return (
       <React.Fragment>
-        <FlexItem>
-          <Badge isRead>Indexed</Badge>
-        </FlexItem>
-        <FlexItem><Button variant={ButtonVariant.link}>Manage</Button></FlexItem>
+        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        <ToolbarItem>
+          <Link
+            to={{
+              pathname:  cacheName + '/indexation'
+            }}
+          >
+            <Button variant={ButtonVariant.link}>Index Management</Button>
+          </Link>
+        </ToolbarItem>
       </React.Fragment>
     );
+  }
+
+  const buildShowMoreHeader = () => {
+    if(!detail) {
+      return '';
+    }
+
+    if(detail.features.indexed
+      || detail.features.hasRemoteBackup
+      || detail.features.secured
+      || detail.features.persistent
+      || detail.features.transactional
+      || detail.features.bounded) {
+
+      if(displayShowMore) {
+        return (
+          <ToolbarItem>
+            <AngleDownIcon/><Button variant={ButtonVariant.link} onClick={() => setDisplayShowMore(false)}> See less cache details </Button>
+          </ToolbarItem>
+        );
+      }
+
+      return (
+          <ToolbarItem>
+            <AngleRightIcon/><Button variant={ButtonVariant.link} onClick={() => setDisplayShowMore(true)}> See more cache details </Button>
+          </ToolbarItem>
+      );
+    }
+
+    return '';
+  }
+
+  const buildShowMorePanel = () => {
+    if(!displayShowMore || !detail) {
+      return '';
+    }
+
+    return (
+      <React.Fragment>
+        <ToolbarGroup>
+          <ToolbarItem>
+            <TextContent>
+              <Text component={TextVariants.h3}>{displayUtils.createFeaturesString(detail.features)}</Text>
+            </TextContent>
+          </ToolbarItem>
+        </ToolbarGroup>
+        <ToolbarGroup>
+          {buildRebalancing()}
+          {buildIndexManage()}
+        </ToolbarGroup>
+      </React.Fragment>
+    )
   }
 
   const buildCacheHeader = () => {
@@ -158,33 +239,20 @@ const DetailCache = props => {
     return (
       <React.Fragment>
         <Toolbar id="cache-detail-header">
-          <ToolbarContent style={{ paddingLeft: 0 }}>
-            <ToolbarItem>
-              <TextContent>
-                <Text component={TextVariants.h1}>{detail.name}</Text>
-              </TextContent>
-            </ToolbarItem>
-            <ToolbarItem>
-              <CacheTypeBadge cacheType={detail.type} small={false} />
-            </ToolbarItem>
-            <ToolbarItem>
+          <ToolbarGroup>
+            <ToolbarContent style={{ paddingLeft: 0}}>
               <ToolbarItem>
-                <Expandable toggleTextExpanded={'Show less'} toggleTextCollapsed={'Show more'}>
-                  <Flex>
-                    <FlexItem>
-                      <TextContent>
-                        <Text component={TextVariants.h4}>
-                          {displayUtils.createFeaturesString(detail.features)}
-                        </Text>
-                      </TextContent>
-                    </FlexItem>
-                  </Flex>
-                  <Flex>
-                    {buildIndexManage()}
-                  </Flex>
-                </Expandable>
+                <TextContent>
+                  <Text component={TextVariants.h1}>{detail.name}</Text>
+                </TextContent>
               </ToolbarItem>
-          </ToolbarContent>
+              <ToolbarItem>
+                <CacheTypeBadge cacheType={detail.type} small={false} />
+              </ToolbarItem>
+              {buildShowMoreHeader()}
+            </ToolbarContent>
+          </ToolbarGroup>
+          {buildShowMorePanel()}
         </Toolbar>
         <Tabs isBox={true}
               activeKey={activeTabKey1}

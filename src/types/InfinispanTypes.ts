@@ -180,3 +180,15 @@ interface ProtoSchema {
   name: string;
   error?: ProtoError;
 }
+
+interface IndexValue {
+  entity: string;
+  count: number;
+}
+
+interface IndexStats {
+  class_names: [string];
+  entities_count: [IndexValue];
+  sizes: [IndexValue];
+  reindexing: boolean;
+}
