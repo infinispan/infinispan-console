@@ -48,11 +48,16 @@ const DetailCache = props => {
   useEffect(() => {
     let locationCacheName = location.pathname.substr(7);
     setCacheName(locationCacheName);
+    setLoading(true);
   }, [location]);
 
   useEffect(() => {
     if(cacheName == '') return;
+    loadCacheDetail();
 
+  }, [cacheName]);
+
+  const loadCacheDetail = () => {
     cacheService.retrieveFullDetail(cacheName).then(eitherDetail => {
       setLoading(false);
       if (eitherDetail.isRight()) {
@@ -66,7 +71,8 @@ const DetailCache = props => {
         setError(eitherDetail.value.message);
       }
     });
-  }, [cacheName]);
+  };
+
 
   const buildDetailContent = () => {
     if (loading) {
@@ -96,26 +102,51 @@ const DetailCache = props => {
     return (
       <Card>
         <CardBody>
-        <Tabs activeKey={activeTabKey1}
-              onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}>
-          <Tab eventKey={0} title="Entries">
-            <Tabs activeKey={activeTabKey2} isSecondary
-                  onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}>
-              <Tab eventKey={10} title="Entries by key">
-                <CacheEntries cacheName={cacheName} />
-              </Tab>
-              <Tab eventKey={11} title="Query values">
-                <QueryEntries cacheName={cacheName} />
-              </Tab>
-            </Tabs>
-          </Tab>
-          <Tab eventKey={1} title="Configuration">
-            <CacheConfiguration config={detail?.configuration} />
-          </Tab>
-          <Tab eventKey={2} title="Metrics">
-            <CacheMetrics stats={detail?.stats} xSite={xSite} />
-          </Tab>
-        </Tabs>
+          <Tabs activeKey={activeTabKey1}
+                onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}>
+            <Tab eventKey={0} title={<TextContent>
+              <Text component={TextVariants.h6}>
+              {'Entries'}
+            </Text>
+              <Text component={TextVariants.pre}>
+                {displayUtils.formatNumber(detail?.size)}
+              </Text>
+            </TextContent>}>
+              <Tabs activeKey={activeTabKey2} isSecondary
+                    onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}>
+                <Tab eventKey={10} title="Entries by key">
+                  <CacheEntries cacheName={cacheName} load={loadCacheDetail}/>
+                </Tab>
+                <Tab eventKey={11} title="Query values">
+                  <QueryEntries cacheName={cacheName}/>
+                </Tab>
+              </Tabs>
+            </Tab>
+            <Tab eventKey={1} title={
+              <TextContent>
+                <Text component={TextVariants.h6}>
+                  {'Configuration'}
+                </Text>
+                <Text component={TextVariants.pre}>
+                  Readonly
+                </Text>
+              </TextContent>
+            }>
+              <CacheConfiguration config={detail?.configuration}/>
+            </Tab>
+            <Tab eventKey={2} title={
+              <TextContent>
+                <Text component={TextVariants.h6}>
+                  {'Metrics'}
+                </Text>
+                <Text component={TextVariants.pre}>
+                  {detail?.stats?.enabled? 'Enabled' : 'Not enabled'}
+                </Text>
+              </TextContent>
+            }>
+              <CacheMetrics stats={detail?.stats} xSite={xSite}/>
+            </Tab>
+          </Tabs>
         </CardBody>
       </Card>
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   AlertVariant,
@@ -120,7 +120,8 @@ const CreateOrUpdateEntryForm = (props: {
               });
             }
           } else {
-            setError(eitherResponse.value.message);
+            onClose();
+            addAlert(eitherResponse.value);
           }
         });
     }

@@ -225,6 +225,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
                     name="cache-config"
                     id="cache-config"
                     isValid={validConfig}
+                    rows={15}
                   />
                 </FormGroup>
               </Expandable>
