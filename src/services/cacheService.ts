@@ -581,6 +581,60 @@ class CacheService {
       });
   }
 
+  /**
+   * Retrieve index stats for the cache name
+   *
+   * @param cacheName
+   */
+  public async retrieveIndexStats(
+    cacheName: string
+  ): Promise<Either<ActionResponse, IndexStats>> {
+    return utils
+      .restCall(
+        this.endpoint + '/caches/' + cacheName + '/search/indexes/stats',
+        'GET'
+      )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then(data =>
+        right(<IndexStats>{
+          class_names: data.indexed_class_names,
+          entities_count: this.mapToIndexValueArray(
+            data.indexed_entities_count
+          ),
+          sizes: this.mapToIndexValueArray(data.index_sizes),
+          reindexing: data.reindexing
+        })
+      )
+      .catch(err => {
+        if (err instanceof TypeError) {
+          return left(<ActionResponse>{ message: err.message, success: false });
+        }
+
+        return err.text().then(errorMessage => {
+          if (errorMessage == '') {
+            errorMessage =
+              'An error happened retrieving index stats for cache ' + cacheName;
+          }
+
+          return left(<ActionResponse>{
+            message: errorMessage,
+            success: false
+          });
+        });
+      });
+  }
+
+  private mapToIndexValueArray(data: JSON): IndexValue[] {
+    return Object.keys(data).map(
+      key => <IndexValue>{ entity: key as string, count: data[key] as number }
+    );
+  }
+
   private mapCacheType(config: JSON): string {
     let cacheType: string = 'Unknown';
     if (config.hasOwnProperty('distributed-cache')) {

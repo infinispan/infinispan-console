@@ -17,7 +17,9 @@ import {
   TextArea,
   TextContent,
   TextInput,
-  TextVariants, Toolbar, ToolbarContent
+  TextVariants,
+  Toolbar,
+  ToolbarContent
 } from '@patternfly/react-core';
 import {CubeIcon} from '@patternfly/react-icons';
 import cacheService from '../../services/cacheService';
