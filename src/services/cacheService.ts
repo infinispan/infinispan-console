@@ -318,11 +318,7 @@ class CacheService {
     keyContentType?: string
   ): Promise<Either<ActionResponse, CacheEntry>> {
     return utils
-      .restCall(
-        this.endpoint + '/caches/' + cacheName + '/' + key,
-        'GET',
-        'application/json;q=0.8'
-      )
+      .restCall(this.endpoint + '/caches/' + cacheName + '/' + key, 'GET')
       .then(response => {
         if (response.ok) {
           return response.text().then(value => {
@@ -340,11 +336,19 @@ class CacheService {
               key: key,
               value: value,
               timeToLive: timeToLive,
-              maxIdleTimeSeconds: maxIdleTimeSeconds,
-              created: created,
-              lastUsed: lastUsed,
-              lastModified: lastModified,
-              expires: expires,
+              maxIdle: maxIdleTimeSeconds,
+              created: created
+                ? new Date(Number.parseInt(created)).toLocaleString()
+                : created,
+              lastUsed: lastUsed
+                ? new Date(Number.parseInt(lastUsed)).toLocaleString()
+                : lastUsed,
+              lastModified: lastModified
+                ? new Date(Date.parse(lastModified)).toLocaleString()
+                : lastModified,
+              expires: expires
+                ? new Date(Date.parse(expires)).toLocaleString()
+                : expires,
               cacheControl: cacheControl,
               eTag: etag
             };
@@ -353,13 +357,36 @@ class CacheService {
         throw response;
       })
       .then(data => right(data))
-      .catch(err =>
-        err
-          .text()
-          .then(errorMessage =>
-            left(<ActionResponse>{ message: errorMessage, success: false })
-          )
-      );
+      .catch(err => {
+        let actionResponse = <ActionResponse>{
+          message: 'An error happened',
+          success: false
+        };
+        if (err instanceof TypeError) {
+          actionResponse = <ActionResponse>{
+            message: err.message,
+            success: false
+          };
+        }
+        if (err instanceof Response) {
+          if (err.status.valueOf() == 404) {
+            // Not Found
+            actionResponse = <ActionResponse>{
+              message: 'The entry key ' + key + ' does not exist',
+              success: false
+            };
+          } else {
+            return err.text().then(errorMessage =>
+              left(<ActionResponse>{
+                message:
+                  errorMessage == '' ? 'An error happened' : errorMessage,
+                success: false
+              })
+            );
+          }
+        }
+        return left(actionResponse);
+      });
   }
 
   /**
@@ -533,15 +560,12 @@ class CacheService {
 
         if (err instanceof Response) {
           if (err.status == 400) {
-            return err
-              .json()
-              .then(jsonError =>
-                left(<ActionResponse>{
-                  message:
-                    jsonError.error.message + '\n' + jsonError.error.cause,
-                  success: false
-                })
-              );
+            return err.json().then(jsonError =>
+              left(<ActionResponse>{
+                message: jsonError.error.message + '\n' + jsonError.error.cause,
+                success: false
+              })
+            );
           }
 
           return err

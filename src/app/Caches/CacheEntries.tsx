@@ -19,7 +19,6 @@ import {SearchIcon} from '@patternfly/react-icons';
 import {CreateOrUpdateEntryForm} from '@app/Caches/CreateOrUpdateEntryForm';
 import cacheService from '../../services/cacheService';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
-import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 import {ClearAllEntries} from '@app/Caches/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/DeleteEntry';
 import {RecentActivityTable} from '@app/Caches/RecentActivityTable';
@@ -31,8 +30,8 @@ import displayUtils from "../../services/displayUtils";
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
+  load: () => void
 }) => {
-  const { activities } = useRecentActivity();
   const [
     isCreateOrUpdateEntryFormOpen,
     setCreateOrUpdateEntryFormOpen
@@ -63,28 +62,8 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
   const columns = [
     { title: 'Key' },
     { title: 'Value' },
-    {
-      title: (
-        <MoreInfoTooltip
-          label="Time to live"
-          toolTip={
-            'The number of seconds before the entry is automatically deleted.'
-          }
-        />
-      )
-    },
-    {
-      title: (
-        <MoreInfoTooltip
-          label="Max Idle"
-          toolTip={
-            'The number of seconds that entries can be idle. ' +
-            'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
-            'the entry is automatically deleted.'
-          }
-        />
-      )
-    },
+    { title: 'Time to live'},
+    { title: 'Max idle'},
     { title: 'Expires' },
     { title: 'Created' },
     { title: 'Last used' },
@@ -169,17 +148,20 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     searchEntryByKey();
     setKeyToEdit('');
     setCreateOrUpdateEntryFormOpen(false);
+    props.load();
   };
 
   const closeClearAllEntryModal = () => {
     setClearAllModalOpen(false);
     searchEntryByKey();
+    props.load();
   };
 
   const closeDeleteEntryModal = () => {
     setDeleteEntryModalOpen(false);
     setKeyToDelete('');
     searchEntryByKey();
+    props.load();
   };
 
   const onChangeKeySearch = value => {
