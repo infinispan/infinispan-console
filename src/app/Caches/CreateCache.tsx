@@ -24,14 +24,15 @@ import {
 import {CubeIcon} from '@patternfly/react-icons';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 
 const CreateCache: React.FunctionComponent<any> = props => {
+  let location = useLocation();
   const { addAlert } = useApiAlert();
-  const cmName: string = props.location.state.cmName;
+  const [cmName, setCmName] = useState('');
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState<('success'| 'error'|'default')>('default');
   const [config, setConfig] = useState('');
@@ -49,6 +50,16 @@ const CreateCache: React.FunctionComponent<any> = props => {
   }
 
   useEffect(() => {
+    setCmName(location.pathname.replace('/caches/create', '')
+      .replace('/container/', ''));
+  }, []);
+
+
+  useEffect(() => {
+    if(cmName == '') {
+      return;
+    }
+
     dataContainerService
       .getCacheConfigurationTemplates(cmName)
       .then(templates => {
@@ -58,7 +69,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
         });
         setConfigs(options);
       });
-  }, []);
+  }, [cmName]);
 
   const onToggleConfigPanel = () => {
     const expanded = !configExpanded;
