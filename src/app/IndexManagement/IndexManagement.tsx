@@ -25,6 +25,7 @@ import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {useLocation} from "react-router";
 import {TableErrorState} from "@app/Common/TableErrorState";
 import {PurgeIndex} from "@app/IndexManagement/PurgeIndex";
+import {Reindex} from "@app/IndexManagement/Reindex";
 import displayUtils from "../../services/displayUtils";
 
 const IndexManagement = props => {
@@ -32,6 +33,7 @@ const IndexManagement = props => {
   let location = useLocation();
   const [cacheName, setCacheName] = useState<string>('');
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
+  const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
   const [indexStats, setIndexStats] = useState<IndexStats | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -97,6 +99,22 @@ const IndexManagement = props => {
     retrieveIndexStats();
   }
 
+  const closeReindexModal = () => {
+    setReindexModalOpen(false);
+    retrieveIndexStats();
+  }
+
+  const buildReindexAction = () => {
+    if(indexStats?.reindexing) {
+      return (
+        <Spinner size={'md'}/>
+      );
+    }
+    return (
+      <Button variant={ButtonVariant.secondary} onClick={() => setReindexModalOpen(true)}>Reindex</Button>
+    );
+  }
+
   const buildIndexPageContent = () => {
     if(loading) {
       return (
@@ -133,7 +151,9 @@ const IndexManagement = props => {
               </TextContent>
             </TextListItem>
             <TextListItem component={TextListItemVariants.dt} key={'reindex'}>Reindexing</TextListItem>
-            <TextListItem component={TextListItemVariants.dd} key={'reindexValue'}>{' ' + indexStats?.reindexing}</TextListItem>
+            <TextListItem component={TextListItemVariants.dd} key={'reindexValue'}>
+              {buildReindexAction()}
+            </TextListItem>
           </TextList>
           <Text key={'button-back'}>
             <Link
@@ -160,12 +180,16 @@ const IndexManagement = props => {
             <Text component={TextVariants.h1} key={'title-value-indexation'}>Indexation</Text>
           </TextContent>
         </LevelItem>
-        <LevelItem><Button variant={ButtonVariant.danger} onClick={() => setPurgeModalOpen(true)}>Purge Index</Button></LevelItem>
+        <LevelItem><Button
+          variant={ButtonVariant.danger}
+          disabled={!indexStats?.reindexing}
+          onClick={() => setPurgeModalOpen(true)}>Purge Index</Button></LevelItem>
       </Level>
 
       <Divider component={DividerVariant.hr}></Divider>
       {buildIndexPageContent()}
       <PurgeIndex cacheName={cacheName} isModalOpen={purgeModalOpen} closeModal={closePurgeModal}/>
+      <Reindex cacheName={cacheName} isModalOpen={reindexModalOpen} closeModal={closeReindexModal}/>
     </PageSection>
   </React.Fragment>
   );

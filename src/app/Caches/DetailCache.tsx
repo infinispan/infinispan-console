@@ -148,12 +148,30 @@ const DetailCache = props => {
   }
 
 
+  const buildDisplayRedindexing = () => {
+    if(!detail?.indexing_in_progress) {
+      return;
+    }
+
+    return (
+      <ToolbarItem>
+          <TextContent>
+            <Text component={TextVariants.small}>
+              <Spinner size={'md'}/>
+              Reindexing
+            </Text>
+          </TextContent>
+      </ToolbarItem>
+    )
+  }
+
   const buildIndexManage = () => {
     if (!detail?.features.indexed)
       return;
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        {buildDisplayRedindexing()}
         <ToolbarItem>
           <Link
             to={{
