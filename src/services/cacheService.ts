@@ -675,6 +675,53 @@ class CacheService {
       });
   }
 
+  /**
+   * Reindex cache
+   *
+   * @param cacheName
+   */
+  public async reindex(cacheName: string): Promise<ActionResponse> {
+    return utils
+      .restCall(
+        this.endpoint + '/caches/' + cacheName + '/search/indexes?action=mass-index&mode=async',
+        'GET'
+      )
+      .then(response => {
+        if (response.ok) {
+          return <ActionResponse>{
+            message: 'Indexing of cache ' + cacheName + ' started',
+            success: true
+          };
+        }
+        throw response;
+      })
+      .catch(err => {
+        let genericError =
+          'An error happened when starting reindex operation for cache ' + cacheName;
+        if (err instanceof TypeError) {
+          return <ActionResponse>{ message: err.message, success: false };
+        }
+
+        if (err instanceof Response) {
+          return err.text().then(errorMessage => {
+            if (errorMessage == '') {
+              errorMessage = genericError;
+            }
+
+            return <ActionResponse>{
+              message: errorMessage,
+              success: false
+            };
+          });
+        }
+
+        return <ActionResponse>{
+          message: genericError,
+          success: false
+        };
+      });
+  }
+
   private mapToIndexValueArray(data: JSON): IndexValue[] {
     return Object.keys(data).map(
       key => <IndexValue>{ entity: key as string, count: data[key] as number }

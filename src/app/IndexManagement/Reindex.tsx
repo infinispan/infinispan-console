@@ -11,9 +11,9 @@ import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 /**
- * Purge index modal
+ * Reindex modal
  */
-const PurgeIndex = (props: {
+const Reindex = (props: {
   cacheName: string;
   isModalOpen: boolean;
   closeModal: () => void;
@@ -23,7 +23,7 @@ const PurgeIndex = (props: {
 
   const onClickPurgeButton = () => {
     cacheService
-      .purgeIndexes(props.cacheName)
+      .reindex(props.cacheName)
       .then(actionResponse => {
         props.closeModal();
         addAlert(actionResponse);
@@ -35,16 +35,15 @@ const PurgeIndex = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Purge index?'}
+      title={'Reindex cache?'}
       onClose={props.closeModal}
-      aria-label="Purge index modal"
+      aria-label="Reindex modal"
       actions={[
         <Button
-          key="purge"
-          variant={ButtonVariant.danger}
+          key="reindex"
           onClick={onClickPurgeButton}
         >
-          Purge
+          Reindex
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
@@ -53,14 +52,13 @@ const PurgeIndex = (props: {
     >
       <TextContent>
         <Text>
-          This action will permanently clear all indexes {' '}
-          from the cache{' '} <strong>{props.cacheName}</strong>.
+          Reindexing a cache might take time.
           <br />
-          This cannot be undone.
+          Are you sure you want to start reindexing?
         </Text>
       </TextContent>
     </Modal>
   );
 };
 
-export { PurgeIndex };
+export { Reindex };
