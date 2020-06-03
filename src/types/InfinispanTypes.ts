@@ -136,6 +136,16 @@ interface QueryStats {
   search_query_execution_max_time_query_string: string;
 }
 
+interface StateTransferStatus {
+  site: string;
+  status: string;
+}
+
+interface SiteNode {
+  name: string;
+  status: string;
+}
+
 interface XSite {
   name: string;
   status: string;

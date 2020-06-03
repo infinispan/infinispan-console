@@ -156,6 +156,27 @@ const DetailCache = props => {
     );
   }
 
+  const buildBackupsManage = () => {
+    if (!detail?.features.hasRemoteBackup)
+      return;
+    return (
+      <React.Fragment>
+        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        <ToolbarItem>
+          <Badge isRead>Backups</Badge>
+        </ToolbarItem>
+        <ToolbarItem>
+          <Link
+            to={{
+              pathname:  cacheName + '/backups'
+            }}
+          >
+            <Button variant={ButtonVariant.link}>Manage</Button>
+          </Link>
+        </ToolbarItem>
+      </React.Fragment>
+    );
+  }
 
   const buildDisplayRedindexing = () => {
     if(!detail?.indexing_in_progress) {
@@ -240,6 +261,7 @@ const DetailCache = props => {
         </ToolbarGroup>
         <ToolbarGroup>
           {buildRebalancing()}
+          {buildBackupsManage()}
           {buildIndexManage()}
         </ToolbarGroup>
       </React.Fragment>

@@ -54,6 +54,18 @@ class DisplayUtils {
       case 'FAILED':
         color = global_danger_color_100.value;
         break;
+      case 'ERROR':
+        color = global_danger_color_100.value;
+        break;
+      case 'OK':
+        color = global_success_color_100.value;
+        break;
+      case 'CANCELED':
+        color = global_warning_color_100.value;
+        break;
+      case 'SENDING':
+        color = global_warning_color_100.value;
+        break;
       case 'TERMINATED':
         color = chart_global_label_Fill.value;
         break;
@@ -71,6 +83,18 @@ class DisplayUtils {
         break;
       case 'RUNNING':
         variant = AlertVariant.success;
+        break;
+      case 'OK':
+        variant = AlertVariant.success;
+        break;
+      case 'CANCELLING':
+        variant = AlertVariant.warning;
+        break;
+      case 'SENDING':
+        variant = AlertVariant.warning;
+        break;
+      case 'ERROR':
+        variant = AlertVariant.danger;
         break;
       case 'INSTANTIATED':
         variant = AlertVariant.warning;
@@ -248,6 +272,7 @@ class DisplayUtils {
 
   public capitalize(value: string | undefined): string {
     if (value === undefined) return '';
+    if (value.length <= 1) return value;
 
     return value.charAt(0).toUpperCase() + value.slice(1).toLocaleLowerCase();
   }

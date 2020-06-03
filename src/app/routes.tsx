@@ -17,6 +17,7 @@ import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
 import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
+import { XSiteCache } from '@app/XSite/XSiteCache';
 
 let routeFocusTimer: number;
 const getSupportModuleAsync = () => {
@@ -156,6 +157,14 @@ const routes: IAppRoute[] = [
     label: 'Index management',
     path: '/cache/:cmName/indexation',
     title: 'Index management',
+    menu: false
+  },
+  {
+    component: XSiteCache,
+    exact: true,
+    label: 'XSite Replication Cache',
+    path: '/cache/:cmName/backups',
+    title: 'XSite management caches',
     menu: false
   },
   {

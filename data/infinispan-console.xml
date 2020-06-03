@@ -162,7 +162,7 @@
       </security-realms>
     </security>
 
-    <endpoints socket-binding="default" security-realm="default">
+    <endpoints socket-binding="default">
       <hotrod-connector name="hotrod"/>
       <rest-connector name="rest"/>
       <!-- Uncomment to enable the memcached connector -->
