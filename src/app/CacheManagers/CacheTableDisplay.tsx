@@ -37,6 +37,7 @@ import {DeleteCache} from '@app/CacheManagers/DeleteCache';
 import {IgnoreCache} from '@app/CacheManagers/IgnoreCache';
 import {IExtraData, IRowData} from '@patternfly/react-table/src/components/Table/Table';
 import {ToolbarItemVariant} from "@patternfly/react-core/src/components/Toolbar/ToolbarItem";
+import {TableEmptyState} from "@app/Common/TableEmptyState";
 
 interface IgnoreCache {
   cacheName: string;
@@ -185,7 +186,7 @@ const CacheTableDisplay = (props: {
             initSlice + cachesPagination.perPage
           ),
           false,
-          undefined
+          ''
         );
       } else {
         updateRows([], false, eitherCaches.value.message);
@@ -202,7 +203,7 @@ const CacheTableDisplay = (props: {
     updateRows(
       filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage),
       false,
-      undefined
+      ''
     );
   };
 
@@ -215,55 +216,14 @@ const CacheTableDisplay = (props: {
     updateRows(
       filteredCaches.slice(initSlice, initSlice + perPage),
       false,
-      undefined
-    );
-  };
-
-  const emptyOrLoading = (loading?: boolean, error?: string | undefined) => {
-    if (loading) {
-      return (
-        <Bullseye>
-          <Spinner size="xl" />
-        </Bullseye>
-      );
-    }
-
-    if (error) {
-      return (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.small}>
-            <EmptyStateIcon
-              icon={ExclamationCircleIcon}
-              color={global_danger_color_100.value}
-            />
-            <Title headingLevel="h2" size="lg">
-              Unable to connect
-            </Title>
-            <EmptyStateBody>
-              There was an error retrieving data. Check your connection and try
-              again.
-            </EmptyStateBody>
-          </EmptyState>
-        </Bullseye>
-      );
-    }
-
-    return (
-      <Bullseye>
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={SearchIcon} />
-          <Title headingLevel="h2" size="lg">
-            No caches found
-          </Title>
-        </EmptyState>
-      </Bullseye>
+      ''
     );
   };
 
   const updateRows = (
     caches: CacheInfo[],
-    loading?: boolean,
-    error?: undefined | string
+    loading: boolean,
+    error: string
   ) => {
     let currentRows: {
       heightAuto: boolean;
@@ -281,7 +241,7 @@ const CacheTableDisplay = (props: {
           cells: [
             {
               props: { colSpan: 9 },
-              title: emptyOrLoading(loading, error)
+              title: <TableEmptyState loading={loading} error={error} empty={'Caches not found'}/>
             }
           ]
         }
@@ -486,7 +446,7 @@ const CacheTableDisplay = (props: {
     let actualSelection: string[] = selected.filter(item => item !== id);
     let newFilteredCaches = filterCaches(actualSelection);
     updateChips(actualSelection);
-    updateRows(newFilteredCaches);
+    updateRows(newFilteredCaches, false, '');
     setSelected(actualSelection);
     setFilteredCaches(newFilteredCaches);
   };
@@ -503,7 +463,7 @@ const CacheTableDisplay = (props: {
     updateChips(actualSelection);
     let newFilteredCaches = filterCaches(actualSelection);
 
-    updateRows(newFilteredCaches);
+    updateRows(newFilteredCaches, false, '');
     setSelected(actualSelection);
     setFilteredCaches(newFilteredCaches);
   };
@@ -517,7 +477,7 @@ const CacheTableDisplay = (props: {
     setChipsCacheType([]);
     setChipsCacheStatus([]);
     setSelected([]);
-    updateRows(caches);
+    updateRows(caches, false, '');
     setFilteredCaches(caches);
   };
 
