@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Card,
   CardBody,
   DataToolbar,
-  DataToolbarContent,
+  DataToolbarContent, DataToolbarGroup,
   DataToolbarItem,
+  DataToolbarItemVariant,
   Nav,
   NavItem,
   NavList,
@@ -18,15 +19,15 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
-import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
-import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
+import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
+import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
 import {ProtobufSchemasDisplay} from "@app/CacheManagers/ProtobufSchemasDisplay";
-import { Spinner } from '@patternfly/react-core/dist/js/experimental';
-import { Status } from '@app/Common/Status';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { TableErrorState } from '@app/Common/TableErrorState';
+import {Spinner} from '@patternfly/react-core/dist/js/experimental';
+import {Status} from '@app/Common/Status';
+import {global_spacer_sm} from '@patternfly/react-tokens';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {TableErrorState} from '@app/Common/TableErrorState';
 
 const CacheManagers = () => {
   const { addAlert } = useApiAlert();
@@ -146,34 +147,52 @@ const CacheManagers = () => {
     );
   };
 
-  let title = 'Data container is empty';
-  let status = '';
-  let localSiteName = '';
-  if (cm !== undefined) {
-    title = displayUtils.capitalize(cm.name);
-    status = cm.cache_manager_status;
-    localSiteName = cm.local_site ? '| ' + cm.local_site + ' site' : '';
+  const buildSiteDisplay = (siteName: string | undefined) => {
+    if(!siteName || siteName == '') {
+      return '';
+    }
+
+    return (
+      <React.Fragment>
+        <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
+        <DataToolbarItem variant={DataToolbarItemVariant.label}>
+        Site:
+        </DataToolbarItem>
+        <DataToolbarItem variant={DataToolbarItemVariant.label}>
+              {siteName}
+        </DataToolbarItem>
+        <DataToolbarItem variant={DataToolbarItemVariant.separator}></DataToolbarItem>
+      </React.Fragment>
+    );
   }
 
-  let buildHeader = () => {
+  const buildHeader = () => {
+    let title = 'Data container';
     if (!cm) {
       return (
         <TextContent id="cluster-manager-header">
-          <Text component={TextVariants.h1}>Data container</Text>
+          <Text component={TextVariants.h1}>{title}</Text>
         </TextContent>
       );
     }
+
+    let status = '';
+    let localSiteName = '';
+    title = displayUtils.capitalize(cm.name);
+    status = cm.cache_manager_status;
+
     return (
       <DataToolbar id="cluster-manager-header">
-        <DataToolbarContent style={{ paddingLeft: 0 }}>
+        <DataToolbarContent style={{ paddingLeft: 0}}>
+            <DataToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h1} style={{marginBottom: 0}}>
+                  {title}
+                </Text>
+              </TextContent>
+            </DataToolbarItem>
+           {buildSiteDisplay(cm.local_site)}
           <DataToolbarItem>
-            <TextContent>
-              <Text component={TextVariants.h1}>
-                {title} {localSiteName}
-              </Text>
-            </TextContent>
-          </DataToolbarItem>
-          <DataToolbarItem style={{ marginBottom: global_spacer_sm.value }}>
             <Status status={status} />
           </DataToolbarItem>
         </DataToolbarContent>
