@@ -21,11 +21,11 @@ const DeleteCache = (props: {
   closeModal: (boolean) => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState(true);
+  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<('success' | 'error' | 'default')>('default');
   const [cacheNameFormValue, setCacheNameFormValue] = useState('');
 
   const clearDeleteCacheModal = (deleteDone: boolean) => {
-    setIsValidCacheNameValue(true);
+    setIsValidCacheNameValue('default');
     setCacheNameFormValue('');
     props.closeModal(deleteDone);
   };
@@ -37,12 +37,12 @@ const DeleteCache = (props: {
     let trim = cacheNameFormValue.trim();
     setCacheNameFormValue(trim);
     if (trim.length == 0) {
-      setIsValidCacheNameValue(false);
+      setIsValidCacheNameValue('error');
       return;
     }
 
     let validCacheName = trim === props.cacheName;
-    setIsValidCacheNameValue(validCacheName);
+    setIsValidCacheNameValue(validCacheName ? 'success' : 'error');
     if (validCacheName) {
       cacheService.deleteCache(props.cacheName).then(actionResponse => {
         clearDeleteCacheModal(actionResponse.success);
@@ -58,7 +58,6 @@ const DeleteCache = (props: {
       isOpen={props.isModalOpen}
       title="Delete Cache?"
       onClose={() => clearDeleteCacheModal(false)}
-      isFooterLeftAligned
       aria-label="Delete cache modal"
       description={
         <TextContent>
@@ -93,10 +92,10 @@ const DeleteCache = (props: {
           label="Type the CACHE NAME to confirm"
           helperTextInvalid="Cache names do not match"
           fieldId="cache-to-delete"
-          isValid={isValidCacheNameValue}
+          validated={isValidCacheNameValue}
         >
           <TextInput
-            isValid={isValidCacheNameValue}
+            validated={isValidCacheNameValue}
             value={cacheNameFormValue}
             id="cache-to-delete"
             aria-describedby="cache-to-delete-helper"

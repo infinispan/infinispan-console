@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  Card,
-  CardBody,
-  ClipboardCopy,
-  ClipboardCopyVariant, Spinner,
-  Text,
-  TextContent,
-  TextVariants
-} from '@patternfly/react-core';
+import {Card, CardBody, ClipboardCopy, ClipboardCopyVariant, Spinner} from '@patternfly/react-core';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const CacheConfiguration: React.FunctionComponent<any> = (props: {
   config: (CacheConfig|undefined);
@@ -22,21 +16,18 @@ const CacheConfiguration: React.FunctionComponent<any> = (props: {
   return (
     <Card>
       <CardBody>
-        <TextContent key={props.config?.name + '-config-text-content'}>
-          <Text
-            component={TextVariants.pre}
-            key={props.config?.name + '-config-text'}
-          >
-            {props.config?.config}
-          </Text>
-          <ClipboardCopy
-            isReadOnly
-            isCode
-            variant={ClipboardCopyVariant.inline}
-          >
-            {props.config?.config}
+        <SyntaxHighlighter wrapLines={false} style={githubGist}
+                           useInlineStyles={true}
+                           showLineNumbers={true}>
+          {props.config?.config}
+        </SyntaxHighlighter>
+        <ClipboardCopy
+          isReadOnly
+          isCode
+          variant={ClipboardCopyVariant.inline}
+        >
+          {props.config?.config}
           </ClipboardCopy>
-        </TextContent>
       </CardBody>
     </Card>
   );

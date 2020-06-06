@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
   BackgroundImage,
-  BackgroundImageSrc,
   Button,
   ListVariant,
   LoginPage,
@@ -11,22 +10,10 @@ import {
 } from '@patternfly/react-core';
 import back from '!!url-loader!@app/assets/images/infinispan_login_background.svg';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo.svg';
-import {
-  ApplicationsIcon,
-  CatalogIcon,
-  InfoIcon
-} from '@patternfly/react-icons';
+import { CatalogIcon, InfoIcon, GithubIcon} from '@patternfly/react-icons'
 import utils from '../../services/utils';
 
 const Welcome: React.FunctionComponent<any> = props => {
-  const images = {
-    [BackgroundImageSrc.xs]: back,
-    [BackgroundImageSrc.xs2x]: back,
-    [BackgroundImageSrc.sm]: back,
-    [BackgroundImageSrc.sm2x]: back,
-    [BackgroundImageSrc.lg]: back
-  };
-
   const brandname = 'Infinispan';
 
   const description1 =
@@ -75,7 +62,7 @@ const Welcome: React.FunctionComponent<any> = props => {
             component="a"
             href="https://github.com/infinispan/infinispan-simple-tutorials"
             variant="link"
-            icon={<ApplicationsIcon />}
+            icon={<GithubIcon />}
           >
             Run the simple tutorials{' '}
           </Button>
@@ -86,12 +73,12 @@ const Welcome: React.FunctionComponent<any> = props => {
 
   return (
     <Page>
-      <BackgroundImage src={images} />
+      <BackgroundImage src={back} />
       <LoginPage
         footerListVariants={ListVariant.inline}
         brandImgSrc={icon}
         brandImgAlt="Infinispan logo"
-        backgroundImgSrc={images}
+        backgroundImgSrc={back}
         backgroundImgAlt={brandname}
         loginTitle="Welcome to the Infinispan Server"
         footerListItems={<FooterList />}

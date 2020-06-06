@@ -66,7 +66,6 @@ const IgnoreCache = (props: {
       isOpen={props.isModalOpen}
       title={props.action == 'ignore' ? 'Ignore Cache?' : 'Undo ignore cache?'}
       onClose={() => clearIgnoreCacheModal(false)}
-      isFooterLeftAligned
       aria-label={
         props.action == 'ignore'
           ? 'Ignore cache modal'

@@ -3,7 +3,7 @@ import {
   Alert,
   AlertVariant,
   Button,
-  Expandable,
+  ExpandableSection,
   Form,
   FormGroup,
   Modal,
@@ -294,7 +294,6 @@ const CreateOrUpdateEntryForm = (props: {
       isOpen={props.isModalOpen}
       title={isEdition ? 'Edit entry' : 'Add new entry'}
       onClose={onClose}
-      isFooterLeftAligned
       aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
       actions={[
         <Button key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
@@ -446,7 +445,7 @@ const CreateOrUpdateEntryForm = (props: {
           />
         </FormGroup>
       </Form>
-      <Expandable toggleText="Advanced options">
+      <ExpandableSection toggleText="Advanced options">
         <Form
           onSubmit={e => {
             e.preventDefault();
@@ -464,7 +463,7 @@ const CreateOrUpdateEntryForm = (props: {
               onSelect={onSelectFlags}
               onClear={onClearFlagsSelection}
               selections={flags.selected}
-              isExpanded={flags.expanded}
+              isOpen={flags.expanded}
               placeholderText="Flags"
               maxHeight={150}
             >
@@ -486,7 +485,7 @@ const CreateOrUpdateEntryForm = (props: {
               onSelect={onSelectKeyContentType}
               onClear={onClearKeyContentType}
               selections={keyContentType.selected}
-              isExpanded={keyContentType.expanded}
+              isOpen={keyContentType.expanded}
               isDisabled={isEdition}
             >
               {keyContentTypeOptions()}
@@ -507,13 +506,13 @@ const CreateOrUpdateEntryForm = (props: {
               onSelect={onSelectValueContentType}
               onClear={onClearValueContentType}
               selections={valueContentType.selected}
-              isExpanded={valueContentType.expanded}
+              isOpen={valueContentType.expanded}
             >
               {valueContentTypeOptions()}
             </Select>
           </FormGroup>
         </Form>
-      </Expandable>
+      </ExpandableSection>
     </Modal>
   );
 };

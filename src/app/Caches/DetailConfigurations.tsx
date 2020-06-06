@@ -8,14 +8,14 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Expandable,
+  ExpandableSection,
   PageSection,
   PageSectionVariants,
   Pagination,
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title, Toolbar, ToolbarContent
 } from '@patternfly/react-core';
 import dataContainerService from '../../services/dataContainerService';
 import { SearchIcon } from '@patternfly/react-icons';
@@ -27,6 +27,8 @@ import {
   TableVariant
 } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const DetailConfigurations: React.FunctionComponent<any> = props => {
   const cm: string = props.location.state.cmName;
@@ -37,9 +39,8 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const columns = [
-    { title: 'Name', transforms: [cellWidth(40)] },
     {
-      title: 'Detail'
+      title: 'Configuration template'
     }
   ];
 
@@ -82,7 +83,6 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
           heightAuto: true,
           cells: [
             {
-              props: { colSpan: 8 },
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
@@ -105,9 +105,8 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
         return {
           heightAuto: true,
           cells: [
-            { title: config.name },
             {
-              title: <DisplayConfig name={config.name} config={config.config} />
+              title: displayConfig(config.name, config.config)
             }
           ]
         };
@@ -116,19 +115,19 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
     setRows(rows);
   };
 
-  const DisplayConfig = (props: { name: string; config: string }) => {
+  const displayConfig = (name: string, config: string ) => {
     return (
-      <Expandable
-        toggleTextExpanded="Hide"
-        toggleTextCollapsed="View"
+      <ExpandableSection
+        toggleTextExpanded={name}
+        toggleTextCollapsed={name}
         key={name + '-config-value'}
       >
-        <TextContent key={props.name + '-config-text-content'}>
-          <Text component={TextVariants.pre} key={props.name + '-config-text'}>
-            {props.config}
-          </Text>
-        </TextContent>
-      </Expandable>
+        <SyntaxHighlighter wrapLines={false} style={githubGist}
+                           useInlineStyles={true}
+                           showLineNumbers={true}>
+          {config}
+        </SyntaxHighlighter>
+      </ExpandableSection>
     );
   };
 
@@ -138,9 +137,13 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb currentPage={pageTitle} />
-        <TextContent>
-          <Text component={TextVariants.h1}>{pageTitle}</Text>
-        </TextContent>
+        <Toolbar id="detail-config-header">
+          <ToolbarContent style={{ paddingLeft: 0 }}>
+            <TextContent>
+              <Text component={TextVariants.h1}>{pageTitle}</Text>
+            </TextContent>
+          </ToolbarContent>
+        </Toolbar>
       </PageSection>
       <PageSection>
         <Card>

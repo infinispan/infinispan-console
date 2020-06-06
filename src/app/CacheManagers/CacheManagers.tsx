@@ -4,25 +4,24 @@ import dataContainerService from '../../services/dataContainerService';
 import {
   Card,
   CardBody,
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
   Nav,
   NavItem,
   NavList,
-  NavVariants,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
+  Spinner
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
 import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
 import {ProtobufSchemasDisplay} from "@app/CacheManagers/ProtobufSchemasDisplay";
-import { Spinner } from '@patternfly/react-core/dist/js/experimental';
 import { Status } from '@app/Common/Status';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
@@ -67,26 +66,32 @@ const CacheManagers = () => {
     setShowSerializationContext(tabIndex == '3');
   };
 
+  interface ContainerTab {
+    key: string;
+    name: string;
+    count: number;
+  }
+
   const buildTabs = () => {
     if (loading || error) {
-      return <span />;
+      return '';
     }
 
+    const tabs:ContainerTab[] = [
+      {name: 'Caches', count: cachesCount, key: '0'},
+      {name: 'Counters', count: countersCount, key: '1'},
+      {name: 'Tasks', count: tasksCount, key: '2'},
+      {name: 'Protobuf Schemas', count: protoSchemasCount, key : '3'}
+    ];
+
     return (
-      <Nav onSelect={handleTabClick}>
-        <NavList variant={NavVariants.tertiary}>
-          <NavItem key="nav-item-0" itemId="0" isActive={activeTabKey === '0'}>
-            <strong>{cachesCount}</strong> Caches
+      <Nav onSelect={handleTabClick} variant={'tertiary'}>
+        <NavList>
+        {tabs.map(tab =>
+          <NavItem key={'nav-item-' + tab.key} itemId={tab.key} isActive={activeTabKey === tab.key}>
+            <strong style={{marginRight: global_spacer_sm.value}}>{tab.count}</strong> {tab.name}
           </NavItem>
-          <NavItem key="nav-item-1" itemId="1" isActive={activeTabKey === '1'}>
-            <strong>{countersCount}</strong> Counters
-          </NavItem>
-          <NavItem key="nav-item-2" itemId="2" isActive={activeTabKey === '2'}>
-            <strong>{tasksCount}</strong> Tasks
-          </NavItem>
-          <NavItem key="nav-item-3" itemId="3" isActive={activeTabKey === '3'}>
-            <strong>{protoSchemasCount}</strong> Protobuf Schemas
-          </NavItem>
+        )}
         </NavList>
       </Nav>
     );
@@ -164,20 +169,20 @@ const CacheManagers = () => {
       );
     }
     return (
-      <DataToolbar id="cluster-manager-header">
-        <DataToolbarContent style={{ paddingLeft: 0 }}>
-          <DataToolbarItem>
+      <Toolbar id="cluster-manager-header">
+        <ToolbarContent style={{ paddingLeft: 0 }}>
+          <ToolbarItem>
             <TextContent>
               <Text component={TextVariants.h1}>
                 {title} {localSiteName}
               </Text>
             </TextContent>
-          </DataToolbarItem>
-          <DataToolbarItem style={{ marginBottom: global_spacer_sm.value }}>
+          </ToolbarItem>
+          <ToolbarItem style={{ marginBottom: global_spacer_sm.value }}>
             <Status status={status} />
-          </DataToolbarItem>
-        </DataToolbarContent>
-      </DataToolbar>
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
     );
   };
 

@@ -1,23 +1,37 @@
 import React, {useEffect, useState} from 'react';
 import {
   AlertVariant,
-  Bullseye, Button, ButtonVariant,
+  Bullseye,
+  Button,
+  ButtonVariant,
   DataList,
   DataListCell,
   DataListContent,
   DataListItem,
   DataListItemCells,
   DataListItemRow,
-  DataListToggle, DataToolbarItemVariant, Divider, DividerVariant,
-  EmptyState, EmptyStateBody,
+  DataListToggle,
+  Divider,
+  DividerVariant,
+  EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
-  Pagination, Spinner,
+  Pagination,
+  Spinner,
   Stack,
-  StackItem, Text, TextArea, TextContent, TextInput, TextVariants,
-  Title, Toolbar, ToolbarGroup, ToolbarItem, Tooltip, TooltipPosition
+  StackItem,
+  Text,
+  TextArea,
+  TextContent,
+  TextVariants,
+  Title,
+  Toolbar, ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem, ToolbarItemVariant,
+  Tooltip,
+  TooltipPosition,
 } from '@patternfly/react-core';
-import {ExclamationCircleIcon, SearchIcon} from '@patternfly/react-icons';
+import {SearchIcon} from '@patternfly/react-icons';
 import {useApiAlert} from "@app/utils/useApiAlert";
 import protobufService from "../../services/protobufService";
 import {
@@ -26,12 +40,8 @@ import {
   global_spacer_sm,
   global_success_color_200
 } from "@patternfly/react-tokens";
-import displayUtils from "../../services/displayUtils";
 import {AlertIcon} from "@patternfly/react-core/dist/js/components/Alert/AlertIcon";
-import {DataToolbar, DataToolbarContent, DataToolbarItem} from "@patternfly/react-core/dist/js/experimental";
-import {Link} from "react-router-dom";
 import {CreateProtoSchema} from "@app/CacheManagers/CreateProtoSchema";
-import {Status} from "@app/Common/Status";
 import {DeleteSchema} from "@app/CacheManagers/DeleteSchema";
 
 /**
@@ -235,21 +245,23 @@ const ProtobufSchemasDisplay = (props: {
                          marginBottom: global_spacer_md.value,
                          marginTop: global_spacer_md.value}}/>
               <Toolbar>
-                <ToolbarItem>
-                  <Button variant={ButtonVariant.secondary}
-                          onClick={() => handleEdit(protoSchema.name)}>
-                    {editSchemaName == protoSchema.name? 'Save' : 'Edit'}
-                  </Button>
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Button variant={ButtonVariant.link}
-                          onClick={() => {
-                            setDeleteSchemaName(protoSchema.name);
-                            setDeleteSchemaModalOpen(true);
-                          }}>
-                  Delete
-                  </Button>
-                </ToolbarItem>
+                <ToolbarGroup>
+                  <ToolbarItem>
+                    <Button variant={ButtonVariant.secondary}
+                            onClick={() => handleEdit(protoSchema.name)}>
+                      {editSchemaName == protoSchema.name? 'Save' : 'Edit'}
+                    </Button>
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <Button variant={ButtonVariant.link}
+                            onClick={() => {
+                              setDeleteSchemaName(protoSchema.name);
+                              setDeleteSchemaModalOpen(true);
+                            }}>
+                      Delete
+                    </Button>
+                  </ToolbarItem>
+                </ToolbarGroup>
               </Toolbar>
             </DataListContent>
           </DataListItem>
@@ -275,11 +287,10 @@ const ProtobufSchemasDisplay = (props: {
   return (
     <Stack>
       <StackItem>
-        <DataToolbar id="schemas-table-toolbar">
-          <DataToolbarContent>
-            <DataToolbarItem>{buildCreateSchemaButton()}</DataToolbarItem>
-            <DataToolbarItem  variant={DataToolbarItemVariant.pagination}
-                              breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
+        <Toolbar id="schemas-table-toolbar">
+          <ToolbarContent>
+            <ToolbarItem>{buildCreateSchemaButton()}</ToolbarItem>
+            <ToolbarItem  variant={ToolbarItemVariant.pagination}>
               <Pagination
                 itemCount={schemas.length}
                 perPage={schemasPagination.perPage}
@@ -289,9 +300,9 @@ const ProtobufSchemasDisplay = (props: {
                 onPerPageSelect={onPerPageSelect}
                 isCompact
               />
-            </DataToolbarItem>
-          </DataToolbarContent>
-        </DataToolbar>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
       </StackItem>
       <StackItem>{buildSchemaList()}</StackItem>
       <StackItem>

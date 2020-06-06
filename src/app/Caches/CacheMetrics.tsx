@@ -256,7 +256,7 @@ const CacheMetrics: React.FunctionComponent<any> = (props: {
   }
 
   return (
-    <Grid gutter="md">
+    <Grid hasGutter={true}>
       <GridItem span={6} rowSpan={2}>
         {buildCacheContentCard()}
         {buildCacheLoaderCard()}

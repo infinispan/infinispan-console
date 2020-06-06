@@ -2,27 +2,27 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
   Bullseye,
-  Card,
-  CardBody,
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Tab,
   Tabs,
+  TabsComponent,
+  TabTitleText,
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title, Card, CardBody
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import displayUtils from '../../services/displayUtils';
-import {Spinner} from '@patternfly/react-core/dist/js/experimental';
 import {CacheMetrics} from '@app/Caches/CacheMetrics';
 import {CacheEntries} from '@app/Caches/CacheEntries';
 import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
@@ -32,6 +32,7 @@ import {useLocation} from 'react-router';
 import {global_danger_color_200} from '@patternfly/react-tokens';
 import {ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from "@app/Caches/QueryEntries";
+import {RecentActivityTable} from "@app/Caches/RecentActivityTable";
 
 const DetailCache = props => {
   let location = useLocation();
@@ -73,6 +74,24 @@ const DetailCache = props => {
     });
   };
 
+  const buildEntriesTabContent = () => {
+    return (
+          <Tabs unmountOnExit
+                activeKey={activeTabKey2}
+                aria-label="Entries tab"
+                component={TabsComponent.nav}
+                style={{backgroundColor: "white"}}
+                onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}>
+            <Tab eventKey={10} title={<TabTitleText>Manage Entries</TabTitleText>} >
+              <CacheEntries cacheName={cacheName} load={loadCacheDetail}/>
+              <RecentActivityTable cacheName={cacheName} />
+            </Tab>
+            <Tab eventKey={11} title={<TabTitleText>Query Values</TabTitleText>} >
+              <QueryEntries cacheName={cacheName}/>
+            </Tab>
+          </Tabs>
+    )
+  }
 
   const buildDetailContent = () => {
     if (loading) {
@@ -80,8 +99,6 @@ const DetailCache = props => {
     }
     if (error.length > 0) {
       return (
-        <Card>
-          <CardBody>
             <Bullseye>
               <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon
@@ -94,61 +111,15 @@ const DetailCache = props => {
                 <EmptyStateBody>{error}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
-          </CardBody>
-        </Card>
       );
     }
 
     return (
-      <Card>
-        <CardBody>
-          <Tabs activeKey={activeTabKey1}
-                onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}>
-            <Tab eventKey={0} title={<TextContent>
-              <Text component={TextVariants.h6}>
-              {'Entries'}
-            </Text>
-              <Text component={TextVariants.pre}>
-                {displayUtils.formatNumber(detail?.size)}
-              </Text>
-            </TextContent>}>
-              <Tabs activeKey={activeTabKey2} isSecondary
-                    onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}>
-                <Tab eventKey={10} title="Entries by key">
-                  <CacheEntries cacheName={cacheName} load={loadCacheDetail}/>
-                </Tab>
-                <Tab eventKey={11} title="Query values">
-                  <QueryEntries cacheName={cacheName}/>
-                </Tab>
-              </Tabs>
-            </Tab>
-            <Tab eventKey={1} title={
-              <TextContent>
-                <Text component={TextVariants.h6}>
-                  {'Configuration'}
-                </Text>
-                <Text component={TextVariants.pre}>
-                  Readonly
-                </Text>
-              </TextContent>
-            }>
-              <CacheConfiguration config={detail?.configuration}/>
-            </Tab>
-            <Tab eventKey={2} title={
-              <TextContent>
-                <Text component={TextVariants.h6}>
-                  {'Metrics'}
-                </Text>
-                <Text component={TextVariants.pre}>
-                  {detail?.stats?.enabled? 'Enabled' : 'Not enabled'}
-                </Text>
-              </TextContent>
-            }>
-              <CacheMetrics stats={detail?.stats} xSite={xSite}/>
-            </Tab>
-          </Tabs>
-        </CardBody>
-      </Card>
+      <React.Fragment>
+          {activeTabKey1 == 0 ?  buildEntriesTabContent() : ''}
+          {activeTabKey1 == 1 ?  <CacheConfiguration config={detail?.configuration}/> : ''}
+          {activeTabKey1 == 2 ?  <CacheMetrics stats={detail?.stats} xSite={xSite}/> : ''}
+      </React.Fragment>
     );
   };
 
@@ -173,32 +144,39 @@ const DetailCache = props => {
 
     return (
       <React.Fragment>
-        <DataToolbar id="cache-detail-header">
-          <DataToolbarContent style={{ paddingLeft: 0 }}>
-            <DataToolbarItem>
+        <Toolbar id="cache-detail-header">
+          <ToolbarContent style={{ paddingLeft: 0 }}>
+            <ToolbarItem>
               <TextContent>
                 <Text component={TextVariants.h1}>{detail.name}</Text>
               </TextContent>
-            </DataToolbarItem>
-            <DataToolbarItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <CacheTypeBadge cacheType={detail.type} small={false} />
-            </DataToolbarItem>
-            <DataToolbarItem>
+            </ToolbarItem>
+            <ToolbarItem>
               <TextContent>
                 <Text component={TextVariants.h4}>
                   {displayUtils.createFeaturesString(detail.features)}
                 </Text>
               </TextContent>
-            </DataToolbarItem>
-          </DataToolbarContent>
-        </DataToolbar>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+        <Tabs isBox={true}
+              activeKey={activeTabKey1}
+              onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}>
+          <Tab eventKey={0} title={'Entries (' + displayUtils.formatNumber(detail?.size) + ')'}></Tab>
+          <Tab eventKey={1} title={'Configuration'}/>
+          <Tab eventKey={2} title={'Metrics (' +  (detail?.stats?.enabled? 'Enabled' : 'Not enabled') + ')'}/>
+        </Tabs>
       </React.Fragment>
     );
   };
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} style={{marginBottom: 0, paddingBottom: 0}}>
         <DataContainerBreadcrumb currentPage="Cache detail" />
         {buildCacheHeader()}
       </PageSection>

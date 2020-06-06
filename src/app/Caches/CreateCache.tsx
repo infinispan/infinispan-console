@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   ActionGroup,
   Button,
   Card,
   CardBody,
-  Expandable,
+  ExpandableSection,
   Form,
   FormGroup,
   PageSection,
@@ -17,29 +17,28 @@ import {
   TextArea,
   TextContent,
   TextInput,
-  TextVariants
+  TextVariants, Toolbar, ToolbarContent
 } from '@patternfly/react-core';
-import { CubeIcon } from '@patternfly/react-icons';
+import {CubeIcon} from '@patternfly/react-icons';
 import cacheService from '../../services/cacheService';
 import dataContainerService from '../../services/dataContainerService';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import displayUtils from '../../services/displayUtils';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 
 const CreateCache: React.FunctionComponent<any> = props => {
   const { addAlert } = useApiAlert();
   const cmName: string = props.location.state.cmName;
   const [cacheName, setCacheName] = useState('');
-  const [validName, setValidName] = useState(true);
+  const [validName, setValidName] = useState<('success'| 'error'|'default')>('default');
   const [config, setConfig] = useState('');
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
   const [expandedSelect, setExpandedSelect] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<string>('');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
-  const [validConfig, setValidConfig] = useState(true);
+  const [validConfig, setValidConfig] = useState<('success'| 'error'|'default')>('default');
 
   interface OptionSelect {
     value: string;
@@ -72,7 +71,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
 
   const handleChangeConfig = config => {
     setConfig(config);
-    setValidConfig(true);
+    setValidConfig('success');
   };
 
   const onToggle = isExpanded => {
@@ -92,10 +91,10 @@ const CreateCache: React.FunctionComponent<any> = props => {
     }
   };
 
-  const validateConfig = () => {
+  const validateConfig = () : string => {
     const trimmedConf = config.trim();
     if (config.length == 0) {
-      return false;
+      return 'error';
     }
     let isJson = false;
     let isXML = false;
@@ -110,18 +109,18 @@ const CreateCache: React.FunctionComponent<any> = props => {
         isXML = true;
       }
     } catch (ex) {}
-    return isJson || isXML;
+    return isJson || isXML ? 'success' : 'error';
   };
 
   const createCache = () => {
     const name = cacheName.trim();
-    let isValidName = name.length > 0;
-    let isValidConfig = selectedConfig != '' || validateConfig();
+    let isValidName:('success' | 'error') = name.length > 0 ? 'success' : 'error';
+    let isValidConfig:('success' | 'error') = selectedConfig != '' || validateConfig() ? 'success' : 'error';
 
     setValidName(isValidName);
     setValidConfig(isValidConfig);
 
-    if (!isValidName || !isValidConfig) {
+    if (isValidName == 'error' || isValidConfig == 'error') {
       return;
     }
 
@@ -145,9 +144,13 @@ const CreateCache: React.FunctionComponent<any> = props => {
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb currentPage="Create cache" />
+        <Toolbar id="create-cache-header">
+          <ToolbarContent style={{ paddingLeft: 0 }}>
         <TextContent>
           <Text component={TextVariants.h1}>Create a cache in {title}</Text>
         </TextContent>
+          </ToolbarContent>
+        </Toolbar>
       </PageSection>
       <PageSection>
         <Card>
@@ -162,7 +165,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
                 isRequired
                 fieldId="cache-name"
                 helperText="Please provide a cache name"
-                isValid={validName}
+                validated={validName}
                 helperTextInvalid="Cache name is mandatory"
               >
                 <TextInput
@@ -173,14 +176,14 @@ const CreateCache: React.FunctionComponent<any> = props => {
                   aria-describedby="cache-name-helper"
                   value={cacheName}
                   onChange={handleChangeName}
-                  isValid={validName}
+                  validated={validName}
                 />
               </FormGroup>
               <FormGroup
                 fieldId="cache-config-name"
                 label="Template"
                 helperText="Please choose a template or provide a new configuration"
-                isValid={validConfig}
+                validated={validConfig}
                 helperTextInvalid="Either choose a template or provide a configuration"
               >
                 <Select
@@ -191,9 +194,9 @@ const CreateCache: React.FunctionComponent<any> = props => {
                   onSelect={onSelect}
                   // @ts-ignore
                   selections={selectedConfig}
-                  isExpanded={expandedSelect}
+                  isOpen={expandedSelect}
                   isDisabled={selectedConfigDisabled}
-                  ariaLabelledBy={titleId}
+                  aria-labelledby={titleId}
                   placeholderText="Choose a template"
                   onClear={clearSelection}
                 >
@@ -207,7 +210,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
                   ))}
                 </Select>
               </FormGroup>
-              <Expandable
+              <ExpandableSection
                 toggleText="Provide a configuration"
                 isExpanded={configExpanded}
                 onToggle={onToggleConfigPanel}
@@ -224,11 +227,11 @@ const CreateCache: React.FunctionComponent<any> = props => {
                     onChange={handleChangeConfig}
                     name="cache-config"
                     id="cache-config"
-                    isValid={validConfig}
-                    rows={15}
+                    validated={validConfig}
+                    rows={10}
                   />
                 </FormGroup>
-              </Expandable>
+              </ExpandableSection>
 
               <ActionGroup>
                 <Button variant="primary" onClick={createCache}>
