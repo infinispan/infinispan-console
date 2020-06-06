@@ -5,7 +5,6 @@ import {
   Nav,
   NavItem,
   NavList,
-  NavVariants,
   Page,
   PageHeader,
   PageSidebar,
@@ -73,7 +72,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
 
   const Navigation = (
     <Nav id="nav-primary-simple" theme="dark">
-      <NavList id="nav-list-simple" variant={NavVariants.default}>
+      <NavList id="nav-list-simple">
         {routes.map(
           (route, idx) =>
             route.menu &&

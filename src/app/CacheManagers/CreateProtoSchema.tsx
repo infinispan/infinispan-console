@@ -67,6 +67,7 @@ const CreateProtoSchema = (props: {
         addAlert(eitherCreate.value);
         clearCreateProtoSchema(true);
       } else {
+        // @ts-ignore
         setError(eitherCreate.value.message);
       }
     })
@@ -94,7 +95,6 @@ const CreateProtoSchema = (props: {
             id="schemaName"
             aria-describedby="schema-name-helper"
             onChange={v => setSchemaName(prevState => { return { ...prevState, value: v.trim()}})}
-            isValid={schemaName.isValid}
             validated={schemaName.validated}
           />
         </FormGroup>
@@ -115,7 +115,6 @@ const CreateProtoSchema = (props: {
             height={400}
             resizeOrientation={TextAreResizeOrientation.vertical}
             onChange={v => setSchema(prevState => { return { ...prevState, value: v }})}
-            isValid={schema.isValid}
             validated={schema.validated}
             rows={15}
           />
@@ -131,7 +130,6 @@ const CreateProtoSchema = (props: {
       isOpen={props.isModalOpen}
       title={'Add Protobuf Schema'}
       onClose={() => clearCreateProtoSchema(false)}
-      isFooterLeftAligned
       aria-label="Add Protobuf Schema"
       actions={[
         <Button

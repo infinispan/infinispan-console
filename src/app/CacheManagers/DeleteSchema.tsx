@@ -37,7 +37,6 @@ const DeleteSchema = (props: {
       isOpen={props.isModalOpen}
       title={'Delete schema?'}
       onClose={props.closeModal}
-      isFooterLeftAligned
       aria-label="Delete schema modal"
       actions={[
         <Button

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Bullseye,
   Card,
   CardBody,
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
-  DataToolbarItemVariant,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarItemVariant,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -18,25 +18,15 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
+  Spinner, ToolbarContent, Toolbar, ToolbarItem
 } from '@patternfly/react-core';
-import {
-  CubesIcon,
-  ExclamationCircleIcon,
-  SearchIcon
-} from '@patternfly/react-icons';
+import {CubesIcon, SearchIcon} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant
-} from '@patternfly/react-table';
-import { Spinner } from '@patternfly/react-core/dist/js/experimental';
-import { Health } from '@app/Common/Health';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
-import { TableErrorState } from '@app/Common/TableErrorState';
+import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
+import {Health} from '@app/Common/Health';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {TableErrorState} from '@app/Common/TableErrorState';
 
 const ClusterStatus: React.FunctionComponent<any> = props => {
   const { addAlert } = useApiAlert();
@@ -160,28 +150,28 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
     const sizeLabel = cacheManager.cluster_size + member + 'in use';
 
     return (
-      <DataToolbar id="cluster-status-header">
-        <DataToolbarContent style={{ paddingLeft: 0 }}>
-          <DataToolbarItem>
+      <Toolbar id="cluster-status-header">
+        <ToolbarContent style={{ paddingLeft: 0 }}>
+          <ToolbarItem>
             <TextContent>
               <Text component={TextVariants.h1}>Cluster Membership</Text>
             </TextContent>
-          </DataToolbarItem>
-        </DataToolbarContent>
-        <DataToolbarContent style={{ paddingLeft: 0 }}>
-          <DataToolbarItem>
+          </ToolbarItem>
+        </ToolbarContent>
+        <ToolbarContent style={{ paddingLeft: 0 }}>
+          <ToolbarItem>
             <Health health={cacheManager.health} />
-          </DataToolbarItem>
-          <DataToolbarItem
-            variant={DataToolbarItemVariant.separator}
-          ></DataToolbarItem>
-          <DataToolbarItem>
+          </ToolbarItem>
+          <ToolbarItem
+            variant={ToolbarItemVariant.separator}
+          ></ToolbarItem>
+          <ToolbarItem>
             <TextContent>
               <Text component={TextVariants.p}>{sizeLabel}</Text>
             </TextContent>
-          </DataToolbarItem>
-        </DataToolbarContent>
-      </DataToolbar>
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
     );
   };
 

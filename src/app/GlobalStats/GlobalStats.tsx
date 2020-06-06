@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
-  Alert,
-  AlertVariant,
   Button,
   Card,
   CardBody,
@@ -24,17 +22,17 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title
+  Title,
+  Spinner
 } from '@patternfly/react-core';
-import { ArrowIcon, CubesIcon } from '@patternfly/react-icons';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
+import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
 import dataContainerService from '../../services/dataContainerService';
-import { Link } from 'react-router-dom';
-import { CardTitle } from '@app/Common/CardTitle';
+import {Link} from 'react-router-dom';
+import {CardTitle} from '@app/Common/CardTitle';
 import displayUtils from '../../services/displayUtils';
-import { Spinner } from '@patternfly/react-core/dist/js/experimental';
-import { global_spacer_2xl } from '@patternfly/react-tokens';
-import { TableErrorState } from '@app/Common/TableErrorState';
+import {global_spacer_2xl} from '@patternfly/react-tokens';
+import {TableErrorState} from '@app/Common/TableErrorState';
 
 const GlobalStats: React.FunctionComponent<any> = props => {
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
@@ -126,7 +124,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
     }
 
     return (
-      <Grid gutter="md">
+      <Grid hasGutter={true}>
         <GridItem span={6} rowSpan={2}>
           <Card>
             <CardHeader>

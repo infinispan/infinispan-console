@@ -4,10 +4,10 @@ import {
   Button,
   Card,
   CardBody,
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
-  DataToolbarItemVariant,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarItemVariant,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
@@ -94,8 +94,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
     return (
       <SyntaxHighlighter wrapLines={false} style={githubGist}
                          useInlineStyles={true}
-                         showLineNumers={true}
-                         customStyle={{backgroundColor: global_BackgroundColor_100.value}}>
+                         showLineNumers={true}>
         {displayUtils.displayValue(value)}
       </SyntaxHighlighter>
     );
@@ -147,9 +146,9 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
 
   return (
     <React.Fragment>
-          <DataToolbar id="cache-query-toolbar" style={{paddingLeft: 0}}>
-            <DataToolbarContent>
-              <DataToolbarItem>
+          <Toolbar id="cache-query-toolbar" style={{paddingLeft: 0}}>
+            <ToolbarContent>
+              <ToolbarItem>
                 <InputGroup>
                   <TextInput
                     name="textSearchByQuery"
@@ -169,10 +168,9 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                     <SearchIcon />
                   </Button>
                 </InputGroup>
-              </DataToolbarItem>
-              <DataToolbarItem
-                variant={DataToolbarItemVariant.pagination}
-                breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}
+              </ToolbarItem>
+              <ToolbarItem
+                variant={ToolbarItemVariant.pagination}
               >
                 <Pagination
                   itemCount={queryPagination.total}
@@ -183,9 +181,9 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                   onPerPageSelect={onPerPageSelect}
                   isCompact
                 />
-              </DataToolbarItem>
-            </DataToolbarContent>
-          </DataToolbar>
+              </ToolbarItem>
+            </ToolbarContent>
+          </Toolbar>
           <Card>
           <CardBody>
             <Table

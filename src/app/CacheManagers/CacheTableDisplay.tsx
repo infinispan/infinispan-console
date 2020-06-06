@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-  textCenter
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -14,10 +7,6 @@ import {
   ButtonVariant,
   Chip,
   ChipGroup,
-  ChipGroupToolbarItem,
-  DataToolbarGroup,
-  DataToolbarItemVariant,
-  DropdownSeparator,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -27,34 +16,27 @@ import {
   SelectGroup,
   SelectOption,
   SelectVariant,
+  Spinner,
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {
-  ExclamationCircleIcon,
-  FilterIcon,
-  SearchIcon
-} from '@patternfly/react-icons';
-import { Link } from 'react-router-dom';
-import {
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
-  Spinner
-} from '@patternfly/react-core/dist/js/experimental';
-import { global_danger_color_100 } from '@patternfly/react-tokens';
+import {ExclamationCircleIcon, FilterIcon, SearchIcon} from '@patternfly/react-icons';
+import {Link} from 'react-router-dom';
+import {global_danger_color_100} from '@patternfly/react-tokens';
 import dataContainerService from '../../services/dataContainerService';
-import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { DeleteCache } from '@app/CacheManagers/DeleteCache';
-import { IgnoreCache } from '@app/CacheManagers/IgnoreCache';
-import {
-  IExtraData,
-  IRowData
-} from '@patternfly/react-table/src/components/Table/Table';
+import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {DeleteCache} from '@app/CacheManagers/DeleteCache';
+import {IgnoreCache} from '@app/CacheManagers/IgnoreCache';
+import {IExtraData, IRowData} from '@patternfly/react-table/src/components/Table/Table';
+import {ToolbarItemVariant} from "@patternfly/react-core/src/components/Toolbar/ToolbarItem";
 
 interface IgnoreCache {
   cacheName: string;
@@ -571,14 +553,14 @@ const CacheTableDisplay = (props: {
 
   const buildFilter = () => {
     return (
-      <DataToolbarGroup variant="filter-group">
+      <ToolbarGroup variant="filter-group">
         <Select
           variant={SelectVariant.checkbox}
           aria-label="Filter"
           onToggle={onToggleFilter}
           onSelect={onSelectFilter}
           selections={selected}
-          isExpanded={isExpanded}
+          isOpen={isExpanded}
           toggleIcon={<FilterIcon />}
           maxHeight={200}
           width={250}
@@ -602,7 +584,7 @@ const CacheTableDisplay = (props: {
             <SelectOption key={11} value="Ignored" />
           </SelectGroup>
         </Select>
-      </DataToolbarGroup>
+      </ToolbarGroup>
     );
   };
 
@@ -642,55 +624,47 @@ const CacheTableDisplay = (props: {
 
   return (
     <React.Fragment>
-      <DataToolbar id="cache-table-toolbar">
-        <DataToolbarContent>
-          <DataToolbarItem variant={DataToolbarItemVariant['search-filter']}>
+      <Toolbar id="cache-table-toolbar">
+        <ToolbarContent>
+          <ToolbarItem variant={ToolbarItemVariant["search-filter"]}>
             {buildFilter()}
-          </DataToolbarItem>
-          <DataToolbarItem
-            variant={DataToolbarItemVariant.separator}
-          ></DataToolbarItem>
-          <DataToolbarItem>{buildCreateCacheButton()}</DataToolbarItem>
-          <DataToolbarItem>{buildViewConfigurationsButton()}</DataToolbarItem>
-          <DataToolbarItem
-            variant={DataToolbarItemVariant.pagination}
-            breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}
-          >
+          </ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+          <ToolbarItem>{buildCreateCacheButton()}</ToolbarItem>
+          <ToolbarItem>{buildViewConfigurationsButton()}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
             {buildPagination()}
-          </DataToolbarItem>
-        </DataToolbarContent>
-        <DataToolbarContent>
-          <DataToolbarItem>
-            <ChipGroup withToolbar>
-              <ChipGroupToolbarItem key="chips-types" categoryName="Cache Type">
+          </ToolbarItem>
+        </ToolbarContent>
+        <ToolbarContent>
+          <ToolbarItem variant={ToolbarItemVariant["chip-group"]}>
+            <ChipGroup key="chips-types" categoryName="Cache Type">
                 {chipsCacheType.map(chip => (
                   <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
                     {chip}
                   </Chip>
                 ))}
-              </ChipGroupToolbarItem>
-              <ChipGroupToolbarItem
+            </ChipGroup>
+            <ChipGroup
                 key="chips-features"
-                categoryName="Features"
-              >
+                categoryName="Features">
                 {chipsCacheFeature.map(chip => (
                   <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
                     {chip}
                   </Chip>
                 ))}
-              </ChipGroupToolbarItem>
-              <ChipGroupToolbarItem key="chip-status" categoryName="Status">
+              </ChipGroup>
+              <ChipGroup key="chip-status" categoryName="Status">
                 {chipsCacheStatus.map(chip => (
                   <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
                     {chip}
                   </Chip>
                 ))}
-              </ChipGroupToolbarItem>
-            </ChipGroup>
-          </DataToolbarItem>
-          <DataToolbarItem>{displayClearAll()}</DataToolbarItem>
-        </DataToolbarContent>
-      </DataToolbar>
+              </ChipGroup>
+          </ToolbarItem>
+          <ToolbarItem>{displayClearAll()}</ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
       <Table
         aria-label="Caches"
         cells={columns}

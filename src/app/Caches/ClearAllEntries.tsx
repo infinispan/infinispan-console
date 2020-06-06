@@ -41,7 +41,6 @@ const ClearAllEntries = (props: {
       isOpen={props.isModalOpen}
       title={'Clear all entries?'}
       onClose={props.closeModal}
-      isFooterLeftAligned
       aria-label="Clear all entries modal"
       actions={[
         <Button

@@ -5,15 +5,15 @@ import {
   ButtonVariant,
   Card,
   CardBody,
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarItem,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
   InputGroup,
   TextInput,
-  Title
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
 import {CreateOrUpdateEntryForm} from '@app/Caches/CreateOrUpdateEntryForm';
@@ -21,8 +21,6 @@ import cacheService from '../../services/cacheService';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {ClearAllEntries} from '@app/Caches/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/DeleteEntry';
-import {RecentActivityTable} from '@app/Caches/RecentActivityTable';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {global_BackgroundColor_100} from "@patternfly/react-tokens";
@@ -118,8 +116,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
   const displayValue = (value: string) => {
     return (
           <SyntaxHighlighter wrapLines={false} style={githubGist}
-                             useInlineStyles={true}
-                             customStyle={{backgroundColor: global_BackgroundColor_100.value}}>
+                             useInlineStyles={true}>
             {displayUtils.displayValue(value)}
           </SyntaxHighlighter>
     );
@@ -193,9 +190,9 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
 
   return (
     <React.Fragment>
-          <DataToolbar id="cache-entries-toolbar" style={{paddingLeft: 0}}>
-            <DataToolbarContent>
-              <DataToolbarItem>
+          <Toolbar id="cache-entries-toolbar" style={{paddingLeft: 0}}>
+            <ToolbarContent>
+              <ToolbarItem>
                 <InputGroup>
                   <TextInput
                     name="textSearchByKey"
@@ -215,8 +212,8 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
                     <SearchIcon />
                   </Button>
                 </InputGroup>
-              </DataToolbarItem>
-              <DataToolbarItem>
+              </ToolbarItem>
+              <ToolbarItem>
                 <Button
                   key="add-entry-button"
                   variant={ButtonVariant.primary}
@@ -224,17 +221,17 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
                 >
                   Add entry
                 </Button>
-              </DataToolbarItem>
-              <DataToolbarItem>
+              </ToolbarItem>
+              <ToolbarItem>
                 <Button
                   variant={ButtonVariant.link}
                   onClick={onClickClearAllButton}
                 >
                   Clear all entries
                 </Button>
-              </DataToolbarItem>
-            </DataToolbarContent>
-          </DataToolbar>
+              </ToolbarItem>
+            </ToolbarContent>
+          </Toolbar>
           <CreateOrUpdateEntryForm
             cacheName={props.cacheName}
             keyToEdit={keyToEdit}
@@ -252,8 +249,6 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
             isModalOpen={isClearAllModalOpen}
             closeModal={closeClearAllEntryModal}
           />
-          <Card>
-          <CardBody>
             <Table
               variant={TableVariant.compact}
               aria-label="Entries"
@@ -265,9 +260,6 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
               <TableHeader />
               <TableBody />
             </Table>
-          </CardBody>
-          </Card>
-          <RecentActivityTable cacheName={props.cacheName} />
     </React.Fragment>
   );
 };

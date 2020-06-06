@@ -44,7 +44,6 @@ const DeleteEntry = (props: {
       isOpen={props.isModalOpen}
       title={'Delete entry?'}
       onClose={props.closeModal}
-      isFooterLeftAligned
       aria-label="Delete entry modal"
       actions={[
         <Button
