@@ -64,6 +64,7 @@ class CacheService {
           size: data.size,
           rehash_in_progress: data.rehash_in_progress,
           indexing_in_progress: data.indexing_in_progress,
+          queryable: data.queryable,
           features: <Features>{
             bounded: data.bounded,
             indexed: data.indexed,
