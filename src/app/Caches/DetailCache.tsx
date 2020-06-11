@@ -83,6 +83,15 @@ const DetailCache = props => {
   };
 
   const buildEntriesTabContent = () => {
+    if(!detail?.queryable) {
+      return (
+        <React.Fragment>
+          <CacheEntries cacheName={cacheName} load={loadCacheDetail}/>
+          <RecentActivityTable cacheName={cacheName} />
+        </React.Fragment>
+      );
+    }
+
     return (
           <Tabs unmountOnExit
                 isSecondary={false}
@@ -96,7 +105,7 @@ const DetailCache = props => {
               <RecentActivityTable cacheName={cacheName} />
             </Tab>
             <Tab eventKey={11} title={<TabTitleText><MoreInfoTooltip label={'Query Values'} toolTip={'Use Ickle query language'}/></TabTitleText>} >
-              <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)}/>
+              <QueryEntries cacheName={cacheName} indexed={detail?.features.indexed} changeTab={() => setActiveTabKey1(2)}/>
             </Tab>
           </Tabs>
     )

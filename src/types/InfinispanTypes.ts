@@ -92,6 +92,7 @@ interface DetailedInfinispanCache {
   size: number;
   rehash_in_progress: boolean;
   indexing_in_progress: boolean;
+  queryable: boolean;
   features: Features;
   configuration: CacheConfig;
   backupSites?: [XSite];

@@ -27,6 +27,7 @@ import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const QueryEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
+  indexed: boolean;
   changeTab: () => void
 }) => {
   const [query, setQuery] = useState<string>('');
@@ -144,6 +145,17 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
     searchByQuery(perPage, queryPagination.page);
   };
 
+  const buildViewAllQueryStats = () => {
+    if(!props.indexed)
+      return '';
+
+    return (
+      <ToolbarItem>
+        <Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()}>View all query stats</Button>
+      </ToolbarItem>
+    );
+  };
+
   return (
     <React.Fragment>
           <Toolbar id="cache-query-toolbar" style={{paddingLeft: 0}}>
@@ -169,7 +181,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                   </Button>
                 </InputGroup>
               </ToolbarItem>
-              <ToolbarItem><Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()}>View all query stats</Button></ToolbarItem>
+              {buildViewAllQueryStats()}
               <ToolbarItem
                 variant={ToolbarItemVariant.pagination}
               >
