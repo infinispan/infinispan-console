@@ -246,7 +246,8 @@ class CacheService {
     flags: string[],
     create: boolean
   ): Promise<ActionResponse> {
-    let headers = new Headers();
+    let headers = utils.createAuthenticatedHeader();
+
     if (keyContentType) {
       let keyContentTypeHeader = this.keyContentTypeHeader(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);

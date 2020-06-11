@@ -11,7 +11,7 @@ import {
   SkipToContent
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useLocation} from 'react-router-dom';
 import { routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
@@ -20,13 +20,12 @@ import { useHistory } from 'react-router';
 
 interface IAppLayout {
   children: React.ReactNode;
-  welcome: boolean;
 }
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({
   children,
-  welcome
 }) => {
+  let location = useLocation();
   const history = useHistory();
 
   const logoProps = {
@@ -124,10 +123,10 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
         <ActionResponseAlert />
         <Page
           mainContainerId="primary-app-container"
-          header={welcome ? null : Header}
+          header={location.pathname.endsWith('/welcome') ? null : Header}
           onPageResize={onPageResize}
           skipToContent={PageSkipToContent}
-          sidebar={welcome ? null : Sidebar}
+          sidebar={location.pathname.endsWith('/welcome') ? null : Sidebar}
         >
           {children}
         </Page>

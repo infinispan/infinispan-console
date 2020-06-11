@@ -84,7 +84,7 @@
     "@patternfly/react-table": "^4.5.7",
     "@patternfly/react-tokens": "^4.4.4",
     "express": "^4.13.4",
-    "keycloak-js": "^8.0.1",
+    "keycloak-js": "^10.0.2",
     "react-router-dom": "^5.1.2",
     "react-router-last-location": "^2.0.1",
     "react-syntax-highlighter": "^12.2.1"

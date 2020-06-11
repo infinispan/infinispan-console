@@ -1,5 +1,8 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {
+  Alert,
+  AlertVariant,
   BackgroundImage,
   Button,
   ListVariant,
@@ -10,10 +13,14 @@ import {
 } from '@patternfly/react-core';
 import back from '!!url-loader!@app/assets/images/infinispan_login_background.svg';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo.svg';
-import { CatalogIcon, InfoIcon, GithubIcon} from '@patternfly/react-icons'
-import utils from '../../services/utils';
+import {CatalogIcon, GithubIcon, InfoIcon} from '@patternfly/react-icons'
+import {Link, useHistory} from "react-router-dom";
+import authenticationService from "../../services/authService";
+import {KeycloakService} from "../../services/keycloakService";
 
 const Welcome: React.FunctionComponent<any> = props => {
+  const history = useHistory();
+  const [error, setError] = useState<undefined | string>();
   const brandname = 'Infinispan';
 
   const description1 =
@@ -71,6 +78,33 @@ const Welcome: React.FunctionComponent<any> = props => {
     );
   };
 
+  const buildConsoleButton = () => {
+    if (error) {
+      return (
+        <Alert variant={AlertVariant.danger} title={error}/>
+      );
+    }
+
+    if (KeycloakService.Instance.isInitialized()) {
+      return (
+        <Link to={'/'}>
+          <Button>
+            Go to the console
+          </Button>
+        </Link>
+      );
+    }
+
+    return (
+      <Button
+        href={authenticationService.httpLoginUrl()}
+        component={'a'}
+      >
+        Go to the console
+      </Button>
+    );
+  };
+
   return (
     <Page>
       <BackgroundImage src={back} />
@@ -83,16 +117,11 @@ const Welcome: React.FunctionComponent<any> = props => {
         loginTitle="Welcome to the Infinispan Server"
         footerListItems={<FooterList />}
       >
-        <Stack gutter={'md'}>
+        <Stack hasGutter={true}>
           <StackItem>{description1}</StackItem>
           <StackItem>{description2}</StackItem>
           <StackItem>
-            <Button
-              href={utils.endpoint() + '/login?action=login'}
-              component="a"
-            >
-              Go to the console
-            </Button>
+            {buildConsoleButton()}
           </StackItem>
         </Stack>
       </LoginPage>

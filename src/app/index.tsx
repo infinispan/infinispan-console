@@ -8,12 +8,7 @@ import '@app/app.css';
 const App: React.FunctionComponent<any> = () => {
   return (
     <Router basename="/console">
-      <AppLayout
-        welcome={
-          location.pathname === '/console/welcome/' ||
-          location.pathname === '/console/welcome'
-        }
-      >
+      <AppLayout>
         <AppRoutes />
       </AppLayout>
     </Router>

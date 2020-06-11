@@ -19,7 +19,7 @@ import {
   TextContent,
   TextVariants,
   Title,
-  Spinner, ToolbarContent, Toolbar, ToolbarItem
+  Spinner
 } from '@patternfly/react-core';
 import {CubesIcon, SearchIcon} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
@@ -50,7 +50,6 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
     }
   ];
 
-  /* Fetch cache manager data */
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherDefaultCm => {
       setLoading(false);
