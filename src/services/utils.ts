@@ -4,6 +4,7 @@
  * @author Katia Aresti
  */
 import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
+import {KeycloakService} from "./keycloakService";
 
 export enum KeyContentType {
   OctetStream = 'application/octet-stream',
@@ -63,6 +64,14 @@ class Utils {
     }
   }
 
+  public landing(): string {
+    if (this.isDevMode()) {
+      return 'http://localhost:9000/console/';
+    } else {
+      return window.location.origin.toString() + '/console';
+    }
+  }
+
   /**
    * Perform a REST call with body
    *
@@ -77,7 +86,7 @@ class Utils {
     body: string,
     contentType?: string
   ): Promise<Response> {
-    let headers = new Headers();
+    let headers = this.createAuthenticatedHeader();
     if (contentType) {
       headers.append('Content-Type', contentType);
     }
@@ -100,7 +109,7 @@ class Utils {
     method: string,
     accept?: string
   ): Promise<Response> {
-    let headers = new Headers();
+    let headers = this.createAuthenticatedHeader();
     if (accept && accept.length > 0) {
       headers.append('Accept', accept);
     }
@@ -109,6 +118,14 @@ class Utils {
       credentials: 'include',
       headers: headers
     });
+  }
+
+  public createAuthenticatedHeader = (): Headers => {
+    let headers = new Headers();
+    if (KeycloakService.Instance.isInitialized()) {
+      headers.append('Authorization', 'Bearer ' + localStorage.getItem('react-token'));
+    }
+    return headers;
   }
 
   public isJSONObject(value: string): boolean {

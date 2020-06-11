@@ -204,3 +204,8 @@ interface IndexStats {
   sizes: [IndexValue];
   reindexing: boolean;
 }
+
+interface AuthInfo {
+  mode: string;
+  keycloakConfig?: Keycloak.KeycloakConfig;
+}
