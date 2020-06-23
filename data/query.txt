@@ -1,0 +1,1 @@
+from people.Person where name='user1'
