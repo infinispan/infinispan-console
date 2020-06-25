@@ -275,7 +275,7 @@ class CrossSiteReplicationService {
         action;
     }
     return utils
-      .restCall(url, 'GET')
+      .restCall(url, 'POST')
       .then(response => {
         if (response.ok) {
           return <ActionResponse>{

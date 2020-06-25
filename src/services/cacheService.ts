@@ -397,7 +397,7 @@ class CacheService {
   public async clear(cacheName: string): Promise<ActionResponse> {
     let clearPromise = utils.restCall(
       this.endpoint + '/caches/' + cacheName + '?action=clear',
-      'GET'
+      'POST'
     );
 
     return this.handleCRUDActionResponse(
@@ -639,7 +639,7 @@ class CacheService {
     return utils
       .restCall(
         this.endpoint + '/caches/' + cacheName + '/search/indexes?action=clear',
-        'GET'
+        'POST'
       )
       .then(response => {
         if (response.ok) {
@@ -686,7 +686,7 @@ class CacheService {
     return utils
       .restCall(
         this.endpoint + '/caches/' + cacheName + '/search/indexes?action=mass-index&mode=async',
-        'GET'
+        'POST'
       )
       .then(response => {
         if (response.ok) {
@@ -787,7 +787,7 @@ class CacheService {
           '/caches/' +
           cacheName +
           '/search/query/stats?action=clear',
-        'GET'
+        'POST'
       )
       .then(response => {
         let message = '';
