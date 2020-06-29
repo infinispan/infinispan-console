@@ -514,36 +514,37 @@ const CacheTableDisplay = (props: {
   const buildFilter = () => {
     return (
       <ToolbarGroup variant="filter-group">
-        <Select
-          variant={SelectVariant.checkbox}
-          aria-label="Filter"
-          onToggle={onToggleFilter}
-          onSelect={onSelectFilter}
-          selections={selected}
-          isOpen={isExpanded}
-          toggleIcon={<FilterIcon />}
-          maxHeight={200}
-          width={250}
-          placeholderText="Filter"
-          isGrouped={true}
-        >
-          <SelectGroup label="Cache type" key="group1">
-            <SelectOption key={0} value="Local" />
-            <SelectOption key={1} value="Replicated" />
-            <SelectOption key={2} value="Distributed" />
-            <SelectOption key={3} value="Invalidated" />
-            <SelectOption key={4} value="Scattered" />
-          </SelectGroup>
-          <SelectGroup label="Feature" key="group2">
-            <SelectOption key={5} value="Bounded" />
-            <SelectOption key={6} value="Indexed" />
-            <SelectOption key={7} value="Persistent" />
-            <SelectOption key={8} value="Transactional" />
-            <SelectOption key={9} value="Secured" />
-            <SelectOption key={10} value="Backups" />
-            <SelectOption key={11} value="Ignored" />
-          </SelectGroup>
-        </Select>
+        <ToolbarItem style={{width: 250}}>
+          <Select
+            variant={SelectVariant.checkbox}
+            aria-label="Filter"
+            onToggle={onToggleFilter}
+            onSelect={onSelectFilter}
+            selections={selected}
+            isOpen={isExpanded}
+            toggleIcon={<FilterIcon />}
+            maxHeight={200}
+            placeholderText="Filter"
+            isGrouped={true}
+          >
+            <SelectGroup label="Cache type" key="group1">
+              <SelectOption key={0} value="Local" />
+              <SelectOption key={1} value="Replicated" />
+              <SelectOption key={2} value="Distributed" />
+              <SelectOption key={3} value="Invalidated" />
+              <SelectOption key={4} value="Scattered" />
+            </SelectGroup>
+            <SelectGroup label="Feature" key="group2">
+              <SelectOption key={5} value="Bounded" />
+              <SelectOption key={6} value="Indexed" />
+              <SelectOption key={7} value="Persistent" />
+              <SelectOption key={8} value="Transactional" />
+              <SelectOption key={9} value="Secured" />
+              <SelectOption key={10} value="Backups" />
+              <SelectOption key={11} value="Ignored" />
+            </SelectGroup>
+          </Select>
+        </ToolbarItem>
       </ToolbarGroup>
     );
   };
