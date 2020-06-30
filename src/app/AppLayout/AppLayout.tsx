@@ -8,15 +8,16 @@ import {
   Page,
   PageHeader,
   PageSidebar,
-  SkipToContent
+  SkipToContent, Text, TextContent, TextVariants, Toolbar, ToolbarContent, ToolbarItem
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {NavLink, useLocation} from 'react-router-dom';
+import {Link, NavLink, useLocation} from 'react-router-dom';
 import { routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
 import { useHistory } from 'react-router';
+import {global_spacer_sm} from "@patternfly/react-tokens";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -49,15 +50,31 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
     setIsMobileView(props.mobileView);
   };
 
+  const Logo = (
+    <Toolbar>
+      <ToolbarContent>
+        <ToolbarItem style={{marginTop: global_spacer_sm.value}}>
+          <Link to={'/'}>
+          <Brand
+            src={icon}
+            alt="Server Management Console"
+            width={150}
+          />
+          </Link>
+        </ToolbarItem>
+        <ToolbarItem  style={{marginTop: 0}}>
+          <TextContent>
+            <Text component={TextVariants.h2}>Server Management Console</Text>
+          </TextContent>
+        </ToolbarItem>
+      </ToolbarContent>
+    </Toolbar>
+  );
+
   const Header = (
     <PageHeader
-      logo={
-        <Brand
-          src={icon}
-          alt="Server Management Console"
-          style={{ width: 600 }}
-        />
-      }
+      logo={Logo}
+      logoComponent={'div'}
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
