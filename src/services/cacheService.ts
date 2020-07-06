@@ -685,7 +685,10 @@ class CacheService {
   public async reindex(cacheName: string): Promise<ActionResponse> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/search/indexes?action=mass-index&mode=async',
+        this.endpoint +
+          '/caches/' +
+          cacheName +
+          '/search/indexes?action=mass-index&mode=async',
         'POST'
       )
       .then(response => {
@@ -699,7 +702,8 @@ class CacheService {
       })
       .catch(err => {
         let genericError =
-          'An error happened when starting reindex operation for cache ' + cacheName;
+          'An error happened when starting reindex operation for cache ' +
+          cacheName;
         if (err instanceof TypeError) {
           return <ActionResponse>{ message: err.message, success: false };
         }
@@ -762,7 +766,8 @@ class CacheService {
       )
       .catch(err => {
         let genericError =
-          'An error happened when starting reindex operation for cache ' + cacheName;
+          'An error happened when starting reindex operation for cache ' +
+          cacheName;
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }

@@ -1,39 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant
-} from '@patternfly/react-table';
-import {
-  Badge,
   Bullseye,
+  Button,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  Grid,
+  GridItem,
+  Label,
+  OptionsMenu,
+  OptionsMenuItem,
+  OptionsMenuToggle,
   Pagination,
-  Stack,
-  StackItem,
-  Title
+  Text,
+  TextContent,
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
-import {
-  chart_color_blue_500,
-  global_FontSize_sm,
-  global_spacer_md,
-  global_spacer_sm,
-  global_spacer_xs
-} from '@patternfly/react-tokens';
 import countersService from '../../services/countersService';
+import {ToolbarItemVariant} from "@patternfly/react-core/src/components/Toolbar/ToolbarItem";
 
 const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;
   isVisible: boolean;
 }) => {
-  const [counters, setCounters] = useState<Counter[]>([]);
+  const STRONG_COUNTER = '0';
+  const WEAK_COUNTER = '1';
+  const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
+  const [weakCounters, setWeakCounters] = useState<Counter[]>([]);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [selectedCounterType, setSelectedCounterType] = useState(STRONG_COUNTER);
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
+  const [actions, setActions] = useState<any[]>([]);
+
+  const strongCountersActions = [
+    // {
+    //   title: 'Delete',
+    //   onClick: (event, rowId, rowData, extra) =>
+    //     onClickDeleteCounterButton(rowData.cells[0].title)
+    // }
+  ];
+
+  const weakCountersActions = [
+    // {
+    //   title: 'Delete',
+    //   onClick: (event, rowId, rowData, extra) =>
+    //     onClickDeleteCounterButton(rowData.cells[0].title)
+    // }
+  ];
 
   const [countersPagination, setCountersPagination] = useState({
     page: 1,
@@ -42,30 +63,39 @@ const CounterTableDisplay = (props: {
   const [rows, setRows] = useState<(string | any)[]>([]);
 
   const columns = [
-    { title: 'Name' },
     {
-      title: 'Type'
+      title: 'Name',
+      transforms: [cellWidth(15)]
     },
     {
-      title: 'Value'
+      title: 'Current value',
+      transforms: [cellWidth(15)]
     },
     {
-      title: 'Initial value'
+      title: 'Initial value',
+      transforms: [cellWidth(15)]
     },
     {
       title: 'Storage'
+    },
+    {
+      title: 'Configuration'
     }
   ];
 
   useEffect(() => {
     countersService.getCounters().then(counters => {
-      setCounters(counters);
-      setFilteredCounters(counters);
+      const weakCounters = counters.filter(counter => counter.config.type == 'Weak');
+      const strongCounters = counters.filter(counter => counter.config.type == 'Strong');
+
+      setWeakCounters(weakCounters)
+      setStrongCounters(strongCounters);
+      setFilteredCounters(strongCounters);
       props.setCountersCount(counters.length);
       const initSlice =
         (countersPagination.page - 1) * countersPagination.perPage;
       updateRows(
-        counters.slice(initSlice, initSlice + countersPagination.perPage)
+        strongCounters.slice(initSlice, initSlice + countersPagination.perPage)
       );
     });
   }, []);
@@ -90,24 +120,36 @@ const CounterTableDisplay = (props: {
     updateRows(filteredCounters.slice(initSlice, initSlice + perPage));
   };
 
-  const counterType = (type: string) => {
+  const displayConfig = (config: CounterConfig) => {
+    if(config.upperBound) {
+      return (
+        <Grid>
+          <GridItem>
+            <TextContent>
+              <Text component={TextVariants.small}>
+                Lower bound: {displayUtils.formatNumber(config.lowerBound)}
+              </Text>
+            </TextContent>
+          </GridItem>
+          <GridItem>
+            <TextContent>
+              <Text component={TextVariants.small}>
+                Upper bound: {displayUtils.formatNumber(config.upperBound)}
+              </Text>
+            </TextContent>
+          </GridItem>
+        </Grid>
+      );
+    }
+
     return (
-      <Badge
-        style={{
-          backgroundColor: displayUtils.counterTypeColor(type),
-          color: chart_color_blue_500.value,
-          fontSize: global_FontSize_sm.value,
-          fontWeight: 'lighter',
-          marginRight: global_spacer_md.value,
-          padding: global_spacer_xs.value,
-          paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value
-        }}
-      >
-        {type}
-      </Badge>
+      <TextContent>
+        <Text component={TextVariants.small}>
+          Concurrency level: {config.concurrencyLevel}
+        </Text>
+      </TextContent>
     );
-  };
+  }
 
   const updateRows = (counters: Counter[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
@@ -118,7 +160,7 @@ const CounterTableDisplay = (props: {
           heightAuto: true,
           cells: [
             {
-              props: { colSpan: 8 },
+              props: { colSpan: 6 },
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
@@ -136,20 +178,22 @@ const CounterTableDisplay = (props: {
           ]
         }
       ];
+      setActions([]);
     } else {
       rows = counters.map(counter => {
         return {
           heightAuto: true,
           cells: [
             { title: counter.name },
-            { title: counterType(counter.config.type) },
-            { title: counter.value },
-            { title: counter.config.initialValue },
-            { title: counter.config.storage }
+            { title: displayUtils.formatNumber(counter.value) },
+            { title: displayUtils.formatNumber(counter.config.initialValue) },
+            { title: counter.config.storage },
+            { title: displayConfig(counter.config) }
           ]
-          //TODO {title: <CounterActionLinks name={counter.name}/>}]
         };
+
       });
+      setActions(selectedCounterType === STRONG_COUNTER ? strongCountersActions : weakCountersActions);
     }
     setRows(rows);
   };
@@ -158,30 +202,75 @@ const CounterTableDisplay = (props: {
     return <span />;
   }
 
+  const onSelectCounterType = event => {
+    const id = event.currentTarget.id;
+    let switchCounters;
+    if(id === STRONG_COUNTER) {
+      switchCounters = strongCounters;
+    } else {
+      switchCounters = weakCounters;
+    }
+
+    setFilteredCounters(switchCounters);
+    updateRows(switchCounters)
+    setSelectedCounterType(id);
+    setIsOpenFilter(false);
+  };
+
+  const countersFilter = () => {
+    const menuItems = [
+      <OptionsMenuItem onSelect={onSelectCounterType} isSelected={selectedCounterType === STRONG_COUNTER} id={STRONG_COUNTER} key="strong-counter">Strong counters</OptionsMenuItem>,
+      <OptionsMenuItem onSelect={onSelectCounterType} isSelected={selectedCounterType === WEAK_COUNTER} id={WEAK_COUNTER} key="weak-counter">Weak counters</OptionsMenuItem>,
+    ];
+    const toggle = <OptionsMenuToggle onToggle={() => setIsOpenFilter(!isOpenFilter)} toggleTemplate={selectedCounterType === STRONG_COUNTER ? 'Strong counters' : 'Weak counters'} />
+
+    return (
+      <OptionsMenu
+        id="filter-counter-menu"
+        menuItems={menuItems}
+        isOpen={isOpenFilter}
+        toggle={toggle}/>
+    );
+  }
+
+  const onClickDeleteCounterButton = (counterName: string) => {
+    //setDeleteEntryModalOpen(true);
+    //setKeyToDelete(entryKey);
+    console.log(counterName);
+  };
+
   return (
-    <Stack>
-      <StackItem>
-        <Pagination
-          itemCount={filteredCounters.length}
-          perPage={countersPagination.perPage}
-          page={countersPagination.page}
-          onSetPage={onSetPage}
-          widgetId="pagination-counters"
-          onPerPageSelect={onPerPageSelect}
-          isCompact
-        />
-        <Table
-          aria-label="Counters"
-          cells={columns}
-          rows={rows}
-          className={'counters-table'}
-          variant={TableVariant.compact}
-        >
-          <TableHeader />
-          <TableBody />
-        </Table>
-      </StackItem>
-    </Stack>
+    <React.Fragment>
+      <Toolbar id="counters-table-toolbar">
+        <ToolbarContent>
+          <ToolbarItem>{countersFilter()}</ToolbarItem>
+          {/*<ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>*/}
+          {/*<ToolbarItem><Button>{selectedCounterType === STRONG_COUNTER ? 'Create strong counter' : 'Create weak counter'}</Button></ToolbarItem>*/}
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            <Pagination
+              itemCount={filteredCounters.length}
+              perPage={countersPagination.perPage}
+              page={countersPagination.page}
+              onSetPage={onSetPage}
+              widgetId="pagination-counters"
+              onPerPageSelect={onPerPageSelect}
+              isCompact
+            />
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+      <Table
+        aria-label="Counters"
+        cells={columns}
+        rows={rows}
+        actions={actions}
+        className={'strongCounters-table'}
+        variant={TableVariant.compact}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
+    </React.Fragment>
   );
 };
 
