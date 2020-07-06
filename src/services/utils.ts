@@ -4,7 +4,7 @@
  * @author Katia Aresti
  */
 import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
-import {KeycloakService} from "./keycloakService";
+import { KeycloakService } from './keycloakService';
 
 export enum KeyContentType {
   OctetStream = 'application/octet-stream',
@@ -123,10 +123,13 @@ class Utils {
   public createAuthenticatedHeader = (): Headers => {
     let headers = new Headers();
     if (KeycloakService.Instance.isInitialized()) {
-      headers.append('Authorization', 'Bearer ' + localStorage.getItem('react-token'));
+      headers.append(
+        'Authorization',
+        'Bearer ' + localStorage.getItem('react-token')
+      );
     }
     return headers;
-  }
+  };
 
   public isJSONObject(value: string): boolean {
     try {

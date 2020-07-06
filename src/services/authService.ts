@@ -1,5 +1,5 @@
 import utils from './utils';
-import {Either, left, right} from "./either";
+import { Either, left, right } from './either';
 
 /**
  * Authentication Service calls Infinispan endpoints related to Authentication
@@ -25,17 +25,16 @@ class AuthenticationService {
    * Retrieve AuthInfo
    */
   public async config(): Promise<Either<ActionResponse, AuthInfo>> {
-    return fetch(
-      this.endpoint + '?action=config',
-      {
-        method: 'GET',
-      }
-    ).then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw response;
-    }).then(json => {
+    return fetch(this.endpoint + '?action=config', {
+      method: 'GET'
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then(json => {
         const authInfo = <AuthInfo>{
           mode: json.mode
         };
@@ -45,34 +44,42 @@ class AuthenticationService {
             url: json.url,
             realm: json.realm,
             clientId: json.clientId
-          }
+          };
         }
 
         return right(authInfo);
-      }
-    ).catch(err => {
-      let actionResponse;
-      if (err instanceof TypeError) {
-        let errorMessage = err.message;
-        if(errorMessage == 'Failed to fetch') {
-          errorMessage = 'Unable to connect to the server';
+      })
+      .catch(err => {
+        let actionResponse;
+        if (err instanceof TypeError) {
+          let errorMessage = err.message;
+          if (errorMessage == 'Failed to fetch') {
+            errorMessage = 'Unable to connect to the server';
+          }
+          actionResponse = <ActionResponse>{
+            message: errorMessage,
+            success: false
+          };
+        } else if (err instanceof Response) {
+          actionResponse = err
+            .text()
+            .then(
+              errorMessage =>
+                <ActionResponse>{ message: errorMessage, success: false }
+            );
+        } else {
+          actionResponse = <ActionResponse>{
+            message: 'Server Error',
+            success: false
+          };
         }
-        actionResponse = (<ActionResponse>{message: errorMessage, success: false});
-      } else if (err instanceof Response) {
-        actionResponse = err
-          .text()
-          .then(
-            errorMessage =>
-              <ActionResponse>{message: errorMessage, success: false}
-          );
-      } else {
-        actionResponse = <ActionResponse>{message: 'Server Error', success: false}
-      }
-      return left(actionResponse);
-    });
+        return left(actionResponse);
+      });
   }
 }
 
-const authenticationService: AuthenticationService = new AuthenticationService(utils.endpoint() + '/login');
+const authenticationService: AuthenticationService = new AuthenticationService(
+  utils.endpoint() + '/login'
+);
 
 export default authenticationService;
