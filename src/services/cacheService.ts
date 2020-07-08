@@ -117,7 +117,7 @@ class CacheService {
       this.endpoint + '/caches/' + cacheName + '?template=' + configName,
       'POST'
     );
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Cache ' + cacheName + ' created with success with ' + configName,
       createCachePromise
@@ -147,7 +147,7 @@ class CacheService {
       config,
       contentType
     );
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Cache ' +
         cacheName +
@@ -167,7 +167,7 @@ class CacheService {
       'DELETE'
     );
 
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Cache ' + cacheName + ' has been deleted',
       deleteCachePromise
@@ -192,7 +192,7 @@ class CacheService {
       'POST'
     );
 
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Cache ' + cacheName + ' has been ignored',
       ignoreCachePromise
@@ -217,7 +217,7 @@ class CacheService {
       'DELETE'
     );
 
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Cache ' + cacheName + ' is not ignored',
       ignoreCachePromise
@@ -282,7 +282,7 @@ class CacheService {
     let message = create
       ? 'A new entry has been added to cache '
       : 'The entry has been updated in cache ';
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       message + cacheName,
       promise
@@ -400,7 +400,7 @@ class CacheService {
       'POST'
     );
 
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Cache ' + cacheName + ' has been cleared',
       clearPromise
@@ -422,50 +422,11 @@ class CacheService {
       'DELETE'
     );
 
-    return this.handleCRUDActionResponse(
+    return utils.handleCRUDActionResponse(
       cacheName,
       'Entry ' + entryKey + ' has been deleted',
       deleteEntryPromise
     );
-  }
-
-  /**
-   * If the response is ok, the cache has been created
-   *
-   * @param cacheName, the cache name to be created
-   * @param successMessage, string message for success
-   * @param response, cache creation response
-   */
-  private async handleCRUDActionResponse(
-    cacheName: string,
-    successMessage: string,
-    response: Promise<Response>
-  ): Promise<ActionResponse> {
-    return response
-      .then(response => {
-        if (response.ok) {
-          return response.text();
-        }
-        throw response;
-      })
-      .then(text => {
-        return <ActionResponse>{
-          message: text == '' ? successMessage : text,
-          success: true
-        };
-      })
-      .catch(err => {
-        if (err instanceof TypeError) {
-          return <ActionResponse>{ message: err.message, success: false };
-        }
-
-        return err
-          .text()
-          .then(
-            errorMessage =>
-              <ActionResponse>{ message: errorMessage, success: false }
-          );
-      });
   }
 
   /**
