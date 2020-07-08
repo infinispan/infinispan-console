@@ -139,6 +139,45 @@ class Utils {
       return false;
     }
   }
+
+  /**
+   * Handle a crud op request result
+   *
+   * @param name of the object
+   * @param successMessage
+   * @param response
+   */
+  public async handleCRUDActionResponse(
+    name: string,
+    successMessage: string,
+    response: Promise<Response>
+  ): Promise<ActionResponse> {
+    return response
+      .then(response => {
+        if (response.ok) {
+          return response.text();
+        }
+        throw response;
+      })
+      .then(text => {
+        return <ActionResponse>{
+          message: text == '' ? successMessage : text,
+          success: true
+        };
+      })
+      .catch(err => {
+        if (err instanceof TypeError) {
+          return <ActionResponse>{ message: err.message, success: false };
+        }
+
+        return err
+          .text()
+          .then(
+            errorMessage =>
+              <ActionResponse>{ message: errorMessage, success: false }
+          );
+      });
+  }
 }
 
 const utils: Utils = new Utils();

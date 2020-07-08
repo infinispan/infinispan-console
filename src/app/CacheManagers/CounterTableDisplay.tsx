@@ -2,14 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {cellWidth, Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {
   Bullseye,
-  Button,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
-  Label,
   OptionsMenu,
   OptionsMenuItem,
   OptionsMenuToggle,
@@ -26,6 +24,7 @@ import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import countersService from '../../services/countersService';
 import {ToolbarItemVariant} from "@patternfly/react-core/src/components/Toolbar/ToolbarItem";
+import {DeleteCounter} from "@app/Counters/DeleteCounter";
 
 const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;
@@ -39,21 +38,22 @@ const CounterTableDisplay = (props: {
   const [selectedCounterType, setSelectedCounterType] = useState(STRONG_COUNTER);
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
+  const [counterToDelete, setCounterToDelete] = useState('');
 
   const strongCountersActions = [
-    // {
-    //   title: 'Delete',
-    //   onClick: (event, rowId, rowData, extra) =>
-    //     onClickDeleteCounterButton(rowData.cells[0].title)
-    // }
+    {
+      title: 'Delete',
+      onClick: (event, rowId, rowData, extra) =>
+        setCounterToDelete(rowData.cells[0].title)
+    }
   ];
 
   const weakCountersActions = [
-    // {
-    //   title: 'Delete',
-    //   onClick: (event, rowId, rowData, extra) =>
-    //     onClickDeleteCounterButton(rowData.cells[0].title)
-    // }
+    {
+      title: 'Delete',
+      onClick: (event, rowId, rowData, extra) =>
+        setCounterToDelete(rowData.cells[0].title)
+    }
   ];
 
   const [countersPagination, setCountersPagination] = useState({
@@ -83,22 +83,34 @@ const CounterTableDisplay = (props: {
     }
   ];
 
-  useEffect(() => {
+  const loadCounters = () => {
     countersService.getCounters().then(counters => {
       const weakCounters = counters.filter(counter => counter.config.type == 'Weak');
       const strongCounters = counters.filter(counter => counter.config.type == 'Strong');
 
       setWeakCounters(weakCounters)
       setStrongCounters(strongCounters);
-      setFilteredCounters(strongCounters);
+
+      let currentCounters;
+      if(selectedCounterType == STRONG_COUNTER) {
+        currentCounters = strongCounters;
+      } else {
+        currentCounters = weakCounters;
+      }
+
+      setFilteredCounters(currentCounters);
       props.setCountersCount(counters.length);
       const initSlice =
         (countersPagination.page - 1) * countersPagination.perPage;
       updateRows(
-        strongCounters.slice(initSlice, initSlice + countersPagination.perPage)
+        currentCounters.slice(initSlice, initSlice + countersPagination.perPage)
       );
     });
-  }, []);
+  }
+
+  useEffect(() => {
+    loadCounters();
+  }, [selectedCounterType]);
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
@@ -233,12 +245,6 @@ const CounterTableDisplay = (props: {
     );
   }
 
-  const onClickDeleteCounterButton = (counterName: string) => {
-    //setDeleteEntryModalOpen(true);
-    //setKeyToDelete(entryKey);
-    console.log(counterName);
-  };
-
   return (
     <React.Fragment>
       <Toolbar id="counters-table-toolbar">
@@ -270,6 +276,10 @@ const CounterTableDisplay = (props: {
         <TableHeader />
         <TableBody />
       </Table>
+      <DeleteCounter name={counterToDelete} isModalOpen={counterToDelete != ''} closeModal={() => {
+        setCounterToDelete('');
+        loadCounters();
+      }}/>
     </React.Fragment>
   );
 };
