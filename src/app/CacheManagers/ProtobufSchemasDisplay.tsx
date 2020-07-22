@@ -35,10 +35,10 @@ import {SearchIcon} from '@patternfly/react-icons';
 import {useApiAlert} from "@app/utils/useApiAlert";
 import protobufService from "../../services/protobufService";
 import {
-  global_danger_color_200,
+  global_danger_color_100,
   global_spacer_md,
   global_spacer_sm,
-  global_success_color_200
+  global_success_color_100
 } from "@patternfly/react-tokens";
 import {AlertIcon} from "@patternfly/react-core/dist/js/components/Alert/AlertIcon";
 import {CreateProtoSchema} from "@app/CacheManagers/CreateProtoSchema";
@@ -136,7 +136,7 @@ const ProtobufSchemasDisplay = (props: {
             <ToolbarItem
               style={{
                 paddingRight: global_spacer_sm.value,
-                color: global_danger_color_200.value
+                color: global_danger_color_100.value
               }}
             >
               <Tooltip
@@ -152,7 +152,7 @@ const ProtobufSchemasDisplay = (props: {
               <TextContent>
                 <Text
                   component={TextVariants.p}
-                  style={{color: global_danger_color_200.value}}
+                  style={{color: global_danger_color_100.value}}
                 >
                   {error?.message}
                 </Text>
@@ -165,7 +165,7 @@ const ProtobufSchemasDisplay = (props: {
 
     return (
       <AlertIcon variant={AlertVariant.success} style={{
-        color: global_success_color_200.value
+        color: global_success_color_100.value
       }} />
     );
   };

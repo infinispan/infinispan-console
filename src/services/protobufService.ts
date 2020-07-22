@@ -124,7 +124,16 @@ class ProtobufService {
         throw response;
       })
       .then(schema => right(schema))
-      .catch(err => left(<ActionResponse>{ message: err, success: false }));
+      .catch(err => {
+        if (err instanceof TypeError) {
+          return left(<ActionResponse>{ message: err.message, success: false });
+        }
+        let errorMessage = 'An error happened with the schema ' + name;
+        if( err instanceof  Response) {
+          console.error('Schema ' + name + '. Error ' + err.status + ' ' + err.statusText);
+        }
+        return left(<ActionResponse>{ message: errorMessage, success: false });
+      });
   }
 
   /**
@@ -153,7 +162,8 @@ class ProtobufService {
               name: schema.name,
               error: protoError
             };
-          })
+          }).filter(schema => schema.name != 'org/infinispan/protostream/message-wrapping.proto' &&
+            schema.name != 'org/infinispan/query/remote/client/query.proto')
         )
       )
       .catch(err => left(<ActionResponse>{ message: err, success: false }));
