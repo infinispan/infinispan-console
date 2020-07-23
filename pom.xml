@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.infinispan</groupId>
-    <artifactId>infinispan-build-configuration-parent</artifactId>
-    <version>11.0.0.Dev04</version>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>36</version>
   </parent>
 
   <groupId>org.infinispan</groupId>
   <artifactId>infinispan-console</artifactId>
-  <version>0.7.Final</version>
+  <version>0.7.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Infinispan Console</name>
   <description>The new Web Management Console for Infinispan</description>
@@ -102,7 +102,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
-          <version>${version.maven.source}</version>
+          <version>${version.source.plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.sonatype.plugins</groupId>
@@ -159,23 +159,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>${version.jar.plugin}</version>
         <configuration>
           <classesDirectory>dist</classesDirectory>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
-            <manifestEntries>
-              <Implementation-Build>$\{buildNumber}</Implementation-Build>
-            </manifestEntries>
-          </archive>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
+        <version>${version.antrun.plugin}</version>
         <executions>
           <execution>
             <id>generate-license-files</id>
@@ -200,6 +192,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>${version.assembly.plugin}</version>
         <executions>
           <execution>
             <id>package-license-files</id>
