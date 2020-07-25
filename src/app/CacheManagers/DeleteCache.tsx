@@ -11,6 +11,7 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import {useRecentActivity} from "@app/utils/useRecentActivity";
 
 /**
  * Delete cache modal
@@ -21,6 +22,8 @@ const DeleteCache = (props: {
   closeModal: (boolean) => void;
 }) => {
   const { addAlert } = useApiAlert();
+  const { clearHistoryForCache} = useRecentActivity();
+
   const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<('success' | 'error' | 'default')>('default');
   const [cacheNameFormValue, setCacheNameFormValue] = useState('');
 
@@ -47,6 +50,7 @@ const DeleteCache = (props: {
       cacheService.deleteCache(props.cacheName).then(actionResponse => {
         clearDeleteCacheModal(actionResponse.success);
         addAlert(actionResponse);
+        clearHistoryForCache(props.cacheName);
       });
     }
   };
