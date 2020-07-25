@@ -6,9 +6,7 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core';
-import cacheService from '../../services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
 import protobufService from "../../services/protobufService";
 
 /**
