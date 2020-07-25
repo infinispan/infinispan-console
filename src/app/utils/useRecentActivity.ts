@@ -3,6 +3,6 @@ import { RecentActivityContext } from '../providers/RecentActivityContextProvide
 
 // a custom hook for using the recent activity context
 export function useRecentActivity() {
-  const { activities, pushActivity } = useContext(RecentActivityContext);
-  return { activities, pushActivity };
+  const { activities, pushActivity, clearHistoryForCache } = useContext(RecentActivityContext);
+  return { activities, pushActivity, clearHistoryForCache };
 }

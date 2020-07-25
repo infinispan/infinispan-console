@@ -38,9 +38,7 @@ const RecentActivityTable = (props: { cacheName: string }) => {
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
-                    <Title headingLevel="h2" size="xs">
                       There is no recent activity
-                    </Title>
                   </EmptyState>
                 </Bullseye>
               )
