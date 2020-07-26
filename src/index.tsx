@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from '@app/index';
 import authenticationService from "./services/authService";
-import Keycloak from "keycloak-js";
 import {KeycloakService} from "./services/keycloakService";
 
 if (process.env.NODE_ENV !== 'production') {
@@ -11,7 +10,6 @@ if (process.env.NODE_ENV !== 'production') {
   // TODO: deal with react axe errors
   // axe(React, ReactDOM, 1000);
 }
-
 authenticationService.config().then(eitherAuth => {
   if(eitherAuth.isRight()) {
     if(!eitherAuth.value.keycloakConfig) {
