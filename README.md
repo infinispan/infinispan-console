@@ -67,6 +67,11 @@ This console is built and released as a maven dependency used in the infinispan 
 * [Jest Config](./jest.config.js)
 * [Editor Config](./.editorconfig)
 
+## Favicons
+
+Generated with [Favicon generator](https://www.favicon-generator.org/)
+
+
 ## Code Quality Tools
 * For accessibility compliance, we use [react-axe](https://github.com/dequelabs/react-axe)
 * To keep our bundle size in check, we use [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)
