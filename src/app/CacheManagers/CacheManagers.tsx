@@ -45,7 +45,6 @@ const CacheManagers = () => {
 
   useEffect(() => {
     dataContainerService.getDefaultCacheManager().then(eitherCm => {
-      setLoading(false);
       if (eitherCm.isRight()) {
         const cmName = eitherCm.value.name;
         setCacheManagerName(cmName);
@@ -54,6 +53,7 @@ const CacheManagers = () => {
       } else {
         setError(eitherCm.value.message);
       }
+      setLoading(false);
     });
   }, []);
 

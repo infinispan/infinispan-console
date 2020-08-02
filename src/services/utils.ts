@@ -72,6 +72,13 @@ class Utils {
     }
   }
 
+  public isWelcomePage(): boolean {
+    return (
+      location.pathname == '/console/welcome' ||
+      location.pathname == '/console/welcome/'
+    );
+  }
+
   /**
    * Perform a REST call with body
    *

@@ -8,17 +8,24 @@ import {
   Page,
   PageHeader,
   PageSidebar,
-  SkipToContent, Text, TextContent, TextVariants, Toolbar, ToolbarContent, ToolbarItem
+  SkipToContent,
+  Text,
+  TextContent,
+  TextVariants,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {Link, NavLink, useLocation} from 'react-router-dom';
-import { routes } from '@app/routes';
-import { APIAlertProvider } from '@app/providers/APIAlertProvider';
-import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
-import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
-import { useHistory } from 'react-router';
+import {Link, NavLink} from 'react-router-dom';
+import {routes} from '@app/routes';
+import {APIAlertProvider} from '@app/providers/APIAlertProvider';
+import {ActionResponseAlert} from '@app/Common/ActionResponseAlert';
+import {RecentActivityProvider} from '@app/providers/RecentActivityContextProvider';
+import {useHistory} from 'react-router';
 import {global_spacer_sm} from "@patternfly/react-tokens";
 import {About} from "@app/About/About";
+import utils from "../../services/utils";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -27,7 +34,6 @@ interface IAppLayout {
 const AppLayout: React.FunctionComponent<IAppLayout> = ({
   children,
 }) => {
-  let location = useLocation();
   const history = useHistory();
 
   const logoProps = {
@@ -137,17 +143,25 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
     />
   );
 
+  const aboutModal = () => {
+    if(utils.isWelcomePage())
+      return;
+
+    return (
+      <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)}/>
+    )
+  }
   return (
     <APIAlertProvider>
       <RecentActivityProvider>
         <ActionResponseAlert />
-        <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)}/>
+        {aboutModal()}
         <Page
           mainContainerId="primary-app-container"
-          header={location.pathname.endsWith('/welcome') ? null : Header}
+          header={utils.isWelcomePage() ? null : Header}
           onPageResize={onPageResize}
           skipToContent={PageSkipToContent}
-          sidebar={location.pathname.endsWith('/welcome') ? null : Sidebar}
+          sidebar={utils.isWelcomePage() ? null : Sidebar}
         >
           {children}
         </Page>

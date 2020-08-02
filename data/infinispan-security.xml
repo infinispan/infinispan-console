@@ -4,9 +4,9 @@
             xmlns="urn:infinispan:server:11.0">
     <security-realms>
       <security-realm name="default">
-        <token-realm name="infinispan" auth-server-url="http://localhost:8180/auth/" client-id="infinispan-console">
+        <token-realm name="infinispan" auth-server-url="http://localhost:8080/auth/" client-id="infinispan-console">
           <oauth2-introspection
-            introspection-url="http://localhost:8180/auth/realms/infinispan/protocol/openid-connect/token/introspect"
+            introspection-url="http://localhost:8080/auth/realms/infinispan/protocol/openid-connect/token/introspect"
             client-id="infinispan-server" client-secret="1fdca4ec-c416-47e0-867a-3d471af7050f"/>
         </token-realm>
       </security-realm>

@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { Alert, PageSection } from '@patternfly/react-core';
-import { DynamicImport } from '@app/DynamicImport';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 import { CacheManagers } from '@app/CacheManagers/CacheManagers';
 import { NotFound } from '@app/NotFound/NotFound';
@@ -20,35 +18,6 @@ import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 
 let routeFocusTimer: number;
-const getSupportModuleAsync = () => {
-  return () => import(/* webpackChunkName: 'support' */ '@app/Support/Support');
-};
-
-const Support = (routeProps: RouteComponentProps) => {
-  const lastNavigation = useLastLocation();
-  return (
-    <DynamicImport
-      load={getSupportModuleAsync()}
-      focusContentAfterMount={lastNavigation !== null}
-    >
-      {(Component: any) => {
-        let loadedComponent: any;
-        if (Component === null) {
-          loadedComponent = (
-            <PageSection aria-label="Loading Content Container">
-              <div className="pf-l-bullseye">
-                <Alert title="Loading" className="pf-l-bullseye__item" />
-              </div>
-            </PageSection>
-          );
-        } else {
-          loadedComponent = <Component.Support {...routeProps} />;
-        }
-        return loadedComponent;
-      }}
-    </DynamicImport>
-  );
-};
 
 // a custom hook for sending focus to the primary content container
 // after a view has loaded so that subsequent press of tab key
@@ -99,6 +68,7 @@ export interface IAppRoute {
   isAsync?: boolean;
   menu?: boolean;
   subRoutes?: string[];
+  init?: string;
 }
 
 const routes: IAppRoute[] = [
@@ -177,11 +147,7 @@ const routes: IAppRoute[] = [
   }
 ];
 
-export let user = {
-  user: 'admin',
-  password: 'admin'
-};
-const AppRoutes = () => (
+const AppRoutes: React.FunctionComponent<any> = (props: { init: string }) => (
   <LastLocationProvider>
     <Switch>
       {routes.map(({ path, exact, component, title, isAsync }, idx) => (
@@ -192,6 +158,7 @@ const AppRoutes = () => (
           key={idx}
           title={title}
           isAsync={isAsync}
+          init={props.init}
         />
       ))}
       <PageNotFound title="404 Page Not Found" />
