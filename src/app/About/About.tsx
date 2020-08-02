@@ -16,7 +16,7 @@ import {
   TextListVariants
 } from '@patternfly/react-core';
 import serverService from "../../services/serverService";
-import back5 from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
+import backImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import {FacebookIcon, GithubIcon, OutlinedCommentsIcon, StackOverflowIcon, TwitterIcon} from "@patternfly/react-icons";
 import {global_spacer_3xl, global_spacer_lg} from "@patternfly/react-tokens";
@@ -49,8 +49,8 @@ const About: React.FunctionComponent<any> = (props: {
       onClose={props.closeModal}
       trademark="Sponsored by Red Hat"
       brandImageSrc={icon}
-      brandImageAlt="Patternfly Logo"
-      backgroundImageSrc={back5}
+      brandImageAlt="Datagrid Logo"
+      backgroundImageSrc={backImage}
     >
       <Stack>
         <StackItem style={{paddingBottom: global_spacer_lg.value}}>

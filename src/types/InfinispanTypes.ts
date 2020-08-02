@@ -218,5 +218,6 @@ interface IndexStats {
 
 interface AuthInfo {
   mode: string;
+  ready: boolean;
   keycloakConfig?: Keycloak.KeycloakConfig;
 }

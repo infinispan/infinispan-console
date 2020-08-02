@@ -20,7 +20,7 @@ const ActionResponseAlert = () => {
         isLiveRegion
         title={alert.message}
         variant={alert.success ? AlertVariant.success : AlertVariant.danger}
-        action={<AlertActionCloseButton onClose={removeAlert} />}
+        actionClose={<AlertActionCloseButton onClose={removeAlert} />}
       />
     </AlertGroup>
   );

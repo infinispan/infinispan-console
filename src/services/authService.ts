@@ -36,7 +36,8 @@ class AuthenticationService {
       })
       .then(json => {
         const authInfo = <AuthInfo>{
-          mode: json.mode
+          mode: json.mode,
+          ready: json.ready == 'true'
         };
 
         if (authInfo.mode == 'OIDC') {
