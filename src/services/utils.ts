@@ -34,14 +34,14 @@ export enum CacheType {
 }
 
 export enum KeyContentType {
-  OctetStream = 'application/octet-stream',
-  OctetStreamHex = 'application/octet-stream; encoding=hex',
-  StringContentType = 'java.lang.String',
-  DoubleContentType = 'java.lang.Double',
-  IntegerContentType = 'java.lang.Integer',
-  LongContentType = 'java.lang.Long',
-  BooleanContentType = 'java.lang.Boolean',
-  BytesType = 'Bytes',
+  StringContentType = 'String',//'application/x-java-object;type=java.lang.String'
+  DoubleContentType = 'Double',//'application/x-java-object;type=java.lang.Double'
+  IntegerContentType = 'Integer',//'application/x-java-object;type=java.lang.Integer'
+  LongContentType = 'Long', //'application/x-java-object;type=java.lang.Long'
+  BooleanContentType = 'Boolean', //'application/x-java-object;type=java.lang.Boolean'
+  BytesType = 'Bytes', //'Bytes'
+  OctetStream = 'Base64', //'application/octet-stream'
+  OctetStreamHex = 'Hex' //'application/octet-stream; encoding=hex'
 }
 
 export enum ValueContentType {
