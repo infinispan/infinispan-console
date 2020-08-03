@@ -3,8 +3,8 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, { KeyContentType, ValueContentType } from './utils';
-import { Either, left, right } from './either';
+import utils, {KeyContentType, ValueContentType} from './utils';
+import {Either, left, right} from './either';
 
 class CacheService {
   endpoint: string;
@@ -302,8 +302,17 @@ class CacheService {
       KeyContentType.LongContentType ||
       KeyContentType.BooleanContentType
     ) {
-      return 'application/x-java-object;type=' + keyContentType.toString();
+      return 'application/x-java-object;type=java.lang.' + keyContentType.toString();
     }
+
+    if (keyContentType == KeyContentType.OctetStream) {
+      return 'application/octet-stream';
+    }
+
+    if (keyContentType == KeyContentType.OctetStreamHex) {
+      return 'application/octet-stream; encoding=hex';
+    }
+
     return keyContentType.toString();
   }
 
@@ -317,14 +326,19 @@ class CacheService {
   public async getEntry(
     cacheName: string,
     key: string,
-    keyContentType?: string
+    keyContentType?: KeyContentType
   ): Promise<Either<ActionResponse, CacheEntry>> {
-    return utils
-      .restCall(
-        this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
-        'GET'
-      )
-      .then((response) => {
+    let headers = utils.createAuthenticatedHeader();
+    if (keyContentType) {
+      let keyContentTypeHeader = this.keyContentTypeHeader(keyContentType);
+      headers.append('Key-Content-Type', keyContentTypeHeader);
+    }
+    return fetch(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key, {
+      method: 'GET',
+      credentials: 'include',
+      headers: headers
+    })
+      .then(response => {
         if (response.ok) {
           return response.text().then((value) => {
             const timeToLive = response.headers.get('timeToLiveSeconds');

@@ -7,6 +7,10 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   InputGroup,
+  Select,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant,
   TextInput,
   Title,
   Toolbar,
@@ -27,6 +31,7 @@ import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
+import { KeyContentType } from '@services/utils';
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -172,13 +177,15 @@ const CacheEntries = (props: { cacheName: string }) => {
       return;
     }
 
-    cacheService.getEntry(props.cacheName, keyToSearch).then((response) => {
-      if (response.isRight()) {
-        updateRows([response.value]);
-      } else {
-        updateRows([]);
-      }
-    });
+    cacheService
+      .getEntry(props.cacheName, keyToSearch, keyType as KeyContentType)
+      .then((response) => {
+        if (response.isRight()) {
+          updateRows([response.value]);
+        } else {
+          updateRows([]);
+        }
+      });
   };
 
   const searchEntryOnKeyPress = (event) => {
@@ -186,11 +193,37 @@ const CacheEntries = (props: { cacheName: string }) => {
       searchEntryByKey();
     }
   };
+  const keyContentTypeOptions = () => {
+    return Object.keys(KeyContentType).map((key) => (
+      <SelectOption key={key} value={KeyContentType[key]} />
+    ));
+  };
+
+  const [expandedKey, setExpandedKey] = useState(false);
+  const [keyType, setKeyType] = useState<
+    string | SelectOptionObject | (string | SelectOptionObject)[]
+  >(KeyContentType.StringContentType);
 
   return (
     <React.Fragment>
       <Toolbar id="cache-entries-toolbar" style={{ paddingLeft: 0 }}>
         <ToolbarContent>
+          <ToolbarItem>
+            <Select
+              width={125}
+              variant={SelectVariant.single}
+              aria-label="Select Key Content Type"
+              onToggle={(isExpanded) => setExpandedKey(isExpanded)}
+              onSelect={(event, selection) => {
+                setKeyType(selection);
+                setExpandedKey(false);
+              }}
+              selections={keyType}
+              isOpen={expandedKey}
+            >
+              {keyContentTypeOptions()}
+            </Select>
+          </ToolbarItem>
           <ToolbarItem>
             <InputGroup>
               <TextInput
@@ -198,7 +231,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                 id="textSearchByKey"
                 type="search"
                 aria-label="search by key textfield"
-                placeholder={'Get by key'}
+                placeholder={'Get by key as ' + keyType}
                 size={50}
                 onChange={onChangeKeySearch}
                 onKeyPress={searchEntryOnKeyPress}

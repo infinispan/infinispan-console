@@ -168,16 +168,8 @@ const CreateOrUpdateEntryForm = (props: {
     });
   };
 
-  const onSelectKeyContentType = (event, selection) => {
-    setSelection(selection, false, setKeyContentType);
-  };
-
   const onSelectValueContentType = (event, selection) => {
     setSelection(selection, false, setValueContentType);
-  };
-
-  const onClearKeyContentType = () => {
-    setKeyContentType(selectSingleElementInitialState);
   };
 
   const onClearValueContentType = () => {
@@ -499,9 +491,10 @@ const CreateOrUpdateEntryForm = (props: {
               placeholderText="Select a key content type"
               variant={SelectVariant.typeahead}
               aria-label="Select Key Content Type"
-              onToggle={onToggleKeyContentType}
-              onSelect={onSelectKeyContentType}
-              onClear={onClearKeyContentType}
+              onToggle={isExpanded => setExpanded(isExpanded, setKeyContentType)}
+              onSelect={(event, selection) =>
+                setSelection(selection, false, setKeyContentType)}
+              onClear={() => setKeyContentType(selectSingleElementInitialState)}
               selections={keyContentType.selected}
               isOpen={keyContentType.expanded}
               isDisabled={isEdition}
