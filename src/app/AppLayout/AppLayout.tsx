@@ -18,6 +18,7 @@ import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
 import { useHistory } from 'react-router';
 import {global_spacer_sm} from "@patternfly/react-tokens";
+import {About} from "@app/About/About";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -35,6 +36,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   };
 
   const [isNavOpen, setIsNavOpen] = useState(true);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
 
@@ -122,6 +124,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
               </NavItem>
             )
         )}
+        <NavItem onClick={()=> setIsAboutOpen(true)}>About</NavItem>
       </NavList>
     </Nav>
   );
@@ -138,6 +141,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
     <APIAlertProvider>
       <RecentActivityProvider>
         <ActionResponseAlert />
+        <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)}/>
         <Page
           mainContainerId="primary-app-container"
           header={location.pathname.endsWith('/welcome') ? null : Header}
