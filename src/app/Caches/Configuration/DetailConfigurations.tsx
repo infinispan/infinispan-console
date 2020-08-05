@@ -1,13 +1,8 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
-  Bullseye,
   Card,
   CardBody,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
   ExpandableSection,
   PageSection,
   PageSectionVariants,
@@ -15,19 +10,19 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent
 } from '@patternfly/react-core';
 import dataContainerService from '../../../services/dataContainerService';
-import {SearchIcon} from '@patternfly/react-icons';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {TableEmptyState} from "@app/Common/TableEmptyState";
 
 const DetailConfigurations: React.FunctionComponent<any> = props => {
-  const cm: string = props.location.state.cmName;
+  const [cm, setCm] = useState(props.computedMatch.params.cmName);
+  const [loading, setLoading] = useState(true);
   const [cacheConfigs, setCacheConfigs] = useState<CacheConfig[]>([]);
   const [pageConfigsPagination, setCacheConfigsPagination] = useState({
     page: 1,
@@ -42,24 +37,24 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
 
   useEffect(() => {
     dataContainerService.getCacheConfigurationTemplates(cm).then(configs => {
+      setLoading(false);
       setCacheConfigs(configs);
-      const initSlice =
-        (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
-      updateRows(
-        configs.slice(initSlice, initSlice + pageConfigsPagination.perPage)
-      );
     });
-  }, []);
+  }, [cm]);
+
+  useEffect(() => {
+    const slice =
+      (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
+    updateRows(
+      cacheConfigs.slice(slice, slice + pageConfigsPagination.perPage)
+    );
+  }, [cacheConfigs, pageConfigsPagination]);
 
   const onSetPage = (_event, pageNumber) => {
     setCacheConfigsPagination({
       page: pageNumber,
       perPage: pageConfigsPagination.perPage
     });
-    const initSlice = (pageNumber - 1) * pageConfigsPagination.perPage;
-    updateRows(
-      cacheConfigs.slice(initSlice, initSlice + pageConfigsPagination.perPage)
-    );
   };
 
   const onPerPageSelect = (_event, perPage) => {
@@ -67,30 +62,18 @@ const DetailConfigurations: React.FunctionComponent<any> = props => {
       page: pageConfigsPagination.page,
       perPage: perPage
     });
-    const initSlice = (pageConfigsPagination.page - 1) * perPage;
-    updateRows(cacheConfigs.slice(initSlice, initSlice + perPage));
   };
 
   const updateRows = (configs: CacheConfig[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-    if (configs.length == 0) {
+    if (configs.length == 0 || loading) {
       rows = [
         {
           heightAuto: true,
           cells: [
             {
               title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      There are no cache configurations
-                    </Title>
-                    <EmptyStateBody>
-                      Create a cache configuration
-                    </EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
+                <TableEmptyState loading={loading} error={''} empty={''}/>
               )
             }
           ]
