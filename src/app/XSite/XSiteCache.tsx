@@ -20,10 +20,9 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import {Link} from 'react-router-dom';
-import {global_spacer_xs, global_spacer_md} from '@patternfly/react-tokens';
+import {global_spacer_md, global_spacer_xs} from '@patternfly/react-tokens';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {useLocation} from "react-router";
 import crossSiteReplicationService from "../../services/crossSiteReplicationService";
 import {cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter} from "@patternfly/react-table";
 import {TableEmptyState} from "@app/Common/TableEmptyState";
@@ -39,8 +38,7 @@ interface StateTransferModalState {
 
 const XSiteCache = props => {
   const { addAlert } = useApiAlert();
-  let location = useLocation();
-  const [cacheName, setCacheName] = useState<string>('');
+  const cacheName =  props.computedMatch.params.cacheName;
   const [backups, setBackups] = useState<XSite[]>([]);
   const [rows, setRows] = useState<IRow[]>([]);
   const [stateTransferStatus, setStateTransferStatus] = useState(new Map());
@@ -50,17 +48,8 @@ const XSiteCache = props => {
   const [stateTransferModal, setStateTransferModal] = useState<StateTransferModalState>({site:'', open: false, action:'' });
 
   useEffect(() => {
-    let locationCacheName = location.pathname.replace('/cache/', '')
-      .replace('/backups', '');
-    setCacheName(locationCacheName);
-  }, [location]);
-
-  useEffect(() => {
-    if(cacheName == '') {
-      return;
-    }
     loadSites();
-  }, [cacheName]);
+  }, []);
 
   useEffect(() => {
     buildRows();

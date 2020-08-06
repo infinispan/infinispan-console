@@ -129,8 +129,10 @@ class ProtobufService {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
         let errorMessage = 'An error happened with the schema ' + name;
-        if( err instanceof  Response) {
-          console.error('Schema ' + name + '. Error ' + err.status + ' ' + err.statusText);
+        if (err instanceof Response) {
+          console.error(
+            'Schema ' + name + '. Error ' + err.status + ' ' + err.statusText
+          );
         }
         return left(<ActionResponse>{ message: errorMessage, success: false });
       });
@@ -150,20 +152,26 @@ class ProtobufService {
       })
       .then(protoSchemas =>
         right(
-          protoSchemas.map(schema => {
-            let protoError: ProtoError | undefined = undefined;
-            if (schema['error'] != null) {
-              protoError = <ProtoError>{
-                message: schema.error.message,
-                cause: schema.error.cause
+          protoSchemas
+            .map(schema => {
+              let protoError: ProtoError | undefined = undefined;
+              if (schema['error'] != null) {
+                protoError = <ProtoError>{
+                  message: schema.error.message,
+                  cause: schema.error.cause
+                };
+              }
+              return <ProtoSchema>{
+                name: schema.name,
+                error: protoError
               };
-            }
-            return <ProtoSchema>{
-              name: schema.name,
-              error: protoError
-            };
-          }).filter(schema => schema.name != 'org/infinispan/protostream/message-wrapping.proto' &&
-            schema.name != 'org/infinispan/query/remote/client/query.proto')
+            })
+            .filter(
+              schema =>
+                schema.name !=
+                  'org/infinispan/protostream/message-wrapping.proto' &&
+                schema.name != 'org/infinispan/query/remote/client/query.proto'
+            )
         )
       )
       .catch(err => left(<ActionResponse>{ message: err, success: false }));

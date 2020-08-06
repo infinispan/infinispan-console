@@ -32,7 +32,7 @@ import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 const CreateCache: React.FunctionComponent<any> = props => {
   let location = useLocation();
   const { addAlert } = useApiAlert();
-  const [cmName, setCmName] = useState('');
+  const cmName = props.computedMatch.params.cmName;
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState<('success'| 'error'|'default')>('default');
   const [config, setConfig] = useState('');
@@ -50,16 +50,6 @@ const CreateCache: React.FunctionComponent<any> = props => {
   }
 
   useEffect(() => {
-    setCmName(location.pathname.replace('/caches/create', '')
-      .replace('/container/', ''));
-  }, []);
-
-
-  useEffect(() => {
-    if(cmName == '') {
-      return;
-    }
-
     dataContainerService
       .getCacheConfigurationTemplates(cmName)
       .then(templates => {
@@ -69,7 +59,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
         });
         setConfigs(options);
       });
-  }, [cmName]);
+  }, []);
 
   const onToggleConfigPanel = () => {
     const expanded = !configExpanded;

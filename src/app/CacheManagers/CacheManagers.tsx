@@ -1,31 +1,31 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import dataContainerService from '../../services/dataContainerService';
 import {
   Card,
   CardBody,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
+  Divider,
+  Flex,
+  FlexItem,
   Nav,
   NavItem,
   NavList,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Text,
   TextContent,
-  TextVariants,
-  Spinner, ToolbarItemVariant
+  TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
 import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
 import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
 import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
 import {ProtobufSchemasDisplay} from "@app/CacheManagers/ProtobufSchemasDisplay";
-import { Status } from '@app/Common/Status';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { TableErrorState } from '@app/Common/TableErrorState';
+import {Status} from '@app/Common/Status';
+import {global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {TableErrorState} from '@app/Common/TableErrorState';
 
 const CacheManagers = () => {
   const { addAlert } = useApiAlert();
@@ -85,7 +85,7 @@ const CacheManagers = () => {
     ];
 
     return (
-      <Nav onSelect={handleTabClick} variant={'tertiary'}>
+      <Nav onSelect={handleTabClick} variant={'tertiary'} style={{marginTop: global_spacer_md.value}}>
         <NavList>
         {tabs.map(tab =>
           <NavItem key={'nav-item-' + tab.key} itemId={tab.key} isActive={activeTabKey === tab.key}>
@@ -158,14 +158,10 @@ const CacheManagers = () => {
 
     return (
       <React.Fragment>
-        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-        <ToolbarItem variant={ToolbarItemVariant.label}>
-        Site:
-        </ToolbarItem>
-        <ToolbarItem variant={ToolbarItemVariant.label}>
-              {siteName}
-        </ToolbarItem>
-        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        <Divider isVertical />
+        <FlexItem>
+          {'Site: ' + siteName}
+        </FlexItem>
       </React.Fragment>
     );
   }
@@ -174,9 +170,13 @@ const CacheManagers = () => {
     let title = 'Data container';
     if (!cm) {
       return (
-        <TextContent id="cluster-manager-header">
-          <Text component={TextVariants.h1}>{title}</Text>
-        </TextContent>
+        <Flex id="cluster-manager-header">
+          <FlexItem>
+            <TextContent>
+              <Text component={TextVariants.h1}>{title}</Text>
+            </TextContent>
+          </FlexItem>
+        </Flex>
       );
     }
 
@@ -185,23 +185,23 @@ const CacheManagers = () => {
     status = cm.cache_manager_status;
 
     return (
-      <Toolbar id="cluster-manager-header">
-        <ToolbarContent style={{ paddingLeft: 0}}>
-          <ToolbarItem>
-            <TextContent>
-              <Text component={TextVariants.h1} style={{marginBottom: 0}}>
-                {title}
-              </Text>
-            </TextContent>
-          </ToolbarItem>
+      <Flex id="cluster-manager-header" direction={{ default: 'column' }}>
+        <Flex>
+          <FlexItem>
+              <TextContent>
+                <Text component={TextVariants.h1}>
+                  {title}
+                </Text>
+              </TextContent>
+          </FlexItem>
+        </Flex>
+        <Flex>
+          <FlexItem><Status status={status} /></FlexItem>
           {buildSiteDisplay(cm.local_site)}
-          <ToolbarItem>
-            <Status status={status} />
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
+        </Flex>
+      </Flex>
     );
-  };
+  }
 
   return (
     <React.Fragment>
