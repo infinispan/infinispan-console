@@ -71,13 +71,9 @@ class CountersService {
     return utils.handleCRUDActionResponse(
       name,
       'Counter ' + name + ' has been deleted',
-      utils.restCall(
-        this.endpoint + '/counters/' + name ,
-        'DELETE'
-      )
+      utils.restCall(this.endpoint + '/counters/' + name, 'DELETE')
     );
   }
-
 }
 
 const countersService: CountersService = new CountersService(utils.endpoint());

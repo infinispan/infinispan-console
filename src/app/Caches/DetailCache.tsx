@@ -33,7 +33,6 @@ import {CacheEntries} from '@app/Caches/CacheEntries';
 import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {useLocation} from 'react-router';
 import {global_danger_color_200, global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
 import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from "@app/Caches/QueryEntries";
@@ -42,40 +41,26 @@ import {Link} from "react-router-dom";
 import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
 
 const DetailCache = props => {
-  let location = useLocation();
+  const cacheName = props.computedMatch.params.cacheName;
+  const [loading, setLoading] = useState<boolean>(true);
   const [activeTabKey1, setActiveTabKey1] = useState< number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState< number | string>(10);
-  const [cacheName, setCacheName] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [detail, setDetail] = useState<DetailedInfinispanCache | undefined>(
     undefined
   );
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(false);
-  const [xSite, setXSite] = useState<XSite[]>([]);
 
   useEffect(() => {
-    let locationCacheName = location.pathname.substr(7);
-    setCacheName(locationCacheName);
-    setLoading(true);
-  }, [location]);
-
-  useEffect(() => {
-    if(cacheName == '') return;
     loadCacheDetail();
 
-  }, [cacheName]);
+  }, []);
 
   const loadCacheDetail = () => {
     cacheService.retrieveFullDetail(cacheName).then(eitherDetail => {
       setLoading(false);
       if (eitherDetail.isRight()) {
         setDetail(eitherDetail.value);
-        if (eitherDetail.value.features.hasRemoteBackup) {
-          cacheService.retrieveXSites(cacheName).then(xsites => {
-            setXSite(xsites);
-          });
-        }
       } else {
         setError(eitherDetail.value.message);
       }

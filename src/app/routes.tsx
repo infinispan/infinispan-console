@@ -155,7 +155,7 @@ const routes: IAppRoute[] = [
     component: IndexManagement,
     exact: true,
     label: 'Index management',
-    path: '/cache/:cmName/indexation',
+    path: '/cache/:cacheName/indexation',
     title: 'Index management',
     menu: false
   },
@@ -163,7 +163,7 @@ const routes: IAppRoute[] = [
     component: XSiteCache,
     exact: true,
     label: 'XSite Replication Cache',
-    path: '/cache/:cmName/backups',
+    path: '/cache/:cacheName/backups',
     title: 'XSite management caches',
     menu: false
   },

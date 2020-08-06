@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
-  Button, ButtonVariant,
+  Button,
+  ButtonVariant,
   Divider,
   DividerVariant,
   Level,
@@ -22,7 +23,6 @@ import {Link} from 'react-router-dom';
 import {global_spacer_md} from '@patternfly/react-tokens';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {useLocation} from "react-router";
 import {TableErrorState} from "@app/Common/TableErrorState";
 import {PurgeIndex} from "@app/IndexManagement/PurgeIndex";
 import {Reindex} from "@app/IndexManagement/Reindex";
@@ -30,8 +30,7 @@ import displayUtils from "../../services/displayUtils";
 
 const IndexManagement = props => {
   const { addAlert } = useApiAlert();
-  let location = useLocation();
-  const [cacheName, setCacheName] = useState<string>('');
+  const cacheName = props.computedMatch.params.cacheName;
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
   const [indexStats, setIndexStats] = useState<IndexStats | undefined>(undefined);
@@ -39,16 +38,8 @@ const IndexManagement = props => {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    let locationCacheName = location.pathname.substr(7).replace('/indexation', '');
-    setCacheName(locationCacheName);
-  }, [location]);
-
-  useEffect(() => {
-    if(cacheName == '') {
-      return;
-    }
     retrieveIndexStats();
-  }, [cacheName]);
+  }, []);
 
   const retrieveIndexStats = () => {
     cacheService.retrieveIndexStats(cacheName).then(eitherResult => {

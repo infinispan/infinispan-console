@@ -19,7 +19,7 @@ import {
   TextContent,
   TextVariants,
   Title,
-  Spinner
+  Spinner, Flex, FlexItem, Divider
 } from '@patternfly/react-core';
 import {CubesIcon, SearchIcon} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';
@@ -149,28 +149,26 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
     const sizeLabel = cacheManager.cluster_size + member + 'in use';
 
     return (
-      <Toolbar id="cluster-status-header">
-        <ToolbarContent style={{ paddingLeft: 0 }}>
-          <ToolbarItem>
+      <Flex id="cluster-status-header" direction={{ default: 'column' }}>
+        <Flex>
+          <FlexItem>
             <TextContent>
               <Text component={TextVariants.h1}>Cluster Membership</Text>
             </TextContent>
-          </ToolbarItem>
-        </ToolbarContent>
-        <ToolbarContent style={{ paddingLeft: 0 }}>
-          <ToolbarItem>
+          </FlexItem>
+        </Flex>
+        <Flex>
+          <FlexItem>
             <Health health={cacheManager.health} />
-          </ToolbarItem>
-          <ToolbarItem
-            variant={ToolbarItemVariant.separator}
-          ></ToolbarItem>
-          <ToolbarItem>
+          </FlexItem>
+          <Divider isVertical></Divider>
+          <FlexItem>
             <TextContent>
               <Text component={TextVariants.p}>{sizeLabel}</Text>
             </TextContent>
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
+          </FlexItem>
+        </Flex>
+      </Flex>
     );
   };
 
