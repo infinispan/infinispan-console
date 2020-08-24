@@ -2,41 +2,33 @@ import React, {useEffect, useState} from 'react';
 import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter} from '@patternfly/react-table';
 import {
   Badge,
-  Bullseye,
   Button,
   ButtonVariant,
   Chip,
   ChipGroup,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
   Pagination,
   Select,
   SelectGroup,
   SelectOption,
   SelectVariant,
-  Spinner,
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
-import {ExclamationCircleIcon, FilterIcon, SearchIcon} from '@patternfly/react-icons';
+import {FilterIcon} from '@patternfly/react-icons';
 import {Link} from 'react-router-dom';
-import {global_danger_color_100} from '@patternfly/react-tokens';
 import dataContainerService from '../../services/dataContainerService';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DeleteCache} from '@app/CacheManagers/DeleteCache';
 import {IgnoreCache} from '@app/CacheManagers/IgnoreCache';
 import {IExtraData, IRowData} from '@patternfly/react-table/src/components/Table/Table';
-import {ToolbarItemVariant} from "@patternfly/react-core/src/components/Toolbar/ToolbarItem";
 import {TableEmptyState} from "@app/Common/TableEmptyState";
 
 interface IgnoreCache {
