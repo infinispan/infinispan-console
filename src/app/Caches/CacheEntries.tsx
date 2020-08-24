@@ -3,8 +3,6 @@ import {
   Bullseye,
   Button,
   ButtonVariant,
-  Card,
-  CardBody,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
@@ -23,7 +21,6 @@ import {ClearAllEntries} from '@app/Caches/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import {global_BackgroundColor_100} from "@patternfly/react-tokens";
 import displayUtils from "../../services/displayUtils";
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
