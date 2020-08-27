@@ -10,7 +10,7 @@ services:
       - xsite-config-volume:/user-config
     command: wget -q https://raw.githubusercontent.com/infinispan/infinispan-console/master/data/infinispan-console.xml -O /user-config/infinispan-console.xml --no-check-certificate
   infinispan-server-lon-1:
-    image: infinispan/server:11.0
+    image: infinispan/server:12.0
     ports:
       - "11222:11222"
     depends_on:
@@ -22,7 +22,7 @@ services:
       - xsite-config-volume:/user-config
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON
   infinispan-server-lon-2:
-    image: infinispan/server:11.0
+    image: infinispan/server:12.0
     ports:
       - "11221:11222"
     depends_on:
@@ -35,7 +35,7 @@ services:
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON -Dinfinispan.server.rest.cors-allow=http://localhost:11221
 
   infinispan-server-nyc-1:
-    image: infinispan/server:11.0
+    image: infinispan/server:12.0
     ports:
       - "32221:11222"
     depends_on:
@@ -47,7 +47,7 @@ services:
       - xsite-config-volume:/user-config
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-console.xml -Djgroups.cluster.mcast_addr=228.6.7.15 -Drelay.site=NYC -Dinfinispan.server.rest.cors-allow=http://localhost:32221
   infinispan-server-nyc-2:
-    image: infinispan/server:11.0
+    image: infinispan/server:12.0
     ports:
       - "32222:11222"
     depends_on:
