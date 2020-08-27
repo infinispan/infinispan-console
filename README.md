@@ -2,7 +2,7 @@
 
 # Infinispan Console [![Build Status](https://travis-ci.org/infinispan/infinispan-console.svg?branch=master)](https://travis-ci.org/infinispan/infinispan-console)
 
-This is the front end application for the web console of the new Infinispan Server 10.x
+This is the front end application for the web console of the new Infinispan Server 12.x
 
 This application is built using [Patternfly 4 and React](https://www.patternfly.org/v4/get-started/developers)
 
@@ -16,10 +16,10 @@ server bundle, so the console is served from the server in production.
 
 ### Use Docker
 
-To run the latest development release version, run 11.0
+To run the latest development release version, run 12.0
 
 ```bash
- docker run -it --rm -p 11222:11222 -e USER="user" -e PASS="pass" infinispan/server:11.0
+ docker run -it --rm -p 11222:11222 -e USER="user" -e PASS="pass" infinispan/server:12.0
 ```
 
 ### Direct download
