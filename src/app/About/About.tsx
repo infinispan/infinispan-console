@@ -33,14 +33,16 @@ const About: React.FunctionComponent<any> = (props: {
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
 
   useEffect(() => {
-    serverService.getVersion().then(eitherVersion => {
-      if (eitherVersion.isRight()) {
-        setVersion(eitherVersion.value);
-      } else {
-        console.log('Unable to retrieve Infinispan Version')
-      }
-    });
-  }, []);
+    if(props.isModalOpen) {
+      serverService.getVersion().then(eitherVersion => {
+        if (eitherVersion.isRight()) {
+          setVersion(eitherVersion.value);
+        } else {
+          console.log('Unable to retrieve Infinispan Version')
+        }
+      });
+    }
+  }, [props.isModalOpen]);
 
 
   return (

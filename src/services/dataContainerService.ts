@@ -26,6 +26,10 @@ class ContainerService {
       .then(names => this.getCacheManager(names[0]).then(cm => right(cm)))
       .catch(err => {
         if (err instanceof Response) {
+          if (err.status == 401) {
+            return left(<ActionResponse>{ message: 'Unauthorized. You need to provide the correct credentials.', success: false })
+          }
+
           return err
             .text()
             .then(errorMessage =>
