@@ -41,10 +41,9 @@ class ContainerService {
             );
         }
         let errorMessage = 'Something went wrong. Check the logs.';
-        if (err != null) {
-          errorMessage = err.toString().includes('Failed to fetch')
-            ? 'Failed to connect'
-            : err.toString();
+        if (err instanceof TypeError) {
+          errorMessage = 'Failed to connect';
+          console.error(err);
         }
         return left(<ActionResponse>{
           message: errorMessage,

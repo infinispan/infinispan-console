@@ -170,13 +170,15 @@ const CacheManagers = () => {
     let title = 'Data container';
     if (!cm) {
       return (
-        <Flex id="cluster-manager-header">
-          <FlexItem>
-            <TextContent>
-              <Text component={TextVariants.h1}>{title}</Text>
-            </TextContent>
-          </FlexItem>
-        </Flex>
+        <PageSection variant={PageSectionVariants.light}>
+          <Flex id="cluster-manager-header">
+            <FlexItem>
+              <TextContent>
+                <Text component={TextVariants.h1}>{title}</Text>
+              </TextContent>
+            </FlexItem>
+          </Flex>
+        </PageSection>
       );
     }
 
@@ -185,30 +187,31 @@ const CacheManagers = () => {
     status = cm.cache_manager_status;
 
     return (
-      <Flex id="cluster-manager-header" direction={{ default: 'column' }}>
-        <Flex>
-          <FlexItem>
+      <PageSection variant={PageSectionVariants.light} style={{paddingBottom: 0}}>
+        <Flex id="cluster-manager-header" direction={{ default: 'column' }}>
+          <Flex>
+            <FlexItem>
               <TextContent>
                 <Text component={TextVariants.h1}>
                   {title}
                 </Text>
               </TextContent>
-          </FlexItem>
+            </FlexItem>
+          </Flex>
+          <Flex>
+            <FlexItem><Status status={status} /></FlexItem>
+            {buildSiteDisplay(cm.local_site)}
+          </Flex>
         </Flex>
-        <Flex>
-          <FlexItem><Status status={status} /></FlexItem>
-          {buildSiteDisplay(cm.local_site)}
-        </Flex>
-      </Flex>
+        {buildTabs()}
+      </PageSection>
+
     );
   }
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light} style={{paddingBottom: 0}}>
-        {buildHeader()}
-        {buildTabs()}
-      </PageSection>
+      {buildHeader()}
       <PageSection variant={PageSectionVariants.default}>
         {buildSelectedContent()}
       </PageSection>
