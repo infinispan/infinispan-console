@@ -3,7 +3,7 @@
  *
  * @author Katia Aresti
  */
-import {KeycloakService} from './keycloakService';
+import { KeycloakService } from './keycloakService';
 
 export enum KeyContentType {
   OctetStream = 'application/octet-stream',

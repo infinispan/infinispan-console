@@ -3,8 +3,8 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, {KeyContentType, ValueContentType} from './utils';
-import {Either, left, right} from './either';
+import utils, { KeyContentType, ValueContentType } from './utils';
+import { Either, left, right } from './either';
 
 class CacheService {
   endpoint: string;
