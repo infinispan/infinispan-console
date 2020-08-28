@@ -26,8 +26,8 @@ import {Link} from 'react-router-dom';
 import dataContainerService from '../../services/dataContainerService';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {useApiAlert} from '@app/utils/useApiAlert';
-import {DeleteCache} from '@app/CacheManagers/DeleteCache';
-import {IgnoreCache} from '@app/CacheManagers/IgnoreCache';
+import {DeleteCache} from '@app/Caches/DeleteCache';
+import {IgnoreCache} from '@app/Caches/IgnoreCache';
 import {IExtraData, IRowData} from '@patternfly/react-table/src/components/Table/Table';
 import {TableEmptyState} from "@app/Common/TableEmptyState";
 

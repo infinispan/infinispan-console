@@ -14,14 +14,14 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
-import {CreateOrUpdateEntryForm} from '@app/Caches/CreateOrUpdateEntryForm';
-import cacheService from '../../services/cacheService';
+import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
+import cacheService from '../../../services/cacheService';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
-import {ClearAllEntries} from '@app/Caches/ClearAllEntries';
-import {DeleteEntry} from '@app/Caches/DeleteEntry';
+import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
+import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import displayUtils from "../../services/displayUtils";
+import displayUtils from "../../../services/displayUtils";
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;

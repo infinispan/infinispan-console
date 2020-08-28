@@ -21,7 +21,7 @@ import displayUtils from '../../services/displayUtils';
 import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
 import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
 import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
-import {ProtobufSchemasDisplay} from "@app/CacheManagers/ProtobufSchemasDisplay";
+import {ProtobufSchemasDisplay} from "@app/ProtoSchema/ProtobufSchemasDisplay";
 import {Status} from '@app/Common/Status';
 import {global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
 import {useApiAlert} from '@app/utils/useApiAlert';

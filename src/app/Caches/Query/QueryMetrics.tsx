@@ -18,10 +18,10 @@ import {
   TextListVariants,
   TextVariants
 } from '@patternfly/react-core';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '../../../services/displayUtils';
 import {TableErrorState} from "@app/Common/TableErrorState";
-import {ClearQueryMetrics} from "@app/Caches/ClearQueryMetrics";
-import cacheService from "../../services/cacheService";
+import {ClearQueryMetrics} from "@app/Caches/Query/ClearQueryMetrics";
+import cacheService from "../../../services/cacheService";
 
 /**
  * Query stats for indexed caches only

@@ -19,7 +19,7 @@ import {
   Toolbar,
   ToolbarContent
 } from '@patternfly/react-core';
-import dataContainerService from '../../services/dataContainerService';
+import dataContainerService from '../../../services/dataContainerService';
 import {SearchIcon} from '@patternfly/react-icons';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';

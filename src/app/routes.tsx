@@ -7,7 +7,7 @@ import {LastLocationProvider, useLastLocation} from 'react-router-last-location'
 import {CreateCache} from '@app/Caches/CreateCache';
 import {Welcome} from '@app/Welcome/Welcome';
 import {DetailCache} from '@app/Caches/DetailCache';
-import {DetailConfigurations} from '@app/Caches/DetailConfigurations';
+import {DetailConfigurations} from '@app/Caches/Configuration/DetailConfigurations';
 import {GlobalStats} from '@app/GlobalStats/GlobalStats';
 import {ClusterStatus} from '@app/ClusterStatus/ClusterStatus';
 import {useDocumentTitle} from '@app/utils/useDocumentTitle';

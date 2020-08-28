@@ -29,13 +29,13 @@ import {
 import cacheService from '../../services/cacheService';
 import displayUtils from '../../services/displayUtils';
 import {CacheMetrics} from '@app/Caches/CacheMetrics';
-import {CacheEntries} from '@app/Caches/CacheEntries';
-import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
+import {CacheEntries} from '@app/Caches/Entries/CacheEntries';
+import {CacheConfiguration} from '@app/Caches/Configuration/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {global_danger_color_200} from '@patternfly/react-tokens';
 import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
-import {QueryEntries} from "@app/Caches/QueryEntries";
+import {QueryEntries} from "@app/Caches/Query/QueryEntries";
 import {RecentActivityTable} from "@app/Caches/RecentActivityTable";
 import {Link} from "react-router-dom";
 import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
