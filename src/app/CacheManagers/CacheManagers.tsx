@@ -205,7 +205,7 @@ const CacheManagers = () => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} style={{paddingBottom: 0}}>
         {buildHeader()}
         {buildTabs()}
       </PageSection>
