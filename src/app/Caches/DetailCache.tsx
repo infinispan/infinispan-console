@@ -8,7 +8,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant, Nav, NavItem, NavList,
+  EmptyStateVariant,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -33,7 +33,7 @@ import {CacheEntries} from '@app/Caches/CacheEntries';
 import {CacheConfiguration} from '@app/Caches/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {global_danger_color_200, global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
+import {global_danger_color_200} from '@patternfly/react-tokens';
 import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from "@app/Caches/QueryEntries";
 import {RecentActivityTable} from "@app/Caches/RecentActivityTable";

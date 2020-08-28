@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Bullseye,
   Card,
@@ -15,18 +15,14 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title, Toolbar, ToolbarContent
+  Title,
+  Toolbar,
+  ToolbarContent
 } from '@patternfly/react-core';
 import dataContainerService from '../../services/dataContainerService';
-import { SearchIcon } from '@patternfly/react-icons';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant
-} from '@patternfly/react-table';
-import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import {SearchIcon} from '@patternfly/react-icons';
+import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
+import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 

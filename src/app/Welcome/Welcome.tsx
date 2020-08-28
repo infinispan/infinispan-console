@@ -1,6 +1,6 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {
-  Alert,
   Button,
   Card,
   CardBody,
@@ -21,10 +21,8 @@ import {CatalogIcon, GithubIcon, InfoIcon} from '@patternfly/react-icons'
 import {KeycloakService} from "../../services/keycloakService";
 import {chart_color_blue_500} from "@patternfly/react-tokens";
 import utils from 'src/services/utils';
-import authenticationService from "../../services/authService";
 import {ConsoleBackground} from "@app/Common/ConsoleBackgroud";
 import {Support} from "@app/Support/Support";
-import {useState} from "react";
 
 const Welcome = (props) => {
   const authState = props.init;

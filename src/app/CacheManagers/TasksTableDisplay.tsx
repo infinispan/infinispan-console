@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -20,7 +15,7 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '../../services/displayUtils';
 import {
   chart_color_blue_500,

@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { APIAlertContext } from '../providers/APIAlertProvider';
+import {useContext} from 'react';
+import {APIAlertContext} from '../providers/APIAlertProvider';
 
 // a custom hook for using the alert context
 export function useApiAlert() {

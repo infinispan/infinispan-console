@@ -1,11 +1,6 @@
 import displayUtils from '../../services/displayUtils';
-import {
-    global_FontSize_lg, global_FontSize_md,
-    global_FontSize_sm,
-    global_spacer_sm,
-    global_spacer_xs
-} from '@patternfly/react-tokens';
-import { Badge } from '@patternfly/react-core';
+import {global_FontSize_md, global_FontSize_sm, global_spacer_sm, global_spacer_xs} from '@patternfly/react-tokens';
+import {Badge} from '@patternfly/react-core';
 import React from 'react';
 
 const CacheTypeBadge = (props: { cacheType: string; small: boolean }) => {

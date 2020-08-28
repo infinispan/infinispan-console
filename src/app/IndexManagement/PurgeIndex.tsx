@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  TextContent,
-  Text
-} from '@patternfly/react-core';
+import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {useRecentActivity} from '@app/utils/useRecentActivity';
 
 /**
  * Purge index modal

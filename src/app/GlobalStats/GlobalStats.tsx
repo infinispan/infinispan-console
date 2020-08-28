@@ -4,7 +4,7 @@ import {
   Button,
   Card,
   CardBody,
-  CardHeader,
+  CardTitle,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -15,6 +15,7 @@ import {
   LevelItem,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Text,
   TextContent,
   TextList,
@@ -22,8 +23,7 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title,
-  Spinner, CardTitle
+  Title
 } from '@patternfly/react-core';
 import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
 import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';

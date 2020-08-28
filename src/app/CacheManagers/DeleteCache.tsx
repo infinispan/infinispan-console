@@ -1,16 +1,7 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  TextContent,
-  Text,
-  Form,
-  FormGroup,
-  TextInput
-} from '@patternfly/react-core';
+import React, {useState} from 'react';
+import {Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput} from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import { useApiAlert } from '@app/utils/useApiAlert';
+import {useApiAlert} from '@app/utils/useApiAlert';
 import {useRecentActivity} from "@app/utils/useRecentActivity";
 
 /**

@@ -3,8 +3,7 @@
  *
  * @author Katia Aresti
  */
-import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
-import { KeycloakService } from './keycloakService';
+import {KeycloakService} from './keycloakService';
 
 export enum KeyContentType {
   OctetStream = 'application/octet-stream',

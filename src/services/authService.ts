@@ -1,5 +1,5 @@
 import utils from './utils';
-import { Either, left, right } from './either';
+import {Either, left, right} from './either';
 
 /**
  * Authentication Service calls Infinispan endpoints related to Authentication
