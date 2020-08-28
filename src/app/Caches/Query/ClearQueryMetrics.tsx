@@ -1,33 +1,24 @@
 import React from 'react';
 import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
-import cacheService from '../../services/cacheService';
+import cacheService from '../../../services/cacheService';
 import {useApiAlert} from '@app/utils/useApiAlert';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
 
 /**
- * Delete entry modal
+ * ClearQueryMetrics entry modal
  */
-const DeleteEntry = (props: {
+const ClearQueryMetrics = (props: {
   cacheName: string;
-  entryKey: string;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { pushActivity } = useRecentActivity();
 
   const onClickDeleteButton = () => {
     cacheService
-      .deleteEntry(props.cacheName, props.entryKey)
+      .clearQueryStats(props.cacheName)
       .then(actionResponse => {
-        props.closeModal();
         addAlert(actionResponse);
-        pushActivity({
-          cacheName: props.cacheName,
-          entryKey: props.entryKey,
-          action: 'Delete',
-          date: new Date()
-        });
+        props.closeModal();
       });
   };
 
@@ -36,16 +27,16 @@ const DeleteEntry = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Delete entry?'}
+      title={'Clear query stats?'}
       onClose={props.closeModal}
-      aria-label="Delete entry modal"
+      aria-label="Clear query stats modal"
       actions={[
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={onClickDeleteButton}
         >
-          Delete
+          Clear stats
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
@@ -54,15 +45,13 @@ const DeleteEntry = (props: {
     >
       <TextContent>
         <Text>
-          This action will permanently delete the key{' '}
-          <strong>'{props.entryKey}'</strong> from the cache{' '}
-          <strong>{props.cacheName}</strong>.
+          This action will permanently clear all the cache query statistics.
           <br />
-          You can always recreate the entry after.
+         This cannot be undone.
         </Text>
       </TextContent>
     </Modal>
   );
 };
 
-export { DeleteEntry };
+export { ClearQueryMetrics };

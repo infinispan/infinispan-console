@@ -22,7 +22,7 @@ import displayUtils from '../../services/displayUtils';
 import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
 import {CubesIcon} from '@patternfly/react-icons';
 import cacheService from "../../services/cacheService";
-import {QueryMetrics} from "@app/Caches/QueryMetrics";
+import {QueryMetrics} from "@app/Caches/Query/QueryMetrics";
 
 const CacheMetrics = (props: {
   cacheName: string,

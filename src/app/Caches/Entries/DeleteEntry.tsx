@@ -1,31 +1,34 @@
 import React from 'react';
 import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
-import cacheService from '../../services/cacheService';
+import cacheService from '../../../services/cacheService';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {useRecentActivity} from '@app/utils/useRecentActivity';
 
 /**
- * Clear all entries modal
+ * Delete entry modal
  */
-const ClearAllEntries = (props: {
+const DeleteEntry = (props: {
   cacheName: string;
+  entryKey: string;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
-  const { pushActivity } = useRecentActivity();
   const { addAlert } = useApiAlert();
+  const { pushActivity } = useRecentActivity();
 
-  const onClickClearAllEntriesButton = () => {
-    cacheService.clear(props.cacheName).then(actionResponse => {
-      addAlert(actionResponse);
-      pushActivity({
-        cacheName: props.cacheName,
-        entryKey: '*',
-        action: 'Clear all',
-        date: new Date()
+  const onClickDeleteButton = () => {
+    cacheService
+      .deleteEntry(props.cacheName, props.entryKey)
+      .then(actionResponse => {
+        props.closeModal();
+        addAlert(actionResponse);
+        pushActivity({
+          cacheName: props.cacheName,
+          entryKey: props.entryKey,
+          action: 'Delete',
+          date: new Date()
+        });
       });
-      props.closeModal();
-    });
   };
 
   return (
@@ -33,16 +36,16 @@ const ClearAllEntries = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Clear all entries?'}
+      title={'Delete entry?'}
       onClose={props.closeModal}
-      aria-label="Clear all entries modal"
+      aria-label="Delete entry modal"
       actions={[
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
-          onClick={onClickClearAllEntriesButton}
+          onClick={onClickDeleteButton}
         >
-          Clear
+          Delete
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
@@ -51,14 +54,15 @@ const ClearAllEntries = (props: {
     >
       <TextContent>
         <Text>
-          This action will permanently clear all entries in{' '}
+          This action will permanently delete the key{' '}
+          <strong>'{props.entryKey}'</strong> from the cache{' '}
           <strong>{props.cacheName}</strong>.
           <br />
-          This cannot be undone.
+          You can always recreate the entry after.
         </Text>
       </TextContent>
     </Modal>
   );
 };
 
-export { ClearAllEntries };
+export { DeleteEntry };

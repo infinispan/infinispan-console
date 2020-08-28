@@ -43,8 +43,8 @@ import {
   global_success_color_100
 } from "@patternfly/react-tokens";
 import {AlertIcon} from "@patternfly/react-core/dist/js/components/Alert/AlertIcon";
-import {CreateProtoSchema} from "@app/CacheManagers/CreateProtoSchema";
-import {DeleteSchema} from "@app/CacheManagers/DeleteSchema";
+import {CreateProtoSchema} from "@app/ProtoSchema/CreateProtoSchema";
+import {DeleteSchema} from "@app/ProtoSchema/DeleteSchema";
 
 /**
  * Protobuf Schemas display

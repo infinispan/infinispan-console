@@ -13,11 +13,11 @@ import {
   TextArea,
   TextInput
 } from '@patternfly/react-core';
-import {Flags, KeyContentType, ValueContentType} from '../../services/utils';
-import formUtils, {IField, ISelectField} from '../../services/formUtils';
+import {Flags, KeyContentType, ValueContentType} from '../../../services/utils';
+import formUtils, {IField, ISelectField} from '../../../services/formUtils';
 import {SelectOptionObject} from '@patternfly/react-core/src/components/Select/SelectOption';
 import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
-import cacheService from '../../services/cacheService';
+import cacheService from '../../../services/cacheService';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {global_spacer_md} from '@patternfly/react-tokens';
 import {useRecentActivity} from '@app/utils/useRecentActivity';

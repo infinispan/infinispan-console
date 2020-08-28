@@ -25,7 +25,7 @@ const About: React.FunctionComponent<any> = (props: {
   isModalOpen: boolean,
   closeModal: () => void
 }) => {
-  const [version, setVersion] = useState();
+  const [version, setVersion] = useState('');
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
   const infinispanStackOverflowLink = 'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
@@ -34,10 +34,10 @@ const About: React.FunctionComponent<any> = (props: {
 
   useEffect(() => {
     serverService.getVersion().then(eitherVersion => {
-      if(eitherVersion.isRight()) {
+      if (eitherVersion.isRight()) {
         setVersion(eitherVersion.value);
       } else {
-        console.log(eitherVersion.value)
+        console.log('Unable to retrieve Infinispan Version')
       }
     });
   }, []);
@@ -49,7 +49,7 @@ const About: React.FunctionComponent<any> = (props: {
       onClose={props.closeModal}
       trademark="Sponsored by Red Hat"
       brandImageSrc={icon}
-      brandImageAlt="Datagrid Logo"
+      brandImageAlt="Infinispan Logo"
       backgroundImageSrc={backImage}
     >
       <Stack>
@@ -100,6 +100,6 @@ const About: React.FunctionComponent<any> = (props: {
       </Stack>
     </AboutModal>
   );
-};
+}
 
 export { About };
