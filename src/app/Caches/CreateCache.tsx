@@ -94,10 +94,10 @@ const CreateCache: React.FunctionComponent<any> = props => {
     }
   };
 
-  const validateConfig = () : string => {
+  const validateConfig = () : boolean => {
     const trimmedConf = config.trim();
-    if (config.length == 0) {
-      return 'error';
+    if (trimmedConf.length == 0) {
+      return false;
     }
     let isJson = false;
     let isXML = false;
@@ -112,14 +112,13 @@ const CreateCache: React.FunctionComponent<any> = props => {
         isXML = true;
       }
     } catch (ex) {}
-    return isJson || isXML ? 'success' : 'error';
+    return isJson || isXML;
   };
 
   const createCache = () => {
     const name = cacheName.trim();
     let isValidName:('success' | 'error') = name.length > 0 ? 'success' : 'error';
     let isValidConfig:('success' | 'error') = selectedConfig != '' || validateConfig() ? 'success' : 'error';
-
     setValidName(isValidName);
     setValidConfig(isValidConfig);
 
