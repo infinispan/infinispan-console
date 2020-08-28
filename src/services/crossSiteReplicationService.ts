@@ -4,7 +4,7 @@
  * @since 1.0
  */
 import utils from './utils';
-import {Either, left, right} from './either';
+import { Either, left, right } from './either';
 
 class CrossSiteReplicationService {
   endpoint: string;

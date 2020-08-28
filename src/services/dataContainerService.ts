@@ -1,5 +1,5 @@
 import utils from './utils';
-import {Either, left, right} from './either';
+import { Either, left, right } from './either';
 import displayUtils from './displayUtils';
 
 class ContainerService {
@@ -27,7 +27,11 @@ class ContainerService {
       .catch(err => {
         if (err instanceof Response) {
           if (err.status == 401) {
-            return left(<ActionResponse>{ message: 'Unauthorized. You need to provide the correct credentials.', success: false })
+            return left(<ActionResponse>{
+              message:
+                'Unauthorized. You need to provide the correct credentials.',
+              success: false
+            });
           }
 
           return err

@@ -1,4 +1,4 @@
-import Keycloak, {KeycloakError, KeycloakLoginOptions} from 'keycloak-js';
+import Keycloak, { KeycloakError, KeycloakLoginOptions } from 'keycloak-js';
 
 export class KeycloakService {
   private initialized = false;

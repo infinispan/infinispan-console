@@ -1,18 +1,21 @@
 import * as React from 'react';
-import {Route, RouteComponentProps, Switch} from 'react-router-dom';
-import {accessibleRouteChangeHandler} from '@app/utils/utils';
-import {CacheManagers} from '@app/CacheManagers/CacheManagers';
-import {NotFound} from '@app/NotFound/NotFound';
-import {LastLocationProvider, useLastLocation} from 'react-router-last-location';
-import {CreateCache} from '@app/Caches/CreateCache';
-import {Welcome} from '@app/Welcome/Welcome';
-import {DetailCache} from '@app/Caches/DetailCache';
-import {DetailConfigurations} from '@app/Caches/Configuration/DetailConfigurations';
-import {GlobalStats} from '@app/GlobalStats/GlobalStats';
-import {ClusterStatus} from '@app/ClusterStatus/ClusterStatus';
-import {useDocumentTitle} from '@app/utils/useDocumentTitle';
-import {IndexManagement} from '@app/IndexManagement/IndexManagement';
-import {XSiteCache} from '@app/XSite/XSiteCache';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { accessibleRouteChangeHandler } from '@app/utils/utils';
+import { CacheManagers } from '@app/CacheManagers/CacheManagers';
+import { NotFound } from '@app/NotFound/NotFound';
+import {
+  LastLocationProvider,
+  useLastLocation
+} from 'react-router-last-location';
+import { CreateCache } from '@app/Caches/CreateCache';
+import { Welcome } from '@app/Welcome/Welcome';
+import { DetailCache } from '@app/Caches/DetailCache';
+import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
+import { GlobalStats } from '@app/GlobalStats/GlobalStats';
+import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
+import { useDocumentTitle } from '@app/utils/useDocumentTitle';
+import { IndexManagement } from '@app/IndexManagement/IndexManagement';
+import { XSiteCache } from '@app/XSite/XSiteCache';
 
 let routeFocusTimer: number;
 
