@@ -17,7 +17,8 @@ const ConsoleBackground = () => {
   };
 
   const defaultFilter = (
-    <filter>
+    <filter id="no-filter">
+      <feGaussianBlur stdDeviation="2" in="coloredOut" result="coloredBlur"/>
     </filter>
   );
 
