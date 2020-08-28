@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
+import {Button, Modal, Text, TextContent} from '@patternfly/react-core';
 import cacheService from '../../services/cacheService';
-import { useApiAlert } from '@app/utils/useApiAlert';
+import {useApiAlert} from '@app/utils/useApiAlert';
 
 /**
  * Ignore cache modal

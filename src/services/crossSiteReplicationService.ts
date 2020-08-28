@@ -3,9 +3,8 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, { KeyContentType, ValueContentType } from './utils';
-import { Either, left, right } from './either';
-import displayUtils from './displayUtils';
+import utils from './utils';
+import {Either, left, right} from './either';
 
 class CrossSiteReplicationService {
   endpoint: string;

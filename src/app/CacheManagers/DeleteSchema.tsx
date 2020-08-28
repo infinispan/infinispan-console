@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  TextContent,
-  Text
-} from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
+import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
+import {useApiAlert} from '@app/utils/useApiAlert';
 import protobufService from "../../services/protobufService";
 
 /**

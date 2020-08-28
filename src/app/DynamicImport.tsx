@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { accessibleRouteChangeHandler } from '@app/utils/utils';
+import {accessibleRouteChangeHandler} from '@app/utils/utils';
 
 interface IDynamicImport {
   /* eslint-disable @typescript-eslint/no-explicit-any */

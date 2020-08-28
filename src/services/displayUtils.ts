@@ -15,7 +15,7 @@ import {
   global_success_color_100,
   global_warning_color_100
 } from '@patternfly/react-tokens';
-import { AlertVariant } from '@patternfly/react-core';
+import {AlertVariant} from '@patternfly/react-core';
 
 /**
  * Utility class to manage display features

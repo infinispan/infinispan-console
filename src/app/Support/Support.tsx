@@ -1,6 +1,11 @@
 import * as React from 'react';
 import {Button, Modal, Stack, StackItem, Text, TextContent, TextVariants} from '@patternfly/react-core';
-import {global_FontSize_4xl, global_spacer_sm, global_spacer_md, global_warning_color_100} from "@patternfly/react-tokens";
+import {
+  global_FontSize_4xl,
+  global_spacer_md,
+  global_spacer_sm,
+  global_warning_color_100
+} from "@patternfly/react-tokens";
 import {ExclamationTriangleIcon} from "@patternfly/react-icons";
 
 /**

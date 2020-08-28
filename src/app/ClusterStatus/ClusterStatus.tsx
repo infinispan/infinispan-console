@@ -4,22 +4,21 @@ import {
   Bullseye,
   Card,
   CardBody,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-  ToolbarItemVariant,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  Flex,
+  FlexItem,
   PageSection,
   PageSectionVariants,
   Pagination,
+  Spinner,
   Text,
   TextContent,
   TextVariants,
-  Title,
-  Spinner, Flex, FlexItem, Divider
+  Title
 } from '@patternfly/react-core';
 import {CubesIcon, SearchIcon} from '@patternfly/react-icons';
 import dataContainerService from '../../services/dataContainerService';

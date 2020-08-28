@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant
-} from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
+import {Alert, AlertActionCloseButton, AlertGroup, AlertVariant} from '@patternfly/react-core';
+import {useApiAlert} from '@app/utils/useApiAlert';
 
 const ActionResponseAlert = () => {
   const { alert, removeAlert } = useApiAlert();

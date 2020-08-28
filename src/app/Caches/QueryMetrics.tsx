@@ -4,7 +4,7 @@ import {
   ButtonVariant,
   Card,
   CardBody,
-  CardHeader, CardTitle,
+  CardTitle,
   Divider,
   DividerVariant,
   Level,
@@ -20,7 +20,6 @@ import {
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
 import {TableErrorState} from "@app/Common/TableErrorState";
-import {CustomCardTitle} from "@app/Common/CustomCardTitle";
 import {ClearQueryMetrics} from "@app/Caches/ClearQueryMetrics";
 import cacheService from "../../services/cacheService";
 

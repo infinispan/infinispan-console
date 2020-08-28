@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 
 const emptyAlert: ActionResponse = { message: '', success: true };
 

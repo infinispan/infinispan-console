@@ -1,21 +1,8 @@
 import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant
-} from '@patternfly/react-table';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import {
-  Bullseye,
-  Card,
-  CardBody,
-  CardHeader,
-  EmptyState,
-  EmptyStateVariant,
-  Title
-} from '@patternfly/react-core';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
+import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
+import {global_spacer_md} from '@patternfly/react-tokens';
+import {Bullseye, Card, CardBody, CardHeader, EmptyState, EmptyStateVariant, Title} from '@patternfly/react-core';
+import {useRecentActivity} from '@app/utils/useRecentActivity';
 
 const RecentActivityTable = (props: { cacheName: string }) => {
   const { activities } = useRecentActivity();

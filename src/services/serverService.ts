@@ -1,6 +1,5 @@
 import utils from './utils';
-import { Either, left, right } from './either';
-import displayUtils from './displayUtils';
+import {Either, left, right} from './either';
 
 class ServerService {
   endpoint: string;

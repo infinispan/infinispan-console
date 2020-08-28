@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Card,
   CardBody,
-  CardHeader,
   CardTitle,
   EmptyState,
   EmptyStateBody,

@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  Tooltip,
-  TooltipPosition
-} from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import {Text, TextContent, Tooltip, TooltipPosition} from '@patternfly/react-core';
+import {OutlinedQuestionCircleIcon} from '@patternfly/react-icons';
 import {
   chart_global_Fill_Color_white,
   global_FontSize_md,

@@ -25,9 +25,11 @@ import {
   TextContent,
   TextVariants,
   Title,
-  Toolbar, ToolbarContent,
+  Toolbar,
+  ToolbarContent,
   ToolbarGroup,
-  ToolbarItem, ToolbarItemVariant,
+  ToolbarItem,
+  ToolbarItemVariant,
   Tooltip,
   TooltipPosition,
 } from '@patternfly/react-core';
