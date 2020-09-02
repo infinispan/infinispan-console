@@ -3,7 +3,7 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, {KeyContentType, ValueContentType} from './utils';
+import utils, {ContentType} from './utils';
 import {Either, left, right} from './either';
 
 class CacheService {
@@ -241,9 +241,9 @@ class CacheService {
   public async createOrUpdate(
     cacheName: string,
     key: string,
-    keyContentType: KeyContentType,
+    keyContentType: ContentType,
     value: string,
-    valueContentType: ValueContentType,
+    valueContentType: ContentType,
     maxIdle: string,
     timeToLive: string,
     flags: string[],
@@ -252,16 +252,15 @@ class CacheService {
     let headers = utils.createAuthenticatedHeader();
 
     if (keyContentType) {
-      let keyContentTypeHeader = this.keyContentTypeHeader(keyContentType);
-      headers.append('Key-Content-Type', keyContentTypeHeader);
+      headers.append('Key-Content-Type', this.contentTypeHeader(keyContentType));
+    } else if (utils.isJSONObject(key)) {
+      headers.append('Key-Content-Type', ContentType.JSON);
     }
 
     if (valueContentType) {
-      headers.append('Content-Type', valueContentType);
-    } else {
-      if (utils.isJSONObject(value)) {
-        headers.append('Content-Type', ValueContentType.JSON);
-      }
+      headers.append('Content-Type', this.contentTypeHeader(valueContentType));
+    } else if (utils.isJSONObject(value)) {
+      headers.append('Content-Type', ContentType.JSON);
     }
 
     if (timeToLive.length > 0) {
@@ -294,22 +293,22 @@ class CacheService {
    * Calculate the key content type header value to send ot the REST API
    * @param keyContentType
    */
-  private keyContentTypeHeader(keyContentType: KeyContentType) {
+  private contentTypeHeader(keyContentType: ContentType) {
     if (
-      keyContentType == KeyContentType.StringContentType ||
-      KeyContentType.DoubleContentType ||
-      KeyContentType.IntegerContentType ||
-      KeyContentType.LongContentType ||
-      KeyContentType.BooleanContentType
+      keyContentType == ContentType.StringContentType ||
+      ContentType.DoubleContentType ||
+      ContentType.IntegerContentType ||
+      ContentType.LongContentType ||
+      ContentType.BooleanContentType
     ) {
       return 'application/x-java-object;type=java.lang.' + keyContentType.toString();
     }
 
-    if (keyContentType == KeyContentType.OctetStream) {
+    if (keyContentType == ContentType.OctetStream) {
       return 'application/octet-stream';
     }
 
-    if (keyContentType == KeyContentType.OctetStreamHex) {
+    if (keyContentType == ContentType.OctetStreamHex) {
       return 'application/octet-stream; encoding=hex';
     }
 
@@ -326,11 +325,11 @@ class CacheService {
   public async getEntry(
     cacheName: string,
     key: string,
-    keyContentType?: KeyContentType
+    keyContentType?: ContentType
   ): Promise<Either<ActionResponse, CacheEntry>> {
     let headers = utils.createAuthenticatedHeader();
     if (keyContentType) {
-      let keyContentTypeHeader = this.keyContentTypeHeader(keyContentType);
+      let keyContentTypeHeader = this.contentTypeHeader(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
     }
     return fetch(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key, {

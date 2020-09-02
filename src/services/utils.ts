@@ -33,21 +33,17 @@ export enum CacheType {
   Scattered = 'Scattered',
 }
 
-export enum KeyContentType {
+export enum ContentType {
   StringContentType = 'String',//'application/x-java-object;type=java.lang.String'
-  DoubleContentType = 'Double',//'application/x-java-object;type=java.lang.Double'
+  JSON = 'application/json',
+  XML = 'application/xml',
   IntegerContentType = 'Integer',//'application/x-java-object;type=java.lang.Integer'
+  DoubleContentType = 'Double',//'application/x-java-object;type=java.lang.Double'
   LongContentType = 'Long', //'application/x-java-object;type=java.lang.Long'
   BooleanContentType = 'Boolean', //'application/x-java-object;type=java.lang.Boolean'
   BytesType = 'Bytes', //'Bytes'
   OctetStream = 'Base64', //'application/octet-stream'
   OctetStreamHex = 'Hex' //'application/octet-stream; encoding=hex'
-}
-
-export enum ValueContentType {
-  JSON = 'application/json',
-  XML = 'application/xml',
-  TEXT = 'text/plain',
 }
 
 export enum Flags {
@@ -167,8 +163,8 @@ class Utils {
 
   public isJSONObject(value: string): boolean {
     try {
-      JSON.parse(value);
-      return true;
+      let jsonObj = JSON.parse(value);
+      return jsonObj['_type'];
     } catch (err) {
       return false;
     }

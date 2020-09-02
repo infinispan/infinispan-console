@@ -13,7 +13,7 @@ import {
   TextArea,
   TextInput,
 } from '@patternfly/react-core';
-import { Flags, KeyContentType, ValueContentType } from '@services/utils';
+import { Flags, ContentType } from '@services/utils';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
 import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
@@ -129,15 +129,9 @@ const CreateOrUpdateEntryForm = (props: {
     }
   }, [props.isModalOpen]);
 
-  const keyContentTypeOptions = () => {
-    return Object.keys(KeyContentType).map((key) => (
-      <SelectOption key={key} value={KeyContentType[key]} />
-    ));
-  };
-
-  const valueContentTypeOptions = () => {
-    return Object.keys(ValueContentType).map((key) => (
-      <SelectOption key={key} value={ValueContentType[key]} />
+  const contentTypeOptions = () => {
+    return Object.keys(ContentType).map(key => (
+      <SelectOption key={key} value={ContentType[key]} />
     ));
   };
 
@@ -249,8 +243,8 @@ const CreateOrUpdateEntryForm = (props: {
         setTimeToLiveField
       ) && isValid;
 
-    let selectedKeyContentType = keyContentType.selected as KeyContentType;
-    let selectedValueContentType = valueContentType.selected as ValueContentType;
+    let selectedKeyContentType = keyContentType.selected as ContentType;
+    let selectedValueContentType = valueContentType.selected as ContentType;
 
     if (isValid) {
       cacheService
@@ -462,25 +456,6 @@ const CreateOrUpdateEntryForm = (props: {
           }}
         >
           <FormGroup
-            label="Flags:"
-            fieldId="flags-helper"
-            helperText="The flags used to add the entry. See 'org.infinispan.context.Flag' class for more information."
-          >
-            <Select
-              variant={SelectVariant.typeaheadMulti}
-              aria-label="Select Flags"
-              onToggle={onToggleFlags}
-              onSelect={onSelectFlags}
-              onClear={onClearFlagsSelection}
-              selections={flags.selected}
-              isOpen={flags.expanded}
-              placeholderText="Flags"
-              maxHeight={150}
-            >
-              {flagsOptions()}
-            </Select>
-          </FormGroup>
-          <FormGroup
             label="Key content type"
             fieldId="key-content-type-helper"
             helperText={keyContentType.helperText}
@@ -499,7 +474,7 @@ const CreateOrUpdateEntryForm = (props: {
               isOpen={keyContentType.expanded}
               isDisabled={isEdition}
             >
-              {keyContentTypeOptions()}
+              {contentTypeOptions()}
             </Select>
           </FormGroup>
 
@@ -519,7 +494,27 @@ const CreateOrUpdateEntryForm = (props: {
               selections={valueContentType.selected}
               isOpen={valueContentType.expanded}
             >
-              {valueContentTypeOptions()}
+              {contentTypeOptions()}
+            </Select>
+          </FormGroup>
+
+          <FormGroup
+            label="Flags:"
+            fieldId="flags-helper"
+            helperText="The flags used to add the entry. See 'org.infinispan.context.Flag' class for more information."
+          >
+            <Select
+              variant={SelectVariant.typeaheadMulti}
+              aria-label="Select Flags"
+              onToggle={onToggleFlags}
+              onSelect={onSelectFlags}
+              onClear={onClearFlagsSelection}
+              selections={flags.selected}
+              isOpen={flags.expanded}
+              placeholderText="Flags"
+              maxHeight={150}
+            >
+              {flagsOptions()}
             </Select>
           </FormGroup>
         </Form>
