@@ -18,7 +18,7 @@ class AuthenticationService {
    * Retrieve the http login endpoint
    */
   public httpLoginUrl(): string {
-    return this.endpoint + '?action=login';
+    return this.endpoint;
   }
 
   /**
