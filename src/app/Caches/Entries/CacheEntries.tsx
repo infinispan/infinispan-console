@@ -31,7 +31,7 @@ import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
-import { KeyContentType } from '@services/utils';
+import { ContentType } from '@services/utils';
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -177,15 +177,13 @@ const CacheEntries = (props: { cacheName: string }) => {
       return;
     }
 
-    cacheService
-      .getEntry(props.cacheName, keyToSearch, keyType as KeyContentType)
-      .then((response) => {
-        if (response.isRight()) {
-          updateRows([response.value]);
-        } else {
-          updateRows([]);
-        }
-      });
+    cacheService.getEntry(props.cacheName, keyToSearch, keyType as ContentType).then(response => {
+      if (response.isRight()) {
+        updateRows([response.value]);
+      } else {
+        updateRows([]);
+      }
+    });
   };
 
   const searchEntryOnKeyPress = (event) => {
@@ -194,15 +192,13 @@ const CacheEntries = (props: { cacheName: string }) => {
     }
   };
   const keyContentTypeOptions = () => {
-    return Object.keys(KeyContentType).map((key) => (
-      <SelectOption key={key} value={KeyContentType[key]} />
+    return Object.keys(ContentType).map(key => (
+      <SelectOption key={key} value={ContentType[key]} />
     ));
   };
 
   const [expandedKey, setExpandedKey] = useState(false);
-  const [keyType, setKeyType] = useState<
-    string | SelectOptionObject | (string | SelectOptionObject)[]
-  >(KeyContentType.StringContentType);
+  const [keyType, setKeyType] = useState<string | SelectOptionObject | (string | SelectOptionObject)[]>(ContentType.StringContentType);
 
   return (
     <React.Fragment>
