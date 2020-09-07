@@ -1,27 +1,31 @@
 import React from 'react';
+import {useApiAlert} from "@app/utils/useApiAlert";
 import {
   Alert,
   AlertActionCloseButton,
   AlertGroup,
   AlertVariant,
 } from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
 
 const ActionResponseAlert = () => {
-  const { alert, removeAlert } = useApiAlert();
+  const { alertMap, removeAlert } = useApiAlert();
 
-  if (alert.message.length == 0) {
-    return <span />;
+  if (alertMap.size == 0) {
+    return (
+      <span />
+    );
   }
+
 
   return (
     <AlertGroup isToast>
-      <Alert
-        isLiveRegion
-        title={alert.message}
-        variant={alert.success ? AlertVariant.success : AlertVariant.danger}
-        actionClose={<AlertActionCloseButton onClose={removeAlert} />}
-      />
+      {Array.from(alertMap.keys()).sort().map(key =>
+        <Alert
+          isLiveRegion
+          title={ alertMap.get(key).message}
+          variant={ alertMap.get(key).success ? AlertVariant.success : AlertVariant.danger}
+          actionClose={<AlertActionCloseButton key={key} onClose={() => removeAlert(key)}/>}/>
+      )}
     </AlertGroup>
   );
 };

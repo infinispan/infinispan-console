@@ -13,15 +13,17 @@ import {
   TextArea,
   TextInput,
 } from '@patternfly/react-core';
-import { Flags, ContentType } from '@services/utils';
-import formUtils, { IField, ISelectField } from '@services/formUtils';
 import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-import { useReloadCache } from '@app/services/cachesHook';
+import { IField, ISelectField } from '../../../services/formUtils';
+import { ContentType, Flags } from '../../../services/utils';
+import { IField, ISelectField } from '../../services/formUtils';
+import { Flags } from '@services/utils';
+import formUtils, { IField, ISelectField } from '@services/formUtils';
+import cacheService from '@services/cacheService';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -130,7 +132,7 @@ const CreateOrUpdateEntryForm = (props: {
   }, [props.isModalOpen]);
 
   const contentTypeOptions = () => {
-    return Object.keys(ContentType).map(key => (
+    return Object.keys(ContentType).map((key) => (
       <SelectOption key={key} value={ContentType[key]} />
     ));
   };
@@ -466,9 +468,12 @@ const CreateOrUpdateEntryForm = (props: {
               placeholderText="Select a key content type"
               variant={SelectVariant.typeahead}
               aria-label="Select Key Content Type"
-              onToggle={isExpanded => setExpanded(isExpanded, setKeyContentType)}
+              onToggle={(isExpanded) =>
+                setExpanded(isExpanded, setKeyContentType)
+              }
               onSelect={(event, selection) =>
-                setSelection(selection, false, setKeyContentType)}
+                setSelection(selection, false, setKeyContentType)
+              }
               onClear={() => setKeyContentType(selectSingleElementInitialState)}
               selections={keyContentType.selected}
               isOpen={keyContentType.expanded}

@@ -35,7 +35,6 @@ interface IAppLayout {
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const history = useHistory();
-
   const logoProps = {
     target: '_self',
     onClick: () => history.push('/'),

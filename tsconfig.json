@@ -17,6 +17,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
     "paths": {
       "@app/*": ["src/app/*"],
       "@services/*": ["src/services/*"],
