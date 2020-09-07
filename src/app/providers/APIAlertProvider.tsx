@@ -1,34 +1,36 @@
 import React, { useCallback, useState } from 'react';
 
-const emptyAlert: ActionResponse = { message: '', success: true };
-
 const initialAlertState = {
   banner: '',
-  alert: { message: '', success: true },
   setBanner: (banner: string) => {},
+  alertMap: new Map(),
   addAlert: (alert: ActionResponse) => {},
-  removeAlert: () => {},
+  removeAlert: (pos: number) => {}
 };
 
 export const APIAlertContext = React.createContext(initialAlertState);
 
 const APIAlertProvider = ({ children }) => {
+  const [alertMap, setAlertMap] = useState(new Map());
   const [banner, setBanner] = useState<string>('');
-  const [alert, setAlert] = useState<ActionResponse>(emptyAlert);
 
-  const removeAlert = () => setAlert(emptyAlert);
+  const removeAlert = (id:number) => {
+    alertMap.delete(id);
+    setAlertMap(new Map(alertMap));
+  }
 
-  const addAlert = (actionResponse) => {
-    setAlert(actionResponse);
+  const addAlert = actionResponse => {
+    let time = new Date().getTime();
+    setAlertMap(new Map(alertMap.set(time, actionResponse)));
     setTimeout(() => {
-      removeAlert();
+      removeAlert(time);
     }, 5000);
   };
 
   const contextValue = {
     banner,
-    alert,
     setBanner: useCallback(setBanner, []),
+    alertMap,
     addAlert: useCallback(addAlert, []),
     removeAlert: useCallback(removeAlert, []),
   };
