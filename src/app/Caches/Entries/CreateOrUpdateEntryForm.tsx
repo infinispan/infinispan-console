@@ -28,6 +28,7 @@ import cacheService from '@services/cacheService';
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
   keyToEdit: string;
+  keyContentType: ContentType;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -98,7 +99,7 @@ const CreateOrUpdateEntryForm = (props: {
     } else {
       setIsEdition(true);
       cacheService
-        .getEntry(props.cacheName, props.keyToEdit)
+        .getEntry(props.cacheName, props.keyToEdit, props.keyContentType)
         .then((eitherResponse) => {
           if (eitherResponse.isRight()) {
             setKey((prevState) => {
@@ -106,6 +107,12 @@ const CreateOrUpdateEntryForm = (props: {
             });
             setValue((prevState) => {
               return { ...prevState, value: eitherResponse.value.value };
+            });
+            setKeyContentType(prevState => {
+              return {
+                ...prevState,
+                selected: props.keyContentType as string
+              };
             });
             if (eitherResponse.value.maxIdle) {
               setMaxIdleField((prevState) => {

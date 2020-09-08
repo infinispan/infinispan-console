@@ -266,6 +266,7 @@ const CacheEntries = (props: { cacheName: string }) => {
           <CreateOrUpdateEntryForm
             cacheName={props.cacheName}
             keyToEdit={keyToEdit}
+            keyContentType={keyType as ContentType}
             isModalOpen={isCreateOrUpdateEntryFormOpen}
             closeModal={closeCreateOrEditEntryFormModal}
           />

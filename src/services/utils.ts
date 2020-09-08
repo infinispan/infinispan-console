@@ -35,8 +35,8 @@ export enum CacheType {
 
 export enum ContentType {
   StringContentType = 'String',//'application/x-java-object;type=java.lang.String'
-  JSON = 'application/json',
-  XML = 'application/xml',
+  JSON = 'Json', //'application/json'
+  XML = 'Xml',//'application/xml'
   IntegerContentType = 'Integer',//'application/x-java-object;type=java.lang.Integer'
   DoubleContentType = 'Double',//'application/x-java-object;type=java.lang.Double'
   LongContentType = 'Long', //'application/x-java-object;type=java.lang.Long'
