@@ -10,6 +10,7 @@ import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { useReloadCache } from '@app/services/cachesHook';
+import { ContentType } from "@services/utils";
 
 /**
  * Delete entry modal
@@ -17,6 +18,7 @@ import { useReloadCache } from '@app/services/cachesHook';
 const DeleteEntry = (props: {
   cacheName: string;
   entryKey: string;
+  keyContentType: ContentType;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -26,8 +28,8 @@ const DeleteEntry = (props: {
 
   const onClickDeleteButton = () => {
     cacheService
-      .deleteEntry(props.cacheName, props.entryKey)
-      .then((actionResponse) => {
+      .deleteEntry(props.cacheName, props.entryKey, props.keyContentType)
+      .then(actionResponse => {
         props.closeModal();
         reload();
         addAlert(actionResponse);

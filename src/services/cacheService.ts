@@ -434,16 +434,18 @@ class CacheService {
    */
   public async deleteEntry(
     cacheName: string,
-    entryKey: string
+    entryKey: string,
+    keyContentType: ContentType
   ): Promise<ActionResponse> {
-    let deleteEntryPromise = utils.restCall(
-      this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/' +
-        entryKey,
-      'DELETE'
-    );
+    let headers = utils.createAuthenticatedHeader();
+    let keyContentTypeHeader = this.contentTypeHeader(keyContentType);
+    headers.append('Key-Content-Type', keyContentTypeHeader);
+
+    let deleteEntryPromise = fetch(this.endpoint + '/caches/' +  encodeURIComponent(cacheName) + '/' + entryKey, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: headers
+    })
 
     return utils.handleCRUDActionResponse(
       'Entry ' + entryKey + ' has been deleted',

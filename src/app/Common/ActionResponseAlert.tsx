@@ -20,7 +20,7 @@ const ActionResponseAlert = () => {
   return (
     <AlertGroup isToast>
       {Array.from(alertMap.keys()).sort().map(key =>
-        <Alert
+        <Alert key={key}
           isLiveRegion
           title={ alertMap.get(key).message}
           variant={ alertMap.get(key).success ? AlertVariant.success : AlertVariant.danger}
