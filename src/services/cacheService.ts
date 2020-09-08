@@ -254,13 +254,14 @@ class CacheService {
     if (keyContentType) {
       headers.append('Key-Content-Type', this.contentTypeHeader(keyContentType));
     } else if (utils.isJSONObject(key)) {
-      headers.append('Key-Content-Type', ContentType.JSON);
+      headers.append('Key-Content-Type', this.contentTypeHeader(ContentType.JSON));
     }
 
     if (valueContentType) {
       headers.append('Content-Type', this.contentTypeHeader(valueContentType));
     } else if (utils.isJSONObject(value)) {
-      headers.append('Content-Type', ContentType.JSON);
+      headers.append('Content-Type', this.contentTypeHeader(ContentType.JSON));
+
     }
 
     if (timeToLive.length > 0) {
@@ -291,28 +292,36 @@ class CacheService {
 
   /**
    * Calculate the key content type header value to send ot the REST API
-   * @param keyContentType
+   * @param contentType
    */
-  private contentTypeHeader(keyContentType: ContentType) {
+  private contentTypeHeader(contentType: ContentType) {
     if (
-      keyContentType == ContentType.StringContentType ||
+      contentType == ContentType.StringContentType ||
       ContentType.DoubleContentType ||
       ContentType.IntegerContentType ||
       ContentType.LongContentType ||
       ContentType.BooleanContentType
     ) {
-      return 'application/x-java-object;type=java.lang.' + keyContentType.toString();
+      return 'application/x-java-object;type=java.lang.' + contentType.toString();
     }
 
-    if (keyContentType == ContentType.OctetStream) {
+    if (contentType == ContentType.OctetStream) {
       return 'application/octet-stream';
     }
 
-    if (keyContentType == ContentType.OctetStreamHex) {
+    if (contentType == ContentType.OctetStreamHex) {
       return 'application/octet-stream; encoding=hex';
     }
 
-    return keyContentType.toString();
+    if (contentType == ContentType.JSON) {
+      return 'application/json';
+    }
+
+    if (contentType == ContentType.XML) {
+      return 'application/xml';
+    }
+
+    return contentType.toString();
   }
 
   /**
