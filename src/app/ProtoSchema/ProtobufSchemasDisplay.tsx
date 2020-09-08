@@ -33,6 +33,8 @@ import {
   Tooltip,
   TooltipPosition,
 } from '@patternfly/react-core';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {SearchIcon} from '@patternfly/react-icons';
 import {useApiAlert} from "@app/utils/useApiAlert";
 import protobufService from "../../services/protobufService";
@@ -40,7 +42,8 @@ import {
   global_danger_color_100,
   global_spacer_md,
   global_spacer_sm,
-  global_success_color_100
+  global_success_color_100,
+  global_FontSize_sm
 } from "@patternfly/react-tokens";
 import {AlertIcon} from "@patternfly/react-core/dist/js/components/Alert/AlertIcon";
 import {CreateProtoSchema} from "@app/ProtoSchema/CreateProtoSchema";
@@ -177,12 +180,22 @@ const ProtobufSchemasDisplay = (props: {
       loadSchema(name);
       return <Spinner size={"sm"}/>
     }
+
+    if(editSchemaName != name) {
+      return (
+        <SyntaxHighlighter wrapLines={false} style={githubGist}
+                           useInlineStyles={true}
+                           showLineNumbers={true}>
+          {schemasContent.get(name)}
+        </SyntaxHighlighter>
+      )
+    }
     return (
       <TextArea onChange={v => setSchemasContent(new Map(schemasContent.set(name, v)))}
                 value={schemasContent.get(name)}
-                readOnly={editSchemaName != name}
                 aria-label={'text-area-' + name}
                 isRequired={true}
+                style={{fontSize:global_FontSize_sm.value}}
                 rows={15}/>
     );
   };
