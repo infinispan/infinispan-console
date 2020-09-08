@@ -172,12 +172,15 @@ const CacheEntries = (props: { cacheName: string }) => {
     setKeyToSearch(value.trim());
   };
 
-  const searchEntryByKey = () => {
+  const searchEntryByKey = (kt?: ContentType) => {
     if (keyToSearch.length == 0) {
       return;
     }
+    if(!kt) {
+      kt = keyType as ContentType;
+    }
 
-    cacheService.getEntry(props.cacheName, keyToSearch, keyType as ContentType).then(response => {
+    cacheService.getEntry(props.cacheName, keyToSearch, kt).then(response => {
       if (response.isRight()) {
         updateRows([response.value]);
       } else {
@@ -202,92 +205,93 @@ const CacheEntries = (props: { cacheName: string }) => {
 
   return (
     <React.Fragment>
-      <Toolbar id="cache-entries-toolbar" style={{ paddingLeft: 0 }}>
-        <ToolbarContent>
-          <ToolbarItem>
-            <Select
-              width={125}
-              variant={SelectVariant.single}
-              aria-label="Select Key Content Type"
-              onToggle={(isExpanded) => setExpandedKey(isExpanded)}
-              onSelect={(event, selection) => {
-                setKeyType(selection);
-                setExpandedKey(false);
-              }}
-              selections={keyType}
-              isOpen={expandedKey}
+          <Toolbar id="cache-entries-toolbar" style={{paddingLeft: 0}}>
+            <ToolbarContent>
+              <ToolbarItem>
+                  <Select width={125}
+                    variant={SelectVariant.single}
+                    aria-label="Select Key Content Type"
+                    onToggle={isExpanded => setExpandedKey(isExpanded)}
+                    onSelect={(event, selection) => {
+                      setKeyType(selection);
+                      setExpandedKey(false);
+                      searchEntryByKey(selection as ContentType);
+                    }}
+                    selections={keyType}
+                    isOpen={expandedKey}
+                  >
+                    {keyContentTypeOptions()}
+                  </Select>
+              </ToolbarItem>
+              <ToolbarItem>
+                <InputGroup>
+                  <TextInput
+                    name="textSearchByKey"
+                    id="textSearchByKey"
+                    type="search"
+                    aria-label="search by key textfield"
+                    placeholder={'Get by key as ' + keyType}
+                    size={50}
+                    onChange={onChangeKeySearch}
+                    onKeyPress={searchEntryOnKeyPress}
+                  />
+                  <Button
+                    variant="control"
+                    aria-label="search button for search input"
+                    onClick={() => searchEntryByKey()}
+                  >
+                    <SearchIcon />
+                  </Button>
+                </InputGroup>
+              </ToolbarItem>
+              <ToolbarItem>
+                <Button
+                  key="add-entry-button"
+                  variant={ButtonVariant.primary}
+                  onClick={onClickAddEntryButton}
+                >
+                  Add entry
+                </Button>
+              </ToolbarItem>
+              <ToolbarItem>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={onClickClearAllButton}
+                >
+                  Clear all entries
+                </Button>
+              </ToolbarItem>
+            </ToolbarContent>
+          </Toolbar>
+          <CreateOrUpdateEntryForm
+            cacheName={props.cacheName}
+            keyToEdit={keyToEdit}
+            isModalOpen={isCreateOrUpdateEntryFormOpen}
+            closeModal={closeCreateOrEditEntryFormModal}
+          />
+          <DeleteEntry
+            cacheName={props.cacheName}
+            entryKey={keyToDelete}
+            keyContentType={keyType as ContentType}
+            isModalOpen={isDeleteEntryModalOpen}
+            closeModal={closeDeleteEntryModal}
+          />
+          <ClearAllEntries
+            cacheName={props.cacheName}
+            isModalOpen={isClearAllModalOpen}
+            closeModal={closeClearAllEntryModal}
+          />
+            <Table
+              variant={TableVariant.compact}
+              aria-label="Entries"
+              cells={columns}
+              rows={rows}
+              actions={actions}
+              className={'entries-table'}
             >
-              {keyContentTypeOptions()}
-            </Select>
-          </ToolbarItem>
-          <ToolbarItem>
-            <InputGroup>
-              <TextInput
-                name="textSearchByKey"
-                id="textSearchByKey"
-                type="search"
-                aria-label="search by key textfield"
-                placeholder={'Get by key as ' + keyType}
-                size={50}
-                onChange={onChangeKeySearch}
-                onKeyPress={searchEntryOnKeyPress}
-              />
-              <Button
-                variant="control"
-                aria-label="search button for search input"
-                onClick={searchEntryByKey}
-              >
-                <SearchIcon />
-              </Button>
-            </InputGroup>
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button
-              key="add-entry-button"
-              variant={ButtonVariant.primary}
-              onClick={onClickAddEntryButton}
-            >
-              Add entry
-            </Button>
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button
-              variant={ButtonVariant.link}
-              onClick={onClickClearAllButton}
-            >
-              Clear all entries
-            </Button>
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-      <CreateOrUpdateEntryForm
-        cacheName={props.cacheName}
-        keyToEdit={keyToEdit}
-        isModalOpen={isCreateOrUpdateEntryFormOpen}
-        closeModal={closeCreateOrEditEntryFormModal}
-      />
-      <DeleteEntry
-        cacheName={props.cacheName}
-        entryKey={keyToDelete}
-        isModalOpen={isDeleteEntryModalOpen}
-        closeModal={closeDeleteEntryModal}
-      />
-      <ClearAllEntries
-        cacheName={props.cacheName}
-        isModalOpen={isClearAllModalOpen}
-        closeModal={closeClearAllEntryModal}
-      />
-      <Table
-        variant={TableVariant.compact}
-        aria-label="Entries"
-        cells={columns}
-        rows={rows}
-        actions={actions}
-        className={'entries-table'}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+              <TableHeader />
+              <TableBody />
+            </Table>
     </React.Fragment>
   );
 };
