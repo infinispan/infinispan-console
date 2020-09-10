@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   AlertVariant,
-  Bullseye,
   Button,
   ButtonVariant,
   DataList,
@@ -13,9 +13,8 @@ import {
   DataListToggle,
   Divider,
   DividerVariant,
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateVariant,
+  Flex,
+  FlexItem,
   Pagination,
   Spinner,
   Stack,
@@ -24,30 +23,27 @@ import {
   TextArea,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
   ToolbarItemVariant,
-  Tooltip,
-  TooltipPosition,
 } from '@patternfly/react-core';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import {SearchIcon} from '@patternfly/react-icons';
 import {useApiAlert} from "@app/utils/useApiAlert";
 import protobufService from "../../services/protobufService";
 import {
   global_danger_color_100,
+  global_FontSize_sm,
   global_spacer_md,
-  global_spacer_sm,
-  global_success_color_100,
-  global_FontSize_sm
+  global_success_color_100
 } from "@patternfly/react-tokens";
 import {AlertIcon} from "@patternfly/react-core/dist/js/components/Alert/AlertIcon";
 import {CreateProtoSchema} from "@app/ProtoSchema/CreateProtoSchema";
 import {DeleteSchema} from "@app/ProtoSchema/DeleteSchema";
+import displayUtils from "../../services/displayUtils";
+import {TableEmptyState} from "@app/Common/TableEmptyState";
 
 /**
  * Protobuf Schemas display
@@ -57,6 +53,8 @@ const ProtobufSchemasDisplay = (props: {
   isVisible: boolean;
 }) => {
   const { addAlert } = useApiAlert();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [schemas, setSchemas] = useState<ProtoSchema[]>([]);
   const [schemasContent, setSchemasContent] = useState(new Map<string, string>());
   const [filteredSchemas, setFilteredSchemas] = useState<ProtoSchema[]>([]);
@@ -69,6 +67,25 @@ const ProtobufSchemasDisplay = (props: {
     perPage: 10
   });
   const [expanded, setExpanded] = useState<string[]>([]);
+
+  useEffect(() => {
+    loadSchemas();
+  }, [props.isVisible]);
+
+  const loadSchemas = () => {
+    protobufService.getProtobufSchemas().then(eitherResponse => {
+      if(eitherResponse.isRight()) {
+        setSchemas(eitherResponse.value);
+        props.setProtoSchemasCount(eitherResponse.value.length);
+        const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
+        setFilteredSchemas(eitherResponse.value.slice(initSlice, initSlice + schemasPagination.perPage));
+      } else {
+        addAlert(eitherResponse.value);
+        setError(eitherResponse.value.message);
+      }
+      setLoading(false);
+    })
+  };
 
   const loadSchema = (schemaName: string) => {
     protobufService.getSchema(schemaName).then(eitherResponse => {
@@ -93,23 +110,6 @@ const ProtobufSchemasDisplay = (props: {
     setDeleteSchemaName('');
     loadSchemas();
   };
-
-  const loadSchemas = () => {
-    protobufService.getProtobufSchemas().then(eitherResponse => {
-      if(eitherResponse.isRight()) {
-        setSchemas(eitherResponse.value);
-        props.setProtoSchemasCount(eitherResponse.value.length);
-        const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
-        setFilteredSchemas(eitherResponse.value.slice(initSlice, initSlice + schemasPagination.perPage));
-      } else {
-        addAlert(eitherResponse.value);
-      }
-    })
-  };
-
-  useEffect(() => {
-    loadSchemas();
-  }, [props.isVisible]);
 
   const onSetPage = (_event, pageNumber) => {
     setSchemasPagination({
@@ -136,42 +136,14 @@ const ProtobufSchemasDisplay = (props: {
   const displayProtoError = (error: (ProtoError | undefined)) => {
     if(error) {
       return (
-        <Toolbar>
-          <ToolbarGroup>
-            <ToolbarItem
-              style={{
-                paddingRight: global_spacer_sm.value,
-                color: global_danger_color_100.value
-              }}
-            >
-              <Tooltip
-                position={TooltipPosition.top}
-                content={
-                  <div>{error?.cause}</div>
-                }
-              >
-              <AlertIcon variant={AlertVariant.danger} />
-              </Tooltip>
-            </ToolbarItem>
-            <ToolbarItem>
-              <TextContent>
-                <Text
-                  component={TextVariants.p}
-                  style={{color: global_danger_color_100.value}}
-                >
-                  {error?.message}
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </Toolbar>
+            <Alert isInline variant={AlertVariant.danger} title={error.message} className="alert-message">
+              <p>{error.cause}</p>
+            </Alert>
       );
     }
 
     return (
-      <AlertIcon variant={AlertVariant.success} style={{
-        color: global_success_color_100.value
-      }} />
+      <Alert isInline variant={AlertVariant.success} title={''} className="alert-message"/>
     );
   };
 
@@ -200,34 +172,27 @@ const ProtobufSchemasDisplay = (props: {
     );
   };
 
+  const handleEdit = (name: string) => {
+    if(editSchemaName == '' || editSchemaName != name) {
+      setEditSchemaName(name);
+    } else {
+      setEditSchemaName('');
+      if(!schemasContent.has(name) || schemasContent.get(name) == '') {
+        return;
+      }
+      protobufService.createOrUpdateSchema(name, schemasContent.get(name) as string, false).then(eitherCreate => {
+        addAlert(eitherCreate.value);
+        loadSchemas();
+      })
+    }
+  };
+
   const buildSchemaList = () => {
     if(filteredSchemas.length == 0) {
       return (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.small}>
-            <EmptyStateIcon icon={SearchIcon} />
-            <Title headingLevel="h2" size="lg">
-              There are no Proto Schemas
-            </Title>
-          </EmptyState>
-        </Bullseye>
+        <TableEmptyState loading={loading} error={error} empty={'There are no Proto Schemas'}/>
       );
     }
-
-    const handleEdit = (name: string) => {
-      if(editSchemaName == '' || editSchemaName != name) {
-        setEditSchemaName(name);
-      } else {
-        setEditSchemaName('');
-        if(!schemasContent.has(name) || schemasContent.get(name) == '') {
-          return;
-        }
-        protobufService.createOrUpdateSchema(name, schemasContent.get(name) as string, false).then(eitherCreate => {
-          addAlert(eitherCreate.value);
-          loadSchemas();
-        })
-      }
-    };
 
     return (
       <DataList aria-label="Data list Protobuf Schemas">
@@ -243,8 +208,8 @@ const ProtobufSchemasDisplay = (props: {
               />
               <DataListItemCells
                 dataListCells={[
-                  <DataListCell key={'schema-name' + protoSchema.name}>{protoSchema.name}</DataListCell>,
-                  <DataListCell key={'schema-validation' + protoSchema.name}>{displayProtoError(protoSchema.error)}</DataListCell>,
+                  <DataListCell width={2} key={'schema-name' + protoSchema.name}>{protoSchema.name}</DataListCell>,
+                  <DataListCell width={4} key={'schema-validation' + protoSchema.name}>{displayProtoError(protoSchema.error)}</DataListCell>,
                 ]}
               />
             </DataListItemRow>
@@ -270,10 +235,14 @@ const ProtobufSchemasDisplay = (props: {
                   <ToolbarItem>
                     <Button variant={ButtonVariant.link}
                             onClick={() => {
-                              setDeleteSchemaName(protoSchema.name);
-                              setDeleteSchemaModalOpen(true);
+                              if (editSchemaName == protoSchema.name) {
+                                setEditSchemaName('');
+                              } else {
+                                setDeleteSchemaName(protoSchema.name);
+                                setDeleteSchemaModalOpen(true);
+                              }
                             }}>
-                      Delete
+                      {editSchemaName == protoSchema.name? 'Cancel' : 'Delete'}
                     </Button>
                   </ToolbarItem>
                 </ToolbarGroup>
