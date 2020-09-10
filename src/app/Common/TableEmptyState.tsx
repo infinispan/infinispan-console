@@ -29,11 +29,10 @@ const TableEmptyState = (props: { loading: boolean, error: string, empty: string
             color={global_danger_color_100.value}
           />
           <Title headingLevel="h2" size="lg">
-            Unable to connect
+            There was an error retrieving the data
           </Title>
           <EmptyStateBody>
-            There was an error retrieving data. Check your connection and try
-            again.
+            {props.error}
           </EmptyStateBody>
         </EmptyState>
       </Bullseye>
