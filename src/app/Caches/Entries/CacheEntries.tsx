@@ -15,7 +15,7 @@ import {
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
 import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
-import cacheService from '../../../services/cacheService';
+import cacheService from '@services/cacheService';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';

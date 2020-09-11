@@ -1,4 +1,4 @@
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {global_FontSize_md, global_FontSize_sm, global_spacer_sm, global_spacer_xs} from '@patternfly/react-tokens';
 import {Badge} from '@patternfly/react-core';
 import React from 'react';

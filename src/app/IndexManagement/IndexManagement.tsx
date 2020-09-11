@@ -18,7 +18,7 @@ import {
   TextListVariants,
   TextVariants
 } from '@patternfly/react-core';
-import cacheService from '../../services/cacheService';
+import cacheService from '@services/cacheService';
 import {Link} from 'react-router-dom';
 import {global_spacer_md} from '@patternfly/react-tokens';
 import {useApiAlert} from '@app/utils/useApiAlert';

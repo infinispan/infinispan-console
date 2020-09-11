@@ -18,7 +18,7 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
-import cacheService from '../../../services/cacheService';
+import cacheService from '@services/cacheService';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {TableErrorState} from "@app/Common/TableErrorState";
 import displayUtils from "../../../services/displayUtils";

@@ -22,8 +22,8 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
-import displayUtils from '../../services/displayUtils';
-import countersService from '../../services/countersService';
+import displayUtils from '@services/displayUtils';
+import countersService from '@services/countersService';
 import {DeleteCounter} from "@app/Counters/DeleteCounter";
 
 const CounterTableDisplay = (props: {

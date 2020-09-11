@@ -1,7 +1,7 @@
 import React from 'react';
 import {Flex, FlexItem, Text, TextContent, TextVariants} from '@patternfly/react-core';
 import {AlertIcon} from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 
 const Status = (props: { status: string }) => {
   return (

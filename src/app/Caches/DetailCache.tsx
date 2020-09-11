@@ -26,8 +26,8 @@ import {
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import cacheService from '../../services/cacheService';
-import displayUtils from '../../services/displayUtils';
+import cacheService from '@services/cacheService';
+import displayUtils from '@services/displayUtils';
 import {CacheMetrics} from '@app/Caches/CacheMetrics';
 import {CacheEntries} from '@app/Caches/Entries/CacheEntries';
 import {CacheConfiguration} from '@app/Caches/Configuration/CacheConfiguration';
