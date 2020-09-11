@@ -203,7 +203,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                     { x: 'Removes Misses', y: stats.remove_misses },
                     { x: 'Evictions', y: stats.evictions }
                   ]}
-                  labels={({ datum }) => `${datum.x}: ${datum.y}%`}
+                  labels={({ datum }) => `${datum.x}: ${displayUtils.formatNumber((datum.y * 100)/allOps())}%`}
                   legendData={[
                     { name: 'Hits: ' + displayUtils.formatNumber(stats.hits) },
                     {
