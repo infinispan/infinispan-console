@@ -20,10 +20,10 @@ import {
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {FilterIcon} from '@patternfly/react-icons';
 import {Link} from 'react-router-dom';
-import dataContainerService from '../../services/dataContainerService';
+import dataContainerService from '@services/dataContainerService';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DeleteCache} from '@app/Caches/DeleteCache';

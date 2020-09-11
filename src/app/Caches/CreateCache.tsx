@@ -22,10 +22,10 @@ import {
   ToolbarContent
 } from '@patternfly/react-core';
 import {CubeIcon} from '@patternfly/react-icons';
-import cacheService from '../../services/cacheService';
-import dataContainerService from '../../services/dataContainerService';
+import cacheService from '@services/cacheService';
+import dataContainerService from '@services/dataContainerService';
 import {Link, useLocation} from 'react-router-dom';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 

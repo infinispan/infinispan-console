@@ -27,10 +27,10 @@ import {
 } from '@patternfly/react-core';
 import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
 import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
-import dataContainerService from '../../services/dataContainerService';
+import dataContainerService from '@services/dataContainerService';
 import {Link} from 'react-router-dom';
 import {CustomCardTitle} from '@app/Common/CustomCardTitle';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {global_spacer_2xl} from '@patternfly/react-tokens';
 import {TableErrorState} from '@app/Common/TableErrorState';
 

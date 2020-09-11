@@ -18,11 +18,11 @@ import {
 
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
 import {CatalogIcon, GithubIcon, InfoIcon} from '@patternfly/react-icons'
-import {KeycloakService} from "../../services/keycloakService";
 import {chart_color_blue_500} from "@patternfly/react-tokens";
-import utils from 'src/services/utils';
+import utils from '@services/utils';
 import {ConsoleBackground} from "@app/Common/ConsoleBackgroud";
 import {Support} from "@app/Support/Support";
+import {KeycloakService} from "@services/keycloakService";
 
 const Welcome = (props) => {
   const authState = props.init;

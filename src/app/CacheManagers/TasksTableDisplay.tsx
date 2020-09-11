@@ -16,7 +16,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {
   chart_color_blue_500,
   global_FontSize_sm,
@@ -24,7 +24,7 @@ import {
   global_spacer_sm,
   global_spacer_xs
 } from '@patternfly/react-tokens';
-import tasksService from '../../services/tasksService';
+import tasksService from '@services/tasksService';
 
 const TasksTableDisplay = (props: {
   setTasksCount: (number) => void;

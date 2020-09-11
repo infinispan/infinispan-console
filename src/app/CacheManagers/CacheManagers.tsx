@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import dataContainerService from '../../services/dataContainerService';
+import dataContainerService from '@services/dataContainerService';
 import {
   Card,
   CardBody,
@@ -17,7 +17,7 @@ import {
   TextContent,
   TextVariants
 } from '@patternfly/react-core';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
 import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
 import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';

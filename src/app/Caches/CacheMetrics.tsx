@@ -18,7 +18,7 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import displayUtils from '../../services/displayUtils';
+import displayUtils from '@services/displayUtils';
 import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
 import {CubesIcon} from '@patternfly/react-icons';
 import cacheService from "../../services/cacheService";

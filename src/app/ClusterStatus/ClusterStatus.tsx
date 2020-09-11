@@ -21,7 +21,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import {CubesIcon, SearchIcon} from '@patternfly/react-icons';
-import dataContainerService from '../../services/dataContainerService';
+import dataContainerService from '@services/dataContainerService';
 import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {Health} from '@app/Common/Health';
 import {useApiAlert} from '@app/utils/useApiAlert';

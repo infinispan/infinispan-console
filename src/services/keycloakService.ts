@@ -85,7 +85,7 @@ export class KeycloakService {
       if (KeycloakService.keycloakAuth.token) {
         KeycloakService.keycloakAuth
           .updateToken(5)
-          .success(() => {
+          .then(() => {
             resolve(KeycloakService.keycloakAuth.token as string);
           })
           .error(() => {
