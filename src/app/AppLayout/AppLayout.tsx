@@ -18,6 +18,7 @@ import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
 import { useHistory } from 'react-router';
 import {global_spacer_sm} from "@patternfly/react-tokens";
+import utils from "../../services/utils";
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -140,10 +141,10 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
         <ActionResponseAlert />
         <Page
           mainContainerId="primary-app-container"
-          header={location.pathname.endsWith('/welcome') ? null : Header}
+          header={utils.isWelcomePage() ? null : Header}
           onPageResize={onPageResize}
           skipToContent={PageSkipToContent}
-          sidebar={location.pathname.endsWith('/welcome') ? null : Sidebar}
+          sidebar={utils.isWelcomePage() ? null : Sidebar}
         >
           {children}
         </Page>

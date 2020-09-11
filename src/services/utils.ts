@@ -53,6 +53,13 @@ class Utils {
     return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
   }
 
+  public isWelcomePage(): boolean {
+    return (
+      location.pathname == '/console/welcome' ||
+      location.pathname == '/console/welcome/'
+    );
+  }
+
   /**
    * Decide the endpoint depending if we are in dev mode or production mode
    */
