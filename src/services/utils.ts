@@ -5,6 +5,33 @@
  */
 import { KeycloakService } from './keycloakService';
 
+export enum ComponentStatus {
+  STOPPING,
+  RUNNING,
+  OK,
+  CANCELLING,
+  SENDING,
+  ERROR,
+  INSTANTIATED,
+  INITIALIZING,
+  FAILED,
+  TERMINATED
+}
+
+export enum ComponentHealth {
+  HEALTHY,
+  HEALTHY_REBALANCING,
+  DEGRADED
+}
+
+export enum CacheType {
+  Distributed,
+  Replicated,
+  Local,
+  Invalidated,
+  Scattered
+}
+
 export enum KeyContentType {
   OctetStream = 'application/octet-stream',
   OctetStreamHex = 'application/octet-stream; encoding=hex',
