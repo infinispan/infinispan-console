@@ -211,6 +211,20 @@ class Utils {
           );
       });
   }
+
+  public mapError(err: any, errorMessage?:string): ActionResponse {
+    console.error(err);
+    if (err instanceof TypeError) {
+      return <ActionResponse>{message: !errorMessage? err.message: errorMessage, success: false};
+    }
+
+    return err
+      .text()
+      .then(
+        text =>
+          <ActionResponse>{message: !errorMessage? text: errorMessage, success: false}
+      );
+  }
 }
 
 const utils: Utils = new Utils();

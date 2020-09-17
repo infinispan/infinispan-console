@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {cellWidth, Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
 import {
-  Bullseye,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
   Grid,
   GridItem,
   OptionsMenu,
@@ -15,21 +10,21 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
-import countersService from '@services/countersService';
 import {DeleteCounter} from "@app/Counters/DeleteCounter";
+import {fetchCounters} from "@app/services/countersHook";
+import {TableEmptyState} from "@app/Common/TableEmptyState";
 
 const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;
   isVisible: boolean;
 }) => {
+  const {counters, loading, error, reload} = fetchCounters();
   const STRONG_COUNTER = '0';
   const WEAK_COUNTER = '1';
   const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
@@ -39,6 +34,10 @@ const CounterTableDisplay = (props: {
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
+
+  useEffect(() => {
+    loadCounters();
+  }, [loading, counters, error, selectedCounterType]);
 
   const strongCountersActions = [
     {
@@ -84,33 +83,29 @@ const CounterTableDisplay = (props: {
   ];
 
   const loadCounters = () => {
-    countersService.getCounters().then(counters => {
-      const weakCounters = counters.filter(counter => counter.config.type == 'Weak');
-      const strongCounters = counters.filter(counter => counter.config.type == 'Strong');
+      if(counters) {
+        const weakCounters = counters.filter(counter => counter.config.type == 'Weak');
+        const strongCounters = counters.filter(counter => counter.config.type == 'Strong');
 
-      setWeakCounters(weakCounters)
-      setStrongCounters(strongCounters);
+        setWeakCounters(weakCounters)
+        setStrongCounters(strongCounters);
 
-      let currentCounters;
-      if(selectedCounterType == STRONG_COUNTER) {
-        currentCounters = strongCounters;
-      } else {
-        currentCounters = weakCounters;
+        let currentCounters;
+        if(selectedCounterType == STRONG_COUNTER) {
+          currentCounters = strongCounters;
+        } else {
+          currentCounters = weakCounters;
+        }
+
+        setFilteredCounters(currentCounters);
+        props.setCountersCount(counters.length);
+        const initSlice =
+          (countersPagination.page - 1) * countersPagination.perPage;
+        updateRows(
+          currentCounters.slice(initSlice, initSlice + countersPagination.perPage)
+        );
       }
-
-      setFilteredCounters(currentCounters);
-      props.setCountersCount(counters.length);
-      const initSlice =
-        (countersPagination.page - 1) * countersPagination.perPage;
-      updateRows(
-        currentCounters.slice(initSlice, initSlice + countersPagination.perPage)
-      );
-    });
   }
-
-  useEffect(() => {
-    loadCounters();
-  }, [selectedCounterType]);
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
@@ -174,17 +169,7 @@ const CounterTableDisplay = (props: {
             {
               props: { colSpan: 6 },
               title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      There are no counters
-                    </Title>
-                    <EmptyStateBody>
-                      Create one using REST endpoint, HotRod or the CLI
-                    </EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
+                <TableEmptyState loading={loading} error={error} empty={'There are no counters'}/>
               )
             }
           ]
@@ -278,7 +263,7 @@ const CounterTableDisplay = (props: {
       </Table>
       <DeleteCounter name={counterToDelete} isModalOpen={counterToDelete != ''} closeModal={() => {
         setCounterToDelete('');
-        loadCounters();
+        reload();
       }}/>
     </React.Fragment>
   );

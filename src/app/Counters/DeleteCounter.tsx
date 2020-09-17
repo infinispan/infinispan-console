@@ -1,7 +1,12 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import countersService from "../../services/countersService";
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
+import { deleteCounter } from '@app/services/countersHook';
 
 /**
  * Delete counter modal
@@ -11,19 +16,11 @@ const DeleteCounter = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
-  const { addAlert } = useApiAlert();
-
-  const onClickDeleteButton = () => {
-    countersService
-      .delete(props.name)
-      .then(actionResponse => {
-        props.closeModal();
-        addAlert(actionResponse);
-      });
-  };
+  const { onDelete } = deleteCounter(props.name);
 
   return (
     <Modal
+      id={'delete-counter-modal'}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
@@ -32,15 +29,24 @@ const DeleteCounter = (props: {
       aria-label="Delete counter modal"
       actions={[
         <Button
-          key="confirm"
+          key={'Confirm'}
+          aria-label={'Confirm'}
           variant={ButtonVariant.danger}
-          onClick={onClickDeleteButton}
+          onClick={() => {
+            onDelete();
+            props.closeModal();
+          }}
         >
           Delete
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={props.closeModal}
+        >
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>
