@@ -65,4 +65,17 @@
     </delete>
 
   </target>
+
+  <target name="licenses-xml">
+    <mkdir dir="${outDir}"/>
+    <exec executable="${binDir}/license-reporter">
+      <arg value="save"/>
+      <arg value="--xml"/>
+      <arg value="licenses-console.xml"/>
+      <arg value="--silent"/>
+      <arg value="--full-dependency-tree"/>
+      <arg value="--output-dir"/>
+      <arg value="${outDir}"/>
+    </exec>
+  </target>
 </project>
