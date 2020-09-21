@@ -161,7 +161,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>${version.jar.plugin}</version>
         <configuration>
-          <classesDirectory>dist</classesDirectory>
+          <classesDirectory>dist</classesDirectory>          
         </configuration>
       </plugin>
       <plugin>
@@ -182,6 +182,22 @@
                 <property name="brand.prefix" value="${branding.infinispan.shortName}"/>
                 <ant antfile="${basedir}/src/main/resources/licenses/build.xml">
                   <target name="default"/>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-license-xml</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="binDir" value="${basedir}/node_modules/.bin"/>
+                <property name="outDir" value="dist/META-INF/licenses"/>
+                <ant antfile="${basedir}/src/main/resources/licenses/build.xml">
+                  <target name="licenses-xml"/>
                 </ant>
               </target>
             </configuration>
