@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Bullseye,
   Card,
@@ -18,16 +18,22 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
 } from '@patternfly/react-core';
-import {CubesIcon, SearchIcon} from '@patternfly/react-icons';
+import { CubesIcon, SearchIcon } from '@patternfly/react-icons';
 import dataContainerService from '@services/dataContainerService';
-import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
-import {Health} from '@app/Common/Health';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {TableErrorState} from '@app/Common/TableErrorState';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+} from '@patternfly/react-table';
+import { Health } from '@app/Common/Health';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { ComponentHealth } from '@services/utils';
 
-const ClusterStatus: React.FunctionComponent<any> = props => {
+const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
   const [error, setError] = useState<undefined | string>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,18 +45,18 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   >([]);
   const [clusterMembersPagination, setClusterMembersPagination] = useState({
     page: 1,
-    perPage: 10
+    perPage: 10,
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const columns = [
     { title: 'Name' },
     {
-      title: 'Physical address'
-    }
+      title: 'Physical address',
+    },
   ];
 
   useEffect(() => {
-    dataContainerService.getDefaultCacheManager().then(eitherDefaultCm => {
+    dataContainerService.getDefaultCacheManager().then((eitherDefaultCm) => {
       setLoading(false);
       if (eitherDefaultCm.isRight()) {
         setCacheManager(eitherDefaultCm.value);
@@ -76,7 +82,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   const onSetPage = (_event, pageNumber) => {
     setClusterMembersPagination({
       page: pageNumber,
-      perPage: clusterMembersPagination.perPage
+      perPage: clusterMembersPagination.perPage,
     });
     const initSlice = (pageNumber - 1) * clusterMembersPagination.perPage;
     updateRows(
@@ -90,7 +96,7 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
   const onPerPageSelect = (_event, perPage) => {
     setClusterMembersPagination({
       page: clusterMembersPagination.page,
-      perPage: perPage
+      perPage: perPage,
     });
     const initSlice = (clusterMembersPagination.page - 1) * perPage;
     updateRows(filteredClusterMembers.slice(initSlice, initSlice + perPage));
@@ -119,16 +125,16 @@ const ClusterStatus: React.FunctionComponent<any> = props => {
           cells: [
             {
               props: { colSpan: 2 },
-              title: buildEmptyState()
-            }
-          ]
-        }
+              title: buildEmptyState(),
+            },
+          ],
+        },
       ];
     } else {
-      rows = clusterMembers.map(member => {
+      rows = clusterMembers.map((member) => {
         return {
           heightAuto: true,
-          cells: [{ title: member.name }, { title: member.physical_address }]
+          cells: [{ title: member.name }, { title: member.physical_address }],
         };
       });
     }

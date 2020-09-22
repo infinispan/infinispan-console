@@ -13,10 +13,10 @@ import {
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
-  global_warning_color_100
+  global_warning_color_100,
 } from '@patternfly/react-tokens';
-import {AlertVariant} from '@patternfly/react-core';
-import {CacheType, ComponentHealth, ComponentStatus} from "@services/utils";
+import { AlertVariant } from '@patternfly/react-core';
+import { CacheType, ComponentHealth, ComponentStatus } from '@services/utils';
 
 /**
  * Utility class to manage display features
@@ -29,7 +29,10 @@ class DisplayUtils {
    * @param componentStatus
    * @param isIcon
    */
-  public statusColor(componentStatus: ComponentStatus | string | undefined, isIcon: boolean) {
+  public statusColor(
+    componentStatus: ComponentStatus | undefined,
+    isIcon: boolean
+  ) {
     let color;
     if (!componentStatus) {
       return chart_global_label_Fill.value;
@@ -39,18 +42,18 @@ class DisplayUtils {
       return chart_global_label_Fill.value;
     }
 
-    switch (componentStatus.toString()) {
-      case ComponentStatus.RUNNING.toString():
-      case ComponentStatus.OK.toString():
+    switch (componentStatus) {
+      case ComponentStatus.RUNNING:
+      case ComponentStatus.OK:
         color = global_success_color_100.value;
         break;
-      case ComponentStatus.INITIALIZING.toString():
-      case ComponentStatus.CANCELLING.toString():
-      case ComponentStatus.SENDING.toString():
+      case ComponentStatus.INITIALIZING:
+      case ComponentStatus.CANCELLING:
+      case ComponentStatus.SENDING:
         color = global_warning_color_100.value;
         break;
-      case ComponentStatus.FAILED.toString():
-      case ComponentStatus.ERROR.toString():
+      case ComponentStatus.FAILED:
+      case ComponentStatus.ERROR:
         color = global_danger_color_100.value;
         break;
       default:
@@ -64,18 +67,18 @@ class DisplayUtils {
    *
    * @param status
    */
-  public statusAlterVariant(status: string | ComponentStatus): AlertVariant {
+  public statusAlterVariant(status: ComponentStatus): AlertVariant {
     let variant;
-    switch (status.toString()) {
-      case ComponentStatus.RUNNING.toString():
-      case ComponentStatus.OK.toString():
+    switch (status) {
+      case ComponentStatus.RUNNING:
+      case ComponentStatus.OK:
         variant = AlertVariant.success;
         break;
-      case ComponentStatus.ERROR.toString():
-      case ComponentStatus.FAILED.toString():
+      case ComponentStatus.ERROR:
+      case ComponentStatus.FAILED:
         variant = AlertVariant.danger;
         break;
-      case ComponentStatus.TERMINATED.toString():
+      case ComponentStatus.TERMINATED:
         variant = AlertVariant.info;
         break;
       default:
@@ -89,7 +92,10 @@ class DisplayUtils {
    * @param health, string value
    * @param isIcon, color depends on the icon as well
    */
-  public healthColor(health: string | ComponentHealth | undefined, isIcon: boolean): string {
+  public healthColor(
+    health: ComponentHealth | undefined,
+    isIcon: boolean
+  ): string {
     if (health == undefined) {
       return chart_global_label_Fill.value;
     }
@@ -99,14 +105,14 @@ class DisplayUtils {
     }
 
     let color;
-    switch (health.toString()) {
-      case ComponentHealth.HEALTHY.toString():
+    switch (health) {
+      case ComponentHealth.HEALTHY:
         color = global_success_color_100.value;
         break;
-      case ComponentHealth.HEALTHY_REBALANCING.toString():
+      case ComponentHealth.HEALTHY_REBALANCING:
         color = global_warning_color_100.value;
         break;
-      case ComponentHealth.DEGRADED.toString():
+      case ComponentHealth.DEGRADED:
         color = global_danger_color_100.value;
         break;
       default:
@@ -120,20 +126,20 @@ class DisplayUtils {
    *
    * @param health
    */
-  public healthLabel(health: string | ComponentHealth | undefined): string {
+  public healthLabel(health: ComponentHealth | undefined): string {
     if (health === undefined) {
       return '-';
     }
 
     let label;
-    switch (health.toString()) {
-      case ComponentHealth.HEALTHY.toString():
+    switch (health) {
+      case ComponentHealth.HEALTHY:
         label = 'Healthy';
         break;
-      case ComponentHealth.HEALTHY_REBALANCING.toString():
+      case ComponentHealth.HEALTHY_REBALANCING:
         label = 'Rebalancing';
         break;
-      case ComponentHealth.DEGRADED.toString():
+      case ComponentHealth.DEGRADED:
         label = 'Degraded';
         break;
       default:
@@ -146,21 +152,21 @@ class DisplayUtils {
    * Alert variant for the icon in the
    * @param health
    */
-  public healthAlertVariant(health: (string | ComponentHealth | undefined)): AlertVariant {
+  public healthAlertVariant(health: ComponentHealth | undefined): AlertVariant {
     if (health == undefined) {
       return AlertVariant.warning;
     }
 
     let variant;
 
-    switch (health.toString()) {
-      case ComponentHealth.HEALTHY.toString():
+    switch (health) {
+      case ComponentHealth.HEALTHY:
         variant = AlertVariant.success;
         break;
-      case ComponentHealth.HEALTHY_REBALANCING.toString():
+      case ComponentHealth.HEALTHY_REBALANCING:
         variant = AlertVariant.warning;
         break;
-      case ComponentHealth.DEGRADED.toString():
+      case ComponentHealth.DEGRADED:
         variant = AlertVariant.danger;
         break;
       default:
@@ -174,22 +180,25 @@ class DisplayUtils {
    *
    * @param cacheType
    */
-  public cacheTypeColor(cacheType: (string|CacheType)): string {
+  public cacheTypeColor(cacheType: CacheType | undefined): string {
     let color;
-    switch (cacheType.toString()) {
-      case CacheType.Distributed.toString():
+    if (cacheType == undefined) {
+      return chart_color_black_100.value;
+    }
+    switch (cacheType) {
+      case CacheType.Distributed:
         color = global_palette_blue_50.value;
         break;
-      case CacheType.Replicated.toString():
+      case CacheType.Replicated:
         color = global_palette_purple_100.value;
         break;
-      case CacheType.Local.toString():
+      case CacheType.Local:
         color = chart_color_cyan_100.value;
         break;
-      case CacheType.Invalidated.toString():
+      case CacheType.Invalidated:
         color = chart_color_gold_100.value;
         break;
-      case CacheType.Scattered.toString():
+      case CacheType.Scattered:
         color = global_palette_black_100.value;
         break;
       default:
@@ -203,22 +212,26 @@ class DisplayUtils {
    *
    * @param cacheType
    */
-  public cacheTypeColorLabel(cacheType: string): string {
+  public cacheTypeColorLabel(cacheType: CacheType): string {
+    if (cacheType == undefined) {
+      return chart_color_black_100.value;
+    }
+
     let color;
     switch (cacheType) {
-      case 'Distributed':
+      case CacheType.Distributed:
         color = chart_color_blue_500.value;
         break;
-      case 'Replicated':
+      case CacheType.Replicated:
         color = chart_color_purple_500.value;
         break;
-      case 'Local':
+      case CacheType.Local:
         color = chart_color_cyan_500.value;
         break;
-      case 'Invalidated':
+      case CacheType.Invalidated:
         color = chart_color_orange_500.value;
         break;
-      case 'Scattered':
+      case CacheType.Scattered:
         color = chart_color_black_500.value;
         break;
       default:
