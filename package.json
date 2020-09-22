@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/infinispan/infinispan-console.git",
   "homepage": "http://locgstalhost:11222/console/",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "prebuild": "npm run clean",
     "dr:surge": "node dr-surge.js",
