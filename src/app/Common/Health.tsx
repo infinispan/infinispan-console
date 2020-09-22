@@ -11,6 +11,7 @@ const Health = (props: { health: string }) => {
     <Flex>
       <FlexItem>
         <AlertIcon
+          data-testid={'HealthIcon'}
           variant={displayUtils.healthAlertVariant(health)}
           style={{
             color: displayUtils.healthColor(health, true),
