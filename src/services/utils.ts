@@ -6,30 +6,30 @@
 import { KeycloakService } from './keycloakService';
 
 export enum ComponentStatus {
-  STOPPING,
-  RUNNING,
-  OK,
-  CANCELLING,
-  SENDING,
-  ERROR,
-  INSTANTIATED,
-  INITIALIZING,
-  FAILED,
-  TERMINATED
+  STOPPING = 'STOPPING',
+  RUNNING = 'RUNNING',
+  OK = 'OK',
+  CANCELLING = 'CANCELLING',
+  SENDING = 'SENDING',
+  ERROR = 'ERROR',
+  INSTANTIATED = 'INSTANTIATED',
+  INITIALIZING = 'INITIALIZING',
+  FAILED = 'FAILED',
+  TERMINATED = 'TERMINATED',
 }
 
 export enum ComponentHealth {
-  HEALTHY,
-  HEALTHY_REBALANCING,
-  DEGRADED
+  HEALTHY = 'HEALTHY',
+  HEALTHY_REBALANCING = 'HEALTHY_REBALANCING',
+  DEGRADED = 'DEGRADED',
 }
 
 export enum CacheType {
-  Distributed,
-  Replicated,
-  Local,
-  Invalidated,
-  Scattered
+  Distributed = 'Distributed',
+  Replicated = 'Replicated',
+  Local = 'Local',
+  Invalidated = 'Invalidated',
+  Scattered = 'Scattered',
 }
 
 export enum KeyContentType {
@@ -40,13 +40,13 @@ export enum KeyContentType {
   IntegerContentType = 'java.lang.Integer',
   LongContentType = 'java.lang.Long',
   BooleanContentType = 'java.lang.Boolean',
-  BytesType = 'Bytes'
+  BytesType = 'Bytes',
 }
 
 export enum ValueContentType {
   JSON = 'application/json',
   XML = 'application/xml',
-  TEXT = 'text/plain'
+  TEXT = 'text/plain',
 }
 
 export enum Flags {
@@ -71,7 +71,7 @@ export enum Flags {
   SKIP_SIZE_OPTIMIZATION = 'SKIP_SIZE_OPTIMIZATION',
   SKIP_STATISTICS = 'SKIP_STATISTICS',
   SKIP_XSITE_BACKUP = 'SKIP_XSITE_BACKUP',
-  ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT'
+  ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT',
 }
 
 class Utils {
@@ -127,7 +127,7 @@ class Utils {
       method: method,
       headers: headers,
       credentials: 'include',
-      body: body
+      body: body,
     });
   }
 
@@ -149,7 +149,7 @@ class Utils {
     return fetch(url, {
       method: method,
       credentials: 'include',
-      headers: headers
+      headers: headers,
     });
   }
 
@@ -186,19 +186,19 @@ class Utils {
     response: Promise<Response>
   ): Promise<ActionResponse> {
     return response
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.text();
         }
         throw response;
       })
-      .then(text => {
+      .then((text) => {
         return <ActionResponse>{
           message: text == '' ? successMessage : text,
-          success: true
+          success: true,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return <ActionResponse>{ message: err.message, success: false };
         }
@@ -206,24 +206,28 @@ class Utils {
         return err
           .text()
           .then(
-            errorMessage =>
+            (errorMessage) =>
               <ActionResponse>{ message: errorMessage, success: false }
           );
       });
   }
 
-  public mapError(err: any, errorMessage?:string): ActionResponse {
+  public mapError(err: any, errorMessage?: string): ActionResponse {
     console.error(err);
     if (err instanceof TypeError) {
-      return <ActionResponse>{message: !errorMessage? err.message: errorMessage, success: false};
+      return <ActionResponse>{
+        message: !errorMessage ? err.message : errorMessage,
+        success: false,
+      };
     }
 
-    return err
-      .text()
-      .then(
-        text =>
-          <ActionResponse>{message: !errorMessage? text: errorMessage, success: false}
-      );
+    return err.text().then(
+      (text) =>
+        <ActionResponse>{
+          message: !errorMessage ? text : errorMessage,
+          success: false,
+        }
+    );
   }
 }
 
