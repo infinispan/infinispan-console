@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button, Modal, Text, TextContent} from '@patternfly/react-core';
+import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 /**
  * Ignore cache modal
@@ -11,7 +11,7 @@ const IgnoreCache = (props: {
   cacheName: string;
   isModalOpen: boolean;
   closeModal: (boolean) => void;
-  action: 'ignore' | 'undo';
+  action: string;
 }) => {
   const { addAlert } = useApiAlert();
 
@@ -23,14 +23,14 @@ const IgnoreCache = (props: {
     if (props.action == 'ignore') {
       cacheService
         .ignoreCache(props.cmName, props.cacheName)
-        .then(actionResponse => {
+        .then((actionResponse) => {
           clearIgnoreCacheModal(actionResponse.success);
           addAlert(actionResponse);
         });
     } else {
       cacheService
         .undoIgnoreCache(props.cmName, props.cacheName)
-        .then(actionResponse => {
+        .then((actionResponse) => {
           clearIgnoreCacheModal(actionResponse.success);
           addAlert(actionResponse);
         });
@@ -88,7 +88,7 @@ const IgnoreCache = (props: {
           onClick={() => clearIgnoreCacheModal(false)}
         >
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       {buildContent()}
