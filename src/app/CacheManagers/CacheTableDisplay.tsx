@@ -41,11 +41,11 @@ import {
 } from '@patternfly/react-table/src/components/Table/Table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
+import { fetchCaches } from '@app/services/cachesHook';
 
-interface IgnoreCache {
+interface CacheAction {
   cacheName: string;
-  modalOpen: boolean;
-  action: 'ignore' | 'undo';
+  action: '' | 'ignore' | 'undo' | 'delete';
 }
 
 const CacheTableDisplay = (props: {
@@ -54,25 +54,81 @@ const CacheTableDisplay = (props: {
   isVisible: boolean;
 }) => {
   const { addAlert } = useApiAlert();
-  const [caches, setCaches] = useState<CacheInfo[]>([]);
+  const { loading, caches, error, reload } = fetchCaches(props.cmName);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
     perPage: 10,
   });
   const [rows, setRows] = useState<any[]>([]);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
   const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
   const [chipsCacheStatus, setChipsCacheStatus] = useState<string[]>([]);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isDeleteCacheModalOpen, setDeleteCacheModalOpen] = useState(false);
-  const [deleteCacheName, setDeleteCacheName] = useState<string>('');
-  const [ignoreCache, setIgnoreCache] = useState<IgnoreCache>({
+  const [isFilterSelectExpanded, setIsFilterSelectExpanded] = useState<boolean>(
+    false
+  );
+  const [cacheAction, setCacheAction] = useState<CacheAction>({
     cacheName: '',
-    action: 'ignore',
-    modalOpen: false,
+    action: '',
   });
+
+  // new caches or new filters
+  useEffect(() => {
+    props.setCachesCount(caches.length);
+    let newFilteredCaches: CacheInfo[] = caches;
+
+    if (selectedFilters.length == 0) {
+      // clear chips
+      setChipsCacheStatus([]);
+      setChipsCacheFeature([]);
+      setChipsCacheType([]);
+    } else {
+      // From the select, extract each category
+      let filterStatus = extract(selectedFilters, cacheStatus);
+      let filterFeatures = extract(selectedFilters, cacheFeatures);
+      let filterCacheType = extract(selectedFilters, cacheTypes);
+      // Update chips
+      setChipsCacheStatus(filterStatus);
+      setChipsCacheFeature(filterFeatures);
+      setChipsCacheType(filterCacheType);
+
+      // Filter caches by status
+      if (filterStatus.length > 0) {
+        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
+          isCacheStatus(cacheInfo, filterStatus)
+        );
+      }
+
+      // Filter caches by cache type
+      if (filterCacheType.length > 0) {
+        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
+          isCacheType(cacheInfo, filterCacheType)
+        );
+      }
+
+      // Filter caches by features
+      if (filterFeatures.length > 0) {
+        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
+          hasFeatures(cacheInfo, filterFeatures)
+        );
+      }
+    }
+
+    // Set filtered caches
+    setFilteredCaches(newFilteredCaches);
+  }, [caches, selectedFilters]);
+
+  // new filtered caches or new pagination upgrades rows
+  useEffect(() => {
+    const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
+    updateRows(
+      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage),
+      loading,
+      error
+    );
+  }, [filteredCaches, cachesPagination]);
+
   const columns = [
     { title: 'Name', transforms: [cellWidth(20), textCenter] },
     {
@@ -128,17 +184,15 @@ const CacheTableDisplay = (props: {
       },
       {
         title: 'Delete',
-        onClick: (event, rowId, rowData, extra) =>
-          openDeleteCacheModal(rowData.cells[0].cacheName),
+        onClick: (event, rowId, rowData, extra) => {
+          setCacheAction({
+            cacheName: rowData.cells[0].cacheName,
+            action: 'delete',
+          });
+        },
       },
     ];
   };
-
-  useEffect(() => {
-    if (props.isVisible) {
-      loadCaches();
-    }
-  }, [props.isVisible]);
 
   const isCacheIgnored = (cacheInfo: CacheInfo): boolean => {
     return cacheInfo.status == 'Ignored';
@@ -147,76 +201,27 @@ const CacheTableDisplay = (props: {
   const closeDeleteModal = (deleteDone: boolean) => {
     if (deleteDone) {
       setFilteredCaches(
-        filteredCaches.filter((cacheInfo) => cacheInfo.name !== deleteCacheName)
+        filteredCaches.filter(
+          (cacheInfo) => cacheInfo.name !== cacheAction.cacheName
+        )
       );
-      loadCaches();
+      reload();
     }
-    setDeleteCacheName('');
-    setDeleteCacheModalOpen(false);
+    setCacheAction({ cacheName: '', action: '' });
   };
 
   const closeIgnoreModal = (ignoreDone: boolean) => {
     if (ignoreDone) {
-      loadCaches();
+      reload();
     }
-    setIgnoreCache({ cacheName: '', modalOpen: false, action: 'ignore' });
+    setCacheAction({ cacheName: '', action: '' });
   };
 
   const openIgnoreCacheModal = (cacheName: string, ignored: boolean) => {
-    setIgnoreCache({
+    setCacheAction({
       cacheName: cacheName,
-      modalOpen: true,
       action: ignored ? 'undo' : 'ignore',
     });
-  };
-
-  const openDeleteCacheModal = (cacheName: string) => {
-    setDeleteCacheModalOpen(true);
-    setDeleteCacheName(cacheName);
-  };
-
-  const loadCaches = () => {
-    dataContainerService.getCaches(props.cmName).then((eitherCaches) => {
-      if (eitherCaches.isRight()) {
-        setCaches(eitherCaches.value);
-        setFilteredCaches(eitherCaches.value);
-        props.setCachesCount(eitherCaches.value.length);
-        const initSlice =
-          (cachesPagination.page - 1) * cachesPagination.perPage;
-        updateRows(
-          eitherCaches.value.slice(
-            initSlice,
-            initSlice + cachesPagination.perPage
-          ),
-          false,
-          ''
-        );
-      } else {
-        updateRows([], false, eitherCaches.value.message);
-      }
-    });
-  };
-
-  const onSetPage = (_event, pageNumber) => {
-    setCachesPagination({
-      page: pageNumber,
-      perPage: cachesPagination.perPage,
-    });
-    const initSlice = (pageNumber - 1) * cachesPagination.perPage;
-    updateRows(
-      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage),
-      false,
-      ''
-    );
-  };
-
-  const onPerPageSelect = (_event, perPage) => {
-    setCachesPagination({
-      page: cachesPagination.page,
-      perPage: perPage,
-    });
-    const initSlice = (cachesPagination.page - 1) * perPage;
-    updateRows(filteredCaches.slice(initSlice, initSlice + perPage), false, '');
   };
 
   const updateRows = (caches: CacheInfo[], loading: boolean, error: string) => {
@@ -407,81 +412,28 @@ const CacheTableDisplay = (props: {
     return false;
   };
 
-  const filterCaches = (actualSelection: string[]) => {
-    let newFilteredCaches: CacheInfo[] = caches;
-
-    if (actualSelection.length > 0) {
-      let filterStatus = extract(actualSelection, cacheStatus);
-      let filterFeatures = extract(actualSelection, cacheFeatures);
-      let filterCacheType = extract(actualSelection, cacheTypes);
-
-      if (filterStatus.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
-          isCacheStatus(cacheInfo, filterStatus)
-        );
-      }
-
-      if (filterCacheType.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
-          isCacheType(cacheInfo, filterCacheType)
-        );
-      }
-
-      if (filterFeatures.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
-          hasFeatures(cacheInfo, filterFeatures)
-        );
-      }
-    }
-    return newFilteredCaches;
-  };
-
-  const updateChips = (actualSelection: string[]) => {
-    let filterFeatures = extract(actualSelection, cacheFeatures);
-    let filterCacheType = extract(actualSelection, cacheTypes);
-    let filterCacheStatus = extract(actualSelection, cacheStatus);
-    setChipsCacheFeature(filterFeatures);
-    setChipsCacheType(filterCacheType);
-    setChipsCacheStatus(filterCacheStatus);
-  };
-
-  const deleteItem = (id) => {
-    let actualSelection: string[] = selected.filter((item) => item !== id);
-    let newFilteredCaches = filterCaches(actualSelection);
-    updateChips(actualSelection);
-    updateRows(newFilteredCaches, false, '');
-    setSelected(actualSelection);
-    setFilteredCaches(newFilteredCaches);
+  const onDeleteChip = (chip) => {
+    let actualSelection = selectedFilters.filter((item) => item !== chip);
+    setSelectedFilters(actualSelection);
   };
 
   const onSelectFilter = (event, selection) => {
-    let actualSelection: string[] = [];
+    let actualSelection;
 
-    if (selected.includes(selection)) {
-      actualSelection = selected.filter((item) => item !== selection);
+    if (selectedFilters.includes(selection)) {
+      actualSelection = selectedFilters.filter((item) => item !== selection);
     } else {
-      actualSelection = [...selected, selection];
+      actualSelection = [...selectedFilters, selection];
     }
-
-    updateChips(actualSelection);
-    let newFilteredCaches = filterCaches(actualSelection);
-
-    updateRows(newFilteredCaches, false, '');
-    setSelected(actualSelection);
-    setFilteredCaches(newFilteredCaches);
-  };
-
-  const onToggleFilter = (isExpanded) => {
-    setIsExpanded(isExpanded);
+    setSelectedFilters(actualSelection);
   };
 
   const onDeleteAllFilters = () => {
     setChipsCacheFeature([]);
     setChipsCacheType([]);
     setChipsCacheStatus([]);
-    setSelected([]);
-    updateRows(caches, false, '');
-    setFilteredCaches(caches);
+    setSelectedFilters([]);
+    reload();
   };
 
   const buildCreateCacheButton = () => {
@@ -521,10 +473,10 @@ const CacheTableDisplay = (props: {
           <Select
             variant={SelectVariant.checkbox}
             aria-label="Filter"
-            onToggle={onToggleFilter}
+            onToggle={setIsFilterSelectExpanded}
             onSelect={onSelectFilter}
-            selections={selected}
-            isOpen={isExpanded}
+            selections={selectedFilters}
+            isOpen={isFilterSelectExpanded}
             toggleIcon={<FilterIcon />}
             maxHeight={200}
             placeholderText="Filter"
@@ -558,9 +510,19 @@ const CacheTableDisplay = (props: {
         itemCount={filteredCaches.length}
         perPage={cachesPagination.perPage}
         page={cachesPagination.page}
-        onSetPage={onSetPage}
+        onSetPage={(_event, pageNumber) =>
+          setCachesPagination({
+            page: pageNumber,
+            perPage: cachesPagination.perPage,
+          })
+        }
         widgetId="pagination-caches"
-        onPerPageSelect={onPerPageSelect}
+        onPerPageSelect={(_event, perPage) =>
+          setCachesPagination({
+            page: cachesPagination.page,
+            perPage: perPage,
+          })
+        }
         isCompact
       />
     );
@@ -604,21 +566,21 @@ const CacheTableDisplay = (props: {
           <ToolbarItem variant={ToolbarItemVariant['chip-group']}>
             <ChipGroup key="chips-types" categoryName="Cache Type">
               {chipsCacheType.map((chip) => (
-                <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                <Chip key={'chip-' + chip} onClick={() => onDeleteChip(chip)}>
                   {chip}
                 </Chip>
               ))}
             </ChipGroup>
             <ChipGroup key="chips-features" categoryName="Features">
               {chipsCacheFeature.map((chip) => (
-                <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                <Chip key={'chip-' + chip} onClick={() => onDeleteChip(chip)}>
                   {chip}
                 </Chip>
               ))}
             </ChipGroup>
             <ChipGroup key="chip-status" categoryName="Status">
               {chipsCacheStatus.map((chip) => (
-                <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
+                <Chip key={'chip-' + chip} onClick={() => onDeleteChip(chip)}>
                   {chip}
                 </Chip>
               ))}
@@ -639,15 +601,17 @@ const CacheTableDisplay = (props: {
         <TableBody />
       </Table>
       <DeleteCache
-        cacheName={deleteCacheName}
-        isModalOpen={isDeleteCacheModalOpen}
+        cacheName={cacheAction.cacheName}
+        isModalOpen={cacheAction.action == 'delete'}
         closeModal={closeDeleteModal}
       />
       <IgnoreCache
         cmName={props.cmName}
-        cacheName={ignoreCache.cacheName}
-        isModalOpen={ignoreCache.modalOpen}
-        action={ignoreCache.action}
+        cacheName={cacheAction.cacheName}
+        isModalOpen={
+          cacheAction.action == 'ignore' || cacheAction.action == 'undo'
+        }
+        action={cacheAction.action}
         closeModal={closeIgnoreModal}
       />
     </React.Fragment>
