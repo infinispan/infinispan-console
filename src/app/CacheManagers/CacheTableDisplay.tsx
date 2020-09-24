@@ -75,6 +75,10 @@ const CacheTableDisplay = (props: {
 
   // new caches or new filters
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+
     props.setCachesCount(caches.length);
     let newFilteredCaches: CacheInfo[] = caches;
 
@@ -117,16 +121,11 @@ const CacheTableDisplay = (props: {
 
     // Set filtered caches
     setFilteredCaches(newFilteredCaches);
-  }, [caches, selectedFilters]);
+  }, [props.isVisible, loading, caches, selectedFilters]);
 
   // new filtered caches or new pagination upgrades rows
   useEffect(() => {
-    const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
-    updateRows(
-      filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage),
-      loading,
-      error
-    );
+    updateRows();
   }, [filteredCaches, cachesPagination]);
 
   const columns = [
@@ -224,7 +223,13 @@ const CacheTableDisplay = (props: {
     });
   };
 
-  const updateRows = (caches: CacheInfo[], loading: boolean, error: string) => {
+  const updateRows = () => {
+    const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
+    const currentPageCaches = filteredCaches.slice(
+      initSlice,
+      initSlice + cachesPagination.perPage
+    );
+
     let currentRows: {
       heightAuto: boolean;
       cells: (string | any)[];
@@ -232,7 +237,7 @@ const CacheTableDisplay = (props: {
       disableActions: boolean;
     }[];
 
-    if (caches.length == 0) {
+    if (currentPageCaches.length == 0 || loading || error != '') {
       currentRows = [
         {
           heightAuto: true,
@@ -245,7 +250,7 @@ const CacheTableDisplay = (props: {
                 <TableEmptyState
                   loading={loading}
                   error={error}
-                  empty={'Caches not found'}
+                  empty={'There are no caches'}
                 />
               ),
             },
@@ -253,7 +258,7 @@ const CacheTableDisplay = (props: {
         },
       ];
     } else {
-      currentRows = caches.map((cacheInfo) => {
+      currentRows = currentPageCaches.map((cacheInfo) => {
         return {
           heightAuto: true,
           type: '',
