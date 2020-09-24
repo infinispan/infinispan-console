@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
 import {
   Button,
+  ButtonVariant,
   Card,
   CardBody,
   CardTitle,
@@ -23,62 +23,30 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title
+  Title,
 } from '@patternfly/react-core';
-import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
-import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
-import dataContainerService from '@services/dataContainerService';
-import {Link} from 'react-router-dom';
-import {CustomCardTitle} from '@app/Common/CustomCardTitle';
+import { ArrowIcon, CubesIcon } from '@patternfly/react-icons';
+import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import { Link } from 'react-router-dom';
+import { CustomCardTitle } from '@app/Common/CustomCardTitle';
 import displayUtils from '@services/displayUtils';
-import {global_spacer_2xl} from '@patternfly/react-tokens';
-import {TableErrorState} from '@app/Common/TableErrorState';
+import { global_spacer_2xl } from '@patternfly/react-tokens';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { fetchGlobalStats } from '@app/services/statsHook';
 
-const GlobalStats: React.FunctionComponent<any> = props => {
-  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
-    undefined
-  );
-  const [error, setError] = useState<undefined | string>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [stats, setStats] = useState<CacheManagerStats>({
-    statistics_enabled: false,
-    hits: -1,
-    retrievals: -1,
-    remove_misses: -1,
-    remove_hits: -1,
-    evictions: -1,
-    stores: -1,
-    misses: -1
-  });
-
-  useEffect(() => {
-    dataContainerService.getDefaultCacheManager().then(eitherDefaultCm => {
-      if (eitherDefaultCm.isRight()) {
-        setCacheManager(eitherDefaultCm.value);
-        dataContainerService
-          .getCacheManagerStats(eitherDefaultCm.value.name)
-          .then(detailedStats => {
-            setStats(detailedStats);
-            setLoading(false);
-          });
-      } else {
-        setError(eitherDefaultCm.value.message);
-        setLoading(false);
-      }
-    });
-  }, []);
+const GlobalStats = () => {
+  const { stats, error, loading } = fetchGlobalStats();
 
   const allOps = () => {
+    return (
+      stats.hits +
+      stats.misses +
+      stats.remove_hits +
+      stats.remove_misses +
+      stats.stores +
+      stats.evictions
+    );
     if (stats?.statistics_enabled) {
-      return (
-        stats.hits +
-        stats.retrievals +
-        stats.remove_hits +
-        stats.remove_misses +
-        stats.stores +
-        stats.misses +
-        stats.evictions
-      );
     }
     return 0;
   };
@@ -111,7 +79,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
             <EmptyState variant={EmptyStateVariant.full}>
               <EmptyStateIcon icon={CubesIcon} />
               <Title headingLevel="h5" size="lg">
-                Statistic disabled
+                Statistics disabled
               </Title>
               <EmptyStateBody>
                 Statistics are disabled. To enable statistics, set
@@ -137,7 +105,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                 </LevelItem>
                 <LevelItem>
                   <Link to={{ pathname: '/' }}>
-                    <Button variant="link" icon={<ArrowIcon />}>
+                    <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
                       View all caches
                     </Button>
                   </Link>
@@ -195,43 +163,44 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                 <ChartDonut
                   constrainToVisibleArea={true}
                   data={[
-                    { x: 'Hits', y: stats.hits },
-                    { x: 'Misses', y: stats.misses },
+                    { x: 'Retrieval hits', y: stats.hits },
+                    { x: 'Retrieval Misses', y: stats.misses },
                     { x: 'Stores', y: stats.stores },
-                    { x: 'Retrievals', y: stats.retrievals },
                     { x: 'Remove Hits', y: stats.remove_hits },
                     { x: 'Removes Misses', y: stats.remove_misses },
-                    { x: 'Evictions', y: stats.evictions }
+                    { x: 'Evictions', y: stats.evictions },
                   ]}
                   labels={({ datum }) => `${datum.x}: ${displayUtils.formatNumber((datum.y * 100)/allOps())}%`}
                   legendData={[
-                    { name: 'Hits: ' + displayUtils.formatNumber(stats.hits) },
                     {
-                      name: 'Misses: ' + displayUtils.formatNumber(stats.misses)
+                      name:
+                        'Retrieval Hits: ' +
+                        displayUtils.formatNumber(stats.hits),
                     },
                     {
                       name:
-                        'Retrievals: ' +
-                        displayUtils.formatNumber(stats.retrievals)
+                        'Retrieval Misses: ' +
+                        displayUtils.formatNumber(stats.misses),
                     },
                     {
-                      name: 'Stores: ' + displayUtils.formatNumber(stats.stores)
+                      name:
+                        'Stores: ' + displayUtils.formatNumber(stats.stores),
                     },
                     {
                       name:
                         'Remove Hits: ' +
-                        displayUtils.formatNumber(stats.remove_hits)
+                        displayUtils.formatNumber(stats.remove_hits),
                     },
                     {
                       name:
                         'Remove Misses: ' +
-                        displayUtils.formatNumber(stats.remove_misses)
+                        displayUtils.formatNumber(stats.remove_misses),
                     },
                     {
                       name:
                         'Evictions: ' +
-                        displayUtils.formatNumber(stats.evictions)
-                    }
+                        displayUtils.formatNumber(stats.evictions),
+                    },
                   ]}
                   legendOrientation="vertical"
                   legendPosition="right"
@@ -239,7 +208,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                     bottom: 40,
                     left: 80,
                     right: 200, // Adjusted to accommodate legend
-                    top: 20
+                    top: 20,
                   }}
                   subTitle="Data access"
                   title={'' + allOps()}
@@ -309,7 +278,7 @@ const GlobalStats: React.FunctionComponent<any> = props => {
                 </LevelItem>
                 <LevelItem>
                   <Link to={{ pathname: '/cluster-membership' }}>
-                    <Button variant="link" icon={<ArrowIcon />}>
+                    <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
                       View Cluster Status
                     </Button>
                   </Link>
