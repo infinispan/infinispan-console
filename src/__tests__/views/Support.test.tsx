@@ -1,10 +1,24 @@
 import { Support } from '@app/Support/Support';
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('Support page', () => {
-  test('should render Support component', () => {
-    const view = render(<Support isModalOpen={true} closeModal={() => {}} />);
-    expect(view.container.firstChild).toMatchSnapshot();
+  test('modal shows the children and a close button', () => {
+    const handleClose = jest.fn();
+
+    const { getByText, getByRole } = render(
+      <Support isModalOpen={true} closeModal={handleClose} />
+    );
+
+    expect(getByRole('dialog', { name: 'Unable to log' })).toBeInTheDocument();
+    expect(getByText('User not configured')).toBeInTheDocument();
+    expect(getByText('Download and run')).toBeInTheDocument();
+    expect(getByText('Podman')).toBeInTheDocument();
+    expect(getByText('Docker')).toBeInTheDocument();
+
+    fireEvent.click(getByRole('button', { name: 'Close' }));
+    fireEvent.click(getByRole('button', { name: 'Reload' }));
+
+    expect(handleClose).toHaveBeenCalledTimes(2);
   });
 });

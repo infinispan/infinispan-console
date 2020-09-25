@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   AboutModal,
   Button,
@@ -13,37 +13,32 @@ import {
   TextList,
   TextListItem,
   TextListItemVariants,
-  TextListVariants
+  TextListVariants,
 } from '@patternfly/react-core';
-import serverService from "../../services/serverService";
+import serverService from '../../services/serverService';
 import backImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {FacebookIcon, GithubIcon, OutlinedCommentsIcon, StackOverflowIcon, TwitterIcon} from "@patternfly/react-icons";
-import {global_spacer_3xl, global_spacer_lg} from "@patternfly/react-tokens";
+import {
+  FacebookIcon,
+  GithubIcon,
+  OutlinedCommentsIcon,
+  StackOverflowIcon,
+  TwitterIcon,
+} from '@patternfly/react-icons';
+import { global_spacer_3xl, global_spacer_lg } from '@patternfly/react-tokens';
+import { fetchVersion } from '@app/services/serverHook';
 
 const About: React.FunctionComponent<any> = (props: {
-  isModalOpen: boolean,
-  closeModal: () => void
+  isModalOpen: boolean;
+  closeModal: () => void;
 }) => {
-  const [version, setVersion] = useState('');
+  const { loading, version, error } = fetchVersion();
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
-  const infinispanStackOverflowLink = 'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
+  const infinispanStackOverflowLink =
+    'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
   const infinispanTwitterLink = 'https://twitter.com/infinispan/';
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
-
-  useEffect(() => {
-    if(props.isModalOpen) {
-      serverService.getVersion().then(eitherVersion => {
-        if (eitherVersion.isRight()) {
-          setVersion(eitherVersion.value);
-        } else {
-          console.log('Unable to retrieve Infinispan Version')
-        }
-      });
-    }
-  }, [props.isModalOpen]);
-
 
   return (
     <AboutModal
@@ -55,46 +50,70 @@ const About: React.FunctionComponent<any> = (props: {
       backgroundImageSrc={backImage}
     >
       <Stack>
-        <StackItem style={{paddingBottom: global_spacer_lg.value}}>
-          <Divider/>
+        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
+          <Divider />
         </StackItem>
-        <StackItem style={{paddingBottom: global_spacer_lg.value}}>
+        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
           <TextContent>
             <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>Version</TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{version}</TextListItem>
+              <TextListItem component={TextListItemVariants.dt}>
+                Version
+              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>
+                {version}
+              </TextListItem>
             </TextList>
           </TextContent>
         </StackItem>
         <StackItem>
-          <Divider/>
+          <Divider />
         </StackItem>
-        <StackItem style={{paddingTop: global_spacer_3xl.value}}>
+        <StackItem style={{ paddingTop: global_spacer_3xl.value }}>
           <Flex>
             <FlexItem>
-              <Button component={'a'} href={infinispanGithubLink} variant={ButtonVariant.link}>
-                <GithubIcon size={'lg'}/>
+              <Button
+                component={'a'}
+                href={infinispanGithubLink}
+                variant={ButtonVariant.link}
+              >
+                <GithubIcon size={'lg'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanZulipLink} variant={ButtonVariant.link}>
-                <OutlinedCommentsIcon size={'lg'}/>
+              <Button
+                component={'a'}
+                href={infinispanZulipLink}
+                variant={ButtonVariant.link}
+              >
+                <OutlinedCommentsIcon size={'lg'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanStackOverflowLink} variant={ButtonVariant.link}>
-                <StackOverflowIcon size={'lg'}/>
+              <Button
+                component={'a'}
+                href={infinispanStackOverflowLink}
+                variant={ButtonVariant.link}
+              >
+                <StackOverflowIcon size={'lg'} />
               </Button>
             </FlexItem>
 
             <FlexItem>
-              <Button component={'a'} href={infinispanTwitterLink} variant={ButtonVariant.link}>
-                <TwitterIcon size={'lg'}/>
+              <Button
+                component={'a'}
+                href={infinispanTwitterLink}
+                variant={ButtonVariant.link}
+              >
+                <TwitterIcon size={'lg'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanFacebookLink} variant={ButtonVariant.link}>
-                <FacebookIcon size={'lg'}/>
+              <Button
+                component={'a'}
+                href={infinispanFacebookLink}
+                variant={ButtonVariant.link}
+              >
+                <FacebookIcon size={'lg'} />
               </Button>
             </FlexItem>
           </Flex>
@@ -102,6 +121,6 @@ const About: React.FunctionComponent<any> = (props: {
       </Stack>
     </AboutModal>
   );
-}
+};
 
 export { About };
