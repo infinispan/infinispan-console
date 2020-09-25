@@ -1,7 +1,13 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import protobufService from "../../services/protobufService";
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import protobufService from '../../services/protobufService';
 
 /**
  * Delete schema modal
@@ -14,12 +20,10 @@ const DeleteSchema = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickDeleteButton = () => {
-    protobufService
-      .delete(props.schemaName)
-      .then(actionResponse => {
-        addAlert(actionResponse);
-        props.closeModal();
-      });
+    protobufService.delete(props.schemaName).then((actionResponse) => {
+      addAlert(actionResponse);
+      props.closeModal();
+    });
   };
 
   return (
@@ -40,14 +44,13 @@ const DeleteSchema = (props: {
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>
         <Text>
-          This action will permanently delete the chema{' '}
-          <strong>'{props.schemaName}'</strong> from the data container{' '}
-          <br/>
+          This action will permanently delete the schema{' '}
+          <strong>'{props.schemaName}'</strong> from the data container <br />
           <strong>Caches using this schema will be strongly affected</strong>.
           <br />
           You can always recreate the schema.
