@@ -307,7 +307,10 @@ const CacheTableDisplay = (props: {
     }
 
     return (
-      <Link key={cacheInfo.name} to={'/cache/' + cacheInfo.name}>
+      <Link
+        key={cacheInfo.name}
+        to={'/cache/' + encodeURIComponent(cacheInfo.name)}
+      >
         <Button
           key={`detail-button-${cacheInfo.name}`}
           variant={ButtonVariant.link}
