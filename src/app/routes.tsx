@@ -7,7 +7,7 @@ import { CacheManagers } from '@app/CacheManagers/CacheManagers';
 import { NotFound } from '@app/NotFound/NotFound';
 import {
   LastLocationProvider,
-  useLastLocation
+  useLastLocation,
 } from 'react-router-last-location';
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
@@ -108,7 +108,7 @@ const routes: IAppRoute[] = [
     label: 'Welcome to the server',
     path: '/welcome',
     title: 'Welcome to the server',
-    menu: false
+    menu: false,
   },
   {
     component: CacheManagers,
@@ -117,7 +117,7 @@ const routes: IAppRoute[] = [
     path: '/',
     title: 'Data Container',
     menu: true,
-    subRoutes: ['container', 'cache']
+    subRoutes: ['container', 'cache'],
   },
   {
     component: GlobalStats,
@@ -125,7 +125,7 @@ const routes: IAppRoute[] = [
     label: 'Global Statistics',
     path: '/global-stats',
     title: 'Global Statistics',
-    menu: true
+    menu: true,
   },
   {
     component: ClusterStatus,
@@ -133,7 +133,7 @@ const routes: IAppRoute[] = [
     label: 'Cluster Membership',
     path: '/cluster-membership',
     title: 'Cluster Membership',
-    menu: true
+    menu: true,
   },
   {
     component: DetailConfigurations,
@@ -141,7 +141,7 @@ const routes: IAppRoute[] = [
     label: 'Cache Manager Configurations',
     path: '/container/:cmName/configurations',
     title: 'Configurations',
-    menu: false
+    menu: false,
   },
   {
     component: CreateCache,
@@ -149,23 +149,23 @@ const routes: IAppRoute[] = [
     label: 'Caches',
     path: '/container/:cmName/caches/create',
     title: 'Caches',
-    menu: false
+    menu: false,
   },
   {
     component: IndexManagement,
     exact: true,
     label: 'Index management',
-    path: '/cache/:cmName/indexation',
+    path: '/cache/:cacheName/indexation',
     title: 'Index management',
-    menu: false
+    menu: false,
   },
   {
     component: XSiteCache,
     exact: true,
     label: 'XSite Replication Cache',
-    path: '/cache/:cmName/backups',
+    path: '/cache/:cacheName/backups',
     title: 'XSite management caches',
-    menu: false
+    menu: false,
   },
   {
     component: DetailCache,
@@ -173,13 +173,13 @@ const routes: IAppRoute[] = [
     label: 'Cache',
     path: '/cache/:cacheName',
     title: 'Cache',
-    menu: false
-  }
+    menu: false,
+  },
 ];
 
 export let user = {
   user: 'admin',
-  password: 'admin'
+  password: 'admin',
 };
 const AppRoutes = () => (
   <LastLocationProvider>

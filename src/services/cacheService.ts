@@ -22,14 +22,17 @@ class CacheService {
     cacheName: string
   ): Promise<Either<ActionResponse, DetailedInfinispanCache>> {
     return utils
-      .restCall(this.endpoint + '/caches/' + cacheName, 'GET')
-      .then(response => {
+      .restCall(
+        this.endpoint + '/caches/' + encodeURIComponent(cacheName),
+        'GET'
+      )
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data => {
+      .then((data) => {
         const cacheStats = <CacheStats>{
           enabled: data.statistics,
           misses: data.stats.misses,
@@ -54,7 +57,7 @@ class CacheService {
           average_remove_time: data.stats.average_remove_time,
           average_remove_time_nanos: data.stats.average_remove_time_nanos,
           required_minimum_number_of_nodes:
-            data.stats.required_minimum_number_of_nodes
+            data.stats.required_minimum_number_of_nodes,
         };
 
         return right(<DetailedInfinispanCache>{
@@ -71,33 +74,33 @@ class CacheService {
             persistent: data.persistent,
             transactional: data.transactional,
             secured: data.secured,
-            hasRemoteBackup: data.has_remote_backup
+            hasRemoteBackup: data.has_remote_backup,
           },
           configuration: <CacheConfig>{
             name: cacheName,
-            config: JSON.stringify(data.configuration, null, 2)
+            config: JSON.stringify(data.configuration, null, 2),
           },
-          stats: cacheStats
+          stats: cacheStats,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         const errorMessage =
           'Unable to retrieve cache detail of cache ' + cacheName;
         if (err instanceof Response) {
-          return err.text().then(errResponse => {
+          return err.text().then((errResponse) => {
             if (errResponse == '') {
               errResponse = errorMessage;
             }
             return left(<ActionResponse>{
               message: errResponse,
-              success: false
+              success: false,
             });
           });
         }
 
         return left(<ActionResponse>{
           message: err.toString() == '' ? errorMessage : err.toString(),
-          success: false
+          success: false,
         });
       });
   }
@@ -114,7 +117,11 @@ class CacheService {
     configName: string
   ): Promise<ActionResponse> {
     let createCachePromise = utils.restCall(
-      this.endpoint + '/caches/' + cacheName + '?template=' + configName,
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '?template=' +
+        encodeURIComponent(configName),
       'POST'
     );
     return this.handleCRUDActionResponse(
@@ -142,7 +149,7 @@ class CacheService {
       contentType = 'application/xml';
     }
     let createCachePromise = utils.restCallWithBody(
-      this.endpoint + '/caches/' + cacheName,
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       'POST',
       config,
       contentType
@@ -163,7 +170,7 @@ class CacheService {
    */
   public async deleteCache(cacheName: string): Promise<ActionResponse> {
     let deleteCachePromise = utils.restCall(
-      this.endpoint + '/caches/' + cacheName,
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       'DELETE'
     );
 
@@ -188,7 +195,7 @@ class CacheService {
         '/server/ignored-caches/' +
         cacheManager +
         '/' +
-        cacheName,
+        encodeURIComponent(cacheName),
       'POST'
     );
 
@@ -213,7 +220,7 @@ class CacheService {
         '/server/ignored-caches/' +
         cacheManager +
         '/' +
-        cacheName,
+        encodeURIComponent(cacheName),
       'DELETE'
     );
 
@@ -272,12 +279,15 @@ class CacheService {
       headers.append('flags', flags.join(','));
     }
 
-    let promise = fetch(this.endpoint + '/caches/' + cacheName + '/' + key, {
-      method: create ? 'POST' : 'PUT',
-      headers: headers,
-      credentials: 'include',
-      body: value
-    });
+    let promise = fetch(
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
+      {
+        method: create ? 'POST' : 'PUT',
+        headers: headers,
+        credentials: 'include',
+        body: value,
+      }
+    );
 
     let message = create
       ? 'A new entry has been added to cache '
@@ -319,10 +329,13 @@ class CacheService {
     keyContentType?: string
   ): Promise<Either<ActionResponse, CacheEntry>> {
     return utils
-      .restCall(this.endpoint + '/caches/' + cacheName + '/' + key, 'GET')
-      .then(response => {
+      .restCall(
+        this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
+        'GET'
+      )
+      .then((response) => {
         if (response.ok) {
-          return response.text().then(value => {
+          return response.text().then((value) => {
             const timeToLive = response.headers.get('timeToLiveSeconds');
             const maxIdleTimeSeconds = response.headers.get(
               'maxIdleTimeSeconds'
@@ -351,22 +364,22 @@ class CacheService {
                 ? new Date(Date.parse(expires)).toLocaleString()
                 : expires,
               cacheControl: cacheControl,
-              eTag: etag
+              eTag: etag,
             };
           });
         }
         throw response;
       })
-      .then(data => right(data))
-      .catch(err => {
+      .then((data) => right(data))
+      .catch((err) => {
         let actionResponse = <ActionResponse>{
           message: 'An error happened',
-          success: false
+          success: false,
         };
         if (err instanceof TypeError) {
           actionResponse = <ActionResponse>{
             message: err.message,
-            success: false
+            success: false,
           };
         }
         if (err instanceof Response) {
@@ -374,14 +387,14 @@ class CacheService {
             // Not Found
             actionResponse = <ActionResponse>{
               message: 'The entry key ' + key + ' does not exist',
-              success: false
+              success: false,
             };
           } else {
-            return err.text().then(errorMessage =>
+            return err.text().then((errorMessage) =>
               left(<ActionResponse>{
                 message:
                   errorMessage == '' ? 'An error happened' : errorMessage,
-                success: false
+                success: false,
               })
             );
           }
@@ -396,7 +409,7 @@ class CacheService {
    */
   public async clear(cacheName: string): Promise<ActionResponse> {
     let clearPromise = utils.restCall(
-      this.endpoint + '/caches/' + cacheName + '?action=clear',
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=clear',
       'GET'
     );
 
@@ -418,7 +431,11 @@ class CacheService {
     entryKey: string
   ): Promise<ActionResponse> {
     let deleteEntryPromise = utils.restCall(
-      this.endpoint + '/caches/' + cacheName + '/' + entryKey,
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '/' +
+        entryKey,
       'DELETE'
     );
 
@@ -476,11 +493,14 @@ class CacheService {
   public async retrieveXSites(cacheName: string): Promise<XSite[]> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/x-site/backups/',
+        this.endpoint +
+          '/caches/' +
+          encodeURIComponent(cacheName) +
+          '/x-site/backups/',
         'GET'
       )
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         let xsites: XSite[] = [];
         for (const [key, value] of Object.entries(data)) {
           xsites.push(<XSite>{ name: key, status: value });
@@ -497,15 +517,18 @@ class CacheService {
   public async retrieveConfig(cacheName: string): Promise<CacheConfig> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '?action=config',
+        this.endpoint +
+          '/caches/' +
+          encodeURIComponent(cacheName) +
+          '?action=config',
         'GET'
       )
-      .then(response => response.json())
+      .then((response) => response.json())
       .then(
-        data =>
+        (data) =>
           <CacheConfig>{
             name: cacheName,
-            config: JSON.stringify(data, null, 2)
+            config: JSON.stringify(data, null, 2),
           }
       );
   }
@@ -527,7 +550,7 @@ class CacheService {
       .restCall(
         this.endpoint +
           '/caches/' +
-          cacheName +
+          encodeURIComponent(cacheName) +
           '?action=search' +
           '&query=' +
           query +
@@ -538,46 +561,48 @@ class CacheService {
         'GET',
         'application/json;q=0.8'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json().then(
-            json =>
+            (json) =>
               <SearchResut>{
                 total: json.total_results,
-                values: json.hits.map(hit => JSON.stringify(hit.hit, null, 2))
+                values: json.hits.map((hit) =>
+                  JSON.stringify(hit.hit, null, 2)
+                ),
               }
           );
         }
         throw response;
       })
-      .then(data => right(data))
-      .catch(err => {
+      .then((data) => right(data))
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{
             message: 'Unable to query. ' + err.message,
-            success: false
+            success: false,
           });
         }
 
         if (err instanceof Response) {
           if (err.status == 400) {
-            return err.json().then(jsonError =>
+            return err.json().then((jsonError) =>
               left(<ActionResponse>{
                 message: jsonError.error.message + '\n' + jsonError.error.cause,
-                success: false
+                success: false,
               })
             );
           }
 
           return err
             .text()
-            .then(errorMessage =>
+            .then((errorMessage) =>
               left(<ActionResponse>{ message: errorMessage, success: false })
             );
         }
         return left(<ActionResponse>{
           message: 'Unable to query',
-          success: false
+          success: false,
         });
       });
   }
@@ -592,31 +617,34 @@ class CacheService {
   ): Promise<Either<ActionResponse, IndexStats>> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/search/indexes/stats',
+        this.endpoint +
+          '/caches/' +
+          encodeURIComponent(cacheName) +
+          '/search/indexes/stats',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data =>
+      .then((data) =>
         right(<IndexStats>{
           class_names: data.indexed_class_names,
           entities_count: this.mapToIndexValueArray(
             data.indexed_entities_count
           ),
           sizes: this.mapToIndexValueArray(data.index_sizes),
-          reindexing: data.reindexing
+          reindexing: data.reindexing,
         })
       )
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           if (errorMessage == '') {
             errorMessage =
               'An error happened retrieving index stats for cache ' + cacheName;
@@ -624,7 +652,7 @@ class CacheService {
 
           return left(<ActionResponse>{
             message: errorMessage,
-            success: false
+            success: false,
           });
         });
       });
@@ -638,19 +666,19 @@ class CacheService {
   public async purgeIndexes(cacheName: string): Promise<ActionResponse> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/search/indexes?action=clear',
+        this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/search/indexes?action=clear',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
             message: 'Index of cache ' + cacheName + ' purged',
-            success: true
+            success: true,
           };
         }
         throw response;
       })
-      .catch(err => {
+      .catch((err) => {
         let genericError =
           'An error happened when purging index for cache ' + cacheName;
         if (err instanceof TypeError) {
@@ -658,21 +686,21 @@ class CacheService {
         }
 
         if (err instanceof Response) {
-          return err.text().then(errorMessage => {
+          return err.text().then((errorMessage) => {
             if (errorMessage == '') {
               errorMessage = genericError;
             }
 
             return <ActionResponse>{
               message: errorMessage,
-              success: false
+              success: false,
             };
           });
         }
 
         return <ActionResponse>{
           message: genericError,
-          success: false
+          success: false,
         };
       });
   }
@@ -685,19 +713,19 @@ class CacheService {
   public async reindex(cacheName: string): Promise<ActionResponse> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/search/indexes?action=mass-index&mode=async',
+        this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/search/indexes?action=mass-index&mode=async',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
             message: 'Indexing of cache ' + cacheName + ' started',
-            success: true
+            success: true,
           };
         }
         throw response;
       })
-      .catch(err => {
+      .catch((err) => {
         let genericError =
           'An error happened when starting reindex operation for cache ' + cacheName;
         if (err instanceof TypeError) {
@@ -705,28 +733,28 @@ class CacheService {
         }
 
         if (err instanceof Response) {
-          return err.text().then(errorMessage => {
+          return err.text().then((errorMessage) => {
             if (errorMessage == '') {
               errorMessage = genericError;
             }
 
             return <ActionResponse>{
               message: errorMessage,
-              success: false
+              success: false,
             };
           });
         }
 
         return <ActionResponse>{
           message: genericError,
-          success: false
+          success: false,
         };
       });
   }
 
   private mapToIndexValueArray(data: JSON): IndexValue[] {
     return Object.keys(data).map(
-      key => <IndexValue>{ entity: key as string, count: data[key] as number }
+      (key) => <IndexValue>{ entity: key as string, count: data[key] as number }
     );
   }
 
@@ -738,13 +766,13 @@ class CacheService {
         this.endpoint + '/caches/' + cacheName + '/search/query/stats',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data =>
+      .then((data) =>
         right(<QueryStats>{
           search_query_execution_count: data.search_query_execution_count,
           search_query_total_time: data.search_query_total_time,
@@ -757,20 +785,26 @@ class CacheService {
             data.object_loading_execution_avg_time,
           objects_loaded_count: data.objects_loaded_count,
           search_query_execution_max_time_query_string:
-            data.search_query_execution_max_time_query_string
+            data.search_query_execution_max_time_query_string,
         })
       )
-      .catch(err => {
+      .catch((err) => {
         let genericError =
           'An error happened when starting reindex operation for cache ' + cacheName;
         if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
+          return left(<ActionResponse>{
+            message: err.message == '' ? genericError : err.message,
+            success: false,
+          });
         }
 
         return err
           .text()
-          .then(errorMessage =>
-            left(<ActionResponse>{ message: errorMessage, success: false })
+          .then((errorMessage) =>
+            left(<ActionResponse>{
+              message: errorMessage == '' ? genericError : errorMessage,
+              success: false,
+            })
           );
       });
   }
@@ -785,11 +819,11 @@ class CacheService {
       .restCall(
         this.endpoint +
           '/caches/' +
-          cacheName +
+          encodeURIComponent(cacheName) +
           '/search/query/stats?action=clear',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         let message = '';
         if (response.ok) {
           message = 'Query stats of cache ' + cacheName + ' have been cleared';
@@ -799,7 +833,7 @@ class CacheService {
 
         return <ActionResponse>{ message: message, success: response.ok };
       })
-      .catch(err => <ActionResponse>{ message: err.message, success: false });
+      .catch((err) => <ActionResponse>{ message: err.message, success: false });
   }
 
   private mapCacheType(config: JSON): string {

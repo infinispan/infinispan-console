@@ -24,28 +24,31 @@ class CrossSiteReplicationService {
   ): Promise<Either<ActionResponse, XSite[]>> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/x-site/backups',
+        this.endpoint +
+          '/caches/' +
+          encodeURIComponent(cacheName) +
+          '/x-site/backups',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data =>
+      .then((data) =>
         right(
           Object.keys(data).map(
-            siteName => <XSite>{ name: siteName, status: data[siteName] }
+            (siteName) => <XSite>{ name: siteName, status: data[siteName] }
           )
         )
       )
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           if (errorMessage == '') {
             errorMessage =
               'An error happened retrieving backups for cache ' + cacheName;
@@ -53,7 +56,7 @@ class CrossSiteReplicationService {
 
           return left(<ActionResponse>{
             message: errorMessage,
-            success: false
+            success: false,
           });
         });
       });
@@ -70,28 +73,32 @@ class CrossSiteReplicationService {
   ): Promise<Either<ActionResponse, SiteNode[]>> {
     return utils
       .restCall(
-        this.endpoint + '/caches/' + cacheName + '/x-site/backups/' + siteName,
+        this.endpoint +
+          '/caches/' +
+          encodeURIComponent(cacheName) +
+          '/x-site/backups/' +
+          siteName,
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data =>
+      .then((data) =>
         right(
           Object.keys(data).map(
-            nodeName => <SiteNode>{ name: nodeName, status: data[nodeName] }
+            (nodeName) => <SiteNode>{ name: nodeName, status: data[nodeName] }
           )
         )
       )
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           if (errorMessage == '') {
             errorMessage =
               'An error happened retrieving backups for cache ' +
@@ -102,7 +109,7 @@ class CrossSiteReplicationService {
 
           return left(<ActionResponse>{
             message: errorMessage,
-            success: false
+            success: false,
           });
         });
       });
@@ -120,30 +127,30 @@ class CrossSiteReplicationService {
       .restCall(
         this.endpoint +
           '/caches/' +
-          cacheName +
+          encodeURIComponent(cacheName) +
           '/x-site/backups?action=push-state-status',
         'GET'
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data =>
+      .then((data) =>
         right(
           Object.keys(data).map(
-            siteName =>
+            (siteName) =>
               <StateTransferStatus>{ site: siteName, status: data[siteName] }
           )
         )
       )
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           if (errorMessage == '') {
             errorMessage =
               'An error happened retrieving state transfer status for cache ' +
@@ -152,7 +159,7 @@ class CrossSiteReplicationService {
 
           return left(<ActionResponse>{
             message: errorMessage,
-            success: false
+            success: false,
           });
         });
       });
@@ -257,21 +264,23 @@ class CrossSiteReplicationService {
     action: string,
     actionLabel: string
   ): Promise<ActionResponse> {
-    let url =
-      this.endpoint +
-      '/caches/' +
-      cacheName +
-      '/x-site/backups/' +
-      siteName +
-      '?action=' +
-      action;
-
+    let url;
+    const encodedCacheName = encodeURIComponent(cacheName);
     if (action == 'clear-push-state-status') {
       url =
         this.endpoint +
         '/caches/' +
-        cacheName +
+        encodedCacheName +
         '/x-site/local?action=' +
+        action;
+    } else {
+      url =
+        this.endpoint +
+        '/caches/' +
+        encodedCacheName +
+        '/x-site/backups/' +
+        siteName +
+        '?action=' +
         action;
     }
     return utils
@@ -285,17 +294,17 @@ class CrossSiteReplicationService {
               ' on site ' +
               siteName +
               ' has started',
-            success: true
+            success: true,
           };
         }
         throw response;
       })
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return <ActionResponse>{ message: err.message, success: false };
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           if (errorMessage == '') {
             errorMessage =
               'An error happened during the operation ' +
@@ -306,7 +315,7 @@ class CrossSiteReplicationService {
 
           return <ActionResponse>{
             message: errorMessage,
-            success: false
+            success: false,
           };
         });
       });
