@@ -181,7 +181,6 @@ class Utils {
    * @param response
    */
   public async handleCRUDActionResponse(
-    name: string,
     successMessage: string,
     response: Promise<Response>
   ): Promise<ActionResponse> {

@@ -1,8 +1,7 @@
 import React from 'react';
-import {Button, Modal, Text, TextContent} from '@patternfly/react-core';
+import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 /**
  * Reindex modal
@@ -13,15 +12,12 @@ const Reindex = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { pushActivity } = useRecentActivity();
 
   const onClickPurgeButton = () => {
-    cacheService
-      .reindex(props.cacheName)
-      .then(actionResponse => {
-        props.closeModal();
-        addAlert(actionResponse);
-      });
+    cacheService.reindex(props.cacheName).then((actionResponse) => {
+      props.closeModal();
+      addAlert(actionResponse);
+    });
   };
 
   return (
@@ -33,15 +29,12 @@ const Reindex = (props: {
       onClose={props.closeModal}
       aria-label="Reindex modal"
       actions={[
-        <Button
-          key="reindex"
-          onClick={onClickPurgeButton}
-        >
+        <Button key="reindex" onClick={onClickPurgeButton}>
           Reindex
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>

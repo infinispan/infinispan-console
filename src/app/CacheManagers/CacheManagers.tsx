@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import dataContainerService from '@services/dataContainerService';
 import {
   Card,
@@ -15,20 +15,18 @@ import {
   Spinner,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
-import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
-import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
-import {ProtobufSchemasDisplay} from "@app/ProtoSchema/ProtobufSchemasDisplay";
-import {Status} from '@app/Common/Status';
-import {global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {TableErrorState} from '@app/Common/TableErrorState';
+import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
+import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
+import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay';
+import { Status } from '@app/Common/Status';
+import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import { TableErrorState } from '@app/Common/TableErrorState';
 
 const CacheManagers = () => {
-  const { addAlert } = useApiAlert();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
   const [cmName, setCacheManagerName] = useState<undefined | string>();
@@ -41,10 +39,12 @@ const CacheManagers = () => {
   const [showCaches, setShowCaches] = useState(false);
   const [showCounters, setShowCounters] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
-  const [showSerializationContext, setShowSerializationContext] = useState(false);
+  const [showSerializationContext, setShowSerializationContext] = useState(
+    false
+  );
 
   useEffect(() => {
-    dataContainerService.getDefaultCacheManager().then(eitherCm => {
+    dataContainerService.getDefaultCacheManager().then((eitherCm) => {
       if (eitherCm.isRight()) {
         const cmName = eitherCm.value.name;
         setCacheManagerName(cmName);
@@ -57,7 +57,7 @@ const CacheManagers = () => {
     });
   }, []);
 
-  const handleTabClick = nav => {
+  const handleTabClick = (nav) => {
     let tabIndex = nav.itemId;
     setActiveTabKey(tabIndex);
     setShowCaches(tabIndex == '0');
@@ -77,21 +77,32 @@ const CacheManagers = () => {
       return '';
     }
 
-    const tabs:ContainerTab[] = [
-      {name: 'Caches', count: cachesCount, key: '0'},
-      {name: 'Counters', count: countersCount, key: '1'},
-      {name: 'Tasks', count: tasksCount, key: '2'},
-      {name: 'Protobuf Schemas', count: protoSchemasCount, key : '3'}
+    const tabs: ContainerTab[] = [
+      { name: 'Caches', count: cachesCount, key: '0' },
+      { name: 'Counters', count: countersCount, key: '1' },
+      { name: 'Tasks', count: tasksCount, key: '2' },
+      { name: 'Protobuf Schemas', count: protoSchemasCount, key: '3' },
     ];
 
     return (
-      <Nav onSelect={handleTabClick} variant={'tertiary'} style={{marginTop: global_spacer_md.value}}>
+      <Nav
+        onSelect={handleTabClick}
+        variant={'tertiary'}
+        style={{ marginTop: global_spacer_md.value }}
+      >
         <NavList>
-        {tabs.map(tab =>
-          <NavItem key={'nav-item-' + tab.key} itemId={tab.key} isActive={activeTabKey === tab.key}>
-            <strong style={{marginRight: global_spacer_sm.value}}>{tab.count}</strong> {tab.name}
-          </NavItem>
-        )}
+          {tabs.map((tab) => (
+            <NavItem
+              key={'nav-item-' + tab.key}
+              itemId={tab.key}
+              isActive={activeTabKey === tab.key}
+            >
+              <strong style={{ marginRight: global_spacer_sm.value }}>
+                {tab.count}
+              </strong>{' '}
+              {tab.name}
+            </NavItem>
+          ))}
         </NavList>
       </Nav>
     );
@@ -152,19 +163,17 @@ const CacheManagers = () => {
   };
 
   const buildSiteDisplay = (siteName: string | undefined) => {
-    if(!siteName || siteName == '') {
+    if (!siteName || siteName == '') {
       return '';
     }
 
     return (
       <React.Fragment>
         <Divider isVertical />
-        <FlexItem>
-          {'Site: ' + siteName}
-        </FlexItem>
+        <FlexItem>{'Site: ' + siteName}</FlexItem>
       </React.Fragment>
     );
-  }
+  };
 
   const buildHeader = () => {
     let title = 'Data container';
@@ -187,27 +196,29 @@ const CacheManagers = () => {
     status = cm.cache_manager_status;
 
     return (
-      <PageSection variant={PageSectionVariants.light} style={{paddingBottom: 0}}>
+      <PageSection
+        variant={PageSectionVariants.light}
+        style={{ paddingBottom: 0 }}
+      >
         <Flex id="cluster-manager-header" direction={{ default: 'column' }}>
           <Flex>
             <FlexItem>
               <TextContent>
-                <Text component={TextVariants.h1}>
-                  {title}
-                </Text>
+                <Text component={TextVariants.h1}>{title}</Text>
               </TextContent>
             </FlexItem>
           </Flex>
           <Flex>
-            <FlexItem><Status status={status} /></FlexItem>
+            <FlexItem>
+              <Status status={status} />
+            </FlexItem>
             {buildSiteDisplay(cm.local_site)}
           </Flex>
         </Flex>
         {buildTabs()}
       </PageSection>
-
     );
-  }
+  };
 
   return (
     <React.Fragment>
