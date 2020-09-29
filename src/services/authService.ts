@@ -1,5 +1,6 @@
 import utils from './utils';
 import { Either, left, right } from './either';
+import * as DigestFetch from 'digest-fetch';
 
 /**
  * Authentication Service calls Infinispan endpoints related to Authentication
@@ -19,6 +20,37 @@ class AuthenticationService {
    */
   public httpLoginUrl(): string {
     return this.endpoint;
+  }
+
+  public login(username: string, password: string): Promise<ActionResponse> {
+    const client = new DigestFetch(username, password);
+    return client
+      .fetch(this.endpoint)
+      .then((response) => {
+        if (response.ok) {
+          localStorage.setItem('username', username);
+          localStorage.setItem('password', password);
+          return <ActionResponse>{
+            success: true,
+            message: username + ' logged in',
+          };
+        }
+        if (response.status == 401) {
+          return <ActionResponse>{
+            success: false,
+            message: username + ' not authorized',
+          };
+        }
+
+        throw response;
+      })
+      .catch((err) => {
+        console.error(err);
+        return <ActionResponse>{
+          success: false,
+          message: 'Unexpected error. Check the logs',
+        };
+      });
   }
 
   /**

@@ -4,6 +4,7 @@
  * @author Katia Aresti
  */
 import { KeycloakService } from './keycloakService';
+import * as DigestFetch from 'digest-fetch';
 
 export enum ComponentStatus {
   STOPPING = 'STOPPING',
@@ -114,13 +115,24 @@ class Utils {
     url: string,
     method: string,
     body: string,
-    contentType?: string
+    contentType?: string,
+    customHeaders?: Headers
   ): Promise<Response> {
-    let headers = this.createAuthenticatedHeader();
-    if (contentType) {
-      headers.append('Content-Type', contentType);
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+    const client = new DigestFetch(username, password);
+
+    let headers;
+    if (customHeaders != undefined) {
+      headers = this.createAuthenticatedHeader();
+      if (contentType) {
+        headers.append('Content-Type', contentType);
+      }
+    } else {
+      headers = customHeaders;
     }
-    return fetch(url, {
+
+    return client.fetch(url, {
       method: method,
       headers: headers,
       credentials: 'include',
@@ -137,15 +149,25 @@ class Utils {
   public restCall(
     url: string,
     method: string,
-    accept?: string
+    accept?: string,
+    customHeaders?: Headers
   ): Promise<Response> {
-    let headers = this.createAuthenticatedHeader();
-    if (accept && accept.length > 0) {
-      headers.append('Accept', accept);
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+    const client = new DigestFetch(username, password);
+
+    let headers;
+    if (customHeaders != undefined) {
+      headers = this.createAuthenticatedHeader();
+      if (accept && accept.length > 0) {
+        headers.append('Accept', accept);
+      }
+    } else {
+      headers = customHeaders;
     }
-    return fetch(url, {
+
+    return client.fetch(url, {
       method: method,
-      credentials: 'include',
       headers: headers,
     });
   }

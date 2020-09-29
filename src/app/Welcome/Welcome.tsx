@@ -24,10 +24,12 @@ import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
+import { LoginForm } from '@app/Welcome/LoginForm';
 
 const Welcome = (props) => {
   const authState = props.init;
   const { t } = useTranslation();
+  const [logModalOpen, setLogModalOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const brandname = t('brandname.brandname');
 
@@ -110,11 +112,23 @@ const Welcome = (props) => {
       return <Spinner size={'sm'} />;
     }
 
-    if (authState == 'READY' || authState == 'SERVER_ERROR') {
+    if (authState == 'SERVER_ERROR') {
       return (
         <Button
           href={utils.landing()}
           component={'a'}
+          style={{ backgroundColor: chart_color_blue_500.value }}
+        >
+          {goToTheConsole}
+        </Button>
+      );
+    }
+
+    if (authState == 'READY') {
+      return (
+        <Button
+          onClick={() => setLogModalOpen(true)}
+          component={'button'}
           style={{ backgroundColor: chart_color_blue_500.value }}
         >
           {goToTheConsole}
@@ -149,6 +163,10 @@ const Welcome = (props) => {
       <Support
         isModalOpen={supportOpen}
         closeModal={() => window.location.reload()}
+      />
+      <LoginForm
+        isModalOpen={logModalOpen}
+        closeModal={() => setLogModalOpen(false)}
       />
       <LoginPage
         footerListVariants={ListVariant.inline}

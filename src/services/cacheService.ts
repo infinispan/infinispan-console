@@ -260,11 +260,12 @@ class CacheService {
       );
     }
 
-    if (valueContentType) {
-      headers.append('Content-Type', utils.fromContentType(valueContentType));
-    } else if (utils.isJSONObject(value)) {
-      headers.append('Content-Type', utils.fromContentType(ContentType.JSON));
+    let contentType = valueContentType;
+    if (!contentType && utils.isJSONObject(value)) {
+      contentType = ValueContentType.JSON;
     }
+
+    headers.append('Content-Type', contentType);
 
     if (timeToLive.length > 0) {
       headers.append('timeToLiveSeconds', timeToLive);
@@ -276,14 +277,12 @@ class CacheService {
       headers.append('flags', flags.join(','));
     }
 
-    let promise = fetch(
+    let promise = utils.restCallWithBody(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
-      {
-        method: create ? 'POST' : 'PUT',
-        headers: headers,
-        credentials: 'include',
-        body: value,
-      }
+      create ? 'POST' : 'PUT',
+      value,
+      contentType,
+      headers
     );
 
     let message = create
