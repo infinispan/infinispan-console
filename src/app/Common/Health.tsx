@@ -6,24 +6,30 @@ import {
   TextVariants,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import displayUtils from '../../services/displayUtils';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 
-const Health = (props: { health: string }) => {
+const Health = (props: { health: string; displayIcon?: boolean }) => {
+  const displayIcon = props.displayIcon == undefined ? true : props.displayIcon;
+
   return (
     <Toolbar>
       <ToolbarGroup>
-        <ToolbarItem
-          style={{
-            paddingRight: global_spacer_sm.value,
-            color: displayUtils.healthColor(props.health, true)
-          }}
-        >
-          <AlertIcon variant={displayUtils.healthAlertVariant(props.health)} />
-        </ToolbarItem>
+        {displayIcon && (
+          <ToolbarItem
+            style={{
+              paddingRight: global_spacer_sm.value,
+              color: displayUtils.healthColor(props.health, true),
+            }}
+          >
+            <AlertIcon
+              variant={displayUtils.healthAlertVariant(props.health)}
+            />
+          </ToolbarItem>
+        )}
         <ToolbarItem>
           <TextContent>
             <Text

@@ -13,7 +13,7 @@ import {
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
-  global_warning_color_100
+  global_warning_color_100,
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
 
@@ -125,6 +125,9 @@ class DisplayUtils {
     }
 
     if (!isIcon) {
+      if (health == 'FAILED' || health == 'DEGRADED') {
+        return global_danger_color_100.value;
+      }
       return chart_global_label_Fill.value;
     }
 
@@ -136,6 +139,7 @@ class DisplayUtils {
       case 'HEALTHY_REBALANCING':
         color = global_warning_color_100.value;
         break;
+      case 'FAILED':
       case 'DEGRADED':
         color = global_danger_color_100.value;
         break;
@@ -163,6 +167,9 @@ class DisplayUtils {
       case 'HEALTHY_REBALANCING':
         label = 'Rebalancing';
         break;
+      case 'FAILED':
+        label = 'Failed';
+        break;
       case 'DEGRADED':
         label = 'Degraded';
         break;
@@ -186,6 +193,7 @@ class DisplayUtils {
       case 'HEALTHY_REBALANCING':
         variant = AlertVariant.warning;
         break;
+      case 'FAILED':
       case 'DEGRADED':
         variant = AlertVariant.danger;
         break;

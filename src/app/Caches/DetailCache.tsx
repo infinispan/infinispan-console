@@ -2,9 +2,10 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
   Badge,
-  Bullseye,
   Button,
   ButtonVariant,
+  Card,
+  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -61,19 +62,21 @@ const DetailCache = (props) => {
   }, []);
 
   const loadCacheDetail = () => {
-    cacheService.retrieveFullDetail(cacheName).then((eitherDetail) => {
-      setLoading(false);
-      if (eitherDetail.isRight()) {
-        setDetail(eitherDetail.value);
-        if (eitherDetail.value.features.hasRemoteBackup) {
-          cacheService.retrieveXSites(cacheName).then((xsites) => {
-            setXSite(xsites);
-          });
+    cacheService
+      .retrieveFullDetail(cacheName)
+      .then((eitherDetail) => {
+        if (eitherDetail.isRight()) {
+          setDetail(eitherDetail.value);
+          if (eitherDetail.value.features.hasRemoteBackup) {
+            cacheService.retrieveXSites(cacheName).then((xsites) => {
+              setXSite(xsites);
+            });
+          }
+        } else {
+          setError(eitherDetail.value.message);
         }
-      } else {
-        setError(eitherDetail.value.message);
-      }
-    });
+      })
+      .then(() => setLoading(false));
   };
 
   const buildEntriesTabContent = () => {
@@ -123,22 +126,31 @@ const DetailCache = (props) => {
 
   const buildDetailContent = () => {
     if (loading) {
-      return <Spinner size="xl" />;
+      return (
+        <Card>
+          <CardBody>
+            <Spinner size="xl" />
+          </CardBody>
+        </Card>
+      );
     }
+
     if (error.length > 0) {
       return (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.small}>
-            <EmptyStateIcon
-              icon={ExclamationCircleIcon}
-              color={global_danger_color_200.value}
-            />
-            <Title headingLevel="h2" size="lg">
-              Error retrieving cache {cacheName}
-            </Title>
-            <EmptyStateBody>{error}</EmptyStateBody>
-          </EmptyState>
-        </Bullseye>
+        <Card>
+          <CardBody>
+            <EmptyState variant={EmptyStateVariant.small}>
+              <EmptyStateIcon
+                icon={ExclamationCircleIcon}
+                color={global_danger_color_200.value}
+              />
+              <Title headingLevel="h2" size="lg">
+                Error retrieving cache {cacheName}
+              </Title>
+              <EmptyStateBody>{error}</EmptyStateBody>
+            </EmptyState>
+          </CardBody>
+        </Card>
       );
     }
 
@@ -304,19 +316,37 @@ const DetailCache = (props) => {
   const buildCacheHeader = () => {
     if (!detail && loading) {
       return (
-        <TextContent>
-          <Text component={TextVariants.h1}>
-            Loading cache {cacheName} ...{' '}
-          </Text>
-        </TextContent>
+        <Toolbar id="cache-detail-header">
+          <ToolbarGroup>
+            <ToolbarContent style={{ paddingLeft: 0 }}>
+              <ToolbarItem>
+                <TextContent>
+                  <Text component={TextVariants.h1}>
+                    Loading cache {cacheName} ...{' '}
+                  </Text>
+                </TextContent>
+              </ToolbarItem>
+            </ToolbarContent>
+          </ToolbarGroup>
+        </Toolbar>
       );
     }
 
     if (!detail) {
       return (
-        <TextContent>
-          <Text component={TextVariants.h1}>Error loading {cacheName} </Text>
-        </TextContent>
+        <Toolbar id="cache-detail-header">
+          <ToolbarGroup>
+            <ToolbarContent style={{ paddingLeft: 0 }}>
+              <ToolbarItem>
+                <TextContent>
+                  <Text component={TextVariants.h1}>
+                    Error loading {cacheName}{' '}
+                  </Text>
+                </TextContent>
+              </ToolbarItem>
+            </ToolbarContent>
+          </ToolbarGroup>
+        </Toolbar>
       );
     }
 
