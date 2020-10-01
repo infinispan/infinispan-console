@@ -56,10 +56,6 @@ const App = () => {
   }, []);
 
   const load = () => {
-    if (init == 'PENDING' || (!utils.isWelcomePage() && init == 'LOGIN')) {
-      return <span />;
-    }
-
     return (
       <Router basename="/console">
         <AppLayout>

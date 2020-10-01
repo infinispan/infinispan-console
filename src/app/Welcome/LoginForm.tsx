@@ -2,13 +2,16 @@ import {
   Alert,
   AlertVariant,
   Button,
+  ButtonVariant,
   Form,
+  FormGroup,
   Modal,
   Stack,
   StackItem,
   Text,
   TextContent,
   TextInput,
+  TextInputTypes,
   TextVariants,
 } from '@patternfly/react-core';
 import { UserIcon } from '@patternfly/react-icons';
@@ -19,11 +22,9 @@ import {
 } from '@patternfly/react-tokens';
 import * as React from 'react';
 import authenticationService from '@services/authService';
-import { useHistory } from 'react-router';
 import { useState } from 'react';
 
 const LoginForm = (props: { isModalOpen: boolean; closeModal: () => void }) => {
-  let history = useHistory();
   const [error, setError] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -67,33 +68,53 @@ const LoginForm = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       onClose={props.closeModal}
       aria-label="Log to Infinispan dialog"
       actions={[
-        <Button aria-label={'Login'} key="login" onClick={loginWithBasicAuth}>
-          Login
+        <Button
+          aria-label={'Login'}
+          key="login"
+          onClick={loginWithBasicAuth}
+          variant={ButtonVariant.secondary}
+        >
+          Log in
+        </Button>,
+        <Button aria-label={'Cancel'} key="login" onClick={props.closeModal}>
+          Cancel
         </Button>,
       ]}
     >
       {error != '' && (
         <Alert title={error} variant={AlertVariant.danger} isInline={true} />
       )}
-      <Form>
-        <TextInput
+      <Form isHorizontal>
+        <FormGroup
+          label="User name"
           isRequired
-          type="text"
-          id="simple-form-name"
-          name="value1"
-          aria-describedby="simple-form-name-helper"
-          value={name}
-          onChange={setName}
-        />
-        <TextInput
+          fieldId="username-field"
+          helperText="Please provide the user name"
+        >
+          <TextInput
+            value={name}
+            isRequired
+            type={TextInputTypes.text}
+            aria-label="User name"
+            aria-describedby="username-field-helper"
+            onChange={setName}
+          />
+        </FormGroup>
+        <FormGroup
+          label="Password"
           isRequired
-          type="text"
-          id="simple-form-name"
-          name="value2"
-          aria-describedby="simple-form-name-helper"
-          value={password}
-          onChange={setPassword}
-        />
+          fieldId="password-field"
+          helperText="Please provide the user name"
+        >
+          <TextInput
+            value={password}
+            isRequired
+            type={TextInputTypes.password}
+            aria-label="Password"
+            aria-describedby="password-field-helper"
+            onChange={setPassword}
+          />
+        </FormGroup>
       </Form>
     </Modal>
   );
