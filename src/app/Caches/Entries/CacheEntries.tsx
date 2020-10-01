@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Bullseye,
   Button,
@@ -11,25 +11,30 @@ import {
   Title,
   Toolbar,
   ToolbarContent,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
-import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
+import { SearchIcon } from '@patternfly/react-icons';
+import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
 import cacheService from '@services/cacheService';
-import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
-import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
-import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+} from '@patternfly/react-table';
+import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
+import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import displayUtils from "../../../services/displayUtils";
+import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import displayUtils from '@services/displayUtils';
 
 const CacheEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
-  load: () => void
+  load: () => void;
 }) => {
   const [
     isCreateOrUpdateEntryFormOpen,
-    setCreateOrUpdateEntryFormOpen
+    setCreateOrUpdateEntryFormOpen,
   ] = useState<boolean>(false);
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
     false
@@ -45,24 +50,24 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     {
       title: 'Edit',
       onClick: (event, rowId, rowData, extra) =>
-        onClickEditEntryButton(rowData.cells[0].title)
+        onClickEditEntryButton(rowData.cells[0].title),
     },
     {
       title: 'Delete',
       onClick: (event, rowId, rowData, extra) =>
-        onClickDeleteEntryButton(rowData.cells[0].title)
-    }
+        onClickDeleteEntryButton(rowData.cells[0].title),
+    },
   ];
 
   const columns = [
     { title: 'Key' },
     { title: 'Value' },
-    { title: 'Time to live'},
-    { title: 'Max idle'},
+    { title: 'Time to live' },
+    { title: 'Max idle' },
     { title: 'Expires' },
     { title: 'Created' },
     { title: 'Last used' },
-    { title: 'Last modified' }
+    { title: 'Last modified' },
   ];
   const updateRows = (entries: CacheEntry[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
@@ -83,14 +88,14 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
                     </Title>
                   </EmptyState>
                 </Bullseye>
-              )
-            }
-          ]
-        }
+              ),
+            },
+          ],
+        },
       ];
       setActions([]);
     } else {
-      rows = entries.map(entry => {
+      rows = entries.map((entry) => {
         return {
           heightAuto: true,
           cells: [
@@ -101,8 +106,8 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
             { title: entry.expires ? entry.expires : 'Never' },
             { title: entry.created },
             { title: entry.lastUsed },
-            { title: entry.lastModified }
-          ]
+            { title: entry.lastModified },
+          ],
         };
       });
       setActions(entryActions);
@@ -112,12 +117,15 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
 
   const displayValue = (value: string) => {
     return (
-          <SyntaxHighlighter wrapLines={false} style={githubGist}
-                             useInlineStyles={true}>
-            {displayUtils.displayValue(value)}
-          </SyntaxHighlighter>
+      <SyntaxHighlighter
+        wrapLines={false}
+        style={githubGist}
+        useInlineStyles={true}
+      >
+        {displayUtils.displayValue(value)}
+      </SyntaxHighlighter>
     );
-  }
+  };
 
   const onClickAddEntryButton = () => {
     setKeyToEdit('');
@@ -158,7 +166,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     props.load();
   };
 
-  const onChangeKeySearch = value => {
+  const onChangeKeySearch = (value) => {
     if (value.length == 0) {
       setRows([]);
     }
@@ -170,7 +178,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
       return;
     }
 
-    cacheService.getEntry(props.cacheName, keyToSearch).then(response => {
+    cacheService.getEntry(props.cacheName, keyToSearch).then((response) => {
       if (response.isRight()) {
         updateRows([response.value]);
       } else {
@@ -179,7 +187,7 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     });
   };
 
-  const searchEntryOnKeyPress = event => {
+  const searchEntryOnKeyPress = (event) => {
     if (event.key === 'Enter') {
       searchEntryByKey();
     }
@@ -187,76 +195,76 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
 
   return (
     <React.Fragment>
-          <Toolbar id="cache-entries-toolbar" style={{paddingLeft: 0}}>
-            <ToolbarContent>
-              <ToolbarItem>
-                <InputGroup>
-                  <TextInput
-                    name="textSearchByKey"
-                    id="textSearchByKey"
-                    type="search"
-                    aria-label="search by key textfield"
-                    placeholder={'Get by key'}
-                    size={50}
-                    onChange={onChangeKeySearch}
-                    onKeyPress={searchEntryOnKeyPress}
-                  />
-                  <Button
-                    variant="control"
-                    aria-label="search button for search input"
-                    onClick={searchEntryByKey}
-                  >
-                    <SearchIcon />
-                  </Button>
-                </InputGroup>
-              </ToolbarItem>
-              <ToolbarItem>
-                <Button
-                  key="add-entry-button"
-                  variant={ButtonVariant.primary}
-                  onClick={onClickAddEntryButton}
-                >
-                  Add entry
-                </Button>
-              </ToolbarItem>
-              <ToolbarItem>
-                <Button
-                  variant={ButtonVariant.link}
-                  onClick={onClickClearAllButton}
-                >
-                  Clear all entries
-                </Button>
-              </ToolbarItem>
-            </ToolbarContent>
-          </Toolbar>
-          <CreateOrUpdateEntryForm
-            cacheName={props.cacheName}
-            keyToEdit={keyToEdit}
-            isModalOpen={isCreateOrUpdateEntryFormOpen}
-            closeModal={closeCreateOrEditEntryFormModal}
-          />
-          <DeleteEntry
-            cacheName={props.cacheName}
-            entryKey={keyToDelete}
-            isModalOpen={isDeleteEntryModalOpen}
-            closeModal={closeDeleteEntryModal}
-          />
-          <ClearAllEntries
-            cacheName={props.cacheName}
-            isModalOpen={isClearAllModalOpen}
-            closeModal={closeClearAllEntryModal}
-          />
-            <Table
-              variant={TableVariant.compact}
-              aria-label="Entries"
-              cells={columns}
-              rows={rows}
-              actions={actions}
-              className={'entries-table'}
+      <Toolbar id="cache-entries-toolbar" style={{ paddingLeft: 0 }}>
+        <ToolbarContent>
+          <ToolbarItem>
+            <InputGroup>
+              <TextInput
+                name="textSearchByKey"
+                id="textSearchByKey"
+                type="search"
+                aria-label="search by key textfield"
+                placeholder={'Get by key'}
+                size={50}
+                onChange={onChangeKeySearch}
+                onKeyPress={searchEntryOnKeyPress}
+              />
+              <Button
+                variant="control"
+                aria-label="search button for search input"
+                onClick={searchEntryByKey}
+              >
+                <SearchIcon />
+              </Button>
+            </InputGroup>
+          </ToolbarItem>
+          <ToolbarItem>
+            <Button
+              key="add-entry-button"
+              variant={ButtonVariant.primary}
+              onClick={onClickAddEntryButton}
             >
-              <TableHeader />
-              <TableBody />
-            </Table>
+              Add entry
+            </Button>
+          </ToolbarItem>
+          <ToolbarItem>
+            <Button
+              variant={ButtonVariant.link}
+              onClick={onClickClearAllButton}
+            >
+              Clear all entries
+            </Button>
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+      <CreateOrUpdateEntryForm
+        cacheName={props.cacheName}
+        keyToEdit={keyToEdit}
+        isModalOpen={isCreateOrUpdateEntryFormOpen}
+        closeModal={closeCreateOrEditEntryFormModal}
+      />
+      <DeleteEntry
+        cacheName={props.cacheName}
+        entryKey={keyToDelete}
+        isModalOpen={isDeleteEntryModalOpen}
+        closeModal={closeDeleteEntryModal}
+      />
+      <ClearAllEntries
+        cacheName={props.cacheName}
+        isModalOpen={isClearAllModalOpen}
+        closeModal={closeClearAllEntryModal}
+      />
+      <Table
+        variant={TableVariant.compact}
+        aria-label="Entries"
+        cells={columns}
+        rows={rows}
+        actions={actions}
+        className={'entries-table'}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
     </React.Fragment>
   );
 };

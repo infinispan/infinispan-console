@@ -101,6 +101,12 @@ class DisplayUtils {
     }
 
     if (!isIcon) {
+      if (
+        health == ComponentHealth.FAILED ||
+        health == ComponentHealth.DEGRADED
+      ) {
+        return global_danger_color_100.value;
+      }
       return chart_global_label_Fill.value;
     }
 
@@ -112,6 +118,7 @@ class DisplayUtils {
       case ComponentHealth.HEALTHY_REBALANCING:
         color = global_warning_color_100.value;
         break;
+      case ComponentHealth.FAILED:
       case ComponentHealth.DEGRADED:
         color = global_danger_color_100.value;
         break;
@@ -142,6 +149,9 @@ class DisplayUtils {
       case ComponentHealth.DEGRADED:
         label = 'Degraded';
         break;
+      case ComponentHealth.FAILED:
+        label = 'Failed';
+        break;
       default:
         label = 'Unknown';
     }
@@ -154,7 +164,7 @@ class DisplayUtils {
    */
   public healthAlertVariant(health: ComponentHealth | undefined): AlertVariant {
     if (health == undefined) {
-      return AlertVariant.warning;
+      return AlertVariant.default;
     }
 
     let variant;
@@ -166,6 +176,7 @@ class DisplayUtils {
       case ComponentHealth.HEALTHY_REBALANCING:
         variant = AlertVariant.warning;
         break;
+      case ComponentHealth.FAILED:
       case ComponentHealth.DEGRADED:
         variant = AlertVariant.danger;
         break;

@@ -1,13 +1,18 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Badge,
   Bullseye,
   Button,
   ButtonVariant,
+  Card,
+  CardActions,
+  CardBody,
+  CardFooter,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
+  EmptyStatePrimary,
   EmptyStateVariant,
   PageSection,
   PageSectionVariants,
@@ -26,7 +31,6 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import displayUtils from '@services/displayUtils';
 import { CacheMetrics } from '@app/Caches/CacheMetrics';
 import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
@@ -43,38 +47,23 @@ import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { RecentActivityTable } from '@app/Caches/RecentActivityTable';
 import { Link } from 'react-router-dom';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import { fetchCache } from '@app/services/cachesHook';
 
 const DetailCache = (props) => {
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { loading, cache, error } = fetchCache(cacheName);
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
-  const [error, setError] = useState<string>('');
-  const [detail, setDetail] = useState<DetailedInfinispanCache | undefined>(
-    undefined
-  );
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
-  useEffect(() => {
-    loadCacheDetail();
-  }, []);
-
-  const loadCacheDetail = () => {
-    cacheService.retrieveFullDetail(cacheName).then((eitherDetail) => {
-      setLoading(false);
-      if (eitherDetail.isRight()) {
-        setDetail(eitherDetail.value);
-      } else {
-        setError(eitherDetail.value.message);
-      }
-    });
-  };
-
   const buildEntriesTabContent = () => {
-    if (!detail?.queryable) {
+    if (!cache?.queryable) {
       return (
         <React.Fragment>
-          <CacheEntries cacheName={cacheName} load={loadCacheDetail} />
+          <CacheEntries
+            cacheName={cacheName}
+            load={() => fetchCache(cacheName)}
+          />
           <RecentActivityTable cacheName={cacheName} />
         </React.Fragment>
       );
@@ -91,7 +80,10 @@ const DetailCache = (props) => {
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
         <Tab eventKey={10} title={<TabTitleText>Manage Entries</TabTitleText>}>
-          <CacheEntries cacheName={cacheName} load={loadCacheDetail} />
+          <CacheEntries
+            cacheName={cacheName}
+            load={() => fetchCache(cacheName)}
+          />
           <RecentActivityTable cacheName={cacheName} />
         </Tab>
         <Tab
@@ -107,7 +99,7 @@ const DetailCache = (props) => {
         >
           <QueryEntries
             cacheName={cacheName}
-            indexed={detail?.features.indexed}
+            indexed={cache?.features.indexed}
             changeTab={() => setActiveTabKey1(2)}
           />
         </Tab>
@@ -117,22 +109,39 @@ const DetailCache = (props) => {
 
   const buildDetailContent = () => {
     if (loading) {
-      return <Spinner size="xl" />;
+      return (
+        <Card>
+          <CardBody>
+            <Spinner size="xl" />
+          </CardBody>
+        </Card>
+      );
     }
     if (error.length > 0) {
       return (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.small}>
-            <EmptyStateIcon
-              icon={ExclamationCircleIcon}
-              color={global_danger_color_200.value}
-            />
-            <Title headingLevel="h2" size="lg">
-              Error retrieving cache {cacheName}
-            </Title>
-            <EmptyStateBody>{error}</EmptyStateBody>
-          </EmptyState>
-        </Bullseye>
+        <Card>
+          <CardBody>
+            <EmptyState variant={EmptyStateVariant.small}>
+              <EmptyStateIcon
+                icon={ExclamationCircleIcon}
+                color={global_danger_color_200.value}
+              />
+              <Title headingLevel="h2" size="lg">
+                Error retrieving cache {cacheName}
+              </Title>
+              <EmptyStateBody>{error}</EmptyStateBody>
+              <EmptyStatePrimary>
+                <Link
+                  to={{
+                    pathname: '/',
+                  }}
+                >
+                  <Button variant={ButtonVariant.secondary}>Back</Button>
+                </Link>
+              </EmptyStatePrimary>
+            </EmptyState>
+          </CardBody>
+        </Card>
       );
     }
 
@@ -140,7 +149,7 @@ const DetailCache = (props) => {
       <React.Fragment>
         {activeTabKey1 == 0 ? buildEntriesTabContent() : ''}
         {activeTabKey1 == 1 ? (
-          <CacheConfiguration config={detail?.configuration} />
+          <CacheConfiguration config={cache?.configuration} />
         ) : (
           ''
         )}
@@ -154,7 +163,7 @@ const DetailCache = (props) => {
   };
 
   const buildRebalancing = () => {
-    if (!detail?.rehash_in_progress) {
+    if (!cache?.rehash_in_progress) {
       return (
         <ToolbarItem>
           <Badge isRead>Rebalanced</Badge>
@@ -169,7 +178,7 @@ const DetailCache = (props) => {
   };
 
   const buildBackupsManage = () => {
-    if (!detail?.features.hasRemoteBackup) return;
+    if (!cache?.features.hasRemoteBackup) return;
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
@@ -189,8 +198,8 @@ const DetailCache = (props) => {
     );
   };
 
-  const buildDisplayRedindexing = () => {
-    if (!detail?.indexing_in_progress) {
+  const buildDisplayReindexing = () => {
+    if (!cache?.indexing_in_progress) {
       return;
     }
 
@@ -207,11 +216,11 @@ const DetailCache = (props) => {
   };
 
   const buildIndexManage = () => {
-    if (!detail?.features.indexed) return;
+    if (!cache?.features.indexed) return;
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-        {buildDisplayRedindexing()}
+        {buildDisplayReindexing()}
         <ToolbarItem>
           <Link
             to={{
@@ -226,17 +235,17 @@ const DetailCache = (props) => {
   };
 
   const buildShowMoreHeader = () => {
-    if (!detail) {
+    if (!cache) {
       return '';
     }
 
     if (
-      detail.features.indexed ||
-      detail.features.hasRemoteBackup ||
-      detail.features.secured ||
-      detail.features.persistent ||
-      detail.features.transactional ||
-      detail.features.bounded
+      cache.features.indexed ||
+      cache.features.hasRemoteBackup ||
+      cache.features.secured ||
+      cache.features.persistent ||
+      cache.features.transactional ||
+      cache.features.bounded
     ) {
       if (displayShowMore) {
         return (
@@ -271,7 +280,7 @@ const DetailCache = (props) => {
   };
 
   const buildShowMorePanel = () => {
-    if (!displayShowMore || !detail) {
+    if (!displayShowMore || !cache) {
       return '';
     }
 
@@ -281,7 +290,7 @@ const DetailCache = (props) => {
           <ToolbarItem>
             <TextContent>
               <Text component={TextVariants.h3}>
-                {displayUtils.createFeaturesString(detail.features)}
+                {displayUtils.createFeaturesString(cache.features)}
               </Text>
             </TextContent>
           </ToolbarItem>
@@ -296,21 +305,39 @@ const DetailCache = (props) => {
   };
 
   const buildCacheHeader = () => {
-    if (!detail && loading) {
+    if (!cache && loading) {
       return (
-        <TextContent>
-          <Text component={TextVariants.h1}>
-            Loading cache {cacheName} ...{' '}
-          </Text>
-        </TextContent>
+        <Toolbar id="cache-detail-header">
+          <ToolbarGroup>
+            <ToolbarContent style={{ paddingLeft: 0 }}>
+              <ToolbarItem>
+                <TextContent>
+                  <Text component={TextVariants.h1}>
+                    Loading cache {cacheName} ...{' '}
+                  </Text>
+                </TextContent>
+              </ToolbarItem>
+            </ToolbarContent>
+          </ToolbarGroup>
+        </Toolbar>
       );
     }
 
-    if (!detail) {
+    if (!cache || error != '') {
       return (
-        <TextContent>
-          <Text component={TextVariants.h1}>Error loading {cacheName} </Text>
-        </TextContent>
+        <Toolbar id="cache-detail-header">
+          <ToolbarGroup>
+            <ToolbarContent style={{ paddingLeft: 0 }}>
+              <ToolbarItem>
+                <TextContent>
+                  <Text component={TextVariants.h1}>
+                    Error loading {cacheName}
+                  </Text>
+                </TextContent>
+              </ToolbarItem>
+            </ToolbarContent>
+          </ToolbarGroup>
+        </Toolbar>
       );
     }
 
@@ -321,11 +348,11 @@ const DetailCache = (props) => {
             <ToolbarContent style={{ paddingLeft: 0 }}>
               <ToolbarItem>
                 <TextContent>
-                  <Text component={TextVariants.h1}>{detail.name}</Text>
+                  <Text component={TextVariants.h1}>{cache.name}</Text>
                 </TextContent>
               </ToolbarItem>
               <ToolbarItem>
-                <CacheTypeBadge cacheType={detail.type} small={false} />
+                <CacheTypeBadge cacheType={cache.type} small={false} />
               </ToolbarItem>
               {buildShowMoreHeader()}
             </ToolbarContent>
@@ -341,14 +368,14 @@ const DetailCache = (props) => {
         >
           <Tab
             eventKey={0}
-            title={'Entries (' + displayUtils.formatNumber(detail?.size) + ')'}
+            title={'Entries (' + displayUtils.formatNumber(cache?.size) + ')'}
           ></Tab>
           <Tab eventKey={1} title={'Configuration'} />
           <Tab
             eventKey={2}
             title={
               'Metrics (' +
-              (detail?.stats?.enabled ? 'Enabled' : 'Not enabled') +
+              (cache?.stats?.enabled ? 'Enabled' : 'Not enabled') +
               ')'
             }
           />
@@ -363,7 +390,7 @@ const DetailCache = (props) => {
         variant={PageSectionVariants.light}
         style={{ paddingBottom: 0 }}
       >
-        <DataContainerBreadcrumb currentPage="Cache detail" />
+        <DataContainerBreadcrumb currentPage={'Detail of cache ' + cacheName} />
         {buildCacheHeader()}
       </PageSection>
       <PageSection>{buildDetailContent()}</PageSection>

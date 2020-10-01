@@ -22,6 +22,7 @@ export enum ComponentHealth {
   HEALTHY = 'HEALTHY',
   HEALTHY_REBALANCING = 'HEALTHY_REBALANCING',
   DEGRADED = 'DEGRADED',
+  FAILED = 'FAILED',
 }
 
 export enum CacheType {
