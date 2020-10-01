@@ -49,7 +49,7 @@ describe('Display Utils tests', () => {
     );
   });
 
-  test('status alter variant', () => {
+  test('status altert variant', () => {
     expect(displayUtils.statusAlterVariant(ComponentStatus.OK)).toBe(
       AlertVariant.success
     );
@@ -105,7 +105,7 @@ describe('Display Utils tests', () => {
 
   test('health alert variant', () => {
     expect(displayUtils.healthAlertVariant(undefined)).toBe(
-      AlertVariant.warning
+      AlertVariant.default
     );
     expect(displayUtils.healthAlertVariant(ComponentHealth.DEGRADED)).toBe(
       AlertVariant.danger
@@ -116,6 +116,9 @@ describe('Display Utils tests', () => {
     expect(displayUtils.healthAlertVariant(ComponentHealth.HEALTHY)).toBe(
       AlertVariant.success
     );
+    expect(displayUtils.healthAlertVariant(ComponentHealth.FAILED)).toBe(
+      AlertVariant.danger
+    );
   });
 
   test('health label', () => {
@@ -124,6 +127,7 @@ describe('Display Utils tests', () => {
       'Rebalancing'
     );
     expect(displayUtils.healthLabel(ComponentHealth.DEGRADED)).toBe('Degraded');
+    expect(displayUtils.healthLabel(ComponentHealth.FAILED)).toBe('Failed');
   });
 
   test('health color', () => {
@@ -134,11 +138,15 @@ describe('Display Utils tests', () => {
       chart_global_label_Fill.value
     );
     expect(displayUtils.healthColor(ComponentHealth.DEGRADED, false)).toBe(
-      chart_global_label_Fill.value
+      global_danger_color_100.value
     );
     expect(
       displayUtils.healthColor(ComponentHealth.HEALTHY_REBALANCING, false)
     ).toBe(chart_global_label_Fill.value);
+    expect(displayUtils.healthColor(ComponentHealth.FAILED, false)).toBe(
+      global_danger_color_100.value
+    );
+
     expect(displayUtils.healthColor(ComponentHealth.HEALTHY, true)).toBe(
       global_success_color_100.value
     );
@@ -148,5 +156,8 @@ describe('Display Utils tests', () => {
     expect(
       displayUtils.healthColor(ComponentHealth.HEALTHY_REBALANCING, true)
     ).toBe(global_warning_color_100.value);
+    expect(displayUtils.healthColor(ComponentHealth.FAILED, true)).toBe(
+      global_danger_color_100.value
+    );
   });
 });

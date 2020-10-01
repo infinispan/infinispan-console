@@ -30,9 +30,7 @@ import {
 import displayUtils from '@services/displayUtils';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import dataContainerService from '@services/dataContainerService';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import { useApiAlert } from '@app/utils/useApiAlert';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import {
@@ -42,6 +40,7 @@ import {
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
 import { fetchCaches } from '@app/services/cachesHook';
+import { Health } from '@app/Common/Health';
 
 interface CacheAction {
   cacheName: string;
@@ -53,7 +52,6 @@ const CacheTableDisplay = (props: {
   setCachesCount: (count: number) => void;
   isVisible: boolean;
 }) => {
-  const { addAlert } = useApiAlert();
   const { loading, caches, error, reload } = fetchCaches(props.cmName);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
@@ -129,7 +127,7 @@ const CacheTableDisplay = (props: {
   }, [filteredCaches, cachesPagination]);
 
   const columns = [
-    { title: 'Name', transforms: [cellWidth(20), textCenter] },
+    { title: 'Name', transforms: [cellWidth(30), textCenter] },
     {
       title: 'Type',
       transforms: [cellWidth(20), textCenter],
@@ -137,8 +135,7 @@ const CacheTableDisplay = (props: {
     },
     {
       title: 'Health',
-      transforms: [cellWidth(20), textCenter],
-      cellTransforms: [textCenter],
+      transforms: [cellWidth(15), textCenter],
     },
     {
       title: 'Features',
@@ -272,7 +269,16 @@ const CacheTableDisplay = (props: {
             {
               title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} />,
             },
-            { title: displayHealth(cacheInfo.health) },
+            {
+              title: (
+                <Health
+                  health={cacheInfo.health}
+                  displayIcon={
+                    ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED
+                  }
+                />
+              ),
+            },
             { title: displayCacheFeatures(cacheInfo) },
             { title: displayIfIgnored(cacheInfo) },
           ],
@@ -305,16 +311,24 @@ const CacheTableDisplay = (props: {
   };
 
   const displayCacheName = (cacheInfo: CacheInfo) => {
+    let className = '';
+    if (ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED) {
+      className = 'failed-link';
+    }
+
+    const buttonName = (
+      <Button
+        key={`detail-button-${cacheInfo.name}`}
+        variant={ButtonVariant.link}
+        isDisabled={isCacheIgnored(cacheInfo)}
+        className={className}
+      >
+        {cacheInfo.name}
+      </Button>
+    );
+
     if (isCacheIgnored(cacheInfo)) {
-      return (
-        <Button
-          key={`detail-button-${cacheInfo.name}`}
-          variant={ButtonVariant.link}
-          isDisabled={true}
-        >
-          {cacheInfo.name}
-        </Button>
-      );
+      return buttonName;
     }
 
     return (
@@ -322,28 +336,8 @@ const CacheTableDisplay = (props: {
         key={cacheInfo.name}
         to={'/cache/' + encodeURIComponent(cacheInfo.name)}
       >
-        <Button
-          key={`detail-button-${cacheInfo.name}`}
-          variant={ButtonVariant.link}
-        >
-          {cacheInfo.name}
-        </Button>
+        {buttonName}
       </Link>
-    );
-  };
-
-  const displayHealth = (health: string) => {
-    return (
-      <TextContent>
-        <Text
-          component={TextVariants.p}
-          style={{
-            color: displayUtils.healthColor(ComponentHealth[health], false),
-          }}
-        >
-          {displayUtils.healthLabel(ComponentHealth[health])}
-        </Text>
-      </TextContent>
     );
   };
 
