@@ -6,7 +6,7 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { deleteCounter } from '@app/services/countersHook';
+import { useDeleteCounter } from '@app/services/countersHook';
 
 /**
  * Delete counter modal
@@ -16,7 +16,7 @@ const DeleteCounter = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
-  const { onDelete } = deleteCounter(props.name);
+  const { onDelete } = useDeleteCounter(props.name);
 
   return (
     <Modal

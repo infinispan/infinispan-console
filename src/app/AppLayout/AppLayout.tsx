@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   Brand,
   Nav,
@@ -14,31 +14,30 @@ import {
   TextVariants,
   Toolbar,
   ToolbarContent,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {Link, NavLink} from 'react-router-dom';
-import {routes} from '@app/routes';
-import {APIAlertProvider} from '@app/providers/APIAlertProvider';
-import {ActionResponseAlert} from '@app/Common/ActionResponseAlert';
-import {RecentActivityProvider} from '@app/providers/RecentActivityContextProvider';
-import {useHistory} from 'react-router';
-import {global_spacer_sm} from "@patternfly/react-tokens";
-import {About} from "@app/About/About";
-import utils from "../../services/utils";
+import { Link, NavLink } from 'react-router-dom';
+import { routes } from '@app/routes';
+import { APIAlertProvider } from '@app/providers/APIAlertProvider';
+import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
+import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
+import { useHistory } from 'react-router';
+import { global_spacer_sm } from '@patternfly/react-tokens';
+import { About } from '@app/About/About';
+import utils from '../../services/utils';
+import { ErrorBoundary } from '@app/ErrorBoundary';
 
 interface IAppLayout {
   children: React.ReactNode;
 }
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({
-  children,
-}) => {
+const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const history = useHistory();
 
   const logoProps = {
     target: '_self',
-    onClick: () => history.push('/')
+    onClick: () => history.push('/'),
   };
 
   const [isNavOpen, setIsNavOpen] = useState(true);
@@ -61,16 +60,12 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   const Logo = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarItem style={{marginTop: global_spacer_sm.value}}>
+        <ToolbarItem style={{ marginTop: global_spacer_sm.value }}>
           <Link to={'/'}>
-          <Brand
-            src={icon}
-            alt="Server Management Console"
-            width={150}
-          />
+            <Brand src={icon} alt="Server Management Console" width={150} />
           </Link>
         </ToolbarItem>
-        <ToolbarItem  style={{marginTop: 0}}>
+        <ToolbarItem style={{ marginTop: 0 }}>
           <TextContent>
             <Text component={TextVariants.h2}>Server Management Console</Text>
           </TextContent>
@@ -130,7 +125,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
               </NavItem>
             )
         )}
-        <NavItem onClick={()=> setIsAboutOpen(true)}>About</NavItem>
+        <NavItem onClick={() => setIsAboutOpen(true)}>About</NavItem>
       </NavList>
     </Nav>
   );
@@ -144,13 +139,15 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
   );
 
   const aboutModal = () => {
-    if(utils.isWelcomePage())
-      return;
+    if (utils.isWelcomePage()) return;
 
     return (
-      <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)}/>
-    )
-  }
+      <About
+        isModalOpen={isAboutOpen}
+        closeModal={() => setIsAboutOpen(false)}
+      />
+    );
+  };
   return (
     <APIAlertProvider>
       <RecentActivityProvider>
@@ -163,7 +160,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({
           skipToContent={PageSkipToContent}
           sidebar={utils.isWelcomePage() ? null : Sidebar}
         >
-          {children}
+          <ErrorBoundary>{children}</ErrorBoundary>
         </Page>
       </RecentActivityProvider>
     </APIAlertProvider>

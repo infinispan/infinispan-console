@@ -1,8 +1,15 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
+import { useFetchCache } from '@app/services/cachesHook';
 
 /**
  * Clear all entries modal
@@ -14,16 +21,18 @@ const ClearAllEntries = (props: {
 }) => {
   const { pushActivity } = useRecentActivity();
   const { addAlert } = useApiAlert();
+  const { reload } = useFetchCache(props.cacheName);
 
   const onClickClearAllEntriesButton = () => {
-    cacheService.clear(props.cacheName).then(actionResponse => {
+    cacheService.clear(props.cacheName).then((actionResponse) => {
       addAlert(actionResponse);
       pushActivity({
         cacheName: props.cacheName,
         entryKey: '*',
         action: 'Clear all',
-        date: new Date()
+        date: new Date(),
       });
+      reload();
       props.closeModal();
     });
   };
@@ -46,7 +55,7 @@ const ClearAllEntries = (props: {
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>

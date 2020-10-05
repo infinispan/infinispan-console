@@ -8,7 +8,7 @@ const mockedGetVersionHook = GetVersionHook as jest.Mocked<
   typeof GetVersionHook
 >;
 
-mockedGetVersionHook.fetchVersion.mockImplementation(() => {
+mockedGetVersionHook.useFetchVersion.mockImplementation(() => {
   return {
     version: 'Infinispan Corona 1.9',
     loading: false,

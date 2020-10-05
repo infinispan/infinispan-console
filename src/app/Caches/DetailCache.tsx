@@ -1,14 +1,11 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Badge,
-  Bullseye,
   Button,
   ButtonVariant,
   Card,
-  CardActions,
   CardBody,
-  CardFooter,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -47,23 +44,20 @@ import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { RecentActivityTable } from '@app/Caches/RecentActivityTable';
 import { Link } from 'react-router-dom';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { fetchCache } from '@app/services/cachesHook';
+import { useFetchCache } from '@app/services/cachesHook';
 
-const DetailCache = (props) => {
-  const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
-  const { loading, cache, error } = fetchCache(cacheName);
+const DetailCache = (props: { cacheName: string }) => {
+  const cacheName = props.cacheName;
+  const { loading, error, cache } = useFetchCache(cacheName);
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
-  const buildEntriesTabContent = () => {
-    if (!cache?.queryable) {
+  const buildEntriesTabContent = (queryable: boolean) => {
+    if (!queryable) {
       return (
         <React.Fragment>
-          <CacheEntries
-            cacheName={cacheName}
-            load={() => fetchCache(cacheName)}
-          />
+          <CacheEntries cacheName={cacheName} />
           <RecentActivityTable cacheName={cacheName} />
         </React.Fragment>
       );
@@ -80,10 +74,7 @@ const DetailCache = (props) => {
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
         <Tab eventKey={10} title={<TabTitleText>Manage Entries</TabTitleText>}>
-          <CacheEntries
-            cacheName={cacheName}
-            load={() => fetchCache(cacheName)}
-          />
+          <CacheEntries cacheName={cacheName} />
           <RecentActivityTable cacheName={cacheName} />
         </Tab>
         <Tab
@@ -117,6 +108,7 @@ const DetailCache = (props) => {
         </Card>
       );
     }
+
     if (error.length > 0) {
       return (
         <Card>
@@ -147,7 +139,7 @@ const DetailCache = (props) => {
 
     return (
       <React.Fragment>
-        {activeTabKey1 == 0 ? buildEntriesTabContent() : ''}
+        {activeTabKey1 == 0 ? buildEntriesTabContent(cache?.queryable) : ''}
         {activeTabKey1 == 1 ? (
           <CacheConfiguration config={cache?.configuration} />
         ) : (
@@ -305,7 +297,7 @@ const DetailCache = (props) => {
   };
 
   const buildCacheHeader = () => {
-    if (!cache && loading) {
+    if (loading) {
       return (
         <Toolbar id="cache-detail-header">
           <ToolbarGroup>
@@ -323,7 +315,7 @@ const DetailCache = (props) => {
       );
     }
 
-    if (!cache || error != '') {
+    if (error != '') {
       return (
         <Toolbar id="cache-detail-header">
           <ToolbarGroup>
@@ -375,7 +367,7 @@ const DetailCache = (props) => {
             eventKey={2}
             title={
               'Metrics (' +
-              (cache?.stats?.enabled ? 'Enabled' : 'Not enabled') +
+              (cache.stats?.enabled ? 'Enabled' : 'Not enabled') +
               ')'
             }
           />

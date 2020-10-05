@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import serverService from '@services/serverService';
 
-export function fetchVersion() {
+export function useFetchVersion() {
   const [version, setVersion] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);

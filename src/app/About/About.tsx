@@ -26,13 +26,13 @@ import {
   TwitterIcon,
 } from '@patternfly/react-icons';
 import { global_spacer_3xl, global_spacer_lg } from '@patternfly/react-tokens';
-import { fetchVersion } from '@app/services/serverHook';
+import { useFetchVersion } from '@app/services/serverHook';
 
 const About: React.FunctionComponent<any> = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
-  const { loading, version, error } = fetchVersion();
+  const { loading, version, error } = useFetchVersion();
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
   const infinispanStackOverflowLink =
