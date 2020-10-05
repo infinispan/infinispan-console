@@ -39,7 +39,7 @@ import {
 } from '@patternfly/react-table/src/components/Table/Table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
-import { fetchCaches } from '@app/services/cachesHook';
+import { useFetchCaches } from '@app/services/cachesHook';
 import { Health } from '@app/Common/Health';
 
 interface CacheAction {
@@ -52,7 +52,7 @@ const CacheTableDisplay = (props: {
   setCachesCount: (count: number) => void;
   isVisible: boolean;
 }) => {
-  const { loading, caches, error, reload } = fetchCaches(props.cmName);
+  const { loading, caches, error, reload } = useFetchCaches(props.cmName);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,

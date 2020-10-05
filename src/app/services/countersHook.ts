@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import countersService from '@services/countersService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 
-export function fetchCounters() {
+export function useFetchCounters() {
   const [counters, setCounters] = useState<Counter[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export function fetchCounters() {
   };
 }
 
-export function deleteCounter(name: string) {
+export function useDeleteCounter(name: string) {
   const { addAlert } = useApiAlert();
 
   const onDelete = () => {

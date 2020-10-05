@@ -1,8 +1,15 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
+import { useFetchCache, useReloadCache } from '@app/services/cachesHook';
 
 /**
  * Delete entry modal
@@ -15,18 +22,20 @@ const DeleteEntry = (props: {
 }) => {
   const { addAlert } = useApiAlert();
   const { pushActivity } = useRecentActivity();
+  const { reload } = useReloadCache();
 
   const onClickDeleteButton = () => {
     cacheService
       .deleteEntry(props.cacheName, props.entryKey)
-      .then(actionResponse => {
+      .then((actionResponse) => {
         props.closeModal();
+        reload();
         addAlert(actionResponse);
         pushActivity({
           cacheName: props.cacheName,
           entryKey: props.entryKey,
           action: 'Delete',
-          date: new Date()
+          date: new Date(),
         });
       });
   };
@@ -49,7 +58,7 @@ const DeleteEntry = (props: {
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>

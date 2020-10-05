@@ -32,10 +32,10 @@ import { CustomCardTitle } from '@app/Common/CustomCardTitle';
 import displayUtils from '@services/displayUtils';
 import { global_spacer_2xl } from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { fetchGlobalStats } from '@app/services/statsHook';
+import { useFetchGlobalStats } from '@app/services/statsHook';
 
 const GlobalStats = () => {
-  const { stats, error, loading } = fetchGlobalStats();
+  const { stats, error, loading } = useFetchGlobalStats();
 
   const allOps = () => {
     return (
@@ -170,7 +170,11 @@ const GlobalStats = () => {
                     { x: 'Removes Misses', y: stats.remove_misses },
                     { x: 'Evictions', y: stats.evictions },
                   ]}
-                  labels={({ datum }) => `${datum.x}: ${displayUtils.formatNumber((datum.y * 100)/allOps())}%`}
+                  labels={({ datum }) =>
+                    `${datum.x}: ${displayUtils.formatNumber(
+                      (datum.y * 100) / allOps()
+                    )}%`
+                  }
                   legendData={[
                     {
                       name:

@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import dataContainerService from '@services/dataContainerService';
 import cacheService from '@services/cacheService';
+import { APIAlertContext } from '@app/providers/APIAlertProvider';
+import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
 
-export function fetchCaches(cacheManager: string) {
+export function useFetchCaches(cacheManager: string) {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -34,27 +36,20 @@ export function fetchCaches(cacheManager: string) {
   };
 }
 
-export function fetchCache(cacheName: string) {
-  const [cache, setCache] = useState<DetailedInfinispanCache>();
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+export function useReloadCache() {
+  const { reload } = useContext(CacheDetailContext);
+
+  return { reload };
+}
+
+export function useFetchCache(cacheName: string) {
+  const { cache, loading, error, loadCache, reload } = useContext(
+    CacheDetailContext
+  );
 
   useEffect(() => {
-    cacheService
-      .retrieveFullDetail(cacheName)
-      .then((eitherDetail) => {
-        if (eitherDetail.isRight()) {
-          setCache(eitherDetail.value);
-        } else {
-          setError(eitherDetail.value.message);
-        }
-      })
-      .then(() => setLoading(false));
-  }, [cacheName]);
+    loadCache(cacheName);
+  }, []);
 
-  return {
-    loading,
-    cache,
-    error,
-  };
+  return { cache, loading, error, loadCache, reload };
 }

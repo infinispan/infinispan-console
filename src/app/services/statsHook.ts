@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import dataContainerService from '@services/dataContainerService';
 
-export function fetchGlobalStats() {
+export function useFetchGlobalStats() {
   const [stats, setStats] = useState<CacheManagerStats>({
     statistics_enabled: false,
     hits: -1,

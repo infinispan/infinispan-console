@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -11,16 +11,18 @@ import {
   SelectOption,
   SelectVariant,
   TextArea,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
-import {Flags, KeyContentType, ValueContentType} from '@services/utils';
-import formUtils, {IField, ISelectField} from '@services/formUtils';
-import {SelectOptionObject} from '@patternfly/react-core/src/components/Select/SelectOption';
-import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import { Flags, KeyContentType, ValueContentType } from '@services/utils';
+import formUtils, { IField, ISelectField } from '@services/formUtils';
+import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
+import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {global_spacer_md} from '@patternfly/react-tokens';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { global_spacer_md } from '@patternfly/react-tokens';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
+import { useFetchCache, useReloadCache } from '@app/services/cachesHook';
+import { getAndCacheOutputJSFileName } from 'ts-loader/dist/utils';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -30,25 +32,26 @@ const CreateOrUpdateEntryForm = (props: {
 }) => {
   const { addAlert } = useApiAlert();
   const { pushActivity } = useRecentActivity();
+  const { reload } = useReloadCache();
 
   const keyInitialState: IField = {
     value: '',
     isValid: false,
     invalidText: 'Key is required',
     helperText: '',
-    validated: 'default'
+    validated: 'default',
   };
   const valueInitialState: IField = {
     value: '',
     isValid: false,
     invalidText: 'Value is required',
     helperText: '',
-    validated: 'default'
+    validated: 'default',
   };
   const selectSingleElementInitialState: ISelectField = {
     selected: '',
     expanded: false,
-    helperText: 'Select content type.'
+    helperText: 'Select content type.',
   };
   const maxIdleInitialState: IField = {
     value: '',
@@ -56,7 +59,7 @@ const CreateOrUpdateEntryForm = (props: {
     invalidText: 'Max idle has to be a number',
     helperText:
       'Number of seconds. If you set a negative value, the entry is never deleted.',
-    validated: 'default'
+    validated: 'default',
   };
   const timeToLiveInitialState: IField = {
     value: '',
@@ -64,12 +67,12 @@ const CreateOrUpdateEntryForm = (props: {
     invalidText: 'Time to live has to be a number',
     helperText:
       'Number of seconds. If you set a negative value, the entry is never deleted.',
-    validated: 'default'
+    validated: 'default',
   };
   const flagsInitialState: ISelectField = {
     selected: [],
     expanded: false,
-    helperText: 'Select flags'
+    helperText: 'Select flags',
   };
 
   const [error, setError] = useState<string | undefined>(undefined);
@@ -95,27 +98,27 @@ const CreateOrUpdateEntryForm = (props: {
       setIsEdition(true);
       cacheService
         .getEntry(props.cacheName, props.keyToEdit)
-        .then(eitherResponse => {
+        .then((eitherResponse) => {
           if (eitherResponse.isRight()) {
-            setKey(prevState => {
+            setKey((prevState) => {
               return { ...prevState, value: eitherResponse.value.key };
             });
-            setValue(prevState => {
+            setValue((prevState) => {
               return { ...prevState, value: eitherResponse.value.value };
             });
             if (eitherResponse.value.maxIdle) {
-              setMaxIdleField(prevState => {
+              setMaxIdleField((prevState) => {
                 return {
                   ...prevState,
-                  value: eitherResponse.value.maxIdle as string
+                  value: eitherResponse.value.maxIdle as string,
                 };
               });
             }
             if (eitherResponse.value.timeToLive) {
-              setTimeToLiveField(prevState => {
+              setTimeToLiveField((prevState) => {
                 return {
                   ...prevState,
-                  value: eitherResponse.value.timeToLive as string
+                  value: eitherResponse.value.timeToLive as string,
                 };
               });
             }
@@ -128,32 +131,32 @@ const CreateOrUpdateEntryForm = (props: {
   }, [props.isModalOpen]);
 
   const keyContentTypeOptions = () => {
-    return Object.keys(KeyContentType).map(key => (
+    return Object.keys(KeyContentType).map((key) => (
       <SelectOption key={key} value={KeyContentType[key]} />
     ));
   };
 
   const valueContentTypeOptions = () => {
-    return Object.keys(ValueContentType).map(key => (
+    return Object.keys(ValueContentType).map((key) => (
       <SelectOption key={key} value={ValueContentType[key]} />
     ));
   };
 
   const flagsOptions = () => {
-    return Object.keys(Flags).map(key => (
+    return Object.keys(Flags).map((key) => (
       <SelectOption key={key} value={Flags[key]} />
     ));
   };
 
-  const onToggleKeyContentType = isExpanded => {
+  const onToggleKeyContentType = (isExpanded) => {
     setExpanded(isExpanded, setKeyContentType);
   };
 
-  const onToggleValueContentType = isExpanded => {
+  const onToggleValueContentType = (isExpanded) => {
     setExpanded(isExpanded, setValueContentType);
   };
 
-  const onToggleFlags = isExpanded => {
+  const onToggleFlags = (isExpanded) => {
     setExpanded(isExpanded, setFlags);
   };
 
@@ -161,7 +164,7 @@ const CreateOrUpdateEntryForm = (props: {
     expanded: boolean,
     stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>
   ) => {
-    stateDispatch(prevState => {
+    stateDispatch((prevState) => {
       return { ...prevState, expanded: expanded };
     });
   };
@@ -190,7 +193,9 @@ const CreateOrUpdateEntryForm = (props: {
     let prevSelectedFlags: SelectOptionObject[] = flags.selected as SelectOptionObject[];
 
     if (prevSelectedFlags.includes(selection)) {
-      prevSelectedFlags = prevSelectedFlags.filter(item => item !== selection);
+      prevSelectedFlags = prevSelectedFlags.filter(
+        (item) => item !== selection
+      );
     } else {
       prevSelectedFlags = [...prevSelectedFlags, selection];
     }
@@ -202,32 +207,44 @@ const CreateOrUpdateEntryForm = (props: {
     expanded: boolean,
     stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>
   ) => {
-    stateDispatch(prevState => {
+    stateDispatch((prevState) => {
       return { ...prevState, expanded: expanded, selected: selection };
     });
   };
 
-  const onChangeKey = value => {
+  const onChangeKey = (value) => {
     formUtils.validateRequiredField(value, 'Key', setKey);
   };
 
-  const onChangeValue = value => {
+  const onChangeValue = (value) => {
     formUtils.validateRequiredField(value, 'Value', setValue);
   };
 
-  const onChangeMaxIdle = value => {
-    formUtils.validateNotRequiredNumericField(value, 'Max idle', setMaxIdleField);
+  const onChangeMaxIdle = (value) => {
+    formUtils.validateNotRequiredNumericField(
+      value,
+      'Max idle',
+      setMaxIdleField
+    );
   };
 
-  const onChangeTimeToLive = value => {
-    formUtils.validateNotRequiredNumericField(value, 'Time to live', setTimeToLiveField);
+  const onChangeTimeToLive = (value) => {
+    formUtils.validateNotRequiredNumericField(
+      value,
+      'Time to live',
+      setTimeToLiveField
+    );
   };
 
   const handleAddOrUpdateEntryButton = () => {
     let isValid = true;
     setError(undefined);
-    isValid = formUtils.validateRequiredField(key.value.trim(), 'Key', setKey) && isValid;
-    isValid = formUtils.validateRequiredField(value.value.trim(), 'Value', setValue) && isValid;
+    isValid =
+      formUtils.validateRequiredField(key.value.trim(), 'Key', setKey) &&
+      isValid;
+    isValid =
+      formUtils.validateRequiredField(value.value.trim(), 'Value', setValue) &&
+      isValid;
     isValid =
       formUtils.validateNotRequiredNumericField(
         maxIdleField.value.trim(),
@@ -257,17 +274,17 @@ const CreateOrUpdateEntryForm = (props: {
           flags.selected as string[],
           !isEdition
         )
-        .then(response => {
+        .then((response) => {
           if (response.success) {
             addAlert(response);
             let activity: Activity = {
               cacheName: props.cacheName,
               entryKey: key.value,
               action: isEdition ? 'Edit' : 'Add',
-              date: new Date()
+              date: new Date(),
             };
             pushActivity(activity);
-            onClose();
+            reload();
           } else {
             setError(response.message);
           }
@@ -293,19 +310,19 @@ const CreateOrUpdateEntryForm = (props: {
       width={'50%'}
       isOpen={props.isModalOpen}
       title={isEdition ? 'Edit entry' : 'Add new entry'}
-      onClose={onClose}
+      onClose={() => onClose()}
       aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
       actions={[
         <Button key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
           {isEdition ? 'Edit' : 'Add'}
         </Button>,
-        <Button key="cancel" variant="link" onClick={onClose}>
+        <Button key="cancel" variant="link" onClick={() => onClose()}>
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <Form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
         }}
         style={{ marginBottom: global_spacer_md.value }}
@@ -361,19 +378,21 @@ const CreateOrUpdateEntryForm = (props: {
           />
         </FormGroup>
         <FormGroup
-          label={<MoreInfoTooltip
-            label="Value:"
-            toolTip={
-              'The value can contain simple values but also JSON ' +
-              'that are automatically converted to and from Protostream.\n ' +
-              'When writing JSON documents, a special field _type must be present.\n' +
-              '{\n' +
-              '   "_type": "Person",\n' +
-              '   "name": "user1",\n' +
-              '   "age": 32\n' +
-              '}'
-            }
-          />}
+          label={
+            <MoreInfoTooltip
+              label="Value:"
+              toolTip={
+                'The value can contain simple values but also JSON ' +
+                'that are automatically converted to and from Protostream.\n ' +
+                'When writing JSON documents, a special field _type must be present.\n' +
+                '{\n' +
+                '   "_type": "Person",\n' +
+                '   "name": "user1",\n' +
+                '   "age": 32\n' +
+                '}'
+              }
+            />
+          }
           isRequired
           helperText={value.helperText}
           helperTextInvalid={value.invalidText}
@@ -447,7 +466,7 @@ const CreateOrUpdateEntryForm = (props: {
       </Form>
       <ExpandableSection toggleText="Advanced options">
         <Form
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
           }}
         >

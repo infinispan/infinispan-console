@@ -30,12 +30,12 @@ const statsEnabledResponse = {
 } as CacheManagerStats;
 
 beforeEach(() => {
-  mockedStatsHook.fetchGlobalStats.mockClear();
+  mockedStatsHook.useFetchGlobalStats.mockClear();
 });
 
 describe('Global stats page', () => {
   test('render a non stats enabled message when stats are not enabled', () => {
-    mockedStatsHook.fetchGlobalStats.mockImplementationOnce(() => {
+    mockedStatsHook.useFetchGlobalStats.mockImplementationOnce(() => {
       return {
         loading: false,
         stats: statsNotEnabledResponse,
@@ -56,7 +56,7 @@ describe('Global stats page', () => {
   });
 
   test('render stats when statistics are enabled', () => {
-    mockedStatsHook.fetchGlobalStats.mockImplementationOnce(() => {
+    mockedStatsHook.useFetchGlobalStats.mockImplementationOnce(() => {
       return {
         loading: false,
         stats: statsEnabledResponse,

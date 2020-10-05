@@ -28,10 +28,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
 
-const CacheEntries: React.FunctionComponent<any> = (props: {
-  cacheName: string;
-  load: () => void;
-}) => {
+const CacheEntries = (props: { cacheName: string }) => {
   const [
     isCreateOrUpdateEntryFormOpen,
     setCreateOrUpdateEntryFormOpen,
@@ -150,20 +147,17 @@ const CacheEntries: React.FunctionComponent<any> = (props: {
     searchEntryByKey();
     setKeyToEdit('');
     setCreateOrUpdateEntryFormOpen(false);
-    props.load();
   };
 
   const closeClearAllEntryModal = () => {
     setClearAllModalOpen(false);
     searchEntryByKey();
-    props.load();
   };
 
   const closeDeleteEntryModal = () => {
     setDeleteEntryModalOpen(false);
     setKeyToDelete('');
     searchEntryByKey();
-    props.load();
   };
 
   const onChangeKeySearch = (value) => {

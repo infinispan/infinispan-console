@@ -16,7 +16,7 @@ beforeEach(() => {
   onDeleteCalls = 0;
 });
 
-mockedCounterHook.deleteCounter.mockImplementation(() => {
+mockedCounterHook.useDeleteCounter.mockImplementation(() => {
   return {
     onDelete: () => onDeleteCalls++,
   };
@@ -45,7 +45,7 @@ describe('Delete counter', () => {
       />
     );
 
-    expect(mockedCounterHook.deleteCounter).toHaveBeenCalledWith('count-1');
+    expect(mockedCounterHook.useDeleteCounter).toHaveBeenCalledWith('count-1');
 
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
