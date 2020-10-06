@@ -26,9 +26,13 @@ import { RecentActivityProvider } from '@app/providers/RecentActivityContextProv
 import { useHistory } from 'react-router';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import { About } from '@app/About/About';
+<<<<<<< HEAD
 import utils from '@services/utils';
 import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
+=======
+import utils from '../../services/utils';
+>>>>>>> 265e7db... ISPN-11067 Extract labels
 
 interface IAppLayout {
   children: React.ReactNode;
