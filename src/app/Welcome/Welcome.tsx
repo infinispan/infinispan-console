@@ -23,22 +23,16 @@ import utils from '@services/utils';
 import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
+import { useTranslation } from 'react-i18next';
 
 const Welcome = (props) => {
   const authState = props.init;
+  const { t } = useTranslation();
   const [supportOpen, setSupportOpen] = useState(false);
   const brandname = 'Infinispan';
 
-  const description1 =
-    brandname +
-    ' is a distributed in-memory key/value data store with optional schema, available under the Apache License 2.0. ' +
-    'Available as an embedded Java library or as a language-independent service accessed remotely over a variety of protocols (Hot Rod, REST)';
-
-  const description2 =
-    'Use ' +
-    brandname +
-    ' as a cache or data grid in containerized, cloud-native environments or on bare-metal. ' +
-    'Works on AWS, Azure, Google Cloud, Kubernetes and OpenShift.';
+  const description1 = t('welcome-page.description1', { brandname: brandname });
+  const description2 = t('welcome-page.description2', { brandname: brandname });
 
   const hotRodClientsLink = 'https://infinispan.org/hotrod-clients/';
   const aboutLink = 'https://infinispan.org/about/';
@@ -51,7 +45,7 @@ const Welcome = (props) => {
         <StackItem>
           <TextContent>
             <Text component={TextVariants.h5}>
-              Remotely connect to {brandname} from client applications.
+              {t('welcome-page.connect', { brandname: brandname })}
             </Text>
           </TextContent>
         </StackItem>
@@ -62,14 +56,13 @@ const Welcome = (props) => {
             variant="link"
             icon={<CatalogIcon />}
           >
-            Download a client
+            {t('welcome-page.download')}
           </Button>
         </StackItem>
         <StackItem>
           <TextContent>
             <Text component={TextVariants.h5}>
-              Find out how to set up, configure, and monitor {brandname}{' '}
-              servers.
+              {t('welcome-page.servers', { brandname: brandname })}
             </Text>
           </TextContent>
         </StackItem>
@@ -80,14 +73,13 @@ const Welcome = (props) => {
             variant="link"
             icon={<InfoIcon />}
           >
-            Learn more
+            {t('welcome-page.learn-more')}
           </Button>
         </StackItem>
         <StackItem>
           <TextContent>
             <Text component={TextVariants.h5}>
-              Develop applications to use {brandname} for in-memory storage in a
-              variety of use cases.
+              {t('welcome-page.develop', { brandname: brandname })}
             </Text>
           </TextContent>
         </StackItem>
@@ -98,7 +90,7 @@ const Welcome = (props) => {
             variant="link"
             icon={<GithubIcon />}
           >
-            Run the simple tutorials{' '}
+            {t('welcome-page.tutorials')}
           </Button>
         </StackItem>
       </Stack>
@@ -110,6 +102,8 @@ const Welcome = (props) => {
       KeycloakService.Instance.login({ redirectUri: utils.landing() });
     }
   };
+
+  const goToTheConsole = t('welcome-page.go-to-console');
 
   const buildConsoleButton = () => {
     if (authState == 'PENDING') {
@@ -123,7 +117,7 @@ const Welcome = (props) => {
           component={'a'}
           style={{ backgroundColor: chart_color_blue_500.value }}
         >
-          Go to the console
+          {goToTheConsole}
         </Button>
       );
     }
@@ -134,7 +128,7 @@ const Welcome = (props) => {
           style={{ backgroundColor: chart_color_blue_500.value }}
           onClick={() => setSupportOpen(true)}
         >
-          Go to the console
+          {goToTheConsole}
         </Button>
       );
     }
@@ -144,7 +138,7 @@ const Welcome = (props) => {
         style={{ backgroundColor: chart_color_blue_500.value }}
         onClick={() => login()}
       >
-        Go to the console
+        {goToTheConsole}
       </Button>
     );
   };

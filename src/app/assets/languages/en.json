@@ -1,0 +1,13 @@
+{
+  "welcome-page" : {
+    "description1": "{{brandname}} is a distributed in-memory key/value data store with optional schema, available under the Apache License 2.0. Available as an embedded Java library or as a language-independent service accessed remotely over a variety of protocols (Hot Rod, REST)",
+    "description2": "Use {{brandname}} as a cache or data grid in containerized, cloud-native environments or on bare-metal. Works on AWS, Azure, Google Cloud, Kubernetes and OpenShift.",
+    "connect" : "Remotely connect to {{brandname}} from client applications.",
+    "download" : "Download a client",
+    "servers" :  "Find out how to set up, configure, and monitor {{brandname}} servers.",
+    "learn-more": "Learn more",
+    "develop": "Develop applications to use {{brandname}} for in-memory storage in a variety of use cases.",
+    "tutorials":  "Run the simple tutorials",
+    "go-to-console":  "Go to the console"
+  }
+}

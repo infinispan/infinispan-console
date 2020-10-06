@@ -41,6 +41,7 @@
     "eslint-plugin-jest-dom": "^3.2.3",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
+    "eslint-plugin-i18n-json": "^2.4.4",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "imagemin": "^7.0.0",
@@ -81,9 +82,13 @@
     "@patternfly/react-table": "^4.18.14",
     "@patternfly/react-tokens": "^4.9.12",
     "express": "^4.17.1",
+    "i18next": "^19.8.1",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-http-backend": "^1.0.21",
     "keycloak-js": "^10.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-i18next": "^11.7.3",
     "react-router-last-location": "^2.0.1",
     "react-syntax-highlighter": "^13.5.3"
   }
