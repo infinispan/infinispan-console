@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Suspense } from 'react';
 import { useState } from 'react';
 import {
   Brand,
@@ -9,6 +9,7 @@ import {
   PageHeader,
   PageSidebar,
   SkipToContent,
+  Spinner,
   Text,
   TextContent,
   TextVariants,
@@ -25,7 +26,7 @@ import { RecentActivityProvider } from '@app/providers/RecentActivityContextProv
 import { useHistory } from 'react-router';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import { About } from '@app/About/About';
-import utils from '../../services/utils';
+import utils from '@services/utils';
 import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
 
