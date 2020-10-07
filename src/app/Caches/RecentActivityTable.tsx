@@ -21,6 +21,7 @@ const RecentActivityTable = (props: { cacheName: string }) => {
 
   const columns = [
     { title: 'Key' },
+    { title: 'Key Content Type' },
     { title: 'Action' },
     { title: 'Local Date-Time' },
   ];
@@ -33,7 +34,7 @@ const RecentActivityTable = (props: { cacheName: string }) => {
           heightAuto: true,
           cells: [
             {
-              props: { colSpan: 3 },
+              props: { colSpan: 4 },
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
@@ -52,6 +53,7 @@ const RecentActivityTable = (props: { cacheName: string }) => {
         heightAuto: true,
         cells: [
           { title: activity.entryKey },
+          { title: activity.keyContentType ? activity.keyContentType : '-' },
           { title: activity.action },
           { title: activity.date.toLocaleString() },
         ],
