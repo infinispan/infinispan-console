@@ -130,12 +130,12 @@ const CacheTableDisplay = (props: {
     { title: 'Name', transforms: [cellWidth(30), textCenter] },
     {
       title: 'Type',
-      transforms: [cellWidth(20), textCenter],
+      transforms: [cellWidth(15), textCenter],
       cellTransforms: [textCenter],
     },
     {
       title: 'Health',
-      transforms: [cellWidth(15), textCenter],
+      transforms: [cellWidth(10)],
     },
     {
       title: 'Features',
