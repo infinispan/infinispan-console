@@ -1,7 +1,5 @@
-import { useContext, useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import dataContainerService from '@services/dataContainerService';
-import cacheService from '@services/cacheService';
-import { APIAlertContext } from '@app/providers/APIAlertProvider';
 import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
 
 export function useFetchCaches(cacheManager: string) {

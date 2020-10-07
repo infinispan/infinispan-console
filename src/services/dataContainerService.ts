@@ -17,26 +17,26 @@ class ContainerService {
   > {
     return utils
       .restCall(this.endpoint + '/server/cache-managers/', 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(names => this.getCacheManager(names[0]).then(cm => right(cm)))
-      .catch(err => {
+      .then((names) => this.getCacheManager(names[0]).then((cm) => right(cm)))
+      .catch((err) => {
         if (err instanceof Response) {
           if (err.status == 401) {
             return left(<ActionResponse>{
               message:
                 'Unauthorized. You need to provide the correct credentials.',
-              success: false
+              success: false,
             });
           }
 
           return err
             .text()
-            .then(errorMessage =>
+            .then((errorMessage) =>
               left(<ActionResponse>{ message: errorMessage, success: false })
             );
         }
@@ -47,7 +47,7 @@ class ContainerService {
         }
         return left(<ActionResponse>{
           message: errorMessage,
-          success: false
+          success: false,
         });
       });
   }
@@ -55,25 +55,25 @@ class ContainerService {
   private getCacheManager(name: string): Promise<CacheManager> {
     let healthPromise: Promise<String> = utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/health', 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(data => data.cluster_health.health_status);
+      .then((data) => data.cluster_health.health_status);
 
-    return healthPromise.then(heath =>
+    return healthPromise.then((heath) =>
       utils
         .restCall(this.endpoint + '/cache-managers/' + name, 'GET')
-        .then(response => {
+        .then((response) => {
           if (response.ok) {
             return response.json();
           }
           throw response;
         })
         .then(
-          data =>
+          (data) =>
             <CacheManager>{
               name: data.name,
               physical_addresses: data.physical_addresses,
@@ -90,25 +90,25 @@ class ContainerService {
                 data.cluster_members_physical_addresses
               ),
               health: heath,
-              local_site: data.local_site
+              local_site: data.local_site,
             }
         )
     );
   }
 
   private removeInternalCaches(caches: DefinedCache[]) {
-    return caches.filter(cache => !cache.name.startsWith('___'));
+    return caches.filter((cache) => !cache.name.startsWith('___'));
   }
 
   private removeInternalTemplate(templates: string[]) {
-    return templates.filter(template => !template.startsWith('___'));
+    return templates.filter((template) => !template.startsWith('___'));
   }
 
   public async getCacheManagerStats(name: string): Promise<CacheManagerStats> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
-      .then(response => response.json())
-      .then(data => <CacheManagerStats>data);
+      .then((response) => response.json())
+      .then((data) => <CacheManagerStats>data);
   }
 
   public async getCacheManagerConfigurations(
@@ -119,13 +119,13 @@ class ContainerService {
         this.endpoint + '/cache-managers/' + name + '/cache-configs',
         'GET'
       )
-      .then(response => response.json())
-      .then(arr =>
+      .then((response) => response.json())
+      .then((arr) =>
         arr.map(
-          config =>
+          (config) =>
             <CacheConfig>{
               name: config.name,
-              config: JSON.stringify(config.configuration, undefined, 2)
+              config: JSON.stringify(config.configuration, undefined, 2),
             }
         )
       );
@@ -139,13 +139,13 @@ class ContainerService {
         this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
         'GET'
       )
-      .then(response => response.json())
-      .then(arr =>
+      .then((response) => response.json())
+      .then((arr) =>
         arr.map(
-          config =>
+          (config) =>
             <CacheConfig>{
               name: config.name,
-              config: JSON.stringify(config.configuration, undefined, 2)
+              config: JSON.stringify(config.configuration, undefined, 2),
             }
         )
       );
@@ -156,17 +156,17 @@ class ContainerService {
   ): Promise<Either<ActionResponse, [CacheInfo]>> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(infos =>
+      .then((infos) =>
         right(
           infos
             .map(
-              cacheInfo =>
+              (cacheInfo) =>
                 <CacheInfo>{
                   name: cacheInfo.name,
                   status: displayUtils.capitalize(cacheInfo.status),
@@ -178,18 +178,18 @@ class ContainerService {
                     bounded: cacheInfo.bounded,
                     secured: cacheInfo.secured,
                     indexed: cacheInfo.indexed,
-                    hasRemoteBackup: cacheInfo.has_remote_backup
+                    hasRemoteBackup: cacheInfo.has_remote_backup,
                   },
-                  health: cacheInfo.health
+                  health: cacheInfo.health,
                 }
             )
-            .filter(cacheInfo => !cacheInfo.name.startsWith('___'))
+            .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
         )
       )
-      .catch(err =>
+      .catch((err) =>
         err
           .text()
-          .then(errorMessage =>
+          .then((errorMessage) =>
             left(<ActionResponse>{ message: errorMessage, success: false })
           )
       );
@@ -219,7 +219,7 @@ class ContainerService {
       (mem, index) =>
         <ClusterMember>{
           name: mem,
-          physical_address: cluster_members_physical_addresses[index]
+          physical_address: cluster_members_physical_addresses[index],
         }
     );
   }

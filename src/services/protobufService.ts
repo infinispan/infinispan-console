@@ -25,18 +25,18 @@ class ProtobufService {
         create ? 'POST' : 'PUT',
         schema
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(schema => {
+      .then((schema) => {
         let protoError: ProtoError | undefined = undefined;
         if (schema['error'] != null) {
           protoError = <ProtoError>{
             message: schema.error.message,
-            cause: schema.error.cause
+            cause: schema.error.cause,
           };
         }
         let message = 'Schema ' + name;
@@ -50,10 +50,10 @@ class ProtobufService {
 
         return right(<ActionResponse>{
           message: message,
-          success: protoError == undefined
+          success: protoError == undefined,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
@@ -61,11 +61,11 @@ class ProtobufService {
         if (err instanceof Response && err.status == 409) {
           return left(<ActionResponse>{
             message: 'Schema ' + name + ' already exists.',
-            success: false
+            success: false,
           });
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           let message = 'Unable to create schema ' + name;
           if (errorMessage.length > 0) {
             message = errorMessage;
@@ -81,26 +81,26 @@ class ProtobufService {
   public async delete(name: string): Promise<ActionResponse> {
     return utils
       .restCallWithBody(this.endpoint + '/' + name, 'DELETE', name)
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
             message: 'Schema ' + name + ' has been deleted',
-            success: true
+            success: true,
           };
         }
         throw response;
       })
-      .catch(err => {
+      .catch((err) => {
         let message = 'Un error happened when deleting schema ' + name + '.';
 
         if (err instanceof TypeError) {
           return <ActionResponse>{
             message: message + ' ' + err.message,
-            success: false
+            success: false,
           };
         }
 
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           if (errorMessage.length > 0) {
             message = message + ' ' + errorMessage;
           }
@@ -117,14 +117,14 @@ class ProtobufService {
   ): Promise<Either<ActionResponse, string>> {
     return utils
       .restCall(this.endpoint + '/' + name, 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.text();
         }
         throw response;
       })
-      .then(schema => right(schema))
-      .catch(err => {
+      .then((schema) => right(schema))
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{ message: err.message, success: false });
         }
@@ -144,37 +144,37 @@ class ProtobufService {
   public getProtobufSchemas(): Promise<Either<ActionResponse, ProtoSchema[]>> {
     return utils
       .restCall(this.endpoint, 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(protoSchemas =>
+      .then((protoSchemas) =>
         right(
           protoSchemas
-            .map(schema => {
+            .map((schema) => {
               let protoError: ProtoError | undefined = undefined;
               if (schema['error'] != null) {
                 protoError = <ProtoError>{
                   message: schema.error.message,
-                  cause: schema.error.cause
+                  cause: schema.error.cause,
                 };
               }
               return <ProtoSchema>{
                 name: schema.name,
-                error: protoError
+                error: protoError,
               };
             })
             .filter(
-              schema =>
+              (schema) =>
                 schema.name !=
                   'org/infinispan/protostream/message-wrapping.proto' &&
                 schema.name != 'org/infinispan/query/remote/client/query.proto'
             )
         )
       )
-      .catch(err => left(<ActionResponse>{ message: err, success: false }));
+      .catch((err) => left(<ActionResponse>{ message: err, success: false }));
   }
 }
 

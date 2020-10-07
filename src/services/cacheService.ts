@@ -759,14 +759,12 @@ class CacheService {
           });
         }
 
-        return err
-          .text()
-          .then((errorMessage) =>
-            left(<ActionResponse>{
-              message: errorMessage == '' ? genericError : errorMessage,
-              success: false,
-            })
-          );
+        return err.text().then((errorMessage) =>
+          left(<ActionResponse>{
+            message: errorMessage == '' ? genericError : errorMessage,
+            success: false,
+          })
+        );
       });
   }
 

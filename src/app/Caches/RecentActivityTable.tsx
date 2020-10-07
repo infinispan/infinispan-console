@@ -1,8 +1,20 @@
 import React from 'react';
-import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
-import {global_spacer_md} from '@patternfly/react-tokens';
-import {Bullseye, Card, CardBody, CardHeader, EmptyState, EmptyStateVariant, Title} from '@patternfly/react-core';
-import {useRecentActivity} from '@app/utils/useRecentActivity';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+} from '@patternfly/react-table';
+import { global_spacer_md } from '@patternfly/react-tokens';
+import {
+  Bullseye,
+  Card,
+  CardBody,
+  CardHeader,
+  EmptyState,
+  EmptyStateVariant,
+} from '@patternfly/react-core';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 const RecentActivityTable = (props: { cacheName: string }) => {
   const { activities } = useRecentActivity();
@@ -10,7 +22,7 @@ const RecentActivityTable = (props: { cacheName: string }) => {
   const columns = [
     { title: 'Key' },
     { title: 'Action' },
-    { title: 'Local Date-Time' }
+    { title: 'Local Date-Time' },
   ];
 
   const buildRows = () => {
@@ -25,30 +37,30 @@ const RecentActivityTable = (props: { cacheName: string }) => {
               title: (
                 <Bullseye>
                   <EmptyState variant={EmptyStateVariant.small}>
-                      There is no recent activity
+                    There is no recent activity
                   </EmptyState>
                 </Bullseye>
-              )
-            }
-          ]
-        }
+              ),
+            },
+          ],
+        },
       ];
     }
 
-    return cacheActivities.map(activity => {
+    return cacheActivities.map((activity) => {
       return {
         heightAuto: true,
         cells: [
           { title: activity.entryKey },
           { title: activity.action },
-          { title: activity.date.toLocaleString() }
-        ]
+          { title: activity.date.toLocaleString() },
+        ],
       };
     });
   };
 
   return (
-    <Card style={{ marginTop: global_spacer_md.value}}>
+    <Card style={{ marginTop: global_spacer_md.value }}>
       <CardHeader>Recent Activity</CardHeader>
       <CardBody>
         <Table

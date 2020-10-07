@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActionGroup,
   Button,
@@ -19,29 +19,33 @@ import {
   TextInput,
   TextVariants,
   Toolbar,
-  ToolbarContent
+  ToolbarContent,
 } from '@patternfly/react-core';
-import {CubeIcon} from '@patternfly/react-icons';
+import { CubeIcon } from '@patternfly/react-icons';
 import cacheService from '@services/cacheService';
 import dataContainerService from '@services/dataContainerService';
-import {Link, useLocation} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 
-const CreateCache: React.FunctionComponent<any> = props => {
+const CreateCache: React.FunctionComponent<any> = (props) => {
   let location = useLocation();
   const { addAlert } = useApiAlert();
   const cmName = props.computedMatch.params.cmName;
   const [cacheName, setCacheName] = useState('');
-  const [validName, setValidName] = useState<('success'| 'error'|'default')>('default');
+  const [validName, setValidName] = useState<'success' | 'error' | 'default'>(
+    'default'
+  );
   const [config, setConfig] = useState('');
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
   const [expandedSelect, setExpandedSelect] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<string>('');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
   const [configExpanded, setConfigExpanded] = useState(false);
-  const [validConfig, setValidConfig] = useState<('success'| 'error'|'default')>('default');
+  const [validConfig, setValidConfig] = useState<
+    'success' | 'error' | 'default'
+  >('default');
 
   interface OptionSelect {
     value: string;
@@ -52,9 +56,9 @@ const CreateCache: React.FunctionComponent<any> = props => {
   useEffect(() => {
     dataContainerService
       .getCacheConfigurationTemplates(cmName)
-      .then(templates => {
+      .then((templates) => {
         let options: OptionSelect[] = [];
-        templates.forEach(template => {
+        templates.forEach((template) => {
           options.push({ value: template.name });
         });
         setConfigs(options);
@@ -68,16 +72,16 @@ const CreateCache: React.FunctionComponent<any> = props => {
     setSelectedConfig('');
   };
 
-  const handleChangeName = name => {
+  const handleChangeName = (name) => {
     setCacheName(name);
   };
 
-  const handleChangeConfig = config => {
+  const handleChangeConfig = (config) => {
     setConfig(config);
     setValidConfig('success');
   };
 
-  const onToggle = isExpanded => {
+  const onToggle = (isExpanded) => {
     setExpandedSelect(isExpanded);
   };
 
@@ -94,7 +98,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
     }
   };
 
-  const validateConfig = () : boolean => {
+  const validateConfig = (): boolean => {
     const trimmedConf = config.trim();
     if (trimmedConf.length == 0) {
       return false;
@@ -117,8 +121,10 @@ const CreateCache: React.FunctionComponent<any> = props => {
 
   const createCache = () => {
     const name = cacheName.trim();
-    let isValidName:('success' | 'error') = name.length > 0 ? 'success' : 'error';
-    let isValidConfig:('success' | 'error') = selectedConfig != '' || validateConfig() ? 'success' : 'error';
+    let isValidName: 'success' | 'error' =
+      name.length > 0 ? 'success' : 'error';
+    let isValidConfig: 'success' | 'error' =
+      selectedConfig != '' || validateConfig() ? 'success' : 'error';
     setValidName(isValidName);
     setValidConfig(isValidConfig);
 
@@ -129,11 +135,11 @@ const CreateCache: React.FunctionComponent<any> = props => {
     if (selectedConfig != '') {
       cacheService
         .createCacheByConfigName(name, selectedConfig)
-        .then(actionResponse => addAlert(actionResponse));
+        .then((actionResponse) => addAlert(actionResponse));
     } else {
       cacheService
         .createCacheWithConfiguration(name, config)
-        .then(actionResponse => addAlert(actionResponse));
+        .then((actionResponse) => addAlert(actionResponse));
     }
   };
 
@@ -148,9 +154,9 @@ const CreateCache: React.FunctionComponent<any> = props => {
         <DataContainerBreadcrumb currentPage="Create cache" />
         <Toolbar id="create-cache-header">
           <ToolbarContent style={{ paddingLeft: 0 }}>
-        <TextContent>
-          <Text component={TextVariants.h1}>Create a cache in {title}</Text>
-        </TextContent>
+            <TextContent>
+              <Text component={TextVariants.h1}>Create a cache in {title}</Text>
+            </TextContent>
           </ToolbarContent>
         </Toolbar>
       </PageSection>
@@ -158,7 +164,7 @@ const CreateCache: React.FunctionComponent<any> = props => {
         <Card>
           <CardBody>
             <Form
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
               }}
             >

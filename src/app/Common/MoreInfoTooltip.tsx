@@ -1,11 +1,16 @@
 import React from 'react';
-import {Text, TextContent, Tooltip, TooltipPosition} from '@patternfly/react-core';
-import {OutlinedQuestionCircleIcon} from '@patternfly/react-icons';
+import {
+  Text,
+  TextContent,
+  Tooltip,
+  TooltipPosition,
+} from '@patternfly/react-core';
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import {
   chart_global_Fill_Color_white,
   global_FontSize_md,
   global_FontSize_sm,
-  global_spacer_xs
+  global_spacer_xs,
 } from '@patternfly/react-tokens';
 
 /**
@@ -18,7 +23,7 @@ const MoreInfoTooltip = (props: { label: string; toolTip: string }) => {
         <Text
           style={{
             fontSize: global_FontSize_sm.value,
-            color: chart_global_Fill_Color_white.value
+            color: chart_global_Fill_Color_white.value,
           }}
         >
           {props.toolTip}
@@ -40,7 +45,7 @@ const MoreInfoTooltip = (props: { label: string; toolTip: string }) => {
           style={{
             fontSize: global_FontSize_md.value,
             paddingLeft: global_spacer_xs.value,
-            paddingTop: global_spacer_xs.value
+            paddingTop: global_spacer_xs.value,
           }}
         />
       </Tooltip>

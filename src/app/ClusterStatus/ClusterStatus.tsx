@@ -31,7 +31,6 @@ import {
 import { Health } from '@app/Common/Health';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { ComponentHealth } from '@services/utils';
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();

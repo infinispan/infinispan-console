@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Bullseye,
   Button,
@@ -15,32 +15,35 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import cacheService from '@services/cacheService';
-import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
-import {TableErrorState} from "@app/Common/TableErrorState";
-import displayUtils from "../../../services/displayUtils";
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+} from '@patternfly/react-table';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const QueryEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
   indexed: boolean;
-  changeTab: () => void
+  changeTab: () => void;
 }) => {
   const [query, setQuery] = useState<string>('');
   const [rows, setRows] = useState<any[]>([]);
   const [queryPagination, setQueryPagination] = useState({
     page: 1,
     perPage: 10,
-    total: 0
+    total: 0,
   });
 
-  const columns = [
-    { title: 'Value' }
-  ];
+  const columns = [{ title: 'Value' }];
   const updateRows = (values: string[], error?: string) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
 
@@ -51,12 +54,10 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
           cells: [
             {
               props: { colSpan: 1 },
-              title: (
-                <TableErrorState error={'Query error'} detail={error}/>
-              )
-            }
-          ]
-        }
+              title: <TableErrorState error={'Query error'} detail={error} />,
+            },
+          ],
+        },
       ];
     } else if (values.length == 0) {
       rows = [
@@ -74,18 +75,16 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                     </Title>
                   </EmptyState>
                 </Bullseye>
-              )
-            }
-          ]
-        }
+              ),
+            },
+          ],
+        },
       ];
     } else {
-      rows = values.map(value => {
+      rows = values.map((value) => {
         return {
           heightAuto: true,
-          cells: [
-            { title: displayValue(value) }
-          ]
+          cells: [{ title: displayValue(value) }],
         };
       });
     }
@@ -94,14 +93,17 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
 
   const displayValue = (value: string) => {
     return (
-      <SyntaxHighlighter wrapLines={false} style={githubGist}
-                         useInlineStyles={true}>
+      <SyntaxHighlighter
+        wrapLines={false}
+        style={githubGist}
+        useInlineStyles={true}
+      >
         {displayUtils.displayValue(value)}
       </SyntaxHighlighter>
     );
-  }
+  };
 
-  const onChangeSearch = value => {
+  const onChangeSearch = (value) => {
     if (value.length == 0) {
       setRows([]);
     }
@@ -113,104 +115,110 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
       return;
     }
 
-    cacheService.searchValues(props.cacheName, query, perPage, page-1).then(response => {
-      if (response.isRight()) {
-        setQueryPagination(prevState => {
-          return { ...prevState, total: response.value.total}
-        });
-        updateRows(response.value.values);
-      } else {
-        updateRows([], response.value.message);
-      }
-    });
+    cacheService
+      .searchValues(props.cacheName, query, perPage, page - 1)
+      .then((response) => {
+        if (response.isRight()) {
+          setQueryPagination((prevState) => {
+            return { ...prevState, total: response.value.total };
+          });
+          updateRows(response.value.values);
+        } else {
+          updateRows([], response.value.message);
+        }
+      });
   };
 
-  const searchEntryOnKeyPress = event => {
+  const searchEntryOnKeyPress = (event) => {
     if (event.key === 'Enter') {
       searchByQuery(queryPagination.perPage, queryPagination.page);
     }
   };
 
   const onSetPage = (_event, pageNumber) => {
-    setQueryPagination(prevState => {
-      return { ...prevState, page: pageNumber}
+    setQueryPagination((prevState) => {
+      return { ...prevState, page: pageNumber };
     });
     searchByQuery(queryPagination.perPage, pageNumber);
   };
 
   const onPerPageSelect = (_event, perPage) => {
-    setQueryPagination(prevState => {
-      return { ...prevState, page: queryPagination.page}
+    setQueryPagination((prevState) => {
+      return { ...prevState, page: queryPagination.page };
     });
     searchByQuery(perPage, queryPagination.page);
   };
 
   const buildViewAllQueryStats = () => {
-    if(!props.indexed)
-      return '';
+    if (!props.indexed) return '';
 
     return (
       <ToolbarItem>
-        <Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()}>View all query stats</Button>
+        <Button
+          variant={ButtonVariant.secondary}
+          onClick={() => props.changeTab()}
+        >
+          View all query stats
+        </Button>
       </ToolbarItem>
     );
   };
 
   return (
     <React.Fragment>
-          <Toolbar id="cache-query-toolbar" style={{paddingLeft: 0}}>
-            <ToolbarContent>
-              <ToolbarItem>
-                <InputGroup>
-                  <TextInput
-                    name="textSearchByQuery"
-                    id="textSearchByQuery"
-                    type="search"
-                    aria-label="search by query textfield"
-                    placeholder={'Ickle query'}
-                    size={75}
-                    onChange={onChangeSearch}
-                    onKeyPress={searchEntryOnKeyPress}
-                  />
-                  <Button
-                    variant="control"
-                    aria-label="search button for search input"
-                    onClick={() => searchByQuery(queryPagination.perPage, queryPagination.page)}
-                  >
-                    <SearchIcon />
-                  </Button>
-                </InputGroup>
-              </ToolbarItem>
-              {buildViewAllQueryStats()}
-              <ToolbarItem
-                variant={ToolbarItemVariant.pagination}
+      <Toolbar id="cache-query-toolbar" style={{ paddingLeft: 0 }}>
+        <ToolbarContent>
+          <ToolbarItem>
+            <InputGroup>
+              <TextInput
+                name="textSearchByQuery"
+                id="textSearchByQuery"
+                type="search"
+                aria-label="search by query textfield"
+                placeholder={'Ickle query'}
+                size={75}
+                onChange={onChangeSearch}
+                onKeyPress={searchEntryOnKeyPress}
+              />
+              <Button
+                variant="control"
+                aria-label="search button for search input"
+                onClick={() =>
+                  searchByQuery(queryPagination.perPage, queryPagination.page)
+                }
               >
-                <Pagination
-                  itemCount={queryPagination.total}
-                  perPage={queryPagination.perPage}
-                  page={queryPagination.page}
-                  onSetPage={onSetPage}
-                  widgetId="pagination-query"
-                  onPerPageSelect={onPerPageSelect}
-                  isCompact
-                />
-              </ToolbarItem>
-            </ToolbarContent>
-          </Toolbar>
-          <Card>
-          <CardBody>
-            <Table
-              variant={TableVariant.compact}
-              aria-label="Entries"
-              cells={columns}
-              rows={rows}
-              className={'values-table'}
-            >
-              <TableHeader />
-              <TableBody />
-            </Table>
-          </CardBody>
-          </Card>
+                <SearchIcon />
+              </Button>
+            </InputGroup>
+          </ToolbarItem>
+          {buildViewAllQueryStats()}
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            <Pagination
+              itemCount={queryPagination.total}
+              perPage={queryPagination.perPage}
+              page={queryPagination.page}
+              onSetPage={onSetPage}
+              widgetId="pagination-query"
+              onPerPageSelect={onPerPageSelect}
+              isCompact
+            />
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+      <Card>
+        <CardBody>
+          <Table
+            variant={TableVariant.compact}
+            aria-label="Entries"
+            cells={columns}
+            rows={rows}
+            className={'values-table'}
+          >
+            <TableHeader />
+            <TableBody />
+          </Table>
+        </CardBody>
+      </Card>
     </React.Fragment>
   );
 };

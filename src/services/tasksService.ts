@@ -10,10 +10,10 @@ class TasksService {
   public getTasks(): Promise<Task[]> {
     return utils
       .restCall(this.endpoint + '/tasks?type=user', 'GET')
-      .then(response => response.json())
-      .then(tasks =>
+      .then((response) => response.json())
+      .then((tasks) =>
         tasks.map(
-          task =>
+          (task) =>
             <Task>{
               parameters: task.parameters,
               task_context_name: task.task_context_name,
@@ -21,7 +21,7 @@ class TasksService {
               name: task.name,
               type: task.type,
               execution_mode: task.execution_mode,
-              allowed_role: task.allowed_role
+              allowed_role: task.allowed_role,
             }
         )
       );

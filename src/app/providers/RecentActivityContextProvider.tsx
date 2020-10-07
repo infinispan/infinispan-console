@@ -1,9 +1,9 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 
 const initialActivityState = {
   activities: new Map(),
   pushActivity: (activity: Activity) => {},
-  clearHistoryForCache: (cacheName: string) => {}
+  clearHistoryForCache: (cacheName: string) => {},
 };
 
 export const RecentActivityContext = React.createContext(initialActivityState);
@@ -13,7 +13,7 @@ const RecentActivityProvider = ({ children }) => {
     new Map()
   );
 
-  const clearHistoryForCache = (cacheName:string) => {
+  const clearHistoryForCache = (cacheName: string) => {
     let currentActivities = activities;
     currentActivities[cacheName] = null;
     setActivities(currentActivities);
@@ -35,7 +35,7 @@ const RecentActivityProvider = ({ children }) => {
   const contextValue = {
     activities,
     pushActivity: useCallback(pushActivity, []),
-    clearHistoryForCache: useCallback(clearHistoryForCache, [])
+    clearHistoryForCache: useCallback(clearHistoryForCache, []),
   };
 
   return (

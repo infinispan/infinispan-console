@@ -9,7 +9,7 @@ import {
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-import { useFetchCache, useReloadCache } from '@app/services/cachesHook';
+import { useReloadCache } from '@app/services/cachesHook';
 
 /**
  * Delete entry modal

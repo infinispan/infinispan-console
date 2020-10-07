@@ -21,8 +21,7 @@ import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-import { useFetchCache, useReloadCache } from '@app/services/cachesHook';
-import { getAndCacheOutputJSFileName } from 'ts-loader/dist/utils';
+import { useReloadCache } from '@app/services/cachesHook';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;

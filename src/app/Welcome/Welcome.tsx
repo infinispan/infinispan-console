@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   Button,
   Card,
@@ -13,16 +13,16 @@ import {
   StackItem,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
 } from '@patternfly/react-core';
 
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
-import {CatalogIcon, GithubIcon, InfoIcon} from '@patternfly/react-icons'
-import {chart_color_blue_500} from "@patternfly/react-tokens";
+import { CatalogIcon, GithubIcon, InfoIcon } from '@patternfly/react-icons';
+import { chart_color_blue_500 } from '@patternfly/react-tokens';
 import utils from '@services/utils';
-import {ConsoleBackground} from "@app/Common/ConsoleBackgroud";
-import {Support} from "@app/Support/Support";
-import {KeycloakService} from "@services/keycloakService";
+import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
+import { Support } from '@app/Support/Support';
+import { KeycloakService } from '@services/keycloakService';
 
 const Welcome = (props) => {
   const authState = props.init;
@@ -30,16 +30,20 @@ const Welcome = (props) => {
   const brandname = 'Infinispan';
 
   const description1 =
-    brandname +' is a distributed in-memory key/value data store with optional schema, available under the Apache License 2.0. ' +
+    brandname +
+    ' is a distributed in-memory key/value data store with optional schema, available under the Apache License 2.0. ' +
     'Available as an embedded Java library or as a language-independent service accessed remotely over a variety of protocols (Hot Rod, REST)';
 
   const description2 =
-    'Use ' + brandname + ' as a cache or data grid in containerized, cloud-native environments or on bare-metal. ' +
+    'Use ' +
+    brandname +
+    ' as a cache or data grid in containerized, cloud-native environments or on bare-metal. ' +
     'Works on AWS, Azure, Google Cloud, Kubernetes and OpenShift.';
 
   const hotRodClientsLink = 'https://infinispan.org/hotrod-clients/';
   const aboutLink = 'https://infinispan.org/about/';
-  const tutorialsLink = 'https://github.com/infinispan/infinispan-simple-tutorials';
+  const tutorialsLink =
+    'https://github.com/infinispan/infinispan-simple-tutorials';
 
   const buildFooter = () => {
     return (
@@ -64,7 +68,8 @@ const Welcome = (props) => {
         <StackItem>
           <TextContent>
             <Text component={TextVariants.h5}>
-              Find out how to set up, configure, and monitor {brandname} servers.
+              Find out how to set up, configure, and monitor {brandname}{' '}
+              servers.
             </Text>
           </TextContent>
         </StackItem>
@@ -101,16 +106,14 @@ const Welcome = (props) => {
   };
 
   const login = () => {
-    if(authState == 'LOGIN' && !KeycloakService.Instance.authenticated()) {
-      KeycloakService.Instance.login({redirectUri: utils.landing()});
+    if (authState == 'LOGIN' && !KeycloakService.Instance.authenticated()) {
+      KeycloakService.Instance.login({ redirectUri: utils.landing() });
     }
-  }
+  };
 
   const buildConsoleButton = () => {
     if (authState == 'PENDING') {
-      return (
-        <Spinner size={'sm'}/>
-      );
+      return <Spinner size={'sm'} />;
     }
 
     if (authState == 'READY' || authState == 'SERVER_ERROR') {
@@ -118,35 +121,41 @@ const Welcome = (props) => {
         <Button
           href={utils.landing()}
           component={'a'}
-          style={{backgroundColor: chart_color_blue_500.value}}
+          style={{ backgroundColor: chart_color_blue_500.value }}
         >
           Go to the console
         </Button>
-      )
+      );
     }
 
     if (authState == 'NOT_READY') {
       return (
         <Button
-          style={{backgroundColor: chart_color_blue_500.value}}
+          style={{ backgroundColor: chart_color_blue_500.value }}
           onClick={() => setSupportOpen(true)}
         >
           Go to the console
         </Button>
-      )
+      );
     }
 
     return (
-      <Button style={{backgroundColor: chart_color_blue_500.value}} onClick={() => login()}>
+      <Button
+        style={{ backgroundColor: chart_color_blue_500.value }}
+        onClick={() => login()}
+      >
         Go to the console
       </Button>
     );
-  }
+  };
 
   return (
     <section>
-      <ConsoleBackground/>
-      <Support isModalOpen={supportOpen} closeModal={() => window.location.reload()}/>
+      <ConsoleBackground />
+      <Support
+        isModalOpen={supportOpen}
+        closeModal={() => window.location.reload()}
+      />
       <LoginPage
         footerListVariants={ListVariant.inline}
         brandImgSrc={icon}
@@ -158,9 +167,7 @@ const Welcome = (props) => {
         <Card>
           <CardHeader>{description1}</CardHeader>
           <CardBody>{description2}</CardBody>
-          <CardFooter>
-            {buildConsoleButton()}
-          </CardFooter>
+          <CardFooter>{buildConsoleButton()}</CardFooter>
         </Card>
       </LoginPage>
     </section>

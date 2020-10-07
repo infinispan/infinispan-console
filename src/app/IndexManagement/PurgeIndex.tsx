@@ -8,7 +8,6 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 /**
  * Purge index modal
