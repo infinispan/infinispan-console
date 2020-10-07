@@ -1,11 +1,11 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 
 const emptyAlert: ActionResponse = { message: '', success: true };
 
 const initialAlertState = {
   alert: { message: '', success: true },
   addAlert: (alert: ActionResponse) => {},
-  removeAlert: () => {}
+  removeAlert: () => {},
 };
 
 export const APIAlertContext = React.createContext(initialAlertState);
@@ -15,7 +15,7 @@ const APIAlertProvider = ({ children }) => {
 
   const removeAlert = () => setAlert(emptyAlert);
 
-  const addAlert = actionResponse => {
+  const addAlert = (actionResponse) => {
     setAlert(actionResponse);
     setTimeout(() => {
       removeAlert();
@@ -25,7 +25,7 @@ const APIAlertProvider = ({ children }) => {
   const contextValue = {
     alert,
     addAlert: useCallback(addAlert, []),
-    removeAlert: useCallback(removeAlert, [])
+    removeAlert: useCallback(removeAlert, []),
   };
 
   return (

@@ -1,7 +1,13 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent} from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 /**
  * ClearQueryMetrics entry modal
@@ -14,12 +20,10 @@ const ClearQueryMetrics = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickDeleteButton = () => {
-    cacheService
-      .clearQueryStats(props.cacheName)
-      .then(actionResponse => {
-        addAlert(actionResponse);
-        props.closeModal();
-      });
+    cacheService.clearQueryStats(props.cacheName).then((actionResponse) => {
+      addAlert(actionResponse);
+      props.closeModal();
+    });
   };
 
   return (
@@ -40,14 +44,14 @@ const ClearQueryMetrics = (props: {
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>
         <Text>
           This action will permanently clear all the cache query statistics.
           <br />
-         This cannot be undone.
+          This cannot be undone.
         </Text>
       </TextContent>
     </Modal>

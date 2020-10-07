@@ -5,13 +5,17 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Spinner,
-  Title
-} from "@patternfly/react-core";
-import {ExclamationCircleIcon, SearchIcon} from "@patternfly/react-icons";
-import {global_danger_color_100} from "@patternfly/react-tokens";
-import React from "react";
+  Title,
+} from '@patternfly/react-core';
+import { ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import { global_danger_color_100 } from '@patternfly/react-tokens';
+import React from 'react';
 
-const TableEmptyState = (props: { loading: boolean, error: string, empty: string }) => {
+const TableEmptyState = (props: {
+  loading: boolean;
+  error: string;
+  empty: string;
+}) => {
   if (props.loading) {
     return (
       <Bullseye>
@@ -31,9 +35,7 @@ const TableEmptyState = (props: { loading: boolean, error: string, empty: string
           <Title headingLevel="h2" size="lg">
             There was an error retrieving the data
           </Title>
-          <EmptyStateBody>
-            {props.error}
-          </EmptyStateBody>
+          <EmptyStateBody>{props.error}</EmptyStateBody>
         </EmptyState>
       </Bullseye>
     );
@@ -51,4 +53,4 @@ const TableEmptyState = (props: { loading: boolean, error: string, empty: string
   );
 };
 
-export {TableEmptyState};
+export { TableEmptyState };

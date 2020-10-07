@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonVariant,
@@ -16,21 +16,21 @@ import {
   TextListItem,
   TextListItemVariants,
   TextListVariants,
-  TextVariants
+  TextVariants,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {TableErrorState} from "@app/Common/TableErrorState";
-import {ClearQueryMetrics} from "@app/Caches/Query/ClearQueryMetrics";
-import cacheService from "../../../services/cacheService";
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
+import cacheService from '../../../services/cacheService';
 
 /**
  * Query stats for indexed caches only
  */
 const QueryMetrics = (props: {
-  cacheName: string,
-  stats: (QueryStats | undefined),
-  loading: boolean,
-  error: string
+  cacheName: string;
+  stats: QueryStats | undefined;
+  loading: boolean;
+  error: string;
 }) => {
   const [stats, setStats] = useState<QueryStats | undefined>(props.stats);
   const [loading, setLoading] = useState<boolean>(props.loading);
@@ -46,34 +46,36 @@ const QueryMetrics = (props: {
   };
 
   const realoadStats = () => {
-    cacheService.retrieveQueryStats(props.cacheName).then(eitherStats => {
+    cacheService.retrieveQueryStats(props.cacheName).then((eitherStats) => {
       setLoading(false);
-      if(eitherStats.isRight()) {
+      if (eitherStats.isRight()) {
         setStats(eitherStats.value);
-      } else  {
+      } else {
         setError(eitherStats.value.message);
       }
-    })
-  }
+    });
+  };
 
   const buildCardContent = () => {
-    if(loading && !stats) {
-      return (
-        <Spinner size={'sm'}/>
-      );
+    if (loading && !stats) {
+      return <Spinner size={'sm'} />;
     }
 
-    if(error != '') {
-      return (
-        <TableErrorState error={error} />
-      );
+    if (error != '') {
+      return <TableErrorState error={error} />;
     }
 
     return (
       <TextContent>
-        <Text component={TextVariants.small}> Search query <Divider component={DividerVariant.hr}/></Text>
+        <Text component={TextVariants.small}>
+          {' '}
+          Search query <Divider component={DividerVariant.hr} />
+        </Text>
         <TextList component={TextListVariants.dl}>
-          <TextListItem component={TextListItemVariants.dt} style={{width: 250}}>
+          <TextListItem
+            component={TextListItemVariants.dt}
+            style={{ width: 250 }}
+          >
             Execution count
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
@@ -108,10 +110,16 @@ const QueryMetrics = (props: {
             {stats?.search_query_execution_max_time_query_string}
           </TextListItem>
         </TextList>
-        <Text component={TextVariants.small}> Object loading <Divider component={DividerVariant.hr}/></Text>
+        <Text component={TextVariants.small}>
+          {' '}
+          Object loading <Divider component={DividerVariant.hr} />
+        </Text>
         <TextList component={TextListVariants.dl}>
-          <TextListItem component={TextListItemVariants.dt} style={{width: 250}}>
-           Total time
+          <TextListItem
+            component={TextListItemVariants.dt}
+            style={{ width: 250 }}
+          >
+            Total time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(stats?.object_loading_total_time)}
@@ -121,26 +129,28 @@ const QueryMetrics = (props: {
             Execution max time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.object_loading_execution_max_time)}
+            {displayUtils.formatNumber(
+              stats?.object_loading_execution_max_time
+            )}
           </TextListItem>
 
           <TextListItem component={TextListItemVariants.dt}>
             Execution avg time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.object_loading_execution_avg_time)}
+            {displayUtils.formatNumber(
+              stats?.object_loading_execution_avg_time
+            )}
           </TextListItem>
 
-          <TextListItem component={TextListItemVariants.dt}>
-            Count
-          </TextListItem>
+          <TextListItem component={TextListItemVariants.dt}>Count</TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(stats?.objects_loaded_count)}
           </TextListItem>
         </TextList>
       </TextContent>
-    )
-  }
+    );
+  };
 
   return (
     <Card>
@@ -148,18 +158,23 @@ const QueryMetrics = (props: {
         <Level id={'query-stats'}>
           <LevelItem>Query stats</LevelItem>
           <LevelItem>
-            <Button variant={ButtonVariant.danger} onClick={() => setClearMetricsModalOpen(true)}>
+            <Button
+              variant={ButtonVariant.danger}
+              onClick={() => setClearMetricsModalOpen(true)}
+            >
               Clear all stats
             </Button>
-            <ClearQueryMetrics cacheName={props.cacheName} isModalOpen={isClearMetricsModalOpen} closeModal={closeClearMetricsModal}/>
+            <ClearQueryMetrics
+              cacheName={props.cacheName}
+              isModalOpen={isClearMetricsModalOpen}
+              closeModal={closeClearMetricsModal}
+            />
           </LevelItem>
         </Level>
       </CardTitle>
-      <CardBody>
-        {buildCardContent()}
-      </CardBody>
+      <CardBody>{buildCardContent()}</CardBody>
     </Card>
   );
 };
 
-export {QueryMetrics};
+export { QueryMetrics };

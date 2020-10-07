@@ -1,5 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Table, TableBody, TableHeader, TableVariant} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -13,16 +18,16 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
 import {
   chart_color_blue_500,
   global_FontSize_sm,
   global_spacer_md,
   global_spacer_sm,
-  global_spacer_xs
+  global_spacer_xs,
 } from '@patternfly/react-tokens';
 import tasksService from '@services/tasksService';
 
@@ -35,31 +40,31 @@ const TasksTableDisplay = (props: {
 
   const [tasksPagination, setTasksPagination] = useState({
     page: 1,
-    perPage: 10
+    perPage: 10,
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
 
   const columns = [
     { title: 'Name' },
     {
-      title: 'Type'
+      title: 'Type',
     },
     {
-      title: 'Context name'
+      title: 'Context name',
     },
     {
-      title: 'Operation name'
+      title: 'Operation name',
     },
     {
-      title: 'Parameters'
+      title: 'Parameters',
     },
     {
-      title: 'Allowed role'
-    }
+      title: 'Allowed role',
+    },
   ];
 
   useEffect(() => {
-    tasksService.getTasks().then(tasks => {
+    tasksService.getTasks().then((tasks) => {
       setTasks(tasks);
       setFilteredTasks(tasks);
       props.setTasksCount(tasks.length);
@@ -71,7 +76,7 @@ const TasksTableDisplay = (props: {
   const onSetPage = (_event, pageNumber) => {
     setTasksPagination({
       page: pageNumber,
-      perPage: tasksPagination.perPage
+      perPage: tasksPagination.perPage,
     });
     const initSlice = (pageNumber - 1) * tasksPagination.perPage;
     updateRows(
@@ -82,7 +87,7 @@ const TasksTableDisplay = (props: {
   const onPerPageSelect = (_event, perPage) => {
     setTasksPagination({
       page: tasksPagination.page,
-      perPage: perPage
+      perPage: perPage,
     });
     const initSlice = (tasksPagination.page - 1) * perPage;
     updateRows(filteredTasks.slice(initSlice, initSlice + perPage));
@@ -99,7 +104,7 @@ const TasksTableDisplay = (props: {
           marginRight: global_spacer_md.value,
           padding: global_spacer_xs.value,
           paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value
+          paddingLeft: global_spacer_sm.value,
         }}
       >
         {type}
@@ -152,13 +157,13 @@ const TasksTableDisplay = (props: {
                     </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
-              )
-            }
-          ]
-        }
+              ),
+            },
+          ],
+        },
       ];
     } else {
-      rows = tasks.map(task => {
+      rows = tasks.map((task) => {
         return {
           heightAuto: true,
           cells: [
@@ -167,8 +172,8 @@ const TasksTableDisplay = (props: {
             { title: task.task_context_name },
             { title: task.task_operation_name },
             { title: taskParameters(task.parameters) },
-            { title: taskAllowedRoles(task.allowed_role) }
-          ]
+            { title: taskAllowedRoles(task.allowed_role) },
+          ],
           //TODO {title: <TasksActionLinks name={task.name}/>}]
         };
       });

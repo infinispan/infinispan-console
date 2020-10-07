@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -16,49 +16,48 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title
+  Title,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
-import {CubesIcon} from '@patternfly/react-icons';
-import cacheService from "../../services/cacheService";
-import {QueryMetrics} from "@app/Caches/Query/QueryMetrics";
+import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import { CubesIcon } from '@patternfly/react-icons';
+import cacheService from '../../services/cacheService';
+import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
 
-const CacheMetrics = (props: {
-  cacheName: string,
-  display: boolean
-}) => {
-
-  const [stats, setStats] = useState<CacheStats| undefined>(undefined);
-  const [statsError, setStatsError] = useState<string| undefined>(undefined);
+const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
+  const [stats, setStats] = useState<CacheStats | undefined>(undefined);
+  const [statsError, setStatsError] = useState<string | undefined>(undefined);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
   const [queryStats, setQueryStats] = useState<QueryStats | undefined>();
   const [queryStatsLoading, setQueryStatsLoading] = useState<boolean>(true);
   const [queryStatsError, setQueryStatsError] = useState<string>('');
 
   useEffect(() => {
-    cacheService.retrieveFullDetail(props.cacheName).then(detail => {
+    cacheService.retrieveFullDetail(props.cacheName).then((detail) => {
       setQueryStatsLoading(false);
-      if(detail.isRight()) {
+      if (detail.isRight()) {
         setStats(detail.value.stats);
-        let loadQueryStats = detail.value.stats.enabled && detail.value.features.indexed;
+        let loadQueryStats =
+          detail.value.stats.enabled && detail.value.features.indexed;
         setDisplayQueryStats(loadQueryStats);
-        if(loadQueryStats) {
+        if (loadQueryStats) {
           // Retrieve query stats only if stats are enabled and the cache is indexed
-          cacheService.retrieveQueryStats(props.cacheName).then(eitherStats => {
-            setQueryStatsLoading(false);
-            if(eitherStats.isRight()) {
-              setQueryStats(eitherStats.value);
-            } else  {
-              setQueryStatsError(eitherStats.value.message);
-            }
-          })
+          cacheService
+            .retrieveQueryStats(props.cacheName)
+            .then((eitherStats) => {
+              setQueryStatsLoading(false);
+              if (eitherStats.isRight()) {
+                setQueryStats(eitherStats.value);
+              } else {
+                setQueryStatsError(eitherStats.value.message);
+              }
+            });
         }
-      } else  {
+      } else {
         setStatsError(detail.value.message);
       }
-    })
-  }, [props.display])
+    });
+  }, [props.display]);
 
   const buildOperationsPerformanceCard = () => {
     if (!stats) {
@@ -97,13 +96,18 @@ const CacheMetrics = (props: {
   };
 
   const buildQueryStats = () => {
-    if(!displayQueryStats) {
-      return ;
+    if (!displayQueryStats) {
+      return;
     }
     return (
-        <QueryMetrics cacheName={props.cacheName} stats={queryStats} error={queryStatsError} loading={queryStatsLoading}/>
+      <QueryMetrics
+        cacheName={props.cacheName}
+        stats={queryStats}
+        error={queryStatsError}
+        loading={queryStatsLoading}
+      />
     );
-  }
+  };
 
   const buildCacheLoaderCard = () => {
     if (!stats) {
@@ -123,51 +127,52 @@ const CacheMetrics = (props: {
       <Card>
         <CardTitle>Data access</CardTitle>
         <CardBody>
-          <div style={{height: '208px', width: '400px'}}>
+          <div style={{ height: '208px', width: '400px' }}>
             <ChartDonut
               constrainToVisibleArea={true}
               data={[
-                {x: 'Hits', y: stats.hits},
-                {x: 'Misses', y: stats.misses},
-                {x: 'Stores', y: stats.stores},
-                {x: 'Retrievals', y: stats.retrievals},
-                {x: 'Remove Hits', y: stats.remove_hits},
-                {x: 'Removes Misses', y: stats.remove_misses},
-                {x: 'Evictions', y: stats.evictions}
+                { x: 'Hits', y: stats.hits },
+                { x: 'Misses', y: stats.misses },
+                { x: 'Stores', y: stats.stores },
+                { x: 'Retrievals', y: stats.retrievals },
+                { x: 'Remove Hits', y: stats.remove_hits },
+                { x: 'Removes Misses', y: stats.remove_misses },
+                { x: 'Evictions', y: stats.evictions },
               ]}
-              labels={({datum}) => `${datum.x}:${displayUtils.formatNumber((datum.y * 100)/all)}%`}
+              labels={({ datum }) =>
+                `${datum.x}:${displayUtils.formatNumber(
+                  (datum.y * 100) / all
+                )}%`
+              }
               legendData={[
                 {
-                  name: 'Hits: ' + displayUtils.formatNumber(stats.hits)
+                  name: 'Hits: ' + displayUtils.formatNumber(stats.hits),
                 },
                 {
-                  name:
-                    'Misses: ' + displayUtils.formatNumber(stats.misses)
+                  name: 'Misses: ' + displayUtils.formatNumber(stats.misses),
                 },
                 {
                   name:
                     'Retrievals: ' +
-                    displayUtils.formatNumber(stats.retrievals)
+                    displayUtils.formatNumber(stats.retrievals),
                 },
                 {
-                  name:
-                    'Stores: ' + displayUtils.formatNumber(stats.stores)
+                  name: 'Stores: ' + displayUtils.formatNumber(stats.stores),
                 },
                 {
                   name:
                     'Remove Hits: ' +
-                    displayUtils.formatNumber(stats.remove_hits)
+                    displayUtils.formatNumber(stats.remove_hits),
                 },
                 {
                   name:
                     'Remove Misses: ' +
-                    displayUtils.formatNumber(stats.remove_misses)
+                    displayUtils.formatNumber(stats.remove_misses),
                 },
                 {
                   name:
-                    'Evictions: ' +
-                    displayUtils.formatNumber(stats.evictions)
-                }
+                    'Evictions: ' + displayUtils.formatNumber(stats.evictions),
+                },
               ]}
               legendOrientation="vertical"
               legendPosition="right"
@@ -175,7 +180,7 @@ const CacheMetrics = (props: {
                 bottom: 40,
                 left: 80,
                 right: 200, // Adjusted to accommodate legend
-                top: 20
+                top: 20,
               }}
               subTitle="Data access"
               title={'' + all}
@@ -200,9 +205,7 @@ const CacheMetrics = (props: {
           <TextContent>
             <TextList component={TextListVariants.dl}>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(
-                  stats.current_number_of_entries
-                )}
+                {displayUtils.formatNumber(stats.current_number_of_entries)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 Current number
@@ -213,9 +216,7 @@ const CacheMetrics = (props: {
               <TextListItem component={TextListItemVariants.dd}>
                 Total number
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                -
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>-</TextListItem>
             </TextList>
           </TextContent>
         </CardBody>
@@ -243,16 +244,12 @@ const CacheMetrics = (props: {
                 Current number
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(
-                  stats.data_memory_used
-                )}
+                {displayUtils.formatNumber(stats.data_memory_used)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 Total in use
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                -
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>-</TextListItem>
             </TextList>
           </TextContent>
         </CardBody>
@@ -265,7 +262,7 @@ const CacheMetrics = (props: {
 
     return (
       <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon}/>
+        <EmptyStateIcon icon={CubesIcon} />
         <Title headingLevel="h5" size="lg">
           Statistics
         </Title>
@@ -278,33 +275,19 @@ const CacheMetrics = (props: {
     );
   }
 
-  if(!props.display) {
-    return (
-      <span/>
-    );
+  if (!props.display) {
+    return <span />;
   }
 
   return (
     <Grid hasGutter={true}>
-      <GridItem span={4}>
-        {buildEntriesCard()}
-      </GridItem>
-      <GridItem span={4}>
-        {buildMemoryCard()}
-      </GridItem>
-      <GridItem span={4}>
-        {buildOperationsPerformanceCard()}
-      </GridItem>
-      <GridItem span={6}>
-        {buildCacheLoaderCard()}
-      </GridItem>
-      <GridItem span={6}>
-        {buildQueryStats()}
-      </GridItem>
-
-
+      <GridItem span={4}>{buildEntriesCard()}</GridItem>
+      <GridItem span={4}>{buildMemoryCard()}</GridItem>
+      <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
+      <GridItem span={6}>{buildCacheLoaderCard()}</GridItem>
+      <GridItem span={6}>{buildQueryStats()}</GridItem>
     </Grid>
   );
 };
 
-export {CacheMetrics};
+export { CacheMetrics };

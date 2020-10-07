@@ -14,18 +14,18 @@ class ServerService {
   public async getVersion(): Promise<Either<string, string>> {
     return utils
       .restCall(this.endpoint, 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(json => right(json.version))
-      .catch(err => {
+      .then((json) => right(json.version))
+      .catch((err) => {
         if (err instanceof TypeError) {
           return left(err.message);
         }
-        return err.text().then(errorMessage => {
+        return err.text().then((errorMessage) => {
           let message = 'Unable to retrieve server version ' + name;
           if (errorMessage.length > 0) {
             message = errorMessage;

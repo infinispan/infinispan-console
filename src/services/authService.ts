@@ -26,31 +26,31 @@ class AuthenticationService {
    */
   public async config(): Promise<Either<ActionResponse, AuthInfo>> {
     return fetch(this.endpoint + '?action=config', {
-      method: 'GET'
+      method: 'GET',
     })
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(json => {
+      .then((json) => {
         const authInfo = <AuthInfo>{
           mode: json.mode,
-          ready: json.ready == 'true'
+          ready: json.ready == 'true',
         };
 
         if (authInfo.mode == 'OIDC') {
           authInfo.keycloakConfig = <Keycloak.KeycloakConfig>{
             url: json.url,
             realm: json.realm,
-            clientId: json.clientId
+            clientId: json.clientId,
           };
         }
 
         return right(authInfo);
       })
-      .catch(err => {
+      .catch((err) => {
         let actionResponse;
         if (err instanceof TypeError) {
           let errorMessage = err.message;
@@ -59,19 +59,19 @@ class AuthenticationService {
           }
           actionResponse = <ActionResponse>{
             message: errorMessage,
-            success: false
+            success: false,
           };
         } else if (err instanceof Response) {
           actionResponse = err
             .text()
             .then(
-              errorMessage =>
+              (errorMessage) =>
                 <ActionResponse>{ message: errorMessage, success: false }
             );
         } else {
           actionResponse = <ActionResponse>{
             message: 'Server Error',
-            success: false
+            success: false,
           };
         }
         return left(actionResponse);

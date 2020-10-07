@@ -1,8 +1,17 @@
-import React, {useState} from 'react';
-import {Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput} from '@patternfly/react-core';
+import React, { useState } from 'react';
+import {
+  Button,
+  ButtonVariant,
+  Form,
+  FormGroup,
+  Modal,
+  Text,
+  TextContent,
+  TextInput,
+} from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useRecentActivity} from "@app/utils/useRecentActivity";
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useRecentActivity } from '@app/utils/useRecentActivity';
 
 /**
  * Delete cache modal
@@ -13,9 +22,11 @@ const DeleteCache = (props: {
   closeModal: (boolean) => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { clearHistoryForCache} = useRecentActivity();
+  const { clearHistoryForCache } = useRecentActivity();
 
-  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<('success' | 'error' | 'default')>('default');
+  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<
+    'success' | 'error' | 'default'
+  >('default');
   const [cacheNameFormValue, setCacheNameFormValue] = useState('');
 
   const clearDeleteCacheModal = (deleteDone: boolean) => {
@@ -24,7 +35,7 @@ const DeleteCache = (props: {
     props.closeModal(deleteDone);
   };
 
-  const handleCacheNameToDeleteInputChange = value => {
+  const handleCacheNameToDeleteInputChange = (value) => {
     setCacheNameFormValue(value);
   };
   const handleDeleteButton = () => {
@@ -38,7 +49,7 @@ const DeleteCache = (props: {
     let validCacheName = trim === props.cacheName;
     setIsValidCacheNameValue(validCacheName ? 'success' : 'error');
     if (validCacheName) {
-      cacheService.deleteCache(props.cacheName).then(actionResponse => {
+      cacheService.deleteCache(props.cacheName).then((actionResponse) => {
         clearDeleteCacheModal(actionResponse.success);
         addAlert(actionResponse);
         clearHistoryForCache(props.cacheName);
@@ -79,7 +90,7 @@ const DeleteCache = (props: {
           onClick={() => clearDeleteCacheModal(false)}
         >
           Cancel
-        </Button>
+        </Button>,
       ]}
     >
       <Form>

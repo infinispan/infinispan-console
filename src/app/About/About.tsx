@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 import {
   AboutModal,
   Button,
@@ -15,7 +14,6 @@ import {
   TextListItemVariants,
   TextListVariants,
 } from '@patternfly/react-core';
-import serverService from '../../services/serverService';
 import backImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import {

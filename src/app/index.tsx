@@ -15,34 +15,36 @@ const App: React.FunctionComponent<any> = () => {
   >('PENDING');
 
   useEffect(() => {
-    authenticationService.config().then(eitherAuth => {
+    authenticationService.config().then((eitherAuth) => {
       if (eitherAuth.isRight()) {
         if (eitherAuth.value.keycloakConfig) {
           // Keycloak
-          KeycloakService.init(eitherAuth.value.keycloakConfig).then(result => {
-            if (utils.isWelcomePage()) {
-              setInit('LOGIN');
-            } else {
-              // if not welcome page
-              if (!KeycloakService.Instance.authenticated()) {
-                KeycloakService.Instance.login();
+          KeycloakService.init(eitherAuth.value.keycloakConfig).then(
+            (result) => {
+              if (utils.isWelcomePage()) {
+                setInit('LOGIN');
+              } else {
+                // if not welcome page
+                if (!KeycloakService.Instance.authenticated()) {
+                  KeycloakService.Instance.login();
+                }
+                localStorage.setItem(
+                  'react-token',
+                  KeycloakService.keycloakAuth.token
+                );
+                localStorage.setItem(
+                  'react-refresh-token',
+                  KeycloakService.keycloakAuth.refreshToken
+                );
+                setTimeout(() => {
+                  KeycloakService.Instance.getToken().then((token) => {
+                    localStorage.setItem('react-token', token);
+                  });
+                }, 60000);
+                setInit('DONE');
               }
-              localStorage.setItem(
-                'react-token',
-                KeycloakService.keycloakAuth.token
-              );
-              localStorage.setItem(
-                'react-refresh-token',
-                KeycloakService.keycloakAuth.refreshToken
-              );
-              setTimeout(() => {
-                KeycloakService.Instance.getToken().then(token => {
-                  localStorage.setItem('react-token', token);
-                });
-              }, 60000);
-              setInit('DONE');
             }
-          });
+          );
         } else if (eitherAuth.value.ready) {
           setInit('READY');
         } else {
