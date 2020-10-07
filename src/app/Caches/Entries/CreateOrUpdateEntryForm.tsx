@@ -18,10 +18,7 @@ import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-import { IField, ISelectField } from '../../../services/formUtils';
-import { ContentType, Flags } from '../../../services/utils';
-import { IField, ISelectField } from '../../services/formUtils';
-import { Flags } from '@services/utils';
+import { ContentType, Flags } from '@services/utils';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
 import cacheService from '@services/cacheService';
 
@@ -50,10 +47,17 @@ const CreateOrUpdateEntryForm = (props: {
     helperText: '',
     validated: 'default',
   };
-  const selectSingleElementInitialState: ISelectField = {
-    selected: '',
+
+  const keyContentTypeInitialState: ISelectField = {
+    selected: ContentType.StringContentType as string,
     expanded: false,
-    helperText: 'Select content type.',
+    helperText: 'Select a key content type.',
+  };
+
+  const contentTypeInitialState: ISelectField = {
+    selected: ContentType.StringContentType as string,
+    expanded: false,
+    helperText: 'Select a value content type.',
   };
   const maxIdleInitialState: IField = {
     value: '',
@@ -81,11 +85,11 @@ const CreateOrUpdateEntryForm = (props: {
   const [isEdition, setIsEdition] = useState<boolean>(false);
   const [key, setKey] = useState<IField>(keyInitialState);
   const [keyContentType, setKeyContentType] = useState<ISelectField>(
-    selectSingleElementInitialState
+    keyContentTypeInitialState
   );
   const [value, setValue] = useState<IField>(valueInitialState);
   const [valueContentType, setValueContentType] = useState<ISelectField>(
-    selectSingleElementInitialState
+    contentTypeInitialState
   );
   const [maxIdleField, setMaxIdleField] = useState<IField>(maxIdleInitialState);
   const [timeToLiveField, setTimeToLiveField] = useState<IField>(
@@ -108,10 +112,16 @@ const CreateOrUpdateEntryForm = (props: {
             setValue((prevState) => {
               return { ...prevState, value: eitherResponse.value.value };
             });
-            setKeyContentType(prevState => {
+            setKeyContentType((prevState) => {
               return {
                 ...prevState,
-                selected: props.keyContentType as string
+                selected: props.keyContentType as string,
+              };
+            });
+            setValueContentType((prevState) => {
+              return {
+                ...prevState,
+                selected: eitherResponse.value.valueContentType as string,
               };
             });
             if (eitherResponse.value.maxIdle) {
@@ -150,18 +160,6 @@ const CreateOrUpdateEntryForm = (props: {
     ));
   };
 
-  const onToggleKeyContentType = (isExpanded) => {
-    setExpanded(isExpanded, setKeyContentType);
-  };
-
-  const onToggleValueContentType = (isExpanded) => {
-    setExpanded(isExpanded, setValueContentType);
-  };
-
-  const onToggleFlags = (isExpanded) => {
-    setExpanded(isExpanded, setFlags);
-  };
-
   const setExpanded = (
     expanded: boolean,
     stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>
@@ -173,14 +171,6 @@ const CreateOrUpdateEntryForm = (props: {
 
   const onSelectValueContentType = (event, selection) => {
     setSelection(selection, false, setValueContentType);
-  };
-
-  const onClearValueContentType = () => {
-    setValueContentType(selectSingleElementInitialState);
-  };
-
-  const onClearFlagsSelection = () => {
-    setFlags(flagsInitialState);
   };
 
   const onSelectFlags = (event, selection) => {
@@ -274,6 +264,7 @@ const CreateOrUpdateEntryForm = (props: {
             let activity: Activity = {
               cacheName: props.cacheName,
               entryKey: key.value,
+              keyContentType: selectedKeyContentType,
               action: isEdition ? 'Edit' : 'Add',
               date: new Date(),
             };
@@ -291,8 +282,8 @@ const CreateOrUpdateEntryForm = (props: {
     setError(undefined);
     setKey(keyInitialState);
     setValue(valueInitialState);
-    setKeyContentType(selectSingleElementInitialState);
-    setValueContentType(selectSingleElementInitialState);
+    setKeyContentType(keyContentTypeInitialState);
+    setValueContentType(contentTypeInitialState);
     setFlags(flagsInitialState);
     setMaxIdleField(maxIdleInitialState);
     setTimeToLiveField(timeToLiveInitialState);
@@ -481,7 +472,7 @@ const CreateOrUpdateEntryForm = (props: {
               onSelect={(event, selection) =>
                 setSelection(selection, false, setKeyContentType)
               }
-              onClear={() => setKeyContentType(selectSingleElementInitialState)}
+              onClear={() => setKeyContentType(keyContentTypeInitialState)}
               selections={keyContentType.selected}
               isOpen={keyContentType.expanded}
               isDisabled={isEdition}
@@ -500,9 +491,11 @@ const CreateOrUpdateEntryForm = (props: {
               placeholderText="Select a value content type"
               variant={SelectVariant.typeahead}
               aria-label="Select Value Content Type"
-              onToggle={onToggleValueContentType}
+              onToggle={(isExpanded) =>
+                setExpanded(isExpanded, setValueContentType)
+              }
               onSelect={onSelectValueContentType}
-              onClear={onClearValueContentType}
+              onClear={() => setValueContentType(contentTypeInitialState)}
               selections={valueContentType.selected}
               isOpen={valueContentType.expanded}
             >
@@ -518,9 +511,9 @@ const CreateOrUpdateEntryForm = (props: {
             <Select
               variant={SelectVariant.typeaheadMulti}
               aria-label="Select Flags"
-              onToggle={onToggleFlags}
+              onToggle={(isExpanded) => setExpanded(isExpanded, setFlags)}
               onSelect={onSelectFlags}
-              onClear={onClearFlagsSelection}
+              onClear={() => setFlags(flagsInitialState)}
               selections={flags.selected}
               isOpen={flags.expanded}
               placeholderText="Flags"

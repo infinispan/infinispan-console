@@ -3,8 +3,8 @@
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, {ContentType} from './utils';
-import {Either, left, right} from './either';
+import utils, { ContentType } from './utils';
+import { Either, left, right } from './either';
 
 class CacheService {
   endpoint: string;
@@ -252,16 +252,21 @@ class CacheService {
     let headers = utils.createAuthenticatedHeader();
 
     if (keyContentType) {
-      headers.append('Key-Content-Type', this.contentTypeHeader(keyContentType));
+      headers.append(
+        'Key-Content-Type',
+        this.contentTypeHeader(keyContentType)
+      );
     } else if (utils.isJSONObject(key)) {
-      headers.append('Key-Content-Type', this.contentTypeHeader(ContentType.JSON));
+      headers.append(
+        'Key-Content-Type',
+        this.contentTypeHeader(ContentType.JSON)
+      );
     }
 
     if (valueContentType) {
       headers.append('Content-Type', this.contentTypeHeader(valueContentType));
     } else if (utils.isJSONObject(value)) {
       headers.append('Content-Type', this.contentTypeHeader(ContentType.JSON));
-
     }
 
     if (timeToLive.length > 0) {
@@ -294,7 +299,7 @@ class CacheService {
    * Calculate the key content type header value to send ot the REST API
    * @param contentType
    */
-  private contentTypeHeader(contentType: ContentType) {
+  private contentTypeHeader(contentType: ContentType): string {
     if (
       contentType == ContentType.StringContentType ||
       ContentType.DoubleContentType ||
@@ -302,7 +307,9 @@ class CacheService {
       ContentType.LongContentType ||
       ContentType.BooleanContentType
     ) {
-      return 'application/x-java-object;type=java.lang.' + contentType.toString();
+      return (
+        'application/x-java-object;type=java.lang.' + contentType.toString()
+      );
     }
 
     if (contentType == ContentType.OctetStream) {
@@ -324,6 +331,44 @@ class CacheService {
     return contentType.toString();
   }
 
+  private toContentType(
+    contentTypeHeader: string | null | undefined,
+    defaultContentType?: ContentType
+  ): ContentType {
+    if (contentTypeHeader == null) {
+      return defaultContentType
+        ? defaultContentType
+        : ContentType.StringContentType;
+    }
+    if (
+      contentTypeHeader.startsWith('application/x-java-object;type=java.lang.')
+    ) {
+      const contentType = contentTypeHeader.replace(
+        'application/x-java-object;type=java.lang.',
+        ''
+      );
+      return ContentType[contentType];
+    }
+
+    if (contentTypeHeader == 'application/octet-stream') {
+      return ContentType.OctetStream;
+    }
+
+    if (contentTypeHeader == 'application/octet-stream; encoding=hex') {
+      return ContentType.OctetStreamHex;
+    }
+
+    if (contentTypeHeader == 'application/json') {
+      return ContentType.JSON;
+    }
+
+    if (contentTypeHeader == 'application/xml') {
+      return ContentType.XML;
+    }
+
+    return ContentType.StringContentType;
+  }
+
   /**
    * Get entry by key
    * @param cacheName
@@ -341,12 +386,15 @@ class CacheService {
       let keyContentTypeHeader = this.contentTypeHeader(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
     }
-    return fetch(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key, {
-      method: 'GET',
-      credentials: 'include',
-      headers: headers
-    })
-      .then(response => {
+    return fetch(
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: headers,
+      }
+    )
+      .then((response) => {
         if (response.ok) {
           return response.text().then((value) => {
             const timeToLive = response.headers.get('timeToLiveSeconds');
@@ -362,6 +410,11 @@ class CacheService {
             return <CacheEntry>{
               key: key,
               value: value,
+              keyContentType: keyContentType,
+              valueContentType: this.toContentType(
+                response.headers.get('Content-Type'),
+                ContentType.JSON
+              ),
               timeToLive: timeToLive,
               maxIdle: maxIdleTimeSeconds,
               created: created
@@ -450,11 +503,18 @@ class CacheService {
     let keyContentTypeHeader = this.contentTypeHeader(keyContentType);
     headers.append('Key-Content-Type', keyContentTypeHeader);
 
-    let deleteEntryPromise = fetch(this.endpoint + '/caches/' +  encodeURIComponent(cacheName) + '/' + entryKey, {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: headers
-    })
+    let deleteEntryPromise = fetch(
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '/' +
+        entryKey,
+      {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: headers,
+      }
+    );
 
     return utils.handleCRUDActionResponse(
       'Entry ' + entryKey + ' has been deleted',

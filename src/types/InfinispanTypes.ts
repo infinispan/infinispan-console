@@ -74,7 +74,9 @@ interface CacheInfo {
 
 interface CacheEntry {
   key: string;
+  keyContentType?: string;
   value: string;
+  valueContentType?: string;
   timeToLive?: string;
   maxIdle?: string;
   created?: string;
@@ -185,6 +187,7 @@ interface ActionResponse {
 interface Activity {
   cacheName: string;
   entryKey: string;
+  keyContentType?: string;
   action: string;
   date: Date;
 }

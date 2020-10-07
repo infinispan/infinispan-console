@@ -29,13 +29,14 @@ const DeleteEntry = (props: {
   const onClickDeleteButton = () => {
     cacheService
       .deleteEntry(props.cacheName, props.entryKey, props.keyContentType)
-      .then(actionResponse => {
+      .then((actionResponse) => {
         props.closeModal();
         reload();
         addAlert(actionResponse);
         pushActivity({
           cacheName: props.cacheName,
           entryKey: props.entryKey,
+          keyContentType: props.keyContentType,
           action: 'Delete',
           date: new Date(),
         });
