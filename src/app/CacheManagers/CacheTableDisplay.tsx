@@ -39,9 +39,14 @@ import {
 } from '@patternfly/react-table/src/components/Table/Table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
+<<<<<<< HEAD
 import { useFetchCaches } from '@app/services/cachesHook';
 import { Health } from '@app/Common/Health';
 import { useBanner } from '@app/utils/useApiAlert';
+=======
+import { fetchCaches } from '@app/services/cachesHook';
+import { useTranslation } from 'react-i18next';
+>>>>>>> df98cbb... externalize strings part one
 
 interface CacheAction {
   cacheName: string;
@@ -72,6 +77,8 @@ const CacheTableDisplay = (props: {
     cacheName: '',
     action: '',
   });
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   useEffect(() => {
     setInterval(() => reload(), 10000);
@@ -167,13 +174,13 @@ const CacheTableDisplay = (props: {
       transforms: [cellWidth(10)],
     },
     {
-      title: 'Features',
+      title: t('cache-table.features'),
       transforms: [textCenter],
       cellTransforms: [textCenter],
     },
     {
       // Will display 'ignored' if the cache is ignored
-      title: '',
+      title: t('cache-table.status'),
       transforms: [cellWidth(15), textCenter],
       cellTransforms: [textCenter],
     },
@@ -188,7 +195,7 @@ const CacheTableDisplay = (props: {
     if (rowData.cells[0].isIgnored) {
       return [
         {
-          title: 'Undo ignore',
+          title: t('cache-table.undo-ignore'),
           onClick: (event, rowId, rowData, extra) =>
             openIgnoreCacheModal(
               rowData.cells[0].cacheName,
@@ -200,7 +207,7 @@ const CacheTableDisplay = (props: {
 
     return [
       {
-        title: 'Ignore',
+        title: t('cache-table.ignore'),
         onClick: (event, rowId, rowData, extra) =>
           openIgnoreCacheModal(
             rowData.cells[0].cacheName,
@@ -208,7 +215,7 @@ const CacheTableDisplay = (props: {
           ),
       },
       {
-        title: 'Delete',
+        title: t('cache-table.delete'),
         onClick: (event, rowId, rowData, extra) => {
           setCacheAction({
             cacheName: rowData.cells[0].cacheName,
@@ -220,7 +227,7 @@ const CacheTableDisplay = (props: {
   };
 
   const isCacheIgnored = (cacheInfo: CacheInfo): boolean => {
-    return cacheInfo.status == 'Ignored';
+    return cacheInfo.status == t('cache-table.ignored-status');
   };
 
   const closeDeleteModal = (deleteDone: boolean) => {
@@ -274,7 +281,7 @@ const CacheTableDisplay = (props: {
                 <TableEmptyState
                   loading={loading}
                   error={error}
-                  empty={'There are no caches'}
+                  empty={t('cache-table.empty-status')}
                 />
               ),
             },

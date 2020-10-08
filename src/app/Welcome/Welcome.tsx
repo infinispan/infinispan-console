@@ -29,7 +29,7 @@ const Welcome = (props) => {
   const authState = props.init;
   const { t } = useTranslation();
   const [supportOpen, setSupportOpen] = useState(false);
-  const brandname = 'Infinispan';
+  const brandname = t('brandname.brandname');
 
   const description1 = t('welcome-page.description1', { brandname: brandname });
   const description2 = t('welcome-page.description2', { brandname: brandname });

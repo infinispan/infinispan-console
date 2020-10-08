@@ -1,4 +1,12 @@
 {
+  "brandname": {
+    "brandname" : "Infinispan"
+  },
+  "layout" : {
+    "console-name": "Server Management Console",
+    "skip-to-content": "Skip to Content",
+    "about-name": "About"
+    },
   "welcome-page" : {
     "description1": "{{brandname}} is a distributed in-memory key/value data store with optional schema, available under the Apache License 2.0. Available as an embedded Java library or as a language-independent service accessed remotely over a variety of protocols (Hot Rod, REST)",
     "description2": "Use {{brandname}} as a cache or data grid in containerized, cloud-native environments or on bare-metal. Works on AWS, Azure, Google Cloud, Kubernetes and OpenShift.",
@@ -6,8 +14,33 @@
     "download" : "Download a client",
     "servers" :  "Find out how to set up, configure, and monitor {{brandname}} servers.",
     "learn-more": "Learn more",
-    "develop": "Develop applications to use {{brandname}} for in-memory storage in a variety of use cases.",
+    "develop": "Do this thing and this other thing.",
     "tutorials":  "Run the simple tutorials",
     "go-to-console":  "Go to the console"
+  },
+  "cache-managers" : {
+    "title" : "Data container",
+    "caches-tab" : "Caches",
+    "counters-tab" : "Counters",
+    "tasks-tab" : "Tasks",
+    "schemas-tab" : "Schemas"
+  },
+  "cache-table" : {
+    "name" : "Name",
+    "mode" : "Type",
+    "health" : "Health",
+    "features" : "Features",
+    "status" : "",
+    "ignore" : "Ignore",
+    "undo-ignore" : "Undo ignore",
+    "ignored-status" : "Ignored",
+    "delete" : "Delete",
+    "empty-status" : "There are no caches",
+    "mode-local" : "Local",
+    "mode-repl" : "Replicated",
+    "mode-dist" : "Distributed",
+    "mode-invalid" : "Invalidated",
+    "mode-scattered" : "Scattered"
+
   }
 }
