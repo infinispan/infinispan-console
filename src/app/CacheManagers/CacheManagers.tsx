@@ -25,6 +25,7 @@ import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay'
 import { Status } from '@app/Common/Status';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
+import { useTranslation } from 'react-i18next';
 
 const CacheManagers = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,6 +43,8 @@ const CacheManagers = () => {
   const [showSerializationContext, setShowSerializationContext] = useState(
     false
   );
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   useEffect(() => {
     if (loading) {
@@ -83,10 +86,10 @@ const CacheManagers = () => {
     }
 
     const tabs: ContainerTab[] = [
-      { name: 'Caches', count: cachesCount, key: '0' },
-      { name: 'Counters', count: countersCount, key: '1' },
-      { name: 'Tasks', count: tasksCount, key: '2' },
-      { name: 'Protobuf Schemas', count: protoSchemasCount, key: '3' },
+      { name: t('cache-managers.caches-tab'), count: cachesCount, key: '0' },
+      { name: t('cache-managers.counters-tab'), count: countersCount, key: '1' },
+      { name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2' },
+      { name: t('cache-managers.schemas-tab'), count: protoSchemasCount, key: '3' },
     ];
 
     return (
@@ -181,7 +184,7 @@ const CacheManagers = () => {
   };
 
   const buildHeader = () => {
-    let title = 'Data container';
+    let title = t('cache-managers.title');
     if (!cm) {
       return (
         <PageSection variant={PageSectionVariants.light}>
