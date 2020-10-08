@@ -252,21 +252,18 @@ class CacheService {
     let headers = utils.createAuthenticatedHeader();
 
     if (keyContentType) {
-      headers.append(
-        'Key-Content-Type',
-        this.contentTypeHeader(keyContentType)
-      );
+      headers.append('Key-Content-Type', utils.fromContentType(keyContentType));
     } else if (utils.isJSONObject(key)) {
       headers.append(
         'Key-Content-Type',
-        this.contentTypeHeader(ContentType.JSON)
+        utils.fromContentType(ContentType.JSON)
       );
     }
 
     if (valueContentType) {
-      headers.append('Content-Type', this.contentTypeHeader(valueContentType));
+      headers.append('Content-Type', utils.fromContentType(valueContentType));
     } else if (utils.isJSONObject(value)) {
-      headers.append('Content-Type', this.contentTypeHeader(ContentType.JSON));
+      headers.append('Content-Type', utils.fromContentType(ContentType.JSON));
     }
 
     if (timeToLive.length > 0) {
@@ -296,80 +293,6 @@ class CacheService {
   }
 
   /**
-   * Calculate the key content type header value to send ot the REST API
-   * @param contentType
-   */
-  private contentTypeHeader(contentType: ContentType): string {
-    if (
-      contentType == ContentType.StringContentType ||
-      ContentType.DoubleContentType ||
-      ContentType.IntegerContentType ||
-      ContentType.LongContentType ||
-      ContentType.BooleanContentType
-    ) {
-      return (
-        'application/x-java-object;type=java.lang.' + contentType.toString()
-      );
-    }
-
-    if (contentType == ContentType.OctetStream) {
-      return 'application/octet-stream';
-    }
-
-    if (contentType == ContentType.OctetStreamHex) {
-      return 'application/octet-stream; encoding=hex';
-    }
-
-    if (contentType == ContentType.JSON) {
-      return 'application/json';
-    }
-
-    if (contentType == ContentType.XML) {
-      return 'application/xml';
-    }
-
-    return contentType.toString();
-  }
-
-  private toContentType(
-    contentTypeHeader: string | null | undefined,
-    defaultContentType?: ContentType
-  ): ContentType {
-    if (contentTypeHeader == null) {
-      return defaultContentType
-        ? defaultContentType
-        : ContentType.StringContentType;
-    }
-    if (
-      contentTypeHeader.startsWith('application/x-java-object;type=java.lang.')
-    ) {
-      const contentType = contentTypeHeader.replace(
-        'application/x-java-object;type=java.lang.',
-        ''
-      );
-      return ContentType[contentType];
-    }
-
-    if (contentTypeHeader == 'application/octet-stream') {
-      return ContentType.OctetStream;
-    }
-
-    if (contentTypeHeader == 'application/octet-stream; encoding=hex') {
-      return ContentType.OctetStreamHex;
-    }
-
-    if (contentTypeHeader == 'application/json') {
-      return ContentType.JSON;
-    }
-
-    if (contentTypeHeader == 'application/xml') {
-      return ContentType.XML;
-    }
-
-    return ContentType.StringContentType;
-  }
-
-  /**
    * Get entry by key
    * @param cacheName
    * @param key
@@ -383,7 +306,7 @@ class CacheService {
   ): Promise<Either<ActionResponse, CacheEntry>> {
     let headers = utils.createAuthenticatedHeader();
     if (keyContentType) {
-      let keyContentTypeHeader = this.contentTypeHeader(keyContentType);
+      let keyContentTypeHeader = utils.fromContentType(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
     }
     return fetch(
@@ -411,7 +334,7 @@ class CacheService {
               key: key,
               value: value,
               keyContentType: keyContentType,
-              valueContentType: this.toContentType(
+              valueContentType: utils.toContentType(
                 response.headers.get('Content-Type'),
                 ContentType.JSON
               ),
@@ -500,7 +423,7 @@ class CacheService {
     keyContentType: ContentType
   ): Promise<ActionResponse> {
     let headers = utils.createAuthenticatedHeader();
-    let keyContentTypeHeader = this.contentTypeHeader(keyContentType);
+    let keyContentTypeHeader = utils.fromContentType(keyContentType);
     headers.append('Key-Content-Type', keyContentTypeHeader);
 
     let deleteEntryPromise = fetch(

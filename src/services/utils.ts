@@ -34,16 +34,16 @@ export enum CacheType {
 }
 
 export enum ContentType {
-  StringContentType = 'String',//'application/x-java-object;type=java.lang.String'
+  StringContentType = 'String', //'application/x-java-object;type=java.lang.String'
   JSON = 'Json', //'application/json'
-  XML = 'Xml',//'application/xml'
-  IntegerContentType = 'Integer',//'application/x-java-object;type=java.lang.Integer'
-  DoubleContentType = 'Double',//'application/x-java-object;type=java.lang.Double'
+  XML = 'Xml', //'application/xml'
+  IntegerContentType = 'Integer', //'application/x-java-object;type=java.lang.Integer'
+  DoubleContentType = 'Double', //'application/x-java-object;type=java.lang.Double'
   LongContentType = 'Long', //'application/x-java-object;type=java.lang.Long'
   BooleanContentType = 'Boolean', //'application/x-java-object;type=java.lang.Boolean'
   BytesType = 'Bytes', //'Bytes'
   OctetStream = 'Base64', //'application/octet-stream'
-  OctetStreamHex = 'Hex' //'application/octet-stream; encoding=hex'
+  OctetStreamHex = 'Hex', //'application/octet-stream; encoding=hex'
 }
 
 export enum Flags {
@@ -224,6 +224,84 @@ class Utils {
           success: false,
         }
     );
+  }
+
+  /**
+   * Calculate the key content type header value to send ot the REST API
+   * @param contentType
+   */
+  public fromContentType(contentType: ContentType): string {
+    let stringContentType = '';
+    switch (contentType) {
+      case ContentType.StringContentType:
+      case ContentType.DoubleContentType:
+      case ContentType.IntegerContentType:
+      case ContentType.LongContentType:
+      case ContentType.BooleanContentType:
+        stringContentType =
+          'application/x-java-object;type=java.lang.' + contentType.toString();
+        break;
+      case ContentType.OctetStream:
+        stringContentType = 'application/octet-stream';
+        break;
+      case ContentType.OctetStreamHex:
+        stringContentType = 'application/octet-stream; encoding=hex';
+        break;
+      case ContentType.JSON:
+        stringContentType = 'application/json';
+        break;
+      case ContentType.XML:
+        stringContentType = 'application/xml';
+        break;
+      default:
+        console.warn('Content type not mapped ' + contentType);
+    }
+
+    return stringContentType;
+  }
+
+  /**
+   * Translate from string to ContentType
+   *
+   * @param contentTypeHeader
+   * @param defaultContentType
+   */
+  public toContentType(
+    contentTypeHeader: string | null | undefined,
+    defaultContentType?: ContentType
+  ): ContentType {
+    if (contentTypeHeader == null) {
+      return defaultContentType
+        ? defaultContentType
+        : ContentType.StringContentType;
+    }
+    if (
+      contentTypeHeader.startsWith('application/x-java-object;type=java.lang.')
+    ) {
+      const contentType = contentTypeHeader.replace(
+        'application/x-java-object;type=java.lang.',
+        ''
+      );
+      return contentType as ContentType;
+    }
+
+    if (contentTypeHeader == 'application/octet-stream') {
+      return ContentType.OctetStream;
+    }
+
+    if (contentTypeHeader == 'application/octet-stream; encoding=hex') {
+      return ContentType.OctetStreamHex;
+    }
+
+    if (contentTypeHeader == 'application/json') {
+      return ContentType.JSON;
+    }
+
+    if (contentTypeHeader == 'application/xml') {
+      return ContentType.XML;
+    }
+
+    return ContentType.StringContentType;
   }
 }
 
