@@ -41,6 +41,7 @@ import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
 import { useFetchCaches } from '@app/services/cachesHook';
 import { Health } from '@app/Common/Health';
+import { useBanner } from '@app/utils/useApiAlert';
 
 interface CacheAction {
   cacheName: string;
@@ -52,6 +53,7 @@ const CacheTableDisplay = (props: {
   setCachesCount: (count: number) => void;
   isVisible: boolean;
 }) => {
+  const { setBanner } = useBanner();
   const { loading, caches, error, reload } = useFetchCaches(props.cmName);
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
@@ -75,6 +77,26 @@ const CacheTableDisplay = (props: {
   useEffect(() => {
     if (loading) {
       return;
+    }
+    const failedCaches = caches.reduce(
+      (failedCaches: string, cacheInfo: CacheInfo) => {
+        if (
+          (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
+          (cacheInfo.health as ComponentHealth) == ComponentHealth.DEGRADED
+        )
+          failedCaches =
+            failedCaches == '' ? cacheInfo.name : ', ' + cacheInfo.name;
+        return failedCaches;
+      },
+      ''
+    );
+
+    if (failedCaches.length > 0) {
+      setBanner(
+        '[' + failedCaches + ']' + ' caches health is FAILED or DEGRADED'
+      );
+    } else {
+      setBanner('');
     }
 
     props.setCachesCount(caches.length);
@@ -227,6 +249,8 @@ const CacheTableDisplay = (props: {
       initSlice + cachesPagination.perPage
     );
 
+    let failedCaches = '';
+
     let currentRows: {
       heightAuto: boolean;
       cells: (string | any)[];
@@ -256,6 +280,17 @@ const CacheTableDisplay = (props: {
       ];
     } else {
       currentRows = currentPageCaches.map((cacheInfo) => {
+        if (
+          ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED ||
+          ComponentHealth[cacheInfo.health] == ComponentHealth.DEGRADED
+        ) {
+          if (failedCaches.length > 0) {
+            failedCaches = failedCaches + ', ' + cacheInfo.name;
+          } else {
+            failedCaches = cacheInfo.name;
+          }
+        }
+
         return {
           heightAuto: true,
           type: '',

@@ -1,11 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 import dataContainerService from '@services/dataContainerService';
 import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
+import useInterval from 'use-interval';
 
 export function useFetchCaches(cacheManager: string) {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+
+  useInterval(() => {
+    dataContainerService.getCaches(cacheManager).then((either) => {
+      if (either.isRight()) {
+        setCaches(either.value);
+      } else {
+        setError(either.value.message);
+      }
+    });
+  }, 10000);
 
   useEffect(() => {
     if (loading) {

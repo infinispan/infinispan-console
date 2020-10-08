@@ -27,6 +27,7 @@ import { global_spacer_sm } from '@patternfly/react-tokens';
 import { About } from '@app/About/About';
 import utils from '../../services/utils';
 import { ErrorBoundary } from '@app/ErrorBoundary';
+import { BannerAlert } from '@app/Common/BannerAlert';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -160,6 +161,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
           skipToContent={PageSkipToContent}
           sidebar={utils.isWelcomePage() ? null : Sidebar}
         >
+          <BannerAlert />
           <ErrorBoundary>{children}</ErrorBoundary>
         </Page>
       </RecentActivityProvider>

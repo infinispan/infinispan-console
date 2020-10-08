@@ -3,7 +3,9 @@ import React, { useCallback, useState } from 'react';
 const emptyAlert: ActionResponse = { message: '', success: true };
 
 const initialAlertState = {
+  banner: '',
   alert: { message: '', success: true },
+  setBanner: (banner: string) => {},
   addAlert: (alert: ActionResponse) => {},
   removeAlert: () => {},
 };
@@ -11,6 +13,7 @@ const initialAlertState = {
 export const APIAlertContext = React.createContext(initialAlertState);
 
 const APIAlertProvider = ({ children }) => {
+  const [banner, setBanner] = useState<string>('');
   const [alert, setAlert] = useState<ActionResponse>(emptyAlert);
 
   const removeAlert = () => setAlert(emptyAlert);
@@ -23,7 +26,9 @@ const APIAlertProvider = ({ children }) => {
   };
 
   const contextValue = {
+    banner,
     alert,
+    setBanner: useCallback(setBanner, []),
     addAlert: useCallback(addAlert, []),
     removeAlert: useCallback(removeAlert, []),
   };
