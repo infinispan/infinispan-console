@@ -55,7 +55,7 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const contentTypeInitialState: ISelectField = {
-    selected: ContentType.StringContentType as string,
+    selected: '',
     expanded: false,
     helperText: 'Select a value content type.',
   };
