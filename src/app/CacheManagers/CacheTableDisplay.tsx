@@ -87,10 +87,13 @@ const CacheTableDisplay = (props: {
         if (
           (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
           (cacheInfo.health as ComponentHealth) == ComponentHealth.DEGRADED
-        )
-          failedCaches =
-            failedCaches == '' ? cacheInfo.name : ', ' + cacheInfo.name;
-        return failedCaches;
+        ) {
+          return failedCaches == ''
+            ? cacheInfo.name
+            : failedCaches + ', ' + cacheInfo.name;
+        } else {
+          return failedCaches;
+        }
       },
       ''
     );
