@@ -44,18 +44,23 @@ const CacheManagers = () => {
   );
 
   useEffect(() => {
-    dataContainerService.getDefaultCacheManager().then((eitherCm) => {
-      if (eitherCm.isRight()) {
-        const cmName = eitherCm.value.name;
-        setCacheManagerName(cmName);
-        setCacheManager(eitherCm.value);
-        setShowCaches(true);
-      } else {
-        setError(eitherCm.value.message);
-      }
-      setLoading(false);
-    });
-  }, []);
+    if (loading) {
+      dataContainerService
+        .getDefaultCacheManager()
+        .then((eitherCm) => {
+          if (eitherCm.isRight()) {
+            const cmName = eitherCm.value.name;
+            setCacheManagerName(cmName);
+            setCacheManager(eitherCm.value);
+            setShowCaches(true);
+          } else {
+            setError(eitherCm.value.message);
+          }
+          setLoading(false);
+        })
+        .then(() => setLoading(false));
+    }
+  }, [loading]);
 
   const handleTabClick = (nav) => {
     let tabIndex = nav.itemId;
