@@ -21,6 +21,7 @@ import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { ContentType, Flags } from '@services/utils';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
 import cacheService from '@services/cacheService';
+import { useReloadCache } from '@app/services/cachesHook';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -81,7 +82,7 @@ const CreateOrUpdateEntryForm = (props: {
     helperText: 'Select flags',
   };
 
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string>('');
   const [isEdition, setIsEdition] = useState<boolean>(false);
   const [key, setKey] = useState<IField>(keyInitialState);
   const [keyContentType, setKeyContentType] = useState<ISelectField>(
@@ -222,7 +223,7 @@ const CreateOrUpdateEntryForm = (props: {
 
   const handleAddOrUpdateEntryButton = () => {
     let isValid = true;
-    setError(undefined);
+    setError('');
     isValid =
       formUtils.validateRequiredField(key.value.trim(), 'Key', setKey) &&
       isValid;
@@ -279,7 +280,7 @@ const CreateOrUpdateEntryForm = (props: {
 
   const onClose = () => {
     props.closeModal();
-    setError(undefined);
+    setError('');
     setKey(keyInitialState);
     setValue(valueInitialState);
     setKeyContentType(keyContentTypeInitialState);
@@ -312,7 +313,7 @@ const CreateOrUpdateEntryForm = (props: {
         }}
         style={{ marginBottom: global_spacer_md.value }}
       >
-        {error && (
+        {error != '' && (
           <Alert variant={AlertVariant.danger} isInline title={error} />
         )}
 

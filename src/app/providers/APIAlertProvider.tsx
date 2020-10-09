@@ -24,7 +24,7 @@ const APIAlertProvider = ({ children }) => {
     setAlertMap(new Map(alertMap.set(time, actionResponse)));
     setTimeout(() => {
       removeAlert(time);
-    }, 80000);
+    }, 10000);
   };
 
   const contextValue = {
