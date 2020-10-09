@@ -73,6 +73,10 @@ const CacheTableDisplay = (props: {
     action: '',
   });
 
+  useEffect(() => {
+    setInterval(() => reload(), 10000);
+  }, []);
+
   // new caches or new filters
   useEffect(() => {
     if (loading) {
@@ -249,12 +253,9 @@ const CacheTableDisplay = (props: {
       initSlice + cachesPagination.perPage
     );
 
-    let failedCaches = '';
-
     let currentRows: {
       heightAuto: boolean;
       cells: (string | any)[];
-      type: string;
       disableActions: boolean;
     }[];
 
@@ -262,11 +263,10 @@ const CacheTableDisplay = (props: {
       currentRows = [
         {
           heightAuto: true,
-          type: 'empty',
           disableActions: true,
           cells: [
             {
-              props: { colSpan: 9 },
+              props: { colSpan: 5 },
               title: (
                 <TableEmptyState
                   loading={loading}
@@ -280,20 +280,8 @@ const CacheTableDisplay = (props: {
       ];
     } else {
       currentRows = currentPageCaches.map((cacheInfo) => {
-        if (
-          ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED ||
-          ComponentHealth[cacheInfo.health] == ComponentHealth.DEGRADED
-        ) {
-          if (failedCaches.length > 0) {
-            failedCaches = failedCaches + ', ' + cacheInfo.name;
-          } else {
-            failedCaches = cacheInfo.name;
-          }
-        }
-
         return {
           heightAuto: true,
-          type: '',
           disableActions: false,
           cells: [
             {
