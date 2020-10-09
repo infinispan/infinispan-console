@@ -33,7 +33,6 @@ const ClearAllEntries = (props: {
         date: new Date(),
       });
       reload();
-      props.closeModal();
     });
   };
 
