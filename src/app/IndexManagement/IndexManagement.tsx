@@ -27,8 +27,11 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { PurgeIndex } from '@app/IndexManagement/PurgeIndex';
 import { Reindex } from '@app/IndexManagement/Reindex';
 import displayUtils from '../../services/displayUtils';
+import { useTranslation } from 'react-i18next';
 
 const IndexManagement = (props) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);

@@ -37,6 +37,7 @@ import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { StateTransfer } from '@app/XSite/StateTransfer';
 import { Status } from '@app/Common/Status';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
 
 interface StateTransferModalState {
   site: string;
@@ -45,6 +46,8 @@ interface StateTransferModalState {
 }
 
 const XSiteCache = (props) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
   const [backups, setBackups] = useState<XSite[]>([]);

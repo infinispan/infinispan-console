@@ -25,6 +25,7 @@ import displayUtils from '@services/displayUtils';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { useTranslation } from 'react-i18next';
 
 const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;
@@ -42,6 +43,8 @@ const CounterTableDisplay = (props: {
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   useEffect(() => {
     loadCounters();
@@ -49,7 +52,7 @@ const CounterTableDisplay = (props: {
 
   const strongCountersActions = [
     {
-      title: 'Delete',
+      title: t('cache-managers.delete'),
       onClick: (event, rowId, rowData, extra) =>
         setCounterToDelete(rowData.cells[0].title),
     },
@@ -57,7 +60,7 @@ const CounterTableDisplay = (props: {
 
   const weakCountersActions = [
     {
-      title: 'Delete',
+      title: t('cache-managers.delete'),
       onClick: (event, rowId, rowData, extra) =>
         setCounterToDelete(rowData.cells[0].title),
     },
@@ -71,33 +74,29 @@ const CounterTableDisplay = (props: {
 
   const columns = [
     {
-      title: 'Name',
-      transforms: [cellWidth(15)],
+      title: t('cache-managers.counter-name'),
+      transforms: [cellWidth(15)]
     },
     {
-      title: 'Current value',
-      transforms: [cellWidth(15)],
+      title: t('cache-managers.current-value'),
+      transforms: [cellWidth(15)]
     },
     {
-      title: 'Initial value',
-      transforms: [cellWidth(15)],
+      title: t('cache-managers.initial-value'),
+      transforms: [cellWidth(15)]
     },
     {
-      title: 'Storage',
+      title: t('cache-managers.storage')
     },
     {
-      title: 'Configuration',
-    },
+      title: t('cache-managers.counter-configuration')
+    }
   ];
 
   const loadCounters = () => {
-    if (counters) {
-      const weakCounters = counters.filter(
-        (counter) => counter.config.type == 'Weak'
-      );
-      const strongCounters = counters.filter(
-        (counter) => counter.config.type == 'Strong'
-      );
+      if(counters) {
+        const weakCounters = counters.filter(counter => counter.config.type == t('cache-managers.weak'));
+        const strongCounters = counters.filter(counter => counter.config.type == t('cache-managers.strong'));
 
       setWeakCounters(weakCounters);
       setStrongCounters(strongCounters);
@@ -146,14 +145,14 @@ const CounterTableDisplay = (props: {
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                Lower bound: {displayUtils.formatNumber(config.lowerBound)}
+                {t('cache-managers.lower-bound')} {displayUtils.formatNumber(config.lowerBound)}
               </Text>
             </TextContent>
           </GridItem>
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                Upper bound: {displayUtils.formatNumber(config.upperBound)}
+                {t('cache-managers.upper-bound')} {displayUtils.formatNumber(config.upperBound)}
               </Text>
             </TextContent>
           </GridItem>
@@ -164,7 +163,7 @@ const CounterTableDisplay = (props: {
     return (
       <TextContent>
         <Text component={TextVariants.small}>
-          Concurrency level: {config.concurrencyLevel}
+          {t('cache-managers.concurrency-level')} {config.concurrencyLevel}
         </Text>
       </TextContent>
     );
@@ -184,7 +183,7 @@ const CounterTableDisplay = (props: {
                 <TableEmptyState
                   loading={loading}
                   error={error}
-                  empty={'There are no counters'}
+                  empty={t('cache-managers.no-counters-status')}
                 />
               ),
             },
@@ -241,7 +240,7 @@ const CounterTableDisplay = (props: {
         id={STRONG_COUNTER}
         key="strong-counter"
       >
-        Strong counters
+        {t('cache-managers.strong-counters')}
       </OptionsMenuItem>,
       <OptionsMenuItem
         onSelect={onSelectCounterType}
@@ -249,7 +248,7 @@ const CounterTableDisplay = (props: {
         id={WEAK_COUNTER}
         key="weak-counter"
       >
-        Weak counters
+        {t('cache-managers.weak-counters')}
       </OptionsMenuItem>,
     ];
     const toggle = (
@@ -257,8 +256,8 @@ const CounterTableDisplay = (props: {
         onToggle={() => setIsOpenFilter(!isOpenFilter)}
         toggleTemplate={
           selectedCounterType === STRONG_COUNTER
-            ? 'Strong counters'
-            : 'Weak counters'
+            ? t('cache-managers.strong-counters')
+            : t('cache-managers.weak-counters')
         }
       />
     );
@@ -294,7 +293,7 @@ const CounterTableDisplay = (props: {
         </ToolbarContent>
       </Toolbar>
       <Table
-        aria-label="Counters"
+        aria-label={t('cache-managers.counters-table-label')}
         cells={columns}
         rows={rows}
         actions={actions}

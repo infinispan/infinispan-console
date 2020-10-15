@@ -10,6 +10,7 @@ import {
 import { ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 } from '@patternfly/react-tokens';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const TableEmptyState = (props: {
   loading: boolean;
@@ -23,6 +24,9 @@ const TableEmptyState = (props: {
       </Bullseye>
     );
   }
+
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   if (props.error != '') {
     return (

@@ -24,6 +24,7 @@ import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { useTranslation } from 'react-i18next';
 
 const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   const [cm, setCm] = useState(props.computedMatch.params.cmName);
@@ -34,10 +35,12 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
     perPage: 10,
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const columns = [
     {
-      title: 'Configuration template',
-    },
+      title: t('caches.configuration.title')
+    }
   ];
 
   useEffect(() => {
@@ -118,7 +121,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
     );
   };
 
-  const pageTitle = 'Configuration templates';
+  const pageTitle = t('caches.configuration.page-title');
 
   return (
     <React.Fragment>
@@ -146,7 +149,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
             />
             <Table
               variant={TableVariant.compact}
-              aria-label="Cache configurations"
+              aria-label={t('caches.configuration.table-label')}
               cells={columns}
               rows={rows}
               className={'configs-table'}

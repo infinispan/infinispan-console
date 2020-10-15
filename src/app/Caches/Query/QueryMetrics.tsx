@@ -22,6 +22,7 @@ import displayUtils from '@services/displayUtils';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
 import cacheService from '../../../services/cacheService';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Query stats for indexed caches only
@@ -35,6 +36,8 @@ const QueryMetrics = (props: {
   const [stats, setStats] = useState<QueryStats | undefined>(props.stats);
   const [loading, setLoading] = useState<boolean>(props.loading);
   const [error, setError] = useState<string>(props.error);
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(
     false

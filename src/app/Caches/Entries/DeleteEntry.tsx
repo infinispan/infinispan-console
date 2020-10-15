@@ -11,6 +11,7 @@ import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { useReloadCache } from '@app/services/cachesHook';
 import { ContentType } from '@services/utils';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Delete entry modal
@@ -25,6 +26,8 @@ const DeleteEntry = (props: {
   const { addAlert } = useApiAlert();
   const { pushActivity } = useRecentActivity();
   const { reload } = useReloadCache();
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const onClickDeleteButton = () => {
     cacheService
@@ -49,27 +52,27 @@ const DeleteEntry = (props: {
       isOpen={props.isModalOpen}
       title={'Delete entry?'}
       onClose={props.closeModal}
-      aria-label="Delete entry modal"
+      aria-label={t('caches.entries.modal-delete-label')}
       actions={[
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={onClickDeleteButton}
         >
-          Delete
+          {t('caches.entries.modal-button-delete')}
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
-          Cancel
-        </Button>,
+          {t('caches.entries.modal-button-cancel')}
+        </Button>
       ]}
     >
       <TextContent>
         <Text>
-          This action will permanently delete the key{' '}
-          <strong>'{props.entryKey}'</strong> from the cache{' '}
+          {t('caches.entries.modal-delete-body-line-one')}{' '}
+          <strong>'{props.entryKey}'</strong> {t('caches.entries.modal-delete-body-line-two')}{' '}
           <strong>{props.cacheName}</strong>.
           <br />
-          You can always recreate the entry after.
+          {t('caches.entries.modal-delete-body-line-three')}
         </Text>
       </TextContent>
     </Modal>

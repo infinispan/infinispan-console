@@ -29,6 +29,7 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useTranslation } from 'react-i18next';
 
 const QueryEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
@@ -37,6 +38,8 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
 }) => {
   const [query, setQuery] = useState<string>('');
   const [rows, setRows] = useState<any[]>([]);
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const [queryPagination, setQueryPagination] = useState({
     page: 1,
     perPage: 10,

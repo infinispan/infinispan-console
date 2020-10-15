@@ -32,6 +32,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
 import { ContentType } from '@services/utils';
+import { useTranslation } from 'react-i18next';
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -47,29 +48,31 @@ const CacheEntries = (props: { cacheName: string }) => {
   const [keyToSearch, setKeyToSearch] = useState<string>('');
   const [rows, setRows] = useState<any[]>([]);
   const [actions, setActions] = useState<any[]>([]);
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const entryActions = [
     {
-      title: 'Edit',
+      title: t('caches.entries.action-edit'),
       onClick: (event, rowId, rowData, extra) =>
         onClickEditEntryButton(rowData.cells[0].title),
     },
     {
-      title: 'Delete',
+      title: t('caches.entries.action-delete'),
       onClick: (event, rowId, rowData, extra) =>
         onClickDeleteEntryButton(rowData.cells[0].title),
     },
   ];
 
   const columns = [
-    { title: 'Key' },
-    { title: 'Value' },
-    { title: 'Time to live' },
-    { title: 'Max idle' },
-    { title: 'Expires' },
-    { title: 'Created' },
-    { title: 'Last used' },
-    { title: 'Last modified' },
+    { title: t('caches.entries.column-key') },
+    { title: t('caches.entries.column-value') },
+    { title: t('caches.entries.column-lifespan') },
+    { title: t('caches.entries.column-maxidle') },
+    { title: t('caches.entries.column-expires') },
+    { title: t('caches.entries.column-created') },
+    { title: t('caches.entries.column-lastused') },
+    { title: t('caches.entries.column-lastmodified') }
   ];
   const updateRows = (entries: CacheEntry[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
@@ -86,8 +89,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                   <EmptyState variant={EmptyStateVariant.full}>
                     <EmptyStateIcon icon={SearchIcon} />
                     <Title headingLevel="h2" size="lg">
-                      Entry with key <strong>{keyToSearch}</strong> and content
-                      type <strong>{keyType}</strong> not found.
+                      {t('caches.entries.get-entry-not-found')} <strong>{keyToSearch}</strong>
                     </Title>
                   </EmptyState>
                 </Bullseye>
@@ -104,9 +106,9 @@ const CacheEntries = (props: { cacheName: string }) => {
           cells: [
             { title: entry.key },
             { title: displayValue(entry.value) },
-            { title: entry.timeToLive ? entry.timeToLive : 'Forever' },
-            { title: entry.maxIdle ? entry.maxIdle : 'Forever' },
-            { title: entry.expires ? entry.expires : 'Never' },
+            { title: entry.timeToLive ? entry.timeToLive : t('caches.entries.lifespan-immortal') },
+            { title: entry.maxIdle ? entry.maxIdle : t('caches.entries.maxidle-immortal') },
+            { title: entry.expires ? entry.expires : t('caches.entries.never-expire') },
             { title: entry.created },
             { title: entry.lastUsed },
             { title: entry.lastModified },

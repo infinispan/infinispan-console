@@ -9,6 +9,7 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_200 } from '@patternfly/react-tokens';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const TableErrorState = (props: { error: string; detail?: string }) => {
   const displayErrorBody = () => {
@@ -21,6 +22,9 @@ const TableErrorState = (props: { error: string; detail?: string }) => {
       );
     }
   };
+
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   return (
     <Bullseye>

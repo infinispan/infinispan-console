@@ -8,6 +8,7 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Purge index modal
@@ -17,6 +18,8 @@ const PurgeIndex = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
 
   const onClickPurgeButton = () => {
