@@ -21,21 +21,16 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import {CubeIcon} from '@patternfly/react-icons';
-import {Link, useLocation} from 'react-router-dom';
 import { CubeIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
 import cacheService from '@services/cacheService';
 import dataContainerService from '@services/dataContainerService';
-import { Link, useLocation } from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
-  let location = useLocation();
   const { addAlert } = useApiAlert();
   const history = useHistory();
   const cmName = props.computedMatch.params.cmName;
@@ -62,12 +57,16 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   useEffect(() => {
     dataContainerService
       .getCacheConfigurationTemplates(cmName)
-      .then((templates) => {
-        let options: OptionSelect[] = [];
-        templates.forEach((template) => {
-          options.push({ value: template.name });
-        });
-        setConfigs(options);
+      .then((eitherTemplates) => {
+        if (eitherTemplates.isRight()) {
+          let options: OptionSelect[] = [];
+          eitherTemplates.value.forEach((template) => {
+            options.push({ value: template.name });
+          });
+          setConfigs(options);
+        } else {
+          addAlert(eitherTemplates.value);
+        }
       });
   }, []);
 
@@ -137,19 +136,23 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     if (isValidName == 'error' || isValidConfig == 'error') {
       return;
     }
-    let createCacheCall: Promise<ActionResponse> ;
+    let createCacheCall: Promise<ActionResponse>;
     if (selectedConfig != '') {
-      createCacheCall = cacheService
-        .createCacheByConfigName(name, selectedConfig);
+      createCacheCall = cacheService.createCacheByConfigName(
+        name,
+        selectedConfig
+      );
     } else {
-      createCacheCall = cacheService
-        .createCacheWithConfiguration(name, config)
+      createCacheCall = cacheService.createCacheWithConfiguration(name, config);
     }
-    createCacheCall.then(actionResponse => {
-      if(actionResponse.success) {
-        history.push('/');
-      }
-    }).then(() => addAlert(actionResponse));
+    createCacheCall
+      .then((actionResponse) => {
+        if (actionResponse.success) {
+          history.push('/');
+        }
+        return actionResponse;
+      })
+      .then((actionResponse) => addAlert(actionResponse));
   };
 
   const titleId = 'plain-typeahead-select-id';

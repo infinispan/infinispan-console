@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -15,6 +16,7 @@ const IgnoreCache = (props: {
   action: string;
 }) => {
   const { addAlert } = useApiAlert();
+  const { reloadCaches } = useCaches();
 
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -30,6 +32,7 @@ const IgnoreCache = (props: {
         .then((actionResponse) => {
           clearIgnoreCacheModal(actionResponse.success);
           addAlert(actionResponse);
+          reloadCaches();
         });
     } else {
       cacheService
@@ -37,6 +40,7 @@ const IgnoreCache = (props: {
         .then((actionResponse) => {
           clearIgnoreCacheModal(actionResponse.success);
           addAlert(actionResponse);
+          reloadCaches();
         });
     }
   };

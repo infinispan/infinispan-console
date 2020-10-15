@@ -12,6 +12,7 @@ import {
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
+import { useCaches } from '@app/services/dataContainerHooks';
 
 /**
  * Delete cache modal
@@ -23,6 +24,7 @@ const DeleteCache = (props: {
 }) => {
   const { addAlert } = useApiAlert();
   const { clearHistoryForCache } = useRecentActivity();
+  const { reloadCaches } = useCaches();
 
   const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<
     'success' | 'error' | 'default'
@@ -53,6 +55,7 @@ const DeleteCache = (props: {
         clearDeleteCacheModal(actionResponse.success);
         addAlert(actionResponse);
         clearHistoryForCache(props.cacheName);
+        reloadCaches();
       });
     }
   };

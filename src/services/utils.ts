@@ -4,6 +4,7 @@
  * @author Katia Aresti
  */
 import { KeycloakService } from './keycloakService';
+import { left } from '@services/either';
 
 export enum ComponentStatus {
   STOPPING = 'STOPPING',
@@ -215,6 +216,15 @@ class Utils {
         message: !errorMessage ? err.message : errorMessage,
         success: false,
       };
+    }
+
+    if (err instanceof Response) {
+      if (err.status == 401) {
+        return <ActionResponse>{
+          message: 'Login failed. Check your credentials and try again.',
+          success: false,
+        };
+      }
     }
 
     return err.text().then(

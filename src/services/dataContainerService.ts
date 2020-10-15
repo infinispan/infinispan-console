@@ -24,32 +24,14 @@ class ContainerService {
         throw response;
       })
       .then((names) => this.getCacheManager(names[0]).then((cm) => right(cm)))
-      .catch((err) => {
-        if (err instanceof Response) {
-          if (err.status == 401) {
-            return left(<ActionResponse>{
-              message:
-                'Unauthorized. You need to provide the correct credentials.',
-              success: false,
-            });
-          }
-
-          return err
-            .text()
-            .then((errorMessage) =>
-              left(<ActionResponse>{ message: errorMessage, success: false })
-            );
-        }
-        let errorMessage = 'Something went wrong. Check the logs.';
-        if (err instanceof TypeError) {
-          errorMessage = 'Failed to connect';
-          console.error(err);
-        }
-        return left(<ActionResponse>{
-          message: errorMessage,
-          success: false,
-        });
-      });
+      .catch((err) =>
+        left(
+          utils.mapError(
+            err,
+            'Cannot connect. Check the navigator logs for errors.'
+          )
+        )
+      );
   }
 
   private getCacheManager(name: string): Promise<CacheManager> {
@@ -104,50 +86,49 @@ class ContainerService {
     return templates.filter((template) => !template.startsWith('___'));
   }
 
-  public async getCacheManagerStats(name: string): Promise<CacheManagerStats> {
+  /**
+   * Retrieve the cache manager stats
+   *
+   * @param name, the name of the cache manager
+   */
+  public async getCacheManagerStats(
+    name: string
+  ): Promise<Either<ActionResponse, CacheManagerStats>> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
       .then((response) => response.json())
-      .then((data) => <CacheManagerStats>data);
-  }
-
-  public async getCacheManagerConfigurations(
-    name: string
-  ): Promise<[CacheConfig]> {
-    return utils
-      .restCall(
-        this.endpoint + '/cache-managers/' + name + '/cache-configs',
-        'GET'
-      )
-      .then((response) => response.json())
-      .then((arr) =>
-        arr.map(
-          (config) =>
-            <CacheConfig>{
-              name: config.name,
-              config: JSON.stringify(config.configuration, undefined, 2),
-            }
-        )
+      .then((data) => right(<CacheManagerStats>data))
+      .catch((err) =>
+        left(utils.mapError(err, 'Error retrieving cache manager statistics.'))
       );
   }
 
+  /**
+   * Get cache configuration templates for in the cache manager name
+   *
+   * @param name, the name of the cache manager
+   */
   public async getCacheConfigurationTemplates(
     name: string
-  ): Promise<[CacheConfig]> {
+  ): Promise<Either<ActionResponse, [CacheConfig]>> {
     return utils
       .restCall(
         this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
         'GET'
       )
       .then((response) => response.json())
-      .then((arr) =>
-        arr.map(
+      .then((arr) => {
+        const configs: [CacheConfig] = arr.map(
           (config) =>
             <CacheConfig>{
               name: config.name,
               config: JSON.stringify(config.configuration, undefined, 2),
             }
-        )
+        );
+        return right(configs);
+      })
+      .catch((err) =>
+        left(utils.mapError(err, 'Error retrieving configuration templates.'))
       );
   }
 
@@ -186,13 +167,7 @@ class ContainerService {
             .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
         )
       )
-      .catch((err) =>
-        err
-          .text()
-          .then((errorMessage) =>
-            left(<ActionResponse>{ message: errorMessage, success: false })
-          )
-      );
+      .catch((err) => left(utils.mapError(err, 'Error retrieving caches.')));
   }
 
   private mapCacheType(type: string) {

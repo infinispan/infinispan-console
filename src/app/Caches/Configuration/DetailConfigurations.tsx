@@ -27,8 +27,9 @@ import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
 
 const DetailConfigurations: React.FunctionComponent<any> = (props) => {
-  const [cm, setCm] = useState(props.computedMatch.params.cmName);
+  const [cmName, setCmName] = useState(props.computedMatch.params.cmName);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [cacheConfigs, setCacheConfigs] = useState<CacheConfig[]>([]);
   const [pageConfigsPagination, setCacheConfigsPagination] = useState({
     page: 1,
@@ -44,11 +45,18 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   ];
 
   useEffect(() => {
-    dataContainerService.getCacheConfigurationTemplates(cm).then((configs) => {
-      setLoading(false);
-      setCacheConfigs(configs);
-    });
-  }, [cm]);
+    dataContainerService
+      .getCacheConfigurationTemplates(cmName)
+      .then((eitherConfigs) => {
+        setLoading(false);
+        if (eitherConfigs.isRight()) {
+          setCacheConfigs(eitherConfigs.value);
+        } else {
+          setError(eitherConfigs.value.message);
+        }
+      })
+      .then(() => setLoading(false));
+  }, [cmName]);
 
   useEffect(() => {
     const slice =
@@ -81,7 +89,11 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
           cells: [
             {
               title: (
-                <TableEmptyState loading={loading} error={''} empty={''} />
+                <TableEmptyState
+                  loading={loading}
+                  error={error}
+                  empty={'There are no cache configurations templates'}
+                />
               ),
             },
           ],
