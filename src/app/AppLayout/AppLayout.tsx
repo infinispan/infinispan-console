@@ -29,6 +29,7 @@ import { About } from '@app/About/About';
 import utils from '@services/utils';
 import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
+import { useTranslation } from 'react-i18next';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -40,6 +41,9 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     target: '_self',
     onClick: () => history.push('/'),
   };
+
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isAboutOpen, setIsAboutOpen] = useState(false);

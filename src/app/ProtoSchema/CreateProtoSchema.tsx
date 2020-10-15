@@ -15,6 +15,7 @@ import { global_spacer_md } from '@patternfly/react-tokens';
 import protobufService from '../../services/protobufService';
 import formUtils, { IField } from '../../services/formUtils';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Proto Schema creation form
@@ -23,6 +24,8 @@ const CreateProtoSchema = (props: {
   isModalOpen: boolean;
   closeModal: (boolean) => void;
 }) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const [error, setError] = useState<string | undefined>(undefined);
 

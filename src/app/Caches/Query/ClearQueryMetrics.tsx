@@ -8,6 +8,7 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useTranslation } from 'react-i18next';
 
 /**
  * ClearQueryMetrics entry modal
@@ -18,6 +19,8 @@ const ClearQueryMetrics = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const onClickDeleteButton = () => {
     cacheService.clearQueryStats(props.cacheName).then((actionResponse) => {
@@ -31,27 +34,25 @@ const ClearQueryMetrics = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Clear query stats?'}
+      title={t('caches.configuration.modal-clear-query-stats')}
       onClose={props.closeModal}
-      aria-label="Clear query stats modal"
+      aria-label={t('caches.configuration.modal-clear-query-stats-label')}
       actions={[
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={onClickDeleteButton}
         >
-          Clear stats
+          {t('caches.configuration.modal-button-query-clear-stats')}
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
-          Cancel
-        </Button>,
+          {t('caches.configuration.modal-button-cancel')}
+        </Button>
       ]}
     >
       <TextContent>
         <Text>
-          This action will permanently clear all the cache query statistics.
-          <br />
-          This cannot be undone.
+          {t('caches.configuration.modal-button-query-clear-stats-body')}
         </Text>
       </TextContent>
     </Modal>

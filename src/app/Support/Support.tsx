@@ -15,11 +15,14 @@ import {
   global_warning_color_100,
 } from '@patternfly/react-tokens';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Support pop up when the user has run the server and there is no user/password to log in
  */
 const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const header = (
     <Stack hasGutter={true}>
       <StackItem>

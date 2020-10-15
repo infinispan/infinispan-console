@@ -31,9 +31,12 @@ import {
 import { Health } from '@app/Common/Health';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { TableErrorState } from '@app/Common/TableErrorState';
+import { useTranslation } from 'react-i18next';
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const [error, setError] = useState<undefined | string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(

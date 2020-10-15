@@ -39,14 +39,10 @@ import {
 } from '@patternfly/react-table/src/components/Table/Table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
-<<<<<<< HEAD
 import { useFetchCaches } from '@app/services/cachesHook';
 import { Health } from '@app/Common/Health';
 import { useBanner } from '@app/utils/useApiAlert';
-=======
-import { fetchCaches } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
->>>>>>> df98cbb... externalize strings part one
 
 interface CacheAction {
   cacheName: string;
@@ -163,24 +159,24 @@ const CacheTableDisplay = (props: {
   }, [filteredCaches, cachesPagination]);
 
   const columns = [
-    { title: 'Name', transforms: [cellWidth(30), textCenter] },
+    { title: t('cache-managers.cache-name'), transforms: [cellWidth(30), textCenter] },
     {
-      title: 'Type',
+      title: t('cache-managers.cache-mode'),
       transforms: [cellWidth(15), textCenter],
       cellTransforms: [textCenter],
     },
     {
-      title: 'Health',
+      title: t('cache-managers.cache-health'),
       transforms: [cellWidth(10)],
     },
     {
-      title: t('cache-table.features'),
+      title: t('cache-managers.cache-features'),
       transforms: [textCenter],
       cellTransforms: [textCenter],
     },
     {
       // Will display 'ignored' if the cache is ignored
-      title: t('cache-table.status'),
+      title: t('cache-managers.cache-status'),
       transforms: [cellWidth(15), textCenter],
       cellTransforms: [textCenter],
     },
@@ -195,7 +191,7 @@ const CacheTableDisplay = (props: {
     if (rowData.cells[0].isIgnored) {
       return [
         {
-          title: t('cache-table.undo-ignore'),
+          title: t('cache-managers.undo-ignore'),
           onClick: (event, rowId, rowData, extra) =>
             openIgnoreCacheModal(
               rowData.cells[0].cacheName,
@@ -207,7 +203,7 @@ const CacheTableDisplay = (props: {
 
     return [
       {
-        title: t('cache-table.ignore'),
+        title: t('cache-managers.ignore'),
         onClick: (event, rowId, rowData, extra) =>
           openIgnoreCacheModal(
             rowData.cells[0].cacheName,
@@ -215,7 +211,7 @@ const CacheTableDisplay = (props: {
           ),
       },
       {
-        title: t('cache-table.delete'),
+        title: t('cache-managers.delete'),
         onClick: (event, rowId, rowData, extra) => {
           setCacheAction({
             cacheName: rowData.cells[0].cacheName,
@@ -227,7 +223,7 @@ const CacheTableDisplay = (props: {
   };
 
   const isCacheIgnored = (cacheInfo: CacheInfo): boolean => {
-    return cacheInfo.status == t('cache-table.ignored-status');
+    return cacheInfo.status == t('cache-managers.ignored-status');
   };
 
   const closeDeleteModal = (deleteDone: boolean) => {
@@ -281,7 +277,7 @@ const CacheTableDisplay = (props: {
                 <TableEmptyState
                   loading={loading}
                   error={error}
-                  empty={t('cache-table.empty-status')}
+                  empty={t('cache-managers.no-caches-status')}
                 />
               ),
             },
@@ -481,7 +477,9 @@ const CacheTableDisplay = (props: {
           },
         }}
       >
-        <Button variant={'primary'}>Create Cache</Button>
+        <Button variant={'primary'}>
+          {t('cache-managers.create-cache-button')}
+        </Button>
       </Link>
     );
   };
@@ -496,7 +494,9 @@ const CacheTableDisplay = (props: {
           },
         }}
       >
-        <Button variant={'link'}>Configuration templates</Button>
+        <Button variant={'link'}>
+          {t('cache-managers.config-templates-button')}
+        </Button>
       </Link>
     );
   };
@@ -507,31 +507,31 @@ const CacheTableDisplay = (props: {
         <ToolbarItem style={{ width: 250 }}>
           <Select
             variant={SelectVariant.checkbox}
-            aria-label="Filter"
+            aria-label={t('cache-managers.cache-filter-label')}
             onToggle={setIsFilterSelectExpanded}
             onSelect={onSelectFilter}
             selections={selectedFilters}
             isOpen={isFilterSelectExpanded}
             toggleIcon={<FilterIcon />}
             maxHeight={200}
-            placeholderText="Filter"
+            placeholderText={t('cache-managers.cache-filter-label')}
             isGrouped={true}
           >
-            <SelectGroup label="Cache type" key="group1">
-              <SelectOption key={0} value="Local" />
-              <SelectOption key={1} value="Replicated" />
-              <SelectOption key={2} value="Distributed" />
-              <SelectOption key={3} value="Invalidated" />
-              <SelectOption key={4} value="Scattered" />
+            <SelectGroup label={t('cache-managers.cache-filter-type-label')} key="group1">
+              <SelectOption key={0} value={t('cache-managers.mode-local')} />
+              <SelectOption key={1} value={t('cache-managers.mode-repl')} />
+              <SelectOption key={2} value={t('cache-managers.mode-dist')} />
+              <SelectOption key={3} value={t('cache-managers.mode-invalid')} />
+              <SelectOption key={4} value={t('cache-managers.mode-scattered')} />
             </SelectGroup>
-            <SelectGroup label="Feature" key="group2">
-              <SelectOption key={5} value="Bounded" />
-              <SelectOption key={6} value="Indexed" />
-              <SelectOption key={7} value="Persistent" />
-              <SelectOption key={8} value="Transactional" />
-              <SelectOption key={9} value="Secured" />
-              <SelectOption key={10} value="Backups" />
-              <SelectOption key={11} value="Ignored" />
+            <SelectGroup label={t('cache-managers.cache-filter-feature-label')} key="group2">
+              <SelectOption key={5} value={t('cache-managers.cache-filter-feature-bounded')} />
+              <SelectOption key={6} value={t('cache-managers.cache-filter-feature-indexed')} />
+              <SelectOption key={7} value={t('cache-managers.cache-filter-feature-persistent')} />
+              <SelectOption key={8} value={t('cache-managers.cache-filter-feature-trans')} />
+              <SelectOption key={9} value={t('cache-managers.cache-filter-feature-secure')} />
+              <SelectOption key={10} value={t('cache-managers.cache-filter-feature-xsite')} />
+              <SelectOption key={11} value={t('cache-managers.cache-filter-feature-ignored')} />
             </SelectGroup>
           </Select>
         </ToolbarItem>
@@ -574,7 +574,7 @@ const CacheTableDisplay = (props: {
         isInline
         onClick={onDeleteAllFilters}
       >
-        Clear all
+        {t('cache-managers.clear-all-button')}
       </Button>
     );
   };
@@ -625,7 +625,7 @@ const CacheTableDisplay = (props: {
         </ToolbarContent>
       </Toolbar>
       <Table
-        aria-label="Caches"
+        aria-label={t('cache-managers.cache-table-label')}
         cells={columns}
         rows={rows}
         className={'caches-table'}

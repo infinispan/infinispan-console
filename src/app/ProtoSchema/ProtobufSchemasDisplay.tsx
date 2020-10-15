@@ -32,6 +32,7 @@ import { global_FontSize_sm, global_spacer_md } from '@patternfly/react-tokens';
 import { CreateProtoSchema } from '@app/ProtoSchema/CreateProtoSchema';
 import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Protobuf Schemas display
@@ -40,6 +41,8 @@ const ProtobufSchemasDisplay = (props: {
   setProtoSchemasCount: (number) => void;
   isVisible: boolean;
 }) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

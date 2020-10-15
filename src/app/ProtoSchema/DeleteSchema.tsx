@@ -8,6 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import protobufService from '../../services/protobufService';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Delete schema modal
@@ -17,6 +18,8 @@ const DeleteSchema = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
 
   const onClickDeleteButton = () => {

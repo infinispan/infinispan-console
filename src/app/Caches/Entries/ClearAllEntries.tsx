@@ -10,6 +10,7 @@ import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { useFetchCache } from '@app/services/cachesHook';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Clear all entries modal
@@ -22,6 +23,8 @@ const ClearAllEntries = (props: {
   const { pushActivity } = useRecentActivity();
   const { addAlert } = useApiAlert();
   const { reload } = useFetchCache(props.cacheName);
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const onClickClearAllEntriesButton = () => {
     cacheService.clear(props.cacheName).then((actionResponse) => {
@@ -41,28 +44,28 @@ const ClearAllEntries = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Clear all entries?'}
+      title={t('caches.entries.modal-clear-title')}
       onClose={props.closeModal}
-      aria-label="Clear all entries modal"
+      aria-label={t('caches.entries.modal-clear-label')}
       actions={[
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={onClickClearAllEntriesButton}
         >
-          Clear
+          {t('caches.entries.modal-clear-button-click')}
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
-          Cancel
-        </Button>,
+          {t('caches.entries.modal-button-cancel')}
+        </Button>
       ]}
     >
       <TextContent>
         <Text>
-          This action will permanently clear all entries in{' '}
+          {t('caches.entries.modal-clear-body-line-one')}{' '}
           <strong>{props.cacheName}</strong>.
           <br />
-          This cannot be undone.
+          {t('caches.entries.modal-clear-body-line-two')}
         </Text>
       </TextContent>
     </Modal>

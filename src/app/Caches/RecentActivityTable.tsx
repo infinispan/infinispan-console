@@ -15,9 +15,13 @@ import {
   EmptyStateVariant,
 } from '@patternfly/react-core';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
+import { useTranslation } from 'react-i18next';
 
 const RecentActivityTable = (props: { cacheName: string }) => {
   const { activities } = useRecentActivity();
+
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const columns = [
     { title: 'Key' },

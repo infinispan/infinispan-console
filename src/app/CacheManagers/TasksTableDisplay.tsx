@@ -30,6 +30,7 @@ import {
   global_spacer_xs,
 } from '@patternfly/react-tokens';
 import tasksService from '@services/tasksService';
+import { useTranslation } from 'react-i18next';
 
 const TasksTableDisplay = (props: {
   setTasksCount: (number) => void;
@@ -43,24 +44,26 @@ const TasksTableDisplay = (props: {
     perPage: 10,
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const columns = [
-    { title: 'Name' },
+    { title: t('cache-managers.task-name'), },
     {
-      title: 'Type',
+      title: t('cache-managers.task-type'),
     },
     {
-      title: 'Context name',
+      title: t('cache-managers.context-name'),
     },
     {
-      title: 'Operation name',
+      title: t('cache-managers.operation-name'),
     },
     {
-      title: 'Parameters',
+      title: t('cache-managers.parameters'),
     },
     {
-      title: 'Allowed role',
-    },
+      title: t('cache-managers.allowed-role'),
+    }
   ];
 
   useEffect(() => {
@@ -126,7 +129,7 @@ const TasksTableDisplay = (props: {
 
   const taskAllowedRoles = (allowedRole: string) => {
     if (allowedRole == null || allowedRole.trim().length == 0) {
-      return <TextContent>-</TextContent>;
+      return <TextContent>{t('cache-managers.allowed-role-null')}</TextContent>;
     }
     return (
       <TextContent>
@@ -150,10 +153,10 @@ const TasksTableDisplay = (props: {
                   <EmptyState variant={EmptyStateVariant.small}>
                     <EmptyStateIcon icon={SearchIcon} />
                     <Title headingLevel="h2" size="lg">
-                      There are no tasks
+                      {t('cache-managers.no-tasks-status')}
                     </Title>
                     <EmptyStateBody>
-                      Create one using REST endpoint, HotRod or the CLI
+                      {t('cache-managers.no-tasks-body')}
                     </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
@@ -198,7 +201,7 @@ const TasksTableDisplay = (props: {
           isCompact
         />
         <Table
-          aria-label="Tasks"
+          aria-label={t('cache-managers.tasks-table-label')}
           cells={columns}
           rows={rows}
           className={'tasks-table'}

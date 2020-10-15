@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Ignore cache modal
@@ -14,6 +15,9 @@ const IgnoreCache = (props: {
   action: string;
 }) => {
   const { addAlert } = useApiAlert();
+
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const clearIgnoreCacheModal = (ignoreDone: boolean) => {
     props.closeModal(ignoreDone);
