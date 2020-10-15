@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import dataContainerService from '@services/dataContainerService';
+import { useState } from 'react';
 import {
   Card,
   CardBody,
@@ -25,19 +24,17 @@ import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay'
 import { Status } from '@app/Common/Status';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
+import { useDataContainer } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 
 const CacheManagers = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [cmName, setCacheManagerName] = useState<undefined | string>();
-  const [cm, setCacheManager] = useState<undefined | CacheManager>();
+  const { cm, loading, error } = useDataContainer();
   const [activeTabKey, setActiveTabKey] = useState('0');
   const [cachesCount, setCachesCount] = useState<number>(0);
   const [countersCount, setCountersCount] = useState<number>(0);
   const [tasksCount, setTasksCount] = useState<number>(0);
   const [protoSchemasCount, setProtoSchemasCount] = useState<number>(0);
-  const [showCaches, setShowCaches] = useState(false);
+  const [showCaches, setShowCaches] = useState(true);
   const [showCounters, setShowCounters] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
   const [showSerializationContext, setShowSerializationContext] = useState(
@@ -45,25 +42,6 @@ const CacheManagers = () => {
   );
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-
-  useEffect(() => {
-    if (loading) {
-      dataContainerService
-        .getDefaultCacheManager()
-        .then((eitherCm) => {
-          if (eitherCm.isRight()) {
-            const cmName = eitherCm.value.name;
-            setCacheManagerName(cmName);
-            setCacheManager(eitherCm.value);
-            setShowCaches(true);
-          } else {
-            setError(eitherCm.value.message);
-          }
-          setLoading(false);
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
 
   const handleTabClick = (nav) => {
     let tabIndex = nav.itemId;
@@ -140,26 +118,26 @@ const CacheManagers = () => {
     return (
       <Card>
         <CardBody>
-          {cmName && (
+          {cm && (
             <CacheTableDisplay
-              cmName={cmName}
+              cmName={cm.name}
               setCachesCount={setCachesCount}
               isVisible={showCaches}
             />
           )}
-          {cmName && (
+          {cm && (
             <CounterTableDisplay
               setCountersCount={setCountersCount}
               isVisible={showCounters}
             />
           )}
-          {cmName && (
+          {cm && (
             <TasksTableDisplay
               setTasksCount={setTasksCount}
               isVisible={showTasks}
             />
           )}
-          {cmName && (
+          {cm && (
             <ProtobufSchemasDisplay
               setProtoSchemasCount={setProtoSchemasCount}
               isVisible={showSerializationContext}

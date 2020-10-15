@@ -23,9 +23,12 @@ export function useFetchGlobalStats() {
           if (eitherDefaultCm.isRight()) {
             dataContainerService
               .getCacheManagerStats(eitherDefaultCm.value.name)
-              .then((detailedStats) => {
-                setStats(detailedStats);
-                setLoading(false);
+              .then((eitherDetailedStats) => {
+                if (eitherDetailedStats.isRight()) {
+                  setStats(eitherDetailedStats.value);
+                } else {
+                  setError(eitherDetailedStats.value.message);
+                }
               });
           } else {
             setError(eitherDefaultCm.value.message);

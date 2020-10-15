@@ -39,9 +39,9 @@ import {
 } from '@patternfly/react-table/src/components/Table/Table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { ComponentHealth } from '@services/utils';
-import { useFetchCaches } from '@app/services/cachesHook';
 import { Health } from '@app/Common/Health';
 import { useBanner } from '@app/utils/useApiAlert';
+import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 
 interface CacheAction {
@@ -55,7 +55,7 @@ const CacheTableDisplay = (props: {
   isVisible: boolean;
 }) => {
   const { setBanner } = useBanner();
-  const { loading, caches, error, reload } = useFetchCaches(props.cmName);
+  const { caches, errorCaches, loadingCaches } = useCaches();
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
@@ -76,13 +76,9 @@ const CacheTableDisplay = (props: {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  useEffect(() => {
-    setInterval(() => reload(), 10000);
-  }, []);
-
   // new caches or new filters
   useEffect(() => {
-    if (loading) {
+    if (loadingCaches) {
       return;
     }
     const failedCaches = caches.reduce(
@@ -151,12 +147,35 @@ const CacheTableDisplay = (props: {
 
     // Set filtered caches
     setFilteredCaches(newFilteredCaches);
-  }, [props.isVisible, loading, caches, selectedFilters]);
+  }, [props.isVisible, loadingCaches, caches, selectedFilters]);
 
-  // new filtered caches or new pagination upgrades rows
+  // new filtered caches upgrades rows if needed
+  useEffect(() => {
+    let paginationUpgrade = false;
+    // Upgrade Pagination in necessary
+    if (cachesPagination.page > 1) {
+      const completePagesNum = Math.floor(
+        filteredCaches.length / cachesPagination.perPage
+      );
+      const lastPageCount = filteredCaches.length % cachesPagination.perPage;
+      if (lastPageCount == 0 && cachesPagination.page > completePagesNum) {
+        paginationUpgrade = true;
+        setCachesPagination({
+          page: completePagesNum,
+          perPage: cachesPagination.perPage,
+        });
+      }
+    }
+
+    if (!paginationUpgrade) {
+      updateRows();
+    }
+  }, [filteredCaches]);
+
+  // new pagination upgrades rows
   useEffect(() => {
     updateRows();
-  }, [filteredCaches, cachesPagination]);
+  }, [cachesPagination]);
 
   const columns = [
     { title: t('cache-managers.cache-name'), transforms: [cellWidth(30), textCenter] },
@@ -233,14 +252,12 @@ const CacheTableDisplay = (props: {
           (cacheInfo) => cacheInfo.name !== cacheAction.cacheName
         )
       );
-      reload();
     }
     setCacheAction({ cacheName: '', action: '' });
   };
 
   const closeIgnoreModal = (ignoreDone: boolean) => {
     if (ignoreDone) {
-      reload();
     }
     setCacheAction({ cacheName: '', action: '' });
   };
@@ -265,7 +282,7 @@ const CacheTableDisplay = (props: {
       disableActions: boolean;
     }[];
 
-    if (currentPageCaches.length == 0 || loading || error != '') {
+    if (currentPageCaches.length == 0 || loadingCaches || errorCaches != '') {
       currentRows = [
         {
           heightAuto: true,
@@ -275,8 +292,8 @@ const CacheTableDisplay = (props: {
               props: { colSpan: 5 },
               title: (
                 <TableEmptyState
-                  loading={loading}
-                  error={error}
+                  loading={loadingCaches}
+                  error={errorCaches}
                   empty={t('cache-managers.no-caches-status')}
                 />
               ),
@@ -464,7 +481,6 @@ const CacheTableDisplay = (props: {
     setChipsCacheType([]);
     setChipsCacheStatus([]);
     setSelectedFilters([]);
-    reload();
   };
 
   const buildCreateCacheButton = () => {
@@ -554,7 +570,7 @@ const CacheTableDisplay = (props: {
         widgetId="pagination-caches"
         onPerPageSelect={(_event, perPage) =>
           setCachesPagination({
-            page: cachesPagination.page,
+            page: 1,
             perPage: perPage,
           })
         }
