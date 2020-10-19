@@ -11,10 +11,10 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <React.Suspense fallback={'loading'}>
       <App />
     </React.Suspense>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root') as HTMLElement
 );
