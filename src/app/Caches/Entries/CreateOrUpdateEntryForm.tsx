@@ -42,14 +42,14 @@ const CreateOrUpdateEntryForm = (props: {
     isValid: false,
     invalidText: t('caches.entries.add-entry-key-invalid'),
     helperText: t('caches.entries.add-entry-key-help'),
-    validated: t('caches.entries.add-entry-key-validated')
+    validated: t('caches.entries.add-entry-key-validated'),
   };
   const valueInitialState: IField = {
     value: '',
     isValid: false,
     invalidText: t('caches.entries.add-entry-value-invalid'),
     helperText: t('caches.entries.add-entry-value-help'),
-    validated: t('caches.entries.add-entry-value-validated')
+    validated: t('caches.entries.add-entry-value-validated'),
   };
 
   const keyContentTypeInitialState: ISelectField = {
@@ -61,26 +61,26 @@ const CreateOrUpdateEntryForm = (props: {
   const contentTypeInitialState: ISelectField = {
     selected: '',
     expanded: false,
-    helperText: t('caches.entries.add-entry-content-type-help')
+    helperText: t('caches.entries.add-entry-content-type-help'),
   };
   const maxIdleInitialState: IField = {
     value: '',
     isValid: true,
     invalidText: t('caches.entries.add-entry-maxidle-invalid'),
     helperText: t('caches.entries.add-entry-maxidle-help'),
-    validated: t('caches.entries.add-entry-maxidle-validated')
+    validated: t('caches.entries.add-entry-maxidle-validated'),
   };
   const timeToLiveInitialState: IField = {
     value: '',
     isValid: true,
     invalidText: t('caches.entries.add-entry-lifespan-invalid'),
     helperText: t('caches.entries.add-entry-lifespan-help'),
-    validated: t('caches.entries.add-entry-lifespan-validated')
+    validated: t('caches.entries.add-entry-lifespan-validated'),
   };
   const flagsInitialState: ISelectField = {
     selected: [],
     expanded: false,
-    helperText: t('caches.entries.add-entry-flags-help')
+    helperText: t('caches.entries.add-entry-flags-help'),
   };
 
   const [error, setError] = useState<string>('');
@@ -305,7 +305,7 @@ const CreateOrUpdateEntryForm = (props: {
         </Button>,
         <Button key="cancel" variant="link" onClick={onClose}>
           {t('caches.entries.modal-button-cancel')}
-        </Button>
+        </Button>,
       ]}
     >
       <Form
@@ -365,19 +365,21 @@ const CreateOrUpdateEntryForm = (props: {
           />
         </FormGroup>
         <FormGroup
-          label={<MoreInfoTooltip
-            label={t('caches.entries.add-entry-form-value')}
-            toolTip={
-              'The value can contain simple values but also JSON ' +
-              'that are automatically converted to and from Protostream.\n ' +
-              'When writing JSON documents, a special field _type must be present.\n' +
-              '{\n' +
-              '   "_type": "Person",\n' +
-              '   "name": "user1",\n' +
-              '   "age": 32\n' +
-              '}'
-            }
-          />}
+          label={
+            <MoreInfoTooltip
+              label={t('caches.entries.add-entry-form-value')}
+              toolTip={
+                'The value can contain simple values but also JSON ' +
+                'that are automatically converted to and from Protostream.\n ' +
+                'When writing JSON documents, a special field _type must be present.\n' +
+                '{\n' +
+                '   "_type": "Person",\n' +
+                '   "name": "user1",\n' +
+                '   "age": 32\n' +
+                '}'
+              }
+            />
+          }
           isRequired
           helperText={value.helperText}
           helperTextInvalid={value.invalidText}
@@ -449,31 +451,14 @@ const CreateOrUpdateEntryForm = (props: {
           />
         </FormGroup>
       </Form>
-      <ExpandableSection toggleText={t('caches.entries.add-entry-form-options')}>
+      <ExpandableSection
+        toggleText={t('caches.entries.add-entry-form-options')}
+      >
         <Form
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <FormGroup
-            label={t('caches.entries.add-entry-form-flags')}
-            fieldId="flags-helper"
-            helperText={t('caches.entries.add-entry-form-flags-help')}
-          >
-            <Select
-              variant={SelectVariant.typeaheadMulti}
-              aria-label={t('caches.entries.add-entry-form-flags-label')}
-              onToggle={onToggleFlags}
-              onSelect={onSelectFlags}
-              onClear={onClearFlagsSelection}
-              selections={flags.selected}
-              isOpen={flags.expanded}
-              placeholderText={t('caches.entries.add-entry-form-flags')}
-              maxHeight={150}
-            >
-              {flagsOptions()}
-            </Select>
-          </FormGroup>
           <FormGroup
             label={t('caches.entries.add-entry-form-key-type-label')}
             fieldId="key-content-type-helper"
@@ -482,12 +467,20 @@ const CreateOrUpdateEntryForm = (props: {
             disabled={isEdition}
           >
             <Select
-              placeholderText={t('caches.entries.add-entry-form-key-type-select')}
+              placeholderText={t(
+                'caches.entries.add-entry-form-key-type-select'
+              )}
               variant={SelectVariant.typeahead}
-              aria-label={t('caches.entries.add-entry-form-key-type-select-label')}
-              onToggle={onToggleKeyContentType}
-              onSelect={onSelectKeyContentType}
-              onClear={onClearKeyContentType}
+              aria-label={t(
+                'caches.entries.add-entry-form-key-type-select-label'
+              )}
+              onToggle={(isExpanded) =>
+                setExpanded(isExpanded, setKeyContentType)
+              }
+              onSelect={(event, selection) =>
+                setSelection(selection, false, setKeyContentType)
+              }
+              onClear={() => setKeyContentType(keyContentTypeInitialState)}
               selections={keyContentType.selected}
               isOpen={keyContentType.expanded}
               isDisabled={isEdition}
@@ -498,16 +491,26 @@ const CreateOrUpdateEntryForm = (props: {
 
           <FormGroup
             label={t('caches.entries.add-entry-form-value-type-label')}
-            helperTextInvalid={t('caches.entries.add-entry-form-value-type-invalid')}
+            helperTextInvalid={t(
+              'caches.entries.add-entry-form-value-type-invalid'
+            )}
             fieldId="value-content-type-helper"
             helperText={valueContentType.helperText}
           >
             <Select
-              placeholderText={t('caches.entries.add-entry-form-value-type-select')}
+              placeholderText={t(
+                'caches.entries.add-entry-form-value-type-select'
+              )}
               variant={SelectVariant.typeahead}
-              aria-label={t('caches.entries.add-entry-form-value-type-select-label')}
-              onToggle={onToggleValueContentType}
-              onSelect={onSelectValueContentType}
+              aria-label={t(
+                'caches.entries.add-entry-form-value-type-select-label'
+              )}
+              onToggle={(isExpanded) =>
+                setExpanded(isExpanded, setValueContentType)
+              }
+              onSelect={(event, selection) =>
+                setSelection(selection, false, setValueContentType)
+              }
               onClear={() => setValueContentType(contentTypeInitialState)}
               selections={valueContentType.selected}
               isOpen={valueContentType.expanded}
