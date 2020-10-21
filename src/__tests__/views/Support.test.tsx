@@ -1,12 +1,13 @@
 import { Support } from '@app/Support/Support';
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
+import { renderWithRouter } from '../../test-utils';
 
 describe('Support page', () => {
   test('modal shows the children and a close button', () => {
     const handleClose = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, getByRole } = renderWithRouter(
       <Support isModalOpen={true} closeModal={handleClose} />
     );
 
