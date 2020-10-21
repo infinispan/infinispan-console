@@ -18,6 +18,11 @@
     "tutorials":  "Run the simple tutorials",
     "go-to-console":  "Go to the console"
   },
+  "not-found-page" : {
+    "title": "Page not found",
+    "description": "That page no longer exists.",
+    "button" : "Return to home page"
+  },
   "cache-managers" : {
     "title" : "Data container",
     "caches-tab" : "Caches",

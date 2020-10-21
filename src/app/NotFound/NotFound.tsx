@@ -1,15 +1,39 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Alert, PageSection } from '@patternfly/react-core';
+import { useHistory } from 'react-router-dom';
+import {
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  PageSection,
+  Title,
+} from '@patternfly/react-core';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
 
 const NotFound = () => {
+  const { t } = useTranslation();
+
+  function GoHomeBtn() {
+    const history = useHistory();
+
+    function handleClick() {
+      history.push('/');
+    }
+
+    return <Button onClick={handleClick}>{t('not-found-page.button')}</Button>;
+  }
+
   return (
     <PageSection>
-      <Alert variant="danger" title="404! This view hasn't been created yet." />
-      <br />
-      <NavLink to="/" className="pf-c-nav__link">
-        Data container
-      </NavLink>
+      <EmptyState variant="full">
+        <EmptyStateIcon icon={ExclamationTriangleIcon} />
+        <Title headingLevel="h1" size="lg">
+          {t('not-found-page.title')}
+        </Title>
+        <EmptyStateBody>{t('not-found-page.description')}</EmptyStateBody>
+        <GoHomeBtn />
+      </EmptyState>
     </PageSection>
   );
 };
