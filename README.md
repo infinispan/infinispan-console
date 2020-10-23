@@ -1,6 +1,6 @@
 ![Version](https://maven-badges.herokuapp.com/maven-central/org.infinispan/infinispan-console/badge.svg "Version")
 
-# Infinispan Console [![Build Status](https://travis-ci.org/infinispan/infinispan-console.svg?branch=master)](https://travis-ci.org/infinispan/infinispan-console)
+# Infinispan Console 
 
 This is the front end application for the web console of the new Infinispan Server 12.x
 
