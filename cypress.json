@@ -1,3 +1,6 @@
 {
-  "baseUrl": "http://localhost:11222/console/"
+  "baseUrl": "http://localhost:11222/console/",
+  "retries": 3,
+  "video" : false,
+  "screenshotOnRunFailure": false
 }
