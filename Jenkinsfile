@@ -1,43 +1,45 @@
 #!/usr/bin/env groovy
 
 pipeline {
-    agent any
+  agent {
+    label 'slave-group-normal'
+  }
 
-    stages {
-       stage('Cleanup') {
-           steps{
-               step([$class: 'WsCleanup'])
-           }
-        }
+  options {
+    timeout(time: 20, unit: 'MINUTES')
+  }
 
-        stage('SCM Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                script {
-                    def mvnHome = tool 'Maven'
-                    sh "${mvnHome}/bin/mvn clean install"
-                }
-            }
-        }
-
-
-        stage('Deploy SNAPSHOT') {
-            when {
-                branch 'master'
-            }
-            steps {
-                configFileProvider([configFile(fileId: 'maven-settings-with-deploy-snapshot', variable: 'MAVEN_SETTINGS')]) {
-                    script {
-                        def mvnHome = tool 'Maven'
-                        sh "${mvnHome}/bin/mvn deploy -s $MAVEN_SETTINGS"
-                    }
-                }
-            }
-        }
+  stages {
+    stage('Run server') {
+      steps {
+        sh './run-server-for-e2e.sh --ci'
+      }
     }
+
+    stage('Cleanup') {
+      steps{
+        step([$class: 'WsCleanup'])
+      }
+    }
+
+    stage('SCM Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build') {
+      steps {
+        script {
+          def mvnHome = tool 'Maven'
+          sh "${mvnHome}/bin/mvn clean install -De2e=true"
+        }
+      }
+    }
+  }
+  post {
+    failure {
+      sh 'cat tmp-tests.log'
+    }
+  }
 }
