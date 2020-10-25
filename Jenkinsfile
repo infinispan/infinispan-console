@@ -10,15 +10,15 @@ pipeline {
   }
 
   stages {
-    stage('Run server') {
-      steps {
-        sh './run-server-for-e2e.sh --ci'
-      }
-    }
-
     stage('Cleanup') {
       steps{
         step([$class: 'WsCleanup'])
+      }
+    }
+    
+    stage('Run server') {
+      steps {
+        sh './run-server-for-e2e.sh --ci'
       }
     }
 
