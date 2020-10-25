@@ -15,16 +15,16 @@ pipeline {
         step([$class: 'WsCleanup'])
       }
     }
-    
-    stage('Run server') {
-      steps {
-        sh './run-server-for-e2e.sh --ci'
-      }
-    }
 
     stage('SCM Checkout') {
       steps {
         checkout scm
+      }
+    }
+
+    stage('Run server') {
+      steps {
+        sh './run-server-for-e2e.sh --ci'
       }
     }
 
