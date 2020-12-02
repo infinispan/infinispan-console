@@ -19,24 +19,25 @@ class ProtobufService {
     schema: string,
     create: boolean
   ): Promise<Either<ActionResponse, ActionResponse>> {
+    // @ts-ignore
     return utils
       .restCallWithBody(
         this.endpoint + '/' + name,
         create ? 'POST' : 'PUT',
         schema
       )
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(schema => {
+      .then((schema) => {
         let protoError: ProtoError | undefined = undefined;
         if (schema['error'] != null) {
           protoError = <ProtoError>{
             message: schema.error.message,
-            cause: schema.error.cause
+            cause: schema.error.cause,
           };
         }
         let message = 'Schema ' + name;
@@ -50,29 +51,10 @@ class ProtobufService {
 
         return right(<ActionResponse>{
           message: message,
-          success: protoError == undefined
+          success: protoError == undefined,
         });
       })
-      .catch(err => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-
-        if (err instanceof Response && err.status == 409) {
-          return left(<ActionResponse>{
-            message: 'Schema ' + name + ' already exists.',
-            success: false
-          });
-        }
-
-        return err.text().then(errorMessage => {
-          let message = 'Unable to create schema ' + name;
-          if (errorMessage.length > 0) {
-            message = errorMessage;
-          }
-          return left(<ActionResponse>{ message: message, success: false });
-        });
-      });
+      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
   }
 
   /**
@@ -81,32 +63,16 @@ class ProtobufService {
   public async delete(name: string): Promise<ActionResponse> {
     return utils
       .restCallWithBody(this.endpoint + '/' + name, 'DELETE', name)
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
             message: 'Schema ' + name + ' has been deleted',
-            success: true
+            success: true,
           };
         }
         throw response;
       })
-      .catch(err => {
-        let message = 'Un error happened when deleting schema ' + name + '.';
-
-        if (err instanceof TypeError) {
-          return <ActionResponse>{
-            message: message + ' ' + err.message,
-            success: false
-          };
-        }
-
-        return err.text().then(errorMessage => {
-          if (errorMessage.length > 0) {
-            message = message + ' ' + errorMessage;
-          }
-          return <ActionResponse>{ message: message, success: false };
-        });
-      });
+      .catch((err) => this.handleProtobufRestError(err));
   }
 
   /**
@@ -115,58 +81,89 @@ class ProtobufService {
   public async getSchema(
     name: string
   ): Promise<Either<ActionResponse, string>> {
+    // @ts-ignore
     return utils
       .restCall(this.endpoint + '/' + name, 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.text();
         }
         throw response;
       })
-      .then(schema => right(schema))
-      .catch(err => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-        let errorMessage = 'An error happened with the schema ' + name;
-        if( err instanceof  Response) {
-          console.error('Schema ' + name + '. Error ' + err.status + ' ' + err.statusText);
-        }
-        return left(<ActionResponse>{ message: errorMessage, success: false });
-      });
+      .then((schema) => right(schema))
+      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
   }
 
   /**
    * Get the list of files and validation response
    */
   public getProtobufSchemas(): Promise<Either<ActionResponse, ProtoSchema[]>> {
+    // @ts-ignore
     return utils
       .restCall(this.endpoint, 'GET')
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw response;
       })
-      .then(protoSchemas =>
+      .then((protoSchemas) =>
         right(
-          protoSchemas.map(schema => {
-            let protoError: ProtoError | undefined = undefined;
-            if (schema['error'] != null) {
-              protoError = <ProtoError>{
-                message: schema.error.message,
-                cause: schema.error.cause
+          protoSchemas
+            .map((schema) => {
+              let protoError: ProtoError | undefined = undefined;
+              if (schema['error'] != null) {
+                protoError = <ProtoError>{
+                  message: schema.error.message,
+                  cause: schema.error.cause,
+                };
+              }
+              return <ProtoSchema>{
+                name: schema.name,
+                error: protoError,
               };
-            }
-            return <ProtoSchema>{
-              name: schema.name,
-              error: protoError
-            };
-          }).filter(schema => schema.name != 'org/infinispan/protostream/message-wrapping.proto' &&
-            schema.name != 'org/infinispan/query/remote/client/query.proto')
+            })
+            .filter(
+              (schema) =>
+                schema.name !=
+                  'org/infinispan/protostream/message-wrapping.proto' &&
+                schema.name != 'org/infinispan/query/remote/client/query.proto'
+            )
         )
       )
-      .catch(err => left(<ActionResponse>{ message: err, success: false }));
+      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
+  }
+
+  private handleProtobufRestError(err): Promise<ActionResponse> {
+    let actionResponse = <ActionResponse>{
+      message: 'Unknown error retrieving protobuf schemas',
+      success: false,
+    };
+
+    if (err instanceof TypeError) {
+      actionResponse = <ActionResponse>{
+        message: err.message,
+        success: false,
+      };
+    } else if (err instanceof Response) {
+      if (err.status.valueOf() == 403) {
+        // Not Found
+        actionResponse = <ActionResponse>{
+          message:
+            'Unauthorized access. The user lacks ___schema_manager permission.',
+          success: false,
+        };
+      } else {
+        return err.text().then(
+          (errorMessage) =>
+            <ActionResponse>{
+              message: errorMessage == '' ? 'Unknown error.' : errorMessage,
+              success: false,
+            }
+        );
+      }
+    }
+    return Promise.resolve(actionResponse);
   }
 }
 
