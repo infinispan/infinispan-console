@@ -5,7 +5,7 @@ import {
   TableBody,
   TableHeader,
   TableVariant,
-  textCenter,
+  textCenter
 } from '@patternfly/react-table';
 import {
   Badge,
@@ -24,7 +24,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import displayUtils from '../../services/displayUtils';
 import { FilterIcon } from '@patternfly/react-icons';
@@ -36,7 +36,7 @@ import { DeleteCache } from '@app/CacheManagers/DeleteCache';
 import { IgnoreCache } from '@app/CacheManagers/IgnoreCache';
 import {
   IExtraData,
-  IRowData,
+  IRowData
 } from '@patternfly/react-table/src/components/Table/Table';
 import { ToolbarItemVariant } from '@patternfly/react-core/src/components/Toolbar/ToolbarItem';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
@@ -57,7 +57,7 @@ const CacheTableDisplay = (props: {
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [rows, setRows] = useState<any[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
@@ -70,31 +70,31 @@ const CacheTableDisplay = (props: {
   const [ignoreCache, setIgnoreCache] = useState<IgnoreCache>({
     cacheName: '',
     action: 'ignore',
-    modalOpen: false,
+    modalOpen: false
   });
   const columns = [
     { title: 'Name', transforms: [cellWidth(30), textCenter] },
     {
       title: 'Type',
       transforms: [cellWidth(15), textCenter],
-      cellTransforms: [textCenter],
+      cellTransforms: [textCenter]
     },
     {
       title: 'Health',
       transforms: [cellWidth(10)],
-      cellTransforms: [],
+      cellTransforms: []
     },
     {
       title: 'Features',
       transforms: [textCenter],
-      cellTransforms: [textCenter],
+      cellTransforms: [textCenter]
     },
     {
       // Will display 'ignored' if the cache is ignored
       title: '',
       transforms: [cellWidth(15), textCenter],
-      cellTransforms: [textCenter],
-    },
+      cellTransforms: [textCenter]
+    }
   ];
 
   const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
@@ -111,8 +111,8 @@ const CacheTableDisplay = (props: {
             openIgnoreCacheModal(
               rowData.cells[0].cacheName,
               rowData.cells[0].isIgnored
-            ),
-        },
+            )
+        }
       ];
     }
 
@@ -123,13 +123,13 @@ const CacheTableDisplay = (props: {
           openIgnoreCacheModal(
             rowData.cells[0].cacheName,
             rowData.cells[0].isIgnored
-          ),
+          )
       },
       {
         title: 'Delete',
         onClick: (event, rowId, rowData, extra) =>
-          openDeleteCacheModal(rowData.cells[0].cacheName),
-      },
+          openDeleteCacheModal(rowData.cells[0].cacheName)
+      }
     ];
   };
 
@@ -146,7 +146,7 @@ const CacheTableDisplay = (props: {
   const closeDeleteModal = (deleteDone: boolean) => {
     if (deleteDone) {
       setFilteredCaches(
-        filteredCaches.filter((cacheInfo) => cacheInfo.name !== deleteCacheName)
+        filteredCaches.filter(cacheInfo => cacheInfo.name !== deleteCacheName)
       );
       loadCaches();
     }
@@ -165,7 +165,7 @@ const CacheTableDisplay = (props: {
     setIgnoreCache({
       cacheName: cacheName,
       modalOpen: true,
-      action: ignored ? 'undo' : 'ignore',
+      action: ignored ? 'undo' : 'ignore'
     });
   };
 
@@ -175,7 +175,7 @@ const CacheTableDisplay = (props: {
   };
 
   const loadCaches = () => {
-    dataContainerService.getCaches(props.cmName).then((eitherCaches) => {
+    dataContainerService.getCaches(props.cmName).then(eitherCaches => {
       if (eitherCaches.isRight()) {
         setCaches(eitherCaches.value);
         setFilteredCaches(eitherCaches.value);
@@ -199,7 +199,7 @@ const CacheTableDisplay = (props: {
   const onSetPage = (_event, pageNumber) => {
     setCachesPagination({
       page: pageNumber,
-      perPage: cachesPagination.perPage,
+      perPage: cachesPagination.perPage
     });
     const initSlice = (pageNumber - 1) * cachesPagination.perPage;
     updateRows(
@@ -212,7 +212,7 @@ const CacheTableDisplay = (props: {
   const onPerPageSelect = (_event, perPage) => {
     setCachesPagination({
       page: cachesPagination.page,
-      perPage: perPage,
+      perPage: perPage
     });
     const initSlice = (cachesPagination.page - 1) * perPage;
     updateRows(filteredCaches.slice(initSlice, initSlice + perPage), false, '');
@@ -222,7 +222,6 @@ const CacheTableDisplay = (props: {
     let currentRows: {
       heightAuto: boolean;
       cells: (string | any)[];
-      type: string;
       disableActions: boolean;
     }[];
 
@@ -230,7 +229,6 @@ const CacheTableDisplay = (props: {
       currentRows = [
         {
           heightAuto: true,
-          type: 'empty',
           disableActions: true,
           cells: [
             {
@@ -241,25 +239,24 @@ const CacheTableDisplay = (props: {
                   error={error}
                   empty={'Caches not found'}
                 />
-              ),
-            },
-          ],
-        },
+              )
+            }
+          ]
+        }
       ];
     } else {
-      currentRows = caches.map((cacheInfo) => {
+      currentRows = caches.map(cacheInfo => {
         return {
           heightAuto: true,
-          type: '',
           disableActions: false,
           cells: [
             {
               cacheName: cacheInfo.name,
               isIgnored: isCacheIgnored(cacheInfo),
-              title: displayCacheName(cacheInfo),
+              title: displayCacheName(cacheInfo)
             },
             {
-              title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} />,
+              title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} />
             },
             {
               title: (
@@ -267,11 +264,11 @@ const CacheTableDisplay = (props: {
                   health={cacheInfo.health}
                   displayIcon={cacheInfo.health == 'FAILED'}
                 />
-              ),
+              )
             },
             { title: displayCacheFeatures(cacheInfo) },
-            { title: displayIfIgnored(cacheInfo) },
-          ],
+            { title: displayIfIgnored(cacheInfo) }
+          ]
         };
       });
     }
@@ -336,7 +333,7 @@ const CacheTableDisplay = (props: {
     'Replicated',
     'Distributed',
     'Invalidated',
-    'Scattered',
+    'Scattered'
   ];
   const cacheFeatures = [
     'Bounded',
@@ -344,13 +341,13 @@ const CacheTableDisplay = (props: {
     'Persistent',
     'Transactional',
     'Secured',
-    'Backups',
+    'Backups'
   ];
 
   const cacheStatus = ['Ignored'];
 
   const extract = (actualSelection: string[], ref: string[]): string[] => {
-    return actualSelection.filter((s) => ref.includes(s));
+    return actualSelection.filter(s => ref.includes(s));
   };
 
   const isCacheStatus = (
@@ -413,19 +410,19 @@ const CacheTableDisplay = (props: {
       let filterCacheType = extract(actualSelection, cacheTypes);
 
       if (filterStatus.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
+        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
           isCacheStatus(cacheInfo, filterStatus)
         );
       }
 
       if (filterCacheType.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
+        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
           isCacheType(cacheInfo, filterCacheType)
         );
       }
 
       if (filterFeatures.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
+        newFilteredCaches = newFilteredCaches.filter(cacheInfo =>
           hasFeatures(cacheInfo, filterFeatures)
         );
       }
@@ -442,8 +439,8 @@ const CacheTableDisplay = (props: {
     setChipsCacheStatus(filterCacheStatus);
   };
 
-  const deleteItem = (id) => {
-    let actualSelection: string[] = selected.filter((item) => item !== id);
+  const deleteItem = id => {
+    let actualSelection: string[] = selected.filter(item => item !== id);
     let newFilteredCaches = filterCaches(actualSelection);
     updateChips(actualSelection);
     updateRows(newFilteredCaches, false, '');
@@ -455,7 +452,7 @@ const CacheTableDisplay = (props: {
     let actualSelection: string[] = [];
 
     if (selected.includes(selection)) {
-      actualSelection = selected.filter((item) => item !== selection);
+      actualSelection = selected.filter(item => item !== selection);
     } else {
       actualSelection = [...selected, selection];
     }
@@ -468,7 +465,7 @@ const CacheTableDisplay = (props: {
     setFilteredCaches(newFilteredCaches);
   };
 
-  const onToggleFilter = (isExpanded) => {
+  const onToggleFilter = isExpanded => {
     setIsExpanded(isExpanded);
   };
 
@@ -487,8 +484,8 @@ const CacheTableDisplay = (props: {
         to={{
           pathname: '/container/' + props.cmName + '/caches/create',
           state: {
-            cmName: props.cmName,
-          },
+            cmName: props.cmName
+          }
         }}
       >
         <Button variant={'primary'}>Create Cache</Button>
@@ -502,8 +499,8 @@ const CacheTableDisplay = (props: {
         to={{
           pathname: '/container/' + props.cmName + '/configurations/',
           state: {
-            cmName: props.cmName,
-          },
+            cmName: props.cmName
+          }
         }}
       >
         <Button variant={'link'}>Configuration templates</Button>
@@ -600,21 +597,21 @@ const CacheTableDisplay = (props: {
         <ToolbarContent>
           <ToolbarItem variant={ToolbarItemVariant['chip-group']}>
             <ChipGroup key="chips-types" categoryName="Cache Type">
-              {chipsCacheType.map((chip) => (
+              {chipsCacheType.map(chip => (
                 <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
                   {chip}
                 </Chip>
               ))}
             </ChipGroup>
             <ChipGroup key="chips-features" categoryName="Features">
-              {chipsCacheFeature.map((chip) => (
+              {chipsCacheFeature.map(chip => (
                 <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
                   {chip}
                 </Chip>
               ))}
             </ChipGroup>
             <ChipGroup key="chip-status" categoryName="Status">
-              {chipsCacheStatus.map((chip) => (
+              {chipsCacheStatus.map(chip => (
                 <Chip key={'chip-' + chip} onClick={() => deleteItem(chip)}>
                   {chip}
                 </Chip>
