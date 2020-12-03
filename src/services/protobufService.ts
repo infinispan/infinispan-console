@@ -150,7 +150,7 @@ class ProtobufService {
         // Not Found
         actionResponse = <ActionResponse>{
           message:
-            'Unauthorized access. The user lacks ___schema_manager permission.',
+            'Unauthorized access.',
           success: false,
         };
       } else {
