@@ -81,7 +81,7 @@ class CacheService {
             config: JSON.stringify(data.configuration, null, 2),
           },
           stats: cacheStats,
-        });
+        }) as Either<ActionResponse, DetailedInfinispanCache>;
       })
       .catch((err) => {
         const errorMessage =
@@ -359,7 +359,7 @@ class CacheService {
         }
         throw response;
       })
-      .then((data) => right(data))
+      .then((data) => right(data) as Either<ActionResponse, CacheEntry>)
       .catch((err) => {
         let actionResponse = <ActionResponse>{
           message: 'An error happened',
@@ -535,7 +535,7 @@ class CacheService {
         }
         throw response;
       })
-      .then((data) => right(data))
+      .then((data) => right(data) as Either<ActionResponse, SearchResut>)
       .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{

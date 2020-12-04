@@ -1,5 +1,5 @@
-import utils from './utils';
-import { Either, left, right } from './either';
+import utils from '@services/utils';
+import {Either, left, right} from '@services/either'
 
 /**
  * Protobuf schemas manipulation service
@@ -51,28 +51,9 @@ class ProtobufService {
         return right(<ActionResponse>{
           message: message,
           success: protoError == undefined,
-        });
+        }) as Either<ActionResponse, ActionResponse>;
       })
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-
-        if (err instanceof Response && err.status == 409) {
-          return left(<ActionResponse>{
-            message: 'Schema ' + name + ' already exists.',
-            success: false,
-          });
-        }
-
-        return err.text().then((errorMessage) => {
-          let message = 'Unable to create schema ' + name;
-          if (errorMessage.length > 0) {
-            message = errorMessage;
-          }
-          return left(<ActionResponse>{ message: message, success: false });
-        });
-      });
+      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
   }
 
   /**
@@ -90,23 +71,7 @@ class ProtobufService {
         }
         throw response;
       })
-      .catch((err) => {
-        let message = 'Un error happened when deleting schema ' + name + '.';
-
-        if (err instanceof TypeError) {
-          return <ActionResponse>{
-            message: message + ' ' + err.message,
-            success: false,
-          };
-        }
-
-        return err.text().then((errorMessage) => {
-          if (errorMessage.length > 0) {
-            message = message + ' ' + errorMessage;
-          }
-          return <ActionResponse>{ message: message, success: false };
-        });
-      });
+      .catch((err) => this.handleProtobufRestError(err));
   }
 
   /**
@@ -123,19 +88,8 @@ class ProtobufService {
         }
         throw response;
       })
-      .then((schema) => right(schema))
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-        let errorMessage = 'An error happened with the schema ' + name;
-        if (err instanceof Response) {
-          console.error(
-            'Schema ' + name + '. Error ' + err.status + ' ' + err.statusText
-          );
-        }
-        return left(<ActionResponse>{ message: errorMessage, success: false });
-      });
+      .then((schema) => right(schema) as Either<ActionResponse, string>)
+      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
   }
 
   /**
@@ -172,9 +126,41 @@ class ProtobufService {
                   'org/infinispan/protostream/message-wrapping.proto' &&
                 schema.name != 'org/infinispan/query/remote/client/query.proto'
             )
-        )
+        )  as Either<ActionResponse, ProtoSchema[]>
       )
-      .catch((err) => left(<ActionResponse>{ message: err, success: false }));
+      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
+  }
+
+  private handleProtobufRestError(err): Promise<ActionResponse> {
+    let actionResponse = <ActionResponse>{
+      message: 'Unknown error retrieving protobuf schemas',
+      success: false,
+    };
+
+    if (err instanceof TypeError) {
+      actionResponse = <ActionResponse>{
+        message: err.message,
+        success: false,
+      };
+    } else if (err instanceof Response) {
+      if (err.status.valueOf() == 403) {
+        // Not Found
+        actionResponse = <ActionResponse>{
+          message:
+            'Unauthorized access.',
+          success: false,
+        };
+      } else {
+        return err.text().then(
+          (errorMessage) =>
+            <ActionResponse>{
+              message: errorMessage == '' ? 'Unknown error.' : errorMessage,
+              success: false,
+            }
+        );
+      }
+    }
+    return Promise.resolve(actionResponse);
   }
 }
 
