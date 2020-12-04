@@ -24,7 +24,7 @@ class CountersService {
         );
         return Promise.all(counters);
       })
-      .then((counters) => right(counters))
+      .then((counters) => right(counters) as Either<ActionResponse, Counter[]>)
       .catch((err) => left(utils.mapError(err, 'Unable to retrieve counters')));
   }
 

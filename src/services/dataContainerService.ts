@@ -23,7 +23,7 @@ class ContainerService {
         }
         throw response;
       })
-      .then((names) => this.getCacheManager(names[0]).then((cm) => right(cm)))
+      .then((names) => this.getCacheManager(names[0]).then((cm) => right(cm) as Either<ActionResponse, CacheManager>))
       .catch((err) =>
         left(
           utils.mapError(
@@ -97,7 +97,7 @@ class ContainerService {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
       .then((response) => response.json())
-      .then((data) => right(<CacheManagerStats>data))
+      .then((data) => right(<CacheManagerStats>data) as Either<ActionResponse, CacheManagerStats>)
       .catch((err) =>
         left(utils.mapError(err, 'Error retrieving cache manager statistics.'))
       );
@@ -110,7 +110,7 @@ class ContainerService {
    */
   public async getCacheConfigurationTemplates(
     name: string
-  ): Promise<Either<ActionResponse, [CacheConfig]>> {
+  ): Promise<Either<ActionResponse, CacheConfig[]>> {
     return utils
       .restCall(
         this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
@@ -125,7 +125,7 @@ class ContainerService {
               config: JSON.stringify(config.configuration, undefined, 2),
             }
         );
-        return right(configs);
+        return right(configs) as Either<ActionResponse, CacheConfig[]>;
       })
       .catch((err) =>
         left(utils.mapError(err, 'Error retrieving configuration templates.'))
@@ -134,7 +134,7 @@ class ContainerService {
 
   public async getCaches(
     name: string
-  ): Promise<Either<ActionResponse, [CacheInfo]>> {
+  ): Promise<Either<ActionResponse, CacheInfo[]>> {
     return utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
       .then((response) => {
@@ -165,7 +165,7 @@ class ContainerService {
                 }
             )
             .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
-        )
+        ) as Either<ActionResponse, CacheInfo[]>
       )
       .catch((err) => left(utils.mapError(err, 'Error retrieving caches.')));
   }

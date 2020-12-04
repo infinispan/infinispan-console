@@ -48,7 +48,7 @@ class AuthenticationService {
           };
         }
 
-        return right(authInfo);
+        return right(authInfo) as Either<ActionResponse, AuthInfo>;
       })
       .catch((err) => {
         let actionResponse;

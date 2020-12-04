@@ -83,7 +83,6 @@ const ProtobufSchemasDisplay = (props: {
           )
         );
       } else {
-        addAlert(eitherResponse.value);
         setError(eitherResponse.value.message);
       }
       setLoading(false);
