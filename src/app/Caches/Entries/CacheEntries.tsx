@@ -235,15 +235,15 @@ const CacheEntries = (props: { cacheName: string }) => {
                 name="textSearchByKey"
                 id="textSearchByKey"
                 type="search"
-                aria-label="search by key textfield"
-                placeholder={'Get by key as ' + keyType}
+                aria-label={t('caches.entries.get-entry-label')}
+                placeholder={t('caches.entries.get-entry-text') + keyType}
                 size={50}
                 onChange={onChangeKeySearch}
                 onKeyPress={searchEntryOnKeyPress}
               />
               <Button
                 variant="control"
-                aria-label="search button for search input"
+                aria-label={t('caches.entries.get-entry-button-label')}
                 onClick={() => searchEntryByKey()}
               >
                 <SearchIcon />

@@ -67,12 +67,12 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       <ToolbarContent>
         <ToolbarItem style={{ marginTop: global_spacer_sm.value }}>
           <Link to={'/'}>
-            <Brand src={icon} alt="Server Management Console" width={150} />
+            <Brand src={icon} alt={ t('layout.console-name')} width={150} />
           </Link>
         </ToolbarItem>
         <ToolbarItem style={{ marginTop: 0 }}>
           <TextContent>
-            <Text component={TextVariants.h2}>Server Management Console</Text>
+            <Text component={TextVariants.h2}>{ t('layout.console-name')}</Text>
           </TextContent>
         </ToolbarItem>
       </ToolbarContent>
