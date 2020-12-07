@@ -33,9 +33,10 @@ const Welcome = (props) => {
 
   const description1 = t('welcome-page.description1', { brandname: brandname });
   const description2 = t('welcome-page.description2', { brandname: brandname });
+  const license = t('welcome-page.license', { brandname: brandname });
 
   const hotRodClientsLink = 'https://infinispan.org/hotrod-clients/';
-  const aboutLink = 'https://infinispan.org/about/';
+  const aboutLink = 'https://infinispan.org/get-started/';
   const tutorialsLink =
     'https://github.com/infinispan/infinispan-simple-tutorials';
 
@@ -161,6 +162,7 @@ const Welcome = (props) => {
         <Card>
           <CardHeader>{description1}</CardHeader>
           <CardBody>{description2}</CardBody>
+          <CardBody>{license}</CardBody>
           <CardFooter>{buildConsoleButton()}</CardFooter>
         </Card>
       </LoginPage>

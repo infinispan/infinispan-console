@@ -9,10 +9,15 @@ import {
 } from '@patternfly/react-table';
 import {
   Badge,
+  Bullseye,
   Button,
   ButtonVariant,
   Chip,
   ChipGroup,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Pagination,
   Select,
   SelectGroup,
@@ -21,6 +26,7 @@ import {
   Text,
   TextContent,
   TextVariants,
+  Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -29,6 +35,7 @@ import {
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { FilterIcon } from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DeleteCache } from '@app/Caches/DeleteCache';
@@ -291,11 +298,17 @@ const CacheTableDisplay = (props: {
             {
               props: { colSpan: 5 },
               title: (
-                <TableEmptyState
-                  loading={loadingCaches}
-                  error={errorCaches}
-                  empty={t('cache-managers.no-caches-status')}
-                />
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      {t('cache-managers.no-caches-status')}
+                    </Title>
+                    <EmptyStateBody>
+                      {t('cache-managers.no-caches-body')}
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
               ),
             },
           ],

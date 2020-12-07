@@ -7,6 +7,11 @@ import {
   TableVariant,
 } from '@patternfly/react-table';
 import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Grid,
   GridItem,
   OptionsMenu,
@@ -20,7 +25,9 @@ import {
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant,
+  Title,
 } from '@patternfly/react-core';
+import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
@@ -178,13 +185,19 @@ const CounterTableDisplay = (props: {
           heightAuto: true,
           cells: [
             {
-              props: { colSpan: 6 },
+              props: { colSpan: 8 },
               title: (
-                <TableEmptyState
-                  loading={loading}
-                  error={error}
-                  empty={t('cache-managers.no-counters-status')}
-                />
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      {t('cache-managers.no-counters-status')}
+                    </Title>
+                    <EmptyStateBody>
+                      {t('cache-managers.no-counters-body')}
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
               ),
             },
           ],
