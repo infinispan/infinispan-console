@@ -5,6 +5,9 @@
  */
 import utils, { ContentType } from './utils';
 import { Either, left, right } from './either';
+import displayUtils from '@services/displayUtils';
+import {number} from "prop-types";
+import {util} from "prettier";
 
 class CacheService {
   endpoint: string;
@@ -277,7 +280,11 @@ class CacheService {
     }
 
     let promise = fetch(
-      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '/' +
+        encodeURIComponent(key),
       {
         method: create ? 'POST' : 'PUT',
         headers: headers,
@@ -293,6 +300,62 @@ class CacheService {
   }
 
   /**
+   * List of entries
+   *
+   * @param cacheName, the cache name
+   * @param limit, maximum number of entries to be retrieved
+   */
+  public async getEntries(
+    cacheName: string,
+    config: CacheConfig,
+    limit: string
+  ): Promise<Either<ActionResponse, CacheEntry[]>> {
+    const isProtobuf = utils.isProtobufCache(config.config);
+    const allKeys =
+      this.endpoint +
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '?action=entries&metadata=true&limit=' +
+      limit;
+    return utils
+      .restCall(allKeys, 'GET')
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw response;
+      })
+      .then((infos) =>
+        right(
+          infos.map(
+            (entry) =>
+              <CacheEntry>{
+                key: isProtobuf[0] ? entry.key._value : entry.key,
+                keyContentType: isProtobuf[0] ? entry.key['_type'] : undefined,
+                value: isProtobuf[1] ? entry.value._value : entry.value,
+                valueContentType: isProtobuf[1]
+                  ? entry.value['_type']
+                  : undefined,
+                timeToLive: this.parseMetadataNumber(entry.timeToLiveSeconds),
+                maxIdle: this.parseMetadataNumber(entry.maxIdleTimeSeconds),
+                created: this.parseMetadataDate(entry.created),
+                lastUsed: this.parseMetadataDate(entry.lastUsed),
+                expires: this.parseMetadataDate(entry.expireTime),
+              }
+          )
+        ) as Either<ActionResponse, CacheEntry[]>
+      )
+      .catch((err) =>
+        left(
+          utils.mapError(
+            err,
+            'An error happened retrieving keys from ' + cacheName
+          )
+        )
+      );
+  }
+
+  /**
    * Get entry by key
    * @param cacheName
    * @param key
@@ -302,15 +365,24 @@ class CacheService {
   public async getEntry(
     cacheName: string,
     key: string,
-    keyContentType?: ContentType
+    keyContentType?: ContentType,
+    config?: CacheConfig
   ): Promise<Either<ActionResponse, CacheEntry>> {
+    let handleProtobuf = [false, false];
     let headers = utils.createAuthenticatedHeader();
+    if (config) {
+      handleProtobuf = utils.isProtobufCache(config.config);
+    }
     if (keyContentType) {
       let keyContentTypeHeader = utils.fromContentType(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
     }
     return fetch(
-      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/' + key,
+      this.endpoint +
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '/' +
+      encodeURIComponent(key),
       {
         method: 'GET',
         credentials: 'include',
@@ -330,28 +402,26 @@ class CacheService {
             const expires = response.headers.get('Expires');
             const cacheControl = response.headers.get('Cache-Control');
             const etag = response.headers.get('Etag');
+            let displayableValue = value;
+            if(utils.isJSONObject(value)) {
+              if (handleProtobuf[1]) {
+                // if we need to handle protobuf and display only the value
+                displayableValue = JSON.parse(value)._value;
+              }
+            }
             return <CacheEntry>{
               key: key,
-              value: value,
+              value: displayableValue,
               keyContentType: keyContentType,
-              valueContentType: utils.toContentType(
-                response.headers.get('Content-Type'),
-                ContentType.JSON
-              ),
-              timeToLive: timeToLive,
-              maxIdle: maxIdleTimeSeconds,
-              created: created
-                ? new Date(Number.parseInt(created)).toLocaleString()
-                : created,
-              lastUsed: lastUsed
-                ? new Date(Number.parseInt(lastUsed)).toLocaleString()
-                : lastUsed,
-              lastModified: lastModified
-                ? new Date(Date.parse(lastModified)).toLocaleString()
-                : lastModified,
-              expires: expires
-                ? new Date(Date.parse(expires)).toLocaleString()
-                : expires,
+              valueContentType: handleProtobuf[1]
+                ? JSON.parse(value)['_type']
+                : undefined,
+              timeToLive: this.parseMetadataNumber(timeToLive),
+              maxIdle: this.parseMetadataNumber(maxIdleTimeSeconds),
+              created: this.parseMetadataDate(created),
+              lastUsed: this.parseMetadataDate(lastUsed),
+              lastModified: lastModified? this.parseMetadataDate(Date.parse(lastModified)) : undefined,
+              expires: expires? this.parseMetadataDate(Date.parse(expires)) : undefined,
               cacheControl: cacheControl,
               eTag: etag,
             };
@@ -361,35 +431,46 @@ class CacheService {
       })
       .then((data) => right(data) as Either<ActionResponse, CacheEntry>)
       .catch((err) => {
-        let actionResponse = <ActionResponse>{
-          message: 'An error happened',
-          success: false,
-        };
-        if (err instanceof TypeError) {
-          actionResponse = <ActionResponse>{
-            message: err.message,
-            success: false,
-          };
+        if (err.status.valueOf() == 404) {
+          // Not Found is an error but a success action result
+          return left(<ActionResponse>{
+            message: 'The entry key ' + key + ' does not exist',
+            success: true,
+          });
         }
-        if (err instanceof Response) {
-          if (err.status.valueOf() == 404) {
-            // Not Found
-            actionResponse = <ActionResponse>{
-              message: 'The entry key ' + key + ' does not exist',
-              success: false,
-            };
-          } else {
-            return err.text().then((errorMessage) =>
-              left(<ActionResponse>{
-                message:
-                  errorMessage == '' ? 'An error happened' : errorMessage,
-                success: false,
-              })
-            );
-          }
-        }
-        return left(actionResponse);
+
+        return left(
+          utils.mapError(err, 'An error happened retrieving key ' + key)
+        );
       });
+  }
+
+  private parseMetadataNumber(entryMetadata: number| undefined| null|string): string | undefined {
+    if(!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
+      return undefined;
+    }
+    let entryMetadataNumber: number;
+    if(Number.isInteger(entryMetadata)) {
+      entryMetadataNumber = entryMetadata as number;
+    } else {
+      entryMetadataNumber = Number.parseInt(entryMetadata as string);
+    }
+    return entryMetadataNumber.toLocaleString('en', {maximumFractionDigits: 0});
+  }
+
+  private parseMetadataDate(entryMetadata: string | number | undefined | null): string | undefined {
+    if(!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
+      return undefined;
+    }
+
+    let entryMetadataNumber: number;
+
+    if(Number.isInteger(entryMetadata)) {
+      entryMetadataNumber = entryMetadata as number;
+    } else {
+      entryMetadataNumber = Number.parseInt(entryMetadata as string);
+    }
+    return new Date(entryMetadataNumber).toLocaleString();
   }
 
   /**
@@ -431,7 +512,7 @@ class CacheService {
         '/caches/' +
         encodeURIComponent(cacheName) +
         '/' +
-        entryKey,
+        encodeURIComponent(entryKey),
       {
         method: 'DELETE',
         credentials: 'include',

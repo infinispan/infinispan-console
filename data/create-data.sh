@@ -12,9 +12,9 @@ curl -XDELETE  -u $userPass http://localhost:11222/rest/v2/caches/example
 curl -XDELETE  -u $userPass http://localhost:11222/rest/v2/caches/local_users
 curl -XDELETE  -u $userPass http://localhost:11222/rest/v2/caches/invalidated
 curl -XDELETE  -u $userPass http://localhost:11222/rest/v2/caches/invalidated-sync
+curl -XDELETE  -u $userPass http://localhost:11222/rest/v2/caches/protocache
 
 echo "= Create caches"
-curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/users2?template=org.infinispan.DIST_ASYNC
 curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/users?template=org.infinispan.DIST_ASYNC
 curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/managers?template=org.infinispan.REPL_SYNC
 curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/programmers?template=org.infinispan.LOCAL
@@ -24,22 +24,28 @@ curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/example?template
 curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/local_users?template=org.infinispan.LOCAL
 curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/invalidated?template=org.infinispan.INVALIDATION_ASYNC
 curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/invalidated-sync?template=org.infinispan.INVALIDATION_SYNC
+curl -XPOST  -u $userPass http://localhost:11222/rest/v2/caches/protocache?template=example.PROTOBUF_DIST
 
-echo "= Delete counters"
-for i in {1..5}
+for i in {1..10}
 do
-curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/weak-$i
-curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/strong-$i
+curl -XPOST -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/x-java-object;type=java.lang.String" -d "val-$i" http://localhost:11222/rest/v2/caches/protocache/key-$i
 done
 
-echo "= Create some counters"
-for i in {1..5}
-do
-  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@weakCounter.json" "http://localhost:11222/rest/v2/counters/weak-$i"
-  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@strongCounter.json" "http://localhost:11222/rest/v2/counters/strong-$i"
-done
-
-echo "= Create some tasks"
-curl -XPOST -u $userPass -H "Content-Type: application/javascript" -d "@hello.js" "http://localhost:11222/rest/v2/tasks/hello"
-
-echo "= End"
+#echo "= Delete counters"
+#for i in {1..5}
+#do
+#curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/weak-$i
+#curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/strong-$i
+#done
+#
+#echo "= Create some counters"
+#for i in {1..5}
+#do
+#  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@weakCounter.json" "http://localhost:11222/rest/v2/counters/weak-$i"
+#  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@strongCounter.json" "http://localhost:11222/rest/v2/counters/strong-$i"
+#done
+#
+#echo "= Create some tasks"
+#curl -XPOST -u $userPass -H "Content-Type: application/javascript" -d "@hello.js" "http://localhost:11222/rest/v2/tasks/hello"
+#
+#echo "= End"

@@ -43,8 +43,7 @@ import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import {
   IExtraData,
   IRowData,
-} from '@patternfly/react-table/src/components/Table/Table';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
+} from '@patternfly/react-table/src/components/Table';
 import { ComponentHealth } from '@services/utils';
 import { Health } from '@app/Common/Health';
 import { useBanner } from '@app/utils/useApiAlert';

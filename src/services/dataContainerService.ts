@@ -132,6 +132,10 @@ class ContainerService {
       );
   }
 
+  /**
+   * Get all caches for a cache manager
+   * @param name
+   */
   public async getCaches(
     name: string
   ): Promise<Either<ActionResponse, CacheInfo[]>> {

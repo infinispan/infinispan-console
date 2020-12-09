@@ -44,11 +44,11 @@ import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { RecentActivityTable } from '@app/Caches/RecentActivityTable';
 import { Link } from 'react-router-dom';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { useFetchCache } from '@app/services/cachesHook';
+import { useCacheDetail } from '@app/services/cachesHook';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
-  const { loading, error, cache } = useFetchCache(cacheName);
+  const { loading, error, cache } = useCacheDetail(cacheName);
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
@@ -62,7 +62,6 @@ const DetailCache = (props: { cacheName: string }) => {
         </React.Fragment>
       );
     }
-
     return (
       <Tabs
         unmountOnExit
@@ -78,7 +77,7 @@ const DetailCache = (props: { cacheName: string }) => {
           <RecentActivityTable cacheName={cacheName} />
         </Tab>
         <Tab
-          eventKey={11}
+          eventKey={13}
           title={
             <TabTitleText>
               <MoreInfoTooltip
@@ -91,7 +90,7 @@ const DetailCache = (props: { cacheName: string }) => {
           <QueryEntries
             cacheName={cacheName}
             indexed={cache?.features.indexed}
-            changeTab={() => setActiveTabKey1(2)}
+            changeTab={() => setActiveTabKey1(3)}
           />
         </Tab>
       </Tabs>

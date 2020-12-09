@@ -80,11 +80,15 @@ interface CacheEntry {
   timeToLive?: string;
   maxIdle?: string;
   created?: string;
-  lastModified?: string;
   lastUsed?: string;
   expires?: string;
   cacheControl?: string;
   eTag?: string;
+}
+
+interface CacheKey {
+  key: string;
+  keyContentType: string;
 }
 
 interface DetailedInfinispanCache {

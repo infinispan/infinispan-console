@@ -9,7 +9,7 @@ import {
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-import { useFetchCache } from '@app/services/cachesHook';
+import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -22,7 +22,7 @@ const ClearAllEntries = (props: {
 }) => {
   const { pushActivity } = useRecentActivity();
   const { addAlert } = useApiAlert();
-  const { reload } = useFetchCache(props.cacheName);
+  const { reload } = useCacheDetail(props.cacheName);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 

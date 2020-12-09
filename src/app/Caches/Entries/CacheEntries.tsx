@@ -1,44 +1,50 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Bullseye,
   Button,
   ButtonVariant,
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateVariant,
   InputGroup,
+  Pagination,
   Select,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
+  Text,
+  TextContent,
   TextInput,
-  Title,
   Toolbar,
   ToolbarContent,
+  ToolbarGroup,
   ToolbarItem,
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
-import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
+import {SearchIcon} from '@patternfly/react-icons';
+import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
 import cacheService from '@services/cacheService';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
-import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
-import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
+import {Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
+import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
+import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
-import { ContentType } from '@services/utils';
-import { useTranslation } from 'react-i18next';
+import {ContentType} from '@services/utils';
+import {useTranslation} from 'react-i18next';
+import {TableEmptyState} from '@app/Common/TableEmptyState';
+import {useCacheDetail, useCacheEntries} from '@app/services/cachesHook';
+import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
     isCreateOrUpdateEntryFormOpen,
     setCreateOrUpdateEntryFormOpen,
   ] = useState<boolean>(false);
+
+  const {
+    cacheEntries,
+    loadingEntries,
+    errorEntries,
+    reloadEntries,
+  } = useCacheEntries();
+  const { cache } = useCacheDetail(props.cacheName);
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
     false
   );
@@ -48,19 +54,60 @@ const CacheEntries = (props: { cacheName: string }) => {
   const [keyToSearch, setKeyToSearch] = useState<string>('');
   const [rows, setRows] = useState<any[]>([]);
   const [actions, setActions] = useState<any[]>([]);
+  const [entriesPagination, setEntriesPagination] = useState({
+    page: 1,
+    perPage: 10,
+  });
+
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+
+  useEffect(() => {
+    updateRows(cacheEntries, loadingEntries, errorEntries);
+  }, [loadingEntries, cacheEntries]);
+
+  useEffect(() => {
+    if (keyToSearch == '') {
+      reloadEntries();
+    }
+  }, [keyToSearch]);
+
+  useEffect(() => {
+    let paginationUpgrade = false;
+    // Upgrade Pagination in necessary
+    if (entriesPagination.page > 1) {
+      const completePagesNum = Math.floor(
+        cacheEntries.length / entriesPagination.perPage
+      );
+      const lastPageCount = cacheEntries.length % entriesPagination.perPage;
+      if (lastPageCount == 0 && entriesPagination.page > completePagesNum) {
+        paginationUpgrade = true;
+        setEntriesPagination({
+          page: completePagesNum,
+          perPage: entriesPagination.perPage,
+        });
+      }
+    }
+
+    if (!paginationUpgrade) {
+      updateRows(cacheEntries, loadingEntries, errorEntries);
+    }
+  }, [cacheEntries]);
+
+  useEffect(() => {
+      updateRows(cacheEntries, loadingEntries, errorEntries);
+  }, [entriesPagination]);
 
   const entryActions = [
     {
       title: t('caches.entries.action-edit'),
       onClick: (event, rowId, rowData, extra) =>
-        onClickEditEntryButton(rowData.cells[0].title),
+        onClickEditEntryButton(rowData.cells[0].keyForAction),
     },
     {
       title: t('caches.entries.action-delete'),
       onClick: (event, rowId, rowData, extra) =>
-        onClickDeleteEntryButton(rowData.cells[0].title),
+        onClickDeleteEntryButton(rowData.cells[0].keyForAction),
     },
   ];
 
@@ -72,12 +119,37 @@ const CacheEntries = (props: { cacheName: string }) => {
     { title: t('caches.entries.column-expires') },
     { title: t('caches.entries.column-created') },
     { title: t('caches.entries.column-lastused') },
-    { title: t('caches.entries.column-lastmodified') }
   ];
-  const updateRows = (entries: CacheEntry[]) => {
+  const displayEmptyMessage = () => {
+    if(keyToSearch.trim() != '') {
+      return (
+        <Text>
+          {t('caches.entries.get-entry-not-found')} <strong>{keyToSearch}</strong>
+        </Text>
+      )
+    }
+
+    return (
+      <Text>
+        {t('caches.entries.empty-cache')}
+      </Text>
+    )
+  }
+
+  const updateRows = (
+    entries: CacheEntry[],
+    loading: boolean,
+    error: string
+  ) => {
+    const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
+    const currentPageEntries = entries.slice(
+      initSlice,
+      initSlice + entriesPagination.perPage
+    );
+
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
 
-    if (entries.length == 0) {
+    if (currentPageEntries.length == 0) {
       rows = [
         {
           heightAuto: true,
@@ -85,14 +157,15 @@ const CacheEntries = (props: { cacheName: string }) => {
             {
               props: { colSpan: 8 },
               title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.full}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('caches.entries.get-entry-not-found')} <strong>{keyToSearch}</strong>
-                    </Title>
-                  </EmptyState>
-                </Bullseye>
+                <TableEmptyState
+                  loading={loading}
+                  error={error}
+                  empty={
+                    <TextContent>
+                      {displayEmptyMessage()}
+                    </TextContent>
+                  }
+                />
               ),
             },
           ],
@@ -100,18 +173,29 @@ const CacheEntries = (props: { cacheName: string }) => {
       ];
       setActions([]);
     } else {
-      rows = entries.map((entry) => {
+      rows = currentPageEntries.map((entry) => {
         return {
           heightAuto: true,
           cells: [
-            { title: entry.key },
-            { title: displayValue(entry.value) },
-            { title: entry.timeToLive ? entry.timeToLive : t('caches.entries.lifespan-immortal') },
-            { title: entry.maxIdle ? entry.maxIdle : t('caches.entries.maxidle-immortal') },
-            { title: entry.expires ? entry.expires : t('caches.entries.never-expire') },
+            { title: displayHighlighted(entry.key), keyForAction: entry.key },
+            { title: displayHighlighted(entry.value) },
+            {
+              title: entry.timeToLive
+                ? entry.timeToLive
+                : t('caches.entries.lifespan-immortal'),
+            },
+            {
+              title: entry.maxIdle
+                ? entry.maxIdle
+                : t('caches.entries.maxidle-immortal'),
+            },
+            {
+              title: entry.expires
+                ? entry.expires
+                : t('caches.entries.never-expire'),
+            },
             { title: entry.created },
             { title: entry.lastUsed },
-            { title: entry.lastModified },
           ],
         };
       });
@@ -120,7 +204,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     setRows(rows);
   };
 
-  const displayValue = (value: string) => {
+  const displayHighlighted = (value: string) => {
     return (
       <SyntaxHighlighter
         wrapLines={false}
@@ -182,13 +266,17 @@ const CacheEntries = (props: { cacheName: string }) => {
     if (!kt) {
       kt = keyType as ContentType;
     }
+    updateRows([], true, '');
+    cacheService.getEntry(props.cacheName, keyToSearch, kt, cache.configuration).then((response) => {
+      let entries: CacheEntry[] = [];
+      let error = '';
 
-    cacheService.getEntry(props.cacheName, keyToSearch, kt).then((response) => {
       if (response.isRight()) {
-        updateRows([response.value]);
-      } else {
-        updateRows([]);
+        entries = [response.value];
+      } else if (response.isLeft() && !response.value.success) {
+        error = response.value.message;
       }
+      updateRows(entries, false, error);
     });
   };
 
@@ -208,67 +296,119 @@ const CacheEntries = (props: { cacheName: string }) => {
     string | SelectOptionObject | (string | SelectOptionObject)[]
   >(ContentType.StringContentType);
 
+  const buildPagination = () => {
+    return (
+        <Pagination
+          itemCount={cacheEntries.length}
+          perPage={entriesPagination.perPage}
+          page={entriesPagination.page}
+          onSetPage={(_event, pageNumber) =>
+            setEntriesPagination({
+              page: pageNumber,
+              perPage: entriesPagination.perPage,
+            })
+          }
+          widgetId="pagination-entries"
+          onPerPageSelect={(_event, perPage) =>
+            setEntriesPagination({
+              page: 1,
+              perPage: perPage,
+            })
+          }
+          isCompact
+        />
+    );
+  };
+
+  const secondRowItems = (
+      <Toolbar>
+        <ToolbarContent>
+          <ToolbarItem variant={ToolbarItemVariant.pagination} alignment={{ default: "alignRight"}}>
+            {buildPagination()}
+          </ToolbarItem>
+          <ToolbarItem><MoreInfoTooltip
+            label={''}
+            toolTip={'Shows up to 100 entries of the cache'}
+          /></ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+  );
+
   return (
     <React.Fragment>
       <Toolbar id="cache-entries-toolbar" style={{ paddingLeft: 0 }}>
         <ToolbarContent>
-          <ToolbarItem>
-            <Select
-              width={125}
-              variant={SelectVariant.single}
-              aria-label="Select Key Content Type"
-              onToggle={(isExpanded) => setExpandedKey(isExpanded)}
-              onSelect={(event, selection) => {
-                setKeyType(selection);
-                setExpandedKey(false);
-                searchEntryByKey(selection as ContentType);
-              }}
-              selections={keyType}
-              isOpen={expandedKey}
-            >
-              {keyContentTypeOptions()}
-            </Select>
-          </ToolbarItem>
-          <ToolbarItem>
-            <InputGroup>
-              <TextInput
-                name="textSearchByKey"
-                id="textSearchByKey"
-                type="search"
-                aria-label={t('caches.entries.get-entry-label')}
-                placeholder={t('caches.entries.get-entry-text') + keyType}
-                size={50}
-                onChange={onChangeKeySearch}
-                onKeyPress={searchEntryOnKeyPress}
-              />
-              <Button
-                variant="control"
-                aria-label={t('caches.entries.get-entry-button-label')}
-                onClick={() => searchEntryByKey()}
+          <ToolbarGroup>
+            <ToolbarItem>
+              <Select
+                width={125}
+                variant={SelectVariant.single}
+                aria-label="Select Key Content Type"
+                onToggle={(isExpanded) => setExpandedKey(isExpanded)}
+                onSelect={(event, selection) => {
+                  setKeyType(selection);
+                  setExpandedKey(false);
+                  searchEntryByKey(selection as ContentType);
+                }}
+                selections={keyType}
+                isOpen={expandedKey}
               >
-                <SearchIcon />
+                {keyContentTypeOptions()}
+              </Select>
+            </ToolbarItem>
+            <ToolbarItem>
+              <InputGroup>
+                <TextInput
+                  name="textSearchByKey"
+                  id="textSearchByKey"
+                  type="search"
+                  aria-label={t('caches.entries.get-entry-label')}
+                  placeholder={t('caches.entries.get-entry-text') + keyType}
+                  size={50}
+                  onChange={onChangeKeySearch}
+                  onKeyPress={searchEntryOnKeyPress}
+                />
+                <Button
+                  variant="control"
+                  aria-label={t('caches.entries.get-entry-button-label')}
+                  onClick={() => searchEntryByKey()}
+                >
+                  <SearchIcon />
+                </Button>
+              </InputGroup>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                key="add-entry-button"
+                variant={ButtonVariant.primary}
+                onClick={onClickAddEntryButton}
+              >
+                Add entry
               </Button>
-            </InputGroup>
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button
-              key="add-entry-button"
-              variant={ButtonVariant.primary}
-              onClick={onClickAddEntryButton}
-            >
-              Add entry
-            </Button>
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button
-              variant={ButtonVariant.link}
-              onClick={onClickClearAllButton}
-            >
-              Clear all entries
-            </Button>
-          </ToolbarItem>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                variant={ButtonVariant.link}
+                onClick={onClickClearAllButton}
+              >
+                Clear all entries
+              </Button>
+            </ToolbarItem>
+          </ToolbarGroup>
         </ToolbarContent>
       </Toolbar>
+      {secondRowItems}
+      <Table
+        variant={TableVariant.compact}
+        aria-label="Entries"
+        cells={columns}
+        rows={rows}
+        actions={actions}
+        className={'entries-table'}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
       <CreateOrUpdateEntryForm
         cacheName={props.cacheName}
         keyToEdit={keyToEdit}
@@ -288,17 +428,6 @@ const CacheEntries = (props: { cacheName: string }) => {
         isModalOpen={isClearAllModalOpen}
         closeModal={closeClearAllEntryModal}
       />
-      <Table
-        variant={TableVariant.compact}
-        aria-label="Entries"
-        cells={columns}
-        rows={rows}
-        actions={actions}
-        className={'entries-table'}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
     </React.Fragment>
   );
 };

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 const TableEmptyState = (props: {
   loading: boolean;
   error: string;
-  empty: string;
+  empty: string | React.ReactNode;
 }) => {
   if (props.loading) {
     return (
