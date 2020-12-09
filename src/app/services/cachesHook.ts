@@ -40,14 +40,29 @@ export function useReloadCache() {
   return { reload };
 }
 
-export function useFetchCache(cacheName: string) {
+export function useCacheEntries() {
+  const {
+    cacheEntries,
+    loadingEntries,
+    errorEntries,
+    reloadEntries,
+  } = useContext(CacheDetailContext);
+  return {
+    cacheEntries,
+    loadingEntries,
+    errorEntries,
+    reloadEntries,
+  };
+}
+
+export function useCacheDetail(cacheName: string) {
   const { cache, loading, error, loadCache, reload } = useContext(
     CacheDetailContext
   );
 
   useEffect(() => {
     loadCache(cacheName);
-  }, []);
+  }, [cacheName]);
 
   return { cache, loading, error, loadCache, reload };
 }

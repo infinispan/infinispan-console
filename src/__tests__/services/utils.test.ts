@@ -56,4 +56,141 @@ describe('Utils tests', () => {
       ContentType.OctetStreamHex
     );
   });
+
+  test('is protobuf config', () => {
+    let protobufConfigDist =
+      '{\n' +
+      '  "distributed-cache": {\n' +
+      '    "mode": "SYNC",\n' +
+      '    "remote-timeout": 17500,\n' +
+      '    "state-transfer": {\n' +
+      '      "timeout": 60000\n' +
+      '    },\n' +
+      '    "encoding": {\n' +
+      '      "key": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      },\n' +
+      '      "value": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      }\n' +
+      '    },\n' +
+      '    "statistics": true\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(protobufConfigDist)).toStrictEqual([
+      true,
+      true,
+    ]);
+
+    let protobufConfigReplicated =
+      '{\n' +
+      '  "replicated-cache": {\n' +
+      '    "mode": "SYNC",\n' +
+      '    "remote-timeout": 17500,\n' +
+      '    "state-transfer": {\n' +
+      '      "timeout": 60000\n' +
+      '    },\n' +
+      '    "encoding": {\n' +
+      '      "key": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      },\n' +
+      '      "value": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      }\n' +
+      '    },\n' +
+      '    "statistics": true\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(protobufConfigReplicated)).toStrictEqual([
+      true,
+      true,
+    ]);
+
+    let protobufConfigLocal =
+      '{\n' +
+      '  "local-cache": {\n' +
+      '    "encoding": {\n' +
+      '      "key": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      },\n' +
+      '      "value": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      }\n' +
+      '    },\n' +
+      '    "statistics": true\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(protobufConfigLocal)).toStrictEqual([
+      true,
+      true,
+    ]);
+
+    let protobufConfigInvalidated =
+      '{\n' +
+      '  "invalidation-cache": {\n' +
+      '    "encoding": {\n' +
+      '      "key": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      },\n' +
+      '      "value": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      }\n' +
+      '    },\n' +
+      '    "statistics": true\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(protobufConfigInvalidated)).toStrictEqual([
+      true,
+      true,
+    ]);
+
+    let notProtobufKey =
+      '{\n' +
+      '  "distributed-cache": {\n' +
+      '    "mode": "SYNC",\n' +
+      '    "encoding": {\n' +
+      '      "value": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      }\n' +
+      '    },\n' +
+      '    "statistics": true\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(notProtobufKey)).toStrictEqual([false, true]);
+
+    let notProtobufValue =
+      '{\n' +
+      '  "distributed-cache": {\n' +
+      '    "mode": "SYNC",\n' +
+      '    "encoding": {\n' +
+      '      "key": {\n' +
+      '        "media-type": "application/x-protostream"\n' +
+      '      }\n' +
+      '    },\n' +
+      '    "statistics": true\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(notProtobufValue)).toStrictEqual([
+      true,
+      false,
+    ]);
+
+    const notProtobuf =
+      '{\n' +
+      '  "distributed-cache": {\n' +
+      '    "mode": "ASYNC",\n' +
+      '    "state-transfer": {\n' +
+      '      "timeout": 60000\n' +
+      '    }\n' +
+      '  }\n' +
+      '}';
+
+    expect(utils.isProtobufCache(notProtobuf)).toStrictEqual([false, false]);
+  });
 });

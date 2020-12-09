@@ -9,7 +9,7 @@ import {
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useRecentActivity } from '@app/utils/useRecentActivity';
-import { useReloadCache } from '@app/services/cachesHook';
+import { useCacheEntries, useReloadCache } from '@app/services/cachesHook';
 import { ContentType } from '@services/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +26,7 @@ const DeleteEntry = (props: {
   const { addAlert } = useApiAlert();
   const { pushActivity } = useRecentActivity();
   const { reload } = useReloadCache();
+  const { reloadEntries } = useCacheEntries();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
@@ -34,6 +35,7 @@ const DeleteEntry = (props: {
       .deleteEntry(props.cacheName, props.entryKey, props.keyContentType)
       .then((actionResponse) => {
         reload();
+        reloadEntries();
         addAlert(actionResponse);
         pushActivity({
           cacheName: props.cacheName,
@@ -63,13 +65,14 @@ const DeleteEntry = (props: {
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.entries.modal-button-cancel')}
-        </Button>
+        </Button>,
       ]}
     >
       <TextContent>
         <Text>
           {t('caches.entries.modal-delete-body-line-one')}{' '}
-          <strong>'{props.entryKey}'</strong> {t('caches.entries.modal-delete-body-line-two')}{' '}
+          <strong>'{props.entryKey}'</strong>{' '}
+          {t('caches.entries.modal-delete-body-line-two')}{' '}
           <strong>{props.cacheName}</strong>.
           <br />
           {t('caches.entries.modal-delete-body-line-three')}

@@ -313,6 +313,49 @@ class Utils {
 
     return ContentType.StringContentType;
   }
+
+  /**
+   * Returns an array of two elements that tell if the cache is encoded (key/value) with
+   * protobuf. If the result is [true, true], both key and value are encoded with protobuf
+   * @param cacheConfig, the config of the cache in string
+   * @return [boolean, boolean]
+   */
+  public isProtobufCache(cacheConfig: string): boolean[] {
+    const config = JSON.parse(cacheConfig);
+
+    let cacheConfigHead;
+    if (config.hasOwnProperty('distributed-cache')) {
+      cacheConfigHead = config['distributed-cache'];
+    } else if (config.hasOwnProperty('replicated-cache')) {
+      cacheConfigHead = config['replicated-cache'];
+    } else if (config.hasOwnProperty('invalidation-cache')) {
+      cacheConfigHead = config['invalidation-cache'];
+    } else if (config.hasOwnProperty('local-cache')) {
+      cacheConfigHead = config['local-cache'];
+    } else {
+      return [false, false];
+    }
+
+    let keyProto = false;
+    try {
+      keyProto =
+        cacheConfigHead.encoding.key['media-type'] ==
+        'application/x-protostream';
+    } catch (err) {
+      // ignore
+    }
+
+    let valueProto = false;
+    try {
+      valueProto =
+        cacheConfigHead.encoding.value['media-type'] ==
+        'application/x-protostream';
+    } catch (err) {
+      // ignore
+    }
+
+    return [keyProto, valueProto];
+  }
 }
 
 const utils: Utils = new Utils();
