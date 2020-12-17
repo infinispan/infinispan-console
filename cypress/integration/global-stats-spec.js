@@ -1,6 +1,10 @@
 describe('Global stats', () => {
   it('successfully loads Global stats', () => {
-       cy.visit('http://localhost:11222/console/global-stats')
+       cy.visit('http://localhost:11222/console/global-stats', {
+                headers: {
+                  "Accept-Encoding": "gzip, deflate, br"
+                }
+       });
        cy.get('h1').should('contain', 'Global statistics')
        cy.get('h5').should('contain', 'Cluster Content')
        cy.get('h5').should('contain', 'Data access')

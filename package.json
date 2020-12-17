@@ -20,7 +20,8 @@
     "bundle-profile:analyze": "npm run build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
     "deploy-console-to-server": "cp -r ./dist/* ./server/infinispan-server/static/console",
-    "cy:run": "cypress run --headless"
+    "cy:run": "cypress run --headless",
+    "cy:e2e": "cypress open"
   },
   "prettier": {
     "parser": "typescript",
