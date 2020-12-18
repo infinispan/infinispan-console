@@ -82,7 +82,11 @@ class Utils {
    */
   public endpoint(): string {
     if (this.isDevMode()) {
-      return 'http://localhost:11222/rest/v2';
+      if (!process.env.INFINISPAN_SERVER_URL) {
+        return 'http://localhost:11222/rest/v2';
+      } else {
+        return process.env.INFINISPAN_SERVER_URL + '/rest/v2';
+      }
     } else {
       return window.location.origin.toString() + '/rest/v2';
     }
