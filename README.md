@@ -37,6 +37,10 @@ npm run start:dev # start the development server
 Install development/build dependencies
 `npm install`
 
+By default, Console in development mode looking for the Infinispan Server REST URL at the `http:\\localhost:11222\v2\rest`
+
+It's possible to replace host and port URL connection with `INFINISPAN_SERVER_URL` environment variable which will be added to the REST endpoint
+
 Start the development server
 `npm run start:dev`
 
