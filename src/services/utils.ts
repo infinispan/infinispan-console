@@ -40,6 +40,7 @@ export enum ContentType {
   XML = 'Xml', //'application/xml'
   IntegerContentType = 'Integer', //'application/x-java-object;type=java.lang.Integer'
   DoubleContentType = 'Double', //'application/x-java-object;type=java.lang.Double'
+  FloatContentType = 'Float', //'application/x-java-object;type=java.lang.Float'
   LongContentType = 'Long', //'application/x-java-object;type=java.lang.Long'
   BooleanContentType = 'Boolean', //'application/x-java-object;type=java.lang.Boolean'
   BytesType = 'Bytes', //'Bytes'
@@ -359,6 +360,36 @@ class Utils {
     }
 
     return [keyProto, valueProto];
+  }
+
+  /**
+   *
+   * @param protobufType
+   */
+  public fromProtobufType(protobufType: string) : ContentType {
+    let contentType;
+
+    switch (protobufType) {
+      case 'string': contentType = ContentType.StringContentType; break;
+      case 'float': contentType = ContentType.FloatContentType; break;
+      case 'double': contentType = ContentType.DoubleContentType; break;
+      case 'int32':
+      case 'uint32':
+      case 'sint32':
+      case 'fixed32':
+      case 'sfixed32':
+        contentType = ContentType.IntegerContentType; break;
+      case 'int64':
+      case 'uint64':
+      case 'sint64':
+      case 'fixed64':
+      case 'sfixed64':
+        contentType = ContentType.LongContentType; break;
+      case 'bool':
+        contentType = ContentType.BooleanContentType; break;
+      default: contentType = ContentType.StringContentType;
+    }
+    return contentType;
   }
 }
 

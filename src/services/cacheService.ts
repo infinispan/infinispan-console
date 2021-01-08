@@ -330,9 +330,9 @@ class CacheService {
           infos.map(
             (entry) =>
               <CacheEntry>{
-                key: isProtobuf[0] ? entry.key._value : entry.key,
-                keyContentType: isProtobuf[0] ? entry.key['_type'] : undefined,
-                value: isProtobuf[1] ? entry.value._value : entry.value,
+                key: isProtobuf[0] ? JSON.stringify(entry.key) : entry.key,
+                keyContentType: isProtobuf[0] ? utils.fromProtobufType(entry.key['_type']) : ContentType.StringContentType,
+                value: isProtobuf[1] ? JSON.stringify(entry.value) : entry.value,
                 valueContentType: isProtobuf[1]
                   ? entry.value['_type']
                   : undefined,
@@ -365,14 +365,9 @@ class CacheService {
   public async getEntry(
     cacheName: string,
     key: string,
-    keyContentType?: ContentType,
-    config?: CacheConfig
+    keyContentType?: ContentType
   ): Promise<Either<ActionResponse, CacheEntry>> {
-    let handleProtobuf = [false, false];
     let headers = utils.createAuthenticatedHeader();
-    if (config) {
-      handleProtobuf = utils.isProtobufCache(config.config);
-    }
     if (keyContentType) {
       let keyContentTypeHeader = utils.fromContentType(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
@@ -402,20 +397,11 @@ class CacheService {
             const expires = response.headers.get('Expires');
             const cacheControl = response.headers.get('Cache-Control');
             const etag = response.headers.get('Etag');
-            let displayableValue = value;
-            if(utils.isJSONObject(value)) {
-              if (handleProtobuf[1]) {
-                // if we need to handle protobuf and display only the value
-                displayableValue = JSON.parse(value)._value;
-              }
-            }
             return <CacheEntry>{
               key: key,
-              value: displayableValue,
+              value: value,
               keyContentType: keyContentType,
-              valueContentType: handleProtobuf[1]
-                ? JSON.parse(value)['_type']
-                : undefined,
+              valueContentType: undefined,
               timeToLive: this.parseMetadataNumber(timeToLive),
               maxIdle: this.parseMetadataNumber(maxIdleTimeSeconds),
               created: this.parseMetadataDate(created),
