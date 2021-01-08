@@ -1,4 +1,4 @@
-import utils, { ContentType } from '@services/utils';
+import utils, {ContentType} from '@services/utils';
 
 describe('Utils tests', () => {
   test('from ContentType to string', () => {
@@ -192,5 +192,23 @@ describe('Utils tests', () => {
       '}';
 
     expect(utils.isProtobufCache(notProtobuf)).toStrictEqual([false, false]);
+  });
+
+  test('from protobuf type to ContentType', () => {
+    expect(utils.fromProtobufType('string')).toStrictEqual(ContentType.StringContentType);
+    expect(utils.fromProtobufType('float')).toStrictEqual(ContentType.FloatContentType);
+    expect(utils.fromProtobufType('double')).toStrictEqual(ContentType.DoubleContentType);
+    expect(utils.fromProtobufType('int32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(utils.fromProtobufType('int64')).toStrictEqual(ContentType.LongContentType);
+    expect(utils.fromProtobufType('uint32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(utils.fromProtobufType('uint64')).toStrictEqual(ContentType.LongContentType);
+    expect(utils.fromProtobufType('sint32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(utils.fromProtobufType('sint64')).toStrictEqual(ContentType.LongContentType);
+    expect(utils.fromProtobufType('fixed32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(utils.fromProtobufType('fixed64')).toStrictEqual(ContentType.LongContentType);
+    expect(utils.fromProtobufType('sfixed32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(utils.fromProtobufType('sfixed64')).toStrictEqual(ContentType.LongContentType);
+    expect(utils.fromProtobufType('bool')).toStrictEqual(ContentType.BooleanContentType);
+
   });
 });

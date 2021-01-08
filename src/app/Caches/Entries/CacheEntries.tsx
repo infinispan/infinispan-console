@@ -26,7 +26,7 @@ import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
-import {ContentType} from '@services/utils';
+import utils, {ContentType} from '@services/utils';
 import {useTranslation} from 'react-i18next';
 import {TableEmptyState} from '@app/Common/TableEmptyState';
 import {useCacheDetail, useCacheEntries} from '@app/services/cachesHook';
@@ -50,6 +50,7 @@ const CacheEntries = (props: { cacheName: string }) => {
   );
   const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [keyToEdit, setKeyToEdit] = useState<string>('');
+  const [keyContentTypeToEdit, setKeyContentTypeToEdit] = useState<ContentType>(ContentType.StringContentType);
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [keyToSearch, setKeyToSearch] = useState<string>('');
   const [rows, setRows] = useState<any[]>([]);
@@ -102,12 +103,12 @@ const CacheEntries = (props: { cacheName: string }) => {
     {
       title: t('caches.entries.action-edit'),
       onClick: (event, rowId, rowData, extra) =>
-        onClickEditEntryButton(rowData.cells[0].keyForAction),
+        onClickEditEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType),
     },
     {
       title: t('caches.entries.action-delete'),
       onClick: (event, rowId, rowData, extra) =>
-        onClickDeleteEntryButton(rowData.cells[0].keyForAction),
+        onClickDeleteEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType),
     },
   ];
 
@@ -174,10 +175,16 @@ const CacheEntries = (props: { cacheName: string }) => {
       setActions([]);
     } else {
       rows = currentPageEntries.map((entry) => {
+        let keyForAction = entry.key;
+        let keyContentType = entry.keyContentType;
+        const isProtobuf = utils.isProtobufCache(cache.configuration.config);
+        if (isProtobuf[0]) {
+          keyForAction = JSON.parse(entry.key)['_value'];
+        }
         return {
           heightAuto: true,
           cells: [
-            { title: displayHighlighted(entry.key), keyForAction: entry.key },
+            { title: displayHighlighted(entry.key), keyForAction: keyForAction, keyContentType: keyContentType },
             { title: displayHighlighted(entry.value) },
             {
               title: entry.timeToLive
@@ -225,14 +232,16 @@ const CacheEntries = (props: { cacheName: string }) => {
     setClearAllModalOpen(true);
   };
 
-  const onClickEditEntryButton = (entryKey: string) => {
+  const onClickEditEntryButton = (entryKey: string, keyContentType: ContentType) => {
     setKeyToEdit(entryKey);
+    setKeyContentTypeToEdit(keyContentType);
     setCreateOrUpdateEntryFormOpen(true);
   };
 
-  const onClickDeleteEntryButton = (entryKey: string) => {
+  const onClickDeleteEntryButton = (entryKey: string,  keyContentType: ContentType) => {
     setDeleteEntryModalOpen(true);
     setKeyToDelete(entryKey);
+    setKeyContentTypeToEdit(keyContentType);
   };
 
   const closeCreateOrEditEntryFormModal = () => {
@@ -267,7 +276,7 @@ const CacheEntries = (props: { cacheName: string }) => {
       kt = keyType as ContentType;
     }
     updateRows([], true, '');
-    cacheService.getEntry(props.cacheName, keyToSearch, kt, cache.configuration).then((response) => {
+    cacheService.getEntry(props.cacheName, keyToSearch, kt).then((response) => {
       let entries: CacheEntry[] = [];
       let error = '';
 
@@ -412,14 +421,14 @@ const CacheEntries = (props: { cacheName: string }) => {
       <CreateOrUpdateEntryForm
         cacheName={props.cacheName}
         keyToEdit={keyToEdit}
-        keyContentType={keyType as ContentType}
+        keyContentType={keyContentTypeToEdit}
         isModalOpen={isCreateOrUpdateEntryFormOpen}
         closeModal={closeCreateOrEditEntryFormModal}
       />
       <DeleteEntry
         cacheName={props.cacheName}
         entryKey={keyToDelete}
-        keyContentType={keyType as ContentType}
+        keyContentType={keyContentTypeToEdit}
         isModalOpen={isDeleteEntryModalOpen}
         closeModal={closeDeleteEntryModal}
       />
