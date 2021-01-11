@@ -41,7 +41,6 @@ import {
   ExclamationCircleIcon,
 } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
-import { RecentActivityTable } from '@app/Caches/RecentActivityTable';
 import { Link } from 'react-router-dom';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useCacheDetail } from '@app/services/cachesHook';
@@ -58,7 +57,6 @@ const DetailCache = (props: { cacheName: string }) => {
       return (
         <React.Fragment>
           <CacheEntries cacheName={cacheName} />
-          <RecentActivityTable cacheName={cacheName} />
         </React.Fragment>
       );
     }
@@ -74,7 +72,6 @@ const DetailCache = (props: { cacheName: string }) => {
       >
         <Tab eventKey={10} title={<TabTitleText>Manage Entries</TabTitleText>}>
           <CacheEntries cacheName={cacheName} />
-          <RecentActivityTable cacheName={cacheName} />
         </Tab>
         <Tab
           eventKey={13}

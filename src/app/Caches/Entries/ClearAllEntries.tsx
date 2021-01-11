@@ -8,7 +8,6 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +19,6 @@ const ClearAllEntries = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
-  const { pushActivity } = useRecentActivity();
   const { addAlert } = useApiAlert();
   const { reload } = useCacheDetail(props.cacheName);
   const { t } = useTranslation();
@@ -29,12 +27,6 @@ const ClearAllEntries = (props: {
   const onClickClearAllEntriesButton = () => {
     cacheService.clear(props.cacheName).then((actionResponse) => {
       addAlert(actionResponse);
-      pushActivity({
-        cacheName: props.cacheName,
-        entryKey: '*',
-        action: 'Clear all',
-        date: new Date(),
-      });
       reload();
     });
   };
