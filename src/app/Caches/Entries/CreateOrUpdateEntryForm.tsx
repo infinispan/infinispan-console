@@ -17,7 +17,6 @@ import { SelectOptionObject } from '@patternfly/react-core/src/components/Select
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { ContentType, Flags } from '@services/utils';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
 import cacheService from '@services/cacheService';
@@ -32,7 +31,6 @@ const CreateOrUpdateEntryForm = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { pushActivity } = useRecentActivity();
   const { reload } = useReloadCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -270,7 +268,6 @@ const CreateOrUpdateEntryForm = (props: {
               action: isEdition ? 'Edit' : 'Add',
               date: new Date(),
             };
-            pushActivity(activity);
             reload();
           } else {
             setError(response.message);

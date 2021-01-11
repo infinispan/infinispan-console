@@ -8,7 +8,6 @@ import {
 } from '@patternfly/react-core';
 import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { useRecentActivity } from '@app/utils/useRecentActivity';
 import { useCacheEntries, useReloadCache } from '@app/services/cachesHook';
 import { ContentType } from '@services/utils';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +23,6 @@ const DeleteEntry = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { pushActivity } = useRecentActivity();
   const { reload } = useReloadCache();
   const { reloadEntries } = useCacheEntries();
   const { t } = useTranslation();
@@ -37,13 +35,6 @@ const DeleteEntry = (props: {
         reload();
         reloadEntries();
         addAlert(actionResponse);
-        pushActivity({
-          cacheName: props.cacheName,
-          entryKey: props.entryKey,
-          keyContentType: props.keyContentType,
-          action: 'Delete',
-          date: new Date(),
-        });
       });
   };
 
