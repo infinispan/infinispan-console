@@ -21,8 +21,8 @@ import {
 import displayUtils from '@services/displayUtils';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
-import cacheService from '../../../services/cacheService';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Query stats for indexed caches only
@@ -49,7 +49,7 @@ const QueryMetrics = (props: {
   };
 
   const realoadStats = () => {
-    cacheService.retrieveQueryStats(props.cacheName).then((eitherStats) => {
+    ConsoleServices.caches().retrieveQueryStats(props.cacheName).then((eitherStats) => {
       setLoading(false);
       if (eitherStats.isRight()) {
         setStats(eitherStats.value);

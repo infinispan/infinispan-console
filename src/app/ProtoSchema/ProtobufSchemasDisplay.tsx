@@ -27,12 +27,12 @@ import {
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import protobufService from '../../services/protobufService';
 import { global_FontSize_sm, global_spacer_md } from '@patternfly/react-tokens';
 import { CreateProtoSchema } from '@app/ProtoSchema/CreateProtoSchema';
 import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Protobuf Schemas display
@@ -41,6 +41,7 @@ const ProtobufSchemasDisplay = (props: {
   setProtoSchemasCount: (number) => void;
   isVisible: boolean;
 }) => {
+  const protobufService = ConsoleServices.protobuf();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();

@@ -1,19 +1,18 @@
+import { ContentType, RestUtils } from './utils';
+import { Either, left, right } from './either';
+
 /**
  * Cache Service calls Infinispan endpoints related to Caches
  * @author Katia Aresti
  * @since 1.0
  */
-import utils, { ContentType } from './utils';
-import { Either, left, right } from './either';
-import displayUtils from '@services/displayUtils';
-import {number} from "prop-types";
-import {util} from "prettier";
-
-class CacheService {
+export class CacheService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   /**
@@ -24,7 +23,7 @@ class CacheService {
   public retrieveFullDetail(
     cacheName: string
   ): Promise<Either<ActionResponse, DetailedInfinispanCache>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint + '/caches/' + encodeURIComponent(cacheName),
         'GET'
@@ -119,7 +118,7 @@ class CacheService {
     cacheName: string,
     configName: string
   ): Promise<ActionResponse> {
-    let createCachePromise = utils.restCall(
+    let createCachePromise = this.utils.restCall(
       this.endpoint +
         '/caches/' +
         encodeURIComponent(cacheName) +
@@ -127,7 +126,7 @@ class CacheService {
         encodeURIComponent(configName),
       'POST'
     );
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Cache ' + cacheName + ' created with success with ' + configName,
       createCachePromise
     );
@@ -144,19 +143,26 @@ class CacheService {
     cacheName: string,
     config: string
   ): Promise<ActionResponse> {
-    let contentType = 'application/json';
+    let contentType = ContentType.JSON;
     try {
       JSON.parse(config);
     } catch (e) {
-      contentType = 'application/xml';
+      contentType = ContentType.XML;
     }
-    let createCachePromise = utils.restCallWithBody(
+    let customHeaders = this.utils.createAuthenticatedHeader();
+    customHeaders.append(
+      'Content-Type',
+      RestUtils.fromContentType(contentType)
+    );
+
+    let createCachePromise = this.utils.restCall(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       'POST',
-      config,
-      contentType
+      undefined,
+      customHeaders,
+      config
     );
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Cache ' +
         cacheName +
         ' created with success with the provided configuration',
@@ -170,12 +176,12 @@ class CacheService {
    * @param cacheName, to be deleted if such exists
    */
   public async deleteCache(cacheName: string): Promise<ActionResponse> {
-    let deleteCachePromise = utils.restCall(
+    let deleteCachePromise = this.utils.restCall(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       'DELETE'
     );
 
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Cache ' + cacheName + ' has been deleted',
       deleteCachePromise
     );
@@ -190,7 +196,7 @@ class CacheService {
     cacheManager: string,
     cacheName: string
   ): Promise<ActionResponse> {
-    let ignoreCachePromise = utils.restCall(
+    let ignoreCachePromise = this.utils.restCall(
       this.endpoint +
         '/server/ignored-caches/' +
         cacheManager +
@@ -199,7 +205,7 @@ class CacheService {
       'POST'
     );
 
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Cache ' + cacheName + ' has been ignored',
       ignoreCachePromise
     );
@@ -214,7 +220,7 @@ class CacheService {
     cacheManager: string,
     cacheName: string
   ): Promise<ActionResponse> {
-    let ignoreCachePromise = utils.restCall(
+    let ignoreCachePromise = this.utils.restCall(
       this.endpoint +
         '/server/ignored-caches/' +
         cacheManager +
@@ -223,7 +229,7 @@ class CacheService {
       'DELETE'
     );
 
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Cache ' + cacheName + ' is not ignored',
       ignoreCachePromise
     );
@@ -252,21 +258,31 @@ class CacheService {
     flags: string[],
     create: boolean
   ): Promise<ActionResponse> {
-    let headers = utils.createAuthenticatedHeader();
+    let headers = this.utils.createAuthenticatedHeader();
 
     if (keyContentType) {
-      headers.append('Key-Content-Type', utils.fromContentType(keyContentType));
-    } else if (utils.isJSONObject(key)) {
       headers.append(
         'Key-Content-Type',
-        utils.fromContentType(ContentType.JSON)
+        RestUtils.fromContentType(keyContentType)
+      );
+    } else if (RestUtils.isJSONObject(key)) {
+      headers.append(
+        'Key-Content-Type',
+        RestUtils.fromContentType(ContentType.JSON)
       );
     }
 
+    let contentType;
     if (valueContentType) {
-      headers.append('Content-Type', utils.fromContentType(valueContentType));
-    } else if (utils.isJSONObject(value)) {
-      headers.append('Content-Type', utils.fromContentType(ContentType.JSON));
+      headers.append(
+        'Content-Type',
+        RestUtils.fromContentType(valueContentType)
+      );
+    } else if (RestUtils.isJSONObject(value)) {
+      headers.append(
+        'Content-Type',
+        RestUtils.fromContentType(ContentType.JSON)
+      );
     }
 
     if (timeToLive.length > 0) {
@@ -279,24 +295,28 @@ class CacheService {
       headers.append('flags', flags.join(','));
     }
 
-    let promise = fetch(
+    const urlCreateOrUpdate =
       this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/' +
-        encodeURIComponent(key),
-      {
-        method: create ? 'POST' : 'PUT',
-        headers: headers,
-        credentials: 'include',
-        body: value,
-      }
-    );
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '/' +
+      encodeURIComponent(key);
+    const createOrUpdateMethod = create ? 'POST' : 'PUT';
 
+    const responsePromise = this.utils.restCall(
+      urlCreateOrUpdate,
+      createOrUpdateMethod,
+      undefined,
+      headers,
+      value
+    );
     let message = create
       ? 'A new entry has been added to cache '
       : 'The entry has been updated in cache ';
-    return utils.handleCRUDActionResponse(message + cacheName, promise);
+    return this.utils.handleCRUDActionResponse(
+      message + cacheName,
+      responsePromise
+    );
   }
 
   /**
@@ -310,14 +330,14 @@ class CacheService {
     config: CacheConfig,
     limit: string
   ): Promise<Either<ActionResponse, CacheEntry[]>> {
-    const isProtobuf = utils.isProtobufCache(config.config);
+    const isProtobuf = RestUtils.isProtobufCache(config.config);
     const allKeys =
       this.endpoint +
       '/caches/' +
       encodeURIComponent(cacheName) +
       '?action=entries&metadata=true&limit=' +
       limit;
-    return utils
+    return this.utils
       .restCall(allKeys, 'GET')
       .then((response) => {
         if (response.ok) {
@@ -325,29 +345,34 @@ class CacheService {
         }
         throw response;
       })
-      .then((infos) =>
-        right(
-          infos.map(
-            (entry) =>
-              <CacheEntry>{
-                key: isProtobuf[0] ? JSON.stringify(entry.key) : entry.key,
-                keyContentType: isProtobuf[0] ? utils.fromProtobufType(entry.key['_type']) : ContentType.StringContentType,
-                value: isProtobuf[1] ? JSON.stringify(entry.value) : entry.value,
-                valueContentType: isProtobuf[1]
-                  ? entry.value['_type']
-                  : undefined,
-                timeToLive: this.parseMetadataNumber(entry.timeToLiveSeconds),
-                maxIdle: this.parseMetadataNumber(entry.maxIdleTimeSeconds),
-                created: this.parseMetadataDate(entry.created),
-                lastUsed: this.parseMetadataDate(entry.lastUsed),
-                expires: this.parseMetadataDate(entry.expireTime),
-              }
-          )
-        ) as Either<ActionResponse, CacheEntry[]>
+      .then(
+        (infos) =>
+          right(
+            infos.map(
+              (entry) =>
+                <CacheEntry>{
+                  key: isProtobuf[0] ? JSON.stringify(entry.key) : entry.key,
+                  keyContentType: isProtobuf[0]
+                    ? RestUtils.fromProtobufType(entry.key['_type'])
+                    : ContentType.StringContentType,
+                  value: isProtobuf[1]
+                    ? JSON.stringify(entry.value)
+                    : entry.value,
+                  valueContentType: isProtobuf[1]
+                    ? entry.value['_type']
+                    : undefined,
+                  timeToLive: this.parseMetadataNumber(entry.timeToLiveSeconds),
+                  maxIdle: this.parseMetadataNumber(entry.maxIdleTimeSeconds),
+                  created: this.parseMetadataDate(entry.created),
+                  lastUsed: this.parseMetadataDate(entry.lastUsed),
+                  expires: this.parseMetadataDate(entry.expireTime),
+                }
+            )
+          ) as Either<ActionResponse, CacheEntry[]>
       )
       .catch((err) =>
         left(
-          utils.mapError(
+          this.utils.mapError(
             err,
             'An error happened retrieving entries from ' + cacheName
           )
@@ -367,23 +392,20 @@ class CacheService {
     key: string,
     keyContentType?: ContentType
   ): Promise<Either<ActionResponse, CacheEntry>> {
-    let headers = utils.createAuthenticatedHeader();
+    let headers = this.utils.createAuthenticatedHeader();
     if (keyContentType) {
-      let keyContentTypeHeader = utils.fromContentType(keyContentType);
+      let keyContentTypeHeader = RestUtils.fromContentType(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
     }
-    return fetch(
+    const getEntryUrl =
       this.endpoint +
       '/caches/' +
       encodeURIComponent(cacheName) +
       '/' +
-      encodeURIComponent(key),
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: headers,
-      }
-    )
+      encodeURIComponent(key);
+
+    return this.utils
+      .restCall(getEntryUrl, 'GET', undefined, headers)
       .then((response) => {
         if (response.ok) {
           return response.text().then((value) => {
@@ -406,8 +428,12 @@ class CacheService {
               maxIdle: this.parseMetadataNumber(maxIdleTimeSeconds),
               created: this.parseMetadataDate(created),
               lastUsed: this.parseMetadataDate(lastUsed),
-              lastModified: lastModified? this.parseMetadataDate(Date.parse(lastModified)) : undefined,
-              expires: expires? this.parseMetadataDate(Date.parse(expires)) : undefined,
+              lastModified: lastModified
+                ? this.parseMetadataDate(Date.parse(lastModified))
+                : undefined,
+              expires: expires
+                ? this.parseMetadataDate(Date.parse(expires))
+                : undefined,
               cacheControl: cacheControl,
               eTag: etag,
             };
@@ -426,32 +452,38 @@ class CacheService {
         }
 
         return left(
-          utils.mapError(err, 'An error happened retrieving key ' + key)
+          this.utils.mapError(err, 'An error happened retrieving key ' + key)
         );
       });
   }
 
-  private parseMetadataNumber(entryMetadata: number| undefined| null|string): string | undefined {
-    if(!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
+  private parseMetadataNumber(
+    entryMetadata: number | undefined | null | string
+  ): string | undefined {
+    if (!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
       return undefined;
     }
     let entryMetadataNumber: number;
-    if(Number.isInteger(entryMetadata)) {
+    if (Number.isInteger(entryMetadata)) {
       entryMetadataNumber = entryMetadata as number;
     } else {
       entryMetadataNumber = Number.parseInt(entryMetadata as string);
     }
-    return entryMetadataNumber.toLocaleString('en', {maximumFractionDigits: 0});
+    return entryMetadataNumber.toLocaleString('en', {
+      maximumFractionDigits: 0,
+    });
   }
 
-  private parseMetadataDate(entryMetadata: string | number | undefined | null): string | undefined {
-    if(!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
+  private parseMetadataDate(
+    entryMetadata: string | number | undefined | null
+  ): string | undefined {
+    if (!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
       return undefined;
     }
 
     let entryMetadataNumber: number;
 
-    if(Number.isInteger(entryMetadata)) {
+    if (Number.isInteger(entryMetadata)) {
       entryMetadataNumber = entryMetadata as number;
     } else {
       entryMetadataNumber = Number.parseInt(entryMetadata as string);
@@ -464,7 +496,7 @@ class CacheService {
    * @param cacheName, the name of the cache
    */
   public async clear(cacheName: string): Promise<ActionResponse> {
-    let clearPromise = utils.restCall(
+    let clearPromise = this.utils.restCall(
       this.endpoint +
         '/caches/' +
         encodeURIComponent(cacheName) +
@@ -472,7 +504,7 @@ class CacheService {
       'POST'
     );
 
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Cache ' + cacheName + ' has been cleared',
       clearPromise
     );
@@ -489,24 +521,24 @@ class CacheService {
     entryKey: string,
     keyContentType: ContentType
   ): Promise<ActionResponse> {
-    let headers = utils.createAuthenticatedHeader();
-    let keyContentTypeHeader = utils.fromContentType(keyContentType);
+    let headers = this.utils.createAuthenticatedHeader();
+    let keyContentTypeHeader = RestUtils.fromContentType(keyContentType);
     headers.append('Key-Content-Type', keyContentTypeHeader);
 
-    let deleteEntryPromise = fetch(
+    const deleteUrl =
       this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/' +
-        encodeURIComponent(entryKey),
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: headers,
-      }
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '/' +
+      encodeURIComponent(entryKey);
+    let deleteEntryPromise = this.utils.restCall(
+      deleteUrl,
+      'DELETE',
+      undefined,
+      headers
     );
 
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Entry ' + entryKey + ' has been deleted',
       deleteEntryPromise
     );
@@ -518,7 +550,7 @@ class CacheService {
    * @param cacheName
    */
   public async retrieveXSites(cacheName: string): Promise<XSite[]> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -542,7 +574,7 @@ class CacheService {
    * @param cacheName
    */
   public async retrieveConfig(cacheName: string): Promise<CacheConfig> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -573,7 +605,7 @@ class CacheService {
     maxResults: number,
     offset: number
   ): Promise<Either<ActionResponse, SearchResut>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -642,7 +674,7 @@ class CacheService {
   public async retrieveIndexStats(
     cacheName: string
   ): Promise<Either<ActionResponse, IndexStats>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -691,7 +723,7 @@ class CacheService {
    * @param cacheName
    */
   public async purgeIndexes(cacheName: string): Promise<ActionResponse> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -741,7 +773,7 @@ class CacheService {
    * @param cacheName
    */
   public async reindex(cacheName: string): Promise<ActionResponse> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -795,7 +827,7 @@ class CacheService {
   public async retrieveQueryStats(
     cacheName: string
   ): Promise<Either<ActionResponse, QueryStats>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint + '/caches/' + cacheName + '/search/query/stats',
         'GET'
@@ -848,7 +880,7 @@ class CacheService {
    * @param cacheName
    */
   public async clearQueryStats(cacheName: string): Promise<ActionResponse> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -885,7 +917,3 @@ class CacheService {
     return cacheType;
   }
 }
-
-const cacheService: CacheService = new CacheService(utils.endpoint());
-
-export default cacheService;

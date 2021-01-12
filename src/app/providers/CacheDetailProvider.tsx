@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import cacheService from '@services/cacheService';
-import utils from '@services/utils';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const initialContext = {
   error: '',
@@ -45,7 +44,7 @@ const CacheDetailProvider = ({ children }) => {
 
   const fetchCache = () => {
     if (loading && cacheName != '') {
-      cacheService
+      ConsoleServices.caches()
         .retrieveFullDetail(cacheName)
         .then((eitherDetail) => {
           if (eitherDetail.isRight()) {
@@ -60,7 +59,7 @@ const CacheDetailProvider = ({ children }) => {
 
   const fetchEntries = () => {
     if (loadingEntries && cache) {
-      cacheService
+      ConsoleServices.caches()
         .getEntries(cacheName, cache.configuration, '100')
         .then((eitherEntries) => {
           if (eitherEntries.isRight()) {

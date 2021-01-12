@@ -25,18 +25,25 @@ import {
 } from '@patternfly/react-icons';
 import { global_spacer_3xl, global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
+import {useEffect} from "react";
 
-const About: React.FunctionComponent<any> = (props: {
+const About = (props: {
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
-  const { loading, version, error } = useFetchVersion();
+  const { loading, version, error, setLoading } = useFetchVersion();
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
   const infinispanStackOverflowLink =
     'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
   const infinispanTwitterLink = 'https://twitter.com/infinispan/';
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
+
+  useEffect(() => {
+    if(props.isModalOpen) {
+      setLoading(true);
+    }
+  }, [props.isModalOpen])
 
   return (
     <AboutModal

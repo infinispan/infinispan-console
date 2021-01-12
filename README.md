@@ -1,6 +1,6 @@
 ![Version](https://maven-badges.herokuapp.com/maven-central/org.infinispan/infinispan-console/badge.svg "Version")
 
-# Infinispan Console 
+# Infinispan Console
 
 This is the front end application for the web console of the new Infinispan Server 12.x
 
@@ -8,7 +8,7 @@ This application is built using [Patternfly 4 and React](https://www.patternfly.
 
 ## Before you start
 This project needs a standalone infinispan server running locally.
-The Infinispan server exposes the [REST API](https://infinispan.org/docs/dev/titles/rest/rest.html) 
+The Infinispan server exposes the [REST API](https://infinispan.org/docs/dev/titles/rest/rest.html)
 that is used in this console.
 
 In production, this console is built as a dependency using maven. This dependency is added to the infinispan
@@ -63,18 +63,18 @@ Launch a tool to inspect the bundle size
 
 This console is built and released as a maven dependency used in the infinispan server.
 
-`mvn clean install` 
+`mvn clean install`
 
 #### Skip Unit tests
 Unit test run by default. To skip them use 'skipTests' property.
 
-`mvn clean install -DskipTests` 
+`mvn clean install -DskipTests`
 
 #### Run Cypress IT Tests
 Integration tests don't run by default locally. They always run in CI.
 To run integration tests locally:
 You need to run first `./run-server-for-e2e.sh` that will download and run the infinispan server.
-Then `mvn clean install -De2e=true` 
+Then `mvn clean install -De2e=true`
 
 ## Configurations
 * [TypeScript Config](./tsconfig.json)
@@ -92,3 +92,48 @@ Generated with [Favicon generator](https://www.favicon-generator.org/)
 * To keep our bundle size in check, we use [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)
 * To keep our code formatting in check, we use [prettier](https://github.com/prettier/prettier)
 * To keep our code logic and test coverage in check, we use [jest](https://github.com/facebook/jest)
+
+## Securing the Console
+
+### Disabling Security
+
+You can disable security in the REST API in the `infinispan.xml` file of the server you are running.
+Remove the `security-realm="default"` from the endpoints
+
+```xml
+  <endpoints socket-binding="default">
+    <hotrod-connector name="hotrod"/>
+    <rest-connector name="rest"/>
+  </endpoints>
+```
+
+### Infinispan Authentication
+Default security of the server uses credential authentication.
+
+If you run a server without any user or password, the 'Support' popup should be displayed in the welcome page.
+
+### Keycloak
+
+1. `docker run -p 8080:8080 -e KEYCLOAK_USER=keycloak -e KEYCLOAK_PASSWORD=keycloak --name keycloak jboss/keycloak:12.0.2`
+2. Connect to `http://localhost:8080` to access the Keycloak admin console.
+3. Select `Add realm` and then upload `data/infinispan-keycloak-realm.json`.
+4. Create an Infinispan server configuration with the following security realm:
+
+```xml
+  <security>
+    <security-realms>
+      <security-realm name="default">
+        <token-realm name="infinispan" auth-server-url="http://localhost:8080/auth/" client-id="infinispan-console">
+          <oauth2-introspection
+            introspection-url="http://localhost:8080/auth/realms/infinispan/protocol/openid-connect/token/introspect"
+            client-id="infinispan-server" client-secret="1fdca4ec-c416-47e0-867a-3d471af7050f"/>
+        </token-realm>
+      </security-realm>
+    </security-realms>
+  </security>
+```
+
+You can also copy the security realm from `data/infinispan-security-realm.xml`.
+
+4. Run the console in dev mode. When you open the dev console in your browser, Keycloak prompts you for credentials.
+5. Enter the `admin/adminPassword` credentials. Keycloak redirects you to the dev console.

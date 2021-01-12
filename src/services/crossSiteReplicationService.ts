@@ -1,16 +1,17 @@
+import { RestUtils } from '@services/utils';
+import { Either, left, right } from './either';
+
 /**
  * Cross Site replication operations
  * @author Katia Aresti
- * @since 1.0
  */
-import utils from './utils';
-import { Either, left, right } from './either';
-
-class CrossSiteReplicationService {
+export class CrossSiteReplicationService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   /**
@@ -21,7 +22,7 @@ class CrossSiteReplicationService {
   public async backupsForCache(
     cacheName: string
   ): Promise<Either<ActionResponse, XSite[]>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -70,7 +71,7 @@ class CrossSiteReplicationService {
     cacheName: string,
     siteName: string
   ): Promise<Either<ActionResponse, SiteNode[]>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -122,7 +123,7 @@ class CrossSiteReplicationService {
   public async stateTransferStatus(
     cacheName: string
   ): Promise<Either<ActionResponse, StateTransferStatus[]>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint +
           '/caches/' +
@@ -282,7 +283,7 @@ class CrossSiteReplicationService {
         '?action=' +
         action;
     }
-    return utils
+    return this.utils
       .restCall(url, 'POST')
       .then((response) => {
         if (response.ok) {
@@ -320,9 +321,3 @@ class CrossSiteReplicationService {
       });
   }
 }
-
-const crossSiteReplicationService: CrossSiteReplicationService = new CrossSiteReplicationService(
-  utils.endpoint()
-);
-
-export default crossSiteReplicationService;

@@ -6,11 +6,11 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCacheEntries, useReloadCache } from '@app/services/cachesHook';
 import { ContentType } from '@services/utils';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Delete entry modal
@@ -29,7 +29,7 @@ const DeleteEntry = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickDeleteButton = () => {
-    cacheService
+    ConsoleServices.caches()
       .deleteEntry(props.cacheName, props.entryKey, props.keyContentType)
       .then((actionResponse) => {
         reload();

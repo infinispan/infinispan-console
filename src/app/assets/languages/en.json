@@ -19,10 +19,29 @@
     "tutorials":  "Run some quick tutorials",
     "go-to-console":  "Open the console"
   },
+  "login-form": {
+    "login-main": "Log in to {{brandname}}.",
+    "login-label": "{{brandname}} login.",
+    "login": "Log in",
+    "cancel": "Cancel",
+    "dialog-label": "Log to Infinispan dialog",
+    "form-username": "User name",
+    "help-username": "Enter your username.",
+    "form-password": "Password",
+    "help-password": "Enter your password."
+  },
   "not-found-page" : {
     "title": "Page not found",
     "description": "That page no longer exists.",
     "button" : "Return to home page"
+  },
+  "support" : {
+    "no-user": "Credentials required.",
+    "no-user-text": "You must enter credentials to access the console. Create a user and password before you continue.",
+    "no-user-label": "No login credentials available.",
+    "reload-button" : "Reload",
+    "text-create-user": "Create a user and password then reload.",
+    "text-command": "bin/cli.sh user create admin -p pass"
   },
   "cache-managers" : {
     "title" : "Data container",

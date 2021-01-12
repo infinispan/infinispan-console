@@ -31,21 +31,21 @@ do
 curl -XPOST -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/x-java-object;type=java.lang.String" -d "val-$i" http://localhost:11222/rest/v2/caches/protocache/key-$i
 done
 
-#echo "= Delete counters"
-#for i in {1..5}
-#do
-#curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/weak-$i
-#curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/strong-$i
-#done
-#
-#echo "= Create some counters"
-#for i in {1..5}
-#do
-#  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@weakCounter.json" "http://localhost:11222/rest/v2/counters/weak-$i"
-#  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@strongCounter.json" "http://localhost:11222/rest/v2/counters/strong-$i"
-#done
-#
-#echo "= Create some tasks"
-#curl -XPOST -u $userPass -H "Content-Type: application/javascript" -d "@hello.js" "http://localhost:11222/rest/v2/tasks/hello"
-#
-#echo "= End"
+echo "= Delete counters"
+for i in {1..5}
+do
+curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/weak-$i
+curl -XDELETE -u $userPass http://localhost:11222/rest/v2/counters/strong-$i
+done
+
+echo "= Create some counters"
+for i in {1..5}
+do
+  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@weakCounter.json" "http://localhost:11222/rest/v2/counters/weak-$i"
+  curl -XPOST -u $userPass -H "Content-Type: application/json" -d "@strongCounter.json" "http://localhost:11222/rest/v2/counters/strong-$i"
+done
+
+echo "= Create some tasks"
+curl -XPOST -u $userPass -H "Content-Type: application/javascript" -d "@hello.js" "http://localhost:11222/rest/v2/tasks/hello"
+
+echo "= End"

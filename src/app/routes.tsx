@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 import { CacheManagerPage } from '@app/CacheManagers/CacheMangerPage';
@@ -24,7 +25,7 @@ let routeFocusTimer: number;
 // sends focus directly to relevant content
 const useA11yRouteChange = (isAsync: boolean) => {
   const lastNavigation = useLastLocation();
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isAsync && lastNavigation !== null) {
       routeFocusTimer = accessibleRouteChangeHandler();
     }
@@ -147,23 +148,25 @@ const routes: IAppRoute[] = [
   },
 ];
 
-const AppRoutes = (props: { init: string }) => (
-  <LastLocationProvider>
-    <Switch>
-      {routes.map(({ path, exact, component, title, isAsync }, idx) => (
-        <RouteWithTitleUpdates
-          path={path}
-          exact={exact}
-          component={component}
-          key={idx}
-          title={title}
-          isAsync={isAsync}
-          init={props.init}
-        />
-      ))}
-      <PageNotFound title="404 Page Not Found" />
-    </Switch>
-  </LastLocationProvider>
-);
+const AppRoutes = (props: { init: string }) => {
+  return (
+    <LastLocationProvider>
+      <Switch>
+        {routes.map(({ path, exact, component, title, isAsync }, idx) => (
+          <RouteWithTitleUpdates
+            path={path}
+            exact={exact}
+            component={component}
+            key={idx}
+            title={title}
+            isAsync={isAsync}
+            init={props.init}
+          />
+        ))}
+        <PageNotFound title="404 Page Not Found" />
+      </Switch>
+    </LastLocationProvider>
+  );
+};
 
 export { AppRoutes, routes };

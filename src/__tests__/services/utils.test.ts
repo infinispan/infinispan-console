@@ -1,58 +1,58 @@
-import utils, {ContentType} from '@services/utils';
+import { RestUtils, ContentType} from '@services/utils';
 
-describe('Utils tests', () => {
+describe('RestUtils tests', () => {
   test('from ContentType to string', () => {
-    expect(utils.fromContentType(ContentType.StringContentType)).toBe(
+    expect(RestUtils.fromContentType(ContentType.StringContentType)).toBe(
       'application/x-java-object;type=java.lang.String'
     );
-    expect(utils.fromContentType(ContentType.IntegerContentType)).toBe(
+    expect(RestUtils.fromContentType(ContentType.IntegerContentType)).toBe(
       'application/x-java-object;type=java.lang.Integer'
     );
-    expect(utils.fromContentType(ContentType.DoubleContentType)).toBe(
+    expect(RestUtils.fromContentType(ContentType.DoubleContentType)).toBe(
       'application/x-java-object;type=java.lang.Double'
     );
-    expect(utils.fromContentType(ContentType.BooleanContentType)).toBe(
+    expect(RestUtils.fromContentType(ContentType.BooleanContentType)).toBe(
       'application/x-java-object;type=java.lang.Boolean'
     );
-    expect(utils.fromContentType(ContentType.LongContentType)).toBe(
+    expect(RestUtils.fromContentType(ContentType.LongContentType)).toBe(
       'application/x-java-object;type=java.lang.Long'
     );
-    expect(utils.fromContentType(ContentType.JSON)).toBe('application/json');
-    expect(utils.fromContentType(ContentType.XML)).toBe('application/xml');
-    expect(utils.fromContentType(ContentType.OctetStream)).toBe(
+    expect(RestUtils.fromContentType(ContentType.JSON)).toBe('application/json');
+    expect(RestUtils.fromContentType(ContentType.XML)).toBe('application/xml');
+    expect(RestUtils.fromContentType(ContentType.OctetStream)).toBe(
       'application/octet-stream'
     );
-    expect(utils.fromContentType(ContentType.OctetStreamHex)).toBe(
+    expect(RestUtils.fromContentType(ContentType.OctetStreamHex)).toBe(
       'application/octet-stream; encoding=hex'
     );
   });
 
   test('from string to ContentType', () => {
-    expect(utils.toContentType('unknown')).toBe(ContentType.StringContentType);
-    expect(utils.toContentType(null)).toBe(ContentType.StringContentType);
-    expect(utils.toContentType(undefined)).toBe(ContentType.StringContentType);
-    expect(utils.toContentType(null, ContentType.JSON)).toBe(ContentType.JSON);
+    expect(RestUtils.toContentType('unknown')).toBe(ContentType.StringContentType);
+    expect(RestUtils.toContentType(null)).toBe(ContentType.StringContentType);
+    expect(RestUtils.toContentType(undefined)).toBe(ContentType.StringContentType);
+    expect(RestUtils.toContentType(null, ContentType.JSON)).toBe(ContentType.JSON);
     expect(
-      utils.toContentType('application/x-java-object;type=java.lang.String')
+      RestUtils.toContentType('application/x-java-object;type=java.lang.String')
     ).toBe(ContentType.StringContentType);
     expect(
-      utils.toContentType('application/x-java-object;type=java.lang.Long')
+      RestUtils.toContentType('application/x-java-object;type=java.lang.Long')
     ).toBe(ContentType.LongContentType);
     expect(
-      utils.toContentType('application/x-java-object;type=java.lang.Integer')
+      RestUtils.toContentType('application/x-java-object;type=java.lang.Integer')
     ).toBe(ContentType.IntegerContentType);
     expect(
-      utils.toContentType('application/x-java-object;type=java.lang.Boolean')
+      RestUtils.toContentType('application/x-java-object;type=java.lang.Boolean')
     ).toBe(ContentType.BooleanContentType);
     expect(
-      utils.toContentType('application/x-java-object;type=java.lang.Double')
+      RestUtils.toContentType('application/x-java-object;type=java.lang.Double')
     ).toBe(ContentType.DoubleContentType);
-    expect(utils.toContentType('application/json')).toBe(ContentType.JSON);
-    expect(utils.toContentType('application/xml')).toBe(ContentType.XML);
-    expect(utils.toContentType('application/octet-stream')).toBe(
+    expect(RestUtils.toContentType('application/json')).toBe(ContentType.JSON);
+    expect(RestUtils.toContentType('application/xml')).toBe(ContentType.XML);
+    expect(RestUtils.toContentType('application/octet-stream')).toBe(
       ContentType.OctetStream
     );
-    expect(utils.toContentType('application/octet-stream; encoding=hex')).toBe(
+    expect(RestUtils.toContentType('application/octet-stream; encoding=hex')).toBe(
       ContentType.OctetStreamHex
     );
   });
@@ -78,7 +78,7 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(protobufConfigDist)).toStrictEqual([
+    expect(RestUtils.isProtobufCache(protobufConfigDist)).toStrictEqual([
       true,
       true,
     ]);
@@ -103,7 +103,7 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(protobufConfigReplicated)).toStrictEqual([
+    expect(RestUtils.isProtobufCache(protobufConfigReplicated)).toStrictEqual([
       true,
       true,
     ]);
@@ -123,7 +123,7 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(protobufConfigLocal)).toStrictEqual([
+    expect(RestUtils.isProtobufCache(protobufConfigLocal)).toStrictEqual([
       true,
       true,
     ]);
@@ -143,7 +143,7 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(protobufConfigInvalidated)).toStrictEqual([
+    expect(RestUtils.isProtobufCache(protobufConfigInvalidated)).toStrictEqual([
       true,
       true,
     ]);
@@ -161,7 +161,7 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(notProtobufKey)).toStrictEqual([false, true]);
+    expect(RestUtils.isProtobufCache(notProtobufKey)).toStrictEqual([false, true]);
 
     let notProtobufValue =
       '{\n' +
@@ -176,7 +176,7 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(notProtobufValue)).toStrictEqual([
+    expect(RestUtils.isProtobufCache(notProtobufValue)).toStrictEqual([
       true,
       false,
     ]);
@@ -191,24 +191,24 @@ describe('Utils tests', () => {
       '  }\n' +
       '}';
 
-    expect(utils.isProtobufCache(notProtobuf)).toStrictEqual([false, false]);
+    expect(RestUtils.isProtobufCache(notProtobuf)).toStrictEqual([false, false]);
   });
 
   test('from protobuf type to ContentType', () => {
-    expect(utils.fromProtobufType('string')).toStrictEqual(ContentType.StringContentType);
-    expect(utils.fromProtobufType('float')).toStrictEqual(ContentType.FloatContentType);
-    expect(utils.fromProtobufType('double')).toStrictEqual(ContentType.DoubleContentType);
-    expect(utils.fromProtobufType('int32')).toStrictEqual(ContentType.IntegerContentType);
-    expect(utils.fromProtobufType('int64')).toStrictEqual(ContentType.LongContentType);
-    expect(utils.fromProtobufType('uint32')).toStrictEqual(ContentType.IntegerContentType);
-    expect(utils.fromProtobufType('uint64')).toStrictEqual(ContentType.LongContentType);
-    expect(utils.fromProtobufType('sint32')).toStrictEqual(ContentType.IntegerContentType);
-    expect(utils.fromProtobufType('sint64')).toStrictEqual(ContentType.LongContentType);
-    expect(utils.fromProtobufType('fixed32')).toStrictEqual(ContentType.IntegerContentType);
-    expect(utils.fromProtobufType('fixed64')).toStrictEqual(ContentType.LongContentType);
-    expect(utils.fromProtobufType('sfixed32')).toStrictEqual(ContentType.IntegerContentType);
-    expect(utils.fromProtobufType('sfixed64')).toStrictEqual(ContentType.LongContentType);
-    expect(utils.fromProtobufType('bool')).toStrictEqual(ContentType.BooleanContentType);
+    expect(RestUtils.fromProtobufType('string')).toStrictEqual(ContentType.StringContentType);
+    expect(RestUtils.fromProtobufType('float')).toStrictEqual(ContentType.FloatContentType);
+    expect(RestUtils.fromProtobufType('double')).toStrictEqual(ContentType.DoubleContentType);
+    expect(RestUtils.fromProtobufType('int32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(RestUtils.fromProtobufType('int64')).toStrictEqual(ContentType.LongContentType);
+    expect(RestUtils.fromProtobufType('uint32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(RestUtils.fromProtobufType('uint64')).toStrictEqual(ContentType.LongContentType);
+    expect(RestUtils.fromProtobufType('sint32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(RestUtils.fromProtobufType('sint64')).toStrictEqual(ContentType.LongContentType);
+    expect(RestUtils.fromProtobufType('fixed32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(RestUtils.fromProtobufType('fixed64')).toStrictEqual(ContentType.LongContentType);
+    expect(RestUtils.fromProtobufType('sfixed32')).toStrictEqual(ContentType.IntegerContentType);
+    expect(RestUtils.fromProtobufType('sfixed64')).toStrictEqual(ContentType.LongContentType);
+    expect(RestUtils.fromProtobufType('bool')).toStrictEqual(ContentType.BooleanContentType);
 
   });
 });

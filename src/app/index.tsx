@@ -4,67 +4,85 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLayout } from '@app/AppLayout/AppLayout';
 import { AppRoutes } from '@app/routes';
 import '@app/app.css';
-import authenticationService from '@services/authService';
-import utils from '@services/utils';
 import { KeycloakService } from '@services/keycloakService';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { UserContextProvider } from '@app/providers/UserContextProvider';
+import { useHistory } from 'react-router';
 
 const App = () => {
+  const history = useHistory();
   const [init, setInit] = useState<
-    'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN'
+    | 'SERVER_ERROR'
+    | 'READY'
+    | 'NOT_READY'
+    | 'PENDING'
+    | 'DONE'
+    | 'LOGIN'
+    | 'DIGEST_LOGIN'
   >('PENDING');
+  ConsoleServices.init();
 
   useEffect(() => {
-    authenticationService.config().then((eitherAuth) => {
-      if (eitherAuth.isRight()) {
-        if (eitherAuth.value.keycloakConfig) {
-          // Keycloak
-          KeycloakService.init(eitherAuth.value.keycloakConfig).then(
-            (result) => {
-              if (utils.isWelcomePage()) {
-                setInit('LOGIN');
-              } else {
-                // if not welcome page
-                if (!KeycloakService.Instance.authenticated()) {
-                  KeycloakService.Instance.login();
+    ConsoleServices.authentication()
+      .config()
+      .then((eitherAuth) => {
+        if (eitherAuth.isRight()) {
+          if (eitherAuth.value.keycloakConfig) {
+            // Keycloak
+            KeycloakService.init(eitherAuth.value.keycloakConfig)
+              .catch((err) => {
+                console.error(err);
+                setInit('SERVER_ERROR');
+              })
+              .then((result) => {
+                if (ConsoleServices.isWelcomePage()) {
+                  setInit('LOGIN');
+                } else {
+                  // if not welcome page
+                  if (!KeycloakService.Instance.authenticated()) {
+                    KeycloakService.Instance.login();
+                  }
+                  localStorage.setItem(
+                    'react-token',
+                    KeycloakService.keycloakAuth.token
+                  );
+                  localStorage.setItem(
+                    'react-refresh-token',
+                    KeycloakService.keycloakAuth.refreshToken
+                  );
+                  setTimeout(() => {
+                    KeycloakService.Instance.getToken().then((token) => {
+                      localStorage.setItem('react-token', token);
+                    });
+                  }, 60000);
+                  setInit('DONE');
                 }
-                localStorage.setItem(
-                  'react-token',
-                  KeycloakService.keycloakAuth.token
-                );
-                localStorage.setItem(
-                  'react-refresh-token',
-                  KeycloakService.keycloakAuth.refreshToken
-                );
-                setTimeout(() => {
-                  KeycloakService.Instance.getToken().then((token) => {
-                    localStorage.setItem('react-token', token);
-                  });
-                }, 60000);
-                setInit('DONE');
-              }
+              });
+          } else if (eitherAuth.value.ready) {
+            if (eitherAuth.value.digest) {
+              console.log('update init to digest login');
+              setInit('DIGEST_LOGIN');
+            } else {
+              ConsoleServices.authentication().noSecurityMode();
+              setInit('READY');
             }
-          );
-        } else if (eitherAuth.value.ready) {
-          setInit('READY');
+          } else {
+            setInit('NOT_READY');
+          }
         } else {
-          setInit('NOT_READY');
+          setInit('SERVER_ERROR');
         }
-      } else {
-        setInit('SERVER_ERROR');
-      }
-    });
+      });
   }, []);
 
   const load = () => {
-    if (init == 'PENDING' || (!utils.isWelcomePage() && init == 'LOGIN')) {
-      return <span />;
-    }
-
     return (
       <Router basename="/console">
-        <AppLayout>
-          <AppRoutes init={init} />
-        </AppLayout>
+        <UserContextProvider>
+          <AppLayout init={init}>
+            <AppRoutes init={init} />
+          </AppLayout>
+        </UserContextProvider>
       </Router>
     );
   };

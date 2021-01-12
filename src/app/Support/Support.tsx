@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+
   const header = (
     <Stack hasGutter={true}>
       <StackItem>
@@ -37,15 +38,14 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 marginBottom: global_spacer_sm.value,
               }}
             />
-            User not configured
+            {t('support.no-user')}
           </Text>
         </TextContent>
       </StackItem>
       <StackItem>
         <TextContent>
           <Text>
-            By default, Infinispan Server requires user authentication, but you
-            did not configure any user before running the server.
+            {t('support.no-user-text')}
           </Text>
         </TextContent>
       </StackItem>
@@ -59,28 +59,17 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       width={'80%'}
       isOpen={props.isModalOpen}
       onClose={props.closeModal}
-      aria-label="Unable to log"
+      aria-label={t('support.no-user-label')}
       actions={[
         <Button aria-label={'Reload'} key="reload" onClick={props.closeModal}>
-          Reload
+          {t('support.reload-button')}
         </Button>,
       ]}
     >
       <TextContent>
-        <Text component={TextVariants.h6}>Download and run</Text>
+        <Text component={TextVariants.h6}>{t('support.text-create-user')}</Text>
         <Text component={TextVariants.pre}>
-          ./bin/cli.sh user create admin -p pass
-        </Text>
-        <Text component={TextVariants.pre}>./bin/server.sh</Text>
-        <Text component={TextVariants.h6}>Podman</Text>
-        <Text component={TextVariants.pre}>
-          podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="pass"
-          quay.io/infinispan/server:12.0
-        </Text>
-        <Text component={TextVariants.h6}>Docker</Text>
-        <Text component={TextVariants.pre}>
-          docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass"
-          infinispan/server:12.0
+          {t('support.text-command')}
         </Text>
       </TextContent>
     </Modal>

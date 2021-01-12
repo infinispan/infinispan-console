@@ -13,7 +13,6 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import dataContainerService from '@services/dataContainerService';
 import {
   Table,
   TableBody,
@@ -25,6 +24,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   const [cmName, setCmName] = useState(props.computedMatch.params.cmName);
@@ -45,7 +45,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   ];
 
   useEffect(() => {
-    dataContainerService
+    ConsoleServices.dataContainer()
       .getCacheConfigurationTemplates(cmName)
       .then((eitherConfigs) => {
         setLoading(false);
