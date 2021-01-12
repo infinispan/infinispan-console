@@ -1,18 +1,25 @@
-import utils from './utils';
 import { Either, left, right } from './either';
+import { RestUtils } from '@services/utils';
 
-class ServerService {
+/**
+ * Infinispan Server related API endpoints
+ *
+ * @author Katia Aresti
+ */
+export class ServerService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   /**
    * Get server version or an error
    */
   public async getVersion(): Promise<Either<string, string>> {
-    return utils
+    return this.utils
       .restCall(this.endpoint, 'GET')
       .then((response) => {
         if (response.ok) {
@@ -35,9 +42,3 @@ class ServerService {
       });
   }
 }
-
-const serverService: ServerService = new ServerService(
-  utils.endpoint() + '/server'
-);
-
-export default serverService;

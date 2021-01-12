@@ -1,10 +1,5 @@
-/**
- * Utility class
- *
- * @author Katia Aresti
- */
-import { KeycloakService } from './keycloakService';
-import { left } from '@services/either';
+import { KeycloakService } from '@services/keycloakService';
+import { AuthenticationService } from '@services/authService';
 
 export enum ComponentStatus {
   STOPPING = 'STOPPING',
@@ -73,65 +68,16 @@ export enum Flags {
   ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT',
 }
 
-class Utils {
-  public isDevMode(): boolean {
-    return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-  }
+/**
+ * Rest Utility class
+ *
+ * @author Katia Aresti
+ */
+export class RestUtils {
+  private authenticationService: AuthenticationService;
 
-  /**
-   * Decide the endpoint depending if we are in dev mode or production mode
-   */
-  public endpoint(): string {
-    if (this.isDevMode()) {
-      if (!process.env.INFINISPAN_SERVER_URL) {
-        return 'http://localhost:11222/rest/v2';
-      } else {
-        return process.env.INFINISPAN_SERVER_URL + '/rest/v2';
-      }
-    } else {
-      return window.location.origin.toString() + '/rest/v2';
-    }
-  }
-
-  public landing(): string {
-    if (this.isDevMode()) {
-      return 'http://localhost:9000/console/';
-    } else {
-      return window.location.origin.toString() + '/console';
-    }
-  }
-
-  public isWelcomePage(): boolean {
-    return (
-      location.pathname == '/console/welcome' ||
-      location.pathname == '/console/welcome/'
-    );
-  }
-
-  /**
-   * Perform a REST call with body
-   *
-   * @param url
-   * @param method
-   * @param body
-   * @param contentType
-   */
-  public restCallWithBody(
-    url: string,
-    method: string,
-    body: string,
-    contentType?: string
-  ): Promise<Response> {
-    let headers = this.createAuthenticatedHeader();
-    if (contentType) {
-      headers.append('Content-Type', contentType);
-    }
-    return fetch(url, {
-      method: method,
-      headers: headers,
-      credentials: 'include',
-      body: body,
-    });
+  constructor(authenticationService: AuthenticationService) {
+    this.authenticationService = authenticationService;
   }
 
   /**
@@ -143,17 +89,48 @@ class Utils {
   public restCall(
     url: string,
     method: string,
-    accept?: string
+    accept?: string,
+    customHeaders?: Headers,
+    body?: string
   ): Promise<Response> {
-    let headers = this.createAuthenticatedHeader();
-    if (accept && accept.length > 0) {
-      headers.append('Accept', accept);
+    if (
+      KeycloakService.Instance.isInitialized() ||
+      this.authenticationService.isNotSecured()
+    ) {
+      let headers = customHeaders;
+      if (!headers) {
+        headers = this.createAuthenticatedHeader();
+        if (accept && accept.length > 0) {
+          headers.append('Accept', accept);
+        }
+      }
+      let fetchOptions: RequestInit = {
+        method: method,
+        headers: headers,
+        credentials: 'include',
+      };
+      if (body && body.length > 0) {
+        fetchOptions['body'] = body;
+      }
+      return fetch(url, fetchOptions);
+    } else {
+      let digestFetchHeaders = {};
+      if (accept && accept.length > 0) {
+        digestFetchHeaders['Accept'] = accept;
+      }
+      if (body && body.length > 0) {
+        digestFetchHeaders['body'] = body;
+      }
+
+      if (customHeaders) {
+        customHeaders.forEach(
+          (value, key) => (digestFetchHeaders[key] = value)
+        );
+      }
+      return this.authenticationService
+        .getAuthenticatedClient()
+        .fetch(url, { method: method, headers: digestFetchHeaders });
     }
-    return fetch(url, {
-      method: method,
-      credentials: 'include',
-      headers: headers,
-    });
   }
 
   public createAuthenticatedHeader = (): Headers => {
@@ -167,7 +144,7 @@ class Utils {
     return headers;
   };
 
-  public isJSONObject(value: string): boolean {
+  public static isJSONObject(value: string): boolean {
     try {
       let jsonObj = JSON.parse(value);
       return jsonObj['_type'];
@@ -205,6 +182,17 @@ class Utils {
           return <ActionResponse>{ message: err.message, success: false };
         }
 
+        if (err instanceof Response) {
+          return err
+            .text()
+            .then(
+              (errorMessage) =>
+                <ActionResponse>{
+                  message: errorMessage ? errorMessage : err.statusText,
+                  success: false,
+                }
+            );
+        }
         return err
           .text()
           .then(
@@ -244,7 +232,7 @@ class Utils {
    * Calculate the key content type header value to send ot the REST API
    * @param contentType
    */
-  public fromContentType(contentType: ContentType): string {
+  public static fromContentType(contentType: ContentType): string {
     let stringContentType = '';
     switch (contentType) {
       case ContentType.StringContentType:
@@ -280,7 +268,7 @@ class Utils {
    * @param contentTypeHeader
    * @param defaultContentType
    */
-  public toContentType(
+  public static toContentType(
     contentTypeHeader: string | null | undefined,
     defaultContentType?: ContentType
   ): ContentType {
@@ -324,7 +312,7 @@ class Utils {
    * @param cacheConfig, the config of the cache in string
    * @return [boolean, boolean]
    */
-  public isProtobufCache(cacheConfig: string): boolean[] {
+  public static isProtobufCache(cacheConfig: string): boolean[] {
     const config = JSON.parse(cacheConfig);
 
     let cacheConfigHead;
@@ -365,33 +353,39 @@ class Utils {
    *
    * @param protobufType
    */
-  public fromProtobufType(protobufType: string) : ContentType {
+  public static fromProtobufType(protobufType: string): ContentType {
     let contentType;
 
     switch (protobufType) {
-      case 'string': contentType = ContentType.StringContentType; break;
-      case 'float': contentType = ContentType.FloatContentType; break;
-      case 'double': contentType = ContentType.DoubleContentType; break;
+      case 'string':
+        contentType = ContentType.StringContentType;
+        break;
+      case 'float':
+        contentType = ContentType.FloatContentType;
+        break;
+      case 'double':
+        contentType = ContentType.DoubleContentType;
+        break;
       case 'int32':
       case 'uint32':
       case 'sint32':
       case 'fixed32':
       case 'sfixed32':
-        contentType = ContentType.IntegerContentType; break;
+        contentType = ContentType.IntegerContentType;
+        break;
       case 'int64':
       case 'uint64':
       case 'sint64':
       case 'fixed64':
       case 'sfixed64':
-        contentType = ContentType.LongContentType; break;
+        contentType = ContentType.LongContentType;
+        break;
       case 'bool':
-        contentType = ContentType.BooleanContentType; break;
-      default: contentType = ContentType.StringContentType;
+        contentType = ContentType.BooleanContentType;
+        break;
+      default:
+        contentType = ContentType.StringContentType;
     }
     return contentType;
   }
 }
-
-const utils: Utils = new Utils();
-
-export default utils;

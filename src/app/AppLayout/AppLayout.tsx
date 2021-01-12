@@ -1,12 +1,16 @@
-import React, { Suspense } from 'react';
-import { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Brand,
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownToggle,
   Nav,
   NavItem,
   NavList,
   Page,
   PageHeader,
+  PageHeaderTools,
   PageSidebar,
   SkipToContent,
   Spinner,
@@ -18,25 +22,28 @@ import {
   ToolbarItem,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { Link, NavLink } from 'react-router-dom';
-import { routes } from '@app/routes';
-import { APIAlertProvider } from '@app/providers/APIAlertProvider';
-import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
-import { RecentActivityProvider } from '@app/providers/RecentActivityContextProvider';
-import { useHistory } from 'react-router';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-import { About } from '@app/About/About';
-import utils from '@services/utils';
-import { ErrorBoundary } from '@app/ErrorBoundary';
-import { BannerAlert } from '@app/Common/BannerAlert';
-import { useTranslation } from 'react-i18next';
+import {Link, NavLink, Redirect} from 'react-router-dom';
+import {routes} from '@app/routes';
+import {APIAlertProvider} from '@app/providers/APIAlertProvider';
+import {ActionResponseAlert} from '@app/Common/ActionResponseAlert';
+import {useHistory} from 'react-router';
+import {global_spacer_sm} from '@patternfly/react-tokens';
+import {About} from '@app/About/About';
+import {ErrorBoundary} from '@app/ErrorBoundary';
+import {BannerAlert} from '@app/Common/BannerAlert';
+import {useTranslation} from 'react-i18next';
+import {useFetchUser} from "@app/services/userManagementHook";
+import {ConsoleServices} from "@services/ConsoleServices";
 
 interface IAppLayout {
+  init: string;
   children: React.ReactNode;
 }
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
+const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const history = useHistory();
+  const {userName, notSecured, logOut} = useFetchUser();
+  const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const logoProps = {
     target: '_self',
     onClick: () => history.push('/'),
@@ -49,6 +56,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    history.listen((location, action) => {
+        setIsWelcomePage(location.pathname == '/welcome');
+    });
+  }, [])
 
   const onNavToggleMobile = () => {
     setIsNavOpenMobile(!isNavOpenMobile);
@@ -79,6 +93,26 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     </Toolbar>
   );
 
+
+  const userDropdownItems = [
+    <DropdownGroup key="user-action-group">
+      <DropdownItem key="user-action-group-1 logout" onClick={() => logOut()}>Logout</DropdownItem>
+    </DropdownGroup>
+  ];
+
+  const UserActions = (
+    <PageHeaderTools>
+      <Dropdown
+        isPlain
+        position="right"
+        onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
+        isOpen={isDropdownOpen}
+        toggle={<DropdownToggle onToggle={()=> setIsDropdownOpen(!isDropdownOpen)}>{userName}</DropdownToggle>}
+        dropdownItems={userDropdownItems}
+      />
+    </PageHeaderTools>
+  )
+
   const Header = (
     <PageHeader
       logo={Logo}
@@ -86,6 +120,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
+      headerTools={notSecured || userName == ''? null: UserActions}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
   );
@@ -136,39 +171,60 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   );
 
   const Sidebar = (
-    <PageSidebar
-      theme="dark"
-      nav={Navigation}
-      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen}
-    />
-  );
-
-  const aboutModal = () => {
-    if (utils.isWelcomePage()) return;
-
-    return (
+    <React.Fragment>
+      <PageSidebar
+        theme="dark"
+        nav={Navigation}
+        isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen}
+      />
       <About
         isModalOpen={isAboutOpen}
         closeModal={() => setIsAboutOpen(false)}
       />
-    );
-  };
-  return (
-    <APIAlertProvider>
-      <RecentActivityProvider>
-        <ActionResponseAlert />
-        {aboutModal()}
+    </React.Fragment>
+  );
+
+  const displayPage = () => {
+    if(init =='PENDING') {
+      return (
+          <Page
+            mainContainerId="primary-app-container"
+          >
+            <ErrorBoundary><Spinner/></ErrorBoundary>
+          </Page>
+        )
+    }
+
+    if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
+      return ( 
+        <Redirect to="/welcome" />
+      )
+    }
+
+    if (init == 'DIGEST_LOGIN' && !ConsoleServices.isWelcomePage() && userName == '') {
+      return (
+        <Redirect to="/welcome" />
+      )
+    }
+
+    return (
         <Page
           mainContainerId="primary-app-container"
-          header={utils.isWelcomePage() ? null : Header}
+          header={isWelcomePage ? null : Header}
           onPageResize={onPageResize}
           skipToContent={PageSkipToContent}
-          sidebar={utils.isWelcomePage() ? null : Sidebar}
+          sidebar={isWelcomePage ? null : Sidebar}
         >
+          <ActionResponseAlert />
           <BannerAlert />
           <ErrorBoundary>{children}</ErrorBoundary>
         </Page>
-      </RecentActivityProvider>
+      )
+
+  }
+  return (
+    <APIAlertProvider>
+      {displayPage()}
     </APIAlertProvider>
   );
 };

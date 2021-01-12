@@ -19,9 +19,9 @@ import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { ContentType, Flags } from '@services/utils';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
-import cacheService from '@services/cacheService';
 import { useReloadCache } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -102,7 +102,7 @@ const CreateOrUpdateEntryForm = (props: {
       setIsEdition(false);
     } else {
       setIsEdition(true);
-      cacheService
+      ConsoleServices.caches()
         .getEntry(props.cacheName, props.keyToEdit, props.keyContentType)
         .then((eitherResponse) => {
           if (eitherResponse.isRight()) {
@@ -246,7 +246,7 @@ const CreateOrUpdateEntryForm = (props: {
     let selectedValueContentType = valueContentType.selected as ContentType;
 
     if (isValid) {
-      cacheService
+      ConsoleServices.caches()
         .createOrUpdate(
           props.cacheName,
           key.value,

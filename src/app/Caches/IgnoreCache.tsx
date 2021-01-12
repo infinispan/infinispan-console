@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Ignore cache modal
@@ -27,7 +27,7 @@ const IgnoreCache = (props: {
 
   const handleIgnoreButton = () => {
     if (props.action == 'ignore') {
-      cacheService
+      ConsoleServices.caches()
         .ignoreCache(props.cmName, props.cacheName)
         .then((actionResponse) => {
           clearIgnoreCacheModal(actionResponse.success);
@@ -35,7 +35,7 @@ const IgnoreCache = (props: {
           reloadCaches();
         });
     } else {
-      cacheService
+      ConsoleServices.caches()
         .undoIgnoreCache(props.cmName, props.cacheName)
         .then((actionResponse) => {
           clearIgnoreCacheModal(actionResponse.success);

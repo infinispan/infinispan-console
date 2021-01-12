@@ -91,11 +91,13 @@
     "i18next": "^19.8.4",
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
-    "keycloak-js": "^11.0.3",
+    "keycloak-js": "^12.0.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-i18next": "^11.7.4",
     "react-router-last-location": "^2.0.1",
-    "react-syntax-highlighter": "^15.4.3"
+    "react-syntax-highlighter": "^15.4.3",
+    "digest-fetch": "1.1.5",
+    "node-fetch": "2.6.1"
   }
 }

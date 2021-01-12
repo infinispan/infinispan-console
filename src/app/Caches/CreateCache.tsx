@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+
 import {
   ActionGroup,
   Button,
@@ -23,12 +24,11 @@ import {
 } from '@patternfly/react-core';
 import { CubeIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import cacheService from '@services/cacheService';
-import dataContainerService from '@services/dataContainerService';
 import displayUtils from '@services/displayUtils';
 import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
@@ -55,7 +55,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }
 
   useEffect(() => {
-    dataContainerService
+    ConsoleServices.dataContainer()
       .getCacheConfigurationTemplates(cmName)
       .then((eitherTemplates) => {
         if (eitherTemplates.isRight()) {
@@ -138,12 +138,12 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     }
     let createCacheCall: Promise<ActionResponse>;
     if (selectedConfig != '') {
-      createCacheCall = cacheService.createCacheByConfigName(
+      createCacheCall = ConsoleServices.caches().createCacheByConfigName(
         name,
         selectedConfig
       );
     } else {
-      createCacheCall = cacheService.createCacheWithConfiguration(name, config);
+      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(name, config);
     }
     createCacheCall
       .then((actionResponse) => {

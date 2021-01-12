@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import countersService from '@services/countersService';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 export function useFetchCounters() {
   const [counters, setCounters] = useState<Counter[]>([]);
@@ -9,7 +9,7 @@ export function useFetchCounters() {
 
   useEffect(() => {
     if (loading) {
-      countersService
+      ConsoleServices.counters()
         .getCounters()
         .then((either) => {
           if (either.isRight()) {
@@ -38,7 +38,7 @@ export function useDeleteCounter(name: string) {
   const { addAlert } = useApiAlert();
 
   const onDelete = () => {
-    countersService.delete(name).then((actionResponse) => {
+    ConsoleServices.counters().delete(name).then((actionResponse) => {
       addAlert(actionResponse);
     });
   };

@@ -6,9 +6,9 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Purge index modal
@@ -23,7 +23,7 @@ const PurgeIndex = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickPurgeButton = () => {
-    cacheService.purgeIndexes(props.cacheName).then((actionResponse) => {
+    ConsoleServices.caches().purgeIndexes(props.cacheName).then((actionResponse) => {
       props.closeModal();
       addAlert(actionResponse);
     });

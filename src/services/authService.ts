@@ -1,5 +1,5 @@
-import utils from './utils';
 import { Either, left, right } from './either';
+import * as DigestFetch from 'digest-fetch';
 
 /**
  * Authentication Service calls Infinispan endpoints related to Authentication
@@ -7,11 +7,33 @@ import { Either, left, right } from './either';
  * @author Katia Aresti
  * @since 1.0
  */
-class AuthenticationService {
+export class AuthenticationService {
   endpoint: string;
+  private username = '';
+  private devMode = false;
+  private notSecured = false;
+  private authenticatedClient;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, devMode: boolean) {
     this.endpoint = endpoint;
+    this.devMode = devMode;
+    if (devMode && process.env.SKIP_AUTH) {
+      this.username = process.env.INFINISPAN_USER
+        ? process.env.INFINISPAN_USER
+        : 'admin';
+      const password = process.env.INFINISPAN_PASSWORD
+        ? process.env.INFINISPAN_PASSWORD
+        : 'pass';
+      this.authenticatedClient = new DigestFetch(this.username, password);
+    }
+  }
+
+  public isNotSecured() {
+    return this.notSecured;
+  }
+
+  public getAuthenticatedClient(): DigestFetch {
+    return this.authenticatedClient;
   }
 
   /**
@@ -19,6 +41,22 @@ class AuthenticationService {
    */
   public httpLoginUrl(): string {
     return this.endpoint;
+  }
+
+  public getUserName(): string {
+    return this.username;
+  }
+
+  public isLoggedIn(): boolean {
+    return this.username != '' && this.authenticatedClient != undefined;
+  }
+
+  public logOut() {
+    this.username = '';
+  }
+
+  public noSecurityMode() {
+    this.notSecured = true;
   }
 
   /**
@@ -38,6 +76,7 @@ class AuthenticationService {
         const authInfo = <AuthInfo>{
           mode: json.mode,
           ready: json.ready == 'true',
+          digest: json.DIGEST == 'true',
         };
 
         if (authInfo.mode == 'OIDC') {
@@ -77,10 +116,37 @@ class AuthenticationService {
         return left(actionResponse);
       });
   }
+
+  public login(username: string, password: string): Promise<ActionResponse> {
+    const client = new DigestFetch(username, password);
+    return client
+      .fetch(this.endpoint)
+      .then((response) => {
+        if (response.ok) {
+          this.authenticatedClient = client;
+          this.username = username;
+          return <ActionResponse>{
+            success: true,
+            message: username + ' logged in',
+          };
+        }
+        if (response.status == 401) {
+          return <ActionResponse>{
+            success: false,
+            message: username + ' not authorized',
+          };
+        }
+
+        throw response;
+      })
+      .catch((err) => {
+        console.error(err);
+        username = '';
+        password = '';
+        return <ActionResponse>{
+          success: false,
+          message: 'Unexpected error. Check the logs',
+        };
+      });
+  }
 }
-
-const authenticationService: AuthenticationService = new AuthenticationService(
-  utils.endpoint() + '/login'
-);
-
-export default authenticationService;

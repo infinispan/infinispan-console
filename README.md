@@ -92,3 +92,50 @@ Generated with [Favicon generator](https://www.favicon-generator.org/)
 * To keep our bundle size in check, we use [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)
 * To keep our code formatting in check, we use [prettier](https://github.com/prettier/prettier)
 * To keep our code logic and test coverage in check, we use [jest](https://github.com/facebook/jest)
+
+## Security of the Console
+
+### Not secured infinispan
+
+You can disable security in the REST API in the `infinispan.xml` file of the server you are running.
+Remove the `security-realm="default"` from the endpoints
+
+```xml
+  <endpoints socket-binding="default">
+    <hotrod-connector name="hotrod"/>
+    <rest-connector name="rest"/>
+  </endpoints>
+```
+
+### Secured Infinispan
+Default security of the server is user/password credentials based.
+
+If you run a server without any user or password, the 'Support' popup should be displayed in the welcome page.
+
+### Keycloak
+
+1. `docker run -p 8080:8080 -e KEYCLOAK_USER=keycloak -e KEYCLOAK_PASSWORD=keycloak --name keycloak jboss/keycloak:12.0.2`
+2. Connect to `http://localhost:8080` and upload the security realm in `data/infinispan-keycloak-realm.json`
+3. Run the infinispan server with the following configuration as security realm
+File in `data/infinispan-security-realm.xml`
+
+```xml
+  <security>
+    <security-realms>
+      <security-realm name="default">
+        <token-realm name="infinispan" auth-server-url="http://localhost:8080/auth/" client-id="infinispan-console">
+          <oauth2-introspection
+            introspection-url="http://localhost:8080/auth/realms/infinispan/protocol/openid-connect/token/introspect"
+            client-id="infinispan-server" client-secret="1fdca4ec-c416-47e0-867a-3d471af7050f"/>
+        </token-realm>
+      </security-realm>
+    </security-realms>
+  </security>
+
+  <endpoints socket-binding="default" security-realm="default">
+    <hotrod-connector name="hotrod"/>
+    <rest-connector name="rest"/>
+  </endpoints>
+```
+
+4. Run the console en dev mode. Keycloak connection should be redirected. Enter `admin/adminPassword` credentials.

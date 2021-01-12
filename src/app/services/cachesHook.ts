@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import dataContainerService from '@services/dataContainerService';
 import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 export function useFetchCaches(cacheManager: string) {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
@@ -9,7 +9,7 @@ export function useFetchCaches(cacheManager: string) {
 
   useEffect(() => {
     if (loading) {
-      dataContainerService
+      ConsoleServices.dataContainer()
         .getCaches(cacheManager)
         .then((either) => {
           if (either.isRight()) {

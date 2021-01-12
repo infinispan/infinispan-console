@@ -12,10 +12,10 @@ import {
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
-import protobufService from '../../services/protobufService';
 import formUtils, { IField } from '../../services/formUtils';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Proto Schema creation form
@@ -72,7 +72,7 @@ const CreateProtoSchema = (props: {
       return;
     }
 
-    protobufService
+    ConsoleServices.protobuf()
       .createOrUpdateSchema(schemaName.value, schema.value, true)
       .then((eitherCreate) => {
         if (eitherCreate.isRight()) {

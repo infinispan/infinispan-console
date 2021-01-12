@@ -1,14 +1,16 @@
-import utils from '@services/utils';
-import {Either, left, right} from '@services/either'
+import { Either, left, right } from '@services/either';
+import { RestUtils } from '@services/utils';
 
 /**
  * Protobuf schemas manipulation service
  */
-class ProtobufService {
+export class ProtobufService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   /**
@@ -19,10 +21,12 @@ class ProtobufService {
     schema: string,
     create: boolean
   ): Promise<Either<ActionResponse, ActionResponse>> {
-    return utils
-      .restCallWithBody(
+    return this.utils
+      .restCall(
         this.endpoint + '/' + name,
         create ? 'POST' : 'PUT',
+        undefined,
+        undefined,
         schema
       )
       .then((response) => {
@@ -60,8 +64,8 @@ class ProtobufService {
    * Delete schema
    */
   public async delete(name: string): Promise<ActionResponse> {
-    return utils
-      .restCallWithBody(this.endpoint + '/' + name, 'DELETE', name)
+    return this.utils
+      .restCall(this.endpoint + '/' + name, 'DELETE')
       .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
@@ -80,7 +84,7 @@ class ProtobufService {
   public async getSchema(
     name: string
   ): Promise<Either<ActionResponse, string>> {
-    return utils
+    return this.utils
       .restCall(this.endpoint + '/' + name, 'GET')
       .then((response) => {
         if (response.ok) {
@@ -96,7 +100,7 @@ class ProtobufService {
    * Get the list of files and validation response
    */
   public getProtobufSchemas(): Promise<Either<ActionResponse, ProtoSchema[]>> {
-    return utils
+    return this.utils
       .restCall(this.endpoint, 'GET')
       .then((response) => {
         if (response.ok) {
@@ -104,29 +108,31 @@ class ProtobufService {
         }
         throw response;
       })
-      .then((protoSchemas) =>
-        right(
-          protoSchemas
-            .map((schema) => {
-              let protoError: ProtoError | undefined = undefined;
-              if (schema['error'] != null) {
-                protoError = <ProtoError>{
-                  message: schema.error.message,
-                  cause: schema.error.cause,
+      .then(
+        (protoSchemas) =>
+          right(
+            protoSchemas
+              .map((schema) => {
+                let protoError: ProtoError | undefined = undefined;
+                if (schema['error'] != null) {
+                  protoError = <ProtoError>{
+                    message: schema.error.message,
+                    cause: schema.error.cause,
+                  };
+                }
+                return <ProtoSchema>{
+                  name: schema.name,
+                  error: protoError,
                 };
-              }
-              return <ProtoSchema>{
-                name: schema.name,
-                error: protoError,
-              };
-            })
-            .filter(
-              (schema) =>
-                schema.name !=
-                  'org/infinispan/protostream/message-wrapping.proto' &&
-                schema.name != 'org/infinispan/query/remote/client/query.proto'
-            )
-        )  as Either<ActionResponse, ProtoSchema[]>
+              })
+              .filter(
+                (schema) =>
+                  schema.name !=
+                    'org/infinispan/protostream/message-wrapping.proto' &&
+                  schema.name !=
+                    'org/infinispan/query/remote/client/query.proto'
+              )
+          ) as Either<ActionResponse, ProtoSchema[]>
       )
       .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
   }
@@ -146,8 +152,7 @@ class ProtobufService {
       if (err.status.valueOf() == 403) {
         // Not Found
         actionResponse = <ActionResponse>{
-          message:
-            'Unauthorized access.',
+          message: 'Unauthorized access.',
           success: false,
         };
       } else {
@@ -163,9 +168,3 @@ class ProtobufService {
     return Promise.resolve(actionResponse);
   }
 }
-
-const protobufService: ProtobufService = new ProtobufService(
-  utils.endpoint() + '/schemas'
-);
-
-export default protobufService;

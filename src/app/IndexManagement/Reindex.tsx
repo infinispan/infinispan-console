@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Reindex modal
@@ -17,7 +17,7 @@ const Reindex = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickPurgeButton = () => {
-    cacheService.reindex(props.cacheName).then((actionResponse) => {
+    ConsoleServices.caches().reindex(props.cacheName).then((actionResponse) => {
       props.closeModal();
       addAlert(actionResponse);
     });

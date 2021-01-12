@@ -6,9 +6,9 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * ClearQueryMetrics entry modal
@@ -23,7 +23,7 @@ const ClearQueryMetrics = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickDeleteButton = () => {
-    cacheService.clearQueryStats(props.cacheName).then((actionResponse) => {
+    ConsoleServices.caches().clearQueryStats(props.cacheName).then((actionResponse) => {
       addAlert(actionResponse);
       props.closeModal();
     });

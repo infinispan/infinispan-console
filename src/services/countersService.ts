@@ -1,22 +1,24 @@
-import utils from './utils';
+import { RestUtils } from './utils';
 import { Either, left, right } from '@services/either';
 
 /**
- * REST API Calls
+ * REST API for counters
  */
-class CountersService {
+export class CountersService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   /**
    * Get counters list
    */
   public getCounters(): Promise<Either<ActionResponse, Counter[]>> {
-    return utils
-      .restCall(this.endpoint + '/counters/', 'GET')
+    return this.utils
+      .restCall(this.endpoint, 'GET')
       .then((response) => response.json())
       .then((jsonList) => {
         const counters: Promise<Counter>[] = jsonList.map((name) =>
@@ -25,12 +27,14 @@ class CountersService {
         return Promise.all(counters);
       })
       .then((counters) => right(counters) as Either<ActionResponse, Counter[]>)
-      .catch((err) => left(utils.mapError(err, 'Unable to retrieve counters')));
+      .catch((err) =>
+        left(this.utils.mapError(err, 'Unable to retrieve counters'))
+      );
   }
 
   private getCounter(name: string): Promise<Counter> {
-    let counter: Promise<Counter> = utils
-      .restCall(this.endpoint + '/counters/' + name, 'GET')
+    let counter: Promise<Counter> = this.utils
+      .restCall(this.endpoint + '/' + name, 'GET')
       .then((response) => response.json())
       .then((value) => <Counter>{ name: name, value: value });
 
@@ -45,8 +49,8 @@ class CountersService {
   }
 
   private getCounterConfig(name: string): Promise<CounterConfig> {
-    return utils
-      .restCall(this.endpoint + '/counters/' + name + '/config', 'GET')
+    return this.utils
+      .restCall(this.endpoint + '/' + name + '/config', 'GET')
       .then((response) => response.json())
       .then((value) => {
         let counterConfig: CounterConfig;
@@ -80,13 +84,9 @@ class CountersService {
    * @param name, counter to be deleted
    */
   public delete(name: string): Promise<ActionResponse> {
-    return utils.handleCRUDActionResponse(
+    return this.utils.handleCRUDActionResponse(
       'Counter ' + name + ' has been deleted',
-      utils.restCall(this.endpoint + '/counters/' + name, 'DELETE')
+      this.utils.restCall(this.endpoint + '/' + name, 'DELETE')
     );
   }
 }
-
-const countersService: CountersService = new CountersService(utils.endpoint());
-
-export default countersService;

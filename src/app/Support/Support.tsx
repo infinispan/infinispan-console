@@ -44,7 +44,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       <StackItem>
         <TextContent>
           <Text>
-            By default, Infinispan Server requires user authentication, but you
+            By default, {brandname} Server requires user authentication, but you
             did not configure any user before running the server.
           </Text>
         </TextContent>
@@ -75,12 +75,12 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
         <Text component={TextVariants.h6}>Podman</Text>
         <Text component={TextVariants.pre}>
           podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="pass"
-          quay.io/infinispan/server:12.0
+          quay.io/infinispan/server:latest
         </Text>
         <Text component={TextVariants.h6}>Docker</Text>
         <Text component={TextVariants.pre}>
           docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass"
-          infinispan/server:12.0
+          infinispan/server:latest
         </Text>
       </TextContent>
     </Modal>

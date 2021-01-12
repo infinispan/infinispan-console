@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import dataContainerService from '@services/dataContainerService';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 export function useFetchGlobalStats() {
   const [stats, setStats] = useState<CacheManagerStats>({
@@ -17,11 +17,11 @@ export function useFetchGlobalStats() {
 
   useEffect(() => {
     if (loading) {
-      dataContainerService
+      ConsoleServices.dataContainer()
         .getDefaultCacheManager()
         .then((eitherDefaultCm) => {
           if (eitherDefaultCm.isRight()) {
-            dataContainerService
+            ConsoleServices.dataContainer()
               .getCacheManagerStats(eitherDefaultCm.value.name)
               .then((eitherDetailedStats) => {
                 if (eitherDetailedStats.isRight()) {
