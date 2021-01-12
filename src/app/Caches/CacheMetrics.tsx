@@ -21,8 +21,8 @@ import {
 import displayUtils from '@services/displayUtils';
 import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
 import { CubesIcon } from '@patternfly/react-icons';
-import cacheService from '../../services/cacheService';
 import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [stats, setStats] = useState<CacheStats | undefined>(undefined);
@@ -33,7 +33,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [queryStatsError, setQueryStatsError] = useState<string>('');
 
   useEffect(() => {
-    cacheService.retrieveFullDetail(props.cacheName).then((detail) => {
+    ConsoleServices.caches().retrieveFullDetail(props.cacheName).then((detail) => {
       setQueryStatsLoading(false);
       if (detail.isRight()) {
         setStats(detail.value.stats);
@@ -42,7 +42,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
         setDisplayQueryStats(loadQueryStats);
         if (loadQueryStats) {
           // Retrieve query stats only if stats are enabled and the cache is indexed
-          cacheService
+          ConsoleServices.caches()
             .retrieveQueryStats(props.cacheName)
             .then((eitherStats) => {
               setQueryStatsLoading(false);

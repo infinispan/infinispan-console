@@ -18,7 +18,6 @@ import {
   ToolbarItemVariant,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
-import cacheService from '@services/cacheService';
 import {
   Table,
   TableBody,
@@ -30,6 +29,7 @@ import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const QueryEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
@@ -118,7 +118,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
       return;
     }
 
-    cacheService
+    ConsoleServices.caches()
       .searchValues(props.cacheName, query, perPage, page - 1)
       .then((response) => {
         if (response.isRight()) {

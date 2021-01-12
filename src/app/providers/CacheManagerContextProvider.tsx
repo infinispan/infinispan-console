@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import dataContainerService from '@services/dataContainerService';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const initialContext = {
   error: '',
@@ -25,7 +25,7 @@ const ContainerDataProvider = ({ children }) => {
 
   useEffect(() => {
     if (loading) {
-      dataContainerService
+      ConsoleServices.dataContainer()
         .getDefaultCacheManager()
         .then((eitherCm) => {
           if (eitherCm.isRight()) {
@@ -40,7 +40,7 @@ const ContainerDataProvider = ({ children }) => {
 
   useEffect(() => {
     if (loadingCaches && cm) {
-      dataContainerService
+      ConsoleServices.dataContainer()
         .getCaches(cm.name)
         .then((either) => {
           if (either.isRight()) {

@@ -9,9 +9,9 @@ import {
   TextContent,
   TextInput,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Delete cache modal
@@ -49,7 +49,7 @@ const DeleteCache = (props: {
     let validCacheName = trim === props.cacheName;
     setIsValidCacheNameValue(validCacheName ? 'success' : 'error');
     if (validCacheName) {
-      cacheService.deleteCache(props.cacheName).then((actionResponse) => {
+      ConsoleServices.caches().deleteCache(props.cacheName).then((actionResponse) => {
         clearDeleteCacheModal(actionResponse.success);
         addAlert(actionResponse);
         reloadCaches();

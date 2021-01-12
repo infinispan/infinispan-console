@@ -21,7 +21,6 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon } from '@patternfly/react-icons';
-import dataContainerService from '@services/dataContainerService';
 import {
   Table,
   TableBody,
@@ -32,6 +31,7 @@ import { Health } from '@app/Common/Health';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
@@ -58,7 +58,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
   ];
 
   useEffect(() => {
-    dataContainerService.getDefaultCacheManager().then((eitherDefaultCm) => {
+    ConsoleServices.dataContainer().getDefaultCacheManager().then((eitherDefaultCm) => {
       setLoading(false);
       if (eitherDefaultCm.isRight()) {
         setCacheManager(eitherDefaultCm.value);

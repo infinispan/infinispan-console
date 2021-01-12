@@ -19,18 +19,18 @@ import {
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
 import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
-import cacheService from '@services/cacheService';
 import {Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
 import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
-import utils, {ContentType} from '@services/utils';
+import {ContentType, RestUtils} from '@services/utils';
 import {useTranslation} from 'react-i18next';
 import {TableEmptyState} from '@app/Common/TableEmptyState';
 import {useCacheDetail, useCacheEntries} from '@app/services/cachesHook';
 import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -177,8 +177,8 @@ const CacheEntries = (props: { cacheName: string }) => {
       rows = currentPageEntries.map((entry) => {
         let keyForAction = entry.key;
         let keyContentType = entry.keyContentType;
-        const isProtobuf = utils.isProtobufCache(cache.configuration.config);
-        if (isProtobuf[0] && utils.isJSONObject(entry.key)) {
+        const isProtobuf = RestUtils.isProtobufCache(cache.configuration.config);
+        if (isProtobuf[0] && RestUtils.isJSONObject(entry.key)) {
           keyForAction = JSON.parse(entry.key)['_value'];
         }
 
@@ -277,7 +277,7 @@ const CacheEntries = (props: { cacheName: string }) => {
       kt = keyType as ContentType;
     }
     updateRows([], true, '');
-    cacheService.getEntry(props.cacheName, keyToSearch, kt).then((response) => {
+    ConsoleServices.caches().getEntry(props.cacheName, keyToSearch, kt).then((response) => {
       let entries: CacheEntry[] = [];
       let error = '';
 

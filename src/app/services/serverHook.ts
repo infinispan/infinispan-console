@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import serverService from '@services/serverService';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 export function useFetchVersion() {
   const [version, setVersion] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (loading) {
-      serverService
+    if (loading && version =='') {
+      ConsoleServices.server()
         .getVersion()
         .then((eitherVersion) => {
           if (eitherVersion.isRight()) {
@@ -22,6 +22,7 @@ export function useFetchVersion() {
   }, [loading]);
 
   return {
+    setLoading,
     loading,
     version,
     error,

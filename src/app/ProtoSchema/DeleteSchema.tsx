@@ -7,8 +7,8 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import protobufService from '../../services/protobufService';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Delete schema modal
@@ -23,7 +23,7 @@ const DeleteSchema = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickDeleteButton = () => {
-    protobufService.delete(props.schemaName).then((actionResponse) => {
+    ConsoleServices.protobuf().delete(props.schemaName).then((actionResponse) => {
       addAlert(actionResponse);
       props.closeModal();
     });

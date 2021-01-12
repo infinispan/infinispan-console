@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
 import {
   Bullseye,
   EmptyState,
@@ -21,18 +15,17 @@ import {
   Text,
   TextContent,
   TextVariants,
+  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant,
-  Title,
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import {SearchIcon} from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
-import { DeleteCounter } from '@app/Counters/DeleteCounter';
-import { useFetchCounters } from '@app/services/countersHook';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
-import { useTranslation } from 'react-i18next';
+import {DeleteCounter} from '@app/Counters/DeleteCounter';
+import {useFetchCounters} from '@app/services/countersHook';
+import {useTranslation} from 'react-i18next';
 
 const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;

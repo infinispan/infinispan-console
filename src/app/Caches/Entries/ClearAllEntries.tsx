@@ -6,10 +6,10 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
  * Clear all entries modal
@@ -25,7 +25,7 @@ const ClearAllEntries = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickClearAllEntriesButton = () => {
-    cacheService.clear(props.cacheName).then((actionResponse) => {
+    ConsoleServices.caches().clear(props.cacheName).then((actionResponse) => {
       addAlert(actionResponse);
       reload();
     });

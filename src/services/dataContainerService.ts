@@ -1,12 +1,14 @@
-import utils from './utils';
+import { RestUtils } from './utils';
 import { Either, left, right } from './either';
 import displayUtils from './displayUtils';
 
-class ContainerService {
+export class ContainerService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   /**
@@ -15,7 +17,7 @@ class ContainerService {
   public getDefaultCacheManager(): Promise<
     Either<ActionResponse, CacheManager>
   > {
-    return utils
+    return this.utils
       .restCall(this.endpoint + '/server/cache-managers/', 'GET')
       .then((response) => {
         if (response.ok) {
@@ -23,10 +25,14 @@ class ContainerService {
         }
         throw response;
       })
-      .then((names) => this.getCacheManager(names[0]).then((cm) => right(cm) as Either<ActionResponse, CacheManager>))
+      .then((names) =>
+        this.getCacheManager(names[0]).then(
+          (cm) => right(cm) as Either<ActionResponse, CacheManager>
+        )
+      )
       .catch((err) =>
         left(
-          utils.mapError(
+          this.utils.mapError(
             err,
             'Cannot connect. Check the navigator logs for errors.'
           )
@@ -35,7 +41,7 @@ class ContainerService {
   }
 
   private getCacheManager(name: string): Promise<CacheManager> {
-    let healthPromise: Promise<String> = utils
+    let healthPromise: Promise<String> = this.utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/health', 'GET')
       .then((response) => {
         if (response.ok) {
@@ -46,7 +52,7 @@ class ContainerService {
       .then((data) => data.cluster_health.health_status);
 
     return healthPromise.then((heath) =>
-      utils
+      this.utils
         .restCall(this.endpoint + '/cache-managers/' + name, 'GET')
         .then((response) => {
           if (response.ok) {
@@ -94,12 +100,20 @@ class ContainerService {
   public async getCacheManagerStats(
     name: string
   ): Promise<Either<ActionResponse, CacheManagerStats>> {
-    return utils
+    return this.utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
       .then((response) => response.json())
-      .then((data) => right(<CacheManagerStats>data) as Either<ActionResponse, CacheManagerStats>)
+      .then(
+        (data) =>
+          right(<CacheManagerStats>data) as Either<
+            ActionResponse,
+            CacheManagerStats
+          >
+      )
       .catch((err) =>
-        left(utils.mapError(err, 'Error retrieving cache manager statistics.'))
+        left(
+          this.utils.mapError(err, 'Error retrieving cache manager statistics.')
+        )
       );
   }
 
@@ -111,7 +125,7 @@ class ContainerService {
   public async getCacheConfigurationTemplates(
     name: string
   ): Promise<Either<ActionResponse, CacheConfig[]>> {
-    return utils
+    return this.utils
       .restCall(
         this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
         'GET'
@@ -128,7 +142,9 @@ class ContainerService {
         return right(configs) as Either<ActionResponse, CacheConfig[]>;
       })
       .catch((err) =>
-        left(utils.mapError(err, 'Error retrieving configuration templates.'))
+        left(
+          this.utils.mapError(err, 'Error retrieving configuration templates.')
+        )
       );
   }
 
@@ -139,7 +155,7 @@ class ContainerService {
   public async getCaches(
     name: string
   ): Promise<Either<ActionResponse, CacheInfo[]>> {
-    return utils
+    return this.utils
       .restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
       .then((response) => {
         if (response.ok) {
@@ -147,31 +163,34 @@ class ContainerService {
         }
         throw response;
       })
-      .then((infos) =>
-        right(
-          infos
-            .map(
-              (cacheInfo) =>
-                <CacheInfo>{
-                  name: cacheInfo.name,
-                  status: displayUtils.capitalize(cacheInfo.status),
-                  type: this.mapCacheType(cacheInfo.type),
-                  simpleCache: cacheInfo.simpleCache,
-                  features: <Features>{
-                    transactional: cacheInfo.transactional,
-                    persistent: cacheInfo.persistent,
-                    bounded: cacheInfo.bounded,
-                    secured: cacheInfo.secured,
-                    indexed: cacheInfo.indexed,
-                    hasRemoteBackup: cacheInfo.has_remote_backup,
-                  },
-                  health: cacheInfo.health,
-                }
-            )
-            .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
-        ) as Either<ActionResponse, CacheInfo[]>
+      .then(
+        (infos) =>
+          right(
+            infos
+              .map(
+                (cacheInfo) =>
+                  <CacheInfo>{
+                    name: cacheInfo.name,
+                    status: displayUtils.capitalize(cacheInfo.status),
+                    type: this.mapCacheType(cacheInfo.type),
+                    simpleCache: cacheInfo.simpleCache,
+                    features: <Features>{
+                      transactional: cacheInfo.transactional,
+                      persistent: cacheInfo.persistent,
+                      bounded: cacheInfo.bounded,
+                      secured: cacheInfo.secured,
+                      indexed: cacheInfo.indexed,
+                      hasRemoteBackup: cacheInfo.has_remote_backup,
+                    },
+                    health: cacheInfo.health,
+                  }
+              )
+              .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
+          ) as Either<ActionResponse, CacheInfo[]>
       )
-      .catch((err) => left(utils.mapError(err, 'Error retrieving caches.')));
+      .catch((err) =>
+        left(this.utils.mapError(err, 'Error retrieving caches.'))
+      );
   }
 
   private mapCacheType(type: string) {
@@ -203,9 +222,3 @@ class ContainerService {
     );
   }
 }
-
-const dataContainerService: ContainerService = new ContainerService(
-  utils.endpoint()
-);
-
-export default dataContainerService;

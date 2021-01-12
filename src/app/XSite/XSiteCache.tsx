@@ -23,7 +23,6 @@ import { Link } from 'react-router-dom';
 import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import crossSiteReplicationService from '../../services/crossSiteReplicationService';
 import {
   cellWidth,
   IRow,
@@ -38,6 +37,7 @@ import { StateTransfer } from '@app/XSite/StateTransfer';
 import { Status } from '@app/Common/Status';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 interface StateTransferModalState {
   site: string;
@@ -47,6 +47,7 @@ interface StateTransferModalState {
 
 const XSiteCache = (props) => {
   const { t } = useTranslation();
+  const crossSiteReplicationService = ConsoleServices.xsite();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);

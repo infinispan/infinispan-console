@@ -29,8 +29,8 @@ import {
   global_spacer_sm,
   global_spacer_xs,
 } from '@patternfly/react-tokens';
-import tasksService from '@services/tasksService';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const TasksTableDisplay = (props: {
   setTasksCount: (number) => void;
@@ -67,7 +67,7 @@ const TasksTableDisplay = (props: {
   ];
 
   useEffect(() => {
-    tasksService.getTasks().then((tasks) => {
+    ConsoleServices.tasks().getTasks().then((tasks) => {
       setTasks(tasks);
       setFilteredTasks(tasks);
       props.setTasksCount(tasks.length);

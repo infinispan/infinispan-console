@@ -1,15 +1,17 @@
-import utils from './utils';
+import { RestUtils } from '@services/utils';
 
-class TasksService {
+export class TasksService {
   endpoint: string;
+  utils: RestUtils;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string, restUtils: RestUtils) {
     this.endpoint = endpoint;
+    this.utils = restUtils;
   }
 
   public getTasks(): Promise<Task[]> {
-    return utils
-      .restCall(this.endpoint + '/tasks?type=user', 'GET')
+    return this.utils
+      .restCall(this.endpoint + '?type=user', 'GET')
       .then((response) => response.json())
       .then((tasks) =>
         tasks.map(
@@ -27,7 +29,3 @@ class TasksService {
       );
   }
 }
-
-const tasksService: TasksService = new TasksService(utils.endpoint());
-
-export default tasksService;

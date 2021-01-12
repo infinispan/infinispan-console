@@ -18,7 +18,6 @@ import {
   TextListVariants,
   TextVariants,
 } from '@patternfly/react-core';
-import cacheService from '@services/cacheService';
 import { Link } from 'react-router-dom';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
@@ -28,6 +27,7 @@ import { PurgeIndex } from '@app/IndexManagement/PurgeIndex';
 import { Reindex } from '@app/IndexManagement/Reindex';
 import displayUtils from '../../services/displayUtils';
 import { useTranslation } from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
 
 const IndexManagement = (props) => {
   const { t } = useTranslation();
@@ -47,7 +47,7 @@ const IndexManagement = (props) => {
   }, []);
 
   const retrieveIndexStats = () => {
-    cacheService.retrieveIndexStats(cacheName).then((eitherResult) => {
+    ConsoleServices.caches().retrieveIndexStats(cacheName).then((eitherResult) => {
       setLoading(false);
       if (eitherResult.isRight()) {
         setIndexStats(eitherResult.value);
