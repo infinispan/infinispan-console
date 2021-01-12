@@ -179,8 +179,10 @@ const CacheEntries = (props: { cacheName: string }) => {
         let keyContentType = entry.keyContentType;
         const isProtobuf = utils.isProtobufCache(cache.configuration.config);
         if (isProtobuf[0]) {
-          keyForAction = JSON.parse(entry.key)['_value'];
+          const key = JSON.parse(entry.key)['_value'];
+          keyForAction = key ? key : entry.key;
         }
+
         return {
           heightAuto: true,
           cells: [
