@@ -214,8 +214,7 @@ class Utils {
       });
   }
 
-  public mapError(err: any, errorMessage?: string): ActionResponse {
-    console.error(err);
+  public mapError(err: any, errorMessage: string): ActionResponse {
     if (err instanceof TypeError) {
       return <ActionResponse>{
         message: !errorMessage ? err.message : errorMessage,
@@ -235,7 +234,7 @@ class Utils {
     return err.text().then(
       (text) =>
         <ActionResponse>{
-          message: !errorMessage ? text : errorMessage,
+          message: text ? text : errorMessage,
           success: false,
         }
     );

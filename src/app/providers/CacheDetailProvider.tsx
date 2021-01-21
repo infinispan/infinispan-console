@@ -66,7 +66,7 @@ const CacheDetailProvider = ({ children }) => {
           if (eitherEntries.isRight()) {
             setCacheEntries(eitherEntries.value);
           } else {
-            setError(eitherEntries.value.message);
+            setErrorEntries(eitherEntries.value.message);
           }
         })
         .then(() => setLoadingEntries(false));

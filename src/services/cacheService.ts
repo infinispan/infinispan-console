@@ -349,7 +349,7 @@ class CacheService {
         left(
           utils.mapError(
             err,
-            'An error happened retrieving keys from ' + cacheName
+            'An error happened retrieving entries from ' + cacheName
           )
         )
       );
