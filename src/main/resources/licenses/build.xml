@@ -68,7 +68,8 @@
 
   <target name="licenses-xml">
     <mkdir dir="${outDir}"/>
-    <exec executable="${binDir}/license-reporter">
+    <exec executable="${node}">
+      <arg value="${binDir}/license-reporter"/>
       <arg value="save"/>
       <arg value="--xml"/>
       <arg value="licenses-console.xml"/>
