@@ -265,6 +265,9 @@
               <target>
                 <property name="binDir" value="${basedir}/node_modules/.bin"/>
                 <property name="outDir" value="dist/META-INF/licenses"/>
+                <!-- node executable -->
+                <!-- use the executable download by frontend plugin in case node isn't installed globally -->
+                <property name="node" value="${basedir}/node/node"/>
                 <ant antfile="${basedir}/src/main/resources/licenses/build.xml">
                   <target name="licenses-xml"/>
                 </ant>
