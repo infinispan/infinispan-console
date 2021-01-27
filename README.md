@@ -65,6 +65,17 @@ This console is built and released as a maven dependency used in the infinispan 
 
 `mvn clean install` 
 
+#### Skip Unit tests
+Unit test run by default. To skip them use 'skipTests' property.
+
+`mvn clean install -DskipTests` 
+
+#### Run Cypress IT Tests
+Integration tests don't run by default locally. They always run in CI.
+To run integration tests locally:
+You need to run first `./run-server-for-e2e.sh` that will download and run the infinispan server.
+Then `mvn clean install -De2e=true` 
+
 ## Configurations
 * [TypeScript Config](./tsconfig.json)
 * [Webpack Config](./webpack.common.js)
