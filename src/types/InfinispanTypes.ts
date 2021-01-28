@@ -157,6 +157,21 @@ interface XSite {
   status: string;
 }
 
+interface CacheAcl {
+  name: string;
+  acl: string[];
+}
+
+interface Acl {
+  global: string[],
+  caches: CacheAcl[]
+}
+
+interface ConnectedUser {
+  name: string,
+  acl?: Acl
+}
+
 interface Task {
   parameters: [string];
   task_context_name: string;

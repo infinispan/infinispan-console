@@ -28,7 +28,7 @@ export class AuthenticationService {
     }
   }
 
-  public isNotSecured() {
+  public isNotSecured() : boolean {
     return this.notSecured;
   }
 

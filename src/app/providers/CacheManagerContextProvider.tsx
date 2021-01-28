@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 const initialContext = {
   error: '',

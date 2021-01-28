@@ -7,13 +7,13 @@ import { CountersService } from '@services/countersService';
 import { CrossSiteReplicationService } from '@services/crossSiteReplicationService';
 import { CacheService } from '@services/cacheService';
 import { ContainerService } from '@services/dataContainerService';
+import {UserService} from "@services/userService";
 
 /**
  * Infinispan Console Services
  */
 export class ConsoleServices {
   private initialized = false;
-  public static keycloakAuth;
   private static instance: ConsoleServices = new ConsoleServices();
   private restUtils;
   private authenticationService;
@@ -24,6 +24,7 @@ export class ConsoleServices {
   private xsiteReplicationService;
   private cacheService;
   private dataContainerService;
+  private userService;
 
   private constructor() {
     this.initialized = false;
@@ -102,6 +103,8 @@ export class ConsoleServices {
         ConsoleServices.endpoint(),
         this.instance.restUtils
       );
+      this.instance.userService = new UserService('/user', this.instance.restUtils, this.instance.authenticationService);
+
       this.instance.initialized = true;
     }
   }
@@ -136,6 +139,10 @@ export class ConsoleServices {
 
   public static authentication(): AuthenticationService {
     return this.instance.authenticationService;
+  }
+
+  public static user(): UserService {
+    return this.instance.userService;
   }
 
   public isInitialized(): boolean {

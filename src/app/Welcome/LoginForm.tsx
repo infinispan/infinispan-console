@@ -22,11 +22,11 @@ import {
 } from '@patternfly/react-tokens';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {useFetchUser} from "@app/services/userManagementHook";
+import {useConnectedUser} from "@app/services/userManagementHook";
 import { useHistory } from 'react-router';
 
 const LoginForm = (props: { isModalOpen: boolean; closeModal: () => void }) => {
-  const {logUser, error, userName} = useFetchUser();
+  const {logUser, error, connectedUser} = useConnectedUser();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
@@ -36,11 +36,11 @@ const LoginForm = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   };
 
   useEffect(() => {
-    if(userName != '' && error == '') {
+    if(connectedUser.name != '' && error == '') {
       props.closeModal();
       history.push('/');
     }
-  }, [userName, error])
+  }, [connectedUser, error])
 
   const header = (
     <Stack hasGutter={true}>

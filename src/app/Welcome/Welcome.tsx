@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 import {LoginForm} from "@app/Welcome/LoginForm";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useHistory} from "react-router";
-import {useFetchUser} from "@app/services/userManagementHook";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 const Welcome = (props) => {
   const authState = props.init;
@@ -35,7 +35,7 @@ const Welcome = (props) => {
   const history = useHistory();
   const [supportOpen, setSupportOpen] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
-  const {notSecuredModeOn} = useFetchUser();
+  const {notSecuredModeOn} = useConnectedUser();
 
   const brandname = t('brandname.brandname');
 

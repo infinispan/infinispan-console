@@ -49,6 +49,8 @@ import { Health } from '@app/Common/Health';
 import { useBanner } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleServices} from "@services/ConsoleServices";
 
 interface CacheAction {
   cacheName: string;
@@ -61,6 +63,7 @@ const CacheTableDisplay = (props: {
   isVisible: boolean;
 }) => {
   const { setBanner } = useBanner();
+  const { connectedUser } = useConnectedUser();
   const { caches, errorCaches, loadingCaches } = useCaches();
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
@@ -208,7 +211,14 @@ const CacheTableDisplay = (props: {
   ];
 
   const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
-    if (rowData.size == 0) {
+    if (rowData.size == 0 || !ConsoleServices.user().hasGlobalWriteAccess(connectedUser)) {
+      return [];
+    }
+
+    // @ts-ignore
+    let cacheName:string = rowData.cells[0].cacheName as string;
+
+    if(!ConsoleServices.user().hasWriteAccessOnCache(cacheName, connectedUser)) {
       return [];
     }
 
@@ -219,7 +229,7 @@ const CacheTableDisplay = (props: {
           title: t('cache-managers.undo-ignore'),
           onClick: (event, rowId, rowData, extra) =>
             openIgnoreCacheModal(
-              rowData.cells[0].cacheName,
+              cacheName,
               rowData.cells[0].isIgnored
             ),
         },
@@ -231,7 +241,7 @@ const CacheTableDisplay = (props: {
         title: t('cache-managers.ignore'),
         onClick: (event, rowId, rowData, extra) =>
           openIgnoreCacheModal(
-            rowData.cells[0].cacheName,
+            cacheName,
             rowData.cells[0].isIgnored
           ),
       },
@@ -239,7 +249,7 @@ const CacheTableDisplay = (props: {
         title: t('cache-managers.delete'),
         onClick: (event, rowId, rowData, extra) => {
           setCacheAction({
-            cacheName: rowData.cells[0].cacheName,
+            cacheName: cacheName,
             action: 'delete',
           });
         },
@@ -378,14 +388,14 @@ const CacheTableDisplay = (props: {
       <Button
         key={`detail-button-${cacheInfo.name}`}
         variant={ButtonVariant.link}
-        isDisabled={isCacheIgnored(cacheInfo)}
+        isDisabled={isCacheIgnored(cacheInfo) || !ConsoleServices.user().hasWriteAccessOnCache(cacheInfo.name, connectedUser)}
         className={className}
       >
         {cacheInfo.name}
       </Button>
     );
 
-    if (isCacheIgnored(cacheInfo)) {
+    if (isCacheIgnored(cacheInfo) || !ConsoleServices.user().hasWriteAccessOnCache(cacheInfo.name, connectedUser)) {
       return buttonName;
     }
 
@@ -496,6 +506,10 @@ const CacheTableDisplay = (props: {
   };
 
   const buildCreateCacheButton = () => {
+    if(!ConsoleServices.user().hasGlobalWriteAccess(connectedUser)) {
+      return '';
+    }
+
     return (
       <Link
         to={{

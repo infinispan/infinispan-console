@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useState} from 'react';
 import {
   Card,
   CardBody,
@@ -17,15 +17,15 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
-import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
-import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
-import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay';
-import { Status } from '@app/Common/Status';
-import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { useDataContainer } from '@app/services/dataContainerHooks';
-import { useTranslation } from 'react-i18next';
+import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
+import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
+import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
+import {ProtobufSchemasDisplay} from '@app/ProtoSchema/ProtobufSchemasDisplay';
+import {Status} from '@app/Common/Status';
+import {global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {useDataContainer} from '@app/services/dataContainerHooks';
+import {useTranslation} from 'react-i18next';
 
 const CacheManagers = () => {
   const { cm, loading, error } = useDataContainer();
