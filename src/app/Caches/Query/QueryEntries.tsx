@@ -97,9 +97,10 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
   const displayValue = (value: string) => {
     return (
       <SyntaxHighlighter
-        wrapLines={false}
+        lineProps={{style: {wordBreak: 'break-all'}}}
         style={githubGist}
         useInlineStyles={true}
+        wrapLongLines={true}
       >
         {displayUtils.displayValue(value)}
       </SyntaxHighlighter>

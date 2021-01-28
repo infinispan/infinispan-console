@@ -14,9 +14,18 @@
     },
     "indexing": {
       "indexed-entities": [
-        "com.redhat.PlayerScore"
+        "people.Person"
       ],
       "enabled": true
+    },
+    "security": {
+      "authorization": {
+        "enabled": true,
+        "roles": [
+          "observer",
+          "admin"
+        ]
+      }
     },
     "statistics": true
   }

@@ -1,5 +1,5 @@
 import { Either, left, right } from './either';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 /**
  * Authentication Service calls Infinispan endpoints related to Authentication
@@ -10,13 +10,10 @@ import {ConsoleServices} from "@services/ConsoleServices";
 export class AuthenticationService {
   endpoint: string;
   private username = '';
-  private devMode = false;
   private notSecured = false;
-  private authenticatedClient;
 
-  constructor(endpoint: string, devMode: boolean) {
+  constructor(endpoint: string) {
     this.endpoint = endpoint;
-    this.devMode = devMode;
   }
 
   public isNotSecured() {
@@ -40,7 +37,7 @@ export class AuthenticationService {
 
   public logOut() {
     return fetch(ConsoleServices.endpoint() + '/server', {
-      headers: { "Authorization": "Basic xxx" }
+      headers: { Authorization: 'Basic xxx' },
     })
       .then((response) => {
         console.log(response);
@@ -76,7 +73,7 @@ export class AuthenticationService {
    * Retrieve AuthInfo
    */
   public async config(): Promise<Either<ActionResponse, AuthInfo>> {
-    return fetch(this.endpoint + '?action=config', {
+    return fetch(this.endpoint + '/login?action=config', {
       method: 'GET',
     })
       .then((response) => {
@@ -131,29 +128,27 @@ export class AuthenticationService {
   }
 
   // hack to force cleanup of credentials in the browser
-  public logOutLink() : Promise<void> {
+  public logOutLink(): Promise<void> {
     let headers = new Headers();
-    headers.set('Authorization', 'Digest username="logout", realm="default", nonce="AAAAUAAAbk7PxogAe0ZbfFS+9jfxOQkSOmsTXWEq/9EmvXSaEWlJp4PGMnU=", uri="/rest/v2/server", algorithm=MD5, response="8af9ceca5a428b0c765c409375964842", opaque="00000000000000000000000000000000", qop=auth, nc=0000005a, cnonce="1b28b45b19a14807"');
+    headers.set(
+      'Authorization',
+      'Digest username="logout", realm="default", nonce="AAAAUAAAbk7PxogAe0ZbfFS+9jfxOQkSOmsTXWEq/9EmvXSaEWlJp4PGMnU=", uri="/rest/v2/server", algorithm=MD5, response="8af9ceca5a428b0c765c409375964842", opaque="00000000000000000000000000000000", qop=auth, nc=0000005a, cnonce="1b28b45b19a14807"'
+    );
 
     let fetchOptions: RequestInit = {
       headers: headers,
-      credentials: 'include'
+      credentials: 'include',
     };
     return fetch(ConsoleServices.endpoint() + '/server', fetchOptions)
-      .then((response) => {
-
-      })
-      .catch((err) => {
-      });
+      .then((response) => {})
+      .catch((err) => {});
   }
 
   public loginLink(): Promise<ActionResponse> {
     return fetch(ConsoleServices.endpoint() + '/server', {
-      credentials: 'include'
+      credentials: 'include',
     })
       .then((response) => {
-        this.username = 'pepe';
-        console.log(response.headers);
         if (response.ok) {
           return <ActionResponse>{
             success: true,
@@ -177,5 +172,4 @@ export class AuthenticationService {
         };
       });
   }
-
 }

@@ -44,9 +44,13 @@ import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useCacheDetail } from '@app/services/cachesHook';
+import {ConsoleServices} from "@services/ConsoleServices";
+import {ConsoleACL} from "@services/securityService";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
+  const { connectedUser } = useConnectedUser();
   const { loading, error, cache } = useCacheDetail(cacheName);
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
@@ -87,7 +91,7 @@ const DetailCache = (props: { cacheName: string }) => {
           <QueryEntries
             cacheName={cacheName}
             indexed={cache?.features.indexed}
-            changeTab={() => setActiveTabKey1(3)}
+            changeTab={() => setActiveTabKey1(2)}
           />
         </Tab>
       </Tabs>
@@ -135,9 +139,9 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <React.Fragment>
-        {activeTabKey1 == 0 ? buildEntriesTabContent(cache?.queryable) : ''}
+        {activeTabKey1 == 0 ? buildEntriesTabContent(cache.queryable) : ''}
         {activeTabKey1 == 1 ? (
-          <CacheConfiguration config={cache?.configuration} />
+          <CacheConfiguration config={cache.configuration} />
         ) : (
           ''
         )}
@@ -167,6 +171,11 @@ const DetailCache = (props: { cacheName: string }) => {
 
   const buildBackupsManage = () => {
     if (!cache?.features.hasRemoteBackup) return;
+
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return;
+    }
+
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
@@ -212,7 +221,7 @@ const DetailCache = (props: { cacheName: string }) => {
         <ToolbarItem>
           <Link
             to={{
-              pathname: encodeURIComponent(cacheName) + '/indexation',
+              pathname: encodeURIComponent(cacheName) + '/indexing',
             }}
           >
             <Button variant={ButtonVariant.link}>Index Management</Button>
@@ -329,6 +338,23 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
+    const displayCacheStats = () => {
+      if(!cache.stats) {
+        return '';
+      }
+
+      return (
+        <Tab
+          eventKey={2}
+          title={
+            'Metrics (' +
+            (cache.stats?.enabled ? 'Enabled' : 'Not enabled') +
+            ')'
+          }
+        />
+      )
+    }
+
     return (
       <React.Fragment>
         <Toolbar id="cache-detail-header">
@@ -356,17 +382,10 @@ const DetailCache = (props: { cacheName: string }) => {
         >
           <Tab
             eventKey={0}
-            title={'Entries (' + displayUtils.formatNumber(cache?.size) + ')'}
+            title={cache.size? 'Entries (' + displayUtils.formatNumber(cache?.size) + ')' : 'Entries'}
           ></Tab>
           <Tab eventKey={1} title={'Configuration'} />
-          <Tab
-            eventKey={2}
-            title={
-              'Metrics (' +
-              (cache.stats?.enabled ? 'Enabled' : 'Not enabled') +
-              ')'
-            }
-          />
+          {displayCacheStats()}
         </Tabs>
       </React.Fragment>
     );

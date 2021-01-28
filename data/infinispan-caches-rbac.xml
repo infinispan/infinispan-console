@@ -1,0 +1,48 @@
+<!--
+Authorization for container and caches
+Each connected user should have a role
+
+bin/cli.sh user create admin -p "pass"
+bin/cli.sh user create application -p "pass"
+bin/cli.sh user create deployer -p "pass"
+bin/cli.sh user create observer -p "pass"
+bin/cli.sh user create ramon -p "pass"
+
+-->
+<cache-container name="default" statistics="true">
+  <transport cluster="${infinispan.cluster.name}" stack="${infinispan.cluster.stack:tcp}" node-name="${infinispan.node.name:}"/>
+  <security>
+    <authorization/>
+  </security>
+  <distributed-cache name="non-secured">
+  </distributed-cache>
+  <distributed-cache name="secure1">
+    <security>
+      <authorization roles="admin"/>
+    </security>
+  </distributed-cache>
+  <distributed-cache name="secure2">
+    <security>
+      <authorization roles="application"/>
+    </security>
+  </distributed-cache>
+  <distributed-cache name="secure3">
+    <security>
+      <authorization roles="deployer"/>
+    </security>
+  </distributed-cache>
+  <distributed-cache name="secure4">
+    <security>
+      <authorization />
+    </security>
+  </distributed-cache>
+  <distributed-cache name="secure5-just-reader" statistics="true">
+    <security>
+      <authorization roles="observer admin"/>
+    </security>
+    <encoding>
+      <key media-type="application/x-java-object"/>
+      <value media-type="application/x-java-object"/>
+    </encoding>
+  </distributed-cache>
+</cache-container>

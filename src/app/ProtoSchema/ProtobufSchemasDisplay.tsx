@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   AlertVariant,
@@ -25,14 +25,16 @@ import {
   ToolbarItemVariant,
 } from '@patternfly/react-core';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_FontSize_sm, global_spacer_md } from '@patternfly/react-tokens';
-import { CreateProtoSchema } from '@app/ProtoSchema/CreateProtoSchema';
-import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
-import { useTranslation } from 'react-i18next';
+import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {global_FontSize_sm, global_spacer_md} from '@patternfly/react-tokens';
+import {CreateProtoSchema} from '@app/ProtoSchema/CreateProtoSchema';
+import {DeleteSchema} from '@app/ProtoSchema/DeleteSchema';
+import {TableEmptyState} from '@app/Common/TableEmptyState';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleACL} from "@services/securityService";
 
 /**
  * Protobuf Schemas display
@@ -42,6 +44,7 @@ const ProtobufSchemasDisplay = (props: {
   isVisible: boolean;
 }) => {
   const protobufService = ConsoleServices.protobuf();
+  const {connectedUser} = useConnectedUser();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
@@ -204,6 +207,52 @@ const ProtobufSchemasDisplay = (props: {
     );
   };
 
+  const buildSchemaToolbar = (name) => {
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return '';
+    }
+
+    return (
+      <React.Fragment>
+        <Divider
+          component={DividerVariant.hr}
+          style={{
+            marginBottom: global_spacer_md.value,
+            marginTop: global_spacer_md.value,
+          }}
+        />
+        <Toolbar>
+          <ToolbarGroup>
+            <ToolbarItem>
+              <Button
+                variant={ButtonVariant.secondary}
+                onClick={() => handleEdit(name)}
+              >
+                {editSchemaName == name ? 'Save' : 'Edit'}
+              </Button>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                variant={ButtonVariant.link}
+                onClick={() => {
+                  if (editSchemaName == name) {
+                    setEditSchemaName('');
+                  } else {
+                    setDeleteSchemaName(name);
+                    setDeleteSchemaModalOpen(true);
+                  }
+                }}
+              >
+                {editSchemaName == name
+                  ? 'Cancel'
+                  : 'Delete'}
+              </Button>
+            </ToolbarItem>
+          </ToolbarGroup>
+        </Toolbar>
+      </React.Fragment>
+    );
+  }
   const handleEdit = (name: string) => {
     if (editSchemaName == '' || editSchemaName != name) {
       setEditSchemaName(name);
@@ -272,42 +321,7 @@ const ProtobufSchemasDisplay = (props: {
                 style={{ boxShadow: 'none' }}
               >
                 {buildSchemaContent(protoSchema.name)}
-                <Divider
-                  component={DividerVariant.hr}
-                  style={{
-                    marginBottom: global_spacer_md.value,
-                    marginTop: global_spacer_md.value,
-                  }}
-                />
-                <Toolbar>
-                  <ToolbarGroup>
-                    <ToolbarItem>
-                      <Button
-                        variant={ButtonVariant.secondary}
-                        onClick={() => handleEdit(protoSchema.name)}
-                      >
-                        {editSchemaName == protoSchema.name ? 'Save' : 'Edit'}
-                      </Button>
-                    </ToolbarItem>
-                    <ToolbarItem>
-                      <Button
-                        variant={ButtonVariant.link}
-                        onClick={() => {
-                          if (editSchemaName == protoSchema.name) {
-                            setEditSchemaName('');
-                          } else {
-                            setDeleteSchemaName(protoSchema.name);
-                            setDeleteSchemaModalOpen(true);
-                          }
-                        }}
-                      >
-                        {editSchemaName == protoSchema.name
-                          ? 'Cancel'
-                          : 'Delete'}
-                      </Button>
-                    </ToolbarItem>
-                  </ToolbarGroup>
-                </Toolbar>
+                {buildSchemaToolbar(protoSchema.name)}
               </DataListContent>
             </DataListItem>
           );
@@ -317,10 +331,15 @@ const ProtobufSchemasDisplay = (props: {
   };
 
   const buildCreateSchemaButton = () => {
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return '';
+    }
     return (
-      <Button variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
-        Create Protobuf Schema
-      </Button>
+      <ToolbarItem>
+        <Button variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
+          Create Protobuf Schema
+        </Button>
+      </ToolbarItem>
     );
   };
 
@@ -336,7 +355,7 @@ const ProtobufSchemasDisplay = (props: {
       <StackItem>
         <Toolbar id="schemas-table-toolbar">
           <ToolbarContent>
-            <ToolbarItem>{buildCreateSchemaButton()}</ToolbarItem>
+            {buildCreateSchemaButton()}
             <ToolbarItem variant={ToolbarItemVariant.pagination}>
               <Pagination
                 itemCount={schemas.length}

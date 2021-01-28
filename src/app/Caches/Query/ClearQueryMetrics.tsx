@@ -34,25 +34,25 @@ const ClearQueryMetrics = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={t('caches.configuration.modal-clear-query-stats')}
+      title={t('caches.query.modal-clear-query-stats')}
       onClose={props.closeModal}
-      aria-label={t('caches.configuration.modal-clear-query-stats-label')}
+      aria-label={t('caches.query.modal-clear-query-stats-label')}
       actions={[
         <Button
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={onClickDeleteButton}
         >
-          {t('caches.configuration.modal-button-query-clear-stats')}
+          {t('caches.query.modal-button-query-clear-stats')}
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
-          {t('caches.configuration.modal-button-cancel')}
+          {t('caches.query.modal-button-cancel')}
         </Button>
       ]}
     >
       <TextContent>
         <Text>
-          {t('caches.configuration.modal-button-query-clear-stats-body')}
+          {t('caches.query.modal-button-query-clear-stats-body')}
         </Text>
       </TextContent>
     </Modal>

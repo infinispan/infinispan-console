@@ -126,7 +126,7 @@ const routes: IAppRoute[] = [
     component: IndexManagement,
     exact: true,
     label: 'Index management',
-    path: '/cache/:cacheName/indexation',
+    path: '/cache/:cacheName/indexing',
     title: 'Index management',
     menu: false,
   },
