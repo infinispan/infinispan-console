@@ -114,12 +114,13 @@ export class RestUtils {
       }
       return fetch(url, fetchOptions);
     } else {
+      let digestFetchOptions = {
+        method: method,
+      };
+
       let digestFetchHeaders = {};
       if (accept && accept.length > 0) {
         digestFetchHeaders['Accept'] = accept;
-      }
-      if (body && body.length > 0) {
-        digestFetchHeaders['body'] = body;
       }
 
       if (customHeaders) {
@@ -127,9 +128,14 @@ export class RestUtils {
           (value, key) => (digestFetchHeaders[key] = value)
         );
       }
+
+      digestFetchOptions['headers'] = digestFetchHeaders;
+      if (body && body.length > 0) {
+        digestFetchOptions['body'] = body;
+      }
       return this.authenticationService
         .getAuthenticatedClient()
-        .fetch(url, { method: method, headers: digestFetchHeaders });
+        .fetch(url, digestFetchOptions);
     }
   }
 
