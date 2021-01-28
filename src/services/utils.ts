@@ -1,5 +1,5 @@
-import {KeycloakService} from '@services/keycloakService';
-import {AuthenticationService} from '@services/authService';
+import { KeycloakService } from '@services/keycloakService';
+import { AuthenticationService } from '@services/authService';
 
 export enum ComponentStatus {
   STOPPING = 'STOPPING',
@@ -181,25 +181,23 @@ export class RestUtils {
       })
       .catch((err) => {
         if (err instanceof TypeError) {
-          return <ActionResponse>{message: err.message, success: false};
+          return <ActionResponse>{ message: err.message, success: false };
         }
 
         if (err instanceof Response) {
-          return err
-            .text()
-            .then(
-              (errorMessage) =>
-                <ActionResponse>{
-                  message: errorMessage ? errorMessage : err.statusText,
-                  success: false,
-                }
-            );
+          return err.text().then(
+            (errorMessage) =>
+              <ActionResponse>{
+                message: errorMessage ? errorMessage : err.statusText,
+                success: false,
+              }
+          );
         }
         return err
           .text()
           .then(
             (errorMessage) =>
-              <ActionResponse>{message: errorMessage, success: false}
+              <ActionResponse>{ message: errorMessage, success: false }
           );
       });
   }
@@ -391,8 +389,8 @@ export class RestUtils {
     return contentType;
   }
 
-  public static isProtobufBasicType(protobufType: string|undefined) : boolean {
-    if(protobufType == undefined) {
+  public static isProtobufBasicType(protobufType: string | undefined): boolean {
+    if (protobufType == undefined) {
       return false;
     }
 

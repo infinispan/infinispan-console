@@ -274,7 +274,7 @@ class DisplayUtils {
   public formatNumber(digit: number | undefined): string {
     if (!digit) return '0';
 
-    if(digit >= 100000000) {
+    if (digit >= 100000000) {
       return numeral(digit).format('0.0a');
     }
 
@@ -284,7 +284,7 @@ class DisplayUtils {
   public formatBigNumber(digit: number | undefined): string {
     if (!digit) return '0';
 
-    if(digit >= 1000000) {
+    if (digit >= 1000000) {
       return numeral(digit).format('0.0a');
     }
 

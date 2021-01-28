@@ -4,17 +4,17 @@ networks:
   mynetwork:
     driver: bridge
 services:
-  infinispan-shared-volume:
-    image: mwendler/wget
-    volumes:
-      - xsite-config-volume:/user-config
-    command: wget -q https://raw.githubusercontent.com/infinispan/infinispan-console/master/data/infinispan-console.xml -O /user-config/infinispan-xsite.xml --no-check-certificate
+#  infinispan-shared-volume:
+#    image: mwendler/wget
+#    volumes:
+#      - xsite-config-volume:/user-config
+#    command: wget -q https://raw.githubusercontent.com/infinispan/infinispan-console/master/data/infinispan-console.xml -O /user-config/infinispan-xsite.xml --no-check-certificate
   infinispan-server-lon-1:
-    image: infinispan/server:12.0
+    image: infinispan/server:12.1
     ports:
       - "11222:11222"
-    depends_on:
-      - "infinispan-shared-volume"
+#    depends_on:
+#      - "infinispan-shared-volume"
     container_name: ispn-lon-1
     networks:
       - mynetwork
@@ -22,42 +22,62 @@ services:
       - xsite-config-volume:/user-config
     command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON
   infinispan-server-lon-2:
-    image: infinispan/server:12.0
+    image: infinispan/server:12.1
     ports:
       - "11221:11222"
-    depends_on:
-      - "infinispan-shared-volume"
+#    depends_on:
+#      - "infinispan-shared-volume"
     container_name: ispn-lon-2
     networks:
       - mynetwork
     volumes:
       - xsite-config-volume:/user-config
-    command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON -Dinfinispan.server.rest.cors-allow=http://localhost:11221
-
+    command: >
+      /bin/sh -c "
+        /opt/infinispan/bin/cli.sh user create admin -p "pass"
+        /opt/infinispan/bin/cli.sh user create application -p "pass"
+        /opt/infinispan/bin/cli.sh user create deployer -p "pass"
+        /opt/infinispan/bin/cli.sh user create observer -p "pass"
+        /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.10 -Drelay.site=LON -Dinfinispan.server.rest.cors-allow=http://localhost:11221
+      "
   infinispan-server-nyc-1:
-    image: infinispan/server:12.0
+    image: infinispan/server:12.1
     ports:
       - "32221:11222"
-    depends_on:
-      - "infinispan-shared-volume"
+#    depends_on:
+#      - "infinispan-shared-volume"
     container_name: ispn-nyc-1
     networks:
       - mynetwork
     volumes:
       - xsite-config-volume:/user-config
-    command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.15 -Drelay.site=NYC -Dinfinispan.server.rest.cors-allow=http://localhost:32221
+    command: >
+      /bin/sh -c "
+        /opt/infinispan/bin/cli.sh user create admin -p "pass"
+        /opt/infinispan/bin/cli.sh user create application -p "pass"
+        /opt/infinispan/bin/cli.sh user create deployer -p "pass"
+        /opt/infinispan/bin/cli.sh user create observer -p "pass"
+        /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.15 -Drelay.site=NYC -Dinfinispan.server.rest.cors-allow=http://localhost:32221
+      "
   infinispan-server-nyc-2:
-    image: infinispan/server:12.0
+    image: infinispan/server:12.1
     ports:
       - "32222:11222"
-    depends_on:
-      - "infinispan-shared-volume"
+#    depends_on:
+#      - "infinispan-shared-volume"
     container_name: ispn-nyc-2
     networks:
       - mynetwork
     volumes:
       - xsite-config-volume:/user-config
-    command: /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.15 -Drelay.site=NYC -Dinfinispan.server.rest.cors-allow=http://localhost:32222
+    command: >
+      /bin/sh -c "
+        /opt/infinispan/bin/cli.sh user create admin -p "pass"
+        /opt/infinispan/bin/cli.sh user create application -p "pass"
+        /opt/infinispan/bin/cli.sh user create deployer -p "pass"
+        /opt/infinispan/bin/cli.sh user create observer -p "pass"
+        /opt/infinispan/bin/server.sh -b SITE_LOCAL -c /user-config/infinispan-xsite.xml -Djgroups.cluster.mcast_addr=228.6.7.15 -Drelay.site=NYC -Dinfinispan.server.rest.cors-allow=http://localhost:32222
+      "
 volumes:
   xsite-config-volume:
     external: true

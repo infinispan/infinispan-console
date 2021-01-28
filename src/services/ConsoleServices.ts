@@ -7,13 +7,13 @@ import { CountersService } from '@services/countersService';
 import { CrossSiteReplicationService } from '@services/crossSiteReplicationService';
 import { CacheService } from '@services/cacheService';
 import { ContainerService } from '@services/dataContainerService';
+import { SecurityService } from '@services/securityService';
 
 /**
  * Infinispan Console Services
  */
 export class ConsoleServices {
   private initialized = false;
-  public static keycloakAuth;
   private static instance: ConsoleServices = new ConsoleServices();
   private restUtils;
   private authenticationService;
@@ -24,6 +24,7 @@ export class ConsoleServices {
   private xsiteReplicationService;
   private cacheService;
   private dataContainerService;
+  private userService;
 
   private constructor() {
     this.initialized = false;
@@ -68,8 +69,7 @@ export class ConsoleServices {
     if (!this.instance.initialized) {
       console.info('Init Console Services');
       this.instance.authenticationService = new AuthenticationService(
-        ConsoleServices.endpoint() + '/login',
-        ConsoleServices.isDevMode()
+        ConsoleServices.endpoint()
       );
       this.instance.restUtils = new RestUtils(
         this.instance.authenticationService
@@ -102,6 +102,12 @@ export class ConsoleServices {
         ConsoleServices.endpoint(),
         this.instance.restUtils
       );
+      this.instance.userService = new SecurityService(
+        ConsoleServices.endpoint() + '/security',
+        this.instance.restUtils,
+        this.instance.authenticationService
+      );
+
       this.instance.initialized = true;
     }
   }
@@ -136,6 +142,10 @@ export class ConsoleServices {
 
   public static authentication(): AuthenticationService {
     return this.instance.authenticationService;
+  }
+
+  public static security(): SecurityService {
+    return this.instance.userService;
   }
 
   public isInitialized(): boolean {

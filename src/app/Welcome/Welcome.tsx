@@ -24,18 +24,16 @@ import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
-import {LoginForm} from "@app/Welcome/LoginForm";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useHistory} from "react-router";
-import {useFetchUser} from "@app/services/userManagementHook";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 const Welcome = (props) => {
   const authState = props.init;
   const { t } = useTranslation();
   const history = useHistory();
   const [supportOpen, setSupportOpen] = useState(false);
-  const [logModalOpen, setLogModalOpen] = useState(false);
-  const {logUser, notSecuredModeOn} = useFetchUser();
+  const {notSecuredModeOn, logUser} = useConnectedUser();
 
   const brandname = t('brandname.brandname');
 
@@ -112,6 +110,10 @@ const Welcome = (props) => {
     }
   };
 
+  const notSecured = () => {
+    history.push('/')
+  }
+
   const goToTheConsole = t('welcome-page.go-to-console');
 
   const buildConsoleButton = () => {
@@ -130,8 +132,12 @@ const Welcome = (props) => {
         <Button
           onClick={() =>{
             ConsoleServices.authentication().loginLink().then( (r) => {
-              logUser();
-              history.push('/');
+              if(r.success) {
+                logUser();
+                history.push('/');
+              } else {
+                // Do nothing
+              }
             })
           }}
           component={'button'}
@@ -180,10 +186,6 @@ const Welcome = (props) => {
       <Support
         isModalOpen={supportOpen}
         closeModal={() => window.location.reload()}
-      />
-      <LoginForm
-        isModalOpen={logModalOpen}
-        closeModal={() => setLogModalOpen(false)}
       />
       <LoginPage
         footerListVariants={ListVariant.inline}

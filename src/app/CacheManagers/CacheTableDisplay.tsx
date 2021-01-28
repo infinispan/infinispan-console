@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  cellWidth,
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-  textCenter,
-} from '@patternfly/react-table';
+import React, {useEffect, useState} from 'react';
+import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter,} from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -34,21 +27,21 @@ import {
   ToolbarItemVariant,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { FilterIcon } from '@patternfly/react-icons';
-import { SearchIcon } from '@patternfly/react-icons';
-import { Link } from 'react-router-dom';
-import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import { DeleteCache } from '@app/Caches/DeleteCache';
-import { IgnoreCache } from '@app/Caches/IgnoreCache';
-import {
-  IExtraData,
-  IRowData,
-} from '@patternfly/react-table/src/components/Table';
-import { ComponentHealth } from '@services/utils';
-import { Health } from '@app/Common/Health';
-import { useBanner } from '@app/utils/useApiAlert';
-import { useCaches } from '@app/services/dataContainerHooks';
-import { useTranslation } from 'react-i18next';
+import {FilterIcon, SearchIcon} from '@patternfly/react-icons';
+import {Link} from 'react-router-dom';
+import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
+import {DeleteCache} from '@app/Caches/DeleteCache';
+import {IgnoreCache} from '@app/Caches/IgnoreCache';
+import {IExtraData, IRowData,} from '@patternfly/react-table/src/components/Table';
+import {ComponentHealth} from '@services/utils';
+import {Health} from '@app/Common/Health';
+import {useBanner} from '@app/utils/useApiAlert';
+import {useCaches} from '@app/services/dataContainerHooks';
+import {useTranslation} from 'react-i18next';
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleServices} from "@services/ConsoleServices";
+import {ConsoleACL} from "@services/securityService";
+import {global_spacer_sm} from '@patternfly/react-tokens';
 
 interface CacheAction {
   cacheName: string;
@@ -61,6 +54,7 @@ const CacheTableDisplay = (props: {
   isVisible: boolean;
 }) => {
   const { setBanner } = useBanner();
+  const { connectedUser } = useConnectedUser();
   const { caches, errorCaches, loadingCaches } = useCaches();
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
@@ -213,13 +207,20 @@ const CacheTableDisplay = (props: {
     }
 
     // @ts-ignore
+    let cacheName:string = rowData.cells[0].cacheName as string;
+
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return [];
+    }
+
+    // @ts-ignore
     if (rowData.cells[0].isIgnored) {
       return [
         {
           title: t('cache-managers.undo-ignore'),
           onClick: (event, rowId, rowData, extra) =>
             openIgnoreCacheModal(
-              rowData.cells[0].cacheName,
+              cacheName,
               rowData.cells[0].isIgnored
             ),
         },
@@ -231,7 +232,7 @@ const CacheTableDisplay = (props: {
         title: t('cache-managers.ignore'),
         onClick: (event, rowId, rowData, extra) =>
           openIgnoreCacheModal(
-            rowData.cells[0].cacheName,
+            cacheName,
             rowData.cells[0].isIgnored
           ),
       },
@@ -239,7 +240,7 @@ const CacheTableDisplay = (props: {
         title: t('cache-managers.delete'),
         onClick: (event, rowId, rowData, extra) => {
           setCacheAction({
-            cacheName: rowData.cells[0].cacheName,
+            cacheName: cacheName,
             action: 'delete',
           });
         },
@@ -374,19 +375,22 @@ const CacheTableDisplay = (props: {
       className = 'failed-link';
     }
 
-    const buttonName = (
+    const disableCacheDetail =
+      isCacheIgnored(cacheInfo) || !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheInfo.name, connectedUser)
+
+    const cacheDetailAccess = (
       <Button
         key={`detail-button-${cacheInfo.name}`}
         variant={ButtonVariant.link}
-        isDisabled={isCacheIgnored(cacheInfo)}
+        isDisabled={disableCacheDetail}
         className={className}
       >
         {cacheInfo.name}
       </Button>
     );
 
-    if (isCacheIgnored(cacheInfo)) {
-      return buttonName;
+    if (disableCacheDetail) {
+      return cacheDetailAccess;
     }
 
     return (
@@ -394,7 +398,7 @@ const CacheTableDisplay = (props: {
         key={cacheInfo.name}
         to={'/cache/' + encodeURIComponent(cacheInfo.name)}
       >
-        {buttonName}
+        {cacheDetailAccess}
       </Link>
     );
   };
@@ -496,20 +500,29 @@ const CacheTableDisplay = (props: {
   };
 
   const buildCreateCacheButton = () => {
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return '';
+    }
+
     return (
-      <Link
-        to={{
-          pathname: '/container/' + props.cmName + '/caches/create',
-          state: {
-            cmName: props.cmName,
-          },
-        }}
-      >
-        <Button variant={'primary'}>
-          {t('cache-managers.create-cache-button')}
-        </Button>
-      </Link>
-    );
+      <React.Fragment>
+        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        <ToolbarItem style={{marginRight: global_spacer_sm.value}}>
+          <Link
+            to={{
+              pathname: '/container/' + props.cmName + '/caches/create',
+              state: {
+                cmName: props.cmName,
+              },
+            }}
+          >
+            <Button variant={ButtonVariant.primary}>
+              {t('cache-managers.create-cache-button')}
+            </Button>
+          </Link>
+        </ToolbarItem>
+      </React.Fragment>
+      )
   };
 
   const buildViewConfigurationsButton = () => {
@@ -618,8 +631,7 @@ const CacheTableDisplay = (props: {
           <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
             {buildFilter()}
           </ToolbarItem>
-          <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-          <ToolbarItem>{buildCreateCacheButton()}</ToolbarItem>
+          {buildCreateCacheButton()}
           <ToolbarItem>{buildViewConfigurationsButton()}</ToolbarItem>
           <ToolbarItem variant={ToolbarItemVariant.pagination}>
             {buildPagination()}

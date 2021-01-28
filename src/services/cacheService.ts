@@ -35,40 +35,43 @@ export class CacheService {
         throw response;
       })
       .then((data) => {
-        const cacheStats = <CacheStats>{
-          enabled: data.statistics,
-          misses: data.stats.misses,
-          time_since_start: data.stats.time_since_start,
-          time_since_reset: data.stats.time_since_reset,
-          hits: data.stats.hits,
-          current_number_of_entries: data.stats.current_number_of_entries,
-          current_number_of_entries_in_memory:
-            data.stats.current_number_of_entries_in_memory,
-          total_number_of_entries: data.stats.total_number_of_entries,
-          stores: data.stats.stores,
-          off_heap_memory_used: data.stats.off_heap_memory_used,
-          data_memory_used: data.stats.data_memory_used,
-          retrievals: data.stats.retrievals,
-          remove_hits: data.stats.remove_hits,
-          remove_misses: data.stats.remove_misses,
-          evictions: data.stats.evictions,
-          average_read_time: data.stats.average_read_time,
-          average_read_time_nanos: data.stats.average_read_time_nanos,
-          average_write_time: data.stats.average_write_time,
-          average_write_time_nanos: data.stats.average_write_time_nanos,
-          average_remove_time: data.stats.average_remove_time,
-          average_remove_time_nanos: data.stats.average_remove_time_nanos,
-          required_minimum_number_of_nodes:
-            data.stats.required_minimum_number_of_nodes,
-        };
+        let cacheStats;
+        if (data['stats']) {
+          cacheStats = <CacheStats>{
+            enabled: data.statistics,
+            misses: data.stats.misses,
+            time_since_start: data.stats.time_since_start,
+            time_since_reset: data.stats.time_since_reset,
+            hits: data.stats.hits,
+            current_number_of_entries: data.stats.current_number_of_entries,
+            current_number_of_entries_in_memory:
+              data.stats.current_number_of_entries_in_memory,
+            total_number_of_entries: data.stats.total_number_of_entries,
+            stores: data.stats.stores,
+            off_heap_memory_used: data.stats.off_heap_memory_used,
+            data_memory_used: data.stats.data_memory_used,
+            retrievals: data.stats.retrievals,
+            remove_hits: data.stats.remove_hits,
+            remove_misses: data.stats.remove_misses,
+            evictions: data.stats.evictions,
+            average_read_time: data.stats.average_read_time,
+            average_read_time_nanos: data.stats.average_read_time_nanos,
+            average_write_time: data.stats.average_write_time,
+            average_write_time_nanos: data.stats.average_write_time_nanos,
+            average_remove_time: data.stats.average_remove_time,
+            average_remove_time_nanos: data.stats.average_remove_time_nanos,
+            required_minimum_number_of_nodes:
+              data.stats.required_minimum_number_of_nodes,
+          };
+        }
 
         return right(<DetailedInfinispanCache>{
           name: cacheName,
           started: true,
           type: this.mapCacheType(data.configuration),
-          size: data.size,
-          rehash_in_progress: data.rehash_in_progress,
-          indexing_in_progress: data.indexing_in_progress,
+          size: data['size'],
+          rehash_in_progress: data['rehash_in_progress'],
+          indexing_in_progress: data['indexing_in_progress'],
           queryable: data.queryable,
           features: <Features>{
             bounded: data.bounded,
@@ -76,7 +79,7 @@ export class CacheService {
             persistent: data.persistent,
             transactional: data.transactional,
             secured: data.secured,
-            hasRemoteBackup: data.has_remote_backup,
+            hasRemoteBackup: data['has_remote_backup'],
           },
           configuration: <CacheConfig>{
             name: cacheName,
@@ -273,16 +276,17 @@ export class CacheService {
     }
 
     let contentTypeHeader;
-    if (RestUtils.isJSONObject(value)) {
-      contentTypeHeader = ContentType.JSON;
+    if (isNaN(Number(value)) && RestUtils.isJSONObject(value) && valueContentType == ContentType.StringContentType) {
+      contentTypeHeader = RestUtils.fromContentType(ContentType.JSON);
     } else if (valueContentType) {
-      contentTypeHeader = valueContentType;
+      contentTypeHeader = RestUtils.fromContentType(valueContentType);
     } else {
-      contentTypeHeader = ContentType.StringContentType;
+      contentTypeHeader = RestUtils.fromContentType(
+        ContentType.StringContentType
+      );
     }
 
-    headers.append(
-      'Content-Type', contentTypeHeader);
+    headers.append('Content-Type', contentTypeHeader);
 
     if (timeToLive.length > 0) {
       headers.append('timeToLiveSeconds', timeToLive);
@@ -377,10 +381,13 @@ export class CacheService {
       );
   }
 
-  private extractKey(key: any, protobufKey: boolean) : string {
-    if(protobufKey) {
+  private extractKey(key: any, protobufKey: boolean): string {
+    if (protobufKey) {
       const keyValue = key['_value'];
-      if (RestUtils.isJSONObject(keyValue) && !RestUtils.isProtobufBasicType(key['_type'])) {
+      if (
+        RestUtils.isJSONObject(keyValue) &&
+        !RestUtils.isProtobufBasicType(key['_type'])
+      ) {
         return JSON.stringify(keyValue);
       }
       return keyValue.toString();
@@ -389,7 +396,7 @@ export class CacheService {
     return key.toString();
   }
 
-  private extractValue(value: any) : string {
+  private extractValue(value: any): string {
     return JSON.stringify(value);
   }
 
@@ -586,7 +593,9 @@ export class CacheService {
    *
    * @param cacheName
    */
-  public async retrieveConfig(cacheName: string): Promise<CacheConfig> {
+  public async getConfiguration(
+    cacheName: string
+  ): Promise<Either<ActionResponse, CacheConfig>> {
     return this.utils
       .restCall(
         this.endpoint +
@@ -598,10 +607,47 @@ export class CacheService {
       .then((response) => response.json())
       .then(
         (data) =>
-          <CacheConfig>{
+          right(<CacheConfig>{
             name: cacheName,
             config: JSON.stringify(data, null, 2),
-          }
+          }) as Either<ActionResponse, CacheConfig>
+      )
+      .catch((err) =>
+        left(
+          this.utils.mapError(
+            err,
+            'Unable to retrieve configuration for cache ' + cacheName
+          )
+        )
+      );
+  }
+
+  public async getSize(
+    cacheName: string
+  ): Promise<Either<ActionResponse, number>> {
+    return this.utils
+      .restCall(
+        this.endpoint +
+          '/caches/' +
+          encodeURIComponent(cacheName) +
+          '?action=size',
+        'GET'
+      )
+      .then((response) => response.text())
+      .then((data) => {
+        if (Number.isNaN(data)) {
+          return right(Number.parseInt(data)) as Either<ActionResponse, number>;
+        } else {
+          return left(<ActionResponse>{
+            message: 'Size of cache ' + cacheName + ' is no a number :' + data,
+            success: false,
+          }) as Either<ActionResponse, number>;
+        }
+      })
+      .catch((err) =>
+        left(
+          this.utils.mapError(err, 'Unable to get size for cache ' + cacheName)
+        )
       );
   }
 
@@ -898,7 +944,7 @@ export class CacheService {
         this.endpoint +
           '/caches/' +
           encodeURIComponent(cacheName) +
-          '/search/query/stats?action=clear',
+          '/search/stats?action=clear',
         'POST'
       )
       .then((response) => {

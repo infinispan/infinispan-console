@@ -38,6 +38,8 @@ import { Status } from '@app/Common/Status';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {ConsoleACL} from "@services/securityService";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 interface StateTransferModalState {
   site: string;
@@ -51,6 +53,7 @@ const XSiteCache = (props) => {
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
+  const { connectedUser } = useConnectedUser();
   const [backups, setBackups] = useState<XSite[]>([]);
   const [rows, setRows] = useState<IRow[]>([]);
   const [stateTransferStatus, setStateTransferStatus] = useState(new Map());
@@ -67,10 +70,16 @@ const XSiteCache = (props) => {
 
   useEffect(() => {
     buildRows();
-  }, [backups, backupsStatus, stateTransferStatus]);
+  }, [backups, backupsStatus, stateTransferStatus, error]);
 
   const loadSites = () => {
     // Get backup list
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      setLoading(false);
+      setError('Connected user lacks ADMIN permission.');
+      return;
+    }
+
     setLoading(true);
     crossSiteReplicationService
       .backupsForCache(cacheName)
@@ -313,20 +322,19 @@ const XSiteCache = (props) => {
           ],
         },
       ];
+    } else {
+      currentRows = backups.map((backup) => {
+        return {
+          heightAuto: true,
+          cells: [
+            { title: backup.name },
+            { title: buildStatus(backup.name, backup.status) },
+            { title: buildStateTransferStatus(backup.name) },
+            { title: buildStateTransferButton(backup) },
+          ],
+        };
+      });
     }
-
-    currentRows = backups.map((backup) => {
-      return {
-        heightAuto: true,
-        cells: [
-          { title: backup.name },
-          { title: buildStatus(backup.name, backup.status) },
-          { title: buildStateTransferStatus(backup.name) },
-          { title: buildStateTransferButton(backup) },
-        ],
-      };
-    });
-
     setRows(currentRows);
   };
 
@@ -341,7 +349,7 @@ const XSiteCache = (props) => {
           <LevelItem>
             <TextContent
               style={{ marginTop: global_spacer_md.value }}
-              key={'title-indexation'}
+              key={'title-backups'}
             >
               <Text component={TextVariants.h1} key={'title-value-backups'}>
                 Backups management

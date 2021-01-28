@@ -94,16 +94,16 @@ interface CacheKey {
 
 interface DetailedInfinispanCache {
   name: string;
-  started: boolean;
+  configuration: CacheConfig;
   type: string;
-  size: number;
-  rehash_in_progress: boolean;
-  indexing_in_progress: boolean;
+  started: boolean;
+  size?: number;
+  rehash_in_progress?: boolean;
+  indexing_in_progress?: boolean;
   queryable: boolean;
   features: Features;
-  configuration: CacheConfig;
   backupSites?: [XSite];
-  stats: CacheStats;
+  stats?: CacheStats;
 }
 
 interface CacheStats {
@@ -156,6 +156,22 @@ interface SiteNode {
 interface XSite {
   name: string;
   status: string;
+}
+
+interface CacheAcl {
+  name: string;
+  acl: string[];
+}
+
+interface Acl {
+  user: string;
+  global: string[];
+  caches: Map<string, CacheAcl>;
+}
+
+interface ConnectedUser {
+  name: string;
+  acl?: Acl;
 }
 
 interface Task {

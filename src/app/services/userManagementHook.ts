@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
-import {UserContext, UserContextProvider} from "@app/providers/UserContextProvider";
+import {useContext} from 'react';
+import {UserContext} from "@app/providers/UserContextProvider";
 
-export function useFetchUser() {
-  const { userName, error, notSecuredModeOn, logUser, notSecured} = useContext(
+export function useConnectedUser() {
+  const { connectedUser, error, notSecuredModeOn, logUser, notSecured, reloadAcl} = useContext(
     UserContext
   );
 
-  return { userName, error, logUser, notSecuredModeOn,  notSecured };
+  return { connectedUser, error, logUser, notSecuredModeOn,  notSecured, reloadAcl };
 }

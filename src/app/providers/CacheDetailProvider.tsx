@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleACL} from "@services/securityService";
 
 const initialContext = {
   error: '',
@@ -10,12 +12,14 @@ const initialContext = {
   cacheEntries: [] as CacheEntry[],
   loadingEntries: true,
   errorEntries: '',
+  infoEntries: '',
   reloadEntries: () => {},
 };
 
 export const CacheDetailContext = React.createContext(initialContext);
 
 const CacheDetailProvider = ({ children }) => {
+  const {connectedUser} = useConnectedUser();
   const [cacheName, setCacheName] = useState('');
   const [cache, setCache] = useState<DetailedInfinispanCache>(
     initialContext.cache
@@ -24,6 +28,7 @@ const CacheDetailProvider = ({ children }) => {
   const [loading, setLoading] = useState(initialContext.loading);
   const [cacheEntries, setCacheEntries] = useState(initialContext.cacheEntries);
   const [errorEntries, setErrorEntries] = useState(initialContext.errorEntries);
+  const [infoEntries, setInfoEntries] = useState(initialContext.infoEntries);
   const [loadingEntries, setLoadingEntries] = useState(
     initialContext.loadingEntries
   );
@@ -44,16 +49,16 @@ const CacheDetailProvider = ({ children }) => {
 
   const fetchCache = () => {
     if (loading && cacheName != '') {
-      ConsoleServices.caches()
-        .retrieveFullDetail(cacheName)
-        .then((eitherDetail) => {
-          if (eitherDetail.isRight()) {
-            setCache(eitherDetail.value);
-          } else {
-            setError(eitherDetail.value.message);
-          }
-        })
-        .then(() => setLoading(false));
+        ConsoleServices.caches()
+          .retrieveFullDetail(cacheName)
+          .then((eitherDetail) => {
+            if (eitherDetail.isRight()) {
+              setCache(eitherDetail.value);
+            } else {
+              setError(eitherDetail.value.message);
+            }
+          })
+          .then(() => setLoading(false));
     }
   };
 
@@ -64,17 +69,21 @@ const CacheDetailProvider = ({ children }) => {
           setCache(eitherCache.value);
         }
       });
-
-      ConsoleServices.caches()
-        .getEntries(cacheName, cache.configuration, '100')
-        .then((eitherEntries) => {
-          if (eitherEntries.isRight()) {
-            setCacheEntries(eitherEntries.value);
-          } else {
-            setErrorEntries(eitherEntries.value.message);
-          }
-        })
-        .then(() => setLoadingEntries(false));
+      if(ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
+         ConsoleServices.caches()
+           .getEntries(cacheName, cache.configuration, '100')
+           .then((eitherEntries) => {
+             if (eitherEntries.isRight()) {
+               setCacheEntries(eitherEntries.value);
+             } else {
+               setErrorEntries(eitherEntries.value.message);
+             }
+           })
+           .then(() => setLoadingEntries(false));
+       } else {
+         setLoadingEntries(false);
+         setInfoEntries('Connected user lacks BULK_READ permission to browse the cache content.');
+      }
     }
   };
 
@@ -87,6 +96,7 @@ const CacheDetailProvider = ({ children }) => {
     cacheEntries: cacheEntries,
     loadingEntries: loadingEntries,
     errorEntries: errorEntries,
+    infoEntries: infoEntries,
     reloadEntries: useCallback(() => setLoadingEntries(true), []),
   };
 

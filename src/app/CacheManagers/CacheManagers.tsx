@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useState} from 'react';
 import {
   Card,
   CardBody,
@@ -17,17 +17,21 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
-import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
-import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
-import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay';
-import { Status } from '@app/Common/Status';
-import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { useDataContainer } from '@app/services/dataContainerHooks';
-import { useTranslation } from 'react-i18next';
+import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
+import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
+import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
+import {ProtobufSchemasDisplay} from '@app/ProtoSchema/ProtobufSchemasDisplay';
+import {Status} from '@app/Common/Status';
+import {global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {useDataContainer} from '@app/services/dataContainerHooks';
+import {useTranslation} from 'react-i18next';
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleServices} from "@services/ConsoleServices";
+import {ConsoleACL} from "@services/securityService";
 
 const CacheManagers = () => {
+  const { connectedUser } = useConnectedUser();
   const { cm, loading, error } = useDataContainer();
   const [activeTabKey, setActiveTabKey] = useState('0');
   const [cachesCount, setCachesCount] = useState<number>(0);
@@ -63,12 +67,18 @@ const CacheManagers = () => {
       return '';
     }
 
-    const tabs: ContainerTab[] = [
+    let tabs: ContainerTab[] = [
       { name: t('cache-managers.caches-tab'), count: cachesCount, key: '0' },
-      { name: t('cache-managers.counters-tab'), count: countersCount, key: '1' },
-      { name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2' },
-      { name: t('cache-managers.schemas-tab'), count: protoSchemasCount, key: '3' },
+      { name: t('cache-managers.counters-tab'), count: countersCount, key: '1' }
     ];
+
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
+      tabs.push({name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2'});
+    }
+
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
+      tabs.push({ name: t('cache-managers.schemas-tab'), count: protoSchemasCount, key: '3' });
+    }
 
     return (
       <Nav

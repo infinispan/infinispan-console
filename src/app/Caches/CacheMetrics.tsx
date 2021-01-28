@@ -38,7 +38,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       if (detail.isRight()) {
         setStats(detail.value.stats);
         let loadQueryStats =
-          detail.value.stats.enabled && detail.value.features.indexed;
+          detail.value.stats != undefined && detail.value.stats.enabled && detail.value.features.indexed;
         setDisplayQueryStats(loadQueryStats);
         if (loadQueryStats) {
           // Retrieve query stats only if stats are enabled and the cache is indexed

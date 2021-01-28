@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Button,
   ButtonVariant,
@@ -19,10 +19,12 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
-import { useTranslation } from 'react-i18next';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {ClearQueryMetrics} from '@app/Caches/Query/ClearQueryMetrics';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleACL} from "@services/securityService";
 
 /**
  * Query stats for indexed caches only
@@ -33,6 +35,7 @@ const QueryMetrics = (props: {
   loading: boolean;
   error: string;
 }) => {
+  const { connectedUser } = useConnectedUser();
   const [stats, setStats] = useState<QueryStats | undefined>(props.stats);
   const [loading, setLoading] = useState<boolean>(props.loading);
   const [error, setError] = useState<string>(props.error);
@@ -61,11 +64,15 @@ const QueryMetrics = (props: {
 
   const buildCardContent = () => {
     if (loading && !stats) {
-      return <Spinner size={'sm'} />;
+      return (
+        <Spinner size={'sm'}/>
+      );
     }
 
     if (error != '') {
-      return <TableErrorState error={error} />;
+      return (
+        <TableErrorState error={error} />
+      )
     }
 
     return (
@@ -155,24 +162,34 @@ const QueryMetrics = (props: {
     );
   };
 
+  const buildClearStatsButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return '';
+    }
+
+    return (
+      <LevelItem>
+        <Button
+          variant={ButtonVariant.danger}
+          onClick={() => setClearMetricsModalOpen(true)}
+        >
+          Clear all stats
+        </Button>
+        <ClearQueryMetrics
+          cacheName={props.cacheName}
+          isModalOpen={isClearMetricsModalOpen}
+          closeModal={closeClearMetricsModal}
+        />
+      </LevelItem>
+    )
+  }
+
   return (
     <Card>
       <CardTitle>
         <Level id={'query-stats'}>
           <LevelItem>Query stats</LevelItem>
-          <LevelItem>
-            <Button
-              variant={ButtonVariant.danger}
-              onClick={() => setClearMetricsModalOpen(true)}
-            >
-              Clear all stats
-            </Button>
-            <ClearQueryMetrics
-              cacheName={props.cacheName}
-              isModalOpen={isClearMetricsModalOpen}
-              closeModal={closeClearMetricsModal}
-            />
-          </LevelItem>
+          {buildClearStatsButton()}
         </Level>
       </CardTitle>
       <CardBody>{buildCardContent()}</CardBody>

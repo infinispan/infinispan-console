@@ -7,10 +7,8 @@ import '@app/app.css';
 import { KeycloakService } from '@services/keycloakService';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { UserContextProvider } from '@app/providers/UserContextProvider';
-import { useHistory } from 'react-router';
 
 const App = () => {
-  const history = useHistory();
   const [init, setInit] = useState<
     | 'SERVER_ERROR'
     | 'READY'

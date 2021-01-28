@@ -45,12 +45,14 @@ export function useCacheEntries() {
     cacheEntries,
     loadingEntries,
     errorEntries,
+    infoEntries,
     reloadEntries,
   } = useContext(CacheDetailContext);
   return {
     cacheEntries,
     loadingEntries,
     errorEntries,
+    infoEntries,
     reloadEntries,
   };
 }

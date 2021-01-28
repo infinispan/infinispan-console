@@ -19,7 +19,7 @@ import {
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
 import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
-import {Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
+import {cellWidth, classNames, Table, TableBody, TableHeader, TableVariant, wrappable,} from '@patternfly/react-table';
 import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -31,6 +31,8 @@ import {TableEmptyState} from '@app/Common/TableEmptyState';
 import {useCacheDetail, useCacheEntries} from '@app/services/cachesHook';
 import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
 import {ConsoleServices} from "@services/ConsoleServices";
+import {useConnectedUser} from "@app/services/userManagementHook";
+import {ConsoleACL} from "@services/securityService";
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -42,9 +44,11 @@ const CacheEntries = (props: { cacheName: string }) => {
     cacheEntries,
     loadingEntries,
     errorEntries,
+    infoEntries,
     reloadEntries,
   } = useCacheEntries();
   const { cache } = useCacheDetail(props.cacheName);
+  const {connectedUser} = useConnectedUser();
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
     false
   );
@@ -64,7 +68,7 @@ const CacheEntries = (props: { cacheName: string }) => {
   const brandname = t('brandname.brandname');
 
   useEffect(() => {
-    updateRows(cacheEntries, loadingEntries, errorEntries);
+    updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
   }, [loadingEntries, cacheEntries]);
 
   useEffect(() => {
@@ -91,12 +95,12 @@ const CacheEntries = (props: { cacheName: string }) => {
     }
 
     if (!paginationUpgrade) {
-      updateRows(cacheEntries, loadingEntries, errorEntries);
+      updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
     }
   }, [cacheEntries]);
 
   useEffect(() => {
-      updateRows(cacheEntries, loadingEntries, errorEntries);
+      updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
   }, [entriesPagination]);
 
   const entryActions = [
@@ -113,13 +117,13 @@ const CacheEntries = (props: { cacheName: string }) => {
   ];
 
   const columns = [
-    { title: t('caches.entries.column-key') },
-    { title: t('caches.entries.column-value') },
-    { title: t('caches.entries.column-lifespan') },
-    { title: t('caches.entries.column-maxidle') },
-    { title: t('caches.entries.column-expires') }
+    { title: t('caches.entries.column-key'), transforms: [cellWidth(30)]},
+    { title: t('caches.entries.column-value'), transforms: [cellWidth(40)]},
+    { title: t('caches.entries.column-lifespan'), transforms: [cellWidth(10)] },
+    { title: t('caches.entries.column-maxidle'), transforms: [cellWidth(10)] },
+    { title: t('caches.entries.column-expires'), transforms: [cellWidth(10)] }
   ];
-  const displayEmptyMessage = () => {
+  const displayEmptyMessage = (info:string) => {
     if(keyToSearch.trim() != '') {
       return (
         <Text>
@@ -130,7 +134,7 @@ const CacheEntries = (props: { cacheName: string }) => {
 
     return (
       <Text>
-        {t('caches.entries.empty-cache')}
+        {info? info : t('caches.entries.empty-cache')}
       </Text>
     )
   }
@@ -138,7 +142,8 @@ const CacheEntries = (props: { cacheName: string }) => {
   const updateRows = (
     entries: CacheEntry[],
     loading: boolean,
-    error: string
+    error: string,
+    info: string
   ) => {
     const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
     const currentPageEntries = entries.slice(
@@ -161,7 +166,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                   error={error}
                   empty={
                     <TextContent>
-                      {displayEmptyMessage()}
+                      {displayEmptyMessage(info)}
                     </TextContent>
                   }
                 />
@@ -211,9 +216,10 @@ const CacheEntries = (props: { cacheName: string }) => {
   const displayHighlighted = (value: string) => {
     return (
       <SyntaxHighlighter
-        wrapLines={false}
+        lineProps={{style: {wordBreak: 'break-all'}}}
         style={githubGist}
         useInlineStyles={true}
+        wrapLongLines={true}
       >
         {displayUtils.displayValue(value)}
       </SyntaxHighlighter>
@@ -272,7 +278,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     if (!kt) {
       kt = keyType as ContentType;
     }
-    updateRows([], true, '');
+    updateRows([], true, '', '');
     ConsoleServices.caches().getEntry(props.cacheName, keyToSearch, kt).then((response) => {
       let entries: CacheEntry[] = [];
       let error = '';
@@ -282,7 +288,7 @@ const CacheEntries = (props: { cacheName: string }) => {
       } else if (response.isLeft() && !response.value.success) {
         error = response.value.message;
       }
-      updateRows(entries, false, error);
+      updateRows(entries, false, error, infoEntries);
     });
   };
 
@@ -340,6 +346,41 @@ const CacheEntries = (props: { cacheName: string }) => {
       </Toolbar>
   );
 
+  const addEntryAction = () => {
+    if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
+      return '';
+    }
+
+    return (
+        <ToolbarItem>
+          <Button
+            key="add-entry-button"
+            variant={ButtonVariant.primary}
+            onClick={onClickAddEntryButton}
+          >
+            Add entry
+          </Button>
+        </ToolbarItem>
+    )
+  }
+
+  const clearAllAction = () => {
+    if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_WRITE, cache.name, connectedUser)) {
+      return '';
+    }
+
+    return (
+        <ToolbarItem>
+          <Button
+            variant={ButtonVariant.link}
+            onClick={onClickClearAllButton}
+          >
+            Clear all entries
+          </Button>
+        </ToolbarItem>
+    )
+  }
+
   return (
     <React.Fragment>
       <Toolbar id="cache-entries-toolbar" style={{ paddingLeft: 0 }}>
@@ -383,23 +424,8 @@ const CacheEntries = (props: { cacheName: string }) => {
                 </Button>
               </InputGroup>
             </ToolbarItem>
-            <ToolbarItem>
-              <Button
-                key="add-entry-button"
-                variant={ButtonVariant.primary}
-                onClick={onClickAddEntryButton}
-              >
-                Add entry
-              </Button>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={onClickClearAllButton}
-              >
-                Clear all entries
-              </Button>
-            </ToolbarItem>
+            {addEntryAction()}
+            {clearAllAction()}
           </ToolbarGroup>
         </ToolbarContent>
       </Toolbar>

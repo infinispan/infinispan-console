@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Button,
   ButtonVariant,
@@ -18,21 +18,24 @@ import {
   TextListVariants,
   TextVariants,
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { PurgeIndex } from '@app/IndexManagement/PurgeIndex';
-import { Reindex } from '@app/IndexManagement/Reindex';
+import {Link} from 'react-router-dom';
+import {global_spacer_md} from '@patternfly/react-tokens';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {PurgeIndex} from '@app/IndexManagement/PurgeIndex';
+import {Reindex} from '@app/IndexManagement/Reindex';
 import displayUtils from '../../services/displayUtils';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {ConsoleACL} from "@services/securityService";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 const IndexManagement = (props) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
+  const { connectedUser } = useConnectedUser();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
@@ -100,6 +103,10 @@ const IndexManagement = (props) => {
   };
 
   const buildReindexAction = () => {
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return ;
+    }
+
     if (indexStats?.reindexing) {
       return <Spinner size={'md'} />;
     }
@@ -112,6 +119,24 @@ const IndexManagement = (props) => {
       </Button>
     );
   };
+
+  const buildPurgeIndexButton = () => {
+    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return ;
+    }
+
+   return (
+     <LevelItem>
+      <Button
+        variant={ButtonVariant.danger}
+        disabled={!indexStats?.reindexing}
+        onClick={() => setPurgeModalOpen(true)}
+      >
+        Purge Index
+      </Button>
+     </LevelItem>
+   );
+  }
 
   const buildIndexPageContent = () => {
     if (loading) {
@@ -189,29 +214,21 @@ const IndexManagement = (props) => {
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb
-          currentPage="Indexation"
+          currentPage="Indexing"
           cacheName={cacheName}
         />
         <Level>
           <LevelItem>
             <TextContent
               style={{ marginTop: global_spacer_md.value }}
-              key={'title-indexation'}
+              key={'title-indexing'}
             >
-              <Text component={TextVariants.h1} key={'title-value-indexation'}>
-                Indexation
+              <Text component={TextVariants.h1} key={'title-value-indexing'}>
+                Indexing
               </Text>
             </TextContent>
           </LevelItem>
-          <LevelItem>
-            <Button
-              variant={ButtonVariant.danger}
-              disabled={!indexStats?.reindexing}
-              onClick={() => setPurgeModalOpen(true)}
-            >
-              Purge Index
-            </Button>
-          </LevelItem>
+          {buildPurgeIndexButton()}
         </Level>
 
         <Divider component={DividerVariant.hr}></Divider>
