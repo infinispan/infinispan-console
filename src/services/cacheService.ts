@@ -351,13 +351,11 @@ export class CacheService {
             infos.map(
               (entry) =>
                 <CacheEntry>{
-                  key: isProtobuf[0] ? JSON.stringify(entry.key) : entry.key,
+                  key: this.extractKey(entry.key, isProtobuf[0]),
                   keyContentType: isProtobuf[0]
                     ? RestUtils.fromProtobufType(entry.key['_type'])
                     : ContentType.StringContentType,
-                  value: isProtobuf[1]
-                    ? JSON.stringify(entry.value)
-                    : entry.value,
+                  value: this.extractValue(entry.value),
                   valueContentType: isProtobuf[1]
                     ? entry.value['_type']
                     : undefined,
@@ -378,6 +376,25 @@ export class CacheService {
           )
         )
       );
+  }
+
+  private extractKey(key: any, protobufKey: boolean) : string {
+    if(protobufKey) {
+      const keyValue = key['_value'];
+      if (RestUtils.isJSONObject(keyValue)) {
+        return JSON.stringify(keyValue)
+      }
+      return keyValue;
+    }
+
+    if(RestUtils.isJSONObject(key)) {
+      return JSON.stringify(key);
+    }
+    return key;
+  }
+
+  private extractValue(value: any) : string {
+    return JSON.stringify(value);
   }
 
   /**
