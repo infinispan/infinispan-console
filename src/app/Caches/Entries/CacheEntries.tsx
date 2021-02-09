@@ -178,8 +178,8 @@ const CacheEntries = (props: { cacheName: string }) => {
         let keyForAction = entry.key;
         let keyContentType = entry.keyContentType;
         const isProtobuf = RestUtils.isProtobufCache(cache.configuration.config);
-        if (isProtobuf[0] && RestUtils.isJSONObject(entry.key)) {
-          keyForAction = JSON.parse(entry.key)['_value'];
+        if (isProtobuf[0]) {
+          keyForAction = RestUtils.extractValueFromProtobufType(entry.key);
         }
 
         return {

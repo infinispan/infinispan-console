@@ -150,10 +150,22 @@ export class RestUtils {
     return headers;
   };
 
+  public static extractValueFromProtobufType(maybeJson: string): any {
+    try {
+      let jsonObj = JSON.parse(maybeJson);
+      if (jsonObj['_type']) {
+        return JSON.stringify(jsonObj['_type']);
+      }
+      return maybeJson;
+    } catch (err) {
+      return maybeJson;
+    }
+  }
+
   public static isJSONObject(value: string): boolean {
     try {
-      let jsonObj = JSON.parse(value);
-      return jsonObj['_type'];
+      JSON.parse(value);
+      return true;
     } catch (err) {
       return false;
     }
