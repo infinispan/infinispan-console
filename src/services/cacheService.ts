@@ -330,9 +330,9 @@ class CacheService {
           infos.map(
             (entry) =>
               <CacheEntry>{
-                key: isProtobuf[0] ? JSON.stringify(entry.key) : entry.key,
+                key:  this.extractKey(entry.key, isProtobuf[0]),
                 keyContentType: isProtobuf[0] ? utils.fromProtobufType(entry.key['_type']) : ContentType.StringContentType,
-                value: isProtobuf[1] ? JSON.stringify(entry.value) : entry.value,
+                value: this.extractValue(entry.value),
                 valueContentType: isProtobuf[1]
                   ? entry.value['_type']
                   : undefined,
@@ -353,6 +353,25 @@ class CacheService {
           )
         )
       );
+  }
+
+  private extractKey(key: any, protobufKey: boolean) : string {
+    if(protobufKey) {
+      const keyValue = key['_value'];
+      if (utils.isJSONObject(keyValue)) {
+        return JSON.stringify(keyValue)
+      }
+      return keyValue;
+    }
+
+    if(utils.isJSONObject(key)) {
+      return JSON.stringify(key);
+    }
+    return key;
+  }
+
+  private extractValue(value: any) : string {
+    return JSON.stringify(value);
   }
 
   /**
