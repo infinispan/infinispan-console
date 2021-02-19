@@ -17,6 +17,7 @@ import {
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
 import { CacheType, ComponentHealth, ComponentStatus } from '@services/utils';
+import numeral from 'numeral';
 
 /**
  * Utility class to manage display features
@@ -273,7 +274,25 @@ class DisplayUtils {
   public formatNumber(digit: number | undefined): string {
     if (!digit) return '0';
 
+    if(digit >= 100000000) {
+      return numeral(digit).format('0.0a');
+    }
+
     return digit.toLocaleString('en', { maximumFractionDigits: 2 });
+  }
+
+  public formatBigNumber(digit: number | undefined): string {
+    if (!digit) return '0';
+
+    if(digit >= 1000000) {
+      return numeral(digit).format('0.0a');
+    }
+
+    if (digit >= 1000) {
+      return numeral(digit).format('0 a');
+    }
+
+    return this.formatNumber(digit);
   }
 
   public createFeaturesString(features: Features): string {

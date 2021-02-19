@@ -1,4 +1,73 @@
-package people;
-message Person  {
-  required string name = 1;
+package org.infinispan;
+
+enum GameStatus {
+
+  PLAYING = 1;
+
+  WIN = 2;
+
+  LOSS = 3;
+}
+
+
+enum ShipType {
+
+  CARRIER = 1;
+
+  SUBMARINE = 2;
+}
+
+
+/**
+ * @Indexed
+ */
+message PlayerScore {
+
+  optional string userId = 1;
+
+  optional string matchId = 2;
+
+  optional string gameId = 3;
+
+  optional bool human = 4;
+
+  /**
+   * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+   */
+  optional int32 score = 5;
+
+  /**
+   * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+   */
+  optional int64 timestamp = 6;
+
+  optional GameStatus gameStatus = 7;
+}
+
+
+message Shot {
+
+  required string userId = 1;
+
+  required string matchId = 2;
+
+  optional string gameId = 3;
+
+  optional bool human = 4;
+
+  optional int64 timestamp = 5;
+
+  optional ShotType shotType = 6;
+
+  optional ShipType shipType = 7;
+}
+
+
+enum ShotType {
+
+  HIT = 1;
+
+  MISS = 2;
+
+  SUNK = 3;
 }
