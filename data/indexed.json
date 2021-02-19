@@ -9,10 +9,13 @@
         "media-type": "application/x-protostream"
       }
     },
-    "transaction": {
-      "mode": "NONE"
+    "memory": {
+      "storage": "HEAP"
     },
     "indexing": {
+      "indexed-entities": [
+        "com.redhat.PlayerScore"
+      ],
       "enabled": true
     },
     "statistics": true

@@ -109,7 +109,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     );
   };
 
-  const buildCacheLoaderCard = () => {
+  const buildDataAccess = () => {
     if (!stats) {
       return '';
     }
@@ -127,19 +127,19 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <Card>
         <CardTitle>Data access</CardTitle>
         <CardBody>
-          <div style={{ height: '208px', width: '400px' }}>
+          <div style={{height: '432px', width: '100%'}}>
             <ChartDonut
               constrainToVisibleArea={true}
               data={[
-                { x: 'Hits', y: stats.hits },
-                { x: 'Misses', y: stats.misses },
-                { x: 'Stores', y: stats.stores },
-                { x: 'Retrievals', y: stats.retrievals },
-                { x: 'Remove Hits', y: stats.remove_hits },
-                { x: 'Removes Misses', y: stats.remove_misses },
-                { x: 'Evictions', y: stats.evictions },
+                {x: 'Hits', y: stats.hits},
+                {x: 'Misses', y: stats.misses},
+                {x: 'Stores', y: stats.stores},
+                {x: 'Retrievals', y: stats.retrievals},
+                {x: 'Remove Hits', y: stats.remove_hits},
+                {x: 'Removes Misses', y: stats.remove_misses},
+                {x: 'Evictions', y: stats.evictions},
               ]}
-              labels={({ datum }) =>
+              labels={({datum}) =>
                 `${datum.x}:${displayUtils.formatNumber(
                   (datum.y * 100) / all
                 )}%`
@@ -152,12 +152,12 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                   name: 'Misses: ' + displayUtils.formatNumber(stats.misses),
                 },
                 {
+                  name: 'Stores: ' + displayUtils.formatNumber(stats.stores),
+                },
+                {
                   name:
                     'Retrievals: ' +
                     displayUtils.formatNumber(stats.retrievals),
-                },
-                {
-                  name: 'Stores: ' + displayUtils.formatNumber(stats.stores),
                 },
                 {
                   name:
@@ -182,9 +182,8 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 right: 200, // Adjusted to accommodate legend
                 top: 20,
               }}
-              subTitle="Data access"
-              title={'' + all}
-              width={400}
+              title={ displayUtils.formatBigNumber(all) }
+              width={600}
               themeColor={ChartThemeColor.multiOrdered}
             />
           </div>
@@ -284,8 +283,8 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={6}>{buildCacheLoaderCard()}</GridItem>
-      <GridItem span={6}>{buildQueryStats()}</GridItem>
+      <GridItem span={7}>{buildDataAccess()}</GridItem>
+      <GridItem span={5}>{buildQueryStats()}</GridItem>
     </Grid>
   );
 };

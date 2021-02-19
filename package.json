@@ -88,17 +88,18 @@
     "@patternfly/react-styles": "^4.8.2",
     "@patternfly/react-table": "^4.23.2",
     "@patternfly/react-tokens": "^4.10.2",
+    "digest-fetch": "1.1.5",
     "express": "^4.17.1",
     "i18next": "^19.8.4",
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
     "keycloak-js": "^12.0.2",
+    "node-fetch": "2.6.1",
+    "numeral": "^2.0.6",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-i18next": "^11.7.4",
     "react-router-last-location": "^2.0.1",
-    "react-syntax-highlighter": "^15.4.3",
-    "digest-fetch": "1.1.5",
-    "node-fetch": "2.6.1"
+    "react-syntax-highlighter": "^15.4.3"
   }
 }

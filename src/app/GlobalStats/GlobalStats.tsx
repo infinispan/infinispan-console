@@ -215,7 +215,7 @@ const GlobalStats = () => {
                     top: 20,
                   }}
                   subTitle="Data access"
-                  title={'' + allOps()}
+                  title={displayUtils.formatBigNumber(allOps())}
                   width={400}
                   themeColor={ChartThemeColor.multiOrdered}
                 />
