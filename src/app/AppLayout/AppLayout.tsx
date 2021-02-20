@@ -32,8 +32,8 @@ import {About} from '@app/About/About';
 import {ErrorBoundary} from '@app/ErrorBoundary';
 import {BannerAlert} from '@app/Common/BannerAlert';
 import {useTranslation} from 'react-i18next';
-import {useFetchUser} from "@app/services/userManagementHook";
 import {ConsoleServices} from "@services/ConsoleServices";
+import {useFetchUser} from "@app/services/userManagementHook";
 
 interface IAppLayout {
   init: string;
@@ -42,14 +42,14 @@ interface IAppLayout {
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const history = useHistory();
-  const {userName, notSecured, logOut} = useFetchUser();
+  const { notSecured } = useFetchUser();
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const logoProps = {
     target: '_self',
     onClick: () => history.push('/'),
   };
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const brandname = t('brandname.brandname');
 
   const [isNavOpen, setIsNavOpen] = useState(true);
@@ -60,7 +60,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
 
   useEffect(() => {
     history.listen((location, action) => {
-        setIsWelcomePage(location.pathname == '/welcome');
+      setIsWelcomePage(location.pathname == '/welcome');
     });
   }, [])
 
@@ -79,14 +79,14 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const Logo = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarItem style={{ marginTop: global_spacer_sm.value }}>
+        <ToolbarItem style={{marginTop: global_spacer_sm.value}}>
           <Link to={'/'}>
-            <Brand src={icon} alt={ t('layout.console-name')} width={150} />
+            <Brand src={icon} alt={t('layout.console-name')} width={150}/>
           </Link>
         </ToolbarItem>
-        <ToolbarItem style={{ marginTop: 0 }}>
+        <ToolbarItem style={{marginTop: 0}}>
           <TextContent>
-            <Text component={TextVariants.h2}>{ t('layout.console-name')}</Text>
+            <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
           </TextContent>
         </ToolbarItem>
       </ToolbarContent>
@@ -96,7 +96,11 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
 
   const userDropdownItems = [
     <DropdownGroup key="user-action-group">
-      <DropdownItem key="user-action-group-1 logout" onClick={() => logOut()}>Logout</DropdownItem>
+      <DropdownItem key="user-action-group-1 logout" onClick={() => {
+        ConsoleServices.authentication().logOutLink();
+        history.push('/welcome');
+        window.location.reload();
+      }}>Logout</DropdownItem>
     </DropdownGroup>
   ];
 
@@ -107,7 +111,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
         position="right"
         onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
         isOpen={isDropdownOpen}
-        toggle={<DropdownToggle onToggle={()=> setIsDropdownOpen(!isDropdownOpen)}>{userName}</DropdownToggle>}
+        toggle={<DropdownToggle onToggle={() => setIsDropdownOpen(!isDropdownOpen)}>Connected User</DropdownToggle>}
         dropdownItems={userDropdownItems}
       />
     </PageHeaderTools>
@@ -120,7 +124,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
-      headerTools={notSecured || userName == ''? null: UserActions}
+      headerTools={ConsoleServices.authentication().isNotSecured() ? null : UserActions}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
   );
@@ -185,41 +189,35 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   );
 
   const displayPage = () => {
-    if(init =='PENDING') {
+    if (init == 'PENDING') {
       return (
-          <Page
-            mainContainerId="primary-app-container"
-          >
-            <ErrorBoundary><Spinner/></ErrorBoundary>
-          </Page>
-        )
-    }
-
-    if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
-      return ( 
-        <Redirect to="/welcome" />
+        <Page
+          mainContainerId="primary-app-container"
+        >
+          <ErrorBoundary><Spinner/></ErrorBoundary>
+        </Page>
       )
     }
 
-    if (init == 'DIGEST_LOGIN' && !ConsoleServices.isWelcomePage() && userName == '') {
+    if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
       return (
-        <Redirect to="/welcome" />
+        <Redirect to="/welcome"/>
       )
     }
 
     return (
-        <Page
-          mainContainerId="primary-app-container"
-          header={isWelcomePage ? null : Header}
-          onPageResize={onPageResize}
-          skipToContent={PageSkipToContent}
-          sidebar={isWelcomePage ? null : Sidebar}
-        >
-          <ActionResponseAlert />
-          <BannerAlert />
-          <ErrorBoundary>{children}</ErrorBoundary>
-        </Page>
-      )
+      <Page
+        mainContainerId="primary-app-container"
+        header={isWelcomePage ? null : Header}
+        onPageResize={onPageResize}
+        skipToContent={PageSkipToContent}
+        sidebar={isWelcomePage ? null : Sidebar}
+      >
+        <ActionResponseAlert/>
+        <BannerAlert/>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </Page>
+    )
 
   }
   return (
@@ -227,6 +225,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       {displayPage()}
     </APIAlertProvider>
   );
-};
+}
 
 export { AppLayout };

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useHistory} from "react-router";
 
@@ -6,8 +6,7 @@ const initialUserState = {
   error: '',
   userName: '',
   notSecured: false,
-  logUser: (userName: string, password: string) => {},
-  logOut: () => {},
+  logUser: () => {},
   notSecuredModeOn: () => {},
 };
 
@@ -19,28 +18,9 @@ const UserContextProvider = ({ children }) => {
   const [error, setError] = useState(initialUserState.error);
   const history = useHistory();
 
-  useEffect(() => {
-    if (ConsoleServices.isDevMode()) {
-      setUserName(ConsoleServices.authentication().getUserName());
-    }
-  } , [])
-  const logUser = (userName: string, password: string) => {
+  const logUser = () => {
       setError('');
-      ConsoleServices.authentication().login(userName, password)
-        .then((loggingResult) => {
-          if (loggingResult.success) {
-            setUserName(userName);
-          } else {
-            setError(loggingResult.message);
-          }
-        })
-  };
-
-  const logOut = () => {
-    setError('');
-    setUserName('');
-    ConsoleServices.authentication().logOut();
-    history.push('/welcome');
+      setUserName('connected');
   };
 
   const notSecuredModeOn = () => {
@@ -55,7 +35,6 @@ const UserContextProvider = ({ children }) => {
     userName,
     notSecured,
     logUser: useCallback(logUser, []),
-    logOut: useCallback(logOut, []),
     notSecuredModeOn: useCallback(notSecuredModeOn, []),
   };
 
