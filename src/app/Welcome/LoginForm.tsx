@@ -35,7 +35,7 @@ const LoginForm = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const brandname = t('brandname.brandname');
 
   const loginWithBasicAuth = () => {
-    logUser(name, password);
+    logUser();
   };
 
   useEffect(() => {

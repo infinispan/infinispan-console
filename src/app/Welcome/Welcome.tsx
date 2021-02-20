@@ -35,7 +35,7 @@ const Welcome = (props) => {
   const history = useHistory();
   const [supportOpen, setSupportOpen] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
-  const {notSecuredModeOn} = useFetchUser();
+  const {logUser, notSecuredModeOn} = useFetchUser();
 
   const brandname = t('brandname.brandname');
 
@@ -112,11 +112,6 @@ const Welcome = (props) => {
     }
   };
 
-  const notSecured = () => {
-
-    history.push('/')
-  }
-
   const goToTheConsole = t('welcome-page.go-to-console');
 
   const buildConsoleButton = () => {
@@ -133,7 +128,12 @@ const Welcome = (props) => {
     if (authState == 'DIGEST_LOGIN') {
       return (
         <Button
-          onClick={() => setLogModalOpen(true)}
+          onClick={() =>{
+            ConsoleServices.authentication().loginLink().then( (r) => {
+              logUser();
+              history.push('/');
+            })
+          }}
           component={'button'}
           style={{ backgroundColor: chart_color_blue_500.value }}
         >
