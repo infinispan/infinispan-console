@@ -32,7 +32,6 @@ import {About} from '@app/About/About';
 import {ErrorBoundary} from '@app/ErrorBoundary';
 import {BannerAlert} from '@app/Common/BannerAlert';
 import {useTranslation} from 'react-i18next';
-import {useFetchUser} from "@app/services/userManagementHook";
 import {ConsoleServices} from "@services/ConsoleServices";
 
 interface IAppLayout {
@@ -42,7 +41,6 @@ interface IAppLayout {
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const history = useHistory();
-  const {userName, notSecured, logOut} = useFetchUser();
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const logoProps = {
     target: '_self',
@@ -96,7 +94,11 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
 
   const userDropdownItems = [
     <DropdownGroup key="user-action-group">
-      <DropdownItem key="user-action-group-1 logout" onClick={() => logOut()}>Logout</DropdownItem>
+      <DropdownItem key="user-action-group-1 logout" onClick={() => {
+        ConsoleServices.authentication().logOutLink();
+        history.push('/welcome');
+        window.location.reload();
+      }}>Logout</DropdownItem>
     </DropdownGroup>
   ];
 
@@ -107,7 +109,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
         position="right"
         onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
         isOpen={isDropdownOpen}
-        toggle={<DropdownToggle onToggle={()=> setIsDropdownOpen(!isDropdownOpen)}>{userName}</DropdownToggle>}
+        toggle={<DropdownToggle onToggle={()=> setIsDropdownOpen(!isDropdownOpen)}>Connected User</DropdownToggle>}
         dropdownItems={userDropdownItems}
       />
     </PageHeaderTools>
@@ -120,7 +122,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
-      headerTools={notSecured || userName == ''? null: UserActions}
+      headerTools={UserActions}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
   );
@@ -196,16 +198,16 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     }
 
     if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
-      return ( 
-        <Redirect to="/welcome" />
-      )
-    }
-
-    if (init == 'DIGEST_LOGIN' && !ConsoleServices.isWelcomePage() && userName == '') {
       return (
         <Redirect to="/welcome" />
       )
     }
+
+    // if (init == 'DIGEST_LOGIN' && !ConsoleServices.isWelcomePage()) {
+    //   return (
+    //     <Redirect to="/welcome" />
+    //   )
+    // }
 
     return (
         <Page

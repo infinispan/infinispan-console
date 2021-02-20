@@ -1,5 +1,5 @@
-import { KeycloakService } from '@services/keycloakService';
-import { AuthenticationService } from '@services/authService';
+import {KeycloakService} from '@services/keycloakService';
+import {AuthenticationService} from '@services/authService';
 
 export enum ComponentStatus {
   STOPPING = 'STOPPING',
@@ -93,50 +93,22 @@ export class RestUtils {
     customHeaders?: Headers,
     body?: string
   ): Promise<Response> {
-    if (
-      KeycloakService.Instance.isInitialized() ||
-      this.authenticationService.isNotSecured()
-    ) {
-      let headers = customHeaders;
-      if (!headers) {
-        headers = this.createAuthenticatedHeader();
-        if (accept && accept.length > 0) {
-          headers.append('Accept', accept);
-        }
-      }
-      let fetchOptions: RequestInit = {
-        method: method,
-        headers: headers,
-        credentials: 'include',
-      };
-      if (body && body.length > 0) {
-        fetchOptions['body'] = body;
-      }
-      return fetch(url, fetchOptions);
-    } else {
-      let digestFetchOptions = {
-        method: method,
-      };
-
-      let digestFetchHeaders = {};
+    let headers = customHeaders;
+    if (!headers) {
+      headers = this.createAuthenticatedHeader();
       if (accept && accept.length > 0) {
-        digestFetchHeaders['Accept'] = accept;
+        headers.append('Accept', accept);
       }
-
-      if (customHeaders) {
-        customHeaders.forEach(
-          (value, key) => (digestFetchHeaders[key] = value)
-        );
-      }
-
-      digestFetchOptions['headers'] = digestFetchHeaders;
-      if (body && body.length > 0) {
-        digestFetchOptions['body'] = body;
-      }
-      return this.authenticationService
-        .getAuthenticatedClient()
-        .fetch(url, digestFetchOptions);
     }
+    let fetchOptions: RequestInit = {
+      method: method,
+      headers: headers,
+      credentials: 'include',
+    };
+    if (body && body.length > 0) {
+      fetchOptions['body'] = body;
+    }
+    return fetch(url, fetchOptions);
   }
 
   public createAuthenticatedHeader = (): Headers => {
@@ -197,7 +169,7 @@ export class RestUtils {
       })
       .catch((err) => {
         if (err instanceof TypeError) {
-          return <ActionResponse>{ message: err.message, success: false };
+          return <ActionResponse>{message: err.message, success: false};
         }
 
         if (err instanceof Response) {
@@ -215,7 +187,7 @@ export class RestUtils {
           .text()
           .then(
             (errorMessage) =>
-              <ActionResponse>{ message: errorMessage, success: false }
+              <ActionResponse>{message: errorMessage, success: false}
           );
       });
   }
