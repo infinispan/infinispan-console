@@ -272,18 +272,17 @@ export class CacheService {
       );
     }
 
-    let contentType;
-    if (valueContentType) {
-      headers.append(
-        'Content-Type',
-        RestUtils.fromContentType(valueContentType)
-      );
-    } else if (RestUtils.isJSONObject(value)) {
-      headers.append(
-        'Content-Type',
-        RestUtils.fromContentType(ContentType.JSON)
-      );
+    let contentTypeHeader;
+    if (RestUtils.isJSONObject(value)) {
+      contentTypeHeader = ContentType.JSON;
+    } else if (valueContentType) {
+      contentTypeHeader = valueContentType;
+    } else {
+      contentTypeHeader = ContentType.StringContentType;
     }
+
+    headers.append(
+      'Content-Type', contentTypeHeader);
 
     if (timeToLive.length > 0) {
       headers.append('timeToLiveSeconds', timeToLive);
@@ -387,10 +386,7 @@ export class CacheService {
       return keyValue.toString();
     }
 
-    if(RestUtils.isJSONObject(key)) {
-      return JSON.stringify(key);
-    }
-    return key;
+    return key.toString();
   }
 
   private extractValue(value: any) : string {

@@ -122,11 +122,23 @@ export class RestUtils {
     return headers;
   };
 
+  public static extractTypeFromProtobufJson(maybeJson: string): string {
+    try {
+      let jsonObj = JSON.parse(maybeJson);
+      if (jsonObj['_type'] && jsonObj['_value']) {
+        return jsonObj['_type'] as string;
+      }
+      return '';
+    } catch (err) {
+      return '';
+    }
+  }
+
   public static extractValueFromProtobufType(maybeJson: string): any {
     try {
       let jsonObj = JSON.parse(maybeJson);
-      if (jsonObj['_type']) {
-        return JSON.stringify(jsonObj['_type']);
+      if (jsonObj['_type'] && jsonObj['_value']) {
+        return JSON.stringify(jsonObj['_value']);
       }
       return maybeJson;
     } catch (err) {
@@ -379,7 +391,11 @@ export class RestUtils {
     return contentType;
   }
 
-  public static isProtobufBasicType(protobufType: string) : boolean {
+  public static isProtobufBasicType(protobufType: string|undefined) : boolean {
+    if(protobufType == undefined) {
+      return false;
+    }
+
     switch (protobufType) {
       case 'string':
       case 'float':

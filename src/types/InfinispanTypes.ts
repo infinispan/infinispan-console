@@ -81,6 +81,7 @@ interface CacheEntry {
   maxIdle?: string;
   created?: string;
   lastUsed?: string;
+  lastModified?: string;
   expires?: string;
   cacheControl?: string;
   eTag?: string;
