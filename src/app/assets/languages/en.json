@@ -121,6 +121,7 @@
       "column-maxidle" : "Max idle",
       "column-expires" : "Expires",
       "column-created" : "Created",
+      "column-modified" : "Modified",
       "column-lastused" : "Last used",
       "lifespan-immortal" : "Forever",
       "maxidle-immortal" : "Forever",

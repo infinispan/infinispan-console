@@ -117,9 +117,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     { title: t('caches.entries.column-value') },
     { title: t('caches.entries.column-lifespan') },
     { title: t('caches.entries.column-maxidle') },
-    { title: t('caches.entries.column-expires') },
-    { title: t('caches.entries.column-created') },
-    { title: t('caches.entries.column-lastused') },
+    { title: t('caches.entries.column-expires') }
   ];
   const displayEmptyMessage = () => {
     if(keyToSearch.trim() != '') {
@@ -201,9 +199,7 @@ const CacheEntries = (props: { cacheName: string }) => {
               title: entry.expires
                 ? entry.expires
                 : t('caches.entries.never-expire'),
-            },
-            { title: entry.created },
-            { title: entry.lastUsed },
+            }
           ],
         };
       });

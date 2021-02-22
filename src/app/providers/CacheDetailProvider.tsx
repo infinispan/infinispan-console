@@ -59,6 +59,12 @@ const CacheDetailProvider = ({ children }) => {
 
   const fetchEntries = () => {
     if (loadingEntries && cache) {
+      ConsoleServices.caches().retrieveFullDetail(cacheName).then(eitherCache => {
+        if(eitherCache.isRight()) {
+          setCache(eitherCache.value);
+        }
+      });
+
       ConsoleServices.caches()
         .getEntries(cacheName, cache.configuration, '100')
         .then((eitherEntries) => {
