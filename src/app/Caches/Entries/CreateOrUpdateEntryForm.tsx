@@ -57,7 +57,7 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const contentTypeInitialState: ISelectField = {
-    selected: '',
+    selected: ContentType.StringContentType as string,
     expanded: false,
     helperText: t('caches.entries.add-entry-content-type-help'),
   };
