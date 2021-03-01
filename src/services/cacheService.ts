@@ -358,16 +358,13 @@ class CacheService {
   private extractKey(key: any, protobufKey: boolean) : string {
     if(protobufKey) {
       const keyValue = key['_value'];
-      if (utils.isJSONObject(keyValue)) {
+      if (utils.isJSONObject(keyValue) && utils.isProtobufBasicType(key['_type'])) {
         return JSON.stringify(keyValue)
       }
-      return keyValue;
+      return keyValue.toString();
     }
 
-    if(utils.isJSONObject(key)) {
-      return JSON.stringify(key);
-    }
-    return key;
+    return key.toString();
   }
 
   private extractValue(value: any) : string {

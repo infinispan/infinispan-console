@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import * as BannerHook from '@app/utils/useApiAlert.ts';
+import * as BannerHook from '@app/utils/useApiAlert';
 import { BannerAlert } from '@app/Common/BannerAlert';
 
 jest.mock('@app/utils/useApiAlert');
