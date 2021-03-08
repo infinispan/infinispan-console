@@ -7,7 +7,6 @@ coverage
 yarn.lock
 target/
 node/
-/package-lock.json
 /infinispan-console.iml
 .DS_Store
 cypress/screenshots
