@@ -79,7 +79,7 @@ const GlobalStats = () => {
             <EmptyState variant={EmptyStateVariant.full}>
               <EmptyStateIcon icon={CubesIcon} />
               <Title headingLevel="h5" size="lg">
-                Statistics disabled
+                Global statistics disabled
               </Title>
               <EmptyStateBody>
                 Statistics are disabled. To enable statistics, set
@@ -99,8 +99,8 @@ const GlobalStats = () => {
               <Level>
                 <LevelItem>
                   <CustomCardTitle
-                    title={'Cluster Content'}
-                    toolTip={'Statistics for all caches'}
+                    title={'Cluster-wide statistics'}
+                    toolTip={'Statistics for all caches across the cluster.'}
                   />
                 </LevelItem>
                 <LevelItem>
@@ -145,7 +145,7 @@ const GlobalStats = () => {
                     {displayUtils.formatNumber(stats.off_heap_memory_used)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
-                    Off heap memory used
+                    Off-heap memory used
                   </TextListItem>
                 </TextList>
               </TextContent>
@@ -154,8 +154,8 @@ const GlobalStats = () => {
           <Card>
             <CardTitle>
               <CustomCardTitle
-                title={'Data access'}
-                toolTip={'Data access for all caches'}
+                title={'Data access statistics'}
+                toolTip={'Data access statistics for all caches across the cluster.'}
               />
             </CardTitle>
             <CardBody style={{ paddingBottom: global_spacer_2xl.value }}>
@@ -164,10 +164,10 @@ const GlobalStats = () => {
                   constrainToVisibleArea={true}
                   data={[
                     { x: 'Retrieval hits', y: stats.hits },
-                    { x: 'Retrieval Misses', y: stats.misses },
+                    { x: 'Retrieval misses', y: stats.misses },
                     { x: 'Stores', y: stats.stores },
-                    { x: 'Remove Hits', y: stats.remove_hits },
-                    { x: 'Removes Misses', y: stats.remove_misses },
+                    { x: 'Remove hits', y: stats.remove_hits },
+                    { x: 'Removes misses', y: stats.remove_misses },
                     { x: 'Evictions', y: stats.evictions },
                   ]}
                   labels={({ datum }) =>
@@ -178,12 +178,12 @@ const GlobalStats = () => {
                   legendData={[
                     {
                       name:
-                        'Retrieval Hits: ' +
+                        'Retrieval hits: ' +
                         displayUtils.formatNumber(stats.hits),
                     },
                     {
                       name:
-                        'Retrieval Misses: ' +
+                        'Retrieval misses: ' +
                         displayUtils.formatNumber(stats.misses),
                     },
                     {
@@ -192,12 +192,12 @@ const GlobalStats = () => {
                     },
                     {
                       name:
-                        'Remove Hits: ' +
+                        'Remove hits: ' +
                         displayUtils.formatNumber(stats.remove_hits),
                     },
                     {
                       name:
-                        'Remove Misses: ' +
+                        'Remove misses: ' +
                         displayUtils.formatNumber(stats.remove_misses),
                     },
                     {
@@ -227,8 +227,8 @@ const GlobalStats = () => {
           <Card>
             <CardTitle>
               <CustomCardTitle
-                title={'Operations Performance'}
-                toolTip={'Average values for all caches in milliseconds'}
+                title={'Operation performance values'}
+                toolTip={'Average values, in milliseconds, for operations on all caches across the cluster.'}
               />
             </CardTitle>
             <CardBody>
@@ -238,31 +238,31 @@ const GlobalStats = () => {
                     {displayUtils.formatNumber(stats.average_read_time)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
-                    Avg READS
+                    Average reads
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
                     {displayUtils.formatNumber(stats.average_remove_time)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
-                    Avg REMOVES
+                    Average removes
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
                     {displayUtils.formatNumber(stats.average_write_time)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
-                    Avg WRITES
+                    Average writes
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
                     {displayUtils.formatNumber(stats.read_write_ratio)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
-                    Read/Write Ratio
+                    Read/Write ratio
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dt}>
                     {displayUtils.formatNumber(stats.hit_ratio)}
                   </TextListItem>
                   <TextListItem component={TextListItemVariants.dd}>
-                    Hits Ratio
+                    Hits ratio
                   </TextListItem>
                 </TextList>
               </TextContent>
@@ -276,14 +276,14 @@ const GlobalStats = () => {
               <Level>
                 <LevelItem>
                   <CustomCardTitle
-                    title={'Cache Manager Lifecycle'}
-                    toolTip={'Lifecycle values are in milliseconds'}
+                    title={'Cache Manager lifecycle values'}
+                    toolTip={'Lifecycle values, in milliseconds, for the Cache Manager.'}
                   />
                 </LevelItem>
                 <LevelItem>
                   <Link to={{ pathname: '/cluster-membership' }}>
                     <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
-                      View Cluster Status
+                      View cluster membership
                     </Button>
                   </Link>
                 </LevelItem>
@@ -315,9 +315,9 @@ const GlobalStats = () => {
 
   const descriptionText = () => {
     if (stats.statistics_enabled) {
-      return 'JMX statistics are globally enabled';
+      return 'Global statistics for all caches in the cluster';
     } else {
-      return 'Explicitly enable JMX statistics globally to display them';
+      return 'You must enable global statistics in the Cache Manager configuration to display values.';
     }
   };
 

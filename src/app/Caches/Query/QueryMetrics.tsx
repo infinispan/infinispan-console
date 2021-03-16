@@ -86,7 +86,7 @@ const QueryMetrics = (props: {
             component={TextListItemVariants.dt}
             style={{ width: 250 }}
           >
-            Execution count
+            Number of executions
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(stats?.search_query_execution_count)}
@@ -100,21 +100,21 @@ const QueryMetrics = (props: {
           </TextListItem>
 
           <TextListItem component={TextListItemVariants.dt}>
-            Execution max time
+            Execution maximum time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(stats?.search_query_execution_max_time)}
           </TextListItem>
 
           <TextListItem component={TextListItemVariants.dt}>
-            Execution avg time
+            Execution average time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(stats?.search_query_execution_avg_time)}
           </TextListItem>
 
           <TextListItem component={TextListItemVariants.dt}>
-            Execution max time query string
+            Execution maximum time query string
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {stats?.search_query_execution_max_time_query_string}
@@ -136,7 +136,7 @@ const QueryMetrics = (props: {
           </TextListItem>
 
           <TextListItem component={TextListItemVariants.dt}>
-            Execution max time
+            Execution maximum time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(
@@ -145,7 +145,7 @@ const QueryMetrics = (props: {
           </TextListItem>
 
           <TextListItem component={TextListItemVariants.dt}>
-            Execution avg time
+            Execution average time
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             {displayUtils.formatNumber(

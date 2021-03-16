@@ -100,7 +100,7 @@ const ProtobufSchemasDisplay = (props: {
       } else {
         schemasContent.set(
           schemaName,
-          'An error occurred. Retry closing and opening the tab again.'
+          'An error occurred. Try closing the tab and opening it again.'
         );
         addAlert(eitherResponse.value);
       }
@@ -276,13 +276,13 @@ const ProtobufSchemasDisplay = (props: {
         <TableEmptyState
           loading={loading}
           error={error}
-          empty={'There are no Proto Schemas'}
+          empty={'No schemas yet'}
         />
       );
     }
 
     return (
-      <DataList aria-label="Data list Protobuf Schemas">
+      <DataList aria-label="Data list Protobuf schemas">
         {filteredSchemas.map((protoSchema) => {
           return (
             <DataListItem
@@ -315,7 +315,7 @@ const ProtobufSchemasDisplay = (props: {
                 />
               </DataListItemRow>
               <DataListContent
-                aria-label="Primary Content Details"
+                aria-label="Primary content details"
                 id={protoSchema.name}
                 isHidden={!expanded.includes(protoSchema.name)}
                 style={{ boxShadow: 'none' }}
@@ -337,7 +337,7 @@ const ProtobufSchemasDisplay = (props: {
     return (
       <ToolbarItem>
         <Button variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
-          Create Protobuf Schema
+          Add Protobuf schema
         </Button>
       </ToolbarItem>
     );

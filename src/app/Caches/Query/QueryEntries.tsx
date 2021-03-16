@@ -162,7 +162,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
           variant={ButtonVariant.secondary}
           onClick={() => props.changeTab()}
         >
-          View all query stats
+          View all query statistics
         </Button>
       </ToolbarItem>
     );
@@ -178,7 +178,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                 name="textSearchByQuery"
                 id="textSearchByQuery"
                 type="search"
-                aria-label="search by query textfield"
+                aria-label="Query textfield"
                 placeholder={'Ickle query'}
                 size={75}
                 onChange={onChangeSearch}
@@ -186,7 +186,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
               />
               <Button
                 variant="control"
-                aria-label="search button for search input"
+                aria-label="Search input button"
                 onClick={() =>
                   searchByQuery(queryPagination.perPage, queryPagination.page)
                 }

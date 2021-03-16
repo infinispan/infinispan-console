@@ -90,7 +90,7 @@ export class CacheService {
       })
       .catch((err) => {
         const errorMessage =
-          'Unable to retrieve cache detail of cache ' + cacheName;
+          'Cannot retrieve details of cache ' + cacheName;
         if (err instanceof Response) {
           return err.text().then((errResponse) => {
             if (errResponse == '') {
@@ -130,7 +130,7 @@ export class CacheService {
       'POST'
     );
     return this.utils.handleCRUDActionResponse(
-      'Cache ' + cacheName + ' created with success with ' + configName,
+      'Cache ' + cacheName + ' successfully created with ' + configName,
       createCachePromise
     );
   }
@@ -168,7 +168,7 @@ export class CacheService {
     return this.utils.handleCRUDActionResponse(
       'Cache ' +
         cacheName +
-        ' created with success with the provided configuration',
+        ' created with the provided configuration.',
       createCachePromise
     );
   }
@@ -185,7 +185,7 @@ export class CacheService {
     );
 
     return this.utils.handleCRUDActionResponse(
-      'Cache ' + cacheName + ' has been deleted',
+      'Cache ' + cacheName + ' deleted.',
       deleteCachePromise
     );
   }
@@ -209,7 +209,7 @@ export class CacheService {
     );
 
     return this.utils.handleCRUDActionResponse(
-      'Cache ' + cacheName + ' has been ignored',
+      'Cache ' + cacheName + ' hidden.',
       ignoreCachePromise
     );
   }
@@ -233,7 +233,7 @@ export class CacheService {
     );
 
     return this.utils.handleCRUDActionResponse(
-      'Cache ' + cacheName + ' is not ignored',
+      'Cache ' + cacheName + ' is now shown.',
       ignoreCachePromise
     );
   }
@@ -314,8 +314,8 @@ export class CacheService {
       value
     );
     let message = create
-      ? 'A new entry has been added to cache '
-      : 'The entry has been updated in cache ';
+      ? 'Entry added to cache '
+      : 'Entry updated in cache ';
     return this.utils.handleCRUDActionResponse(
       message + cacheName,
       responsePromise
@@ -375,7 +375,7 @@ export class CacheService {
         left(
           this.utils.mapError(
             err,
-            'An error happened retrieving entries from ' + cacheName
+            'An error occurred retrieving entries from ' + cacheName
           )
         )
       );
@@ -466,13 +466,13 @@ export class CacheService {
         if (err.status.valueOf() == 404) {
           // Not Found is an error but a success action result
           return left(<ActionResponse>{
-            message: 'The entry key ' + key + ' does not exist',
+            message: 'The entry key ' + key + ' does not exist.',
             success: true,
           });
         }
 
         return left(
-          this.utils.mapError(err, 'An error happened retrieving key ' + key)
+          this.utils.mapError(err, 'An error occurred retrieving key ' + key)
         );
       });
   }
@@ -525,7 +525,7 @@ export class CacheService {
     );
 
     return this.utils.handleCRUDActionResponse(
-      'Cache ' + cacheName + ' has been cleared',
+      'Cache ' + cacheName + ' cleared',
       clearPromise
     );
   }
@@ -559,7 +559,7 @@ export class CacheService {
     );
 
     return this.utils.handleCRUDActionResponse(
-      'Entry ' + entryKey + ' has been deleted',
+      'Entry ' + entryKey + ' deleted',
       deleteEntryPromise
     );
   }
@@ -616,7 +616,7 @@ export class CacheService {
         left(
           this.utils.mapError(
             err,
-            'Unable to retrieve configuration for cache ' + cacheName
+            'Cannot retrieve configuration for cache ' + cacheName
           )
         )
       );
@@ -639,14 +639,14 @@ export class CacheService {
           return right(Number.parseInt(data)) as Either<ActionResponse, number>;
         } else {
           return left(<ActionResponse>{
-            message: 'Size of cache ' + cacheName + ' is no a number :' + data,
+            message: 'Size of cache ' + cacheName + ' is not a number :' + data,
             success: false,
           }) as Either<ActionResponse, number>;
         }
       })
       .catch((err) =>
         left(
-          this.utils.mapError(err, 'Unable to get size for cache ' + cacheName)
+          this.utils.mapError(err, 'Cannot get size for cache ' + cacheName)
         )
       );
   }
@@ -697,7 +697,7 @@ export class CacheService {
       .catch((err) => {
         if (err instanceof TypeError) {
           return left(<ActionResponse>{
-            message: 'Unable to query. ' + err.message,
+            message: 'Cannot perform query. ' + err.message,
             success: false,
           });
         }
@@ -719,7 +719,7 @@ export class CacheService {
             );
         }
         return left(<ActionResponse>{
-          message: 'Unable to query',
+          message: 'Cannot perform query.',
           success: false,
         });
       });
@@ -765,7 +765,7 @@ export class CacheService {
         return err.text().then((errorMessage) => {
           if (errorMessage == '') {
             errorMessage =
-              'An error happened retrieving index stats for cache ' + cacheName;
+              'An error occurred when retrieving index statistics for cache ' + cacheName;
           }
 
           return left(<ActionResponse>{
@@ -793,7 +793,7 @@ export class CacheService {
       .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
-            message: 'Index of cache ' + cacheName + ' purged',
+            message: 'Index of cache ' + cacheName + ' cleared.',
             success: true,
           };
         }
@@ -801,7 +801,7 @@ export class CacheService {
       })
       .catch((err) => {
         let genericError =
-          'An error happened when purging index for cache ' + cacheName;
+          'An error occurred when clearing the index for cache ' + cacheName;
         if (err instanceof TypeError) {
           return <ActionResponse>{ message: err.message, success: false };
         }
@@ -843,7 +843,7 @@ export class CacheService {
       .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
-            message: 'Indexing of cache ' + cacheName + ' started',
+            message: 'Indexing cache ' + cacheName + ' started.',
             success: true,
           };
         }
@@ -851,7 +851,7 @@ export class CacheService {
       })
       .catch((err) => {
         let genericError =
-          'An error happened when starting reindex operation for cache ' +
+          'An error occurred when starting to rebuild the index for cache ' +
           cacheName;
         if (err instanceof TypeError) {
           return <ActionResponse>{ message: err.message, success: false };
@@ -915,7 +915,7 @@ export class CacheService {
       )
       .catch((err) => {
         let genericError =
-          'An error happened when starting reindex operation for cache ' +
+          'An error occurred when starting to rebuild the index for cache ' +
           cacheName;
         if (err instanceof TypeError) {
           return left(<ActionResponse>{
@@ -950,9 +950,9 @@ export class CacheService {
       .then((response) => {
         let message = '';
         if (response.ok) {
-          message = 'Query stats of cache ' + cacheName + ' have been cleared';
+          message = 'Query statistics of cache ' + cacheName + ' cleared.';
         } else {
-          message = 'Unable to clear query stats of cache ' + cacheName;
+          message = 'Cannot clear query statistics of cache ' + cacheName;
         }
 
         return <ActionResponse>{ message: message, success: response.ok };

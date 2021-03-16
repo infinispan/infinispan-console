@@ -115,7 +115,7 @@ const IndexManagement = (props) => {
         variant={ButtonVariant.secondary}
         onClick={() => setReindexModalOpen(true)}
       >
-        Reindex
+        Rebuild index
       </Button>
     );
   };
@@ -132,7 +132,7 @@ const IndexManagement = (props) => {
         disabled={!indexStats?.reindexing}
         onClick={() => setPurgeModalOpen(true)}
       >
-        Purge Index
+        Clear index
       </Button>
      </LevelItem>
    );
@@ -152,7 +152,7 @@ const IndexManagement = (props) => {
         <TextContent style={{ marginTop: global_spacer_md.value }}>
           <TextList component={TextListVariants.dl} key="indexes">
             <TextListItem component={TextListItemVariants.dt} key={'className'}>
-              Class names
+              Class name
             </TextListItem>
             <TextListItem
               component={TextListItemVariants.dd}
@@ -164,7 +164,7 @@ const IndexManagement = (props) => {
               component={TextListItemVariants.dt}
               key={'entriesCount'}
             >
-              Entities count
+              Number of entities
             </TextListItem>
             <TextListItem
               component={TextListItemVariants.dd}
@@ -175,7 +175,7 @@ const IndexManagement = (props) => {
               </TextContent>
             </TextListItem>
             <TextListItem component={TextListItemVariants.dt} key={'sizes'}>
-              Sizes
+              Index size
             </TextListItem>
             <TextListItem
               component={TextListItemVariants.dd}
@@ -186,7 +186,7 @@ const IndexManagement = (props) => {
               </TextContent>
             </TextListItem>
             <TextListItem component={TextListItemVariants.dt} key={'reindex'}>
-              Reindexing
+              Rebuilding index
             </TextListItem>
             <TextListItem
               component={TextListItemVariants.dd}
@@ -214,7 +214,7 @@ const IndexManagement = (props) => {
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb
-          currentPage="Indexing"
+          currentPage="Index management"
           cacheName={cacheName}
         />
         <Level>

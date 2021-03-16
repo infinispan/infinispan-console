@@ -62,16 +62,13 @@ const DeleteCache = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title="Delete Cache?"
+      title="Permanently delete cache?"
       onClose={() => clearDeleteCacheModal(false)}
       aria-label="Delete cache modal"
       description={
         <TextContent>
           <Text>
-            This action will permanently delete cache{' '}
-            <strong>'{props.cacheName}'</strong> and all it's data.
-            <br />
-            This cannot be undone.
+            <strong>'{props.cacheName}'</strong> and all of its data will be deleted.
           </Text>
         </TextContent>
       }
@@ -95,8 +92,8 @@ const DeleteCache = (props: {
     >
       <Form>
         <FormGroup
-          label="Type the CACHE NAME to confirm"
-          helperTextInvalid="Cache names do not match"
+          label="Enter the cache name to delete it."
+          helperTextInvalid="Cache names do not match."
           fieldId="cache-to-delete"
           validated={isValidCacheNameValue}
         >

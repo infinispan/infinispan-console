@@ -24,7 +24,7 @@ const DeleteCounter = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Delete counter?'}
+      title={'Permanently delete counter?'}
       onClose={props.closeModal}
       aria-label="Delete counter modal"
       actions={[
@@ -51,10 +51,10 @@ const DeleteCounter = (props: {
     >
       <TextContent>
         <Text>
-          This action will permanently delete the counter from the cluster{' '}
+          The counter will be permanently deleted from the cluster{' '}
           <strong>'{props.name}'</strong>
           <br />
-          This cannot be undone, but you can recreate the counter after.
+          You can always recreate the counter.
         </Text>
       </TextContent>
     </Modal>

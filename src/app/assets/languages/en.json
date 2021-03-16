@@ -24,8 +24,8 @@
     "login-label": "{{brandname}} login.",
     "login": "Log in",
     "cancel": "Cancel",
-    "dialog-label": "Log to Infinispan dialog",
-    "form-username": "User name",
+    "dialog-label": "{{brandname}} log in dialog.",
+    "form-username": "Username",
     "help-username": "Enter your username.",
     "form-password": "Password",
     "help-password": "Enter your password."
@@ -37,11 +37,11 @@
   },
   "support" : {
     "no-user": "Credentials required.",
-    "no-user-text": "You must enter credentials to access the console. Create a user and password before you continue.",
-    "no-user-label": "No login credentials available.",
+    "no-user-text": "You must enter credentials to access the console. Create a username and password to continue.",
+    "no-user-label": "No user credentials exist.",
     "reload-button" : "Reload",
-    "text-create-user": "Create a user and password then reload.",
-    "text-command": "bin/cli.sh user create admin -p pass"
+    "text-create-user": "Create a username and password then reload.",
+    "text-command": "bin/cli.sh user create myuser -p changeme -g admin"
   },
   "cache-managers" : {
     "title" : "Data container",
@@ -55,9 +55,9 @@
     "cache-health" : "Health",
     "cache-features" : "Features",
     "cache-status" : "",
-    "ignore" : "Ignore",
-    "undo-ignore" : "Undo ignore",
-    "ignored-status" : "Ignored",
+    "ignore" : "Hide",
+    "undo-ignore" : "Show",
+    "ignored-status" : "Hidden",
     "delete" : "Delete",
     "clear-all-button" : "Clear all",
     "no-caches-status" : "No caches found",
@@ -78,7 +78,7 @@
     "cache-filter-feature-trans" : "Transactional",
     "cache-filter-feature-secure" : "Secured",
     "cache-filter-feature-xsite" : "Backups",
-    "cache-filter-feature-ignored" : "Ignored",
+    "cache-filter-feature-ignored" : "Hidden",
     "counters-table-label" : "Counters",
     "strong-counters" : "Strong counters",
     "weak-counters" : "Weak counters",
@@ -92,7 +92,7 @@
     "concurrency-level" : "Concurrency level:",
     "storage" : "Storage",
     "counter-configuration" : "Configuration",
-    "no-counters-status" : "No counters found",
+    "no-counters-status" : "No counters yet",
     "no-counters-body" : "Create counters with the CLI or a remote client.",
     "tasks-table-label" : "Tasks",
     "task-name" : "Name",
@@ -102,7 +102,7 @@
     "parameters" : "Parameters",
     "allowed-role" : "Allowed role",
     "allowed-role-null" : "-",
-    "no-tasks-status" : "No tasks found",
+    "no-tasks-status" : "No tasks yet",
     "no-tasks-body" : "Create tasks with the CLI or a remote client."
   },
   "caches" : {
@@ -126,11 +126,11 @@
       "lifespan-immortal" : "Forever",
       "maxidle-immortal" : "Forever",
       "never-expire" : "Never",
-      "get-entry-label" : "retrieve by key textfield",
+      "get-entry-label" : "Retrieve by key text field",
       "get-entry-text" : "Retrieve by key ",
       "get-entry-not-found" : "Cannot retrieve entry with key:",
       "empty-cache" : "The cache is empty",
-      "get-entry-button-label" : "search button for search input",
+      "get-entry-button-label" : "Query input button",
       "add-entry-button-label" : "Add entry",
       "clear-entry-button-label" : "Clear all entries",
       "entries-table-label" : "Entries",
@@ -161,12 +161,12 @@
       "add-entry-flags-help" : "Select flags",
       "add-entry-form-cache-name" : "Cache name",
       "add-entry-form-key" : "Key:",
-      "add-entry-form-key-tooltip": "The key can contain simple values ...",
+      "add-entry-form-key-tooltip": "The key can contain JSON or Protobuf values, depending on cache encoding.",
       "add-entry-form-value" : "Value:",
-      "add-entry-form-value-tooltip": "The value can contain simple values ...",
+      "add-entry-form-value-tooltip": "The value can contain JSON or Protobuf values, depending on cache encoding.",
       "add-entry-form-lifespan": "Time to live (number of seconds):",
       "add-entry-form-lifespan-tooltip": "Sets the number of seconds before",
-      "add-entry-form-maxidle": "Max idle (number of seconds):",
+      "add-entry-form-maxidle": "Maximum idle time (number of seconds):",
       "add-entry-form-maxidle-tooltip": "Sets the number of seconds that entries can be idle.",
       "add-entry-form-options": "Advanced options",
       "add-entry-form-flags": "Flags:",
@@ -186,7 +186,7 @@
       "modal-clear-query-stats-label" : "Clear query stats modal",
       "modal-button-query-clear-stats" : "Clear stats",
       "modal-button-cancel" : "Cancel",
-      "modal-button-query-clear-stats-body" : "This action will permanently clear all the cache query statistics."
+      "modal-button-query-clear-stats-body" : "All query statistics in this cluster will be removed."
     }
   }
 }

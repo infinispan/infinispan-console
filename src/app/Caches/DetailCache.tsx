@@ -74,7 +74,7 @@ const DetailCache = (props: { cacheName: string }) => {
         style={{ backgroundColor: 'white' }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
-        <Tab eventKey={10} title={<TabTitleText>Manage Entries</TabTitleText>}>
+        <Tab eventKey={10} title={<TabTitleText>Manage entries</TabTitleText>}>
           <CacheEntries cacheName={cacheName} />
         </Tab>
         <Tab
@@ -82,8 +82,8 @@ const DetailCache = (props: { cacheName: string }) => {
           title={
             <TabTitleText>
               <MoreInfoTooltip
-                label={'Query Values'}
-                toolTip={'Use Ickle query language'}
+                label={'Query values in caches.'}
+                toolTip={'Use the Ickle query language to search values.'}
               />
             </TabTitleText>
           }
@@ -119,7 +119,7 @@ const DetailCache = (props: { cacheName: string }) => {
                 color={global_danger_color_200.value}
               />
               <Title headingLevel="h2" size="lg">
-                Error retrieving cache {cacheName}
+                An error occurred while retrieving cache {cacheName}
               </Title>
               <EmptyStateBody>{error}</EmptyStateBody>
               <EmptyStatePrimary>
@@ -205,7 +205,7 @@ const DetailCache = (props: { cacheName: string }) => {
         <TextContent>
           <Text component={TextVariants.small}>
             <Spinner size={'md'} />
-            Reindexing
+            Rebuilding the index for {cacheName}
           </Text>
         </TextContent>
       </ToolbarItem>
@@ -224,7 +224,7 @@ const DetailCache = (props: { cacheName: string }) => {
               pathname: encodeURIComponent(cacheName) + '/indexing',
             }}
           >
-            <Button variant={ButtonVariant.link}>Index Management</Button>
+            <Button variant={ButtonVariant.link}>Manage indexes</Button>
           </Link>
         </ToolbarItem>
       </React.Fragment>
@@ -253,7 +253,7 @@ const DetailCache = (props: { cacheName: string }) => {
               onClick={() => setDisplayShowMore(false)}
             >
               {' '}
-              See less cache details{' '}
+              See fewer cache details{' '}
             </Button>
           </ToolbarItem>
         );
@@ -328,7 +328,7 @@ const DetailCache = (props: { cacheName: string }) => {
               <ToolbarItem>
                 <TextContent>
                   <Text component={TextVariants.h1}>
-                    Error loading {cacheName}
+                    An error occurred while loading {cacheName}
                   </Text>
                 </TextContent>
               </ToolbarItem>

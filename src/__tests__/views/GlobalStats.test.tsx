@@ -47,10 +47,10 @@ describe('Global stats page', () => {
     expect(
       screen.getByRole('heading', { name: 'Global statistics' })
     ).toBeInTheDocument();
-    expect(screen.queryByText('Statistics disabled')).toBeInTheDocument();
+    expect(screen.queryByText('Global statistics disabled')).toBeInTheDocument();
     expect(
       screen.queryByText(
-        'Explicitly enable JMX statistics globally to display them'
+        'Statistics are disabled. To enable statistics, set statistics=true in the configuration.'
       )
     ).toBeInTheDocument();
   });
@@ -70,16 +70,16 @@ describe('Global stats page', () => {
       screen.getByRole('heading', { name: 'Global statistics' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Cluster Content' })
+      screen.getByRole('heading', { name: 'Cluster-wide statistics' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Data access' })
+      screen.getByRole('heading', { name: 'Data access statistics' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Operations Performance' })
+      screen.getByRole('heading', { name: 'Operation performance values' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Cache Manager Lifecycle' })
+      screen.getByRole('heading', { name: 'Cache Manager lifecycle values' })
     ).toBeInTheDocument();
 
     expect(
@@ -87,12 +87,12 @@ describe('Global stats page', () => {
     ).toBeInTheDocument();
 
     expect(
-      screen.getByRole('link', { name: 'View Cluster Status' })
+      screen.getByRole('link', { name: 'View cluster membership' })
     ).toBeInTheDocument();
 
-    expect(screen.queryByText('Statistics disabled')).not.toBeInTheDocument();
+    expect(screen.queryByText('Global statistics disabled')).not.toBeInTheDocument();
     expect(
-      screen.getByText('JMX statistics are globally enabled')
+      screen.getByText('Global statistics for all caches in the cluster')
     ).toBeInTheDocument();
   });
 });

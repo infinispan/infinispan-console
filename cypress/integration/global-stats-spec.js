@@ -6,10 +6,10 @@ describe('Global stats', () => {
                 }
        });
        cy.get('h1').should('contain', 'Global statistics')
-       cy.get('h5').should('contain', 'Cluster Content')
-       cy.get('h5').should('contain', 'Data access')
-       cy.get('h5').should('contain', 'Operations Performance')
-       cy.get('h5').should('contain', 'Cache Manager Lifecycle')
+       cy.get('h5').should('contain', 'Cluster-wide statistics')
+       cy.get('h5').should('contain', 'Data access statistics')
+       cy.get('h5').should('contain', 'Operation performance values')
+       cy.get('h5').should('contain', 'Cache Manager lifecycle values')
     })
 
   //View all caches href
