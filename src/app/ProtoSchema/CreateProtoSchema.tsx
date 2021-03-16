@@ -115,8 +115,7 @@ const CreateProtoSchema = (props: {
             <MoreInfoTooltip
               label="Schema:"
               toolTip={
-                "Protocol Buffers (a.k.a., protobuf) are Google's language-neutral, platform-neutral, extensible mechanism " +
-                "for serializing structured data. You can find protobuf's documentation on the Google Developers site."
+                "Protobuf schema describe entries in your caches so you can query them."
               }
             />
           }
@@ -147,12 +146,12 @@ const CreateProtoSchema = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Add Protobuf Schema'}
+      title={'Add Protobuf schema'}
       onClose={() => clearCreateProtoSchema(false)}
-      aria-label="Add Protobuf Schema"
+      aria-label="Add Protobuf schema"
       actions={[
         <Button key="create-button" onClick={handleCreateButton}>
-          Create
+          Add
         </Button>,
         <Button
           key="cancel"

@@ -5,6 +5,6 @@ describe('Cluster Membership', () => {
                 "Accept-Encoding": "gzip, deflate, br"
                }
       });
-      cy.get('h1').should('contain', 'Cluster Membership');
+      cy.get('h1').should('contain', 'Cluster membership');
     })
 });

@@ -28,12 +28,12 @@ const Reindex = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Reindex cache?'}
+      title={'Rebuild index?'}
       onClose={props.closeModal}
       aria-label="Reindex modal"
       actions={[
         <Button key="reindex" onClick={onClickPurgeButton}>
-          Reindex
+          Rebuild index
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
@@ -42,9 +42,9 @@ const Reindex = (props: {
     >
       <TextContent>
         <Text>
-          Reindexing a cache might take time.
+          All indexes will be rebuilt. To ensure accurate results, do not query caches until rebuilding is complete.
           <br />
-          Are you sure you want to start reindexing?
+          This process may take a few minutes.
         </Text>
       </TextContent>
     </Modal>

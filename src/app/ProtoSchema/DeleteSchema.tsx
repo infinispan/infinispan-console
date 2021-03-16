@@ -34,7 +34,7 @@ const DeleteSchema = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Delete schema?'}
+      title={'Permanently delete schema?'}
       onClose={props.closeModal}
       aria-label="Delete schema modal"
       actions={[
@@ -52,9 +52,9 @@ const DeleteSchema = (props: {
     >
       <TextContent>
         <Text>
-          This action will permanently delete the schema{' '}
-          <strong>'{props.schemaName}'</strong> from the data container <br />
-          <strong>Caches using this schema will be strongly affected</strong>.
+          {' '} will be permanently deleted
+          <strong>'{props.schemaName}'</strong> from the data container, and <br />
+          caches using this schema will be affected.
           <br />
           You can always recreate the schema.
         </Text>

@@ -50,7 +50,7 @@ const IgnoreCache = (props: {
       return (
         <TextContent>
           <Text>
-            <strong>'{props.cacheName}'</strong> will be accessible again .
+            Shows the <strong>'{props.cacheName}'</strong>.
           </Text>
         </TextContent>
       );
@@ -58,10 +58,9 @@ const IgnoreCache = (props: {
     return (
       <TextContent>
         <Text>
-          You won't be able to access <strong>'{props.cacheName}'</strong> cache
-          anymore after you perform ignore cache .
+          Hides the <strong>'{props.cacheName}'</strong> cache.
           <br />
-          You can undo the ignore cache operation.
+          You can show the cache again if you need to access it later.
         </Text>
       </TextContent>
     );
@@ -72,12 +71,12 @@ const IgnoreCache = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={props.action == 'ignore' ? 'Ignore Cache?' : 'Undo ignore cache?'}
+      title={props.action == 'ignore' ? 'Hide cache?' : 'Show cache?'}
       onClose={() => clearIgnoreCacheModal(false)}
       aria-label={
         props.action == 'ignore'
-          ? 'Ignore cache modal'
-          : 'Undo ignore cache modal'
+          ? 'Hide cache modal'
+          : 'Show cache modal'
       }
       actions={[
         <Button
@@ -88,7 +87,7 @@ const IgnoreCache = (props: {
           }
           onClick={handleIgnoreButton}
         >
-          {props.action == 'ignore' ? 'Ignore' : 'Undo ignore'}
+          {props.action == 'ignore' ? 'Hide' : 'Show'}
         </Button>,
         <Button
           key="cancel"

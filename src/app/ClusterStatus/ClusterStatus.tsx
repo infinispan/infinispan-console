@@ -110,9 +110,9 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={SearchIcon} />
           <Title headingLevel="h2" size="lg">
-            There are no cluster members
+            No cluster members
           </Title>
-          <EmptyStateBody>Are you connected to a Cluster?</EmptyStateBody>
+          <EmptyStateBody>Add nodes to create a cluster.</EmptyStateBody>
         </EmptyState>
       </Bullseye>
     );
@@ -160,7 +160,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
         <Flex>
           <FlexItem>
             <TextContent>
-              <Text component={TextVariants.h1}>Cluster Membership</Text>
+              <Text component={TextVariants.h1}>Cluster membership</Text>
             </TextContent>
           </FlexItem>
         </Flex>
@@ -204,7 +204,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
           <EmptyStateIcon icon={CubesIcon} />
-          <EmptyStateBody>The cluster is empty</EmptyStateBody>
+          <EmptyStateBody>This cluster is empty</EmptyStateBody>
         </EmptyState>
       );
     }

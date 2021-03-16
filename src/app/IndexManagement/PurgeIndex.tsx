@@ -34,16 +34,16 @@ const PurgeIndex = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Purge index?'}
+      title={'Permanently clear index?'}
       onClose={props.closeModal}
-      aria-label="Purge index modal"
+      aria-label="Clear index modal"
       actions={[
         <Button
           key="purge"
           variant={ButtonVariant.danger}
           onClick={onClickPurgeButton}
         >
-          Purge
+          Clear
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
@@ -52,10 +52,7 @@ const PurgeIndex = (props: {
     >
       <TextContent>
         <Text>
-          This action will permanently clear all indexes from the cache{' '}
-          <strong>{props.cacheName}</strong>.
-          <br />
-          This cannot be undone.
+          All indexes in {' '} <strong>{props.cacheName}</strong> will be deleted.
         </Text>
       </TextContent>
     </Modal>

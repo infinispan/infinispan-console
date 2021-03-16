@@ -156,7 +156,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   };
 
   const titleId = 'plain-typeahead-select-id';
-  let title = 'Data container is empty';
+  let title = 'Data container is empty.';
   if (cmName !== undefined) {
     title = displayUtils.capitalize(cmName);
   }
@@ -181,12 +181,12 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
               }}
             >
               <FormGroup
-                label="Name"
+                label="Cache name"
                 isRequired
                 fieldId="cache-name"
-                helperText="Please provide a cache name"
+                helperText="Enter a unique name for your cache."
                 validated={validName}
-                helperTextInvalid="Cache name is mandatory"
+                helperTextInvalid="Your cache must have a name."
               >
                 <TextInput
                   isRequired
@@ -201,15 +201,15 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
               </FormGroup>
               <FormGroup
                 fieldId="cache-config-name"
-                label="Template"
-                helperText="Please choose a template or provide a new configuration"
+                label="Cache templates"
+                helperText="Select a cache template or provide a cache configuration."
                 validated={validConfig}
-                helperTextInvalid="Either choose a template or provide a configuration"
+                helperTextInvalid="Your cache must have a configuration."
               >
                 <Select
                   toggleIcon={<CubeIcon />}
                   variant={SelectVariant.typeahead}
-                  aria-label="Configuration templates"
+                  aria-label="Cache templates"
                   onToggle={onToggle}
                   onSelect={onSelect}
                   // @ts-ignore
@@ -217,7 +217,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
                   isOpen={expandedSelect}
                   isDisabled={selectedConfigDisabled}
                   aria-labelledby={titleId}
-                  placeholderText="Choose a template"
+                  placeholderText="Select a cache template"
                   onClear={clearSelection}
                 >
                   {configs.map((option, index) => (
@@ -231,15 +231,15 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
                 </Select>
               </FormGroup>
               <ExpandableSection
-                toggleText="Provide a configuration"
+                toggleText="Provide a cache configuration"
                 isExpanded={configExpanded}
                 onToggle={onToggleConfigPanel}
               >
                 <FormGroup
-                  label="Config"
+                  label="Cache configuration"
                   fieldId="cache-config"
-                  helperText="Please provide a cache config JSON or XML"
-                  helperTextInvalid="Either choose a template or provide a configuration"
+                  helperText="Enter a cache configuration in XML or JSON format."
+                  helperTextInvalid="Provide a valid cache configuration in XML or JSON format."
                 >
                   <TextArea
                     isRequired

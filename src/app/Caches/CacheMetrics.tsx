@@ -66,7 +66,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Operations Performance</CardTitle>
+        <CardTitle>Operation performance values</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
@@ -74,19 +74,19 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 {displayUtils.formatNumber(stats.average_read_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Avg Reads
+                Average reads
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_write_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Avg Writes
+                Average writes
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_remove_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Avg Removes
+                Average removes
               </TextListItem>
             </TextList>
           </TextContent>
@@ -125,7 +125,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Data access</CardTitle>
+        <CardTitle>Data access statistics</CardTitle>
         <CardBody>
           <div style={{height: '432px', width: '100%'}}>
             <ChartDonut
@@ -161,12 +161,12 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 },
                 {
                   name:
-                    'Remove Hits: ' +
+                    'Remove hits: ' +
                     displayUtils.formatNumber(stats.remove_hits),
                 },
                 {
                   name:
-                    'Remove Misses: ' +
+                    'Remove misses: ' +
                     displayUtils.formatNumber(stats.remove_misses),
                 },
                 {
@@ -257,7 +257,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   };
 
   if (!stats?.enabled) {
-    const message = 'Statistics not enabled';
+    const message = 'Statistics disabled.';
 
     return (
       <EmptyState variant={EmptyStateVariant.small}>
