@@ -42,23 +42,37 @@ const ContainerDataProvider = ({ children }) => {
 
   useEffect(() => {
     if (loadingCaches && cm) {
-      reloadAcl().then(r => {
-        if (r) {
-          ConsoleServices.dataContainer()
-            .getCaches(cm.name)
-            .then((either) => {
-              if (either.isRight()) {
-                setCaches(either.value);
-              } else {
-                setErrorCaches(either.value.message);
-              }
-            })
-            .then(() => setLoadingCaches(false));
-        } else {
-          setErrorCaches('Unable to load ACL for caches. Reconnect');
-          setLoadingCaches(false);
-        }
-      })
+      if (ConsoleServices.authentication().isNotSecured()) {
+        ConsoleServices.dataContainer()
+          .getCaches(cm.name)
+          .then((either) => {
+            if (either.isRight()) {
+              setCaches(either.value);
+            } else {
+              setErrorCaches(either.value.message);
+            }
+          })
+          .then(() => setLoadingCaches(false));
+      } else {
+        reloadAcl().then(r => {
+          if (r) {
+            ConsoleServices.dataContainer()
+              .getCaches(cm.name)
+              .then((either) => {
+                if (either.isRight()) {
+                  setCaches(either.value);
+                } else {
+                  setErrorCaches(either.value.message);
+                }
+              })
+              .then(() => setLoadingCaches(false));
+          } else {
+            setErrorCaches('Unable to load ACL for caches. Reconnect');
+            setLoadingCaches(false);
+          }
+        })
+      }
+
     }
   }, [cm, loadingCaches]);
 
