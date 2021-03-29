@@ -23,7 +23,8 @@
         "enabled": true,
         "roles": [
           "observer",
-          "admin"
+          "admin",
+          "monitor"
         ]
       }
     },
