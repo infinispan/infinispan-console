@@ -3,6 +3,7 @@ import { RestUtils } from '@services/utils';
 import { AuthenticationService } from '@services/authService';
 
 export enum ConsoleACL {
+  MONITOR = 'MONITOR',
   READ = 'READ',
   WRITE = 'WRITE',
   BULK_READ = 'BULK_READ',
@@ -12,6 +13,7 @@ export enum ConsoleACL {
 }
 
 export enum ACL {
+  MONITOR = 'MONITOR',
   LIFECYCLE = 'LIFECYCLE',
   READ = 'READ',
   WRITE = 'WRITE',
@@ -141,6 +143,9 @@ export class SecurityService {
     let hasAcl = false;
 
     switch (consoleACL) {
+      case ConsoleACL.MONITOR:
+        hasAcl = aclList.includes(ACL.MONITOR);
+        break;
       case ConsoleACL.ADMIN:
         hasAcl = aclList.includes(ACL.ADMIN);
         break;

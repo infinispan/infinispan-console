@@ -376,7 +376,7 @@ const CacheTableDisplay = (props: {
     }
 
     const disableCacheDetail =
-      isCacheIgnored(cacheInfo) || !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheInfo.name, connectedUser)
+      isCacheIgnored(cacheInfo) || !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.MONITOR, cacheInfo.name, connectedUser)
 
     const cacheDetailAccess = (
       <Button

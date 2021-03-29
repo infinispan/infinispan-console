@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useState} from 'react';
 import {
   Badge,
   Button,
@@ -29,21 +29,17 @@ import {
   ToolbarItemVariant,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { CacheMetrics } from '@app/Caches/CacheMetrics';
-import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
-import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
-import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
-import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
-import {
-  AngleDownIcon,
-  AngleRightIcon,
-  ExclamationCircleIcon,
-} from '@patternfly/react-icons';
-import { QueryEntries } from '@app/Caches/Query/QueryEntries';
-import { Link } from 'react-router-dom';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { useCacheDetail } from '@app/services/cachesHook';
+import {CacheMetrics} from '@app/Caches/CacheMetrics';
+import {CacheEntries} from '@app/Caches/Entries/CacheEntries';
+import {CacheConfiguration} from '@app/Caches/Configuration/CacheConfiguration';
+import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
+import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
+import {global_danger_color_200} from '@patternfly/react-tokens';
+import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon,} from '@patternfly/react-icons';
+import {QueryEntries} from '@app/Caches/Query/QueryEntries';
+import {Link} from 'react-router-dom';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import {useCacheDetail} from '@app/services/cachesHook';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
@@ -52,11 +48,15 @@ const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache } = useCacheDetail(cacheName);
-  const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
+  const [activeTabKey1, setActiveTabKey1] = useState<number | string>(ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)? 0:1);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
   const buildEntriesTabContent = (queryable: boolean) => {
+    if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+      return '';
+    }
+
     if (!queryable) {
       return (
         <React.Fragment>
@@ -338,6 +338,19 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
+    const displayCacheEntries = () => {
+      if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+        return '';
+      }
+
+      return (
+        <Tab
+          eventKey={0}
+          title={cache.size? 'Entries (' + displayUtils.formatNumber(cache?.size) + ')' : 'Entries'}
+        ></Tab>
+      )
+    }
+
     const displayCacheStats = () => {
       if(!cache.stats) {
         return '';
@@ -380,10 +393,7 @@ const DetailCache = (props: { cacheName: string }) => {
           component={TabsComponent.nav}
           onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}
         >
-          <Tab
-            eventKey={0}
-            title={cache.size? 'Entries (' + displayUtils.formatNumber(cache?.size) + ')' : 'Entries'}
-          ></Tab>
+          {displayCacheEntries()}
           <Tab eventKey={1} title={'Configuration'} />
           {displayCacheStats()}
         </Tabs>
