@@ -19,7 +19,7 @@ import {
   TextVariants,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
+  ToolbarItem, Tooltip,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import {Link, NavLink, Redirect} from 'react-router-dom';
@@ -35,6 +35,7 @@ import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {KeycloakService} from "@services/keycloakService";
+import {InfoCircleIcon} from "@patternfly/react-icons";
 
 interface IAppLayout {
   init: string;
@@ -95,7 +96,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     </Toolbar>
   );
 
-
   const userDropdownItems = [
     <DropdownGroup key="user-action-group">
       <DropdownItem key="user-action-group-1 logout" onClick={() => {
@@ -110,18 +110,38 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     </DropdownGroup>
   ];
 
-  const UserActions = (
-    <PageHeaderTools>
-      <Dropdown
-        isPlain
-        position="right"
-        onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
-        isOpen={isDropdownOpen}
-        toggle={<DropdownToggle onToggle={() => setIsDropdownOpen(!isDropdownOpen)}>{connectedUser.name}</DropdownToggle>}
-        dropdownItems={userDropdownItems}
-      />
-    </PageHeaderTools>
-  )
+  const userActions = () => {
+    let chromeAgent = navigator.userAgent.toString().indexOf("Chrome") > -1;
+    if (chromeAgent || (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated())) {
+      return (
+        <PageHeaderTools>
+          <Dropdown
+            isPlain
+            position="right"
+            onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
+            isOpen={isDropdownOpen}
+            toggle={<DropdownToggle onToggle={() => setIsDropdownOpen(!isDropdownOpen)}>{connectedUser.name}</DropdownToggle>}
+            dropdownItems={userDropdownItems}
+          />
+        </PageHeaderTools>
+      );
+    }
+   return (
+     <PageHeaderTools>
+       {connectedUser.name}
+       <Tooltip
+         position="left"
+         content={
+           <div>Close the browser or open an incognito window to log again.</div>
+         }
+       >
+      <span aria-label="Close the browser or open an incognito window to log again." tabIndex={0}>
+        <InfoCircleIcon style={{marginLeft: global_spacer_sm.value, marginTop: global_spacer_sm.value}}/>
+      </span>
+       </Tooltip>
+     </PageHeaderTools>
+   )
+  }
 
   const Header = (
     <PageHeader
@@ -130,7 +150,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
-      headerTools={ConsoleServices.authentication().isNotSecured() ? null : UserActions}
+      headerTools={ConsoleServices.authentication().isNotSecured() ? null : userActions()}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
   );
