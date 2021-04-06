@@ -29,7 +29,6 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "cypress": "^6.0.1",
     "@testing-library/dom": "^7.28.1",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
@@ -43,6 +42,7 @@
     "@webpack-cli/serve": "^1.1.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
+    "cypress": "^6.0.1",
     "dotenv-webpack": "^6.0.0",
     "eslint": "^7.14.0",
     "eslint-plugin-i18n-json": "^3.1.0",
@@ -83,10 +83,9 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@hot-loader/react-dom": "^17.0.1",
     "@patternfly/react-catalog-view-extension": "^4.10.2",
     "@patternfly/react-charts": "^6.14.2",
-    "@patternfly/react-code-editor": "^4.1.25",
+    "@patternfly/react-code-editor": "^4.2.19",
     "@patternfly/react-core": "^4.97.2",
     "@patternfly/react-icons": "^4.9.2",
     "@patternfly/react-styles": "^4.8.2",
@@ -98,11 +97,9 @@
     "i18next-http-backend": "^1.0.21",
     "keycloak-js": "^12.0.2",
     "numeral": "^2.0.6",
-    "monaco-editor": "^0.21.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-i18next": "^11.7.4",
-    "react-monaco-editor": "^0.41.2",
     "react-router-last-location": "^2.0.1",
     "react-syntax-highlighter": "^15.4.3",
     "sirv-cli": "^1.0.10"
