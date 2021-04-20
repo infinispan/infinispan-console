@@ -182,11 +182,27 @@
       "add-entry-form-value-type-select-label": "Select Value Content Type"
     },
     "query" : {
+      "button-clear-query-stats" : "Clear all stats",
+      "stat-max" : "Max",
+      "stat-count" : "Count",
+      "stat-average" : "Average",
+      "stat-slowest" : "Slowest",
       "modal-clear-query-stats" : "Permanently clear query stats?",
       "modal-clear-query-stats-label" : "Clear query stats modal",
       "modal-button-query-clear-stats" : "Clear stats",
       "modal-button-cancel" : "Cancel",
       "modal-button-query-clear-stats-body" : "All query statistics in this cluster will be removed."
+    },
+    "index" : {
+      "title" : "Index management",
+      "empty" : "Indexes are empty",
+      "class-name" : "Class name",
+      "entities-number" : "Number of entities",
+      "size" : "Index size in bytes",
+      "indexing-status" : "Indexing",
+      "button-clear" : "Clear index",
+      "button-rebuild" : "Rebuild index",
+      "button-back-to-cache-detail" : "Back"
     }
   }
 }

@@ -18,29 +18,24 @@ import {
   TextListVariants,
   TextVariants,
 } from '@patternfly/react-core';
-import displayUtils from '@services/displayUtils';
 import {TableErrorState} from '@app/Common/TableErrorState';
 import {ClearQueryMetrics} from '@app/Caches/Query/ClearQueryMetrics';
 import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
+import {useSearchStats} from "@app/services/statsHook";
 
 /**
  * Query stats for indexed caches only
  */
 const QueryMetrics = (props: {
   cacheName: string;
-  stats: QueryStats | undefined;
-  loading: boolean;
-  error: string;
 }) => {
-  const { connectedUser } = useConnectedUser();
-  const [stats, setStats] = useState<QueryStats | undefined>(props.stats);
-  const [loading, setLoading] = useState<boolean>(props.loading);
-  const [error, setError] = useState<string>(props.error);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const { connectedUser } = useConnectedUser();
+  const {stats, loading, error, setLoading} = useSearchStats(props.cacheName);
 
   const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(
     false
@@ -48,18 +43,7 @@ const QueryMetrics = (props: {
 
   const closeClearMetricsModal = () => {
     setClearMetricsModalOpen(false);
-    realoadStats();
-  };
-
-  const realoadStats = () => {
-    ConsoleServices.caches().retrieveQueryStats(props.cacheName).then((eitherStats) => {
-      setLoading(false);
-      if (eitherStats.isRight()) {
-        setStats(eitherStats.value);
-      } else {
-        setError(eitherStats.value.message);
-      }
-    });
+    setLoading(true);
   };
 
   const buildCardContent = () => {
@@ -77,90 +61,66 @@ const QueryMetrics = (props: {
 
     return (
       <TextContent>
-        <Text component={TextVariants.small}>
-          {' '}
-          Search query <Divider component={DividerVariant.hr} />
-        </Text>
-        <TextList component={TextListVariants.dl}>
-          <TextListItem
-            component={TextListItemVariants.dt}
-            style={{ width: 250 }}
-          >
-            Number of executions
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.search_query_execution_count)}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>
-            Total time
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.search_query_total_time)}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>
-            Execution maximum time
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.search_query_execution_max_time)}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>
-            Execution average time
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.search_query_execution_avg_time)}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>
-            Execution maximum time query string
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {stats?.search_query_execution_max_time_query_string}
-          </TextListItem>
-        </TextList>
-        <Text component={TextVariants.small}>
-          {' '}
-          Object loading <Divider component={DividerVariant.hr} />
-        </Text>
-        <TextList component={TextListVariants.dl}>
-          <TextListItem
-            component={TextListItemVariants.dt}
-            style={{ width: 250 }}
-          >
-            Total time
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.object_loading_total_time)}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>
-            Execution maximum time
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(
-              stats?.object_loading_execution_max_time
-            )}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>
-            Execution average time
-          </TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(
-              stats?.object_loading_execution_avg_time
-            )}
-          </TextListItem>
-
-          <TextListItem component={TextListItemVariants.dt}>Count</TextListItem>
-          <TextListItem component={TextListItemVariants.dd}>
-            {displayUtils.formatNumber(stats?.objects_loaded_count)}
-          </TextListItem>
-        </TextList>
+          {stats.query.map((queryStat, num) =>
+            <React.Fragment key={'stat-fragment-' + num}>
+              <Text component={TextVariants.small} key={'name-' + num}>
+                {' '}
+                {queryStat.name} <Divider component={DividerVariant.hr} />
+              </Text>
+              <TextList component={TextListVariants.dl} key={'stats-' + num}>
+                <TextListItem
+                  component={TextListItemVariants.dt}
+                  style={{width: 250}}  key={'stats-count-label-' + num}
+                >
+                  {t('caches.query.stat-count')}
+                </TextListItem>
+                <TextListItem component={TextListItemVariants.dd}  key={'stats-count-value-' + num}>
+                  {queryStat.count}
+                </TextListItem>
+                <TextListItem
+                  component={TextListItemVariants.dt}
+                  style={{width: 250}}  key={'stats-qverage-label-' + num}
+                >
+                  {t('caches.query.stat-average')}
+                </TextListItem>
+                <TextListItem component={TextListItemVariants.dd}  key={'stats-average-value-' + num}>
+                  {queryStat.average}
+                </TextListItem>
+                <TextListItem
+                  component={TextListItemVariants.dt}
+                  style={{width: 250}}  key={'stats-max-label-' + num}
+                >
+                  {t('caches.query.stat-max')}
+                </TextListItem>
+                <TextListItem component={TextListItemVariants.dd}  key={'stats-max-value-' + num}>
+                  {queryStat.max}
+                </TextListItem>
+                {displaySlowest(queryStat, num)}
+              </TextList>
+            </React.Fragment>
+          )}
       </TextContent>
     );
   };
+
+  const displaySlowest = (queryStat: QueryStat, num: number) => {
+    if(!queryStat.slowest || queryStat.slowest == '') {
+      return '';
+    }
+    return (
+      <React.Fragment>
+        <TextListItem
+          component={TextListItemVariants.dt}
+          style={{width: 250}} key={'stats-slowest-label-' + num}
+        >
+          {t('caches.query.stat-slowest')}
+        </TextListItem>
+        <TextListItem component={TextListItemVariants.dd} key={'stats-slowest-value-' + num}>
+          <code>{queryStat.slowest}</code>
+        </TextListItem>
+      </React.Fragment>
+    )
+  }
 
   const buildClearStatsButton = () => {
     if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
@@ -173,7 +133,7 @@ const QueryMetrics = (props: {
           variant={ButtonVariant.danger}
           onClick={() => setClearMetricsModalOpen(true)}
         >
-          Clear all stats
+          {t('caches.query.button-clear-query-stats')}
         </Button>
         <ClearQueryMetrics
           cacheName={props.cacheName}

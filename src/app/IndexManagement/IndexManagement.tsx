@@ -1,10 +1,14 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {
+  Alert,
+  AlertVariant,
   Button,
   ButtonVariant,
   Divider,
   DividerVariant,
+  Grid,
+  GridItem,
   Level,
   LevelItem,
   PageSection,
@@ -16,7 +20,7 @@ import {
   TextListItem,
   TextListItemVariants,
   TextListVariants,
-  TextVariants,
+  TextVariants, Toolbar, ToolbarItem,
 } from '@patternfly/react-core';
 import {Link} from 'react-router-dom';
 import {global_spacer_md} from '@patternfly/react-tokens';
@@ -25,81 +29,30 @@ import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {TableErrorState} from '@app/Common/TableErrorState';
 import {PurgeIndex} from '@app/IndexManagement/PurgeIndex';
 import {Reindex} from '@app/IndexManagement/Reindex';
-import displayUtils from '../../services/displayUtils';
 import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
+import {useSearchStats} from "@app/services/statsHook";
+import { ToolbarContent } from '@patternfly/react-core/dist/js/components/Toolbar/ToolbarContent';
 
 const IndexManagement = (props) => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const { connectedUser } = useConnectedUser();
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
+  const {stats, loading, error, setLoading} = useSearchStats(cacheName)
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
-  const [indexStats, setIndexStats] = useState<IndexStats | undefined>(
-    undefined
-  );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    retrieveIndexStats();
-  }, []);
-
-  const retrieveIndexStats = () => {
-    ConsoleServices.caches().retrieveIndexStats(cacheName).then((eitherResult) => {
-      setLoading(false);
-      if (eitherResult.isRight()) {
-        setIndexStats(eitherResult.value);
-      } else {
-        addAlert(eitherResult.value);
-        setError(eitherResult.value.message);
-      }
-    });
-  };
-
-  const displayClassNames = () => {
-    if (!indexStats) {
-      return <Text></Text>;
-    }
-    return indexStats?.class_names.map((className) => (
-      <Text component={TextVariants.p} key={className}>
-        {className}
-      </Text>
-    ));
-  };
-
-  const displayIndexValues = (label: string, values: IndexValue[]) => {
-    if (!indexStats) {
-      return '';
-    }
-    return (
-      <TextList component={TextListVariants.dl}>
-        {values.map((indexValue) => (
-          <React.Fragment key={'react-frangment-text-' + indexValue.entity}>
-            <TextListItem component={TextListItemVariants.dt}>
-              {indexValue.entity}
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
-              {displayUtils.formatNumber(indexValue.count) + ' ' + label}
-            </TextListItem>
-          </React.Fragment>
-        ))}
-      </TextList>
-    );
-  };
 
   const closePurgeModal = () => {
     setPurgeModalOpen(false);
-    retrieveIndexStats();
+    setLoading(true);
   };
 
   const closeReindexModal = () => {
     setReindexModalOpen(false);
-    retrieveIndexStats();
+    setLoading(true);
   };
 
   const buildReindexAction = () => {
@@ -107,7 +60,7 @@ const IndexManagement = (props) => {
       return ;
     }
 
-    if (indexStats?.reindexing) {
+    if (stats?.reindexing) {
       return <Spinner size={'md'} />;
     }
     return (
@@ -115,7 +68,7 @@ const IndexManagement = (props) => {
         variant={ButtonVariant.secondary}
         onClick={() => setReindexModalOpen(true)}
       >
-        Rebuild index
+        {t('caches.index.button-rebuild')}
       </Button>
     );
   };
@@ -129,10 +82,10 @@ const IndexManagement = (props) => {
      <LevelItem>
       <Button
         variant={ButtonVariant.danger}
-        disabled={!indexStats?.reindexing}
+        disabled={!stats?.reindexing}
         onClick={() => setPurgeModalOpen(true)}
       >
-        Clear index
+        {t('caches.index.button-clear')}
       </Button>
      </LevelItem>
    );
@@ -140,81 +93,76 @@ const IndexManagement = (props) => {
 
   const buildIndexPageContent = () => {
     if (loading) {
-      return <Spinner size={'lg'} />;
+      return (
+        <Spinner size={'lg'} />
+        );
     }
 
     if (error != '') {
-      return <TableErrorState error={error} />;
+      return (
+        <TableErrorState error={error} />
+        );
     }
 
-    if (indexStats) {
+    if (stats) {
       return (
-        <TextContent style={{ marginTop: global_spacer_md.value }}>
-          <TextList component={TextListVariants.dl} key="indexes">
-            <TextListItem component={TextListItemVariants.dt} key={'className'}>
-              Class name
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'classNameValue'}
-            >
-              <TextContent>{displayClassNames()}</TextContent>
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dt}
-              key={'entriesCount'}
-            >
-              Number of entities
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'entriesCountValue'}
-            >
-              <TextContent>
-                {displayIndexValues('entities', indexStats?.entities_count)}
+        <Grid hasGutter>
+          {stats.index.map((indexData, num) =>
+            <GridItem span={6} key={'grid-item-index-' + num}>
+              <TextContent style={{marginTop: global_spacer_md.value}} key={'index-className-' + num}>
+                <TextList component={TextListVariants.dl}>
+                  <TextListItem component={TextListItemVariants.dt}>
+                    {t('caches.index.class-name')}
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dd}
+                    key={'classNameValue'}
+                  >
+                    <TextContent>{indexData.name}</TextContent>
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dt}
+                    key={'entriesCount'}
+                  >
+                    {t('caches.index.entities-number')}
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dd}
+                    key={'entriesCountValue'}
+                  >
+                    <TextContent>
+                      {indexData.count}
+                    </TextContent>
+                  </TextListItem>
+                  <TextListItem component={TextListItemVariants.dt} key={'sizes'}>
+                    {t('caches.index.size')}
+                  </TextListItem>
+                  <TextListItem
+                    component={TextListItemVariants.dd}
+                    key={'sizesValue'}
+                  >
+                    <TextContent>
+                      {indexData.size}
+                    </TextContent>
+                  </TextListItem>
+                </TextList>
               </TextContent>
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dt} key={'sizes'}>
-              Index size
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'sizesValue'}
-            >
-              <TextContent>
-                {displayIndexValues('bytes', indexStats?.sizes)}
-              </TextContent>
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dt} key={'reindex'}>
-              Rebuilding index
-            </TextListItem>
-            <TextListItem
-              component={TextListItemVariants.dd}
-              key={'reindexValue'}
-            >
-              {buildReindexAction()}
-            </TextListItem>
-          </TextList>
-          <Text key={'button-back'}>
-            <Link
-              to={{
-                pathname: '/cache/' + encodeURIComponent(cacheName),
-              }}
-            >
-              <Button>Back</Button>
-            </Link>
-          </Text>
-        </TextContent>
+            </GridItem>
+          )}
+        </Grid>
       );
     }
-    return;
+
+    return (
+      <Alert variant={AlertVariant.info} title={t('caches.index.empty')}/>
+    );
   };
 
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb
-          currentPage="Index management"
+          currentPage={t('caches.index.title')}
           cacheName={cacheName}
         />
         <Level>
@@ -224,7 +172,7 @@ const IndexManagement = (props) => {
               key={'title-indexing'}
             >
               <Text component={TextVariants.h1} key={'title-value-indexing'}>
-                Indexing
+                {t('caches.index.indexing-status')}
               </Text>
             </TextContent>
           </LevelItem>
@@ -233,6 +181,25 @@ const IndexManagement = (props) => {
 
         <Divider component={DividerVariant.hr}></Divider>
         {buildIndexPageContent()}
+        <Divider component={DividerVariant.hr} style={{marginTop: global_spacer_md.value}}></Divider>
+        <Toolbar id="indexing-page-toolbar">
+          <ToolbarContent>
+            <ToolbarItem>{buildReindexAction()}</ToolbarItem>
+            <ToolbarItem>
+              <TextContent>
+                <Text key={'button-back'}>
+                  <Link
+                    to={{
+                      pathname: '/cache/' + encodeURIComponent(cacheName),
+                    }}
+                  >
+                    <Button> {t('caches.index.button-back-to-cache-detail')}</Button>
+                  </Link>
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
         <PurgeIndex
           cacheName={cacheName}
           isModalOpen={purgeModalOpen}

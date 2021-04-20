@@ -17,7 +17,7 @@ const Reindex = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickPurgeButton = () => {
-    ConsoleServices.caches().reindex(props.cacheName).then((actionResponse) => {
+    ConsoleServices.search().reindex(props.cacheName).then((actionResponse) => {
       props.closeModal();
       addAlert(actionResponse);
     });

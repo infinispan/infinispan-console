@@ -23,7 +23,7 @@ const PurgeIndex = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickPurgeButton = () => {
-    ConsoleServices.caches().purgeIndexes(props.cacheName).then((actionResponse) => {
+    ConsoleServices.search().purgeIndexes(props.cacheName).then((actionResponse) => {
       props.closeModal();
       addAlert(actionResponse);
     });

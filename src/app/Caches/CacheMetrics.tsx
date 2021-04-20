@@ -28,31 +28,14 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [stats, setStats] = useState<CacheStats | undefined>(undefined);
   const [statsError, setStatsError] = useState<string | undefined>(undefined);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
-  const [queryStats, setQueryStats] = useState<QueryStats | undefined>();
-  const [queryStatsLoading, setQueryStatsLoading] = useState<boolean>(true);
-  const [queryStatsError, setQueryStatsError] = useState<string>('');
 
   useEffect(() => {
     ConsoleServices.caches().retrieveFullDetail(props.cacheName).then((detail) => {
-      setQueryStatsLoading(false);
       if (detail.isRight()) {
         setStats(detail.value.stats);
         let loadQueryStats =
           detail.value.stats != undefined && detail.value.stats.enabled && detail.value.features.indexed;
         setDisplayQueryStats(loadQueryStats);
-        if (loadQueryStats) {
-          // Retrieve query stats only if stats are enabled and the cache is indexed
-          ConsoleServices.caches()
-            .retrieveQueryStats(props.cacheName)
-            .then((eitherStats) => {
-              setQueryStatsLoading(false);
-              if (eitherStats.isRight()) {
-                setQueryStats(eitherStats.value);
-              } else {
-                setQueryStatsError(eitherStats.value.message);
-              }
-            });
-        }
       } else {
         setStatsError(detail.value.message);
       }
@@ -100,12 +83,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       return;
     }
     return (
-      <QueryMetrics
-        cacheName={props.cacheName}
-        stats={queryStats}
-        error={queryStatsError}
-        loading={queryStatsLoading}
-      />
+      <QueryMetrics cacheName={props.cacheName}/>
     );
   };
 
@@ -127,7 +105,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <Card>
         <CardTitle>Data access statistics</CardTitle>
         <CardBody>
-          <div style={{height: '432px', width: '100%'}}>
+          <div style={{height: '300px', width: '70%'}}>
             <ChartDonut
               constrainToVisibleArea={true}
               data={[
@@ -179,7 +157,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               padding={{
                 bottom: 40,
                 left: 80,
-                right: 200, // Adjusted to accommodate legend
+                right: 0, // Adjusted to accommodate legend
                 top: 20,
               }}
               title={ displayUtils.formatBigNumber(all) }
@@ -283,8 +261,8 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={7}>{buildDataAccess()}</GridItem>
-      <GridItem span={5}>{buildQueryStats()}</GridItem>
+      <GridItem span={12}>{buildDataAccess()}</GridItem>
+      <GridItem span={12}>{buildQueryStats()}</GridItem>
     </Grid>
   );
 };

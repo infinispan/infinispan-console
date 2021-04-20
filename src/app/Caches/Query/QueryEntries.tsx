@@ -119,7 +119,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
       return;
     }
 
-    ConsoleServices.caches()
+    ConsoleServices.search()
       .searchValues(props.cacheName, query, perPage, page - 1)
       .then((response) => {
         if (response.isRight()) {
