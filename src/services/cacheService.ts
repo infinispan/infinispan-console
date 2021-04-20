@@ -1,5 +1,5 @@
-import { ContentType, RestUtils } from './utils';
-import { Either, left, right } from './either';
+import {ContentType, RestUtils} from './utils';
+import {Either, left, right} from './either';
 
 /**
  * Cache Service calls Infinispan endpoints related to Caches
@@ -239,7 +239,7 @@ export class CacheService {
   }
 
   /**
-   * Add entry
+   * Add or Update an entry
    *
    * @param cacheName
    * @param key
@@ -416,6 +416,7 @@ export class CacheService {
     if (keyContentType) {
       let keyContentTypeHeader = RestUtils.fromContentType(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
+      headers.append('Content-Type', RestUtils.fromContentType(ContentType.JSON));
     }
     const getEntryUrl =
       this.endpoint +
@@ -429,6 +430,11 @@ export class CacheService {
       .then((response) => {
         if (response.ok) {
           return response.text().then((value) => {
+            let valueContentType = ContentType.StringContentType;
+            if (isNaN(Number(value)) && RestUtils.isJSONObject(value)) {
+              valueContentType = ContentType.JSON;
+            }
+
             const timeToLive = response.headers.get('timeToLiveSeconds');
             const maxIdleTimeSeconds = response.headers.get(
               'maxIdleTimeSeconds'
@@ -443,7 +449,7 @@ export class CacheService {
               key: key,
               value: value,
               keyContentType: keyContentType,
-              valueContentType: undefined,
+              valueContentType: valueContentType,
               timeToLive: this.parseMetadataNumber(timeToLive),
               maxIdle: this.parseMetadataNumber(maxIdleTimeSeconds),
               created: this.parseMetadataDate(created),
