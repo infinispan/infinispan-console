@@ -23,7 +23,7 @@ const ClearQueryMetrics = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickDeleteButton = () => {
-    ConsoleServices.caches().clearQueryStats(props.cacheName).then((actionResponse) => {
+    ConsoleServices.search().clearQueryStats(props.cacheName).then((actionResponse) => {
       addAlert(actionResponse);
       props.closeModal();
     });

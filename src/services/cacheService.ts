@@ -89,8 +89,7 @@ export class CacheService {
         }) as Either<ActionResponse, DetailedInfinispanCache>;
       })
       .catch((err) => {
-        const errorMessage =
-          'Cannot retrieve details of cache ' + cacheName;
+        const errorMessage = 'Cannot retrieve details of cache ' + cacheName;
         if (err instanceof Response) {
           return err.text().then((errResponse) => {
             if (errResponse == '') {
@@ -166,9 +165,7 @@ export class CacheService {
       config
     );
     return this.utils.handleCRUDActionResponse(
-      'Cache ' +
-        cacheName +
-        ' created with the provided configuration.',
+      'Cache ' + cacheName + ' created with the provided configuration.',
       createCachePromise
     );
   }
@@ -276,7 +273,11 @@ export class CacheService {
     }
 
     let contentTypeHeader;
-    if (isNaN(Number(value)) && RestUtils.isJSONObject(value) && valueContentType == ContentType.StringContentType) {
+    if (
+      isNaN(Number(value)) &&
+      RestUtils.isJSONObject(value) &&
+      valueContentType == ContentType.StringContentType
+    ) {
       contentTypeHeader = RestUtils.fromContentType(ContentType.JSON);
     } else if (valueContentType) {
       contentTypeHeader = RestUtils.fromContentType(valueContentType);
@@ -313,9 +314,7 @@ export class CacheService {
       headers,
       value
     );
-    let message = create
-      ? 'Entry added to cache '
-      : 'Entry updated in cache ';
+    let message = create ? 'Entry added to cache ' : 'Entry updated in cache ';
     return this.utils.handleCRUDActionResponse(
       message + cacheName,
       responsePromise
@@ -651,319 +650,8 @@ export class CacheService {
         }
       })
       .catch((err) =>
-        left(
-          this.utils.mapError(err, 'Cannot get size for cache ' + cacheName)
-        )
+        left(this.utils.mapError(err, 'Cannot get size for cache ' + cacheName))
       );
-  }
-
-  /**
-   * Search entries by query
-   *
-   * @param cacheName
-   * @param query
-   * @return SearchResult or ActionResponse
-   */
-  public async searchValues(
-    cacheName: string,
-    query: string,
-    maxResults: number,
-    offset: number
-  ): Promise<Either<ActionResponse, SearchResut>> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '?action=search' +
-          '&query=' +
-          query +
-          '&max_results=' +
-          maxResults +
-          '&offset=' +
-          offset * maxResults,
-        'GET',
-        'application/json;q=0.8'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json().then(
-            (json) =>
-              <SearchResut>{
-                total: json.total_results,
-                values: json.hits.map((hit) =>
-                  JSON.stringify(hit.hit, null, 2)
-                ),
-              }
-          );
-        }
-        throw response;
-      })
-      .then((data) => right(data) as Either<ActionResponse, SearchResut>)
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{
-            message: 'Cannot perform query. ' + err.message,
-            success: false,
-          });
-        }
-
-        if (err instanceof Response) {
-          if (err.status == 400) {
-            return err.json().then((jsonError) =>
-              left(<ActionResponse>{
-                message: jsonError.error.message + '\n' + jsonError.error.cause,
-                success: false,
-              })
-            );
-          }
-
-          return err
-            .text()
-            .then((errorMessage) =>
-              left(<ActionResponse>{ message: errorMessage, success: false })
-            );
-        }
-        return left(<ActionResponse>{
-          message: 'Cannot perform query.',
-          success: false,
-        });
-      });
-  }
-
-  /**
-   * Retrieve index stats for the cache name
-   *
-   * @param cacheName
-   */
-  public async retrieveIndexStats(
-    cacheName: string
-  ): Promise<Either<ActionResponse, IndexStats>> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/search/indexes/stats',
-        'GET'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data) =>
-        right(<IndexStats>{
-          class_names: data.indexed_class_names,
-          entities_count: this.mapToIndexValueArray(
-            data.indexed_entities_count
-          ),
-          sizes: this.mapToIndexValueArray(data.index_sizes),
-          reindexing: data.reindexing,
-        })
-      )
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-
-        return err.text().then((errorMessage) => {
-          if (errorMessage == '') {
-            errorMessage =
-              'An error occurred when retrieving index statistics for cache ' + cacheName;
-          }
-
-          return left(<ActionResponse>{
-            message: errorMessage,
-            success: false,
-          });
-        });
-      });
-  }
-
-  /**
-   * Purge index for the cache name
-   *
-   * @param cacheName
-   */
-  public async purgeIndexes(cacheName: string): Promise<ActionResponse> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/search/indexes?action=clear',
-        'POST'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return <ActionResponse>{
-            message: 'Index of cache ' + cacheName + ' cleared.',
-            success: true,
-          };
-        }
-        throw response;
-      })
-      .catch((err) => {
-        let genericError =
-          'An error occurred when clearing the index for cache ' + cacheName;
-        if (err instanceof TypeError) {
-          return <ActionResponse>{ message: err.message, success: false };
-        }
-
-        if (err instanceof Response) {
-          return err.text().then((errorMessage) => {
-            if (errorMessage == '') {
-              errorMessage = genericError;
-            }
-
-            return <ActionResponse>{
-              message: errorMessage,
-              success: false,
-            };
-          });
-        }
-
-        return <ActionResponse>{
-          message: genericError,
-          success: false,
-        };
-      });
-  }
-
-  /**
-   * Reindex cache
-   *
-   * @param cacheName
-   */
-  public async reindex(cacheName: string): Promise<ActionResponse> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/search/indexes?action=mass-index&mode=async',
-        'POST'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return <ActionResponse>{
-            message: 'Indexing cache ' + cacheName + ' started.',
-            success: true,
-          };
-        }
-        throw response;
-      })
-      .catch((err) => {
-        let genericError =
-          'An error occurred when starting to rebuild the index for cache ' +
-          cacheName;
-        if (err instanceof TypeError) {
-          return <ActionResponse>{ message: err.message, success: false };
-        }
-
-        if (err instanceof Response) {
-          return err.text().then((errorMessage) => {
-            if (errorMessage == '') {
-              errorMessage = genericError;
-            }
-
-            return <ActionResponse>{
-              message: errorMessage,
-              success: false,
-            };
-          });
-        }
-
-        return <ActionResponse>{
-          message: genericError,
-          success: false,
-        };
-      });
-  }
-
-  private mapToIndexValueArray(data: JSON): IndexValue[] {
-    return Object.keys(data).map(
-      (key) => <IndexValue>{ entity: key as string, count: data[key] as number }
-    );
-  }
-
-  public async retrieveQueryStats(
-    cacheName: string
-  ): Promise<Either<ActionResponse, QueryStats>> {
-    return this.utils
-      .restCall(
-        this.endpoint + '/caches/' + cacheName + '/search/query/stats',
-        'GET'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data) =>
-        right(<QueryStats>{
-          search_query_execution_count: data.search_query_execution_count,
-          search_query_total_time: data.search_query_total_time,
-          search_query_execution_max_time: data.search_query_execution_max_time,
-          search_query_execution_avg_time: data.search_query_execution_avg_time,
-          object_loading_total_time: data.object_loading_total_time,
-          object_loading_execution_max_time:
-            data.object_loading_execution_max_time,
-          object_loading_execution_avg_time:
-            data.object_loading_execution_avg_time,
-          objects_loaded_count: data.objects_loaded_count,
-          search_query_execution_max_time_query_string:
-            data.search_query_execution_max_time_query_string,
-        })
-      )
-      .catch((err) => {
-        let genericError =
-          'An error occurred when starting to rebuild the index for cache ' +
-          cacheName;
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{
-            message: err.message == '' ? genericError : err.message,
-            success: false,
-          });
-        }
-
-        return err.text().then((errorMessage) =>
-          left(<ActionResponse>{
-            message: errorMessage == '' ? genericError : errorMessage,
-            success: false,
-          })
-        );
-      });
-  }
-
-  /**
-   * Clears the cache query statistics
-   *
-   * @param cacheName
-   */
-  public async clearQueryStats(cacheName: string): Promise<ActionResponse> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/search/stats?action=clear',
-        'POST'
-      )
-      .then((response) => {
-        let message = '';
-        if (response.ok) {
-          message = 'Query statistics of cache ' + cacheName + ' cleared.';
-        } else {
-          message = 'Cannot clear query statistics of cache ' + cacheName;
-        }
-
-        return <ActionResponse>{ message: message, success: response.ok };
-      })
-      .catch((err) => <ActionResponse>{ message: err.message, success: false });
   }
 
   private mapCacheType(config: JSON): string {

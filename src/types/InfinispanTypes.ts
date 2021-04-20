@@ -228,21 +228,28 @@ interface ProtoSchema {
   error?: ProtoError;
 }
 
-interface IndexValue {
-  entity: string;
-  count: number;
-}
-
-interface IndexStats {
-  class_names: [string];
-  entities_count: [IndexValue];
-  sizes: [IndexValue];
-  reindexing: boolean;
-}
-
 interface AuthInfo {
   mode: string;
   ready: boolean;
   digest: boolean;
   keycloakConfig?: Keycloak.KeycloakConfig;
+}
+
+interface IndexStat {
+  name: string;
+  count: string;
+  size: string;
+}
+interface QueryStat {
+  name: string;
+  count: string;
+  average: string;
+  max: string;
+  slowest?: string;
+}
+
+interface SearchStats {
+  index: IndexStat[];
+  query: QueryStat[];
+  reindexing: boolean;
 }
