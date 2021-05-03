@@ -19,7 +19,7 @@ server bundle, so the console is served from the server in production.
 To run the latest development release version, run 12.0
 
 ```bash
- docker run -it --rm -p 11222:11222 -e USER="user" -e PASS="pass" infinispan/server:12.0
+ docker run -it --rm -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:12.1
 ```
 
 ### Direct download
