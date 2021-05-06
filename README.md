@@ -2,7 +2,7 @@
 
 # Infinispan Console
 
-This is the front end application for the web console of the new Infinispan Server 12.x
+This is the front end application for the web console of the new Infinispan Server 13.x
 
 This application is built using [Patternfly 4 and React](https://www.patternfly.org/v4/get-started/developers)
 
@@ -16,7 +16,7 @@ server bundle, so the console is served from the server in production.
 
 ### Use Docker
 
-To run the latest development release version, run 12.0
+To run the latest development release version, run 13.0
 
 ```bash
  docker run -it --rm -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:13.0
