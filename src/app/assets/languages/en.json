@@ -8,7 +8,7 @@
     "about-name": "About"
     },
   "welcome-page" : {
-    "description1": "{{brandname}} is a scalable in-memory data store that provides highly flexible and available access to data.",
+    "description1": "{{brandname}} is a highly flexible in-memory data store that provides scalability, interoperability, and fault tolerance.",
     "description2": "Use high-performance caching capabilities or create distributed data grids designed for microservice architectures.",
     "license": "Available under Apache License 2.0.",
     "connect" : "Connect to {{brandname}} clusters with remote clients.",
