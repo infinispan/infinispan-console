@@ -7,7 +7,7 @@ import {
 } from '@patternfly/react-tokens';
 import { Badge } from '@patternfly/react-core';
 import React from 'react';
-import { CacheType } from '@services/utils';
+import { CacheType } from '@services/restUtils';
 
 const CacheTypeBadge = (props: { cacheType: string; small: boolean }) => {
   const cacheTypeEnum = CacheType[props.cacheType];

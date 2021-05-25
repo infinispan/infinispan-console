@@ -1,5 +1,5 @@
 import { Either, left, right } from '@services/either';
-import { RestUtils } from '@services/utils';
+import { RestUtils } from '@services/restUtils';
 
 /**
  * Protobuf schemas manipulation service

@@ -17,7 +17,7 @@ import { SelectOptionObject } from '@patternfly/react-core/src/components/Select
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
-import { ContentType, Flags } from '@services/utils';
+import { ContentType, Flags } from '@services/restUtils';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
 import { useReloadCache } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';

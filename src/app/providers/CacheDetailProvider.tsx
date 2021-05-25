@@ -71,7 +71,7 @@ const CacheDetailProvider = ({ children }) => {
       });
       if(ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
          ConsoleServices.caches()
-           .getEntries(cacheName, cache.configuration, '100')
+           .getEntries(cacheName, cache.encoding, '100')
            .then((eitherEntries) => {
              if (eitherEntries.isRight()) {
                setCacheEntries(eitherEntries.value);

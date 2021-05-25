@@ -1,4 +1,4 @@
-import { RestUtils } from '@services/utils';
+import { RestUtils } from '@services/restUtils';
 
 export class TasksService {
   endpoint: string;

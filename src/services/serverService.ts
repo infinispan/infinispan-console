@@ -1,5 +1,5 @@
 import { Either, left, right } from './either';
-import { RestUtils } from '@services/utils';
+import { RestUtils } from '@services/restUtils';
 
 /**
  * Infinispan Server related API endpoints

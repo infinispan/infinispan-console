@@ -1,5 +1,5 @@
 import { Health } from '@app/Common/Health';
-import { ComponentHealth } from '@services/utils';
+import { ComponentHealth } from '@services/restUtils';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
