@@ -1,5 +1,6 @@
 import { KeycloakService } from '@services/keycloakService';
 import { AuthenticationService } from '@services/authService';
+import { CacheConfigUtils, EncodingType } from '@services/cacheConfigUtils';
 
 export enum ComponentStatus {
   STOPPING = 'STOPPING',
@@ -31,16 +32,13 @@ export enum CacheType {
 
 export enum ContentType {
   StringContentType = 'String', //'application/x-java-object;type=java.lang.String'
-  JSON = 'Json', //'application/json'
-  XML = 'Xml', //'application/xml'
   IntegerContentType = 'Integer', //'application/x-java-object;type=java.lang.Integer'
   DoubleContentType = 'Double', //'application/x-java-object;type=java.lang.Double'
   FloatContentType = 'Float', //'application/x-java-object;type=java.lang.Float'
   LongContentType = 'Long', //'application/x-java-object;type=java.lang.Long'
   BooleanContentType = 'Boolean', //'application/x-java-object;type=java.lang.Boolean'
-  BytesType = 'Bytes', //'Bytes'
-  OctetStream = 'Base64', //'application/octet-stream'
-  OctetStreamHex = 'Hex', //'application/octet-stream; encoding=hex'
+  JSON = 'Json', //'application/json'
+  XML = 'Xml', //'application/xml'
 }
 
 export enum Flags {
@@ -243,12 +241,6 @@ export class RestUtils {
         stringContentType =
           'application/x-java-object;type=java.lang.' + contentType.toString();
         break;
-      case ContentType.OctetStream:
-        stringContentType = 'application/octet-stream';
-        break;
-      case ContentType.OctetStreamHex:
-        stringContentType = 'application/octet-stream; encoding=hex';
-        break;
       case ContentType.JSON:
         stringContentType = 'application/json';
         break;
@@ -287,14 +279,6 @@ export class RestUtils {
       return contentType as ContentType;
     }
 
-    if (contentTypeHeader == 'application/octet-stream') {
-      return ContentType.OctetStream;
-    }
-
-    if (contentTypeHeader == 'application/octet-stream; encoding=hex') {
-      return ContentType.OctetStreamHex;
-    }
-
     if (contentTypeHeader == 'application/json') {
       return ContentType.JSON;
     }
@@ -314,39 +298,12 @@ export class RestUtils {
    */
   public static isProtobufCache(cacheConfig: string): boolean[] {
     const config = JSON.parse(cacheConfig);
-
-    let cacheConfigHead;
-    if (config.hasOwnProperty('distributed-cache')) {
-      cacheConfigHead = config['distributed-cache'];
-    } else if (config.hasOwnProperty('replicated-cache')) {
-      cacheConfigHead = config['replicated-cache'];
-    } else if (config.hasOwnProperty('invalidation-cache')) {
-      cacheConfigHead = config['invalidation-cache'];
-    } else if (config.hasOwnProperty('local-cache')) {
-      cacheConfigHead = config['local-cache'];
-    } else {
-      return [false, false];
-    }
-
-    let keyProto = false;
-    try {
-      keyProto =
-        cacheConfigHead.encoding.key['media-type'] ==
-        'application/x-protostream';
-    } catch (err) {
-      // ignore
-    }
-
-    let valueProto = false;
-    try {
-      valueProto =
-        cacheConfigHead.encoding.value['media-type'] ==
-        'application/x-protostream';
-    } catch (err) {
-      // ignore
-    }
-
-    return [keyProto, valueProto];
+    let encodingTypes = CacheConfigUtils.mapEncoding(config);
+    console.log(encodingTypes);
+    return [
+      encodingTypes[0] == EncodingType.Protobuf,
+      encodingTypes[1] == EncodingType.Protobuf,
+    ];
   }
 
   /**

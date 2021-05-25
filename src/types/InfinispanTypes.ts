@@ -95,11 +95,13 @@ interface CacheKey {
 interface DetailedInfinispanCache {
   name: string;
   configuration: CacheConfig;
+  encoding: [string, string];
   type: string;
   started: boolean;
   size?: number;
   rehash_in_progress?: boolean;
   indexing_in_progress?: boolean;
+  editable: boolean;
   queryable: boolean;
   features: Features;
   backupSites?: [XSite];
