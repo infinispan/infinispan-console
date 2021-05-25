@@ -1,4 +1,4 @@
-import { RestUtils } from './utils';
+import { RestUtils } from './restUtils';
 import { Either, left, right } from './either';
 import displayUtils from '@services/displayUtils';
 
@@ -130,7 +130,9 @@ export class SearchService {
               count: displayUtils.formatNumber(
                 data.index.types[indexType].count
               ),
-              size: displayUtils.formatBigNumber(data.index.types[indexType].size),
+              size: displayUtils.formatBigNumber(
+                data.index.types[indexType].size
+              ),
             }
         );
         return right(<SearchStats>{

@@ -25,7 +25,7 @@ import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
-import {ContentType, RestUtils} from '@services/utils';
+import {ContentType, RestUtils} from '@services/restUtils';
 import {useTranslation} from 'react-i18next';
 import {TableEmptyState} from '@app/Common/TableEmptyState';
 import {useCacheDetail, useCacheEntries} from '@app/services/cachesHook';
@@ -33,6 +33,7 @@ import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
+import {EncodingType} from "@services/cacheConfigUtils";
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -180,8 +181,8 @@ const CacheEntries = (props: { cacheName: string }) => {
       rows = currentPageEntries.map((entry) => {
         let keyForAction = entry.key;
         let keyContentType = entry.keyContentType;
-        const isProtobuf = RestUtils.isProtobufCache(cache.configuration.config);
-        if (isProtobuf[0]) {
+        const isProtobuf: [string, string] = cache.encoding;
+        if (isProtobuf[0] == EncodingType.Protobuf) {
           keyForAction = RestUtils.extractValueFromProtobufType(entry.key);
         }
 

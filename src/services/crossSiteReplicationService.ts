@@ -1,4 +1,4 @@
-import { RestUtils } from '@services/utils';
+import { RestUtils } from '@services/restUtils';
 import { Either, left, right } from './either';
 
 /**

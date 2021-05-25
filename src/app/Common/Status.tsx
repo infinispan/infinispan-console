@@ -8,7 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import displayUtils from '@services/displayUtils';
-import { ComponentStatus } from '@services/utils';
+import { ComponentStatus } from '@services/restUtils';
 
 const Status = (props: { status: string }) => {
   const componentStatus = ComponentStatus[props.status];

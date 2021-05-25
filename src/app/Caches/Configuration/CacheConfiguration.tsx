@@ -1,23 +1,49 @@
 import React from 'react';
 import {
+  Alert, AlertActionLink, AlertVariant, Button,
   Card,
-  CardBody,
+  CardBody, CardHeader,
   ClipboardCopy,
   ClipboardCopyVariant,
   Spinner,
 } from '@patternfly/react-core';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useTranslation } from 'react-i18next';
 
-const CacheConfiguration: React.FunctionComponent<any> = (props: {
-  config: CacheConfig | undefined;
+const CacheConfiguration = (props: {
+  cache: DetailedInfinispanCache | undefined;
 }) => {
-  if (!props.config) {
-    return <Spinner size={'md'} />;
+  const { t } = useTranslation();
+  const encodingDocs = t('brandname.encoding-docs-link');
+  if (!props.cache) {
+    return (
+      <Spinner size={'md'} />
+    );
   }
+
+  const displayHeaderAlert = () => {
+    if(props.cache?.editable) {
+      return '';
+    }
+
+    return (
+      <CardHeader>
+        <Alert isInline title={'You cannot read or edit this cache content from the console. To read or edit caches content, you must define an encoding.'}
+               variant={AlertVariant.warning}
+               actionLinks={
+                   <AlertActionLink onClick={() => window.open(encodingDocs, "_blank")}>
+                     See "Cache Encoding and Marshalling" for more information</AlertActionLink>
+               }
+        />
+
+      </CardHeader>
+    );
+  };
 
   return (
     <Card>
+      {displayHeaderAlert()}
       <CardBody>
         <SyntaxHighlighter
           wrapLines={false}
@@ -25,10 +51,10 @@ const CacheConfiguration: React.FunctionComponent<any> = (props: {
           useInlineStyles={true}
           showLineNumbers={true}
         >
-          {props.config?.config}
+          {props.cache.configuration.config}
         </SyntaxHighlighter>
         <ClipboardCopy isReadOnly isCode variant={ClipboardCopyVariant.inline}>
-          {props.config?.config}
+          {props.cache.configuration.config}
         </ClipboardCopy>
       </CardBody>
     </Card>
