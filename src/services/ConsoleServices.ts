@@ -1,5 +1,5 @@
 import { AuthenticationService } from '@services/authService';
-import { RestUtils } from '@services/utils';
+import { RestUtils } from '@services/restUtils';
 import { ProtobufService } from '@services/protobufService';
 import { TasksService } from '@services/tasksService';
 import { ServerService } from '@services/serverService';

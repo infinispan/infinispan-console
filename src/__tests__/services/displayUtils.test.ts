@@ -1,5 +1,5 @@
 import displayUtils from '@services/displayUtils';
-import { CacheType, ComponentHealth, ComponentStatus } from '@services/utils';
+import { CacheType, ComponentHealth, ComponentStatus } from '@services/restUtils';
 import {
   chart_color_cyan_100,
   chart_color_gold_100,
