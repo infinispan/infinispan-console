@@ -33,7 +33,7 @@ import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DeleteCache} from '@app/Caches/DeleteCache';
 import {IgnoreCache} from '@app/Caches/IgnoreCache';
 import {IExtraData, IRowData,} from '@patternfly/react-table/src/components/Table';
-import {ComponentHealth} from '@services/utils';
+import {ComponentHealth} from '@services/restUtils';
 import {Health} from '@app/Common/Health';
 import {useBanner} from '@app/utils/useApiAlert';
 import {useCaches} from '@app/services/dataContainerHooks';

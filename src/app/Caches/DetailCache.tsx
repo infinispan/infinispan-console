@@ -48,7 +48,7 @@ const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache } = useCacheDetail(cacheName);
-  const [activeTabKey1, setActiveTabKey1] = useState<number | string>(ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)? 0:1);
+  const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
@@ -137,21 +137,23 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
-    return (
-      <React.Fragment>
-        {activeTabKey1 == 0 ? buildEntriesTabContent(cache.queryable) : ''}
-        {activeTabKey1 == 1 ? (
-          <CacheConfiguration config={cache.configuration} />
-        ) : (
-          ''
-        )}
-        {activeTabKey1 == 2 ? (
-          <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />
-        ) : (
-          ''
-        )}
-      </React.Fragment>
-    );
+    if(activeTabKey1 == 0
+      && cache.editable
+      && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+        return (
+          <React.Fragment>
+            {buildEntriesTabContent(cache.queryable)}
+          </React.Fragment>
+        );
+    } else if (activeTabKey1 == 2) {
+      return (
+        <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />
+      );
+    } else {
+      return (
+        <CacheConfiguration cache={cache} />
+      );
+    }
   };
 
   const buildRebalancing = () => {
@@ -343,12 +345,28 @@ const DetailCache = (props: { cacheName: string }) => {
         return '';
       }
 
+      if(cache?.editable) {
+        return (
+          <Tab
+            eventKey={0}
+            title={cache.size? 'Entries (' + displayUtils.formatNumber(cache?.size) + ')' : 'Entries'}
+          ></Tab>
+        )
+      }
+
+      return '';
+    }
+
+    const displayConfiguration = () => {
+      let eventKey = 1;
+      if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) ||
+      !cache.editable) {
+        eventKey = 0;
+      }
+
       return (
-        <Tab
-          eventKey={0}
-          title={cache.size? 'Entries (' + displayUtils.formatNumber(cache?.size) + ')' : 'Entries'}
-        ></Tab>
-      )
+        <Tab eventKey={eventKey} title={'Configuration'} />
+      );
     }
 
     const displayCacheStats = () => {
@@ -394,7 +412,7 @@ const DetailCache = (props: { cacheName: string }) => {
           onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}
         >
           {displayCacheEntries()}
-          <Tab eventKey={1} title={'Configuration'} />
+          {displayConfiguration()}
           {displayCacheStats()}
         </Tabs>
       </React.Fragment>

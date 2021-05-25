@@ -8,7 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCacheEntries, useReloadCache } from '@app/services/cachesHook';
-import { ContentType } from '@services/utils';
+import { ContentType } from '@services/restUtils';
 import { useTranslation } from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 

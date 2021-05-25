@@ -1,6 +1,7 @@
-import { RestUtils } from './utils';
+import { RestUtils } from '@services/restUtils';
 import { Either, left, right } from './either';
 import displayUtils from './displayUtils';
+import { CacheConfigUtils } from './cacheConfigUtils';
 
 export class ContainerService {
   endpoint: string;
@@ -172,7 +173,7 @@ export class ContainerService {
                   <CacheInfo>{
                     name: cacheInfo.name,
                     status: displayUtils.capitalize(cacheInfo.status),
-                    type: this.mapCacheType(cacheInfo.type),
+                    type: CacheConfigUtils.mapCacheType(cacheInfo.type),
                     simpleCache: cacheInfo.simpleCache,
                     features: <Features>{
                       transactional: cacheInfo.transactional,
@@ -191,22 +192,6 @@ export class ContainerService {
       .catch((err) =>
         left(this.utils.mapError(err, 'Error retrieving caches.'))
       );
-  }
-
-  private mapCacheType(type: string) {
-    let cacheType: string = 'Unknown';
-    if (type == 'distributed-cache') {
-      cacheType = 'Distributed';
-    } else if (type == 'replicated-cache') {
-      cacheType = 'Replicated';
-    } else if (type == 'local-cache') {
-      cacheType = 'Local';
-    } else if (type == 'invalidation-cache') {
-      cacheType = 'Invalidated';
-    } else if (type == 'scattered-cache') {
-      cacheType = 'Scattered';
-    }
-    return cacheType;
   }
 
   private clusterMembers(

@@ -1,6 +1,7 @@
 {
   "brandname": {
-    "brandname" : "Infinispan"
+    "brandname" : "Infinispan",
+    "encoding-docs-link": "https://infinispan.org/docs/stable/titles/encoding/encoding.html"
   },
   "layout" : {
     "console-name": "Server Management Console",

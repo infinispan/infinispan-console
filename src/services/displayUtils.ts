@@ -16,7 +16,11 @@ import {
   global_warning_color_100,
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
-import { CacheType, ComponentHealth, ComponentStatus } from '@services/utils';
+import {
+  CacheType,
+  ComponentHealth,
+  ComponentStatus,
+} from '@services/restUtils';
 import numeral from 'numeral';
 
 /**

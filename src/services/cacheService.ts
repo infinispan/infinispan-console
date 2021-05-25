@@ -1,5 +1,6 @@
-import {ContentType, RestUtils} from './utils';
-import {Either, left, right} from './either';
+import { ContentType, RestUtils } from '@services/restUtils';
+import { Either, left, right } from './either';
+import { CacheConfigUtils, EncodingType } from './cacheConfigUtils';
 
 /**
  * Cache Service calls Infinispan endpoints related to Caches
@@ -65,13 +66,16 @@ export class CacheService {
           };
         }
 
+        let keyValueEncoding = CacheConfigUtils.mapEncoding(data.configuration);
         return right(<DetailedInfinispanCache>{
           name: cacheName,
           started: true,
-          type: this.mapCacheType(data.configuration),
+          type: CacheConfigUtils.mapCacheType(data.configuration),
+          encoding: keyValueEncoding,
           size: data['size'],
           rehash_in_progress: data['rehash_in_progress'],
           indexing_in_progress: data['indexing_in_progress'],
+          editable: CacheConfigUtils.isEditable(keyValueEncoding[1]),
           queryable: data.queryable,
           features: <Features>{
             bounded: data.bounded,
@@ -329,10 +333,9 @@ export class CacheService {
    */
   public async getEntries(
     cacheName: string,
-    config: CacheConfig,
+    encoding: [string, string],
     limit: string
   ): Promise<Either<ActionResponse, CacheEntry[]>> {
-    const isProtobuf = RestUtils.isProtobufCache(config.config);
     const allKeys =
       this.endpoint +
       '/caches/' +
@@ -353,14 +356,19 @@ export class CacheService {
             infos.map(
               (entry) =>
                 <CacheEntry>{
-                  key: this.extractKey(entry.key, isProtobuf[0]),
-                  keyContentType: isProtobuf[0]
-                    ? RestUtils.fromProtobufType(entry.key['_type'])
-                    : ContentType.StringContentType,
+                  key: this.extractKey(
+                    entry.key,
+                    encoding[0] == EncodingType.Protobuf
+                  ),
+                  keyContentType:
+                    encoding[0] == EncodingType.Protobuf
+                      ? RestUtils.fromProtobufType(entry.key['_type'])
+                      : ContentType.StringContentType,
                   value: this.extractValue(entry.value),
-                  valueContentType: isProtobuf[1]
-                    ? entry.value['_type']
-                    : undefined,
+                  valueContentType:
+                    encoding[1] == EncodingType.Protobuf
+                      ? entry.value['_type']
+                      : undefined,
                   timeToLive: this.parseMetadataNumber(entry.timeToLiveSeconds),
                   maxIdle: this.parseMetadataNumber(entry.maxIdleTimeSeconds),
                   created: this.parseMetadataDate(entry.created),
@@ -415,7 +423,10 @@ export class CacheService {
     if (keyContentType) {
       let keyContentTypeHeader = RestUtils.fromContentType(keyContentType);
       headers.append('Key-Content-Type', keyContentTypeHeader);
-      headers.append('Content-Type', RestUtils.fromContentType(ContentType.JSON));
+      headers.append(
+        'Content-Type',
+        RestUtils.fromContentType(ContentType.JSON)
+      );
     }
     const getEntryUrl =
       this.endpoint +
@@ -652,21 +663,5 @@ export class CacheService {
       .catch((err) =>
         left(this.utils.mapError(err, 'Cannot get size for cache ' + cacheName))
       );
-  }
-
-  private mapCacheType(config: JSON): string {
-    let cacheType: string = 'Unknown';
-    if (config.hasOwnProperty('distributed-cache')) {
-      cacheType = 'Distributed';
-    } else if (config.hasOwnProperty('replicated-cache')) {
-      cacheType = 'Replicated';
-    } else if (config.hasOwnProperty('local-cache')) {
-      cacheType = 'Local';
-    } else if (config.hasOwnProperty('invalidation-cache')) {
-      cacheType = 'Invalidated';
-    } else if (config.hasOwnProperty('scattered-cache')) {
-      cacheType = 'Scattered';
-    }
-    return cacheType;
   }
 }
