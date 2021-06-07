@@ -120,30 +120,6 @@ export class RestUtils {
     return headers;
   };
 
-  public static extractTypeFromProtobufJson(maybeJson: string): string {
-    try {
-      let jsonObj = JSON.parse(maybeJson);
-      if (jsonObj['_type'] && jsonObj['_value']) {
-        return jsonObj['_type'] as string;
-      }
-      return '';
-    } catch (err) {
-      return '';
-    }
-  }
-
-  public static extractValueFromProtobufType(maybeJson: string): any {
-    try {
-      let jsonObj = JSON.parse(maybeJson);
-      if (jsonObj['_type'] && jsonObj['_value']) {
-        return JSON.stringify(jsonObj['_value']);
-      }
-      return maybeJson;
-    } catch (err) {
-      return maybeJson;
-    }
-  }
-
   public static isJSONObject(value: string): boolean {
     try {
       JSON.parse(value);

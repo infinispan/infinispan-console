@@ -22,9 +22,11 @@ import formUtils, { IField, ISelectField } from '@services/formUtils';
 import { useReloadCache } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {CacheConfigUtils, EncodingType} from "@services/cacheConfigUtils";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
+  cacheEncoding: [string, string],
   keyToEdit: string;
   keyContentType: ContentType;
   isModalOpen: boolean;
@@ -148,9 +150,9 @@ const CreateOrUpdateEntryForm = (props: {
     }
   }, [props.isModalOpen]);
 
-  const contentTypeOptions = () => {
-    return Object.keys(ContentType).map((key) => (
-      <SelectOption key={key} value={ContentType[key]} />
+  const contentTypeOptions = (encodingType: EncodingType) => {
+    return CacheConfigUtils.getContentTypeOptions(encodingType).map((contentType) => (
+      <SelectOption key={contentType as string} value={contentType} />
     ));
   };
 
@@ -167,10 +169,6 @@ const CreateOrUpdateEntryForm = (props: {
     stateDispatch((prevState) => {
       return { ...prevState, expanded: expanded };
     });
-  };
-
-  const onSelectValueContentType = (event, selection) => {
-    setSelection(selection, false, setValueContentType);
   };
 
   const onSelectFlags = (event, selection) => {
@@ -288,6 +286,255 @@ const CreateOrUpdateEntryForm = (props: {
     setTimeToLiveField(timeToLiveInitialState);
   };
 
+  const keyContentTypeFormGroup = () => {
+    return (
+      <FormGroup
+      label={t('caches.entries.add-entry-form-key-type-label')}
+      fieldId="key-content-type-helper"
+      helperText={keyContentType.helperText}
+      placeholder={t('caches.entries.add-entry-form-key-type')}
+      disabled={isEdition}
+    >
+      <Select
+        placeholderText={t(
+          'caches.entries.add-entry-form-key-type-select'
+        )}
+        variant={SelectVariant.typeahead}
+        aria-label={t(
+          'caches.entries.add-entry-form-key-type-select-label'
+        )}
+        onToggle={(isExpanded) =>
+          setExpanded(isExpanded, setKeyContentType)
+        }
+        onSelect={(event, selection) =>
+          setSelection(selection, false, setKeyContentType)
+        }
+        onClear={() => setKeyContentType(keyContentTypeInitialState)}
+        selections={keyContentType.selected}
+        isOpen={keyContentType.expanded}
+        isDisabled={isEdition}
+      >
+        {contentTypeOptions(props.cacheEncoding[0] as EncodingType)}
+      </Select>
+    </FormGroup>
+    );
+  }
+
+  const cacheNameFormGroup = () => {
+    return (
+      <FormGroup
+      label={t('caches.entries.add-entry-form-cache-name')}
+      isRequired
+      fieldId="cache-name"
+      disabled={true}
+    >
+      <TextInput
+        isDisabled
+        value={props.cacheName}
+        id="cacheName"
+        aria-describedby="cache-name-helper"
+      />
+    </FormGroup>
+    );
+  }
+
+  const keyFormGroup = () => {
+    return (
+      <FormGroup
+      label={
+        <MoreInfoTooltip
+          label={t('caches.entries.add-entry-form-key')}
+          toolTip={
+            'The key can contain simple values but also JSON ' +
+            'that are automatically converted to and from Protostream. \n' +
+            'When writing JSON documents, a special field `_type` must be present.\n' +
+            '{\n' +
+            '   "_type": "Person",\n' +
+            '   "name": "user1",\n' +
+            '   "age": 32\n' +
+            '}'
+          }
+        />
+      }
+      isRequired
+      helperText={key.helperText}
+      helperTextInvalid={key.invalidText}
+      fieldId="key-entry"
+      validated={key.validated}
+      disabled={isEdition}
+    >
+      <TextArea
+        isRequired
+        validated={key.validated}
+        value={key.value}
+        id="key-entry"
+        aria-describedby="key-entry-helper"
+        onChange={onChangeKey}
+        disabled={isEdition}
+      />
+    </FormGroup>
+    );
+  }
+
+  const valueFormGroup = () => {
+    return (
+      <FormGroup
+      label={
+        <MoreInfoTooltip
+          label={t('caches.entries.add-entry-form-value')}
+          toolTip={
+            'The value can contain simple values but also JSON ' +
+            'that are automatically converted to and from Protostream.\n ' +
+            'When writing JSON documents, a special field _type must be present.\n' +
+            '{\n' +
+            '   "_type": "Person",\n' +
+            '   "name": "user1",\n' +
+            '   "age": 32\n' +
+            '}'
+          }
+        />
+      }
+      isRequired
+      helperText={value.helperText}
+      helperTextInvalid={value.invalidText}
+      fieldId="value-entry"
+      validated={value.validated}
+    >
+      <TextArea
+        isRequired
+        validated={value.validated}
+        value={value.value}
+        id="value-entry"
+        aria-describedby="value-entry-helper"
+        onChange={onChangeValue}
+      />
+    </FormGroup>
+    );
+  }
+
+  const lifespanFormGroup = () => {
+    return (
+      <FormGroup
+      label={
+        <MoreInfoTooltip
+          label={t('caches.entries.add-entry-form-lifespan')}
+          toolTip={
+            'Sets the number of seconds before ' +
+            'the entry is automatically deleted. If you do not set this parameter, ' +
+            'Infinispan uses the default value from the configuration. ' +
+            'If you set a negative value, the entry is never deleted.\n' +
+            '\n'
+          }
+        />
+      }
+      type="number"
+      helperText={timeToLiveField.helperText}
+      helperTextInvalid={timeToLiveField.invalidText}
+      fieldId="timeToLive"
+      validated={timeToLiveField.validated}
+    >
+      <TextInput
+        validated={timeToLiveField.validated}
+        value={timeToLiveField.value}
+        id="timeToLive"
+        aria-describedby="timeToLive-helper"
+        onChange={onChangeTimeToLive}
+      />
+    </FormGroup>
+    );
+  }
+
+  const maxIdleFormGroup = () => {
+    return (
+      <FormGroup
+      label={
+        <MoreInfoTooltip
+          label={t('caches.entries.add-entry-form-maxidle')}
+          toolTip={
+            'Sets the number of seconds that entries can be idle. ' +
+            'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
+            'the entry is automatically deleted. If you do not set this parameter, ' +
+            'Infinispan uses the default value from the configuration. ' +
+            'If you set a negative value, the entry is never deleted.\n' +
+            '\n'
+          }
+        />
+      }
+      type="number"
+      helperText={maxIdleField.helperText}
+      helperTextInvalid={maxIdleField.invalidText}
+      fieldId="maxIdle"
+      validated={maxIdleField.validated}
+    >
+      <TextInput
+        validated={maxIdleField.validated}
+        value={maxIdleField.value}
+        id="maxIdle"
+        aria-describedby="maxIdle-helper"
+        onChange={onChangeMaxIdle}
+      />
+    </FormGroup>
+    );
+  }
+
+  const valueContentTypeFormGroup = () => {
+    return (
+      <FormGroup
+      label={t('caches.entries.add-entry-form-value-type-label')}
+      helperTextInvalid={t(
+        'caches.entries.add-entry-form-value-type-invalid'
+      )}
+      fieldId="value-content-type-helper"
+      helperText={valueContentType.helperText}
+    >
+      <Select
+        placeholderText={t(
+          'caches.entries.add-entry-form-value-type-select'
+        )}
+        variant={SelectVariant.typeahead}
+        aria-label={t(
+          'caches.entries.add-entry-form-value-type-select-label'
+        )}
+        onToggle={(isExpanded) =>
+          setExpanded(isExpanded, setValueContentType)
+        }
+        onSelect={(event, selection) =>
+          setSelection(selection, false, setValueContentType)
+        }
+        onClear={() => setValueContentType(contentTypeInitialState)}
+        selections={valueContentType.selected}
+        isOpen={valueContentType.expanded}
+      >
+        {contentTypeOptions(props.cacheEncoding[1] as EncodingType)}
+      </Select>
+    </FormGroup>
+    );
+  }
+
+  const flagsFormGroup = () => {
+    return (
+      <FormGroup
+      label="Flags:"
+      fieldId="flags-helper"
+      helperText="The flags used to add the entry. See 'org.infinispan.context.Flag' class for more information."
+    >
+      <Select
+        variant={SelectVariant.typeaheadMulti}
+        aria-label="Select Flags"
+        onToggle={(isExpanded) => setExpanded(isExpanded, setFlags)}
+        onSelect={onSelectFlags}
+        onClear={() => setFlags(flagsInitialState)}
+        selections={flags.selected}
+        isOpen={flags.expanded}
+        placeholderText="Flags"
+        maxHeight={150}
+      >
+        {flagsOptions()}
+      </Select>
+    </FormGroup>
+    );
+  }
+
   return (
     <Modal
       className="pf-m-redhat-font"
@@ -309,144 +556,19 @@ const CreateOrUpdateEntryForm = (props: {
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        style={{ marginBottom: global_spacer_md.value }}
+        style={{marginBottom: global_spacer_md.value}}
       >
         {error != '' && (
-          <Alert variant={AlertVariant.danger} isInline title={error} />
+          <Alert variant={AlertVariant.danger} isInline title={error}/>
         )}
 
-        <FormGroup
-          label={t('caches.entries.add-entry-form-cache-name')}
-          isRequired
-          fieldId="cache-name"
-          disabled={true}
-        >
-          <TextInput
-            isDisabled
-            value={props.cacheName}
-            id="cacheName"
-            aria-describedby="cache-name-helper"
-          />
-        </FormGroup>
-        <FormGroup
-          label={
-            <MoreInfoTooltip
-              label={t('caches.entries.add-entry-form-key')}
-              toolTip={
-                'The key can contain simple values but also JSON ' +
-                'that are automatically converted to and from Protostream. \n' +
-                'When writing JSON documents, a special field `_type` must be present.\n' +
-                '{\n' +
-                '   "_type": "Person",\n' +
-                '   "name": "user1",\n' +
-                '   "age": 32\n' +
-                '}'
-              }
-            />
-          }
-          isRequired
-          helperText={key.helperText}
-          helperTextInvalid={key.invalidText}
-          fieldId="key-entry"
-          validated={key.validated}
-          disabled={isEdition}
-        >
-          <TextArea
-            isRequired
-            validated={key.validated}
-            value={key.value}
-            id="key-entry"
-            aria-describedby="key-entry-helper"
-            onChange={onChangeKey}
-            disabled={isEdition}
-          />
-        </FormGroup>
-        <FormGroup
-          label={
-            <MoreInfoTooltip
-              label={t('caches.entries.add-entry-form-value')}
-              toolTip={
-                'The value can contain simple values but also JSON ' +
-                'that are automatically converted to and from Protostream.\n ' +
-                'When writing JSON documents, a special field _type must be present.\n' +
-                '{\n' +
-                '   "_type": "Person",\n' +
-                '   "name": "user1",\n' +
-                '   "age": 32\n' +
-                '}'
-              }
-            />
-          }
-          isRequired
-          helperText={value.helperText}
-          helperTextInvalid={value.invalidText}
-          fieldId="value-entry"
-          validated={value.validated}
-        >
-          <TextArea
-            isRequired
-            validated={value.validated}
-            value={value.value}
-            id="value-entry"
-            aria-describedby="value-entry-helper"
-            onChange={onChangeValue}
-          />
-        </FormGroup>
-        <FormGroup
-          label={
-            <MoreInfoTooltip
-              label={t('caches.entries.add-entry-form-lifespan')}
-              toolTip={
-                'Sets the number of seconds before ' +
-                'the entry is automatically deleted. If you do not set this parameter, ' +
-                'Infinispan uses the default value from the configuration. ' +
-                'If you set a negative value, the entry is never deleted.\n' +
-                '\n'
-              }
-            />
-          }
-          type="number"
-          helperText={timeToLiveField.helperText}
-          helperTextInvalid={timeToLiveField.invalidText}
-          fieldId="timeToLive"
-          validated={timeToLiveField.validated}
-        >
-          <TextInput
-            validated={timeToLiveField.validated}
-            value={timeToLiveField.value}
-            id="timeToLive"
-            aria-describedby="timeToLive-helper"
-            onChange={onChangeTimeToLive}
-          />
-        </FormGroup>
-        <FormGroup
-          label={
-            <MoreInfoTooltip
-              label={t('caches.entries.add-entry-form-maxidle')}
-              toolTip={
-                'Sets the number of seconds that entries can be idle. ' +
-                'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
-                'the entry is automatically deleted. If you do not set this parameter, ' +
-                'Infinispan uses the default value from the configuration. ' +
-                'If you set a negative value, the entry is never deleted.\n' +
-                '\n'
-              }
-            />
-          }
-          type="number"
-          helperText={maxIdleField.helperText}
-          helperTextInvalid={maxIdleField.invalidText}
-          fieldId="maxIdle"
-          validated={maxIdleField.validated}
-        >
-          <TextInput
-            validated={maxIdleField.validated}
-            value={maxIdleField.value}
-            id="maxIdle"
-            aria-describedby="maxIdle-helper"
-            onChange={onChangeMaxIdle}
-          />
-        </FormGroup>
+        {cacheNameFormGroup()}
+        {keyContentTypeFormGroup()}
+        {keyFormGroup()}
+        {valueContentTypeFormGroup()}
+        {valueFormGroup()}
+        {lifespanFormGroup()}
+        {maxIdleFormGroup()}
       </Form>
       <ExpandableSection
         toggleText={t('caches.entries.add-entry-form-options')}
@@ -456,85 +578,7 @@ const CreateOrUpdateEntryForm = (props: {
             e.preventDefault();
           }}
         >
-          <FormGroup
-            label={t('caches.entries.add-entry-form-key-type-label')}
-            fieldId="key-content-type-helper"
-            helperText={keyContentType.helperText}
-            placeholder={t('caches.entries.add-entry-form-key-type')}
-            disabled={isEdition}
-          >
-            <Select
-              placeholderText={t(
-                'caches.entries.add-entry-form-key-type-select'
-              )}
-              variant={SelectVariant.typeahead}
-              aria-label={t(
-                'caches.entries.add-entry-form-key-type-select-label'
-              )}
-              onToggle={(isExpanded) =>
-                setExpanded(isExpanded, setKeyContentType)
-              }
-              onSelect={(event, selection) =>
-                setSelection(selection, false, setKeyContentType)
-              }
-              onClear={() => setKeyContentType(keyContentTypeInitialState)}
-              selections={keyContentType.selected}
-              isOpen={keyContentType.expanded}
-              isDisabled={isEdition}
-            >
-              {contentTypeOptions()}
-            </Select>
-          </FormGroup>
-
-          <FormGroup
-            label={t('caches.entries.add-entry-form-value-type-label')}
-            helperTextInvalid={t(
-              'caches.entries.add-entry-form-value-type-invalid'
-            )}
-            fieldId="value-content-type-helper"
-            helperText={valueContentType.helperText}
-          >
-            <Select
-              placeholderText={t(
-                'caches.entries.add-entry-form-value-type-select'
-              )}
-              variant={SelectVariant.typeahead}
-              aria-label={t(
-                'caches.entries.add-entry-form-value-type-select-label'
-              )}
-              onToggle={(isExpanded) =>
-                setExpanded(isExpanded, setValueContentType)
-              }
-              onSelect={(event, selection) =>
-                setSelection(selection, false, setValueContentType)
-              }
-              onClear={() => setValueContentType(contentTypeInitialState)}
-              selections={valueContentType.selected}
-              isOpen={valueContentType.expanded}
-            >
-              {contentTypeOptions()}
-            </Select>
-          </FormGroup>
-
-          <FormGroup
-            label="Flags:"
-            fieldId="flags-helper"
-            helperText="The flags used to add the entry. See 'org.infinispan.context.Flag' class for more information."
-          >
-            <Select
-              variant={SelectVariant.typeaheadMulti}
-              aria-label="Select Flags"
-              onToggle={(isExpanded) => setExpanded(isExpanded, setFlags)}
-              onSelect={onSelectFlags}
-              onClear={() => setFlags(flagsInitialState)}
-              selections={flags.selected}
-              isOpen={flags.expanded}
-              placeholderText="Flags"
-              maxHeight={150}
-            >
-              {flagsOptions()}
-            </Select>
-          </FormGroup>
+          {flagsFormGroup()}
         </Form>
       </ExpandableSection>
     </Modal>
