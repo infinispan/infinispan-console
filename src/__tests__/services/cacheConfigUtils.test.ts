@@ -7,6 +7,7 @@ import {
   Replicated,
   Scattered
 } from "@services/cacheConfigUtils";
+import {ContentType} from "@services/restUtils";
 
 describe('Cache Config Utils tests', () => {
   test('cache topology', () => {
@@ -53,7 +54,10 @@ describe('Cache Config Utils tests', () => {
       EncodingType.XML,
       EncodingType.Text,
       EncodingType.Protobuf,
-      EncodingType.Java];
+      EncodingType.Java,
+      EncodingType.JavaSerialized,
+      EncodingType.JBoss
+    ];
 
     for (let cacheType of cacheTypes) {
       let cacheTypeConf = baseConfig.replace('CACHE_TYPE', cacheType);
@@ -69,10 +73,38 @@ describe('Cache Config Utils tests', () => {
 
   test('editable', () => {
     expect(CacheConfigUtils.isEditable(EncodingType.Protobuf)).toBeTruthy();
+    expect(CacheConfigUtils.isEditable(EncodingType.JBoss)).toBeTruthy();
+    expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.XML)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Text)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JSON)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy()
     expect(CacheConfigUtils.isEditable(EncodingType.Empty)).toBeFalsy();
-  })
+  });
+
+  test('extractValue from protobuf content', () => {
+    expect(CacheConfigUtils.extractValueFromProtobufValueContent('no proto')).toBe('no proto');
+    expect(CacheConfigUtils.extractValueFromProtobufValueContent('{ "name": "Dakota" }')).toBe('{ "name": "Dakota" }');
+    expect(CacheConfigUtils.extractValueFromProtobufValueContent('{ "_type": "string", "name": "Dakota" }')).toBe('{ "_type": "string", "name": "Dakota" }');
+    expect(CacheConfigUtils.extractValueFromProtobufValueContent('{ "_type": "string", "_value": "Dakota" }')).toBe('"Dakota"');
+  });
+
+  test('content types depending on encoding', () => {
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Text)).toStrictEqual([ContentType.StringContentType, ContentType.JSON]);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)).toStrictEqual([ContentType.StringContentType, ContentType.JSON]);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.XML)).toStrictEqual([ContentType.StringContentType, ContentType.XML]);
+    const javaContentTypes = [ContentType.StringContentType,
+      ContentType.IntegerContentType,
+      ContentType.LongContentType,
+      ContentType.FloatContentType,
+      ContentType.DoubleContentType,
+      ContentType.BooleanContentType,
+      ContentType.JSON,
+    ];
+
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Java)).toStrictEqual(javaContentTypes);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JavaSerialized)).toStrictEqual(javaContentTypes);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JBoss)).toStrictEqual(javaContentTypes);
+  });
+
 });
