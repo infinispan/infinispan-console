@@ -172,7 +172,7 @@ export class ContainerService {
                 (cacheInfo) =>
                   <CacheInfo>{
                     name: cacheInfo.name,
-                    status: displayUtils.capitalize(cacheInfo.status),
+                    status: cacheInfo.status,
                     type: CacheConfigUtils.mapCacheType(cacheInfo.type),
                     simpleCache: cacheInfo.simpleCache,
                     features: <Features>{
