@@ -202,19 +202,24 @@ const CacheTableDisplay = (props: {
   ];
 
   const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
-    if (rowData.size == 0) {
-      return [];
-    }
-
     // @ts-ignore
     let cacheName:string = rowData.cells[0].cacheName as string;
 
-    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+    if(!cacheName) {
       return [];
     }
 
+    const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+    const isCreator = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+
     // @ts-ignore
-    if (rowData.cells[0].isIgnored) {
+    const ignoredCache = rowData.cells[0].isIgnored;
+
+    if((!isAdmin && !isCreator) || (ignoredCache && !isAdmin)) {
+      return [];
+    }
+
+    if (ignoredCache) {
       return [
         {
           title: t('cache-managers.undo-ignore'),
@@ -227,29 +232,30 @@ const CacheTableDisplay = (props: {
       ];
     }
 
-    return [
-      {
+    let actions = [{
+      title: t('cache-managers.delete'),
+      onClick: (event, rowId, rowData, extra) => {
+        setCacheAction({
+          cacheName: cacheName,
+          action: 'delete',
+        });
+      }}];
+
+    if (isAdmin) {
+      actions.push({
         title: t('cache-managers.ignore'),
         onClick: (event, rowId, rowData, extra) =>
           openIgnoreCacheModal(
             cacheName,
             rowData.cells[0].isIgnored
           ),
-      },
-      {
-        title: t('cache-managers.delete'),
-        onClick: (event, rowId, rowData, extra) => {
-          setCacheAction({
-            cacheName: cacheName,
-            action: 'delete',
-          });
-        },
-      },
-    ];
+      })
+    }
+    return actions;
   };
 
   const isCacheIgnored = (cacheInfo: CacheInfo): boolean => {
-    return cacheInfo.status == t('cache-managers.ignored-status');
+    return cacheInfo.status == 'IGNORED';
   };
 
   const closeDeleteModal = (deleteDone: boolean) => {
@@ -361,10 +367,9 @@ const CacheTableDisplay = (props: {
     if (!isCacheIgnored(cacheInfo)) {
       return '';
     }
-
     return (
       <Badge key={`ignore-${cacheInfo.name}`} isRead>
-        {displayUtils.capitalize(cacheInfo.status)}
+        {t('cache-managers.ignored-status')}
       </Badge>
     );
   };
@@ -419,7 +424,7 @@ const CacheTableDisplay = (props: {
     'Backups',
   ];
 
-  const cacheStatus = ['Ignored'];
+  const cacheStatus = [t('cache-managers.ignored-status')];
 
   const extract = (actualSelection: string[], ref: string[]): string[] => {
     return actualSelection.filter((s) => ref.includes(s));
