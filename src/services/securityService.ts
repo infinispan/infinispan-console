@@ -167,7 +167,6 @@ export class SecurityService {
         hasAcl = aclList.includes(ACL.CREATE);
         break;
     }
-
     return hasAcl;
   }
 
