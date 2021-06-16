@@ -29,11 +29,11 @@ const CacheConfiguration = (props: {
 
     return (
       <CardHeader>
-        <Alert isInline title={'You cannot read or edit this cache content from the console. To read or edit caches content, you must define an encoding.'}
+        <Alert isInline title={t('caches.configuration.no-encoding-warning')}
                variant={AlertVariant.warning}
                actionLinks={
                    <AlertActionLink onClick={() => window.open(encodingDocs, "_blank")}>
-                     See "Cache Encoding and Marshalling" for more information</AlertActionLink>
+                     {t('caches.configuration.no-encoding-docs')}</AlertActionLink>
                }
         />
 
