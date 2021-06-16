@@ -1,6 +1,8 @@
-![Version](https://maven-badges.herokuapp.com/maven-central/org.infinispan/infinispan-console/badge.svg "Version")
-
 # Infinispan Console
+
+[![Version](https://img.shields.io/maven-central/v/org.infinispan/infinispan-console?logo=apache-maven&style=for-the-badge)](https://search.maven.org/artifact/org.infinispan/infinispan-console)
+[![License](https://img.shields.io/github/license/infinispan/infinispan-console?style=for-the-badge&logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
+
 
 This is the front end application for the web console of the new Infinispan Server 13.x
 
