@@ -2,19 +2,14 @@
   "distributed-cache": {
     "mode": "SYNC",
     "encoding": {
-      "key": {
-        "media-type": "application/x-protostream"
-      },
-      "value": {
-        "media-type": "application/x-protostream"
-      }
+      "media-type": "application/x-protostream"
     },
     "memory": {
       "storage": "HEAP"
     },
     "indexing": {
       "indexed-entities": [
-        "people.Person"
+        "org.infinispan.Person"
       ],
       "enabled": true
     },
