@@ -110,7 +110,9 @@
     "configuration" : {
       "title" : "Configuration template",
       "page-title" : "Configuration templates",
-      "table-label" : "Cache configurations"
+      "table-label" : "Cache configurations",
+      "no-encoding-warning" : "To read or edit entries from the console, recreate this cache and configure an encoding. Otherwise you can use only the CLI, or a REST or Hot Rod client, to perform read and write operations on this cache.",
+      "no-encoding-docs" : "See \"Cache Encoding and Marshalling\" in our documentation."
     },
     "entries" : {
       "action-edit" : "Edit",
