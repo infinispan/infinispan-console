@@ -1,0 +1,22 @@
+package org.infinispan;
+
+/**
+* @Indexed
+*/
+message Person {
+
+  /**
+  * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+  */
+  optional string name = 1;
+
+  /**
+   * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+   */
+  optional string age = 2;
+
+  /**
+   * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+   */
+  optional string city = 3;
+}

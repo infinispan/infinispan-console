@@ -1,0 +1,18 @@
+{
+  "distributed-cache": {
+    "mode": "SYNC",
+    "remote-timeout": 17500,
+    "state-transfer": {
+      "timeout": 60000
+    },
+    "encoding": {
+      "media-type": "application/x-protostream"
+    },
+    "locking": {
+      "concurrency-level": 1000,
+      "acquire-timeout": 15000,
+      "striping": false
+    },
+    "statistics": true
+  }
+}
