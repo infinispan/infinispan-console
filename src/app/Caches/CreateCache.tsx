@@ -39,7 +39,15 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     'default'
   );
   const [config, setConfig] = useState('');
-  const [configs, setConfigs] = useState<OptionSelect[]>([]);
+  const consoleTemplates = ConsoleServices.dataContainer().getCacheConsoleLocalConfigurationTemplates();
+  const initConfigsNamesSelect = (configNames : string[]) : OptionSelect[] => {
+    let options: OptionSelect[] = [];
+    configNames.forEach((template) => {
+      options.push({ value: template });
+    });
+    return options;
+  }
+  const configs = initConfigsNamesSelect([...consoleTemplates.keys()]);
   const [expandedSelect, setExpandedSelect] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<string>('');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
@@ -53,22 +61,6 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     disabled?: boolean;
     isPlaceholder?: boolean;
   }
-
-  useEffect(() => {
-    ConsoleServices.dataContainer()
-      .getCacheConfigurationTemplates(cmName)
-      .then((eitherTemplates) => {
-        if (eitherTemplates.isRight()) {
-          let options: OptionSelect[] = [];
-          eitherTemplates.value.forEach((template) => {
-            options.push({ value: template.name });
-          });
-          setConfigs(options);
-        } else {
-          addAlert(eitherTemplates.value);
-        }
-      });
-  }, []);
 
   const onToggleConfigPanel = () => {
     const expanded = !configExpanded;
@@ -138,9 +130,9 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     }
     let createCacheCall: Promise<ActionResponse>;
     if (selectedConfig != '') {
-      createCacheCall = ConsoleServices.caches().createCacheByConfigName(
+      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(
         name,
-        selectedConfig
+        consoleTemplates.get(selectedConfig) as string
       );
     } else {
       createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(name, config);
