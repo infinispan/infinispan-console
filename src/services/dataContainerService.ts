@@ -118,6 +118,39 @@ export class ContainerService {
   }
 
   /**
+   * Get cache console local configuration templates for in the cache manager name
+   *
+   * @param name, the name of the cache manager
+   */
+  public  getCacheConsoleLocalConfigurationTemplates(): Map<string, string> {
+    let protobuf = <CacheConfig>{
+      name: 'Quick start cache',
+      config: '{\n' +
+        '  "distributed-cache": {\n' +
+        '    "mode": "SYNC",\n' +
+        '    "remote-timeout": 17500,\n' +
+        '    "state-transfer": {\n' +
+        '      "timeout": 60000\n' +
+        '    },\n' +
+        '    "encoding": {\n' +
+        '      "media-type": "application/x-protostream"\n' +
+        '    },\n' +
+        '    "locking": {\n' +
+        '      "concurrency-level": 1000,\n' +
+        '      "acquire-timeout": 15000,\n' +
+        '      "striping": false\n' +
+        '    },\n' +
+        '    "statistics": true\n' +
+        '  }\n' +
+        '}',
+    }
+
+    let configs = new Map();
+    configs.set(protobuf.name, protobuf.config);
+    return configs;
+  }
+
+  /**
    * Get cache configuration templates for in the cache manager name
    *
    * @param name, the name of the cache manager
