@@ -22,18 +22,20 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import {CubeIcon} from '@patternfly/react-icons';
+import {CubeIcon, PencilAltIcon} from '@patternfly/react-icons';
 import {Link} from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
 import {useHistory} from 'react-router';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {CodeEditor, CodeEditorControl, Language} from "@patternfly/react-code-editor";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
   const history = useHistory();
   const cmName = props.computedMatch.params.cmName;
+  const [language, setLanguage] = useState(Language.xml);
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState<'success' | 'error' | 'default'>(
     'default'
@@ -160,6 +162,16 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   if (cmName !== undefined) {
     title = displayUtils.capitalize(cmName);
   }
+
+  const languageSelection = (
+    <CodeEditorControl
+      icon={<PencilAltIcon/>}
+      aria-label="XML or Json"
+      toolTipText="XML or Json"
+      onClick={() => setLanguage(language == Language.json ? Language.xml : Language.json)}
+      isVisible
+    />);
+
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
@@ -238,17 +250,19 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
                 <FormGroup
                   label="Cache configuration"
                   fieldId="cache-config"
+                  validated={validConfig}
                   helperText="Enter a cache configuration in XML or JSON format."
                   helperTextInvalid="Provide a valid cache configuration in XML or JSON format."
                 >
-                  <TextArea
-                    isRequired
-                    value={config}
+                  <CodeEditor
+                    isUploadEnabled
+                    uploadButtonToolTipText={'JSON or XML'}
+                    height='300px'
+                    isLanguageLabelVisible
+                    language={language}
+                    customControls={languageSelection}
+                    code={config}
                     onChange={handleChangeConfig}
-                    name="cache-config"
-                    id="cache-config"
-                    validated={validConfig}
-                    rows={10}
                   />
                 </FormGroup>
               </ExpandableSection>

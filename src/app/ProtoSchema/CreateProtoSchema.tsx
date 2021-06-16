@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   AlertVariant,
@@ -10,12 +10,13 @@ import {
   TextAreResizeOrientation,
   TextInput,
 } from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import formUtils, { IField } from '../../services/formUtils';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { useTranslation } from 'react-i18next';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {global_spacer_md} from '@patternfly/react-tokens';
+import formUtils, {IField} from '../../services/formUtils';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {CodeEditor, Language} from "@patternfly/react-code-editor";
 
 /**
  * Proto Schema creation form
@@ -121,20 +122,18 @@ const CreateProtoSchema = (props: {
           }
           isRequired
           fieldId="schema-content"
+          validated={schema.validated}
+          helperTextInvalid="Please upload or write a Protobuf Schema "
         >
-          <TextArea
-            value={schema.value}
-            id="schema"
-            aria-describedby="schema-content-helper"
-            height={400}
-            resizeOrientation={TextAreResizeOrientation.vertical}
-            onChange={(v) =>
+          <CodeEditor
+            isUploadEnabled
+            height='400px'
+            language={Language.javascript}
+            onChange={(code) =>
               setSchema((prevState) => {
-                return { ...prevState, value: v };
+                return { ...prevState, value: code as string };
               })
             }
-            validated={schema.validated}
-            rows={15}
           />
         </FormGroup>
       </Form>
