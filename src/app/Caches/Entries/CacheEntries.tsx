@@ -299,8 +299,8 @@ const CacheEntries = (props: { cacheName: string }) => {
     }
   };
   const keyContentTypeOptions = () => {
-    return Object.keys(ContentType).map((key) => (
-      <SelectOption key={key} value={ContentType[key]} />
+    return CacheConfigUtils.getContentTypeOptions(cache.encoding[0] as EncodingType).map((contentType) => (
+      <SelectOption key={contentType as string} value={contentType} />
     ));
   };
 
