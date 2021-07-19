@@ -1,8 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const BG_IMAGES_DIRNAME = 'bgimages';
+const ASSET_PATH = process.env.ASSET_PATH || '/';
 
 module.exports = env => {
 
@@ -120,6 +123,10 @@ module.exports = env => {
               }
             }
           ]
+        },
+        {
+          test: /\.ttf$/,
+          use: ['file-loader']
         }
       ]
     },
@@ -133,6 +140,7 @@ module.exports = env => {
         template: path.resolve(__dirname, 'src', 'index.html'),
         favicon: path.resolve(__dirname, 'src/app/assets/favicons', 'favicon.ico')
       }),
+      // new MonacoWebpackPlugin(),
       new Dotenv({
         systemvars: true,
         silent: true

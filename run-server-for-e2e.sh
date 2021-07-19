@@ -9,7 +9,7 @@ else
 fi
 
 
-SERVER_VERSION="12.0.0.Final"
+SERVER_VERSION="13.0.0.Dev02"
 SERVER_HOME=server/infinispan-server-$SERVER_VERSION
 CLUSTER_SIZE_MAIN="$SERVER_HOME/bin/cli.sh -c localhost:11322 -f batch "
 ZIP_ROOT="http://downloads.jboss.org/infinispan"

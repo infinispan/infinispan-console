@@ -89,6 +89,7 @@ const CacheManagers = () => {
         <NavList>
           {tabs.map((tab) => (
             <NavItem
+              aria-label={'nav-item-' + tab.name}
               key={'nav-item-' + tab.key}
               itemId={tab.key}
               isActive={activeTabKey === tab.key}
