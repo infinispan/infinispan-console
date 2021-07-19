@@ -55,18 +55,12 @@ it('Delete created cache', () => {
  })
 
 // Displays 3 tabs: Caches, Counters, Tasks
- it('Displays 3 tabs: Caches, Counters, Tasks', () => {
-    //make sure there are total 4 tabs (0,1,2,3)
-    cy.get('.pf-c-nav__list').find('>li').eq(3);
-    //counters
-    cy.get('.pf-c-nav__list:nth-child(2) > .pf-c-nav__item:nth-child(2) > .pf-c-nav__link').click();
-    cy.get('#filter-counter-menu-toggle').click();
-    //Tasks
-    cy.get('.pf-c-nav__list:nth-child(2) > .pf-c-nav__item:nth-child(3) > .pf-c-nav__link').click();
-    //protobuf schemas
-    cy.get('.pf-c-nav__list:nth-child(2) > .pf-c-nav__item:nth-child(4) > .pf-c-nav__link').click();
-    cy.get('.pf-c-toolbar__item > .pf-c-button').click();
-    cy.get('.pf-m-link').click();
+ it('Displays 4 tabs: Caches, Counters, Tasks, Schemas', () => {
+   //make sure there are total 4 tabs (0,1,2,3)
+   cy.get('a[aria-label="nav-item-Caches"]').click();
+   cy.get('a[aria-label="nav-item-Tasks"]').click();
+   cy.get('a[aria-label="nav-item-Counters"]').click();
+   cy.get('a[aria-label="nav-item-Schemas"]').click();
  })
 
 });

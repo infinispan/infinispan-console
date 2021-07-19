@@ -20,7 +20,10 @@ import {
   TextListItem,
   TextListItemVariants,
   TextListVariants,
-  TextVariants, Toolbar, ToolbarItem,
+  TextVariants,
+  Toolbar,
+  ToolbarItem,
+  ToolbarContent
 } from '@patternfly/react-core';
 import {Link} from 'react-router-dom';
 import {global_spacer_md} from '@patternfly/react-tokens';
@@ -34,7 +37,6 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {useSearchStats} from "@app/services/statsHook";
-import { ToolbarContent } from '@patternfly/react-core/dist/js/components/Toolbar/ToolbarContent';
 
 const IndexManagement = (props) => {
   const { t } = useTranslation();
