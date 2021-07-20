@@ -53,7 +53,7 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const keyContentTypeInitialState: ISelectField = {
-    selected: ContentType.StringContentType as string,
+    selected: props.keyContentType? props.keyContentType as string : CacheConfigUtils.getContentTypeOptions(props.cacheEncoding[0] as EncodingType)[0] as string,
     expanded: false,
     helperText: 'Select a key content type.',
   };

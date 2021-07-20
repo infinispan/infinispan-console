@@ -2,13 +2,15 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
+import {ContentType} from "@services/restUtils";
 
 const initialContext = {
   error: '',
   loading: true,
+  cache: (undefined as unknown) as DetailedInfinispanCache,
   loadCache: (name: string) => {},
   reload: () => {},
-  cache: (undefined as unknown) as DetailedInfinispanCache,
+  getByKey: (keyToSearch: string, kct: ContentType) => {},
   cacheEntries: [] as CacheEntry[],
   loadingEntries: true,
   errorEntries: '',
@@ -62,6 +64,18 @@ const CacheDetailProvider = ({ children }) => {
     }
   };
 
+  const fetchEntry = (keyToSearch: string, kct: ContentType ) => {
+    ConsoleServices.caches().getEntry(cacheName, keyToSearch, kct).then((response) => {
+      let entries: CacheEntry[] = [];
+      if (response.isRight()) {
+        entries = [response.value];
+      } else if (response.isLeft() && !response.value.success) {
+        setErrorEntries(response.value.message);
+      }
+      setCacheEntries(entries);
+    });
+  }
+
   const fetchEntries = () => {
     if (loadingEntries && cache) {
       ConsoleServices.caches().retrieveFullDetail(cacheName).then(eitherCache => {
@@ -98,6 +112,7 @@ const CacheDetailProvider = ({ children }) => {
     errorEntries: errorEntries,
     infoEntries: infoEntries,
     reloadEntries: useCallback(() => setLoadingEntries(true), []),
+    getByKey: fetchEntry,
   };
 
   return (

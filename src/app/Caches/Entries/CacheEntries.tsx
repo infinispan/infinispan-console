@@ -47,6 +47,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     errorEntries,
     infoEntries,
     reloadEntries,
+    getByKey
   } = useCacheEntries();
   const { cache } = useCacheDetail(props.cacheName);
   const {connectedUser} = useConnectedUser();
@@ -124,6 +125,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     { title: t('caches.entries.column-maxidle'), transforms: [cellWidth(10)] },
     { title: t('caches.entries.column-expires'), transforms: [cellWidth(10)] }
   ];
+
   const displayEmptyMessage = (info:string) => {
     if(keyToSearch.trim() != '') {
       return (
@@ -279,18 +281,8 @@ const CacheEntries = (props: { cacheName: string }) => {
     if (!kt) {
       kt = keyType as ContentType;
     }
-    updateRows([], true, '', '');
-    ConsoleServices.caches().getEntry(props.cacheName, keyToSearch, kt).then((response) => {
-      let entries: CacheEntry[] = [];
-      let error = '';
 
-      if (response.isRight()) {
-        entries = [response.value];
-      } else if (response.isLeft() && !response.value.success) {
-        error = response.value.message;
-      }
-      updateRows(entries, false, error, infoEntries);
-    });
+    getByKey(keyToSearch, kt);
   };
 
   const searchEntryOnKeyPress = (event) => {

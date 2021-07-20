@@ -91,8 +91,8 @@ describe('Cache Config Utils tests', () => {
 
   test('content types depending on encoding', () => {
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Text)).toStrictEqual([ContentType.StringContentType, ContentType.JSON]);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)).toStrictEqual([ContentType.StringContentType, ContentType.JSON]);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.XML)).toStrictEqual([ContentType.StringContentType, ContentType.XML]);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)).toStrictEqual([ContentType.JSON]);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.XML)).toStrictEqual([ContentType.XML]);
     const javaContentTypes = [ContentType.StringContentType,
       ContentType.IntegerContentType,
       ContentType.LongContentType,

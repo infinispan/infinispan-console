@@ -134,7 +134,7 @@ export class CacheConfigUtils {
   public static getContentTypeOptions(
     encodingType: EncodingType
   ): ContentType[] {
-    let contentTypes = [ContentType.StringContentType];
+    let contentTypes: ContentType[] = [];
 
     if (
       encodingType == EncodingType.Protobuf ||
@@ -142,6 +142,7 @@ export class CacheConfigUtils {
       encodingType == EncodingType.JavaSerialized ||
       encodingType == EncodingType.JBoss
     ) {
+      contentTypes.push(ContentType.StringContentType);
       contentTypes.push(ContentType.IntegerContentType);
       contentTypes.push(ContentType.LongContentType);
       contentTypes.push(ContentType.FloatContentType);
@@ -150,10 +151,10 @@ export class CacheConfigUtils {
       contentTypes.push(ContentType.JSON);
     } else if (encodingType == EncodingType.XML) {
       contentTypes.push(ContentType.XML);
-    } else if (
-      encodingType == EncodingType.JSON ||
-      encodingType == EncodingType.Text
-    ) {
+    } else if (encodingType == EncodingType.JSON) {
+      contentTypes.push(ContentType.JSON);
+    } else if (encodingType == EncodingType.Text) {
+      contentTypes.push(ContentType.StringContentType);
       contentTypes.push(ContentType.JSON);
     }
 

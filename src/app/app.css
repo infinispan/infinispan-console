@@ -38,3 +38,7 @@ html, body, #root {
   --pf-c-button--m-link--focus--Color: var(--pf-global--danger-color--200);
   --pf-c-button--m-link--active--Color: var(--pf-global--danger-color--200);
 }
+
+.pf-c-toolbar {
+  padding-bottom: 0;
+}
