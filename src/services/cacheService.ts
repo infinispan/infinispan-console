@@ -340,7 +340,7 @@ export class CacheService {
       this.endpoint +
       '/caches/' +
       encodeURIComponent(cacheName) +
-      '?action=entries&metadata=true&limit=' +
+      '?action=entries&content-negotiation=true&metadata=true&limit=' +
       limit;
     return this.utils
       .restCall(allKeys, 'GET')

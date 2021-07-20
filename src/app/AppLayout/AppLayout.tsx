@@ -20,7 +20,8 @@ import {
   TextVariants,
   Toolbar,
   ToolbarContent,
-  ToolbarItem, Tooltip,
+  ToolbarItem,
+  Tooltip,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import {Link, NavLink, Redirect} from 'react-router-dom';
@@ -83,16 +84,16 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const Logo = (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarItem style={{marginTop: global_spacer_sm.value}}>
-          <Link to={'/'}>
-            <Brand src={icon} alt={t('layout.console-name')} width={150}/>
-          </Link>
-        </ToolbarItem>
-        <ToolbarItem style={{marginTop: 0}}>
-          <TextContent>
-            <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
-          </TextContent>
-        </ToolbarItem>
+          <ToolbarItem style={{marginTop: global_spacer_sm.value}}>
+            <Link to={'/'}>
+              <Brand src={icon} alt={t('layout.console-name')} width={150}/>
+            </Link>
+          </ToolbarItem>
+          <ToolbarItem style={{marginTop: 0}}>
+            <TextContent>
+              <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
+            </TextContent>
+          </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );

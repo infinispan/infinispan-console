@@ -47,6 +47,7 @@ export function useCacheEntries() {
     errorEntries,
     infoEntries,
     reloadEntries,
+    getByKey,
   } = useContext(CacheDetailContext);
   return {
     cacheEntries,
@@ -54,6 +55,7 @@ export function useCacheEntries() {
     errorEntries,
     infoEntries,
     reloadEntries,
+    getByKey
   };
 }
 
