@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { useCacheDetail } from '@app/services/cachesHook';
-import { useTranslation } from 'react-i18next';
+import {Button, ButtonVariant, Modal, Text, TextContent,} from '@patternfly/react-core';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {useCacheDetail} from '@app/services/cachesHook';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 
 /**
@@ -20,7 +14,7 @@ const ClearAllEntries = (props: {
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { reload } = useCacheDetail(props.cacheName);
+  const { reload } = useCacheDetail();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 

@@ -1,5 +1,5 @@
 import { AuthenticationService } from '@services/authService';
-import { RestUtils } from '@services/restUtils';
+import { FetchCaller } from '@services/fetchCaller';
 import { ProtobufService } from '@services/protobufService';
 import { TasksService } from '@services/tasksService';
 import { ServerService } from '@services/serverService';
@@ -16,7 +16,7 @@ import { SearchService } from '@services/searchService';
 export class ConsoleServices {
   private initialized = false;
   private static instance: ConsoleServices = new ConsoleServices();
-  private restUtils;
+  private fetchCaller;
   private authenticationService;
   private countersService;
   private serverService;
@@ -73,46 +73,46 @@ export class ConsoleServices {
       this.instance.authenticationService = new AuthenticationService(
         ConsoleServices.endpoint()
       );
-      this.instance.restUtils = new RestUtils(
+      this.instance.fetchCaller = new FetchCaller(
         this.instance.authenticationService
       );
       this.instance.protobufService = new ProtobufService(
         ConsoleServices.endpoint() + '/schemas',
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.taskService = new TasksService(
         ConsoleServices.endpoint() + '/tasks',
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.serverService = new ServerService(
         ConsoleServices.endpoint() + '/server',
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.countersService = new CountersService(
         ConsoleServices.endpoint() + '/counters',
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.xsiteReplicationService = new CrossSiteReplicationService(
         ConsoleServices.endpoint(),
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.cacheService = new CacheService(
         ConsoleServices.endpoint(),
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.dataContainerService = new ContainerService(
         ConsoleServices.endpoint(),
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
       this.instance.userService = new SecurityService(
         ConsoleServices.endpoint() + '/security',
-        this.instance.restUtils,
+        this.instance.fetchCaller,
         this.instance.authenticationService
       );
 
       this.instance.searchService = new SearchService(
         ConsoleServices.endpoint() + '/caches/',
-        this.instance.restUtils
+        this.instance.fetchCaller
       );
 
       this.instance.initialized = true;

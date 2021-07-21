@@ -74,13 +74,12 @@ const CreateProtoSchema = (props: {
 
     ConsoleServices.protobuf()
       .createOrUpdateSchema(schemaName.value, schema.value, true)
-      .then((eitherCreate) => {
-        if (eitherCreate.isRight()) {
-          addAlert(eitherCreate.value);
+      .then((actionResponse) => {
+        if (actionResponse.success) {
+          addAlert(actionResponse);
           clearCreateProtoSchema(true);
         } else {
-          // @ts-ignore
-          setError(eitherCreate.value.message);
+          setError(actionResponse.message);
         }
       });
   };

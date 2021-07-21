@@ -1,25 +1,18 @@
 import React from 'react';
-import {
-  Flex,
-  FlexItem,
-  Text,
-  TextContent,
-  TextVariants,
-} from '@patternfly/react-core';
-import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
-import displayUtils from '@services/displayUtils';
-import { ComponentStatus } from '@services/restUtils';
+import {AlertVariant, Flex, FlexItem, Text, TextContent, TextVariants,} from '@patternfly/react-core';
+import {AlertIcon} from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
+import {chart_global_label_Fill} from "@patternfly/react-tokens";
 
-const Status = (props: { status: string }) => {
-  const componentStatus = ComponentStatus[props.status];
+const Status = (props: { status: ComponentStatus }) => {
+  const componentStatus = props.status;
 
   return (
     <Flex>
       <FlexItem>
         <AlertIcon
-          variant={displayUtils.statusAlterVariant(componentStatus)}
+          variant={componentStatus.icon as AlertVariant}
           style={{
-            color: displayUtils.statusColor(componentStatus, true),
+            color: componentStatus.color,
             display: 'inline',
           }}
         />
@@ -28,9 +21,9 @@ const Status = (props: { status: string }) => {
         <TextContent>
           <Text
             component={TextVariants.p}
-            style={{ color: displayUtils.statusColor(componentStatus, false) }}
+            style={{ color: chart_global_label_Fill.value}}
           >
-            {displayUtils.capitalize(props.status)}
+            {componentStatus.name}
           </Text>
         </TextContent>
       </FlexItem>

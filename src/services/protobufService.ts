@@ -1,14 +1,14 @@
 import { Either, left, right } from '@services/either';
-import { RestUtils } from '@services/restUtils';
+import { FetchCaller } from '@services/fetchCaller';
 
 /**
  * Protobuf schemas manipulation service
  */
 export class ProtobufService {
   endpoint: string;
-  utils: RestUtils;
+  utils: FetchCaller;
 
-  constructor(endpoint: string, restUtils: RestUtils) {
+  constructor(endpoint: string, restUtils: FetchCaller) {
     this.endpoint = endpoint;
     this.utils = restUtils;
   }
@@ -20,62 +20,33 @@ export class ProtobufService {
     name: string,
     schema: string,
     create: boolean
-  ): Promise<Either<ActionResponse, ActionResponse>> {
-    return this.utils
-      .restCall(
-        this.endpoint + '/' + name,
-        create ? 'POST' : 'PUT',
-        undefined,
-        undefined,
-        schema
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((schema) => {
-        let protoError: ProtoError | undefined = undefined;
-        if (schema['error'] != null) {
-          protoError = <ProtoError>{
-            message: schema.error.message,
-            cause: schema.error.cause,
-          };
-        }
-        let message = 'Schema ' + name;
-        if (protoError) {
-          message = protoError.message;
-        } else if (create) {
-          message = message + ' created.';
-        } else {
-          message = message + ' updated.';
-        }
+  ): Promise<ActionResponse> {
+    if (create) {
+      return this.utils.post({
+        url: this.endpoint + '/' + name,
+        successMessage: `Schema ${name} created.`,
+        errorMessage: `Unexpected error creating schema ${name}`,
+        body: schema,
+      });
+    }
 
-        return right(<ActionResponse>{
-          message: message,
-          success: protoError == undefined,
-        }) as Either<ActionResponse, ActionResponse>;
-      })
-      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
+    return this.utils.put({
+      url: this.endpoint + '/' + name,
+      successMessage: `Schema ${name} updated.`,
+      errorMessage: `Unexpected error updating schema ${name}`,
+      body: schema,
+    });
   }
 
   /**
    * Delete schema
    */
-  public async delete(name: string): Promise<ActionResponse> {
-    return this.utils
-      .restCall(this.endpoint + '/' + name, 'DELETE')
-      .then((response) => {
-        if (response.ok) {
-          return <ActionResponse>{
-            message: 'Schema ' + name + ' has been deleted',
-            success: true,
-          };
-        }
-        throw response;
-      })
-      .catch((err) => this.handleProtobufRestError(err));
+  public async delete(schemaName: string): Promise<ActionResponse> {
+    return this.utils.delete({
+      url: this.endpoint,
+      successMessage: `Schema ${schemaName} has been deleted.`,
+      errorMessage: `Unexpected error happened when deleting schema ${schemaName}.`,
+    });
   }
 
   /**
@@ -84,57 +55,40 @@ export class ProtobufService {
   public async getSchema(
     name: string
   ): Promise<Either<ActionResponse, string>> {
-    return this.utils
-      .restCall(this.endpoint + '/' + name, 'GET')
-      .then((response) => {
-        if (response.ok) {
-          return response.text();
-        }
-        throw response;
-      })
-      .then((schema) => right(schema) as Either<ActionResponse, string>)
-      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
+    return this.utils.get(
+      this.endpoint + '/' + name,
+      (data) => data,
+      undefined,
+      true
+    );
   }
 
   /**
    * Get the list of files and validation response
    */
   public getProtobufSchemas(): Promise<Either<ActionResponse, ProtoSchema[]>> {
-    return this.utils
-      .restCall(this.endpoint, 'GET')
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(
-        (protoSchemas) =>
-          right(
-            protoSchemas
-              .map((schema) => {
-                let protoError: ProtoError | undefined = undefined;
-                if (schema['error'] != null) {
-                  protoError = <ProtoError>{
-                    message: schema.error.message,
-                    cause: schema.error.cause,
-                  };
-                }
-                return <ProtoSchema>{
-                  name: schema.name,
-                  error: protoError,
-                };
-              })
-              .filter(
-                (schema) =>
-                  schema.name !=
-                    'org/infinispan/protostream/message-wrapping.proto' &&
-                  schema.name !=
-                    'org/infinispan/query/remote/client/query.proto'
-              )
-          ) as Either<ActionResponse, ProtoSchema[]>
-      )
-      .catch((err) => this.handleProtobufRestError(err).then((r) => left(r)));
+    return this.utils.get(this.endpoint, (data) =>
+      data
+        .map((schema) => {
+          let protoError: ProtoError | undefined = undefined;
+          if (schema['error'] != null) {
+            protoError = <ProtoError>{
+              message: schema.error.message,
+              cause: schema.error.cause,
+            };
+          }
+          return <ProtoSchema>{
+            name: schema.name,
+            error: protoError,
+          };
+        })
+        .filter(
+          (schema) =>
+            schema.name !=
+              'org/infinispan/protostream/message-wrapping.proto' &&
+            schema.name != 'org/infinispan/query/remote/client/query.proto'
+        )
+    );
   }
 
   private handleProtobufRestError(err): Promise<ActionResponse> {

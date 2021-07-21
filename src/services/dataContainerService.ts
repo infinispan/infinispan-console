@@ -1,13 +1,13 @@
-import { RestUtils } from './restUtils';
-import { Either, left, right } from './either';
-import displayUtils from './displayUtils';
+import { FetchCaller } from './fetchCaller';
+import { Either, left } from './either';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import displayUtils from '@services/displayUtils';
 
 export class ContainerService {
   endpoint: string;
-  utils: RestUtils;
+  utils: FetchCaller;
 
-  constructor(endpoint: string, restUtils: RestUtils) {
+  constructor(endpoint: string, restUtils: FetchCaller) {
     this.endpoint = endpoint;
     this.utils = restUtils;
   }
@@ -19,69 +19,50 @@ export class ContainerService {
     Either<ActionResponse, CacheManager>
   > {
     return this.utils
-      .restCall(this.endpoint + '/server/cache-managers/', 'GET')
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
+      .get(this.endpoint + '/server/cache-managers/', (data) => data[0])
+      .then((maybeCmName) => {
+        if (maybeCmName.isRight()) {
+          return this.getCacheManager(maybeCmName.value);
         }
-        throw response;
-      })
-      .then((names) =>
-        this.getCacheManager(names[0]).then(
-          (cm) => right(cm) as Either<ActionResponse, CacheManager>
-        )
-      )
-      .catch((err) =>
-        left(
-          this.utils.mapError(
-            err,
-            'Cannot connect. Check the navigator logs for errors.'
-          )
-        )
-      );
+        return left(maybeCmName);
+      });
   }
 
-  private getCacheManager(name: string): Promise<CacheManager> {
-    let healthPromise: Promise<String> = this.utils
-      .restCall(this.endpoint + '/cache-managers/' + name + '/health', 'GET')
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data) => data.cluster_health.health_status);
+  private getCacheManager(
+    name: string
+  ): Promise<Either<ActionResponse, CacheManager>> {
+    let healthPromise: Promise<Either<ActionResponse, String>> = this.utils.get(
+      this.endpoint + '/cache-managers/' + name + '/health',
+      (data) => data.cluster_health.health_status
+    );
 
-    return healthPromise.then((heath) =>
-      this.utils
-        .restCall(this.endpoint + '/cache-managers/' + name, 'GET')
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
+    return healthPromise.then((maybeHealth) =>
+      this.utils.get(
+        this.endpoint + '/cache-managers/' + name,
+        (data) =>
+          <CacheManager>{
+            name: data.name,
+            physical_addresses: data.physical_addresses,
+            coordinator: data.coordinator,
+            cluster_name: data.cluster_name,
+            cache_manager_status: displayUtils.parseComponentStatus(
+              data.cache_manager_status
+            ),
+            cluster_size: data.cluster_size,
+            defined_caches: this.removeInternalCaches(data.defined_caches),
+            cache_configuration_names: this.removeInternalTemplate(
+              data.cache_configuration_names
+            ),
+            cluster_members: this.clusterMembers(
+              data.cluster_members,
+              data.cluster_members_physical_addresses
+            ),
+            health: maybeHealth.isRight()
+              ? maybeHealth.value
+              : maybeHealth.value.message,
+            local_site: data.local_site,
           }
-          throw response;
-        })
-        .then(
-          (data) =>
-            <CacheManager>{
-              name: data.name,
-              physical_addresses: data.physical_addresses,
-              coordinator: data.coordinator,
-              cluster_name: data.cluster_name,
-              cache_manager_status: data.cache_manager_status,
-              cluster_size: data.cluster_size,
-              defined_caches: this.removeInternalCaches(data.defined_caches),
-              cache_configuration_names: this.removeInternalTemplate(
-                data.cache_configuration_names
-              ),
-              cluster_members: this.clusterMembers(
-                data.cluster_members,
-                data.cluster_members_physical_addresses
-              ),
-              health: heath,
-              local_site: data.local_site,
-            }
-        )
+      )
     );
   }
 
@@ -101,21 +82,10 @@ export class ContainerService {
   public async getCacheManagerStats(
     name: string
   ): Promise<Either<ActionResponse, CacheManagerStats>> {
-    return this.utils
-      .restCall(this.endpoint + '/cache-managers/' + name + '/stats', 'GET')
-      .then((response) => response.json())
-      .then(
-        (data) =>
-          right(<CacheManagerStats>data) as Either<
-            ActionResponse,
-            CacheManagerStats
-          >
-      )
-      .catch((err) =>
-        left(
-          this.utils.mapError(err, 'Error retrieving cache manager statistics.')
-        )
-      );
+    return this.utils.get(
+      this.endpoint + '/cache-managers/' + name + '/stats',
+      (data) => <CacheManagerStats>data
+    );
   }
 
   /**
@@ -126,27 +96,17 @@ export class ContainerService {
   public async getCacheConfigurationTemplates(
     name: string
   ): Promise<Either<ActionResponse, CacheConfig[]>> {
-    return this.utils
-      .restCall(
-        this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
-        'GET'
-      )
-      .then((response) => response.json())
-      .then((arr) => {
-        const configs: [CacheConfig] = arr.map(
+    return this.utils.get(
+      this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
+      (data) =>
+        data.map(
           (config) =>
             <CacheConfig>{
               name: config.name,
               config: JSON.stringify(config.configuration, undefined, 2),
             }
-        );
-        return right(configs) as Either<ActionResponse, CacheConfig[]>;
-      })
-      .catch((err) =>
-        left(
-          this.utils.mapError(err, 'Error retrieving configuration templates.')
         )
-      );
+    );
   }
 
   /**
@@ -156,42 +116,30 @@ export class ContainerService {
   public async getCaches(
     name: string
   ): Promise<Either<ActionResponse, CacheInfo[]>> {
-    return this.utils
-      .restCall(this.endpoint + '/cache-managers/' + name + '/caches', 'GET')
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then(
-        (infos) =>
-          right(
-            infos
-              .map(
-                (cacheInfo) =>
-                  <CacheInfo>{
-                    name: cacheInfo.name,
-                    status: cacheInfo.status,
-                    type: CacheConfigUtils.mapCacheType(cacheInfo.type),
-                    simpleCache: cacheInfo.simpleCache,
-                    features: <Features>{
-                      transactional: cacheInfo.transactional,
-                      persistent: cacheInfo.persistent,
-                      bounded: cacheInfo.bounded,
-                      secured: cacheInfo.secured,
-                      indexed: cacheInfo.indexed,
-                      hasRemoteBackup: cacheInfo.has_remote_backup,
-                    },
-                    health: cacheInfo.health,
-                  }
-              )
-              .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
-          ) as Either<ActionResponse, CacheInfo[]>
-      )
-      .catch((err) =>
-        left(this.utils.mapError(err, 'Error retrieving caches.'))
-      );
+    return this.utils.get(
+      this.endpoint + '/cache-managers/' + name + '/caches',
+      (data) =>
+        data
+          .map(
+            (cacheInfo) =>
+              <CacheInfo>{
+                name: cacheInfo.name,
+                status: cacheInfo.status,
+                type: CacheConfigUtils.mapCacheType(cacheInfo.type),
+                simpleCache: cacheInfo.simpleCache,
+                features: <Features>{
+                  transactional: cacheInfo.transactional,
+                  persistent: cacheInfo.persistent,
+                  bounded: cacheInfo.bounded,
+                  secured: cacheInfo.secured,
+                  indexed: cacheInfo.indexed,
+                  hasRemoteBackup: cacheInfo.has_remote_backup,
+                },
+                health: cacheInfo.health,
+              }
+          )
+          .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
+    );
   }
 
   private clusterMembers(

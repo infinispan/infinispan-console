@@ -46,12 +46,11 @@ it('Delete created cache', () => {
                     "Accept-Encoding": "gzip, deflate, br"
                      }
     });
-   /*cy.get('.pf-dropdown-toggle-id-4916').click();
-   cy.get('li:nth-child(2) > .pf-c-dropdown__menu-item').click();
-   cy.get('#cache-to-delete').click();
-   cy.get('#cache-to-delete').type('local');
-   cy.get('.pf-m-danger').click();
- */
+   // cy.get('.pf-dropdown-toggle-id-11').click();
+   // cy.get('li:nth-child(2) > .pf-c-dropdown__menu-item').click();
+   // cy.get('#cache-to-delete').click();
+   // cy.get('#cache-to-delete').type('local');
+   // cy.get('.pf-m-danger').click();
  })
 
 // Displays 3 tabs: Caches, Counters, Tasks

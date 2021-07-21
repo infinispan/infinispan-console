@@ -1,5 +1,5 @@
 import { Either, left, right } from './either';
-import { RestUtils } from '@services/restUtils';
+import { FetchCaller } from '@services/fetchCaller';
 import { AuthenticationService } from '@services/authService';
 
 export enum ConsoleACL {
@@ -36,12 +36,12 @@ export enum ACL {
  */
 export class SecurityService {
   endpoint: string;
-  utils: RestUtils;
+  utils: FetchCaller;
   authenticationService: AuthenticationService;
 
   constructor(
     endpoint: string,
-    restUtils: RestUtils,
+    restUtils: FetchCaller,
     authenticationService: AuthenticationService
   ) {
     this.endpoint = endpoint;
@@ -53,47 +53,30 @@ export class SecurityService {
    * Retrieve connected user acl
    */
   public async userAcl(): Promise<Either<ActionResponse, Acl>> {
-    return this.utils
-      .restCall(this.endpoint + '/user/acl', 'GET')
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
+    return this.utils.get(this.endpoint + '/user/acl', (data) => {
+      const subjects = data.subject;
+      let username = 'Connected User';
+      for (let subject of subjects) {
+        if (subject['type'] == 'NamePrincipal') {
+          username = subject['name'];
         }
-        throw response;
-      })
-      .then((data) => {
-        const subjects = data.subject;
-        let username = 'Connected User';
-        for (let subject of subjects) {
-          if (subject['type'] == 'NamePrincipal') {
-            username = subject['name'];
-          }
-        }
+      }
 
-        let global = data.global as string[];
-        let cachesAcl = new Map();
-        for (let cacheName of Object.keys(data.caches)) {
-          cachesAcl.set(cacheName, <CacheAcl>{
-            name: cacheName,
-            acl: data.caches[cacheName].map((aclStr) => aclStr as ACL),
-          });
-        }
+      let global = data.global as string[];
+      let cachesAcl = new Map();
+      for (let cacheName of Object.keys(data.caches)) {
+        cachesAcl.set(cacheName, <CacheAcl>{
+          name: cacheName,
+          acl: data.caches[cacheName].map((aclStr) => aclStr as ACL),
+        });
+      }
 
-        return right(<Acl>{
-          user: username,
-          global: global.map((aclStr) => aclStr as ACL),
-          caches: cachesAcl,
-        }) as Either<ActionResponse, Acl>;
-      })
-      .catch((err) => {
-        return left(
-          this.utils.mapError(
-            err,
-            'An error happened retrieving acl for ' +
-              this.authenticationService.getUserName()
-          )
-        );
-      });
+      return <Acl>{
+        user: username,
+        global: global.map((aclStr) => aclStr as ACL),
+        caches: cachesAcl,
+      };
+    });
   }
 
   public isConnected(user: ConnectedUser): boolean {

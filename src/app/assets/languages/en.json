@@ -111,8 +111,28 @@
       "title" : "Configuration template",
       "page-title" : "Configuration templates",
       "table-label" : "Cache configurations",
-      "no-encoding-warning" : "To read or edit entries from the console, recreate this cache and configure an encoding. Otherwise you can use only the CLI, or a REST or Hot Rod client, to perform read and write operations on this cache.",
+      "no-encoding-warning" : "This cache has no encoding definition or the encoding is not supported to read or edit entries from the console. You can use the Hot Rod client to perform read and write operations on this cache entries.",
       "no-encoding-docs" : "See \"Cache Encoding and Marshalling\" in our documentation."
+    },
+    "tabs": {
+      "entries": "Entries",
+      "entries-size": "Entries ({{size}})",
+      "configuration": "Configuration",
+      "metrics": "Metrics ({{status}})",
+      "metrics-enabled": "Metrics (Enabled)",
+      "metrics-disabled": "Metrics (Not enabled)"
+    },
+    "info" : {
+      "breadcrumb" : "Detail of cache {{cacheName}}",
+      "loading" : "Loading cache {{cacheName}} ...",
+      "error" : "An error occurred while loading {{cacheName}}",
+      "rebalanced" : "Rebalanced",
+      "rebalancing" : "Rebalancing"
+    },
+    "actions" : {
+      "action-see-less" : "See fewer cache details",
+      "action-see-more" : "See more cache details",
+      "action-manage-indexes" : "Manage indexes"
     },
     "entries" : {
       "action-edit" : "Edit",

@@ -1,0 +1,6 @@
+{
+  "_type": "org.infinispan.Person",
+  "name": "Elaia",
+  "age": 3,
+  "city": "Bilbao"
+}

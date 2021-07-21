@@ -188,10 +188,7 @@ const CacheManagers = () => {
       );
     }
 
-    let status = '';
     title = displayUtils.capitalize(cm.name);
-    status = cm.cache_manager_status;
-
     return (
       <PageSection
         variant={PageSectionVariants.light}
@@ -207,7 +204,7 @@ const CacheManagers = () => {
           </Flex>
           <Flex>
             <FlexItem>
-              <Status status={status} />
+              <Status status={cm.cache_manager_status} />
             </FlexItem>
             {buildSiteDisplay(cm.local_site)}
           </Flex>

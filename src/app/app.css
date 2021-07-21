@@ -42,3 +42,7 @@ html, body, #root {
 .pf-c-toolbar {
   padding-bottom: 0;
 }
+
+.pf-c-table__action {
+  text-align: right;
+}

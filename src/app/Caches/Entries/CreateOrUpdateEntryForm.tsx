@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   AlertVariant,
@@ -9,33 +9,32 @@ import {
   Modal,
   Select,
   SelectOption,
-  SelectVariant,
+  SelectVariant, Spinner,
   TextArea,
   TextInput,
 } from '@patternfly/react-core';
-import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import { ContentType, Flags } from '@services/restUtils';
-import formUtils, { IField, ISelectField } from '@services/formUtils';
-import { useReloadCache } from '@app/services/cachesHook';
-import { useTranslation } from 'react-i18next';
+import {SelectOptionObject} from '@patternfly/react-core/src/components/Select/SelectOption';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {global_spacer_md} from '@patternfly/react-tokens';
+import formUtils, {IField, ISelectField} from '@services/formUtils';
+import {useCacheDetail} from '@app/services/cachesHook';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
-import {CacheConfigUtils, EncodingType} from "@services/cacheConfigUtils";
+import {CacheConfigUtils} from "@services/cacheConfigUtils";
+import {ContentType, EncodingType, InfinispanFlags} from "@services/infinispanRefData";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
-  cacheEncoding: [string, string],
+  cacheEncoding: CacheEncoding,
   keyToEdit: string;
   keyContentType: ContentType;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
   const { addAlert } = useApiAlert();
-  const { reload } = useReloadCache();
+  const { reload } = useCacheDetail()
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
 
   const keyInitialState: IField = {
     value: '',
@@ -53,13 +52,13 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const keyContentTypeInitialState: ISelectField = {
-    selected: props.keyContentType? props.keyContentType as string : CacheConfigUtils.getContentTypeOptions(props.cacheEncoding[0] as EncodingType)[0] as string,
+    selected: CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.key as EncodingType)[0],
     expanded: false,
     helperText: 'Select a key content type.',
   };
 
   const contentTypeInitialState: ISelectField = {
-    selected: ContentType.StringContentType as string,
+    selected: CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType)[0],
     expanded: false,
     helperText: t('caches.entries.add-entry-content-type-help'),
   };
@@ -83,8 +82,8 @@ const CreateOrUpdateEntryForm = (props: {
     helperText: t('caches.entries.add-entry-flags-help'),
   };
 
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
-  const [isEdition, setIsEdition] = useState<boolean>(false);
   const [key, setKey] = useState<IField>(keyInitialState);
   const [keyContentType, setKeyContentType] = useState<ISelectField>(
     keyContentTypeInitialState
@@ -98,57 +97,112 @@ const CreateOrUpdateEntryForm = (props: {
     timeToLiveInitialState
   );
   const [flags, setFlags] = useState<ISelectField>(flagsInitialState);
+  const [isEdition, setIsEdition] = useState<boolean>(props.keyToEdit!='');
 
   useEffect(() => {
-    if (props.keyToEdit == '') {
+    if (!props.isModalOpen) {
       setIsEdition(false);
-    } else {
-      setIsEdition(true);
-      ConsoleServices.caches()
-        .getEntry(props.cacheName, props.keyToEdit, props.keyContentType)
-        .then((eitherResponse) => {
-          if (eitherResponse.isRight()) {
-            setKey((prevState) => {
-              return { ...prevState, value: eitherResponse.value.key };
-            });
-            setValue((prevState) => {
-              return { ...prevState, value: eitherResponse.value.value };
-            });
-            setKeyContentType((prevState) => {
-              return {
-                ...prevState,
-                selected: props.keyContentType as string,
-              };
-            });
-            setValueContentType((prevState) => {
-              return {
-                ...prevState,
-                selected: eitherResponse.value.valueContentType as string,
-              };
-            });
-            if (eitherResponse.value.maxIdle) {
-              setMaxIdleField((prevState) => {
-                return {
-                  ...prevState,
-                  value: eitherResponse.value.maxIdle as string,
-                };
-              });
-            }
-            if (eitherResponse.value.timeToLive) {
-              setTimeToLiveField((prevState) => {
-                return {
-                  ...prevState,
-                  value: eitherResponse.value.timeToLive as string,
-                };
-              });
-            }
-          } else {
-            onClose();
-            addAlert(eitherResponse.value);
-          }
-        });
+      return;
     }
+
+    if (props.keyToEdit!='') {
+      setIsEdition(true);
+      if (props.cacheEncoding.key as EncodingType == EncodingType.Java
+        || props.cacheEncoding.key as EncodingType == EncodingType.JBoss) {
+        tryGetEntry(props.keyContentType, true)
+          .then(r => {
+            if (r && !Number.isNaN(props.keyToEdit)) {
+              return tryGetEntry(ContentType.IntegerContentType, true);
+            }
+            return false;
+          }).then(r => {
+          if (r) {
+            return tryGetEntry(ContentType.LongContentType, true);
+          }
+          return false;
+        })
+          .then(r => {
+            if (r) {
+              return tryGetEntry(ContentType.FloatContentType, true);
+            }
+            return false;
+          }).then(r => {
+          if (r) {
+            return tryGetEntry(ContentType.DoubleContentType, false);
+          }
+          return false;
+        }).finally(() => setLoading(false));
+      } else {
+        tryGetEntry(props.keyContentType, false).finally(() => setLoading(false));
+      }
+    } else {
+      setLoading(false);
+    }
+
   }, [props.isModalOpen]);
+
+  const tryGetEntry = (keyContentType :ContentType, retry: boolean) : Promise<boolean> => {
+    return ConsoleServices.caches()
+      .getEntry(props.cacheName, props.cacheEncoding, props.keyToEdit, keyContentType)
+      .then((eitherResponse) => {
+        if (eitherResponse.isRight()) {
+          if(eitherResponse.value.length == 0) {
+            if(retry) {
+              return true;
+            }
+            setError(`The key ${props.keyToEdit} was not found.`);
+            setIsEdition(false);
+            return false;
+          }
+
+          const entry = eitherResponse.value[0];
+
+          setKey((prevState) => {
+            return { ...prevState, value: entry.key };
+          });
+          setValue((prevState) => {
+            return { ...prevState, value: entry.value };
+          });
+          setKeyContentType((prevState) => {
+            return {
+              ...prevState,
+              selected: keyContentType as string,
+            };
+          });
+          setValueContentType((prevState) => {
+            return {
+              ...prevState,
+              selected: entry.valueContentType as string,
+            };
+          });
+          if (entry.maxIdle) {
+            setMaxIdleField((prevState) => {
+              return {
+                ...prevState,
+                value: entry.maxIdle as string,
+              };
+            });
+          }
+          if (entry.timeToLive) {
+            setTimeToLiveField((prevState) => {
+              return {
+                ...prevState,
+                value: entry.timeToLive as string,
+              };
+            });
+          }
+        } else {
+          if (retry) {
+            // ignore error if retry
+            return true;
+          }
+
+          onClose();
+          addAlert(eitherResponse.value);
+        }
+        return false;
+      });
+  }
 
   const contentTypeOptions = (encodingType: EncodingType) => {
     return CacheConfigUtils.getContentTypeOptions(encodingType).map((contentType) => (
@@ -157,8 +211,8 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const flagsOptions = () => {
-    return Object.keys(Flags).map((key) => (
-      <SelectOption key={key} value={Flags[key]} />
+    return Object.keys(InfinispanFlags).map((key) => (
+      <SelectOption key={key} value={InfinispanFlags[key]} />
     ));
   };
 
@@ -245,8 +299,9 @@ const CreateOrUpdateEntryForm = (props: {
 
     if (isValid) {
       ConsoleServices.caches()
-        .createOrUpdate(
+        .createOrUpdateEntry(
           props.cacheName,
+          props.cacheEncoding,
           key.value,
           selectedKeyContentType,
           value.value,
@@ -259,14 +314,8 @@ const CreateOrUpdateEntryForm = (props: {
         .then((response) => {
           if (response.success) {
             addAlert(response);
-            let activity: Activity = {
-              cacheName: props.cacheName,
-              entryKey: key.value,
-              keyContentType: selectedKeyContentType,
-              action: isEdition ? 'Edit' : 'Add',
-              date: new Date(),
-            };
             reload();
+            onClose();
           } else {
             setError(response.message);
           }
@@ -276,6 +325,7 @@ const CreateOrUpdateEntryForm = (props: {
 
   const onClose = () => {
     props.closeModal();
+    setLoading(true);
     setError('');
     setKey(keyInitialState);
     setValue(valueInitialState);
@@ -287,15 +337,22 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const keyContentTypeFormGroup = () => {
+    const tooltip = <MoreInfoTooltip
+      label={t('caches.entries.add-entry-form-key-type-label')}
+      toolTip={'Choose \'Custom Type\' to specify keys with custom `_type` json value type.'}
+    />
+
     return (
       <FormGroup
-      label={t('caches.entries.add-entry-form-key-type-label')}
+      label={props.cacheEncoding.key == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-key-type-label')}
       fieldId="key-content-type-helper"
       helperText={keyContentType.helperText}
       placeholder={t('caches.entries.add-entry-form-key-type')}
       disabled={isEdition}
+      isRequired
     >
       <Select
+        maxHeight={200}
         placeholderText={t(
           'caches.entries.add-entry-form-key-type-select'
         )}
@@ -314,7 +371,7 @@ const CreateOrUpdateEntryForm = (props: {
         isOpen={keyContentType.expanded}
         isDisabled={isEdition}
       >
-        {contentTypeOptions(props.cacheEncoding[0] as EncodingType)}
+        {contentTypeOptions(props.cacheEncoding.key as EncodingType)}
       </Select>
     </FormGroup>
     );
@@ -339,23 +396,23 @@ const CreateOrUpdateEntryForm = (props: {
   }
 
   const keyFormGroup = () => {
+    const tooltip = <MoreInfoTooltip
+      label={t('caches.entries.add-entry-form-key')}
+      toolTip={
+        'The key can contain simple values but also JSON ' +
+        'that are automatically converted to and from Protostream. \n' +
+        'When writing JSON documents, a special field `_type` must be present.\n' +
+        '{\n' +
+        '   "_type": "Person",\n' +
+        '   "name": "user1",\n' +
+        '   "age": 32\n' +
+        '}'
+      }
+    />
+
     return (
       <FormGroup
-      label={
-        <MoreInfoTooltip
-          label={t('caches.entries.add-entry-form-key')}
-          toolTip={
-            'The key can contain simple values but also JSON ' +
-            'that are automatically converted to and from Protostream. \n' +
-            'When writing JSON documents, a special field `_type` must be present.\n' +
-            '{\n' +
-            '   "_type": "Person",\n' +
-            '   "name": "user1",\n' +
-            '   "age": 32\n' +
-            '}'
-          }
-        />
-      }
+        label={props.cacheEncoding.key == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-key')}
       isRequired
       helperText={key.helperText}
       helperTextInvalid={key.invalidText}
@@ -377,23 +434,23 @@ const CreateOrUpdateEntryForm = (props: {
   }
 
   const valueFormGroup = () => {
+    const tooltip = <MoreInfoTooltip
+      label={t('caches.entries.add-entry-form-value')}
+      toolTip={
+        'The value can contain simple values but also JSON ' +
+        'that are automatically converted to and from Protostream.\n ' +
+        'When writing JSON documents, a special field _type must be present.\n' +
+        '{\n' +
+        '   "_type": "org.infinispan.Person",\n' +
+        '   "name": "user1",\n' +
+        '   "age": 32\n' +
+        '}'
+      }
+    />
+
     return (
       <FormGroup
-      label={
-        <MoreInfoTooltip
-          label={t('caches.entries.add-entry-form-value')}
-          toolTip={
-            'The value can contain simple values but also JSON ' +
-            'that are automatically converted to and from Protostream.\n ' +
-            'When writing JSON documents, a special field _type must be present.\n' +
-            '{\n' +
-            '   "_type": "Person",\n' +
-            '   "name": "user1",\n' +
-            '   "age": 32\n' +
-            '}'
-          }
-        />
-      }
+      label={props.cacheEncoding.value == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-value')}
       isRequired
       helperText={value.helperText}
       helperTextInvalid={value.invalidText}
@@ -478,16 +535,22 @@ const CreateOrUpdateEntryForm = (props: {
   }
 
   const valueContentTypeFormGroup = () => {
+    const tooltip = <MoreInfoTooltip
+      label={t('caches.entries.add-entry-form-value-type-label')}
+      toolTip={'Choose \'Custom Type\' to specify values with custom `_type` json value type.'}
+    />
     return (
       <FormGroup
-      label={t('caches.entries.add-entry-form-value-type-label')}
+      label={props.cacheEncoding.value == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-value-type-label')}
       helperTextInvalid={t(
         'caches.entries.add-entry-form-value-type-invalid'
       )}
       fieldId="value-content-type-helper"
       helperText={valueContentType.helperText}
+      isRequired
     >
       <Select
+        maxHeight={200}
         placeholderText={t(
           'caches.entries.add-entry-form-value-type-select'
         )}
@@ -505,7 +568,7 @@ const CreateOrUpdateEntryForm = (props: {
         selections={valueContentType.selected}
         isOpen={valueContentType.expanded}
       >
-        {contentTypeOptions(props.cacheEncoding[1] as EncodingType)}
+        {contentTypeOptions(props.cacheEncoding.value as EncodingType)}
       </Select>
     </FormGroup>
     );
@@ -541,7 +604,7 @@ const CreateOrUpdateEntryForm = (props: {
       width={'50%'}
       isOpen={props.isModalOpen}
       title={isEdition ? 'Edit entry' : 'Add new entry'}
-      onClose={() => onClose()}
+      onClose={onClose}
       aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
       actions={[
         <Button key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
@@ -552,35 +615,36 @@ const CreateOrUpdateEntryForm = (props: {
         </Button>,
       ]}
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-        style={{marginBottom: global_spacer_md.value}}
-      >
-        {error != '' && (
-          <Alert variant={AlertVariant.danger} isInline title={error}/>
-        )}
-
-        {cacheNameFormGroup()}
-        {keyContentTypeFormGroup()}
-        {keyFormGroup()}
-        {valueContentTypeFormGroup()}
-        {valueFormGroup()}
-        {lifespanFormGroup()}
-        {maxIdleFormGroup()}
-      </Form>
-      <ExpandableSection
-        toggleText={t('caches.entries.add-entry-form-options')}
-      >
+        {loading? <Spinner size={'sm'}/> : ''}
         <Form
           onSubmit={(e) => {
             e.preventDefault();
           }}
+          style={{marginBottom: global_spacer_md.value}}
         >
-          {flagsFormGroup()}
+          {error != '' && (
+            <Alert variant={AlertVariant.danger} isInline title={error}/>
+          )}
+
+          {cacheNameFormGroup()}
+          {keyContentTypeFormGroup()}
+          {keyFormGroup()}
+          {valueContentTypeFormGroup()}
+          {valueFormGroup()}
+          {lifespanFormGroup()}
+          {maxIdleFormGroup()}
         </Form>
-      </ExpandableSection>
+        <ExpandableSection
+          toggleText={t('caches.entries.add-entry-form-options')}
+        >
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            {flagsFormGroup()}
+          </Form>
+        </ExpandableSection>
     </Modal>
   );
 };

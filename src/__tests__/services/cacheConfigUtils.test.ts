@@ -1,13 +1,12 @@
 import {
   CacheConfigUtils,
   Distributed,
-  EncodingType,
   Invalidated,
   Local,
   Replicated,
   Scattered
 } from "@services/cacheConfigUtils";
-import {ContentType} from "@services/restUtils";
+import {ContentType, EncodingType} from "@services/infinispanRefData";
 
 describe('Cache Config Utils tests', () => {
   test('cache topology', () => {
@@ -56,7 +55,8 @@ describe('Cache Config Utils tests', () => {
       EncodingType.Protobuf,
       EncodingType.Java,
       EncodingType.JavaSerialized,
-      EncodingType.JBoss
+      EncodingType.JBoss,
+      EncodingType.Octet
     ];
 
     for (let cacheType of cacheTypes) {
@@ -66,7 +66,7 @@ describe('Cache Config Utils tests', () => {
           .replace('KEY_TYPE', encoding)
           .replace('VALUE_TYPE', encoding)
         );
-        expect(CacheConfigUtils.mapEncoding(config)).toStrictEqual([encoding, encoding]);
+        expect(CacheConfigUtils.mapEncoding(config)).toStrictEqual({key: encoding, value: encoding});
       }
     }
   });
@@ -74,23 +74,17 @@ describe('Cache Config Utils tests', () => {
   test('editable', () => {
     expect(CacheConfigUtils.isEditable(EncodingType.Protobuf)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JBoss)).toBeTruthy();
-    expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.XML)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Text)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JSON)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy()
+    expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeFalsy();
+    expect(CacheConfigUtils.isEditable(EncodingType.Octet)).toBeFalsy();
     expect(CacheConfigUtils.isEditable(EncodingType.Empty)).toBeFalsy();
   });
 
-  test('extractValue from protobuf content', () => {
-    expect(CacheConfigUtils.extractValueFromProtobufValueContent('no proto')).toBe('no proto');
-    expect(CacheConfigUtils.extractValueFromProtobufValueContent('{ "name": "Dakota" }')).toBe('{ "name": "Dakota" }');
-    expect(CacheConfigUtils.extractValueFromProtobufValueContent('{ "_type": "string", "name": "Dakota" }')).toBe('{ "_type": "string", "name": "Dakota" }');
-    expect(CacheConfigUtils.extractValueFromProtobufValueContent('{ "_type": "string", "_value": "Dakota" }')).toBe('"Dakota"');
-  });
-
   test('content types depending on encoding', () => {
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Text)).toStrictEqual([ContentType.StringContentType, ContentType.JSON]);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Text)).toStrictEqual([ContentType.StringContentType]);
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)).toStrictEqual([ContentType.JSON]);
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.XML)).toStrictEqual([ContentType.XML]);
     const javaContentTypes = [ContentType.StringContentType,
@@ -105,6 +99,24 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Java)).toStrictEqual(javaContentTypes);
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JavaSerialized)).toStrictEqual(javaContentTypes);
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JBoss)).toStrictEqual(javaContentTypes);
+    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Protobuf)).toStrictEqual([
+      ContentType.string,
+      ContentType.customType,
+      ContentType.int32,
+      ContentType.int64,
+      ContentType.double,
+      ContentType.float,
+      ContentType.bool,
+      ContentType.bytes,
+      ContentType.uint32,
+      ContentType.uint64,
+      ContentType.sint32,
+      ContentType.sint64,
+      ContentType.fixed32,
+      ContentType.fixed64,
+      ContentType.sfixed32,
+      ContentType.sfixed64
+    ]);
   });
 
 });

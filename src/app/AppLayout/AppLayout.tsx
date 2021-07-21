@@ -5,7 +5,7 @@ import {
   Dropdown,
   DropdownGroup,
   DropdownItem,
-  DropdownToggle,
+  DropdownToggle, Flex, FlexItem,
   Nav,
   NavItem,
   NavList,
@@ -82,20 +82,18 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   };
 
   const Logo = (
-    <Toolbar>
-      <ToolbarContent>
-          <ToolbarItem style={{marginTop: global_spacer_sm.value}}>
+    <Flex alignItems={{ default: 'alignItemsCenter' }}>
+          <FlexItem style={{marginTop: global_spacer_sm.value}}>
             <Link to={'/'}>
               <Brand src={icon} alt={t('layout.console-name')} width={150}/>
             </Link>
-          </ToolbarItem>
-          <ToolbarItem style={{marginTop: 0}}>
+          </FlexItem>
+          <FlexItem>
             <TextContent>
               <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
             </TextContent>
-          </ToolbarItem>
-      </ToolbarContent>
-    </Toolbar>
+          </FlexItem>
+    </Flex>
   );
 
   const userDropdownItems = [

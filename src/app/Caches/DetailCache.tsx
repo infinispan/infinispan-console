@@ -1,16 +1,15 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
-  Badge,
   Button,
   ButtonVariant,
   Card,
-  CardBody,
+  CardBody, Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStatePrimary,
-  EmptyStateVariant,
+  EmptyStateVariant, Flex, FlexItem, Label,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -35,7 +34,7 @@ import {CacheConfiguration} from '@app/Caches/Configuration/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {global_danger_color_200} from '@patternfly/react-tokens';
-import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon,} from '@patternfly/react-icons';
+import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon,ExternalLinkSquareAltIcon} from '@patternfly/react-icons';
 import {QueryEntries} from '@app/Caches/Query/QueryEntries';
 import {Link} from 'react-router-dom';
 import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
@@ -43,14 +42,20 @@ import {useCacheDetail} from '@app/services/cachesHook';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
+import {useTranslation} from "react-i18next";
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
+  const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
-  const { loading, error, cache } = useCacheDetail(cacheName);
+  const { loading, error, cache, loadCache } = useCacheDetail();
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
+
+  useEffect(() => {
+    loadCache(cacheName);
+  }, []);
 
   const buildEntriesTabContent = (queryable: boolean) => {
     if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
@@ -74,7 +79,7 @@ const DetailCache = (props: { cacheName: string }) => {
         style={{ backgroundColor: 'white' }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
-        <Tab eventKey={10} title={<TabTitleText>Manage entries</TabTitleText>}>
+        <Tab eventKey={10} title={<TabTitleText>{t('caches.actions.action-manage-indexes')}</TabTitleText>}>
           <CacheEntries cacheName={cacheName} />
         </Tab>
         <Tab
@@ -109,7 +114,7 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
-    if (error.length > 0) {
+    if (error.length > 0 || !cache) {
       return (
         <Card>
           <CardBody>
@@ -119,7 +124,7 @@ const DetailCache = (props: { cacheName: string }) => {
                 color={global_danger_color_200.value}
               />
               <Title headingLevel="h2" size="lg">
-                An error occurred while retrieving cache {cacheName}
+                {`An error occurred while retrieving cache ${cacheName}`}
               </Title>
               <EmptyStateBody>{error}</EmptyStateBody>
               <EmptyStatePrimary>
@@ -160,7 +165,7 @@ const DetailCache = (props: { cacheName: string }) => {
     if (!cache?.rehash_in_progress) {
       return (
         <ToolbarItem>
-          <Badge isRead>Rebalanced</Badge>
+          <Label>Rebalanced</Label>
         </ToolbarItem>
       );
     }
@@ -180,9 +185,9 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <React.Fragment>
-        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        <ToolbarItem><Divider isVertical/></ToolbarItem>
         <ToolbarItem>
-          <Badge isRead>Backups</Badge>
+          <Label>Backups</Label>
         </ToolbarItem>
         <ToolbarItem>
           <Link
@@ -203,14 +208,18 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <ToolbarItem>
-        <TextContent>
-          <Text component={TextVariants.small}>
-            <Spinner size={'md'} />
-            Rebuilding the index for {cacheName}
-          </Text>
-        </TextContent>
-      </ToolbarItem>
+      <React.Fragment>
+        <FlexItem spacer={{ default: 'spacerXs' }}>
+          <Spinner size={'md'} />
+        </FlexItem>
+        <FlexItem>
+          <TextContent>
+            <Text component={TextVariants.small}>
+              {`Rebuilding the index for ${cacheName}`}
+            </Text>
+          </TextContent>
+        </FlexItem>
+      </React.Fragment>
     );
   };
 
@@ -218,16 +227,22 @@ const DetailCache = (props: { cacheName: string }) => {
     if (!cache?.features.indexed) return;
     return (
       <React.Fragment>
-        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-        {buildDisplayReindexing()}
         <ToolbarItem>
-          <Link
-            to={{
-              pathname: encodeURIComponent(cacheName) + '/indexing',
-            }}
-          >
-            <Button variant={ButtonVariant.link}>Manage indexes</Button>
-          </Link>
+          <Flex>
+            <Divider isVertical inset={{default: 'insetMd'}} />
+            {buildDisplayReindexing()}
+            <FlexItem>
+              <Link
+                to={{
+                  pathname: encodeURIComponent(cacheName) + '/indexing',
+                }}
+              >
+                <Button variant={ButtonVariant.link}>
+                  {t("caches.actions.action-manage-indexes")}
+                </Button>
+              </Link>
+            </FlexItem>
+          </Flex>
         </ToolbarItem>
       </React.Fragment>
     );
@@ -249,13 +264,11 @@ const DetailCache = (props: { cacheName: string }) => {
       if (displayShowMore) {
         return (
           <ToolbarItem>
-            <AngleDownIcon />
-            <Button
+            <Button isSmall icon={<AngleDownIcon />}
               variant={ButtonVariant.link}
               onClick={() => setDisplayShowMore(false)}
             >
-              {' '}
-              See fewer cache details{' '}
+              {t('caches.actions.action-see-less')}
             </Button>
           </ToolbarItem>
         );
@@ -263,13 +276,13 @@ const DetailCache = (props: { cacheName: string }) => {
 
       return (
         <ToolbarItem>
-          <AngleRightIcon />
           <Button
+            isSmall
+            icon={<AngleRightIcon />}
             variant={ButtonVariant.link}
             onClick={() => setDisplayShowMore(true)}
           >
-            {' '}
-            See more cache details{' '}
+            {t('caches.actions.action-see-more')}
           </Button>
         </ToolbarItem>
       );
@@ -288,7 +301,7 @@ const DetailCache = (props: { cacheName: string }) => {
         <ToolbarGroup>
           <ToolbarItem>
             <TextContent>
-              <Text component={TextVariants.h3}>
+              <Text component={TextVariants.h4}>
                 {displayUtils.createFeaturesString(cache.features)}
               </Text>
             </TextContent>
@@ -303,8 +316,48 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
+  const displayCacheEntries = () => {
+    if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)
+      || !cache?.editable) {
+      return '';
+    }
+
+    return (
+      <Tab
+        eventKey={0}
+        title={cache.size?
+          t('caches.tabs.entries-size', {size: displayUtils.formatNumber(cache?.size)}):
+          t('caches.tabs.entries')}/>
+    );
+  }
+
+  const displayConfiguration = () => {
+    let eventKey = 1;
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) ||
+      !cache.editable) {
+      eventKey = 0;
+    }
+
+    return (
+      <Tab eventKey={eventKey} title={t('caches.tabs.configuration')} />
+    );
+  }
+
+  const displayCacheStats = () => {
+    if(!cache.stats) {
+      return '';
+    }
+
+    return (
+      <Tab
+        eventKey={2}
+        title={cache.stats?.enabled ? t('caches.tabs.metrics-enabled') :  t('caches.tabs.metrics-disabled')}
+      />
+    )
+  }
+
   const buildCacheHeader = () => {
-    if (loading) {
+    if (loading || !cache) {
       return (
         <Toolbar id="cache-detail-header">
           <ToolbarGroup>
@@ -312,7 +365,7 @@ const DetailCache = (props: { cacheName: string }) => {
               <ToolbarItem>
                 <TextContent>
                   <Text component={TextVariants.h1}>
-                    Loading cache {cacheName} ...{' '}
+                    {t('caches.info.loading', {cacheName: cacheName})}
                   </Text>
                 </TextContent>
               </ToolbarItem>
@@ -330,7 +383,7 @@ const DetailCache = (props: { cacheName: string }) => {
               <ToolbarItem>
                 <TextContent>
                   <Text component={TextVariants.h1}>
-                    An error occurred while loading {cacheName}
+                    {t('caches.info.error', {cacheName: cacheName})}
                   </Text>
                 </TextContent>
               </ToolbarItem>
@@ -338,52 +391,6 @@ const DetailCache = (props: { cacheName: string }) => {
           </ToolbarGroup>
         </Toolbar>
       );
-    }
-
-    const displayCacheEntries = () => {
-      if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
-        return '';
-      }
-
-      if(cache?.editable) {
-        return (
-          <Tab
-            eventKey={0}
-            title={cache.size? 'Entries (' + displayUtils.formatNumber(cache?.size) + ')' : 'Entries'}
-          ></Tab>
-        )
-      }
-
-      return '';
-    }
-
-    const displayConfiguration = () => {
-      let eventKey = 1;
-      if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) ||
-      !cache.editable) {
-        eventKey = 0;
-      }
-
-      return (
-        <Tab eventKey={eventKey} title={'Configuration'} />
-      );
-    }
-
-    const displayCacheStats = () => {
-      if(!cache.stats) {
-        return '';
-      }
-
-      return (
-        <Tab
-          eventKey={2}
-          title={
-            'Metrics (' +
-            (cache.stats?.enabled ? 'Enabled' : 'Not enabled') +
-            ')'
-          }
-        />
-      )
     }
 
     return (
@@ -425,7 +432,7 @@ const DetailCache = (props: { cacheName: string }) => {
         variant={PageSectionVariants.light}
         style={{ paddingBottom: 0 }}
       >
-        <DataContainerBreadcrumb currentPage={'Detail of cache ' + cacheName} />
+        <DataContainerBreadcrumb currentPage={t('caches.info.breadcrumb', {cacheName: cacheName})} />
         {buildCacheHeader()}
       </PageSection>
       <PageSection>{buildDetailContent()}</PageSection>

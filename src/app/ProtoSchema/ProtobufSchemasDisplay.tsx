@@ -264,7 +264,7 @@ const ProtobufSchemasDisplay = (props: {
       protobufService
         .createOrUpdateSchema(name, schemasContent.get(name) as string, false)
         .then((eitherCreate) => {
-          addAlert(eitherCreate.value);
+          addAlert(eitherCreate);
           loadSchemas();
         });
     }

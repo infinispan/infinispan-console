@@ -67,12 +67,17 @@ const TasksTableDisplay = (props: {
   ];
 
   useEffect(() => {
-    ConsoleServices.tasks().getTasks().then((tasks) => {
-      setTasks(tasks);
-      setFilteredTasks(tasks);
-      props.setTasksCount(tasks.length);
-      const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
-      updateRows(tasks.slice(initSlice, initSlice + tasksPagination.perPage));
+    ConsoleServices.tasks().getTasks().then((maybeTasks) => {
+      if (maybeTasks.isRight()) {
+        setTasks(maybeTasks.value);
+        setFilteredTasks(maybeTasks.value);
+        props.setTasksCount(maybeTasks.value.length);
+        const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
+        updateRows(maybeTasks.value.slice(initSlice, initSlice + tasksPagination.perPage));
+      } else {
+        // TODO: deal loading, error, empty status
+      }
+
     });
   }, []);
 

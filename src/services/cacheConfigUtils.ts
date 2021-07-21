@@ -1,26 +1,10 @@
-/**
- * Cache configuration utils class
- *
- * @author Katia Aresti
- */
-import { ContentType } from '@services/restUtils';
+import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
 export const Invalidated = 'invalidation-cache';
 export const Local = 'local-cache';
 export const Scattered = 'scattered-cache';
-
-export enum EncodingType {
-  Protobuf = 'application/x-protostream',
-  Java = 'application/x-java-object',
-  JavaSerialized = 'application/x-java-serialized',
-  XML = 'application/xml; charset=UTF-8',
-  JSON = 'application/json',
-  Text = 'text/plain',
-  JBoss = 'application/x-jboss-marshalling',
-  Empty = 'Empty',
-}
 
 /**
  * Utility class to map cache configuration
@@ -30,8 +14,8 @@ export class CacheConfigUtils {
    * Map the encoding type of the cache
    * @param config, config of the cache
    */
-  public static mapEncoding(config: JSON): [EncodingType, EncodingType] {
-    let cacheConfigHead;
+  public static mapEncoding(config: JSON): CacheEncoding {
+    let cacheConfigHead: any = {};
     if (config.hasOwnProperty(Distributed)) {
       cacheConfigHead = config[Distributed];
     } else if (config.hasOwnProperty(Replicated)) {
@@ -42,20 +26,20 @@ export class CacheConfigUtils {
       cacheConfigHead = config[Local];
     } else if (config.hasOwnProperty(Scattered)) {
       cacheConfigHead = config[Scattered];
-    } else {
-      throw new Error('The configuration of the cache is not correct');
     }
 
     if (cacheConfigHead.hasOwnProperty('encoding')) {
-      return [
-        CacheConfigUtils.toEncoding(cacheConfigHead.encoding.key['media-type']),
-        CacheConfigUtils.toEncoding(
+      return {
+        key: CacheConfigUtils.toEncoding(
+          cacheConfigHead.encoding.key['media-type']
+        ),
+        value: CacheConfigUtils.toEncoding(
           cacheConfigHead.encoding.value['media-type']
         ),
-      ];
+      };
     }
 
-    return [EncodingType.Empty, EncodingType.Empty];
+    return { key: EncodingType.Empty, value: EncodingType.Empty };
   }
 
   public static toEncoding(encodingConf: string | undefined): EncodingType {
@@ -75,6 +59,8 @@ export class CacheConfigUtils {
       return EncodingType.XML;
     } else if (encodingConf.includes('json')) {
       return EncodingType.JSON;
+    } else if (encodingConf.includes('octet')) {
+      return EncodingType.Octet;
     }
 
     return EncodingType.Empty;
@@ -106,24 +92,11 @@ export class CacheConfigUtils {
    * @param encoding
    */
   public static isEditable(encoding: EncodingType): boolean {
-    return encoding != EncodingType.Empty;
-  }
-
-  /**
-   * Extract protobuf value type
-   *
-   * @param maybeJson
-   */
-  public static extractValueFromProtobufValueContent(maybeJson: string): any {
-    try {
-      let jsonObj = JSON.parse(maybeJson);
-      if (jsonObj['_type'] && jsonObj['_value']) {
-        return JSON.stringify(jsonObj['_value']);
-      }
-      return maybeJson;
-    } catch (err) {
-      return maybeJson;
-    }
+    return (
+      encoding != EncodingType.Empty &&
+      encoding != EncodingType.JavaSerialized &&
+      encoding != EncodingType.Octet
+    );
   }
 
   /**
@@ -137,7 +110,6 @@ export class CacheConfigUtils {
     let contentTypes: ContentType[] = [];
 
     if (
-      encodingType == EncodingType.Protobuf ||
       encodingType == EncodingType.Java ||
       encodingType == EncodingType.JavaSerialized ||
       encodingType == EncodingType.JBoss
@@ -149,13 +121,29 @@ export class CacheConfigUtils {
       contentTypes.push(ContentType.DoubleContentType);
       contentTypes.push(ContentType.BooleanContentType);
       contentTypes.push(ContentType.JSON);
+    } else if (encodingType == EncodingType.Protobuf) {
+      contentTypes.push(ContentType.string);
+      contentTypes.push(ContentType.customType);
+      contentTypes.push(ContentType.int32);
+      contentTypes.push(ContentType.int64);
+      contentTypes.push(ContentType.double);
+      contentTypes.push(ContentType.float);
+      contentTypes.push(ContentType.bool);
+      contentTypes.push(ContentType.bytes);
+      contentTypes.push(ContentType.uint32);
+      contentTypes.push(ContentType.uint64);
+      contentTypes.push(ContentType.sint32);
+      contentTypes.push(ContentType.sint64);
+      contentTypes.push(ContentType.fixed32);
+      contentTypes.push(ContentType.fixed64);
+      contentTypes.push(ContentType.sfixed32);
+      contentTypes.push(ContentType.sfixed64);
     } else if (encodingType == EncodingType.XML) {
       contentTypes.push(ContentType.XML);
     } else if (encodingType == EncodingType.JSON) {
       contentTypes.push(ContentType.JSON);
     } else if (encodingType == EncodingType.Text) {
       contentTypes.push(ContentType.StringContentType);
-      contentTypes.push(ContentType.JSON);
     }
 
     return contentTypes;
