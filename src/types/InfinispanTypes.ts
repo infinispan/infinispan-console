@@ -1,9 +1,15 @@
+interface ComponentStatus {
+  name: string;
+  color: string;
+  icon: string;
+}
+
 interface CacheManager {
   name: string;
   physical_addresses: [string];
   coordinator: boolean;
   cluster_name: string;
-  cache_manager_status: string;
+  cache_manager_status: ComponentStatus;
   cluster_size: number;
   defined_caches: [DefinedCache];
   cache_configuration_names: [string];
@@ -74,6 +80,7 @@ interface CacheInfo {
 
 interface CacheEntry {
   key: string;
+  keyDisplay: string;
   keyContentType?: string;
   value: string;
   valueContentType?: string;
@@ -92,10 +99,15 @@ interface CacheKey {
   keyContentType: string;
 }
 
+interface CacheEncoding {
+  key: string;
+  value: string;
+}
+
 interface DetailedInfinispanCache {
   name: string;
   configuration: CacheConfig;
-  encoding: [string, string];
+  encoding: CacheEncoding;
   type: string;
   started: boolean;
   size?: number;
@@ -147,7 +159,7 @@ interface QueryStats {
 
 interface StateTransferStatus {
   site: string;
-  status: string;
+  status: ComponentStatus;
 }
 
 interface SiteNode {
@@ -207,14 +219,6 @@ interface ActionResponse {
   success: boolean;
 }
 
-interface Activity {
-  cacheName: string;
-  entryKey: string;
-  keyContentType?: string;
-  action: string;
-  date: Date;
-}
-
 interface SearchResut {
   total: number;
   values: string[];
@@ -254,4 +258,12 @@ interface SearchStats {
   index: IndexStat[];
   query: QueryStat[];
   reindexing: boolean;
+}
+
+interface ServiceCall {
+  url: string;
+  successMessage: string;
+  errorMessage: string;
+  customHeaders?: Headers;
+  body?: string;
 }

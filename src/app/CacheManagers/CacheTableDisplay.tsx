@@ -33,7 +33,6 @@ import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DeleteCache} from '@app/Caches/DeleteCache';
 import {IgnoreCache} from '@app/Caches/IgnoreCache';
 import {IExtraData, IRowData,} from '@patternfly/react-table/src/components/Table';
-import {ComponentHealth} from '@services/restUtils';
 import {Health} from '@app/Common/Health';
 import {useBanner} from '@app/utils/useApiAlert';
 import {useCaches} from '@app/services/dataContainerHooks';
@@ -42,6 +41,7 @@ import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {global_spacer_sm} from '@patternfly/react-tokens';
+import {ComponentHealth} from "@services/infinispanRefData";
 
 interface CacheAction {
   cacheName: string;

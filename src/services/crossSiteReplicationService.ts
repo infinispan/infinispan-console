@@ -1,5 +1,6 @@
-import { RestUtils } from '@services/restUtils';
+import { FetchCaller } from '@services/fetchCaller';
 import { Either, left, right } from './either';
+import displayUtils from '@services/displayUtils';
 
 /**
  * Cross Site replication operations
@@ -7,9 +8,9 @@ import { Either, left, right } from './either';
  */
 export class CrossSiteReplicationService {
   endpoint: string;
-  utils: RestUtils;
+  utils: FetchCaller;
 
-  constructor(endpoint: string, restUtils: RestUtils) {
+  constructor(endpoint: string, restUtils: FetchCaller) {
     this.endpoint = endpoint;
     this.utils = restUtils;
   }
@@ -22,44 +23,16 @@ export class CrossSiteReplicationService {
   public async backupsForCache(
     cacheName: string
   ): Promise<Either<ActionResponse, XSite[]>> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/x-site/backups',
-        'GET'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data) =>
-        right(
-          Object.keys(data).map(
-            (siteName) => <XSite>{ name: siteName, status: data[siteName] }
-          )
+    return this.utils.get(
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '/x-site/backups',
+      (data) =>
+        Object.keys(data).map(
+          (siteName) => <XSite>{ name: siteName, status: data[siteName] }
         )
-      )
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-
-        return err.text().then((errorMessage) => {
-          if (errorMessage == '') {
-            errorMessage =
-              'An error happened retrieving backups for cache ' + cacheName;
-          }
-
-          return left(<ActionResponse>{
-            message: errorMessage,
-            success: false,
-          });
-        });
-      });
+    );
   }
 
   /**
@@ -71,48 +44,17 @@ export class CrossSiteReplicationService {
     cacheName: string,
     siteName: string
   ): Promise<Either<ActionResponse, SiteNode[]>> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/x-site/backups/' +
-          siteName,
-        'GET'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data) =>
-        right(
-          Object.keys(data).map(
-            (nodeName) => <SiteNode>{ name: nodeName, status: data[nodeName] }
-          )
+    return this.utils.get(
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '/x-site/backups/' +
+        siteName,
+      (data) =>
+        Object.keys(data).map(
+          (nodeName) => <SiteNode>{ name: nodeName, status: data[nodeName] }
         )
-      )
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-
-        return err.text().then((errorMessage) => {
-          if (errorMessage == '') {
-            errorMessage =
-              'An error happened retrieving backups for cache ' +
-              cacheName +
-              'and site ' +
-              siteName;
-          }
-
-          return left(<ActionResponse>{
-            message: errorMessage,
-            success: false,
-          });
-        });
-      });
+    );
   }
 
   /**
@@ -123,46 +65,20 @@ export class CrossSiteReplicationService {
   public async stateTransferStatus(
     cacheName: string
   ): Promise<Either<ActionResponse, StateTransferStatus[]>> {
-    return this.utils
-      .restCall(
-        this.endpoint +
-          '/caches/' +
-          encodeURIComponent(cacheName) +
-          '/x-site/backups?action=push-state-status',
-        'GET'
-      )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data) =>
-        right(
-          Object.keys(data).map(
-            (siteName) =>
-              <StateTransferStatus>{ site: siteName, status: data[siteName] }
-          )
+    return this.utils.get(
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '/x-site/backups?action=push-state-status',
+      (data) =>
+        Object.keys(data).map(
+          (siteName) =>
+            <StateTransferStatus>{
+              site: siteName,
+              status: displayUtils.parseComponentStatus(data[siteName]),
+            }
         )
-      )
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return left(<ActionResponse>{ message: err.message, success: false });
-        }
-
-        return err.text().then((errorMessage) => {
-          if (errorMessage == '') {
-            errorMessage =
-              'An error happened retrieving state transfer status for cache ' +
-              cacheName;
-          }
-
-          return left(<ActionResponse>{
-            message: errorMessage,
-            success: false,
-          });
-        });
-      });
+    );
   }
 
   /**
@@ -283,41 +199,10 @@ export class CrossSiteReplicationService {
         '?action=' +
         action;
     }
-    return this.utils
-      .restCall(url, 'POST')
-      .then((response) => {
-        if (response.ok) {
-          return <ActionResponse>{
-            message:
-              'Operation ' +
-              actionLabel +
-              ' on site ' +
-              siteName +
-              ' has started',
-            success: true,
-          };
-        }
-        throw response;
-      })
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          return <ActionResponse>{ message: err.message, success: false };
-        }
-
-        return err.text().then((errorMessage) => {
-          if (errorMessage == '') {
-            errorMessage =
-              'An error happened during the operation ' +
-              actionLabel +
-              ' started on ' +
-              siteName;
-          }
-
-          return <ActionResponse>{
-            message: errorMessage,
-            success: false,
-          };
-        });
-      });
+    return this.utils.post({
+      url: url,
+      successMessage: `Operation ${actionLabel} on site ${siteName} has started.`,
+      errorMessage: `An error happened during the operation ${actionLabel} started on ${siteName}.`,
+    });
   }
 }

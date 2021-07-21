@@ -9,6 +9,7 @@ import {
   chart_color_purple_500,
   chart_global_label_Fill,
   global_danger_color_100,
+  global_info_color_100,
   global_palette_black_100,
   global_palette_blue_50,
   global_palette_purple_100,
@@ -16,80 +17,114 @@ import {
   global_warning_color_100,
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
+import numeral from 'numeral';
 import {
   CacheType,
   ComponentHealth,
-  ComponentStatus,
-} from '@services/restUtils';
-import numeral from 'numeral';
+  ContentType,
+} from '@services/infinispanRefData';
 
 /**
  * Utility class to manage display features
  *
  * @author Katia Aresti
  */
+export const UNKNOWN_CS = {
+  name: 'Unknown',
+  color: chart_global_label_Fill.value,
+  icon: AlertVariant.warning,
+};
+export const OK_CS = {
+  name: 'Ok',
+  color: global_success_color_100.value,
+  icon: AlertVariant.success,
+};
+export const RUNNING_CS = {
+  name: 'Running',
+  color: global_success_color_100.value,
+  icon: AlertVariant.success,
+};
+export const INIT_CS = {
+  name: 'Initializing',
+  color: global_warning_color_100.value,
+  icon: AlertVariant.warning,
+};
+export const CANCEL_CS = {
+  name: 'Cancelling',
+  color: global_warning_color_100.value,
+  icon: AlertVariant.warning,
+};
+export const SENDING_CS = {
+  name: 'Sending',
+  color: global_warning_color_100.value,
+  icon: AlertVariant.warning,
+};
+export const FAILED_CS = {
+  name: 'Failed',
+  color: global_danger_color_100.value,
+  icon: AlertVariant.danger,
+};
+export const ERROR_CS = {
+  name: 'Error',
+  color: global_danger_color_100.value,
+  icon: AlertVariant.danger,
+};
+export const TERMINATED_CS = {
+  name: 'Terminated',
+  color: global_info_color_100.value,
+  icon: AlertVariant.info,
+};
+export const STOPPING_CS = {
+  name: 'Stopping',
+  color: global_info_color_100.value,
+  icon: AlertVariant.info,
+};
+export const INSTANTIATED_CS = {
+  name: 'Instantiated',
+  color: global_info_color_100.value,
+  icon: AlertVariant.info,
+};
+
 class DisplayUtils {
-  /**
-   * Get the status color
-   * @param componentStatus
-   * @param isIcon
-   */
-  public statusColor(
-    componentStatus: ComponentStatus | undefined,
-    isIcon: boolean
-  ) {
-    let color;
-    if (!componentStatus) {
-      return chart_global_label_Fill.value;
-    }
+  public parseComponentStatus(value?: string): ComponentStatus {
+    let componentStatus: ComponentStatus;
 
-    if (!isIcon) {
-      return chart_global_label_Fill.value;
-    }
-
-    switch (componentStatus) {
-      case ComponentStatus.RUNNING:
-      case ComponentStatus.OK:
-        color = global_success_color_100.value;
+    switch (value) {
+      case 'RUNNING':
+        componentStatus = RUNNING_CS;
         break;
-      case ComponentStatus.INITIALIZING:
-      case ComponentStatus.CANCELLING:
-      case ComponentStatus.SENDING:
-        color = global_warning_color_100.value;
+      case 'OK':
+        componentStatus = OK_CS;
         break;
-      case ComponentStatus.FAILED:
-      case ComponentStatus.ERROR:
-        color = global_danger_color_100.value;
+      case 'INITIALIZING':
+        componentStatus = INIT_CS;
+        break;
+      case 'CANCELLING':
+        componentStatus = CANCEL_CS;
+        break;
+      case 'SENDING':
+        componentStatus = SENDING_CS;
+        break;
+      case 'FAILED':
+        componentStatus = FAILED_CS;
+        break;
+      case 'ERROR':
+        componentStatus = ERROR_CS;
+        break;
+      case 'TERMINATED':
+        componentStatus = TERMINATED_CS;
+        break;
+      case 'STOPPING':
+        componentStatus = STOPPING_CS;
+        break;
+      case 'INSTANTIATED':
+        componentStatus = INSTANTIATED_CS;
         break;
       default:
-        color = chart_global_label_Fill.value;
+        componentStatus = UNKNOWN_CS;
     }
-    return color;
-  }
 
-  /**
-   * Status alert icon
-   *
-   * @param status
-   */
-  public statusAlterVariant(status: ComponentStatus): AlertVariant {
-    let variant;
-    switch (status) {
-      case ComponentStatus.RUNNING:
-      case ComponentStatus.OK:
-        variant = AlertVariant.success;
-        break;
-      case ComponentStatus.ERROR:
-      case ComponentStatus.FAILED:
-        variant = AlertVariant.danger;
-        break;
-      case ComponentStatus.TERMINATED:
-        variant = AlertVariant.info;
-        break;
-      default:
-        variant = AlertVariant.warning;
-    }
-    return variant;
+    return componentStatus;
   }
 
   /**
@@ -323,13 +358,22 @@ class DisplayUtils {
     return featuresString;
   }
 
-  public displayValue(value: string): string {
-    try {
-      let parse = JSON.stringify(JSON.parse(value), null, 2);
-      return parse;
-    } catch (err) {
-      return value;
+  public formatContentToDisplay(
+    content: any,
+    contentType?: ContentType
+  ): string {
+    if (
+      !contentType ||
+      contentType == ContentType.JSON ||
+      contentType == ContentType.customType
+    ) {
+      // Try parse and stringify
+      try {
+        return JSON.stringify(JSON.parse(content), null, 2);
+      } catch (err) {}
     }
+
+    return content as string;
   }
 
   private appendFeature = (features: string, feature: string): string => {

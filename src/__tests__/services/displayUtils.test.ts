@@ -1,5 +1,12 @@
-import displayUtils from '@services/displayUtils';
-import { CacheType, ComponentHealth, ComponentStatus } from '@services/restUtils';
+import displayUtils, {
+  CANCEL_CS, ERROR_CS,
+  FAILED_CS,
+  INIT_CS, INSTANTIATED_CS,
+  OK_CS,
+  RUNNING_CS,
+  SENDING_CS, STOPPING_CS, TERMINATED_CS,
+  UNKNOWN_CS
+} from '@services/displayUtils';
 import {
   chart_color_cyan_100,
   chart_color_gold_100,
@@ -11,75 +18,21 @@ import {
   global_warning_color_100,
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
+import {CacheType, ComponentHealth} from "@services/infinispanRefData";
 
 describe('Display Utils tests', () => {
-  test('status color', () => {
-    expect(displayUtils.statusColor(undefined, false)).toBe(
-      chart_global_label_Fill.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.OK, true)).toBe(
-      global_success_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.RUNNING, true)).toBe(
-      global_success_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.INITIALIZING, true)).toBe(
-      global_warning_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.CANCELLING, true)).toBe(
-      global_warning_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.SENDING, true)).toBe(
-      global_warning_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.FAILED, true)).toBe(
-      global_danger_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.ERROR, true)).toBe(
-      global_danger_color_100.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.STOPPING, true)).toBe(
-      chart_global_label_Fill.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.TERMINATED, true)).toBe(
-      chart_global_label_Fill.value
-    );
-    expect(displayUtils.statusColor(ComponentStatus.INSTANTIATED, true)).toBe(
-      chart_global_label_Fill.value
-    );
-  });
-
-  test('status altert variant', () => {
-    expect(displayUtils.statusAlterVariant(ComponentStatus.OK)).toBe(
-      AlertVariant.success
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.RUNNING)).toBe(
-      AlertVariant.success
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.INITIALIZING)).toBe(
-      AlertVariant.warning
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.CANCELLING)).toBe(
-      AlertVariant.warning
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.SENDING)).toBe(
-      AlertVariant.warning
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.FAILED)).toBe(
-      AlertVariant.danger
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.ERROR)).toBe(
-      AlertVariant.danger
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.STOPPING)).toBe(
-      AlertVariant.warning
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.TERMINATED)).toBe(
-      AlertVariant.info
-    );
-    expect(displayUtils.statusAlterVariant(ComponentStatus.INSTANTIATED)).toBe(
-      AlertVariant.warning
-    );
+  test('parseComponentStatus', () => {
+    expect(displayUtils.parseComponentStatus(undefined)).toBe(UNKNOWN_CS);
+    expect(displayUtils.parseComponentStatus('OK')).toBe(OK_CS);
+    expect(displayUtils.parseComponentStatus('RUNNING')).toBe(RUNNING_CS);
+    expect(displayUtils.parseComponentStatus('INITIALIZING')).toBe(INIT_CS);
+    expect(displayUtils.parseComponentStatus('CANCELLING')).toBe(CANCEL_CS);
+    expect(displayUtils.parseComponentStatus('SENDING')).toBe(SENDING_CS);
+    expect(displayUtils.parseComponentStatus('FAILED')).toBe(FAILED_CS);
+    expect(displayUtils.parseComponentStatus('ERROR')).toBe(ERROR_CS);
+    expect(displayUtils.parseComponentStatus('STOPPING')).toBe(STOPPING_CS);
+    expect(displayUtils.parseComponentStatus('TERMINATED')).toBe(TERMINATED_CS);
+    expect(displayUtils.parseComponentStatus('INSTANTIATED')).toBe(INSTANTIATED_CS);
   });
 
   test('format number should cut 2 digits', () => {

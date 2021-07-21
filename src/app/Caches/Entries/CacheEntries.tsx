@@ -16,10 +16,11 @@ import {
   ToolbarGroup,
   ToolbarItem,
   ToolbarItemVariant,
+  Tooltip,
 } from '@patternfly/react-core';
 import {SearchIcon} from '@patternfly/react-icons';
 import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
-import {cellWidth, classNames, Table, TableBody, TableHeader, TableVariant, wrappable,} from '@patternfly/react-table';
+import {cellWidth, Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
 import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
 import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -32,8 +33,8 @@ import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
-import {CacheConfigUtils, EncodingType} from "@services/cacheConfigUtils";
-import {ContentType} from "@services/restUtils";
+import {CacheConfigUtils} from "@services/cacheConfigUtils";
+import {ContentType, EncodingType} from "@services/infinispanRefData";
 
 const CacheEntries = (props: { cacheName: string }) => {
   const [
@@ -49,7 +50,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     reloadEntries,
     getByKey
   } = useCacheEntries();
-  const { cache } = useCacheDetail(props.cacheName);
+  const { cache } = useCacheDetail();
   const {connectedUser} = useConnectedUser();
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
     false
@@ -99,7 +100,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     if (!paginationUpgrade) {
       updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
     }
-  }, [cacheEntries]);
+  }, [cacheEntries, errorEntries]);
 
   useEffect(() => {
       updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
@@ -181,18 +182,11 @@ const CacheEntries = (props: { cacheName: string }) => {
       setActions([]);
     } else {
       rows = currentPageEntries.map((entry) => {
-        let keyForAction = entry.key;
-        let keyContentType = entry.keyContentType;
-        const isProtobuf: [string, string] = cache.encoding;
-        if (isProtobuf[0] == EncodingType.Protobuf) {
-          keyForAction = CacheConfigUtils.extractValueFromProtobufValueContent(entry.key);
-        }
-
         return {
           heightAuto: true,
           cells: [
-            { title: displayHighlighted(entry.key), keyForAction: keyForAction, keyContentType: keyContentType },
-            { title: displayHighlighted(entry.value) },
+            { title: displayHighlighted(entry.key, cache.encoding.key as EncodingType, entry.keyContentType as ContentType), keyForAction: entry.key, keyContentType: entry.keyContentType },
+            { title: displayHighlighted(entry.value, cache.encoding.value as EncodingType, entry.valueContentType as ContentType) },
             {
               title: entry.timeToLive
                 ? entry.timeToLive
@@ -216,17 +210,30 @@ const CacheEntries = (props: { cacheName: string }) => {
     setRows(rows);
   };
 
-  const displayHighlighted = (value: string) => {
-    return (
+  const displayHighlighted = (value: string, encodingType: EncodingType, contentType?: ContentType) => {
+    const highlightedContent = (
       <SyntaxHighlighter
-        lineProps={{style: {wordBreak: 'break-all'}}}
-        style={githubGist}
-        useInlineStyles={true}
-        wrapLongLines={true}
-      >
-        {displayUtils.displayValue(value)}
-      </SyntaxHighlighter>
+      language="json"
+      lineProps={{style: {wordBreak: 'break-all'}}}
+      style={githubGist}
+      useInlineStyles={true}
+      wrapLongLines={true}
+    >
+      {displayUtils.formatContentToDisplay(value, contentType)}
+    </SyntaxHighlighter>
     );
+
+    if (encodingType == EncodingType.Protobuf && contentType) {
+      return (
+        <Tooltip
+          position="top"
+          content={<div>{contentType}</div>}
+        >
+          {highlightedContent}
+        </Tooltip>
+      );
+    }
+    return highlightedContent;
   };
 
   const onClickAddEntryButton = () => {
@@ -291,7 +298,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     }
   };
   const keyContentTypeOptions = () => {
-    return CacheConfigUtils.getContentTypeOptions(cache.encoding[0] as EncodingType).map((contentType) => (
+    return CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).map((contentType) => (
       <SelectOption key={contentType as string} value={contentType} />
     ));
   };
@@ -299,7 +306,7 @@ const CacheEntries = (props: { cacheName: string }) => {
   const [expandedKey, setExpandedKey] = useState(false);
   const [keyType, setKeyType] = useState<
     string | SelectOptionObject | (string | SelectOptionObject)[]
-  >(ContentType.StringContentType);
+  >(CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType)[0]);
 
   const buildPagination = () => {
     return (
@@ -368,7 +375,7 @@ const CacheEntries = (props: { cacheName: string }) => {
             variant={ButtonVariant.link}
             onClick={onClickClearAllButton}
           >
-            Clear all entries
+            {t('caches.entries.clear-entry-button-label')}
           </Button>
         </ToolbarItem>
     )
@@ -382,6 +389,7 @@ const CacheEntries = (props: { cacheName: string }) => {
             <ToolbarItem>
               <Select
                 width={125}
+                maxHeight={200}
                 variant={SelectVariant.single}
                 aria-label="Select Key Content Type"
                 onToggle={(isExpanded) => setExpandedKey(isExpanded)}
@@ -444,6 +452,7 @@ const CacheEntries = (props: { cacheName: string }) => {
       />
       <DeleteEntry
         cacheName={props.cacheName}
+        cacheEncoding={cache.encoding}
         entryKey={keyToDelete}
         keyContentType={keyContentTypeToEdit}
         isModalOpen={isDeleteEntryModalOpen}

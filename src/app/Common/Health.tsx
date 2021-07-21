@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, FlexItem, Text, TextContent } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import displayUtils from '@services/displayUtils';
-import { ComponentHealth } from '@services/restUtils';
+import {ComponentHealth} from "@services/infinispanRefData";
 
 const Health = (props: { health: string; displayIcon?: boolean }) => {
   const health = ComponentHealth[props.health];

@@ -34,12 +34,6 @@ export function useFetchCaches(cacheManager: string) {
   };
 }
 
-export function useReloadCache() {
-  const { reload } = useContext(CacheDetailContext);
-
-  return { reload };
-}
-
 export function useCacheEntries() {
   const {
     cacheEntries,
@@ -59,14 +53,10 @@ export function useCacheEntries() {
   };
 }
 
-export function useCacheDetail(cacheName: string) {
+export function useCacheDetail() {
   const { cache, loading, error, loadCache, reload } = useContext(
     CacheDetailContext
   );
-
-  useEffect(() => {
-    loadCache(cacheName);
-  }, [cacheName]);
 
   return { cache, loading, error, loadCache, reload };
 }

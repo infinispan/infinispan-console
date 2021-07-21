@@ -1,4 +1,4 @@
-import { RestUtils } from './restUtils';
+import { FetchCaller } from './fetchCaller';
 import { Either, left, right } from '@services/either';
 
 /**
@@ -6,9 +6,9 @@ import { Either, left, right } from '@services/either';
  */
 export class CountersService {
   endpoint: string;
-  utils: RestUtils;
+  utils: FetchCaller;
 
-  constructor(endpoint: string, restUtils: RestUtils) {
+  constructor(endpoint: string, restUtils: FetchCaller) {
     this.endpoint = endpoint;
     this.utils = restUtils;
   }
@@ -18,7 +18,7 @@ export class CountersService {
    */
   public getCounters(): Promise<Either<ActionResponse, Counter[]>> {
     return this.utils
-      .restCall(this.endpoint, 'GET')
+      .fetch(this.endpoint, 'GET')
       .then((response) => response.json())
       .then((jsonList) => {
         const counters: Promise<Counter>[] = jsonList.map((name) =>
@@ -34,7 +34,7 @@ export class CountersService {
 
   private getCounter(name: string): Promise<Counter> {
     let counter: Promise<Counter> = this.utils
-      .restCall(this.endpoint + '/' + name, 'GET')
+      .fetch(this.endpoint + '/' + name, 'GET')
       .then((response) => response.json())
       .then((value) => <Counter>{ name: name, value: value });
 
@@ -50,7 +50,7 @@ export class CountersService {
 
   private getCounterConfig(name: string): Promise<CounterConfig> {
     return this.utils
-      .restCall(this.endpoint + '/' + name + '/config', 'GET')
+      .fetch(this.endpoint + '/' + name + '/config', 'GET')
       .then((response) => response.json())
       .then((value) => {
         let counterConfig: CounterConfig;
@@ -84,9 +84,10 @@ export class CountersService {
    * @param name, counter to be deleted
    */
   public delete(name: string): Promise<ActionResponse> {
-    return this.utils.handleCRUDActionResponse(
-      'Counter ' + name + ' has been deleted',
-      this.utils.restCall(this.endpoint + '/' + name, 'DELETE')
-    );
+    return this.utils.delete({
+      url: this.endpoint + '/' + name,
+      successMessage: `Counter ${name} has been deleted.`,
+      errorMessage: `Unexpected error deleting the counter ${name}.`,
+    });
   }
 }

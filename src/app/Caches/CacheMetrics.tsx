@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Card,
   CardBody,
@@ -19,9 +19,9 @@ import {
   Title,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
-import { CubesIcon } from '@patternfly/react-icons';
-import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
+import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
+import {CubesIcon} from '@patternfly/react-icons';
+import {QueryMetrics} from '@app/Caches/Query/QueryMetrics';
 import {ConsoleServices} from "@services/ConsoleServices";
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
@@ -265,6 +265,6 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={12}>{buildQueryStats()}</GridItem>
     </Grid>
   );
-};
+}
 
 export { CacheMetrics };

@@ -2,17 +2,17 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
-import {ContentType} from "@services/restUtils";
+import {ContentType} from "@services/infinispanRefData";
 
 const initialContext = {
   error: '',
-  loading: true,
+  loading: false,
   cache: (undefined as unknown) as DetailedInfinispanCache,
   loadCache: (name: string) => {},
   reload: () => {},
   getByKey: (keyToSearch: string, kct: ContentType) => {},
   cacheEntries: [] as CacheEntry[],
-  loadingEntries: true,
+  loadingEntries: false,
   errorEntries: '',
   infoEntries: '',
   reloadEntries: () => {},
@@ -36,21 +36,22 @@ const CacheDetailProvider = ({ children }) => {
   );
 
   const loadCache = (name: string | undefined) => {
-    if (name != undefined && cacheName != name) {
+    if (name != undefined && name != '' && cacheName != name) {
       setCacheName(name);
+      setLoading(true);
     }
   };
 
   useEffect(() => {
     fetchEntries();
-  }, [loadingEntries, cache]);
+  }, [loadingEntries]);
 
   useEffect(() => {
     fetchCache();
-  }, [loading, cacheName]);
+  }, [loading]);
 
   const fetchCache = () => {
-    if (loading && cacheName != '') {
+    if (loading) {
         ConsoleServices.caches()
           .retrieveFullDetail(cacheName)
           .then((eitherDetail) => {
@@ -60,16 +61,19 @@ const CacheDetailProvider = ({ children }) => {
               setError(eitherDetail.value.message);
             }
           })
-          .then(() => setLoading(false));
+          .finally(() => {
+            setLoading(false);
+            setLoadingEntries(true);
+          });
     }
   };
 
   const fetchEntry = (keyToSearch: string, kct: ContentType ) => {
-    ConsoleServices.caches().getEntry(cacheName, keyToSearch, kct).then((response) => {
+    ConsoleServices.caches().getEntry(cacheName, cache.encoding, keyToSearch, kct).then((response) => {
       let entries: CacheEntry[] = [];
       if (response.isRight()) {
-        entries = [response.value];
-      } else if (response.isLeft() && !response.value.success) {
+        entries = response.value;
+      } else {
         setErrorEntries(response.value.message);
       }
       setCacheEntries(entries);
@@ -77,23 +81,29 @@ const CacheDetailProvider = ({ children }) => {
   }
 
   const fetchEntries = () => {
-    if (loadingEntries && cache) {
-      ConsoleServices.caches().retrieveFullDetail(cacheName).then(eitherCache => {
-        if(eitherCache.isRight()) {
-          setCache(eitherCache.value);
-        }
-      });
+    if (loadingEntries) {
       if(ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
-         ConsoleServices.caches()
-           .getEntries(cacheName, cache.encoding, '100')
-           .then((eitherEntries) => {
-             if (eitherEntries.isRight()) {
-               setCacheEntries(eitherEntries.value);
-             } else {
-               setErrorEntries(eitherEntries.value.message);
-             }
-           })
-           .then(() => setLoadingEntries(false));
+        if (cache) {
+          ConsoleServices.caches()
+            .getEntries(cacheName, cache.encoding, '100')
+            .then((eitherEntries) => {
+              if (eitherEntries.isRight()) {
+                setCacheEntries(eitherEntries.value);
+                setErrorEntries('');
+                setInfoEntries('');
+              } else {
+                if (eitherEntries.value.success) {
+                  setInfoEntries(eitherEntries.value.message);
+                } else {
+                  setErrorEntries(eitherEntries.value.message);
+                }
+              }
+            })
+            .finally(() => setLoadingEntries(false));
+        } else {
+          setLoadingEntries(false);
+        }
+
        } else {
          setLoadingEntries(false);
          setInfoEntries('Connected user lacks BULK_READ permission to browse the cache content.');

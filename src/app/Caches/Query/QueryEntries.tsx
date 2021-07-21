@@ -102,7 +102,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
         useInlineStyles={true}
         wrapLongLines={true}
       >
-        {displayUtils.displayValue(value)}
+        {displayUtils.formatContentToDisplay(value)}
       </SyntaxHighlighter>
     );
   };

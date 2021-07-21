@@ -1,7 +1,7 @@
 import { Health } from '@app/Common/Health';
-import { ComponentHealth } from '@services/restUtils';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import {ComponentHealth} from "@services/infinispanRefData";
 
 describe('Health Component Test', () => {
   test('by default both health label and icon are displayed', () => {
