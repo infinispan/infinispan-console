@@ -119,4 +119,12 @@ describe('Cache Config Utils tests', () => {
     ]);
   });
 
+  test('minim validation of the configuration json or xml', () => {
+    expect(CacheConfigUtils.validateConfig('').isLeft()).toBeTruthy();
+    expect(CacheConfigUtils.validateConfig('    ').isLeft()).toBeTruthy();
+    expect(CacheConfigUtils.validateConfig('xml').isLeft()).toBeTruthy();
+    expect(CacheConfigUtils.validateConfig('json').isLeft()).toBeTruthy();
+    expect(CacheConfigUtils.validateConfig('{}').isRight()).toBeTruthy();
+    expect(CacheConfigUtils.validateConfig('<xml>foo</xml>').isRight()).toBeTruthy();
+  });
 });
