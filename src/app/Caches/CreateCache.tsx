@@ -29,6 +29,7 @@ import {useHistory} from 'react-router';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {CacheConfigUtils} from "@services/cacheConfigUtils";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
@@ -47,6 +48,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const [validConfig, setValidConfig] = useState<
     'success' | 'error' | 'default'
   >('default');
+  const [errorConfig, setErrorConfig] = useState('');
 
   interface OptionSelect {
     value: string;
@@ -103,39 +105,31 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     }
   };
 
-  const validateConfig = (): boolean => {
-    const trimmedConf = config.trim();
-    if (trimmedConf.length == 0) {
-      return false;
-    }
-    let isJson = false;
-    let isXML = false;
-    try {
-      JSON.parse(trimmedConf);
-      isJson = true;
-    } catch (ex) {}
-
-    try {
-      let oDOM = new DOMParser().parseFromString(trimmedConf, 'text/xml');
-      if (oDOM.getElementsByTagName('parsererror').length == 0) {
-        isXML = true;
-      }
-    } catch (ex) {}
-    return isJson || isXML;
-  };
-
   const createCache = () => {
+    setErrorConfig('');
     const name = cacheName.trim();
+    // Validate Name
     let isValidName: 'success' | 'error' =
       name.length > 0 ? 'success' : 'error';
-    let isValidConfig: 'success' | 'error' =
-      selectedConfig != '' || validateConfig() ? 'success' : 'error';
     setValidName(isValidName);
+
+    // Validate the config
+    let isValidConfig: 'success' | 'error' = 'error';
+    if (selectedConfig != '') {
+      isValidConfig = 'success';
+    } else {
+      let configValidation = CacheConfigUtils.validateConfig(config);
+      isValidConfig = configValidation.isRight() ? 'success' : 'error';
+      if (configValidation.isLeft()) {
+        setErrorConfig(configValidation.value);
+      }
+    }
     setValidConfig(isValidConfig);
 
     if (isValidName == 'error' || isValidConfig == 'error') {
       return;
     }
+
     let createCacheCall: Promise<ActionResponse>;
     if (selectedConfig != '') {
       createCacheCall = ConsoleServices.caches().createCacheByConfigName(
@@ -202,9 +196,9 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
               <FormGroup
                 fieldId="cache-config-name"
                 label="Cache templates"
-                helperText="Select a cache template or provide a cache configuration."
+                helperText="Select a cache template or provide a valid cache configuration."
                 validated={validConfig}
-                helperTextInvalid="Your cache must have a configuration."
+                helperTextInvalid={errorConfig}
               >
                 <Select
                   toggleIcon={<CubeIcon />}
@@ -238,6 +232,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
                 <FormGroup
                   label="Cache configuration"
                   fieldId="cache-config"
+                  validated={validConfig}
                   helperText="Enter a cache configuration in XML or JSON format."
                   helperTextInvalid="Provide a valid cache configuration in XML or JSON format."
                 >

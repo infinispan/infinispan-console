@@ -79,7 +79,7 @@ const DetailCache = (props: { cacheName: string }) => {
         style={{ backgroundColor: 'white' }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
-        <Tab eventKey={10} title={<TabTitleText>{t('caches.actions.action-manage-indexes')}</TabTitleText>}>
+        <Tab eventKey={10} title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}>
           <CacheEntries cacheName={cacheName} />
         </Tab>
         <Tab
@@ -87,7 +87,7 @@ const DetailCache = (props: { cacheName: string }) => {
           title={
             <TabTitleText>
               <MoreInfoTooltip
-                label={'Query values in caches.'}
+                label={t('caches.tabs.query-values')}
                 toolTip={'Use the Ickle query language to search values.'}
               />
             </TabTitleText>
