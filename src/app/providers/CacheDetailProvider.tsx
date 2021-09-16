@@ -7,6 +7,7 @@ import {ContentType} from "@services/infinispanRefData";
 const initialContext = {
   error: '',
   loading: false,
+  cacheManager: (undefined as unknown) as CacheManager,
   cache: (undefined as unknown) as DetailedInfinispanCache,
   loadCache: (name: string) => {},
   reload: () => {},
@@ -23,6 +24,9 @@ export const CacheDetailContext = React.createContext(initialContext);
 const CacheDetailProvider = ({ children }) => {
   const {connectedUser} = useConnectedUser();
   const [cacheName, setCacheName] = useState('');
+  const [cacheManager, setCacheManager] = useState<CacheManager>(
+    initialContext.cacheManager
+  );
   const [cache, setCache] = useState<DetailedInfinispanCache>(
     initialContext.cache
   );
@@ -52,19 +56,28 @@ const CacheDetailProvider = ({ children }) => {
 
   const fetchCache = () => {
     if (loading) {
-        ConsoleServices.caches()
-          .retrieveFullDetail(cacheName)
-          .then((eitherDetail) => {
-            if (eitherDetail.isRight()) {
-              setCache(eitherDetail.value);
-            } else {
-              setError(eitherDetail.value.message);
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-            setLoadingEntries(true);
-          });
+      ConsoleServices.dataContainer().getDefaultCacheManager()
+        .then(maybeCm => {
+           if (maybeCm.isRight()) {
+             setCacheManager(maybeCm.value);
+             ConsoleServices.caches()
+               .retrieveFullDetail(cacheName)
+               .then((eitherDetail) => {
+                 if (eitherDetail.isRight()) {
+                   setCache(eitherDetail.value);
+                 } else {
+                   setError(eitherDetail.value.message);
+                 }
+               })
+               .finally(() => {
+                 setLoading(false);
+                 setLoadingEntries(true);
+               });
+           } else {
+             setError(maybeCm.value.message);
+           }
+        })
+
     }
   };
 
@@ -117,6 +130,7 @@ const CacheDetailProvider = ({ children }) => {
     loadCache: useCallback(loadCache, []),
     reload: useCallback(() => setLoading(true), []),
     cache: cache,
+    cacheManager: cacheManager,
     cacheEntries: cacheEntries,
     loadingEntries: loadingEntries,
     errorEntries: errorEntries,

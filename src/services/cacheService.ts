@@ -68,6 +68,7 @@ export class CacheService {
           size: data['size'],
           rehash_in_progress: data['rehash_in_progress'],
           indexing_in_progress: data['indexing_in_progress'],
+          rebalancing_enabled: data['rebalancing_enabled'],
           editable:
             CacheConfigUtils.isEditable(keyValueEncoding.key as EncodingType) &&
             CacheConfigUtils.isEditable(keyValueEncoding.value as EncodingType),
@@ -551,5 +552,29 @@ export class CacheService {
           )
         )
       );
+  }
+
+  /**
+   * Enables or disables rebalancing on a cache
+   * @param cacheName
+   * @param enable, true to enable, false for disable
+   */
+  public async rebalancing(
+    cacheName: string,
+    enable: boolean
+  ): Promise<ActionResponse> {
+    const action = enable ? 'enable' : 'disable';
+    const url =
+      this.endpoint +
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '?action=' +
+      action +
+      '-rebalancing';
+    return this.fetchCaller.post({
+      url: url,
+      successMessage: `Cache ${cacheName} rebalancing successfully ${action}d.`,
+      errorMessage: `Unexpected error when cache ${cacheName} rebalancing ${action}d.`,
+    });
   }
 }

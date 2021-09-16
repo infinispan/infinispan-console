@@ -1,5 +1,5 @@
 import { ContentType, EncodingType } from '@services/infinispanRefData';
-import {Either, left, right} from "@services/either";
+import { Either, left, right } from '@services/either';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -11,18 +11,17 @@ export const Scattered = 'scattered-cache';
  * Utility class to map cache configuration
  */
 export class CacheConfigUtils {
-
   /**
    * Validates a configuration of cache may have a correct format and detects if it's
    * a valid formatted json or a xml.
    *
    * @param config
    */
-  public static validateConfig (config: string): Either<string, 'xml' | 'json'> {
+  public static validateConfig(config: string): Either<string, 'xml' | 'json'> {
     const trimmedConf = config.trim();
 
     if (trimmedConf.length == 0) {
-      return left('Configuration can\'t be empty');
+      return left("Configuration can't be empty");
     }
     try {
       JSON.parse(trimmedConf);
@@ -36,7 +35,7 @@ export class CacheConfigUtils {
       }
     } catch (ex) {}
     return left('The provided configuration is not a valid XML or JSON.');
-  };
+  }
 
   /**
    * Map the encoding type of the cache

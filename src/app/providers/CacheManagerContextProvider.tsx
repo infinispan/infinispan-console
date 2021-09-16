@@ -9,6 +9,7 @@ const initialContext = {
   caches: [] as CacheInfo[],
   loadingCaches: true,
   errorCaches: '',
+  reload: () => {},
   reloadCaches: () => {},
 };
 
@@ -76,6 +77,10 @@ const ContainerDataProvider = ({ children }) => {
     }
   }, [cm, loadingCaches]);
 
+  const reload = () => {
+    setLoading(true);
+  };
+
   const reloadCaches = () => {
     setLoadingCaches(true);
   };
@@ -87,6 +92,7 @@ const ContainerDataProvider = ({ children }) => {
     cm: cm,
     loadingCaches: loadingCaches,
     errorCaches: errorCaches,
+    reload: useCallback(reload, []),
     reloadCaches: useCallback(reloadCaches, []),
   };
 

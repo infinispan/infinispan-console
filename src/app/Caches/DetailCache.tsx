@@ -43,6 +43,7 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {useTranslation} from "react-i18next";
+import {RebalancingCache} from "@app/Caches/RebalancingCache";
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -104,17 +105,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const buildDetailContent = () => {
-    if (loading) {
-      return (
-        <Card>
-          <CardBody>
-            <Spinner size="xl" />
-          </CardBody>
-        </Card>
-      );
-    }
-
-    if (error.length > 0 || !cache) {
+    if (error.length > 0) {
       return (
         <Card>
           <CardBody>
@@ -142,6 +133,16 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
+    if (loading || !cache) {
+      return (
+        <Card>
+          <CardBody>
+            <Spinner size="xl" />
+          </CardBody>
+        </Card>
+      );
+    }
+
     if(activeTabKey1 == 0
       && cache.editable
       && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
@@ -162,6 +163,8 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const buildRebalancing = () => {
+    if (!cache) return ;
+
     if (!cache?.rehash_in_progress) {
       return (
         <ToolbarItem>
@@ -308,7 +311,7 @@ const DetailCache = (props: { cacheName: string }) => {
           </ToolbarItem>
         </ToolbarGroup>
         <ToolbarGroup>
-          {buildRebalancing()}
+          <RebalancingCache/>
           {buildBackupsManage()}
           {buildIndexManage()}
         </ToolbarGroup>
@@ -416,7 +419,12 @@ const DetailCache = (props: { cacheName: string }) => {
           activeKey={activeTabKey1}
           isSecondary={true}
           component={TabsComponent.nav}
-          onSelect={(event, tabIndex) => setActiveTabKey1(tabIndex)}
+          onSelect={(event, tabIndex) => {
+            setActiveTabKey1(tabIndex);
+            if (tabIndex == 0) {
+              loadCache(cacheName);
+            }
+          }}
         >
           {displayCacheEntries()}
           {displayConfiguration()}

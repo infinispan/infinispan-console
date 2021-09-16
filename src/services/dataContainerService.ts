@@ -5,11 +5,11 @@ import displayUtils from '@services/displayUtils';
 
 export class ContainerService {
   endpoint: string;
-  utils: FetchCaller;
+  fetchCaller: FetchCaller;
 
-  constructor(endpoint: string, restUtils: FetchCaller) {
+  constructor(endpoint: string, fetchCaller: FetchCaller) {
     this.endpoint = endpoint;
-    this.utils = restUtils;
+    this.fetchCaller = fetchCaller;
   }
 
   /**
@@ -18,7 +18,7 @@ export class ContainerService {
   public getDefaultCacheManager(): Promise<
     Either<ActionResponse, CacheManager>
   > {
-    return this.utils
+    return this.fetchCaller
       .get(this.endpoint + '/server/cache-managers/', (data) => data[0])
       .then((maybeCmName) => {
         if (maybeCmName.isRight()) {
@@ -31,13 +31,15 @@ export class ContainerService {
   private getCacheManager(
     name: string
   ): Promise<Either<ActionResponse, CacheManager>> {
-    let healthPromise: Promise<Either<ActionResponse, String>> = this.utils.get(
+    let healthPromise: Promise<
+      Either<ActionResponse, String>
+    > = this.fetchCaller.get(
       this.endpoint + '/cache-managers/' + name + '/health',
       (data) => data.cluster_health.health_status
     );
 
     return healthPromise.then((maybeHealth) =>
-      this.utils.get(
+      this.fetchCaller.get(
         this.endpoint + '/cache-managers/' + name,
         (data) =>
           <CacheManager>{
@@ -61,6 +63,7 @@ export class ContainerService {
               ? maybeHealth.value
               : maybeHealth.value.message,
             local_site: data.local_site,
+            rebalancing_enabled: data.rebalancing_enabled,
           }
       )
     );
@@ -82,7 +85,7 @@ export class ContainerService {
   public async getCacheManagerStats(
     name: string
   ): Promise<Either<ActionResponse, CacheManagerStats>> {
-    return this.utils.get(
+    return this.fetchCaller.get(
       this.endpoint + '/cache-managers/' + name + '/stats',
       (data) => <CacheManagerStats>data
     );
@@ -96,7 +99,7 @@ export class ContainerService {
   public async getCacheConfigurationTemplates(
     name: string
   ): Promise<Either<ActionResponse, CacheConfig[]>> {
-    return this.utils.get(
+    return this.fetchCaller.get(
       this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
       (data) =>
         data.map(
@@ -116,7 +119,7 @@ export class ContainerService {
   public async getCaches(
     name: string
   ): Promise<Either<ActionResponse, CacheInfo[]>> {
-    return this.utils.get(
+    return this.fetchCaller.get(
       this.endpoint + '/cache-managers/' + name + '/caches',
       (data) =>
         data
@@ -136,10 +139,35 @@ export class ContainerService {
                   hasRemoteBackup: cacheInfo.has_remote_backup,
                 },
                 health: cacheInfo.health,
+                rebalancing_enabled: cacheInfo['rebalancing_enabled'],
               }
           )
           .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
     );
+  }
+
+  /**
+   * Enables or disables rebalancing on a cluster
+   * @param name of the cache manager
+   * @param enable, true to enable, false for disable
+   */
+  public async rebalancing(
+    name: string,
+    enable: boolean
+  ): Promise<ActionResponse> {
+    const action = enable ? 'enable' : 'disable';
+    const url =
+      this.endpoint +
+      '/cache-managers/' +
+      encodeURIComponent(name) +
+      '?action=' +
+      action +
+      '-rebalancing';
+    return this.fetchCaller.post({
+      url: url,
+      successMessage: `Rebalancing successfully ${action}d.`,
+      errorMessage: `Unexpected error when rebalancing ${action}d.`,
+    });
   }
 
   private clusterMembers(
