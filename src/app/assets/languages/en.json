@@ -59,6 +59,7 @@
     "ignore" : "Hide",
     "undo-ignore" : "Show",
     "ignored-status" : "Hidden",
+    "rebalancing-disabled-status" : "Rebalancing off",
     "delete" : "Delete",
     "clear-all-button" : "Clear all",
     "no-caches-status" : "No caches found",
@@ -104,7 +105,9 @@
     "allowed-role" : "Allowed role",
     "allowed-role-null" : "-",
     "no-tasks-status" : "No tasks yet",
-    "no-tasks-body" : "Create tasks with the CLI or a remote client."
+    "no-tasks-body" : "Create tasks with the CLI or a remote client.",
+    "rebalancing-enabled": "Rebalancing is on",
+    "rebalancing-disabled": "Rebalancing is off"
   },
   "caches" : {
     "configuration" : {
@@ -129,7 +132,8 @@
       "loading" : "Loading cache {{cacheName}} ...",
       "error" : "An error occurred while loading {{cacheName}}",
       "rebalanced" : "Rebalanced",
-      "rebalancing" : "Rebalancing"
+      "rebalancing-enabled" : "Rebalancing is on",
+      "rebalancing-disabled" : "Rebalancing is off"
     },
     "actions" : {
       "action-see-less" : "See fewer cache details",

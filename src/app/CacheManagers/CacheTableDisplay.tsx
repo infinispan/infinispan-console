@@ -10,7 +10,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant,
+  EmptyStateVariant, Label, LabelGroup,
   Pagination,
   Select,
   SelectGroup,
@@ -35,7 +35,7 @@ import {IgnoreCache} from '@app/Caches/IgnoreCache';
 import {IExtraData, IRowData,} from '@patternfly/react-table/src/components/Table';
 import {Health} from '@app/Common/Health';
 import {useBanner} from '@app/utils/useApiAlert';
-import {useCaches} from '@app/services/dataContainerHooks';
+import {useCaches, useDataContainer} from '@app/services/dataContainerHooks';
 import {useTranslation} from 'react-i18next';
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleServices} from "@services/ConsoleServices";
@@ -55,6 +55,7 @@ const CacheTableDisplay = (props: {
 }) => {
   const { setBanner } = useBanner();
   const { connectedUser } = useConnectedUser();
+  const { cm } = useDataContainer();
   const { caches, errorCaches, loadingCaches } = useCaches();
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
@@ -178,7 +179,7 @@ const CacheTableDisplay = (props: {
   }, [cachesPagination]);
 
   const columns = [
-    { title: t('cache-managers.cache-name'), transforms: [cellWidth(30), textCenter] },
+    { title: t('cache-managers.cache-name'), transforms: [cellWidth(25), textCenter] },
     {
       title: t('cache-managers.cache-mode'),
       transforms: [cellWidth(15), textCenter],
@@ -190,13 +191,13 @@ const CacheTableDisplay = (props: {
     },
     {
       title: t('cache-managers.cache-features'),
-      transforms: [textCenter],
+      transforms: [textCenter, cellWidth(30)],
       cellTransforms: [textCenter],
     },
     {
       // Will display 'ignored' if the cache is ignored
       title: t('cache-managers.cache-status'),
-      transforms: [cellWidth(15), textCenter],
+      transforms: [textCenter],
       cellTransforms: [textCenter],
     },
   ];
@@ -345,7 +346,7 @@ const CacheTableDisplay = (props: {
               ),
             },
             { title: displayCacheFeatures(cacheInfo) },
-            { title: displayIfIgnored(cacheInfo) },
+            { title: displayBadges(cacheInfo) },
           ],
         };
       });
@@ -363,14 +364,53 @@ const CacheTableDisplay = (props: {
     );
   };
 
-  const displayIfIgnored = (cacheInfo: CacheInfo) => {
+  const ignoreCacheBadge = (cacheInfo: CacheInfo) => {
     if (!isCacheIgnored(cacheInfo)) {
       return '';
     }
     return (
-      <Badge key={`ignore-${cacheInfo.name}`} isRead>
+      <Label key={`ignore-${cacheInfo.name}`}>
         {t('cache-managers.ignored-status')}
-      </Badge>
+      </Label>);
+  }
+
+  /**
+   * Display the badge only of rebalancing is enabled at cluster level
+   * and the cache has rebalancing disabled. Check cluster level since we
+   * don't want to display a badge for all the caches
+   *
+   * @param cacheInfo
+   */
+  const rebalancingOffBadge = (cacheInfo: CacheInfo) => {
+    if(!cm.rebalancing_enabled) {
+      return '';
+    }
+
+    if (cacheInfo.rebalancing_enabled != undefined && cacheInfo.rebalancing_enabled) {
+      return '';
+    }
+
+    return (
+      <Label key={`ignore-${cacheInfo.name}`}>
+        {t('cache-managers.rebalancing-disabled-status')}
+      </Label>
+    )
+  }
+
+  const displayBadges = (cacheInfo: CacheInfo) => {
+    const badgeIgnore = ignoreCacheBadge(cacheInfo);
+    const badgeRebalancing = rebalancingOffBadge(cacheInfo);
+
+    if (badgeIgnore == '' && badgeRebalancing == '') {
+      return '';
+    }
+
+    return (
+      <LabelGroup>
+        {badgeIgnore}
+        {badgeRebalancing}
+      </LabelGroup>
+
     );
   };
 

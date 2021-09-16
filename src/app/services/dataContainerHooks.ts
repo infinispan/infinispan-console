@@ -2,11 +2,12 @@ import { useContext } from 'react';
 import { DataContainerContext } from '@app/providers/CacheManagerContextProvider';
 
 export function useDataContainer() {
-  const { cm, loading, error } = useContext(DataContainerContext);
+  const { cm, loading, error, reload } = useContext(DataContainerContext);
   return {
     loading,
     error,
     cm,
+    reload
   };
 }
 

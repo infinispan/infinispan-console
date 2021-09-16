@@ -16,6 +16,7 @@ interface CacheManager {
   cluster_members: [ClusterMember];
   health: string;
   local_site?: string;
+  rebalancing_enabled?: boolean;
 }
 
 interface ClusterMember {
@@ -76,6 +77,7 @@ interface CacheInfo {
   simpleCache: boolean;
   health: string;
   features: Features;
+  rebalancing_enabled?: boolean;
 }
 
 interface CacheEntry {
@@ -113,6 +115,7 @@ interface DetailedInfinispanCache {
   size?: number;
   rehash_in_progress?: boolean;
   indexing_in_progress?: boolean;
+  rebalancing_enabled?: boolean;
   editable: boolean;
   queryable: boolean;
   features: Features;

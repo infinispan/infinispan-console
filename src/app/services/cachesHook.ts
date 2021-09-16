@@ -54,9 +54,9 @@ export function useCacheEntries() {
 }
 
 export function useCacheDetail() {
-  const { cache, loading, error, loadCache, reload } = useContext(
+  const { cache, loading, error, loadCache, reload, cacheManager } = useContext(
     CacheDetailContext
   );
 
-  return { cache, loading, error, loadCache, reload };
+  return { cache, loading, error, loadCache, reload, cacheManager };
 }
