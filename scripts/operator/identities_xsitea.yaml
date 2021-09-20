@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: connect-secret-clustera
+type: Opaque
+stringData:
+  identities.yaml: |-
+    credentials:
+    - username: user-sitea
+      password: pwd-sitea

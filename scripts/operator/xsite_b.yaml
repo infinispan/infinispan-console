@@ -1,0 +1,23 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: example-clusterb
+spec:
+  replicas: 3
+  expose:
+    type: NodePort
+    nodePort: 30001
+  security:
+    endpointSecretName: connect-secret-clusterb
+  service:
+    type: DataGrid
+    sites:
+      local:
+        name: SiteB
+        expose:
+          type: ClusterIP
+      locations:
+        - name: SiteA
+          url: infinispan+xsite://example-clustera-site
+        - name: SiteB
+          url: infinispan+xsite://example-clusterb-site
