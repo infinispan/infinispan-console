@@ -25,6 +25,7 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
 import {useSearchStats} from "@app/services/statsHook";
+import {CustomCardTitle} from "@app/Common/CustomCardTitle";
 
 /**
  * Query stats for indexed caches only
@@ -148,7 +149,12 @@ const QueryMetrics = (props: {
     <Card>
       <CardTitle>
         <Level id={'query-stats'}>
-          <LevelItem>Query stats</LevelItem>
+          <LevelItem>
+            <CustomCardTitle
+              title={'Query statistics'}
+              toolTip={'Average time, in nanoseconds, for queries on this cache.'}
+            />
+          </LevelItem>
           {buildClearStatsButton()}
         </Level>
       </CardTitle>

@@ -23,6 +23,7 @@ import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
 import {CubesIcon} from '@patternfly/react-icons';
 import {QueryMetrics} from '@app/Caches/Query/QueryMetrics';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {CustomCardTitle} from "@app/Common/CustomCardTitle";
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [stats, setStats] = useState<CacheStats | undefined>(undefined);
@@ -49,7 +50,10 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Operation performance values</CardTitle>
+        <CardTitle> <CustomCardTitle
+          title={'Performance of cache operations'}
+          toolTip={'Average time, in milliseconds, for read and write operations on this cache.'}
+        /></CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
