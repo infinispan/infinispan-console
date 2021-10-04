@@ -34,7 +34,7 @@ export class SearchService {
         encodeURIComponent(cacheName) +
         '?action=search' +
         '&query=' +
-        query +
+        encodeURIComponent(query) +
         '&max_results=' +
         maxResults +
         '&offset=' +
