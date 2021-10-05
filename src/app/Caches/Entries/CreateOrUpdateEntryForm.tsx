@@ -9,7 +9,8 @@ import {
   Modal,
   Select,
   SelectOption,
-  SelectVariant, Spinner,
+  SelectVariant,
+  Spinner,
   TextArea,
   TextInput,
 } from '@patternfly/react-core';
@@ -23,6 +24,7 @@ import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {CacheConfigUtils} from "@services/cacheConfigUtils";
 import {ContentType, EncodingType, InfinispanFlags} from "@services/infinispanRefData";
+import {ProtobufDataUtils} from "@services/protobufDataUtils";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -58,6 +60,7 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const contentTypeInitialState: ISelectField = {
+    // add protobuf custom type by default in the values
     selected: CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType)[0],
     expanded: false,
     helperText: t('caches.entries.add-entry-content-type-help'),
@@ -248,25 +251,49 @@ const CreateOrUpdateEntryForm = (props: {
     });
   };
 
-  const onChangeKey = (value) => {
-    formUtils.validateRequiredField(value, 'Key', setKey);
+  const onChangeKey = (key) => {
+    formUtils.validateRequiredField(key, 'Key', setKey);
+  };
+
+  const onBlurKey = () => {
+    // if we detect a custom type in onBlur change the content type to custom type
+    if (props.cacheEncoding.key as EncodingType == EncodingType.Protobuf && ProtobufDataUtils.isCustomType(key.value)) {
+      setKeyContentType((prevState) => {
+        return {
+          ...prevState,
+          selected: ContentType.customType as string,
+        };
+      });
+    }
   };
 
   const onChangeValue = (value) => {
     formUtils.validateRequiredField(value, 'Value', setValue);
   };
 
-  const onChangeMaxIdle = (value) => {
+  const onBlurValue = () => {
+    // if we detect a custom type in onBlur change the content type to custom type
+    if (props.cacheEncoding.value as EncodingType == EncodingType.Protobuf && ProtobufDataUtils.isCustomType(value.value)) {
+      setValueContentType((prevState) => {
+        return {
+          ...prevState,
+          selected: ContentType.customType as string,
+        };
+      });
+    }
+  };
+
+  const onChangeMaxIdle = (maxIdle) => {
     formUtils.validateNotRequiredNumericField(
-      value,
+      maxIdle,
       'Max idle',
       setMaxIdleField
     );
   };
 
-  const onChangeTimeToLive = (value) => {
+  const onChangeTimeToLive = (timeToLive) => {
     formUtils.validateNotRequiredNumericField(
-      value,
+      timeToLive,
       'Time to live',
       setTimeToLiveField
     );
@@ -427,6 +454,7 @@ const CreateOrUpdateEntryForm = (props: {
         id="key-entry"
         aria-describedby="key-entry-helper"
         onChange={onChangeKey}
+        onBlur={onBlurKey}
         disabled={isEdition}
       />
     </FormGroup>
@@ -464,6 +492,7 @@ const CreateOrUpdateEntryForm = (props: {
         id="value-entry"
         aria-describedby="value-entry-helper"
         onChange={onChangeValue}
+        onBlur={onBlurValue}
       />
     </FormGroup>
     );
