@@ -50,4 +50,17 @@ export class ProtobufDataUtils {
 
     return contentType ? contentType : ContentType.customType;
   }
+
+  /**
+   * Checks if a given value is a custom protobuf type
+   *
+   * @param value
+   */
+  public static isCustomType(value: string): boolean {
+    try {
+      return JSON.parse(value)['_type'];
+    } catch {
+      return false;
+    }
+  }
 }
