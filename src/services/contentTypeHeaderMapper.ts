@@ -25,6 +25,9 @@ export class ContentTypeHeaderMapper {
       case ContentType.XML:
         stringContentType = 'application/xml';
         break;
+      case ContentType.YAML:
+        stringContentType = 'application/yaml';
+        break;
       default:
         stringContentType = 'application/json';
     }
@@ -63,6 +66,10 @@ export class ContentTypeHeaderMapper {
 
     if (contentTypeHeader == 'application/xml') {
       return ContentType.XML;
+    }
+
+    if (contentTypeHeader == 'application/yaml') {
+      return ContentType.YAML;
     }
 
     return ContentType.StringContentType;

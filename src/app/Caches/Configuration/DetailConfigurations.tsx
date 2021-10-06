@@ -92,7 +92,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
                 <TableEmptyState
                   loading={loading}
                   error={error}
-                  empty={'There are no cache configurations templates'}
+                  empty={t('caches.configuration.no-templates-body')}
                 />
               ),
             },

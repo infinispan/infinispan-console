@@ -17,7 +17,9 @@ export class CacheConfigUtils {
    *
    * @param config
    */
-  public static validateConfig(config: string): Either<string, 'xml' | 'json'> {
+  public static validateConfig(
+    config: string
+  ): Either<string, 'xml' | 'json' | 'yaml'> {
     const trimmedConf = config.trim();
 
     if (trimmedConf.length == 0) {
@@ -34,7 +36,8 @@ export class CacheConfigUtils {
         return right('xml');
       }
     } catch (ex) {}
-    return left('The provided configuration is not a valid XML or JSON.');
+
+    return right('yaml');
   }
 
   /**
