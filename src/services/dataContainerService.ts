@@ -7,6 +7,18 @@ export class ContainerService {
   endpoint: string;
   fetchCaller: FetchCaller;
 
+  private TEMPLATES = [
+    'example.PROTOBUF_DIST',
+    'org.infinispan.DIST_ASYNC',
+    'org.infinispan.DIST_SYNC',
+    'org.infinispan.INVALIDATION_ASYNC',
+    'org.infinispan.INVALIDATION_SYNC',
+    'org.infinispan.LOCAL',
+    'org.infinispan.REPL_ASYNC',
+    'org.infinispan.REPL_SYNC',
+    'org.infinispan.SCATTERED_SYNC',
+  ];
+
   constructor(endpoint: string, fetchCaller: FetchCaller) {
     this.endpoint = endpoint;
     this.fetchCaller = fetchCaller;
@@ -74,7 +86,11 @@ export class ContainerService {
   }
 
   private removeInternalTemplate(templates: string[]) {
-    return templates.filter((template) => !template.startsWith('___'));
+    return templates.filter((template) => this.isInternalTemplate(template));
+  }
+
+  private isInternalTemplate(template: string) {
+    return template.startsWith('___') || this.TEMPLATES.includes(template);
   }
 
   /**
@@ -102,13 +118,15 @@ export class ContainerService {
     return this.fetchCaller.get(
       this.endpoint + '/cache-managers/' + name + '/cache-configs/templates',
       (data) =>
-        data.map(
-          (config) =>
-            <CacheConfig>{
-              name: config.name,
-              config: JSON.stringify(config.configuration, undefined, 2),
-            }
-        )
+        data
+          .filter((config) => !this.isInternalTemplate(config.name))
+          .map(
+            (config) =>
+              <CacheConfig>{
+                name: config.name,
+                config: JSON.stringify(config.configuration, undefined, 2),
+              }
+          )
     );
   }
 

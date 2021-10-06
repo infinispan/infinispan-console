@@ -28,8 +28,6 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^7.0.0",
-    "css-minimizer-webpack-plugin": "^3.0.1",
     "@testing-library/dom": "^7.28.1",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
@@ -41,8 +39,10 @@
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
     "@webpack-cli/serve": "^1.1.0",
+    "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
-    "cypress": "^6.0.1",
+    "css-minimizer-webpack-plugin": "^3.0.1",
+    "cypress": "^8.5.0",
     "dotenv-webpack": "^6.0.0",
     "eslint": "^7.14.0",
     "eslint-plugin-i18n-json": "^3.1.0",

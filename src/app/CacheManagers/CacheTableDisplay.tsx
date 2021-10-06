@@ -561,7 +561,7 @@ const CacheTableDisplay = (props: {
               },
             }}
           >
-            <Button variant={ButtonVariant.primary}>
+            <Button variant={ButtonVariant.primary} aria-label="create-cache-button">
               {t('cache-managers.create-cache-button')}
             </Button>
           </Link>
@@ -580,7 +580,7 @@ const CacheTableDisplay = (props: {
           },
         }}
       >
-        <Button variant={'link'}>
+        <Button variant={'link'} aria-label="view-cache-configurations-button">
           {t('cache-managers.config-templates-button')}
         </Button>
       </Link>

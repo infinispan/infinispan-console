@@ -125,12 +125,13 @@ export class CacheService {
    */
   public async createCacheWithConfiguration(
     cacheName: string,
-    config: string
+    config: string,
+    configType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
-    let contentType = ContentType.JSON;
-    try {
-      JSON.parse(config);
-    } catch (e) {
+    let contentType = ContentType.YAML;
+    if (configType == 'json') {
+      contentType = ContentType.JSON;
+    } else if (configType == 'xml') {
       contentType = ContentType.XML;
     }
     let customHeaders = new Headers();

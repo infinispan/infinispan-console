@@ -1,19 +1,19 @@
 <infinispan
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="urn:infinispan:config:13.0 https://infinispan.org/schemas/infinispan-config-13.0.xsd
-                            urn:infinispan:server:12.0 https://infinispan.org/schemas/infinispan-server-13.0.xsd"
+                            urn:infinispan:server:13.0 https://infinispan.org/schemas/infinispan-server-13.0.xsd"
   xmlns="urn:infinispan:config:13.0"
   xmlns:server="urn:infinispan:server:13.0">
 
-  <cache-container name="default" statistics="true" default-cache="default">
-    <transport cluster="${infinispan.cluster.name}" stack="${infinispan.cluster.stack:tcp}" node-name="${infinispan.node.name:}"/>
+  <cache-container name="default" statistics="true">
+    <transport cluster="${infinispan.cluster.name:cluster}" stack="${infinispan.cluster.stack:tcp}" node-name="${infinispan.node.name:}"/>
     <local-cache name="default"/>
     <distributed-cache name="people" statistics="true">
       <transaction mode="NON_XA"/>
       <encoding media-type="application/x-protostream"/>
     </distributed-cache>
     <distributed-cache-configuration name="e2e-test-template">
-
+      <encoding media-type="application/x-protostream"/>
     </distributed-cache-configuration>
   </cache-container>
 
@@ -29,9 +29,6 @@
       <socket-binding name="memcached" port="11221"/>
     </socket-bindings>
 
-    <endpoints socket-binding="default">
-      <hotrod-connector name="hotrod"/>
-      <rest-connector name="rest"/>
-    </endpoints>
+    <endpoints socket-binding="default"/>
   </server>
 </infinispan>

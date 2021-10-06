@@ -23,6 +23,7 @@ describe('Encoding Utility tests', () => {
     );
     expect(ContentTypeHeaderMapper.fromContentType(ContentType.JSON)).toBe('application/json');
     expect(ContentTypeHeaderMapper.fromContentType(ContentType.XML)).toBe('application/xml');
+    expect(ContentTypeHeaderMapper.fromContentType(ContentType.YAML)).toBe('application/yaml');
   });
 
   test('from string to ContentType', () => {
@@ -47,5 +48,6 @@ describe('Encoding Utility tests', () => {
     ).toBe(ContentType.DoubleContentType);
     expect(ContentTypeHeaderMapper.toContentType('application/json')).toBe(ContentType.JSON);
     expect(ContentTypeHeaderMapper.toContentType('application/xml')).toBe(ContentType.XML);
+    expect(ContentTypeHeaderMapper.toContentType('application/yaml')).toBe(ContentType.YAML);
   });
 });

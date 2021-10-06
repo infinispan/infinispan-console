@@ -1,7 +1,8 @@
 {
   "brandname": {
     "brandname" : "Infinispan",
-    "encoding-docs-link": "https://infinispan.org/docs/stable/titles/encoding/encoding.html"
+    "encoding-docs-link": "https://infinispan.org/docs/stable/titles/encoding/encoding.html",
+    "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html"
   },
   "layout" : {
     "console-name": "Server Management Console",
@@ -9,8 +10,8 @@
     "about-name": "About"
     },
   "welcome-page" : {
-    "description1": "{{brandname}} is a highly flexible in-memory data store that provides scalability, interoperability, and fault tolerance.",
-    "description2": "Use high-performance caching capabilities or create distributed data grids designed for microservice architectures.",
+    "description1": "{{brandname}} is an in-memory data store that offers scalability, interoperability, and fault tolerance.",
+    "description2": "Use high-performance caching capabilities and create distributed data grids designed for microservice architectures.",
     "license": "Available under Apache License 2.0.",
     "connect" : "Connect to {{brandname}} clusters with remote clients.",
     "download" : "Download clients",
@@ -62,15 +63,15 @@
     "rebalancing-disabled-status" : "Rebalancing off",
     "delete" : "Delete",
     "clear-all-button" : "Clear all",
-    "no-caches-status" : "No caches found",
-    "no-caches-body" : "Create caches in the Console or use the CLI or a remote client.",
+    "no-caches-status" : "No caches yet",
+    "no-caches-body" : "Select \"Create a cache\" and provide configuration in XML, JSON, or YAML format or use a custom template. You can also create caches from the CLI and remote clients.",
     "mode-local" : "Local",
     "mode-repl" : "Replicated",
     "mode-dist" : "Distributed",
     "mode-invalid" : "Invalidated",
     "mode-scattered" : "Scattered",
-    "create-cache-button" : "Create cache",
-    "config-templates-button" : "View configuration templates",
+    "create-cache-button" : "Create a cache",
+    "config-templates-button" : "Display cache templates",
     "cache-filter-label" : "Filter",
     "cache-filter-type-label" : "Cache type",
     "cache-filter-feature-label" : "Feature",
@@ -110,12 +111,30 @@
     "rebalancing-disabled": "Rebalancing is off"
   },
   "caches" : {
+    "create" : {
+      "page-title" : "Create a cache in {{cmName}}",
+      "cache-name": "Name",
+      "cache-name-help" : "Enter a unique name for your cache.",
+      "cache-name-help-invalid" : "You must specify a unique name for each cache.",
+      "configuration": "Configuration",
+      "configuration-help" : "Enter cache configuration in XML, JSON, or YAML format. You can use the distributed cache above for demonstration purposes.",
+      "configuration-info" : "Need help?",
+      "cache-configuration-docs" : "See \"Configuring Caches\" in the documentation.",
+      "configuration-help-invalid" : "Cache configuration must be valid and conform to the schema.",
+      "configuration-provide" : "Provide cache configuration",
+      "templates": "Cache templates",
+      "templates-help" : "Create caches from a custom template.",
+      "templates-placeholder" : "Select a cache template",
+      "create-button-label": "Create",
+      "back-button-label": "Back"
+    },
     "configuration" : {
-      "title" : "Configuration template",
-      "page-title" : "Configuration templates",
-      "table-label" : "Cache configurations",
-      "no-encoding-warning" : "This cache has no encoding definition or the encoding is not supported to read or edit entries from the console. You can use the Hot Rod client to perform read and write operations on this cache entries.",
-      "no-encoding-docs" : "See \"Cache Encoding and Marshalling\" in our documentation."
+      "title" : "Available cache templates",
+      "page-title" : "Cache templates",
+      "no-templates-body" : "Add cache templates to the server configuration.",
+      "table-label" : "Create caches from custom templates.",
+      "no-encoding-warning" : "This cache either has no encoding configuration or uses an encoding that the console does not support. You must use Hot Rod clients to perform read and write operations on this cache.",
+      "no-encoding-docs" : "See \"Cache Encoding and Marshalling\" in the documentation."
     },
     "tabs": {
       "entries": "Entries",

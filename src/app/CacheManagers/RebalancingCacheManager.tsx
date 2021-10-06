@@ -27,7 +27,6 @@ const RebalancingCacheManager = () => {
         <Divider isVertical />
         <FlexItem>
           <Switch
-            id="rebalancing-switch"
             label={t('cache-managers.rebalancing-enabled')}
             labelOff={t('cache-managers.rebalancing-disabled')}
             isChecked={cm.rebalancing_enabled}

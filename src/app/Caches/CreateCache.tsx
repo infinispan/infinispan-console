@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 
 import {
-  ActionGroup,
+  ActionGroup, Alert, AlertActionLink, AlertVariant,
   Button,
   Card,
   CardBody,
@@ -13,7 +13,7 @@ import {
   PageSectionVariants,
   Select,
   SelectOption,
-  SelectVariant,
+  SelectVariant, Spinner,
   Text,
   TextArea,
   TextContent,
@@ -30,16 +30,28 @@ import {useApiAlert} from '@app/utils/useApiAlert';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {CacheConfigUtils} from "@services/cacheConfigUtils";
+import { useTranslation } from 'react-i18next';
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
-  const history = useHistory();
   const cmName = props.computedMatch.params.cmName;
+  const history = useHistory();
+  const [loading, setLoading] = useState(true);
   const [cacheName, setCacheName] = useState('');
   const [validName, setValidName] = useState<'success' | 'error' | 'default'>(
     'default'
   );
-  const [config, setConfig] = useState('');
+  const sampleConfig = '{\n' +
+    '  "distributed-cache": {\n' +
+    '    "mode": "SYNC",\n' +
+    '    "encoding": {\n' +
+    '      "media-type": "application/x-protostream"\n' +
+    '    },\n' +
+    '    "statistics": true\n' +
+    '  }\n' +
+    '}';
+
+  const [config, setConfig] = useState(sampleConfig);
   const [configs, setConfigs] = useState<OptionSelect[]>([]);
   const [expandedSelect, setExpandedSelect] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<string>('');
@@ -49,6 +61,9 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     'success' | 'error' | 'default'
   >('default');
   const [errorConfig, setErrorConfig] = useState('');
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
+  const configurationDocs = t('brandname.configuration-docs-link');
 
   interface OptionSelect {
     value: string;
@@ -69,7 +84,8 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         } else {
           addAlert(eitherTemplates.value);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const onToggleConfigPanel = () => {
@@ -88,7 +104,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     setValidConfig('success');
   };
 
-  const onToggle = (isExpanded) => {
+  const onToggleTemplateName = (isExpanded) => {
     setExpandedSelect(isExpanded);
   };
 
@@ -97,7 +113,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     setExpandedSelect(false);
   };
 
-  const onSelect = (event, selection, isPlaceholder) => {
+  const onSelectTemplate = (event, selection, isPlaceholder) => {
     if (isPlaceholder) clearSelection();
     else {
       setSelectedConfig(selection);
@@ -114,16 +130,25 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
     setValidName(isValidName);
 
     // Validate the config
-    let isValidConfig: 'success' | 'error' = 'error';
+    let isValidConfig: 'success' | 'error';
+    let configValidation;
     if (selectedConfig != '') {
+      // User has chosen a template
       isValidConfig = 'success';
     } else {
-      let configValidation = CacheConfigUtils.validateConfig(config);
-      isValidConfig = configValidation.isRight() ? 'success' : 'error';
-      if (configValidation.isLeft()) {
-        setErrorConfig(configValidation.value);
+      if (configs.length == 0 || configExpanded) {
+        // there are no  templates or the expanded area is opened, we validate the text area content
+        configValidation = CacheConfigUtils.validateConfig(config);
+        isValidConfig = configValidation.isRight() ? 'success' : 'error';
+        if (configValidation.isLeft()) {
+          setErrorConfig(configValidation.value);
+        }
+      } else {
+        // There are no templates chosen and the config text area is not visible
+        isValidConfig = 'error';
       }
     }
+
     setValidConfig(isValidConfig);
 
     if (isValidName == 'error' || isValidConfig == 'error') {
@@ -137,7 +162,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         selectedConfig
       );
     } else {
-      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(name, config);
+      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(name, config, configValidation.value);
     }
     createCacheCall
       .then((actionResponse) => {
@@ -154,14 +179,143 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   if (cmName !== undefined) {
     title = displayUtils.capitalize(cmName);
   }
+  const displayCacheConfigEditor = () => {
+    return (
+      <FormGroup
+        label={t('caches.create.configuration')}
+        fieldId="cache-config"
+        validated={validConfig}
+        helperText={t('caches.create.configuration-help')}
+        helperTextInvalid={t('caches.create.configuration-help-invalid')}
+        isRequired={configs.length == 0}
+      >
+        <TextArea
+          isRequired
+          value={config}
+          onChange={handleChangeConfig}
+          name="cache-config"
+          id="cache-config"
+          validated={validConfig}
+          rows={10}
+        />
+        <Alert isInline title={t('caches.create.configuration-info')}
+               variant={AlertVariant.info}
+               actionLinks={
+                 <AlertActionLink onClick={() => window.open(configurationDocs, "_blank")}>
+                   {t('caches.create.cache-configuration-docs')}</AlertActionLink>
+               }
+        />
+      </FormGroup>
+    )
+  }
+
+  const handleTemplates = () => {
+    if (configs.length == 0) {
+      return displayCacheConfigEditor();
+    }
+
+    return (
+      <React.Fragment>
+        <FormGroup
+          fieldId="cache-config-name"
+          label={t('caches.create.templates')}
+          helperText={t('caches.create.templates-help')}
+          validated={validConfig}
+          helperTextInvalid={errorConfig}
+        >
+          <Select
+            data-testid="template-selector"
+            toggleIcon={<CubeIcon />}
+            variant={SelectVariant.typeahead}
+            aria-label={t('caches.create.templates')}
+            onToggle={onToggleTemplateName}
+            onSelect={onSelectTemplate}
+            // @ts-ignore
+            selections={selectedConfig}
+            isOpen={expandedSelect}
+            isDisabled={selectedConfigDisabled}
+            aria-labelledby={titleId}
+            placeholderText={t('caches.create.templates-placeholder')}
+            onClear={clearSelection}
+            validated={validConfig}
+          >
+            {configs.map((option, index) => (
+              <SelectOption
+                isDisabled={option.disabled}
+                key={index}
+                value={option.value}
+                isPlaceholder={option.isPlaceholder}
+              />
+            ))}
+          </Select>
+        </FormGroup>
+        <ExpandableSection
+          toggleText={t('caches.create.configuration-provide')}
+          isExpanded={configExpanded}
+          onToggle={onToggleConfigPanel}
+          role={'display-editor'}
+        >
+          {displayCacheConfigEditor()}
+        </ExpandableSection>
+      </React.Fragment>
+    )
+  }
+
+  const displayPageContent = () => {
+    if (loading) {
+      return (
+        <Spinner size={'lg'}/>
+      )
+    }
+
+    return (
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <FormGroup
+          label={t('caches.create.cache-name')}
+          isRequired
+          fieldId="cache-name"
+          helperText={t('caches.create.cache-name-help')}
+          validated={validName}
+          helperTextInvalid={t('caches.create.cache-name-help-invalid')}
+        >
+          <TextInput
+            isRequired
+            type="text"
+            id="cache-name"
+            name="cache-name"
+            aria-describedby="cache-name-helper"
+            value={cacheName}
+            onChange={handleChangeName}
+            validated={validName}
+          />
+        </FormGroup>
+        {handleTemplates()}
+        <ActionGroup>
+          <Button id="create-button" variant="primary" onClick={createCache}>
+            {t('caches.create.create-button-label')}
+          </Button>
+          <Link to="/">
+            <Button id="back-button" variant="secondary" target="_blank">
+              {t('caches.create.back-button-label')}
+            </Button>
+          </Link>
+        </ActionGroup>
+      </Form>
+    );
+  }
+
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb currentPage="Create cache" />
+        <DataContainerBreadcrumb currentPage="Create a cache" />
         <Toolbar id="create-cache-header">
           <ToolbarContent style={{ paddingLeft: 0 }}>
             <TextContent>
-              <Text component={TextVariants.h1}>Create a cache in {title}</Text>
+              <Text component={TextVariants.h1}>{t('caches.create.page-title', {"cmName" : title})}</Text>
             </TextContent>
           </ToolbarContent>
         </Toolbar>
@@ -169,96 +323,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
       <PageSection>
         <Card>
           <CardBody>
-            <Form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <FormGroup
-                label="Cache name"
-                isRequired
-                fieldId="cache-name"
-                helperText="Enter a unique name for your cache."
-                validated={validName}
-                helperTextInvalid="Your cache must have a name."
-              >
-                <TextInput
-                  isRequired
-                  type="text"
-                  id="cache-name"
-                  name="cache-name"
-                  aria-describedby="cache-name-helper"
-                  value={cacheName}
-                  onChange={handleChangeName}
-                  validated={validName}
-                />
-              </FormGroup>
-              <FormGroup
-                fieldId="cache-config-name"
-                label="Cache templates"
-                helperText="Select a cache template or provide a valid cache configuration."
-                validated={validConfig}
-                helperTextInvalid={errorConfig}
-              >
-                <Select
-                  toggleIcon={<CubeIcon />}
-                  variant={SelectVariant.typeahead}
-                  aria-label="Cache templates"
-                  onToggle={onToggle}
-                  onSelect={onSelect}
-                  // @ts-ignore
-                  selections={selectedConfig}
-                  isOpen={expandedSelect}
-                  isDisabled={selectedConfigDisabled}
-                  aria-labelledby={titleId}
-                  placeholderText="Select a cache template"
-                  onClear={clearSelection}
-                >
-                  {configs.map((option, index) => (
-                    <SelectOption
-                      isDisabled={option.disabled}
-                      key={index}
-                      value={option.value}
-                      isPlaceholder={option.isPlaceholder}
-                    />
-                  ))}
-                </Select>
-              </FormGroup>
-              <ExpandableSection
-                toggleText="Provide a cache configuration"
-                isExpanded={configExpanded}
-                onToggle={onToggleConfigPanel}
-              >
-                <FormGroup
-                  label="Cache configuration"
-                  fieldId="cache-config"
-                  validated={validConfig}
-                  helperText="Enter a cache configuration in XML or JSON format."
-                  helperTextInvalid="Provide a valid cache configuration in XML or JSON format."
-                >
-                  <TextArea
-                    isRequired
-                    value={config}
-                    onChange={handleChangeConfig}
-                    name="cache-config"
-                    id="cache-config"
-                    validated={validConfig}
-                    rows={10}
-                  />
-                </FormGroup>
-              </ExpandableSection>
-
-              <ActionGroup>
-                <Button variant="primary" onClick={createCache}>
-                  Create
-                </Button>
-                <Link to="/">
-                  <Button variant="secondary" target="_blank">
-                    Back
-                  </Button>
-                </Link>
-              </ActionGroup>
-            </Form>
+            {displayPageContent()}
           </CardBody>
         </Card>
       </PageSection>

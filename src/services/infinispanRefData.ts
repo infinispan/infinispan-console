@@ -18,6 +18,7 @@ export enum ContentType {
   BooleanContentType = 'Boolean', //'application/x-java-object;type=java.lang.Boolean'
   JSON = 'Json', //'application/json'
   XML = 'Xml', //'application/xml',
+  YAML = 'Yaml', //'application/yaml'
 
   // Protobuf types
   string = 'string',

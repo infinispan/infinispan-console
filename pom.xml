@@ -89,21 +89,21 @@
             <version>${maven-frontend-plugin.version}</version>
             <executions>
               <execution>
-                <id>npm install cypress</id>
-                <goals>
-                  <goal>npm</goal>
-                </goals>
-                <configuration>
-                  <arguments>install cypress@^6.0.1 --verbose</arguments>
-                </configuration>
-              </execution>
-              <execution>
                 <id>npm deploy dist</id>
                 <goals>
                   <goal>npm</goal>
                 </goals>
                 <configuration>
                   <arguments>run deploy-console-to-server</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm install cypress</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>install cypress@^8.5.0 --verbose</arguments>
                 </configuration>
               </execution>
               <execution>
