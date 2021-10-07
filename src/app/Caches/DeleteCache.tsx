@@ -59,6 +59,7 @@ const DeleteCache = (props: {
 
   return (
     <Modal
+      titleIconVariant={'warning'}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
