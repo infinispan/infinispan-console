@@ -20,6 +20,7 @@ const DeleteCounter = (props: {
 
   return (
     <Modal
+      titleIconVariant={'warning'}
       id={'delete-counter-modal'}
       className="pf-m-redhat-font"
       width={'50%'}

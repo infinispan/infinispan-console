@@ -4,6 +4,7 @@ import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {EyeIcon, EyeSlashIcon} from "@patternfly/react-icons";
 
 /**
  * Ignore cache modal
@@ -68,6 +69,7 @@ const IgnoreCache = (props: {
 
   return (
     <Modal
+      titleIconVariant={props.action == 'ignore'? EyeSlashIcon : EyeIcon}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}

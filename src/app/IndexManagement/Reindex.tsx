@@ -16,7 +16,7 @@ const Reindex = (props: {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const onClickPurgeButton = () => {
+  const onClickReindex = () => {
     ConsoleServices.search().reindex(props.cacheName).then((actionResponse) => {
       props.closeModal();
       addAlert(actionResponse);
@@ -25,6 +25,7 @@ const Reindex = (props: {
 
   return (
     <Modal
+      titleIconVariant={'info'}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
@@ -32,7 +33,7 @@ const Reindex = (props: {
       onClose={props.closeModal}
       aria-label="Reindex modal"
       actions={[
-        <Button key="reindex" onClick={onClickPurgeButton}>
+        <Button key="reindex" onClick={onClickReindex}>
           Rebuild index
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>

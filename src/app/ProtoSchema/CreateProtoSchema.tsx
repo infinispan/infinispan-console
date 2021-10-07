@@ -16,6 +16,7 @@ import formUtils, { IField } from '../../services/formUtils';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useTranslation } from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {AddCircleOIcon} from "@patternfly/react-icons";
 
 /**
  * Proto Schema creation form
@@ -142,6 +143,7 @@ const CreateProtoSchema = (props: {
 
   return (
     <Modal
+      titleIconVariant={AddCircleOIcon}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}

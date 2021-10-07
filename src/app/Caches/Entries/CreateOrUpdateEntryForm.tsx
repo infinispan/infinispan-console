@@ -25,6 +25,7 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {CacheConfigUtils} from "@services/cacheConfigUtils";
 import {ContentType, EncodingType, InfinispanFlags} from "@services/infinispanRefData";
 import {ProtobufDataUtils} from "@services/protobufDataUtils";
+import {AddCircleOIcon, PencilAltIcon} from "@patternfly/react-icons";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -629,6 +630,7 @@ const CreateOrUpdateEntryForm = (props: {
 
   return (
     <Modal
+      titleIconVariant={isEdition? PencilAltIcon: AddCircleOIcon}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
