@@ -29,7 +29,7 @@ import {useTranslation} from 'react-i18next';
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
-import {RebalancingCacheManager} from "@app/CacheManagers/RebalancingCacheManager";
+import {RebalancingCacheManager} from "@app/Rebalancing/RebalancingCacheManager";
 
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();

@@ -43,7 +43,7 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {useTranslation} from "react-i18next";
-import {RebalancingCache} from "@app/Caches/RebalancingCache";
+import {RebalancingCache} from "@app/Rebalancing/RebalancingCache";
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;

@@ -183,7 +183,7 @@ export class ContainerService {
       '-rebalancing';
     return this.fetchCaller.post({
       url: url,
-      successMessage: `Rebalancing successfully ${action}d.`,
+      successMessage: `Rebalancing ${action}d.`,
       errorMessage: `Unexpected error when rebalancing ${action}d.`,
     });
   }
