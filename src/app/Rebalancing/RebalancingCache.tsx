@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Label, Spinner, Switch, ToolbarItem} from '@patternfly/react-core';
 import {useCacheDetail} from "@app/services/cachesHook";
 import {useConnectedUser} from "@app/services/userManagementHook";
@@ -6,11 +6,12 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useTranslation} from "react-i18next";
 import {useApiAlert} from "@app/utils/useApiAlert";
-import {useDataContainer} from "@app/services/dataContainerHooks";
+import {RebalancingConfirmationModal} from "@app/Rebalancing/RebalancingConfirmationModal";
 
 const RebalancingCache = () => {
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
+  const [ confirmationModalOpened, setConfirmationModalOpened ]= useState(false);
   const { connectedUser } = useConnectedUser();
   const { cache, cacheManager, loading, reload } = useCacheDetail();
 
@@ -33,7 +34,7 @@ const RebalancingCache = () => {
   if (cache?.rehash_in_progress) {
     return (
       <ToolbarItem>
-        <Spinner size={'md'} /> {t('caches.info.rebalancing')}
+        <Spinner size={'md'} /> {t('caches.rebalancing.rebalancing')}
       </ToolbarItem>
     );
   }
@@ -46,17 +47,20 @@ const RebalancingCache = () => {
       <ToolbarItem>
         <Switch
           id="rebalancing-switch"
-          label={t('caches.info.rebalancing-enabled')}
-          labelOff={t('caches.info.rebalancing-disabled')}
+          label={t('caches.rebalancing.enabled')}
+          labelOff={t('caches.rebalancing.disabled')}
           isChecked={cache.rebalancing_enabled}
-          onChange={() => {
-            ConsoleServices.caches().rebalancing(cache.name, !cache.rebalancing_enabled)
-              .then(r => {
-                addAlert(r);
-                reload();
-              })
-          }}
+          onChange={() => setConfirmationModalOpened(true)}
         />
+        <RebalancingConfirmationModal type={'caches'}
+                                      isModalOpen={confirmationModalOpened}
+                                      confirmAction={() => ConsoleServices.caches().rebalancing(cache.name, !cache.rebalancing_enabled)
+                                        .then(r => {
+                                          addAlert(r);
+                                          reload();
+                                        }).finally(() => setConfirmationModalOpened(false))}
+                                      closeModal={() => setConfirmationModalOpened(false)}
+                                      enabled={cache.rebalancing_enabled}/>
       </ToolbarItem>
     );
   }
@@ -64,14 +68,14 @@ const RebalancingCache = () => {
   if (cache.rebalancing_enabled) {
     return (
       <ToolbarItem>
-        <Label>{t('caches.info.rebalanced')}</Label>
+        <Label>{t('caches.rebalancing.rebalanced')}</Label>
       </ToolbarItem>
     );
   }
 
   return (
     <ToolbarItem>
-      <Label>{t('caches.info.rebalancing-disabled')}</Label>
+      <Label>{t('caches.rebalancing.disabled')}</Label>
     </ToolbarItem>
   );
 };

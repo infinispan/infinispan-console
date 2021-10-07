@@ -60,7 +60,6 @@
     "ignore" : "Hide",
     "undo-ignore" : "Show",
     "ignored-status" : "Hidden",
-    "rebalancing-disabled-status" : "Rebalancing off",
     "delete" : "Delete",
     "clear-all-button" : "Clear all",
     "no-caches-status" : "No caches yet",
@@ -107,8 +106,17 @@
     "allowed-role-null" : "-",
     "no-tasks-status" : "No tasks yet",
     "no-tasks-body" : "Create tasks with the CLI or a remote client.",
-    "rebalancing-enabled": "Rebalancing is on",
-    "rebalancing-disabled": "Rebalancing is off"
+    "rebalancing": {
+      "disabled-status" : "Cluster rebalancing off",
+      "enabled": "Cluster rebalancing on",
+      "disabled": "Cluster rebalancing off",
+      "modal-disable-title" : "Disable cluster rebalancing",
+      "modal-disable-button" : "Turn off rebalancing",
+      "modal-enable-title" : "Enable cluster rebalancing",
+      "modal-enable-button" : "Turn on rebalancing",
+      "modal-cancel-button" : "Cancel",
+      "modal-description" : "Temporarily disable cluster rebalancing only when restarting or adding nodes. Always enable cluster rebalancing as soon as possible to prevent data loss."
+    }
   },
   "caches" : {
     "create" : {
@@ -149,10 +157,7 @@
     "info" : {
       "breadcrumb" : "Detail of cache {{cacheName}}",
       "loading" : "Loading cache {{cacheName}} ...",
-      "error" : "An error occurred while loading {{cacheName}}",
-      "rebalanced" : "Rebalanced",
-      "rebalancing-enabled" : "Rebalancing is on",
-      "rebalancing-disabled" : "Rebalancing is off"
+      "error" : "An error occurred while loading {{cacheName}}"
     },
     "actions" : {
       "action-see-less" : "See fewer cache details",
@@ -251,6 +256,18 @@
       "button-clear" : "Clear index",
       "button-rebuild" : "Rebuild index",
       "button-back-to-cache-detail" : "Back"
+    },
+    "rebalancing": {
+      "rebalancing" : "Rebalancing",
+      "rebalanced" : "Rebalanced",
+      "enabled" : "Rebalancing is on",
+      "disabled" : "Rebalancing is off",
+      "modal-disable-title" : "Disable rebalancing on this cache?",
+      "modal-disable-button" : "Disable",
+      "modal-enable-title" : "Enable rebalancing on this cache?",
+      "modal-enable-button" : "Enable",
+      "modal-cancel-button" : "Cancel",
+      "modal-description" : " Disabling rebalancing prevents the cluster from repairing data in this cache belonging to nodes leaving the cluster. It should be re-enabled as soon as possible to prevent possible data-loss in this cache."
     }
   }
 }

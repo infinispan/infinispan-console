@@ -392,7 +392,7 @@ const CacheTableDisplay = (props: {
 
     return (
       <Label key={`ignore-${cacheInfo.name}`}>
-        {t('cache-managers.rebalancing-disabled-status')}
+        {t('cache-managers.rebalancing.disabled-status')}
       </Label>
     )
   }
