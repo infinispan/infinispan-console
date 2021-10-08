@@ -43,6 +43,7 @@ const StateTransfer = (props: {
 
   return (
     <Modal
+      titleIconVariant={props.action == 'start'? 'info' : 'warning'}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}

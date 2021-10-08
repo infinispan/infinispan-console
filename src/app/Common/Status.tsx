@@ -2,17 +2,18 @@ import React from 'react';
 import {AlertVariant, Flex, FlexItem, Text, TextContent, TextVariants,} from '@patternfly/react-core';
 import {AlertIcon} from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import {chart_global_label_Fill} from "@patternfly/react-tokens";
+import {UNKNOWN_STATUS} from "@services/displayUtils";
 
-const Status = (props: { status: ComponentStatus }) => {
-  const componentStatus = props.status;
+const Status = (props: { status?: Status }) => {
+  const status = props.status? props.status : UNKNOWN_STATUS;
 
   return (
     <Flex>
       <FlexItem>
         <AlertIcon
-          variant={componentStatus.icon as AlertVariant}
+          variant={status.icon as AlertVariant}
           style={{
-            color: componentStatus.color,
+            color: status.color,
             display: 'inline',
           }}
         />
@@ -23,7 +24,7 @@ const Status = (props: { status: ComponentStatus }) => {
             component={TextVariants.p}
             style={{ color: chart_global_label_Fill.value}}
           >
-            {componentStatus.name}
+            {status.name}
           </Text>
         </TextContent>
       </FlexItem>

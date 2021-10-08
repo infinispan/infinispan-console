@@ -15,6 +15,7 @@ const RebalancingConfirmationModal = (props: {
   const { t } = useTranslation();
   return (
     <Modal
+      titleIconVariant={props.enabled? 'warning' : 'info'}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
@@ -23,7 +24,6 @@ const RebalancingConfirmationModal = (props: {
       aria-label={
         props.enabled? 'Disable' : 'Enable'
       }
-      titleIconVariant={props.enabled? 'warning' : 'info'}
       actions={[
         <Button
           variant={props.enabled? ButtonVariant.danger : ButtonVariant.primary}
