@@ -6,8 +6,10 @@ describe('Cache Detail Overview', () => {
                     "Accept-Encoding": "gzip, deflate, br"
                      }
    });
-   cy.get('h1').should('contain', 'people');
-   cy.get('h4').should('contain', 'Transactional');
+   cy.contains('people');
+   cy.contains('Transactional');
+   cy.contains('Distributed');
+   cy.contains('Rebalancing is on');
  })
 
 });
