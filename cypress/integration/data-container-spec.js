@@ -11,7 +11,7 @@ describe('Data Container Overview', () => {
    cy.contains('Server Management Console'); // header
    cy.contains('Default'); // cluster name
    cy.contains('Running'); // cluster status
-   cy.contains('Rebalancing is on'); // rebalancing status
+   cy.contains('Cluster rebalancing on'); // rebalancing status
    cy.contains('default'); // cache default
    cy.contains('people'); // cache people
  })
