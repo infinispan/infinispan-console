@@ -54,6 +54,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
 
   return (
     <Modal
+      titleIconVariant={'info'}
       className="pf-m-redhat-font"
       header={header}
       width={'80%'}

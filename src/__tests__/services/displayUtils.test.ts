@@ -1,11 +1,12 @@
 import displayUtils, {
-  CANCEL_CS, ERROR_CS,
-  FAILED_CS,
-  INIT_CS, INSTANTIATED_CS,
-  OK_CS,
-  RUNNING_CS,
-  SENDING_CS, STOPPING_CS, TERMINATED_CS,
-  UNKNOWN_CS
+  CANCEL_STATUS, ERROR_STATUS,
+  FAILED_STATUS,
+  INIT_STATUS, INSTANTIATED_STATUS,
+  OK_STATUS,
+  RUNNING_STATUS, ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING,
+  STOPPING_STATUS,
+  TERMINATED_STATUS,
+  UNKNOWN_STATUS
 } from '@services/displayUtils';
 import {
   chart_color_cyan_100,
@@ -21,18 +22,26 @@ import { AlertVariant } from '@patternfly/react-core';
 import {CacheType, ComponentHealth} from "@services/infinispanRefData";
 
 describe('Display Utils tests', () => {
+  test('parseStateTransferStatus', () => {
+    expect(displayUtils.parseStateTransferStatus(undefined)).toBe(ST_IDLE);
+    expect(displayUtils.parseStateTransferStatus('OK')).toBe(ST_SEND_OK);
+    expect(displayUtils.parseStateTransferStatus('IDLE')).toBe(ST_IDLE);
+    expect(displayUtils.parseStateTransferStatus('CANCELED')).toBe(ST_SEND_CANCELED);
+    expect(displayUtils.parseStateTransferStatus('ERROR')).toBe(ST_SEND_FAILED);
+    expect(displayUtils.parseStateTransferStatus('SENDING')).toBe(ST_SENDING);
+  });
+
   test('parseComponentStatus', () => {
-    expect(displayUtils.parseComponentStatus(undefined)).toBe(UNKNOWN_CS);
-    expect(displayUtils.parseComponentStatus('OK')).toBe(OK_CS);
-    expect(displayUtils.parseComponentStatus('RUNNING')).toBe(RUNNING_CS);
-    expect(displayUtils.parseComponentStatus('INITIALIZING')).toBe(INIT_CS);
-    expect(displayUtils.parseComponentStatus('CANCELLING')).toBe(CANCEL_CS);
-    expect(displayUtils.parseComponentStatus('SENDING')).toBe(SENDING_CS);
-    expect(displayUtils.parseComponentStatus('FAILED')).toBe(FAILED_CS);
-    expect(displayUtils.parseComponentStatus('ERROR')).toBe(ERROR_CS);
-    expect(displayUtils.parseComponentStatus('STOPPING')).toBe(STOPPING_CS);
-    expect(displayUtils.parseComponentStatus('TERMINATED')).toBe(TERMINATED_CS);
-    expect(displayUtils.parseComponentStatus('INSTANTIATED')).toBe(INSTANTIATED_CS);
+    expect(displayUtils.parseComponentStatus(undefined)).toBe(UNKNOWN_STATUS);
+    expect(displayUtils.parseComponentStatus('OK')).toBe(OK_STATUS);
+    expect(displayUtils.parseComponentStatus('RUNNING')).toBe(RUNNING_STATUS);
+    expect(displayUtils.parseComponentStatus('INITIALIZING')).toBe(INIT_STATUS);
+    expect(displayUtils.parseComponentStatus('CANCELLING')).toBe(CANCEL_STATUS);
+    expect(displayUtils.parseComponentStatus('FAILED')).toBe(FAILED_STATUS);
+    expect(displayUtils.parseComponentStatus('ERROR')).toBe(ERROR_STATUS);
+    expect(displayUtils.parseComponentStatus('STOPPING')).toBe(STOPPING_STATUS);
+    expect(displayUtils.parseComponentStatus('TERMINATED')).toBe(TERMINATED_STATUS);
+    expect(displayUtils.parseComponentStatus('INSTANTIATED')).toBe(INSTANTIATED_STATUS);
   });
 
   test('format number should cut 2 digits', () => {

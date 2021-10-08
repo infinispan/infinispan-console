@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Badge,
+  Bullseye,
   Button,
   ButtonVariant,
   Card,
@@ -19,27 +20,20 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
-import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import {
-  cellWidth,
-  IRow,
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-  textCenter,
-} from '@patternfly/react-table';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
-import { StateTransfer } from '@app/XSite/StateTransfer';
-import { Status } from '@app/Common/Status';
-import { InfoCircleIcon } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
+import {Link} from 'react-router-dom';
+import {global_spacer_md, global_spacer_xs} from '@patternfly/react-tokens';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
+import {cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter,} from '@patternfly/react-table';
+import {TableEmptyState} from '@app/Common/TableEmptyState';
+import {StateTransfer} from '@app/XSite/StateTransfer';
+import {Status} from '@app/Common/Status';
+import {InfoCircleIcon} from '@patternfly/react-icons';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {ConsoleACL} from "@services/securityService";
 import {useConnectedUser} from "@app/services/userManagementHook";
+import {ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING} from "@services/displayUtils";
 
 interface StateTransferModalState {
   site: string;
@@ -56,7 +50,7 @@ const XSiteCache = (props) => {
   const { connectedUser } = useConnectedUser();
   const [backups, setBackups] = useState<XSite[]>([]);
   const [rows, setRows] = useState<IRow[]>([]);
-  const [stateTransferStatus, setStateTransferStatus] = useState(new Map());
+  const [stateTransferStatus, setStateTransferStatus] = useState(new Map<string, Status>());
   const [backupsStatus, setBackupsStatus] = useState(new Map());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -65,78 +59,75 @@ const XSiteCache = (props) => {
   >({ site: '', open: false, action: '' });
 
   useEffect(() => {
-    loadSites();
-  }, []);
+    if (loading) {
+      // Load Sites
+      // First check ADMIN
+      if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+        setLoading(false);
+        setError('Connected user lacks ADMIN permission.');
+        return;
+      }
+      // Second get backups
+      crossSiteReplicationService
+        .backupsForCache(cacheName)
+        .then((eitherResponse) => {
+          if (eitherResponse.isRight()) {
+            setBackups(eitherResponse.value);
+            eitherResponse.value.map((xsite) => {
+              let latestBackups = new Map();
+              crossSiteReplicationService
+                .backupsForSite(cacheName, xsite.name)
+                .then((eitherResponse) => {
+                  if (eitherResponse.isRight()) {
+                    latestBackups.set(xsite.name, eitherResponse.value);
+                    setBackupsStatus(latestBackups);
+                  } else {
+                    addAlert(eitherResponse.value);
+                  }
+                });
+            });
+          } else {
+            setError(eitherResponse.value.message);
+            addAlert(eitherResponse.value);
+          }
+        }).then(() => {
+        // Third get state transfer status
+        crossSiteReplicationService
+          .stateTransferStatus(cacheName)
+          .then((eitherResponse) => {
+            let latestStStatus = new Map();
+            if (eitherResponse.isRight()) {
+              eitherResponse.value.map((stStatus) =>
+                latestStStatus.set(stStatus.site, stStatus.status)
+              );
+              setStateTransferStatus(latestStStatus);
+            } else {
+              addAlert(eitherResponse.value);
+            }
+          }).then(() => setLoading(false));
+      });
+    }
+  }, [loading]);
 
   useEffect(() => {
     buildRows();
-  }, [backups, backupsStatus, stateTransferStatus, error]);
-
-  const loadSites = () => {
-    // Get backup list
-    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      setLoading(false);
-      setError('Connected user lacks ADMIN permission.');
-      return;
-    }
-
-    setLoading(true);
-    crossSiteReplicationService
-      .backupsForCache(cacheName)
-      .then((eitherResponse) => {
-        if (eitherResponse.isRight()) {
-          setBackups(eitherResponse.value);
-          eitherResponse.value.map((xsite) => {
-            let latestBackups = new Map();
-            crossSiteReplicationService
-              .backupsForSite(cacheName, xsite.name)
-              .then((eitherResponse) => {
-                if (eitherResponse.isRight()) {
-                  latestBackups.set(xsite.name, eitherResponse.value);
-                  setBackupsStatus(latestBackups);
-                } else {
-                  addAlert(eitherResponse.value);
-                }
-              });
-          });
-        } else {
-          setError(eitherResponse.value.message);
-          addAlert(eitherResponse.value);
-        }
-      });
-
-    // Get state transfer status
-    crossSiteReplicationService
-      .stateTransferStatus(cacheName)
-      .then((eitherResponse) => {
-        let latestStStatus = new Map();
-        setLoading(false);
-        if (eitherResponse.isRight()) {
-          eitherResponse.value.map((stStatus) =>
-            latestStStatus.set(stStatus.site, stStatus.status)
-          );
-          setStateTransferStatus(latestStStatus);
-        } else {
-          addAlert(eitherResponse.value);
-        }
-      });
-  };
+  }, [backups, backupsStatus, stateTransferStatus, loading, error]);
 
   const columns = [
-    { title: 'Site', transforms: [cellWidth(20)] },
+    { title: 'Site', transforms: [cellWidth(30)] },
     {
       title: 'Status',
+      transforms: [cellWidth(30), textCenter],
+      cellTransforms: [textCenter],
+    },
+    {
+      title: 'Transfer status / Result',
       transforms: [cellWidth(40), textCenter],
       cellTransforms: [textCenter],
     },
     {
-      title: 'Transfer status/ Result',
-      transforms: [cellWidth(20), textCenter],
-      cellTransforms: [textCenter],
-    },
-    {
       title: 'Action',
-      transforms: [cellWidth(10), textCenter],
+      transforms: [cellWidth(20), textCenter],
       cellTransforms: [textCenter],
     },
   ];
@@ -146,17 +137,17 @@ const XSiteCache = (props) => {
       crossSiteReplicationService
         .takeOffline(cacheName, site)
         .then((result) => {
-          loadSites();
           addAlert(result);
-        });
+        })
+        .finally(() => setLoading(true));
     }
     if (status == 'offline') {
       crossSiteReplicationService
         .bringOnline(cacheName, site)
         .then((result) => {
-          loadSites();
           addAlert(result);
-        });
+        })
+        .finally(() => setLoading(true));
     }
   };
 
@@ -164,9 +155,8 @@ const XSiteCache = (props) => {
     crossSiteReplicationService
       .clearStateTransferState(cacheName, site)
       .then((result) => {
-        loadSites();
         addAlert(result);
-      });
+      }).finally(() => setLoading(true));
   };
 
   const buildStatus = (site: string, status: string) => {
@@ -219,15 +209,22 @@ const XSiteCache = (props) => {
   };
 
   const buildStateTransferStatus = (site: string) => {
-    if (!stateTransferStatus.has(site)) {
+    let stStatus = stateTransferStatus.get(site);
+    if (!stStatus || stStatus == ST_IDLE) {
       return '';
     }
-    return <Status status={stateTransferStatus.get(site)} />;
+    return (
+      <Bullseye>
+        <Status status={stateTransferStatus.get(site)} />
+      </Bullseye>
+    );
   };
 
   const buildStateTransferButton = (backup: XSite) => {
-    let stateTransfer = stateTransferStatus.get(backup.name) as string;
-    if (stateTransfer == 'SENDING') {
+    const maybeSTStatus = stateTransferStatus.get(backup.name);
+    const stStatus = maybeSTStatus != undefined? maybeSTStatus : ST_IDLE;
+
+    if (stStatus == ST_SENDING) {
       return (
         <Button
           variant={ButtonVariant.danger}
@@ -245,9 +242,9 @@ const XSiteCache = (props) => {
     }
 
     if (
-      stateTransfer == 'OK' ||
-      stateTransfer == 'ERROR' ||
-      stateTransfer == 'CANCELED'
+      stStatus == ST_SEND_OK ||
+      stStatus == ST_SEND_FAILED ||
+      stStatus == ST_SEND_CANCELED
     ) {
       return (
         <Button
@@ -281,18 +278,17 @@ const XSiteCache = (props) => {
         crossSiteReplicationService
           .startStateTransfer(cacheName, stateTransferModal.site)
           .then((result) => {
-            loadSites();
             addAlert(result);
-          });
+          }).finally(() => setLoading(true));
       } else if (stateTransferModal.action == 'cancel') {
         crossSiteReplicationService
           .cancelStateTransfer(cacheName, stateTransferModal.site)
           .then((result) => {
-            loadSites();
             addAlert(result);
-          });
+          }).finally(() => setLoading(true));
+      } else {
+        setLoading(true);
       }
-      loadSites();
     }
     setStateTransferModal({ site: '', open: false, action: '' });
   };
@@ -304,7 +300,7 @@ const XSiteCache = (props) => {
   const buildRows = () => {
     let currentRows;
 
-    if (backups.length == 0) {
+    if (loading || error) {
       currentRows = [
         {
           heightAuto: true,

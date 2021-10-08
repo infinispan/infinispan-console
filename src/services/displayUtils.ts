@@ -8,6 +8,7 @@ import {
   chart_color_orange_500,
   chart_color_purple_500,
   chart_global_label_Fill,
+  global_default_color_100,
   global_danger_color_100,
   global_info_color_100,
   global_palette_black_100,
@@ -29,99 +30,142 @@ import {
  *
  * @author Katia Aresti
  */
-export const UNKNOWN_CS = {
+export const UNKNOWN_STATUS = {
   name: 'Unknown',
   color: chart_global_label_Fill.value,
   icon: AlertVariant.warning,
 };
-export const OK_CS = {
+export const OK_STATUS = {
   name: 'Ok',
   color: global_success_color_100.value,
   icon: AlertVariant.success,
 };
-export const RUNNING_CS = {
+export const RUNNING_STATUS = {
   name: 'Running',
   color: global_success_color_100.value,
   icon: AlertVariant.success,
 };
-export const INIT_CS = {
+export const INIT_STATUS = {
   name: 'Initializing',
   color: global_warning_color_100.value,
   icon: AlertVariant.warning,
 };
-export const CANCEL_CS = {
+export const CANCEL_STATUS = {
   name: 'Cancelling',
   color: global_warning_color_100.value,
   icon: AlertVariant.warning,
 };
-export const SENDING_CS = {
-  name: 'Sending',
-  color: global_warning_color_100.value,
-  icon: AlertVariant.warning,
-};
-export const FAILED_CS = {
+export const FAILED_STATUS = {
   name: 'Failed',
   color: global_danger_color_100.value,
   icon: AlertVariant.danger,
 };
-export const ERROR_CS = {
+export const ERROR_STATUS = {
   name: 'Error',
   color: global_danger_color_100.value,
   icon: AlertVariant.danger,
 };
-export const TERMINATED_CS = {
+export const TERMINATED_STATUS = {
   name: 'Terminated',
   color: global_info_color_100.value,
   icon: AlertVariant.info,
 };
-export const STOPPING_CS = {
+export const STOPPING_STATUS = {
   name: 'Stopping',
   color: global_info_color_100.value,
   icon: AlertVariant.info,
 };
-export const INSTANTIATED_CS = {
+export const INSTANTIATED_STATUS = {
   name: 'Instantiated',
   color: global_info_color_100.value,
   icon: AlertVariant.info,
 };
 
+export const ST_IDLE = {
+  name: 'Inactive',
+  color: global_default_color_100.value,
+  icon: AlertVariant.success,
+};
+export const ST_SENDING = {
+  name: 'Sending',
+  color: global_info_color_100.value,
+  icon: AlertVariant.info,
+};
+export const ST_SEND_OK = {
+  name: 'Transfer Ok',
+  color: global_success_color_100.value,
+  icon: AlertVariant.success,
+};
+export const ST_SEND_FAILED = {
+  name: 'Transfer Failed',
+  color: global_danger_color_100.value,
+  icon: AlertVariant.danger,
+};
+export const ST_SEND_CANCELED = {
+  name: 'Transfer Cancelled',
+  color: global_warning_color_100.value,
+  icon: AlertVariant.warning,
+};
+
 class DisplayUtils {
-  public parseComponentStatus(value?: string): ComponentStatus {
-    let componentStatus: ComponentStatus;
+  public parseStateTransferStatus(value?: string): Status {
+    let stateTransfertStatus: Status;
+    switch (value) {
+      case 'IDLE':
+        stateTransfertStatus = ST_IDLE;
+        break;
+      case 'SENDING':
+        stateTransfertStatus = ST_SENDING;
+        break;
+      case 'OK':
+        stateTransfertStatus = ST_SEND_OK;
+        break;
+      case 'ERROR':
+        stateTransfertStatus = ST_SEND_FAILED;
+        break;
+      case 'CANCELED':
+        stateTransfertStatus = ST_SEND_CANCELED;
+        break;
+      default:
+        stateTransfertStatus = ST_IDLE;
+    }
+
+    return stateTransfertStatus;
+  }
+
+  public parseComponentStatus(value?: string): Status {
+    let componentStatus: Status;
 
     switch (value) {
       case 'RUNNING':
-        componentStatus = RUNNING_CS;
+        componentStatus = RUNNING_STATUS;
         break;
       case 'OK':
-        componentStatus = OK_CS;
+        componentStatus = OK_STATUS;
         break;
       case 'INITIALIZING':
-        componentStatus = INIT_CS;
+        componentStatus = INIT_STATUS;
         break;
       case 'CANCELLING':
-        componentStatus = CANCEL_CS;
-        break;
-      case 'SENDING':
-        componentStatus = SENDING_CS;
+        componentStatus = CANCEL_STATUS;
         break;
       case 'FAILED':
-        componentStatus = FAILED_CS;
+        componentStatus = FAILED_STATUS;
         break;
       case 'ERROR':
-        componentStatus = ERROR_CS;
+        componentStatus = ERROR_STATUS;
         break;
       case 'TERMINATED':
-        componentStatus = TERMINATED_CS;
+        componentStatus = TERMINATED_STATUS;
         break;
       case 'STOPPING':
-        componentStatus = STOPPING_CS;
+        componentStatus = STOPPING_STATUS;
         break;
       case 'INSTANTIATED':
-        componentStatus = INSTANTIATED_CS;
+        componentStatus = INSTANTIATED_STATUS;
         break;
       default:
-        componentStatus = UNKNOWN_CS;
+        componentStatus = UNKNOWN_STATUS;
     }
 
     return componentStatus;

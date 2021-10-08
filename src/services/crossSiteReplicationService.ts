@@ -75,7 +75,7 @@ export class CrossSiteReplicationService {
           (siteName) =>
             <StateTransferStatus>{
               site: siteName,
-              status: displayUtils.parseComponentStatus(data[siteName]),
+              status: displayUtils.parseStateTransferStatus(data[siteName]),
             }
         )
     );

@@ -1,4 +1,4 @@
-interface ComponentStatus {
+interface Status {
   name: string;
   color: string;
   icon: string;
@@ -9,7 +9,7 @@ interface CacheManager {
   physical_addresses: [string];
   coordinator: boolean;
   cluster_name: string;
-  cache_manager_status: ComponentStatus;
+  cache_manager_status: Status;
   cluster_size: number;
   defined_caches: [DefinedCache];
   cache_configuration_names: [string];
@@ -162,7 +162,7 @@ interface QueryStats {
 
 interface StateTransferStatus {
   site: string;
-  status: ComponentStatus;
+  status: Status;
 }
 
 interface SiteNode {

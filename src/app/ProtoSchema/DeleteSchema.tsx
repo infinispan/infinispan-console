@@ -9,6 +9,7 @@ import {
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
+import {EyeIcon, EyeSlashIcon} from "@patternfly/react-icons";
 
 /**
  * Delete schema modal
@@ -31,6 +32,7 @@ const DeleteSchema = (props: {
 
   return (
     <Modal
+      titleIconVariant={'danger'}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}

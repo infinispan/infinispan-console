@@ -1,8 +1,9 @@
 <infinispan>
   <cache-container>
     <distributed-cache name="xsite-transactional" statistics="true">
+      <encoding media-type="application/x-protostream"/>
       <backups>
-        <backup site="LON" strategy="SYNC" failure-policy="WARN" timeout="12003">
+        <backup site="NYC" strategy="SYNC" failure-policy="WARN" timeout="12003">
           <state-transfer chunk-size="098" timeout="7654" max-retries="321" wait-time="0101"/>
         </backup>
       </backups>

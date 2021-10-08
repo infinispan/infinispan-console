@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter,} from '@patternfly/react-table';
 import {
-  Badge,
   Bullseye,
   Button,
   ButtonVariant,
@@ -10,7 +9,9 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateVariant, Label, LabelGroup,
+  EmptyStateVariant,
+  Label,
+  LabelGroup,
   Pagination,
   Select,
   SelectGroup,

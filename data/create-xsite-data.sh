@@ -9,5 +9,5 @@ curl -XDELETE  -u $userPass http://localhost:11222/rest/v2/caches/xsite-transact
 
 echo "= Create caches"
 
-curl -XPOST  -u $userPass -H "Content-Type: application/xml" -d "@xsiteCache.xml" http://localhost:11222/rest/v2/caches/xsiteCache
-curl -XPOST  -u $userPass -H "Content-Type: application/xml" -d "@xsiteCache-transactional.xml" http://localhost:11222/rest/v2/caches/xsite-transactional
+curl -XPOST  -u $userPass -H "Content-Type: application/xml" -d "@caches/xsiteCache.xml" http://localhost:11222/rest/v2/caches/xsiteCache
+curl -XPOST  -u $userPass -H "Content-Type: application/xml" -d "@caches/xsiteCache-transactional.xml" http://localhost:11222/rest/v2/caches/xsite-transactional
