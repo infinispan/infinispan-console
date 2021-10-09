@@ -40,38 +40,6 @@ export class CacheConfigUtils {
     return right('yaml');
   }
 
-  /**
-   * Map the encoding type of the cache
-   * @param config, config of the cache
-   */
-  public static mapEncoding(config: JSON): CacheEncoding {
-    let cacheConfigHead: any = {};
-    if (config.hasOwnProperty(Distributed)) {
-      cacheConfigHead = config[Distributed];
-    } else if (config.hasOwnProperty(Replicated)) {
-      cacheConfigHead = config[Replicated];
-    } else if (config.hasOwnProperty(Invalidated)) {
-      cacheConfigHead = config[Invalidated];
-    } else if (config.hasOwnProperty(Local)) {
-      cacheConfigHead = config[Local];
-    } else if (config.hasOwnProperty(Scattered)) {
-      cacheConfigHead = config[Scattered];
-    }
-
-    if (cacheConfigHead.hasOwnProperty('encoding')) {
-      return {
-        key: CacheConfigUtils.toEncoding(
-          cacheConfigHead.encoding.key['media-type']
-        ),
-        value: CacheConfigUtils.toEncoding(
-          cacheConfigHead.encoding.value['media-type']
-        ),
-      };
-    }
-
-    return { key: EncodingType.Empty, value: EncodingType.Empty };
-  }
-
   public static toEncoding(encodingConf: string | undefined): EncodingType {
     if (!encodingConf) return EncodingType.Empty;
 
