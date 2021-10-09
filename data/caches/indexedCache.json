@@ -1,9 +1,6 @@
 {
   "distributed-cache": {
     "mode": "SYNC",
-    "encoding": {
-      "media-type": "application/x-protostream"
-    },
     "memory": {
       "storage": "HEAP"
     },

@@ -33,44 +33,6 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.mapCacheType(Scattered)).toBe('Scattered');
   });
 
-  test('cache encoding', () => {
-    let baseConfig =
-      '{\n' +
-      '  "CACHE_TYPE": {\n' +
-      '    "encoding": {\n' +
-      '      "key": {\n' +
-      '        "media-type": "KEY_TYPE"\n' +
-      '      },\n' +
-      '      "value": {\n' +
-      '        "media-type": "VALUE_TYPE"\n' +
-      '      }\n' +
-      '    }\n' +
-      '  }\n' +
-      '}';
-
-    let cacheTypes = [Distributed, Replicated];
-    let encodings = [EncodingType.JSON,
-      EncodingType.XML,
-      EncodingType.Text,
-      EncodingType.Protobuf,
-      EncodingType.Java,
-      EncodingType.JavaSerialized,
-      EncodingType.JBoss,
-      EncodingType.Octet
-    ];
-
-    for (let cacheType of cacheTypes) {
-      let cacheTypeConf = baseConfig.replace('CACHE_TYPE', cacheType);
-      for (let encoding of encodings) {
-        let config = JSON.parse(cacheTypeConf
-          .replace('KEY_TYPE', encoding)
-          .replace('VALUE_TYPE', encoding)
-        );
-        expect(CacheConfigUtils.mapEncoding(config)).toStrictEqual({key: encoding, value: encoding});
-      }
-    }
-  });
-
   test('editable', () => {
     expect(CacheConfigUtils.isEditable(EncodingType.Protobuf)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JBoss)).toBeTruthy();

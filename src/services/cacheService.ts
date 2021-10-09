@@ -59,7 +59,7 @@ export class CacheService {
           };
         }
 
-        let keyValueEncoding = CacheConfigUtils.mapEncoding(data.configuration);
+        let keyValueEncoding = { key: CacheConfigUtils.toEncoding(data['key_storage']), value: CacheConfigUtils.toEncoding(data['value_storage']) };
         return <DetailedInfinispanCache>{
           name: cacheName,
           started: true,
