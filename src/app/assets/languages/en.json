@@ -115,7 +115,7 @@
       "modal-enable-title" : "Enable cluster rebalancing",
       "modal-enable-button" : "Turn on rebalancing",
       "modal-cancel-button" : "Cancel",
-      "modal-description" : "Temporarily disable cluster rebalancing only when restarting or adding nodes. Always enable cluster rebalancing as soon as possible to prevent data loss."
+      "modal-description" : "Temporarily disable only to avoid repeated cluster rebalancing operations when restarting a node or adding multiple nodes. Always enable cluster rebalancing as soon as possible to prevent data loss."
     }
   },
   "caches" : {
