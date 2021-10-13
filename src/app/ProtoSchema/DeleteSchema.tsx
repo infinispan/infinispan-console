@@ -41,13 +41,19 @@ const DeleteSchema = (props: {
       aria-label="Delete schema modal"
       actions={[
         <Button
+          id="confirm-delete-schema-button"
+          name="confirm-delete-schema-button"
+          aria-label="confirm-delete-schema-button"
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={onClickDeleteButton}
         >
           Delete
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button  id="cancel-delete-schema-button"
+                 name="cancel-delete-schema-button"
+                 key="cancel"
+                 variant="link" onClick={props.closeModal}>
           Cancel
         </Button>,
       ]}

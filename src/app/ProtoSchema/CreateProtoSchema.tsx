@@ -100,7 +100,8 @@ const CreateProtoSchema = (props: {
         <FormGroup label="Name:" isRequired fieldId="schema-name">
           <TextInput
             value={schemaName.value}
-            id="schemaName"
+            id="schema-name"
+            name="schema-name"
             aria-describedby="schema-name-helper"
             onChange={(v) =>
               setSchemaName((prevState) => {
@@ -125,6 +126,7 @@ const CreateProtoSchema = (props: {
           <TextArea
             value={schema.value}
             id="schema"
+            name="schema"
             aria-describedby="schema-content-helper"
             height={400}
             resizeOrientation={TextAreResizeOrientation.vertical}
@@ -151,11 +153,12 @@ const CreateProtoSchema = (props: {
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
       actions={[
-        <Button key="create-button" onClick={handleCreateButton}>
+        <Button aria-label="add-schema-button" key="add-schema-button" onClick={handleCreateButton}>
           Add
         </Button>,
         <Button
-          key="cancel"
+          aria-label="cancel-add-schema-button"
+          key="cancel-add-schema-button"
           variant="link"
           onClick={() => clearCreateProtoSchema(false)}
         >

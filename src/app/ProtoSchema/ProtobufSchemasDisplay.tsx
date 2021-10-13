@@ -70,7 +70,9 @@ const ProtobufSchemasDisplay = (props: {
   const [expanded, setExpanded] = useState<string[]>([]);
 
   useEffect(() => {
-    loadSchemas();
+      if (props.isVisible || schemas.length == 0) {
+        loadSchemas();
+      }
   }, [props.isVisible]);
 
   const loadSchemas = () => {
@@ -199,7 +201,6 @@ const ProtobufSchemasDisplay = (props: {
           setSchemasContent(new Map(schemasContent.set(name, v)))
         }
         value={schemasContent.get(name)}
-        aria-label={'text-area-' + name}
         isRequired={true}
         style={{ fontSize: global_FontSize_sm.value }}
         rows={15}
@@ -207,7 +208,7 @@ const ProtobufSchemasDisplay = (props: {
     );
   };
 
-  const buildSchemaToolbar = (name) => {
+  const buildSchemaToolbar = (schemaName) => {
     if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return '';
     }
@@ -225,25 +226,31 @@ const ProtobufSchemasDisplay = (props: {
           <ToolbarGroup>
             <ToolbarItem>
               <Button
+                id={'edit-button-schema-' +  schemaName}
+                name={'edit-button-schema-' +  schemaName}
+                aria-label={'edit-button-schema-' +  schemaName}
                 variant={ButtonVariant.secondary}
-                onClick={() => handleEdit(name)}
+                onClick={() => handleEdit(schemaName)}
               >
-                {editSchemaName == name ? 'Save' : 'Edit'}
+                {editSchemaName == schemaName ? 'Save' : 'Edit'}
               </Button>
             </ToolbarItem>
             <ToolbarItem>
               <Button
+                id={'delete-button-schema-' +  schemaName}
+                name={'delete-button-schema-' +  schemaName}
+                aria-label={'delete-button-schema-' +  schemaName}
                 variant={ButtonVariant.link}
                 onClick={() => {
-                  if (editSchemaName == name) {
+                  if (editSchemaName == schemaName) {
                     setEditSchemaName('');
                   } else {
-                    setDeleteSchemaName(name);
+                    setDeleteSchemaName(schemaName);
                     setDeleteSchemaModalOpen(true);
                   }
                 }}
               >
-                {editSchemaName == name
+                {editSchemaName == schemaName
                   ? 'Cancel'
                   : 'Delete'}
               </Button>
@@ -253,16 +260,17 @@ const ProtobufSchemasDisplay = (props: {
       </React.Fragment>
     );
   }
-  const handleEdit = (name: string) => {
-    if (editSchemaName == '' || editSchemaName != name) {
-      setEditSchemaName(name);
+
+  const handleEdit = (schemaName: string) => {
+    if (editSchemaName == '' || editSchemaName != schemaName) {
+      setEditSchemaName(schemaName);
     } else {
       setEditSchemaName('');
-      if (!schemasContent.has(name) || schemasContent.get(name) == '') {
+      if (!schemasContent.has(schemaName) || schemasContent.get(schemaName) == '') {
         return;
       }
       protobufService
-        .createOrUpdateSchema(name, schemasContent.get(name) as string, false)
+        .createOrUpdateSchema(schemaName, schemasContent.get(schemaName) as string, false)
         .then((eitherCreate) => {
           addAlert(eitherCreate);
           loadSchemas();
@@ -282,10 +290,11 @@ const ProtobufSchemasDisplay = (props: {
     }
 
     return (
-      <DataList aria-label="Data list Protobuf schemas">
+      <DataList aria-label="data-list-proto-schemas">
         {filteredSchemas.map((protoSchema) => {
           return (
             <DataListItem
+              id={'item-' + protoSchema.name}
               key={'key-' + protoSchema.name}
               aria-labelledby={protoSchema.name + '-list-item'}
               isExpanded={expanded.includes(protoSchema.name)}
@@ -295,6 +304,7 @@ const ProtobufSchemasDisplay = (props: {
                   onClick={() => toggle(protoSchema.name)}
                   isExpanded={expanded.includes(protoSchema.name)}
                   id={protoSchema.name}
+                  aria-label={'expand-schema-' + protoSchema.name}
                   aria-controls={'ex-' + protoSchema.name}
                 />
                 <DataListItemCells
@@ -336,7 +346,7 @@ const ProtobufSchemasDisplay = (props: {
     }
     return (
       <ToolbarItem>
-        <Button variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
+        <Button aria-label="create-schema-button" variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
           Add Protobuf schema
         </Button>
       </ToolbarItem>
