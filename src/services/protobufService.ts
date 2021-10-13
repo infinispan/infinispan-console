@@ -1,5 +1,5 @@
-import { Either, left, right } from '@services/either';
-import { FetchCaller } from '@services/fetchCaller';
+import {Either} from '@services/either';
+import {FetchCaller} from '@services/fetchCaller';
 
 /**
  * Protobuf schemas manipulation service
@@ -17,23 +17,23 @@ export class ProtobufService {
    * Create or Update a Proto Schema
    */
   public async createOrUpdateSchema(
-    name: string,
+    schemaName: string,
     schema: string,
     create: boolean
   ): Promise<ActionResponse> {
     if (create) {
       return this.utils.post({
-        url: this.endpoint + '/' + name,
-        successMessage: `Schema ${name} created.`,
-        errorMessage: `Unexpected error creating schema ${name}`,
+        url: this.endpoint + '/' + schemaName,
+        successMessage: `Schema ${schemaName} created.`,
+        errorMessage: `Unexpected error creating schema ${schemaName}`,
         body: schema,
       });
     }
 
     return this.utils.put({
-      url: this.endpoint + '/' + name,
-      successMessage: `Schema ${name} updated.`,
-      errorMessage: `Unexpected error updating schema ${name}`,
+      url: this.endpoint + '/' + schemaName,
+      successMessage: `Schema ${schemaName} updated.`,
+      errorMessage: `Unexpected error updating schema ${schemaName}`,
       body: schema,
     });
   }
@@ -43,7 +43,7 @@ export class ProtobufService {
    */
   public async delete(schemaName: string): Promise<ActionResponse> {
     return this.utils.delete({
-      url: this.endpoint,
+      url: this.endpoint+ '/' + schemaName,
       successMessage: `Schema ${schemaName} has been deleted.`,
       errorMessage: `Unexpected error happened when deleting schema ${schemaName}.`,
     });
@@ -53,10 +53,10 @@ export class ProtobufService {
    * Get schema
    */
   public async getSchema(
-    name: string
+    schemaName: string
   ): Promise<Either<ActionResponse, string>> {
     return this.utils.get(
-      this.endpoint + '/' + name,
+      this.endpoint + '/' + schemaName,
       (data) => data,
       undefined,
       true
@@ -91,34 +91,4 @@ export class ProtobufService {
     );
   }
 
-  private handleProtobufRestError(err): Promise<ActionResponse> {
-    let actionResponse = <ActionResponse>{
-      message: 'Unknown error retrieving protobuf schemas',
-      success: false,
-    };
-
-    if (err instanceof TypeError) {
-      actionResponse = <ActionResponse>{
-        message: err.message,
-        success: false,
-      };
-    } else if (err instanceof Response) {
-      if (err.status.valueOf() == 403) {
-        // Not Found
-        actionResponse = <ActionResponse>{
-          message: 'Unauthorized access.',
-          success: false,
-        };
-      } else {
-        return err.text().then(
-          (errorMessage) =>
-            <ActionResponse>{
-              message: errorMessage == '' ? 'Unknown error.' : errorMessage,
-              success: false,
-            }
-        );
-      }
-    }
-    return Promise.resolve(actionResponse);
-  }
 }
