@@ -275,6 +275,16 @@
       "modal-available-description": "will become available for read and write operations.",
       "modal-available-button-done": "OK",
       "modal-available-button-cancel": "Cancel"
+    },
+    "cache-metrics":{
+      "current-number-entries":"Current number of entries",
+      "current-number-entries-tooltip":"Displays the number of entries that are stored in the cache. Each entry is counted only once so the number does not include replicas.",
+      "min-nodes":"Minimum number of nodes",
+      "min-nodes-tooltip":"Displays the number of nodes that must remain in the cluster to avoid data loss.",
+      "cache-size-off-heap":"Size of cache in off-heap memory",
+      "cache-size-off-heap-tooltip":"Displays the amount of off-heap memory that data in the cache uses. Total memory usage is higher because it includes internal data structures.",
+      "cache-size-heap":"Size of cache in heap memory",
+      "cache-size-heap-tooltip":"Displays the amount of JVM heap memory that data in the cache uses. Total memory usage is higher because it includes internal data structures."
     }
   }
 }

@@ -24,15 +24,31 @@ import {CubesIcon} from '@patternfly/react-icons';
 import {QueryMetrics} from '@app/Caches/Query/QueryMetrics';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {CustomCardTitle} from "@app/Common/CustomCardTitle";
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import { useTranslation } from 'react-i18next';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [stats, setStats] = useState<CacheStats | undefined>(undefined);
   const [statsError, setStatsError] = useState<string | undefined>(undefined);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
+  const [size, setSize] = useState<number|undefined>(0)
+  const [memory, setMemory] = useState<string|undefined>(undefined)
+  const { t } = useTranslation();
 
   useEffect(() => {
     ConsoleServices.caches().retrieveFullDetail(props.cacheName).then((detail) => {
       if (detail.isRight()) {
+
+        // Load the memory storage and size eviction
+        const loadMemory = JSON.parse(detail.value.configuration.config)["distributed-cache"]
+        if(loadMemory.memory){
+          if(loadMemory.memory.storage==="HEAP" && loadMemory.memory["max-size"])
+            setMemory(loadMemory.memory.storage)
+          else if(loadMemory.memory.storage==="OFF_HEAP")
+            setMemory(loadMemory.memory.storage)
+        }
+
+        setSize(detail.value.size)
         setStats(detail.value.stats);
         let loadQueryStats =
           detail.value.stats != undefined && detail.value.stats.enabled && detail.value.features.indexed;
@@ -175,7 +191,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   };
 
   const buildEntriesCard = () => {
-    if (!stats) {
+  if (!stats) {
       return '';
     }
 
@@ -185,17 +201,23 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.current_number_of_entries)}
+              <TextListItem aria-label="view-cache-metrics-size" component={TextListItemVariants.dt}>
+                {displayUtils.formatNumber(size)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Current number
+              <MoreInfoTooltip
+                label={t('caches.cache-metrics.current-number-entries')}
+                toolTip={t('caches.cache-metrics.current-number-entries-tooltip')}
+              />
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.total_number_of_entries)}
+              <TextListItem aria-label="view-cache-metrics-nodes" component={TextListItemVariants.dt}>
+                {displayUtils.formatNumber(stats.required_minimum_number_of_nodes)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Total number
+              <MoreInfoTooltip
+              label={t('caches.cache-metrics.min-nodes')}
+              toolTip={t('caches.cache-metrics.min-nodes-tooltip')}
+              />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>-</TextListItem>
             </TextList>
@@ -216,19 +238,23 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(
-                  stats.current_number_of_entries_in_memory
-                )}
+              <TextListItem aria-label="view-cache-metrics-off-heap" component={TextListItemVariants.dt}>
+                { memory==="OFF_HEAP" ? displayUtils.formatNumber(stats.off_heap_memory_used) : "-" }
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Current number
+                <MoreInfoTooltip
+                  label={t('caches.cache-metrics.cache-size-off-heap')}
+                  toolTip={memory==="OFF_HEAP" ? '': t('caches.cache-metrics.cache-size-off-heap-tooltip')}
+                />
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(stats.data_memory_used)}
+              <TextListItem aria-label="view-cache-metrics-heap" component={TextListItemVariants.dt}>
+                { memory==="HEAP" ? displayUtils.formatNumber(stats.data_memory_used) : "-" }
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Total in use
+                <MoreInfoTooltip
+                  label={t('caches.cache-metrics.cache-size-heap')}
+                  toolTip={memory==="HEAP" ? '': t('caches.cache-metrics.cache-size-heap-tooltip')}
+                />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>-</TextListItem>
             </TextList>
@@ -239,7 +265,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   };
 
   if (!stats?.enabled) {
-    const message = 'Statistics disabled.';
+    const message = 'Statistics are disabled.';
 
     return (
       <EmptyState variant={EmptyStateVariant.small}>
