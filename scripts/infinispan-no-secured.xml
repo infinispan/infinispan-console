@@ -15,6 +15,16 @@
     <distributed-cache-configuration name="e2e-test-template">
       <encoding media-type="application/x-protostream"/>
     </distributed-cache-configuration>
+    <distributed-cache name="heap-test" statistics="true">
+      <transaction mode="NON_XA"/>
+      <memory storage="HEAP" max-size="1.5GB"/>
+      <encoding media-type="application/x-protostream"/>
+    </distributed-cache>
+    <distributed-cache name="off-heap-test" statistics="true">
+      <transaction mode="NON_XA"/>
+      <memory storage="OFF_HEAP"/>
+      <encoding media-type="application/x-protostream"/>
+    </distributed-cache>
   </cache-container>
 
   <server xmlns="urn:infinispan:server:13.0">
