@@ -33,6 +33,7 @@ import {Link} from 'react-router-dom';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DeleteCache} from '@app/Caches/DeleteCache';
 import {IgnoreCache} from '@app/Caches/IgnoreCache';
+import {SetAvailableCache} from '@app/Caches/SetAvailableCache'
 import {IExtraData, IRowData,} from '@patternfly/react-table/src/components/Table';
 import {Health} from '@app/Common/Health';
 import {useBanner} from '@app/utils/useApiAlert';
@@ -46,7 +47,7 @@ import {ComponentHealth} from "@services/infinispanRefData";
 
 interface CacheAction {
   cacheName: string;
-  action: '' | 'ignore' | 'undo' | 'delete';
+  action: '' | 'ignore' | 'undo' | 'delete' | 'available';
 }
 
 const CacheTableDisplay = (props: {
@@ -216,6 +217,8 @@ const CacheTableDisplay = (props: {
 
     // @ts-ignore
     const ignoredCache = rowData.cells[0].isIgnored;
+    // @ts-ignore
+    const health = rowData.cells[0].health;
 
     if((!isAdmin && !isCreator) || (ignoredCache && !isAdmin)) {
       return [];
@@ -253,6 +256,16 @@ const CacheTableDisplay = (props: {
           ),
       })
     }
+
+    if (isAdmin && health==="DEGRADED") {
+      actions.push({
+        title: t('cache-managers.available'),
+        onClick: (event, rowId, rowData, extra) =>
+          openAvailableCacheModal(
+            cacheName
+          ),
+      })
+    }
     return actions;
   };
 
@@ -277,10 +290,23 @@ const CacheTableDisplay = (props: {
     setCacheAction({ cacheName: '', action: '' });
   };
 
+  const closeAvailableModal = (ignoreDone: boolean) => {
+    if (ignoreDone) {
+    }
+    setCacheAction({ cacheName: '', action: '' });
+  };
+
   const openIgnoreCacheModal = (cacheName: string, ignored: boolean) => {
     setCacheAction({
       cacheName: cacheName,
       action: ignored ? 'undo' : 'ignore',
+    });
+  };
+
+  const openAvailableCacheModal = (cacheName: string) => {
+    setCacheAction({
+      cacheName: cacheName,
+      action: 'available',
     });
   };
 
@@ -330,6 +356,7 @@ const CacheTableDisplay = (props: {
           cells: [
             {
               cacheName: cacheInfo.name,
+              health: cacheInfo.health,
               isIgnored: isCacheIgnored(cacheInfo),
               title: displayCacheName(cacheInfo),
             },
@@ -734,6 +761,13 @@ const CacheTableDisplay = (props: {
         }
         action={cacheAction.action}
         closeModal={closeIgnoreModal}
+      />
+      <SetAvailableCache
+        cacheName={cacheAction.cacheName}
+        isModalOpen={
+          cacheAction.action == 'available'
+        }
+        closeModal={closeAvailableModal}
       />
     </React.Fragment>
   );
