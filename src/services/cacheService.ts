@@ -578,4 +578,23 @@ export class CacheService {
       errorMessage: `Unexpected error when cache ${cacheName} rebalancing ${action}d.`,
     });
   }
+
+  /**
+   * Set Availability of cache
+   * @param cacheName, the name of the cache
+   * @author Dipanshu Gupta
+  */
+   public async setAvailability(cacheName: string): Promise<ActionResponse> {
+    const availabilityUrl =
+      this.endpoint +
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '?action=set-availability&availability=AVAILABLE';
+    return this.fetchCaller.post({
+      url: availabilityUrl,
+      successMessage: `Cache ${cacheName} is now available.`,
+      errorMessage: `An error occurred while changing cache ${cacheName} availability.`,
+    });
+  }
+
 }

@@ -61,6 +61,7 @@
     "undo-ignore" : "Show",
     "ignored-status" : "Hidden",
     "delete" : "Delete",
+    "available": "Make available",
     "clear-all-button" : "Clear all",
     "no-caches-status" : "No caches yet",
     "no-caches-body" : "Select \"Create a cache\" and provide configuration in XML, JSON, or YAML format or use a custom template. You can also create caches from the CLI and remote clients.",
@@ -268,6 +269,11 @@
       "modal-enable-button" : "Enable",
       "modal-cancel-button" : "Cancel",
       "modal-description" : " Disabling rebalancing prevents the cluster from repairing data in this cache belonging to nodes leaving the cluster. It should be re-enabled as soon as possible to prevent possible data-loss in this cache."
+    },
+    "availability": {
+      "modal-available-title": "Make cache available",
+      "modal-available-done": "Done",
+      "modal-available-cancel": "Cancel"
     }
   }
 }
