@@ -272,8 +272,9 @@
     },
     "availability": {
       "modal-available-title": "Make cache available",
-      "modal-available-done": "Done",
-      "modal-available-cancel": "Cancel"
+      "modal-available-description": "will become available for read and write operations.",
+      "modal-available-button-done": "OK",
+      "modal-available-button-cancel": "Cancel"
     }
   }
 }
