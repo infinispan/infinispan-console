@@ -48,7 +48,7 @@ const SetAvailableCache = (props: {
       description={
         <TextContent>
           <Text>
-            <strong>'{props.cacheName}'</strong> will become available for read and write operations.
+            <strong>'{props.cacheName}'</strong> {t('caches.availability.modal-available-description')}
           </Text>
         </TextContent>
       }
@@ -57,14 +57,14 @@ const SetAvailableCache = (props: {
           key="available"
           onClick={handleAvailableButton}
         >
-          {t('caches.availability.modal-available-done')}
+          {t('caches.availability.modal-available-button-done')}
         </Button>,
         <Button
           key="cancel"
           variant="link"
           onClick={() => clearSetAvailableCacheModal(false)}
         >
-          {t('caches.availability.modal-available-cancel')}
+          {t('caches.availability.modal-available-button-cancel')}
         </Button>,
       ]}
     >
