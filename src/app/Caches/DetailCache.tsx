@@ -157,7 +157,7 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     } else {
       return (
-        <CacheConfiguration cache={cache} />
+        <CacheConfiguration cacheName={cache.name} editable={cache.editable} config={cache.configuration.config} />
       );
     }
   };
