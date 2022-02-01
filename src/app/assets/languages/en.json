@@ -277,6 +277,13 @@
       "modal-available-button-cancel": "Cancel"
     },
     "cache-metrics":{
+      "average-reads":"Average cache read time",
+      "average-writes":"Average cache write time",
+      "average-deletes":"Average cache delete time",
+      "average-reads-tooltip":"Average time, in milliseconds, for read operations to complete.",
+      "average-writes-tooltip":"Average time, in milliseconds, for write operations to complete.",
+      "average-deletes-tooltip":"Average time, in milliseconds, for delete operations to complete.",
+      "data-access-hits":"Hits:",
       "current-number-entries":"Current number of entries",
       "current-number-entries-tooltip":"Displays the number of entries that are stored in the cache. Each entry is counted only once so the number does not include replicas.",
       "min-nodes":"Minimum number of nodes",
