@@ -3,6 +3,7 @@ import {
   Card,
   CardBody,
   CardTitle,
+  CardFooter,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -25,6 +26,7 @@ import {QueryMetrics} from '@app/Caches/Query/QueryMetrics';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {CustomCardTitle} from "@app/Common/CustomCardTitle";
 import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import { ExpandableSection } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
@@ -34,6 +36,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [size, setSize] = useState<number|undefined>(0)
   const [memory, setMemory] = useState<string|undefined>(undefined)
   const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   useEffect(() => {
     ConsoleServices.caches().retrieveFullDetail(props.cacheName).then((detail) => {
@@ -66,10 +69,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle> <CustomCardTitle
-          title={'Performance of cache operations'}
-          toolTip={'Average time, in milliseconds, for read and write operations on this cache.'}
-        /></CardTitle>
+        <CardTitle>Performance</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
@@ -77,19 +77,28 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 {displayUtils.formatNumber(stats.average_read_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Average reads
+              <MoreInfoTooltip
+                label={t('caches.cache-metrics.average-reads')}
+                toolTip={t('caches.cache-metrics.average-reads-tooltip')}
+              />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_write_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Average writes
+              <MoreInfoTooltip
+                label={t('caches.cache-metrics.average-writes')}
+                toolTip={t('caches.cache-metrics.average-writes-tooltip')}
+              />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_remove_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                Average removes
+              <MoreInfoTooltip
+                label={t('caches.cache-metrics.average-deletes')}
+                toolTip={t('caches.cache-metrics.average-deletes-tooltip')}
+              />
               </TextListItem>
             </TextList>
           </TextContent>
@@ -186,6 +195,11 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
             />
           </div>
         </CardBody>
+        <CardFooter>
+        <ExpandableSection toggleTextExpanded="Show less" toggleTextCollapsed="Interpreting data access statistics">
+        Data access statistics show info about cache operations to access data.
+        </ExpandableSection>
+        </CardFooter>
       </Card>
     );
   };
