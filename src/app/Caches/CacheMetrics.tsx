@@ -18,6 +18,8 @@ import {
   TextListVariants,
   TextVariants,
   Title,
+  List,
+  ListItem
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
@@ -69,7 +71,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Performance</CardTitle>
+        <CardTitle>{t('caches.cache-metrics.performance-title')}</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
@@ -132,7 +134,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Data access statistics</CardTitle>
+        <CardTitle>{t('caches.cache-metrics.data-access-title')}</CardTitle>
         <CardBody>
           <div style={{height: '300px', width: '70%'}}>
             <ChartDonut
@@ -196,8 +198,16 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
           </div>
         </CardBody>
         <CardFooter>
-        <ExpandableSection toggleTextExpanded="Show less" toggleTextCollapsed="Interpreting data access statistics">
-        Data access statistics show info about cache operations to access data.
+        <ExpandableSection toggleTextExpanded={t('caches.cache-metrics.data-access-collapsed')} toggleTextCollapsed={t('caches.cache-metrics.data-access-expanded')}>
+        <List>
+        <ListItem>{t('caches.cache-metrics.data-access-hits-info')}</ListItem>
+        <ListItem>{t('caches.cache-metrics.data-access-misses-info')}</ListItem>
+        <ListItem>{t('caches.cache-metrics.data-access-stores-info')}</ListItem>
+        <ListItem>{t('caches.cache-metrics.data-access-retrievals-info')}</ListItem>
+        <ListItem>{t('caches.cache-metrics.data-access-remove-hits-info')}</ListItem>
+        <ListItem>{t('caches.cache-metrics.data-access-remove-misses-info')}</ListItem>
+        <ListItem>{t('caches.cache-metrics.data-access-evictions-info')}</ListItem>
+        </List>
         </ExpandableSection>
         </CardFooter>
       </Card>
@@ -211,7 +221,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Entries</CardTitle>
+        <CardTitle>{t('caches.cache-metrics.entries-title')}</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
@@ -248,7 +258,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
     return (
       <Card>
-        <CardTitle>Memory</CardTitle>
+        <CardTitle>{t('caches.cache-metrics.memory-title')}</CardTitle>
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
