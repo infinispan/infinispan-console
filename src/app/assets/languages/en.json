@@ -122,7 +122,7 @@
   "caches" : {
     "create" : {
       "page-title" : "Create a cache in {{cmName}}",
-      "cache-name": "Name",
+      "cache-name": "Cache Name",
       "cache-name-help" : "Enter a unique name for your cache.",
       "cache-name-help-invalid" : "You must specify a unique name for each cache.",
       "configuration": "Configuration",

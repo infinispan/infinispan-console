@@ -1,0 +1,2782 @@
+[33mcommit 7d5ec4ae13472f25170bf0a0502cf01fd7891dc8[m[33m ([m[1;36mHEAD -> [m[1;32mISPN-12977[m[33m, [m[1;31morigin/ISPN-12977[m[33m)[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Feb 1 00:53:53 2022 +0100
+
+    ISPN-13353 View configuration in json, xml and yaml
+    
+    * Custom Hook for fetching configuration in YAML, XML format
+    * Changed props in CacheConfiguration.tsx file
+    * Unit test CacheConfiguration.test.tsx added
+    * Formatter for XML added
+
+[33mcommit ef825488e74331f131779be3f7705ebe06a2a2f1[m
+Author: Dipanshu Gupta <dipgupta@redhat.com>
+Date:   Mon Feb 28 14:31:36 2022 +0530
+
+    * Cache Wizard Next and back button set
+
+[33mcommit 75bf791cc35963ea05fd0ca0a4833d36ddb4a499[m
+Author: Dipanshu Gupta <dipgupta@redhat.com>
+Date:   Thu Feb 3 12:44:39 2022 +0530
+
+    ISPN-13684 Add the wizard use editor option to create caches with a configuration
+
+[33mcommit 562bb47ad68e62c9583b0776462304785bcfa3ec[m
+Author: Dipanshu Gupta <dipgupta@dipgupta.remote.csb>
+Date:   Mon Jan 17 17:40:00 2022 +0530
+
+    ISPN-13510 Cache Metrics size fix
+    * added t hook and externalise the labels into the properties file
+    * Toltips for Heap and off-heap metrics
+    * Integration Testing
+    * change in the metrics for heap and off-heap memory storage
+    
+    * cache size metrics labels and tooltips
+
+[33mcommit e03a7976ef8c0f9b890a15b5aca6b5b49515be92[m
+Author: Dipanshu Gupta <dipgupta@redhat.com>
+Date:   Wed Jan 26 14:27:20 2022 +0530
+
+    * Done changed to OK
+    * Strings are externalize to en.json file
+
+[33mcommit a3081ea5fe4cca9306d384966d031cc60f730897[m
+Author: Dipanshu Gupta <dipgupta@redhat.com>
+Date:   Fri Jan 21 14:35:53 2022 +0530
+
+    ISPN-13373 Allow Cache availability to be configured via the console
+
+[33mcommit 7a7830574eeace7b37e3a07265c0792dc6017f6c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 25 16:51:31 2022 +0100
+
+    ISPN-13660 Update dependencies
+
+[33mcommit d46c2f3c58e0d2006b6b8421153c5c01e1316157[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 25 16:04:53 2022 +0100
+
+    update version to 14
+
+[33mcommit 490367aaaae1e1988de99039708824ad467e7713[m[33m ([m[1;31mupstream/13.x[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Thu Nov 25 11:20:51 2021 -0500
+
+    next version 0.15.5-SNAPSHOT
+
+[33mcommit 928d912bc4e013a7fdbdbcd95f8029f1f62a610e[m[33m ([m[1;33mtag: 0.15.4.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Thu Nov 25 11:20:39 2021 -0500
+
+    Releasing version 0.15.4.Final
+
+[33mcommit f5b984d5dc161d9f349ffe777eee96b7ec48e173[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 13 13:06:04 2021 +0200
+
+    ISPN-13391 Fix protoschema delete regression
+
+[33mcommit 92bbc9a69a38113d0d89360dd7d080aeba1cca03[m
+Author: Don Naro <dnaro@redhat.com>
+Date:   Mon Oct 11 09:31:47 2021 +0100
+
+    ISPN-13380 clarify text for rebalancing alert
+
+[33mcommit ffa201c06ef6adc4a4bb936f0850a2d4c200d986[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Oct 9 12:46:03 2021 +0200
+
+    ISPN-13377 Use key_storage and value_storage instead of config for encoding
+
+[33mcommit 1caf675f245134d1f9791820326cb37d1410d8a1[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Sat Oct 9 04:42:49 2021 -0400
+
+    next version 0.15.4-SNAPSHOT
+
+[33mcommit 4bbbaecc0363ba92601a856b0db12d803eaa5ca3[m[33m ([m[1;33mtag: 0.15.3.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Sat Oct 9 04:42:40 2021 -0400
+
+    Releasing version 0.15.3.Final
+
+[33mcommit 8a65de497060d1535ef0a69acf493cb296f3864a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 8 14:03:47 2021 +0200
+
+    ISPN-13374 fix per cache xsite operations
+
+[33mcommit 647aa9a9ccaf25d5cf0c195178de1abbc4dce19c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 8 15:48:51 2021 +0200
+
+    fix rebalancing it test
+
+[33mcommit d5b1fccea7061fa1d8e990b2379209b202699c82[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 7 17:39:24 2021 +0200
+
+    ISPN-13363 Confirmation modal for rebalancing
+
+[33mcommit cd79261d41fb763f0d3fb6880972aa3674acf3e9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 7 22:45:55 2021 +0200
+
+    Adds icons in modals
+
+[33mcommit a577ff9d63fc79710d4d587307876cffb4ba174b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 6 11:50:27 2021 +0200
+
+    ISPN-13083 remove templates and support yaml
+
+[33mcommit cfa4b1e1a126e6baa80a3c1e004a078a9e20ead7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 5 18:13:48 2021 +0200
+
+    ISPN-13354 Detect json and _type on protostream encoding to help users
+
+[33mcommit d319b67df4eab765713fe1fe24c59a7d7c919090[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 4 14:45:40 2021 +0200
+
+    ISPN-12308 Show timeunits with tooltips
+    
+    Co-authored-by: Don Naro <dnaro@redhat.com>
+
+[33mcommit 16a60687be7883c42197107298a5df429a48d0f5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 4 14:30:04 2021 +0200
+
+    ISPN-13346 Encore query parameter
+
+[33mcommit d253c0536a737f1b1cef225d6fb523ca6db8ffb9[m
+Author: Diego Lovison <diegolovison@gmail.com>
+Date:   Mon Sep 20 13:46:23 2021 -0300
+
+    Operator with Minikube
+
+[33mcommit aeafcd8598a63208e77fd3ddd1620fe7984514d8[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Mon Sep 20 12:21:34 2021 -0400
+
+    next version 0.15.3-SNAPSHOT
+
+[33mcommit 9d1a135f684e6d3dd40fc299b7d7fa8f0e47511f[m[33m ([m[1;33mtag: 0.15.2.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Mon Sep 20 12:21:22 2021 -0400
+
+    Releasing version 0.15.2.Final
+
+[33mcommit 39e32a858527ee42060a825ee1fccefaacfdd17d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 16 23:13:17 2021 +0200
+
+    ISPN-11491, ISPN-11492, ISPN-11493 Cluster and Cache enable/disable rebalancing
+
+[33mcommit c6fd0378160e84dfda362b4abc2e463ec6dbed1d[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Tue Aug 10 06:23:30 2021 -0400
+
+    next version 0.15.2-SNAPSHOT
+
+[33mcommit 1db73a1df408593d6000c3ae13c5d6f4557da8cb[m[33m ([m[1;33mtag: 0.15.1.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Tue Aug 10 06:23:18 2021 -0400
+
+    Releasing version 0.15.1.Final
+
+[33mcommit 8a86596cfee839428088f1e4aa66fa8bdce9f031[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 6 14:27:03 2021 +0200
+
+    ISPN-13218 improve cache creation error handling
+
+[33mcommit 85725a07d5fe6a96e26d97fd147a994bcef66ac2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jul 21 14:10:11 2021 +0200
+
+    ISPN-13189 Content types, encodings and error handling
+    * Error handling is consistent (refactoring)
+    * Add cache detail covering first test
+    * Add configuration test
+    * Fix header layour with toolbar
+    * Protobuf data crud deal and testing
+    * XML caches encoding type deal and testing
+    * Deal Json cache encoding and data sent
+    * Java and Jboss caches retry number key on getEntries list
+    
+            modified:   run-server-for-e2e.sh
+
+[33mcommit f34bd74bd9be240bce27aa6bd3a1b0056c5c8d1b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jul 20 16:20:55 2021 +0200
+
+    ISPN-13117 pagination component fix getKey
+
+[33mcommit 95468c52e93e62ecc36631311e57d422a46a0352[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jul 19 18:41:54 2021 +0200
+
+    ISPN-13187 Upgrade Patternfly version to 2021-06-22
+
+[33mcommit fdb6b378778d424dec958be02acb44cc0d70c35c[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Fri Jun 25 08:17:18 2021 -0400
+
+    next version 0.15.1-SNAPSHOT
+
+[33mcommit b683181dd1d127a52d17de2fbe49d8da5b7766d2[m[33m ([m[1;33mtag: 0.15.0.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Fri Jun 25 08:17:06 2021 -0400
+
+    Releasing version 0.15.0.Final
+
+[33mcommit 8ab8997cc29db4804cf59adf5be53f9fcafe18b2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jun 15 15:47:49 2021 +0200
+
+    ISPN-13100 Create role can remove caches
+
+[33mcommit a6c36cd0fb773d292b23b5557154f5ca01f1c9c5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jun 18 15:58:50 2021 +0200
+
+    ISPN-13087 display and adapt content type options in get by key select
+
+[33mcommit 2e1f90bbdcd102b148971c8ea5179aa00c75561c[m
+Author: Don Naro <dnaro@redhat.com>
+Date:   Wed Jun 16 17:07:44 2021 +0100
+
+    ISPN-12984 Encoding warning message improvement
+
+[33mcommit 86f1edca8e3d6f8a0ba292c375c4b2c5b4d03de8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jun 16 16:25:29 2021 +0200
+
+    Update README.md
+
+[33mcommit 746dd9d455056741a506c6227de634fa6bc44d99[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jun 16 16:03:27 2021 +0200
+
+    clean create data script
+
+[33mcommit e9ec7b865031260a4cb45bd6a1bfa55d6ce51a56[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jun 7 18:02:45 2021 +0200
+
+    ISPN-13087 display and adapt content type options in add/edit entry
+
+[33mcommit a34c7742fa91c1edcbcbce417bf4abdfe0b4960e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 25 16:35:48 2021 +0200
+
+    ISPN-12984 Hide entries tab when the encoding of the cache is not defined
+
+[33mcommit dd6e5c9491637cdf8c80b0190cca95bc1e88534e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jun 16 10:48:26 2021 +0200
+
+    main branch
+
+[33mcommit 0128a3875165d0b926593a7ac08b728b2a0bab69[m
+Author: Don Naro <dnaro@redhat.com>
+Date:   Mon May 24 19:32:15 2021 +0100
+
+    issue #142 welcome page rewording
+
+[33mcommit b0a6ce62fa513556987dc621ebd7d1541d180a4d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 6 10:51:03 2021 +0200
+
+    update readme to 13
+
+[33mcommit 538b8c7cf4b32cd63e4744f9fed7707cdb11942d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 6 10:50:19 2021 +0200
+
+    move master to Infinispan 13
+
+[33mcommit 3d4d4ff78c55090c2101525b85a9cc6c84d3e2a1[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Tue May 4 09:34:21 2021 -0400
+
+    next version 0.14.3-SNAPSHOT
+
+[33mcommit 70f2f7bb13f85c6004ca60ca457e546febb4071f[m[33m ([m[1;33mtag: 0.14.2.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Tue May 4 09:34:09 2021 -0400
+
+    Releasing version 0.14.2.Final
+
+[33mcommit 6ab9f31df32e0518a35c0bcec2faacb6c208302a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon May 3 09:48:27 2021 +0200
+
+    Update server version on readme
+
+[33mcommit e52649eaa3d837ce17c29baa181a164ae06f2069[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Apr 21 00:44:01 2021 +0200
+
+    ISPN-12458 Index and Query stats REST API
+    * Move the Search code to a Search dedicated file
+    * Remove deprecated query and index stats calls
+    * Display the new index and query stats
+
+[33mcommit a9a23c0e5d5a9ba59b68568381d6e4f25d729d62[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 20 19:57:11 2021 +0200
+
+    ISPN-12968 Fix entry edition content type
+
+[33mcommit 988473e1b8e361bcdc6e0d6b05ed33f9d8822a5f[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Sat Apr 3 16:23:49 2021 -0400
+
+    next version 0.14.2-SNAPSHOT
+
+[33mcommit e4b8aa2275c1f60d810da06f838a0f6b240428cc[m[33m ([m[1;33mtag: 0.14.1.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Sat Apr 3 16:23:37 2021 -0400
+
+    Releasing version 0.14.1.Final
+
+[33mcommit eace4fd6fdefa6eef788bb11ced5d01921b708a7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Apr 3 22:20:39 2021 +0200
+
+    releasing 0.14.1
+
+[33mcommit 5f1aa5c54f82bf1c01f589e5b2cdaaf1ae894f1f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Apr 3 22:09:32 2021 +0200
+
+    Handle logout with chrome or keycloak
+
+[33mcommit 0080e7f1a3b88f7b63ae7d5063ae5fd2c80a9ad0[m
+Author: Don Naro <dnaro@redhat.com>
+Date:   Tue Mar 16 09:07:11 2021 +0000
+
+    ISPN-12840 console microcopy edits
+
+[33mcommit cd22ae5175c4796394c9299944ed2f1af0459591[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Mar 29 13:04:33 2021 +0200
+
+    ISPN-12885 Monitor right
+
+[33mcommit 0a43236f25c9db832b091ffae2a7d9b85576de2a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Mar 23 13:48:25 2021 +0100
+
+    ISPN-11596 load caches without rbac call on non auth mode
+
+[33mcommit 85e534f9cd4d81b979d1e76b872295a9a42b4631[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Sat Mar 20 06:29:57 2021 -0400
+
+    next version 0.14.1-SNAPSHOT
+
+[33mcommit 100b8cf78de0b08686b3ba2e06471be8d20330a9[m[33m ([m[1;33mtag: 0.14.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Sat Mar 20 06:29:46 2021 -0400
+
+    Releasing version 0.14.Final
+
+[33mcommit 45de679c5b0610d2e6d9d6aa5486e153c912c035[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jan 28 15:27:42 2021 +0100
+
+    ISPN-11596 RBAC access to the console
+
+[33mcommit f3af18eb1c7e8a8f3878067bbdd61ce3b862ec29[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Fri Mar 19 14:25:56 2021 +0000
+
+    Use NPM 6.14.5 & Node 12.16.3
+
+[33mcommit cc83c20b02f004ea7d92b2df0c9493b574a5695d[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Thu Mar 11 13:44:57 2021 +0000
+
+    Remove cypress from package.json
+
+[33mcommit fe31cd18745e20338c008a1915a0a637638a6c59[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Mon Mar 8 10:26:47 2021 +0000
+
+    Remove package-lock.json from .gitignore
+
+[33mcommit 705b414e6fd457b528a30614a75935b081882813[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Feb 22 18:32:21 2021 +0100
+
+    ISPN-12719 Key handle in protobuf and text caches
+    * reload size
+    * don't stringfy
+    * deail cache context
+
+[33mcommit e2b3166da4ca12bba3daad67f42d6716b1d777eb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Feb 22 12:43:14 2021 +0100
+
+    ISPN-12719 do not stringify regular protobuf keys but convert to string
+
+[33mcommit 18fb1032af111bafec597aaed713c1d037ead603[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Feb 20 15:56:20 2021 +0100
+
+    ISPN-12768 Double form login
+
+[33mcommit 80f4b514e94e6e3b76cc5a64607cbeaba2314ff9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Feb 20 16:18:53 2021 +0100
+
+    jenkinsfile
+
+[33mcommit 80074f25005045f13ec8104f01a8843dfb5e3d6e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Feb 19 01:05:52 2021 +0100
+
+    ISPN-12749 Fix pie chart
+
+[33mcommit 64f96ea118375b779daf1ec0671b1e939c6f8b33[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Feb 18 10:26:51 2021 +0100
+
+    ISPN-12748 Upgrade to 2021.02 Release
+
+[33mcommit 8a41395824d62616a6537c2c6c1c2a573f0382d6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Feb 9 22:44:16 2021 +0100
+
+    ISPN-12719 Fix json not protobuf parser
+
+[33mcommit 4273250214a645308dca3be671e0ced9ccd0c727[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 12 16:23:33 2021 +0100
+
+    ISPN-12370 Form log and authentication with Digest
+    * Log in implemented
+    * Log out implemented
+    * Refactoring of the services to get an IoC model
+    * Upgrade e2e to 12.0.0.Final
+
+[33mcommit 2573310ea18d09907861540c20fa56f24cb06825[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Wed Jan 27 15:16:41 2021 +0000
+
+    ISPN-12661 Licenses are not properly generated
+
+[33mcommit ad45039a6bb6511df3d1b73bafe7b9bb9cad3806[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jan 27 14:10:39 2021 +0100
+
+    ISPN-12660 skipTests property for local build
+
+[33mcommit f8036a9bf8b5b1876edc9d289b9c13ba672d786b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 26 22:07:52 2021 +0100
+
+    next dev version
+
+[33mcommit 6ffea4941938e7c452294da648db6d0d32f007bb[m
+Author: Prajakta Deshmukh <pradeshm@localhost.localdomain>
+Date:   Mon Jan 18 13:34:54 2021 +0100
+
+    glabal stats href tests
+
+[33mcommit befc4e1fd41d17a1b8df056e027e42a9d6fe1892[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 26 14:12:53 2021 +0100
+
+    ISPN-12654 Fix getentry for protobuf caches
+
+[33mcommit 161edff9f88e472a89aee0bc729787168653fd83[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jan 21 12:20:51 2021 +0100
+
+    ISPN-12640 Deal with server error in getEntries
+
+[33mcommit 06756fb10d614043295c55850764b6d63c046c64[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jan 11 22:13:27 2021 +0100
+
+    ISPN-12613 Upgrade patternfly to release 2020.16
+
+[33mcommit 5c10b295c684729f38bf55b36fbdc32e36135366[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 12 16:23:33 2021 +0100
+
+    ISPN-12610 Fix edit/delete when on search
+
+[33mcommit 2f7040955c97e700a963c953e87f0fb1c6e0ef10[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jan 11 21:43:39 2021 +0100
+
+    ISPN-12610 Remove recent activity table
+
+[33mcommit 044359fc21b80978701f782e01e9d55ba681c132[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jan 8 23:03:12 2021 +0100
+
+    ISPN-12610 fix protobuf crud
+
+[33mcommit a4089a7e6d87150799acbbeb27584e2b30c06edf[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Dec 21 12:39:32 2020 +0100
+
+    next npm version 0.13.0
+
+[33mcommit fe404fb8dfe47dcc8aa656fda5852d216322b437[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Mon Dec 21 06:37:33 2020 -0500
+
+    next version 0.13-SNAPSHOT
+
+[33mcommit a5a2af1aa8c4c7b865dc450a7024d3fd973b0c40[m[33m ([m[1;33mtag: 0.12.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Mon Dec 21 06:37:20 2020 -0500
+
+    Releasing version 0.12.Final
+
+[33mcommit a2ec5ab365285a7e895b51c36f5916b66c0ec87a[m
+Author: Dmitry Volodin <dmvolod@gmail.com>
+Date:   Fri Dec 18 19:45:59 2020 +0300
+
+    Describe INFINISPAN_SERVER_URL environment variable
+
+[33mcommit a32969bc1e0e181c12d6e9979452b5c99ab04ad9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 9 22:28:37 2020 +0100
+
+    ISPN-12301 Stream sample entries
+
+[33mcommit 152e684a03559d47ce81c2e840fa78f49b466741[m
+Author: Dmitry Volodin <dmvolod@gmail.com>
+Date:   Fri Dec 18 17:06:40 2020 +0300
+
+    Able to customize Infinispan server URL in DevMode
+
+[33mcommit ba5463943f4f0522caf471ff73a3a686c153eb62[m
+Author: Prajakta Deshmukh <pradeshm@localhost.localdomain>
+Date:   Fri Dec 18 00:30:10 2020 +0100
+
+    added more tests
+
+[33mcommit 48e653f34af74b76655b406dfa56c8b0da4ae2e0[m
+Author: Abigael Donahue <adonahue@redhat.com>
+Date:   Mon Dec 7 09:47:20 2020 -0500
+
+    ISPN-11412 microcopy edits
+
+[33mcommit d2f922cfac88c56423689f5531efd66cc1e1a6c8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 4 14:28:05 2020 +0100
+
+    ISPN-12506 Fix protobuf schema lack of permission
+    * Includes upgrade typescript versio
+    * Includes upgrade to minor patternflyn
+
+[33mcommit 816c25c2c4671b3ed70a91494963051c90ef801d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 11 16:22:05 2020 +0000
+
+    ISPN-12488 Upgrade to 2020.14 Patternfly
+
+[33mcommit 562e177e3bfae888f1345334448b572a24e6800f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Oct 25 12:43:01 2020 +0100
+
+    Not Secured for 11
+
+[33mcommit 89ee3c6d4e22c1cda0ab78909e3a175d61ecf6e5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Oct 25 11:08:47 2020 +0100
+
+    ISPN-12447 Checkout before running
+
+[33mcommit 0a285fd7a6f03df3a1a4f3c092e7422f4cef986c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Oct 25 11:02:24 2020 +0100
+
+    ISPN-12447 Fix build pipeline
+
+[33mcommit c0befaa59a4a2198a22cc702cb9e45857766c8e6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 23 10:22:34 2020 +0200
+
+    ISPN-12447 Configure CI
+
+[33mcommit 0c111e0db9ccb34f49b0ac635cbec8687eaf6a2c[m
+Author: Prajakta Deshmukh <pradeshm@localhost.localdomain>
+Date:   Fri Oct 23 00:53:16 2020 +0200
+
+    ISPN-12447 adding cypress e2e tests
+
+[33mcommit da4f9cb694129c794511e708ec27ee405b925dd3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Oct 24 12:16:51 2020 +0200
+
+    fix test build temporary hack
+
+[33mcommit af912fdd50aa65db234bb67fd842c47f5c7ebaf1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Oct 24 12:01:07 2020 +0200
+
+    Upgrade dev dependencies
+
+[33mcommit 8d095befbd66ae4cd9a474ceb0425cee2f7ba221[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Oct 24 11:41:14 2020 +0200
+
+    Upgrade front-end plugin to 1.10.3
+
+[33mcommit 2adfeef2d7b72a8adc91c8b73b4e078b728993a4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Oct 24 11:38:59 2020 +0200
+
+    Upgrade to 6.14.8 and v15.0.1
+
+[33mcommit cafb8a8409797f5bec841c248ad160fe18d659e2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 23 14:36:53 2020 +0200
+
+    Update README.md
+
+[33mcommit 2044068ba73f242db77509fd97d108db12300ceb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 23 14:33:16 2020 +0200
+
+    remove travis
+
+[33mcommit 4d5730df24abed409787301e42d8e3a7013490ff[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 21 23:34:39 2020 +0200
+
+    ISPN-12445 404 not found page test and design improvement
+    
+    Co-authored-by: Don Naro <dnaro@redhat.com>
+
+[33mcommit 864eb1aa49188fad43ce9baea0e5da35593a1e9c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 15 21:29:12 2020 +0200
+
+    ISPN-12433 Fix delete cache latest page
+
+[33mcommit 65af82255832a779d5a048b95552db4aa4caffbd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 19 16:10:49 2020 +0200
+
+    ISPN-11067 Fix merge
+
+[33mcommit 784e3b73e2231edde07800283eeceb2442af0647[m
+Author: Don Naro <dnaro@redhat.com>
+Date:   Thu Oct 15 17:10:09 2020 +0100
+
+    ISPN-11067 Externalize strings part two
+
+[33mcommit 1f21b6e981ef3acc4dbfe1dd2e4b298499ce9676[m
+Author: Don Naro <dnaro@redhat.com>
+Date:   Thu Oct 8 19:51:56 2020 +0100
+
+    ISPN-11067 Externalize strings part one
+
+[33mcommit 1a5d0e0bc81c092bf13d0ed13fa323428210dd6a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 6 14:01:40 2020 +0200
+
+    ISPN-11067 Extract labels
+
+[33mcommit abdb00cf4a57ceebef273e0cfa09a6bf47ccf7d5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 6 14:01:40 2020 +0200
+
+    ISPN-11067 Extract labels
+
+[33mcommit 6a59480676a2abdbf828e6f81107e34631992bd1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 14 11:12:16 2020 +0200
+
+    Next dev version 0.12
+
+[33mcommit 17e263fc3f3b1c09d1b8ba6e69affbeb7810eed1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 9 23:23:57 2020 +0200
+
+    ISPN-12138 Rebase fixes
+
+[33mcommit cf0229139c4e67587b5d2a02f40b17cb46ef838a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 8 17:12:41 2020 +0200
+
+    ISPN-12138 Fix and unit test Content Type send
+
+[33mcommit 1516d244eb42dc635c23bf43629bba34c7238169[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 7 17:29:06 2020 +0200
+
+    ISPN-12138 Get content type from header and display it in the activity table
+
+[33mcommit 5eeba48ec8a206675aec664e956677e53fa8b15f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 5 16:14:52 2020 +0200
+
+    ISPN-12138 Add a new message not found with the content type
+
+[33mcommit 6943339a1ff5ef72384a47a1d51a0641ba206f60[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 8 16:20:30 2020 +0200
+
+    ISPN-12138 Fix content type on edit
+
+[33mcommit 58eef999aed5db0e262d0f898e75208f97d7e0a6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 8 16:02:08 2020 +0200
+
+    ISPN-12138 Fix remove entry
+
+[33mcommit d3238511c952f439697bc103fa28e0ec7545ac0f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 7 16:57:15 2020 +0200
+
+    ISPN-12138 convert alert component to a map
+
+[33mcommit afe53757d53b02cfbc640cd013462929804be528[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Sep 2 23:17:36 2020 +0200
+
+    try fixing value content type
+
+[33mcommit ba365206346b7aff5890fa1ac8c6eb60476bb217[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Aug 4 00:50:43 2020 +0200
+
+    ISPN-12138 be able to get with other key content types
+
+[33mcommit a5b06287f69eed77da82881ec547835b33293b9c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 9 14:50:47 2020 +0200
+
+    ISPN-12309 Xsite transactional xsite again
+
+[33mcommit 663e99c5c878d4047266d68d623d9375ab153d4e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 9 14:09:32 2020 +0200
+
+    ISPN-12309 Upgrade and fix 'type' row regression
+
+[33mcommit 40aa208d9d08055bb3b1423e0fe759e8be391cff[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 8 19:13:23 2020 +0200
+
+    ISPN-12309 Display a banner and call caches info regulary
+
+[33mcommit 2a025c8d66ad5574e72ed72d2d555f23c6d67004[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 7 11:45:21 2020 +0200
+
+    ISPN-12309 Optimize imports
+
+[33mcommit 7698da0fdddb51554aab76a937be270a6ab1d709[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 7 11:40:46 2020 +0200
+
+    ISPN-12309 Fix alignment
+
+[33mcommit ce30d21709fa4618752fce7f10a29122d828ecd5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 5 15:58:46 2020 +0200
+
+    ISPN-12376 Use a cache detail provider
+
+[33mcommit 0334d657165a81725514397455f0b2f8fedb8d20[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 1 12:37:33 2020 +0200
+
+    ISPN-12376 Deal with Failed health in the console
+
+[33mcommit bd50dbf875edb115c52129c769861bd5bffdf9e4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 28 17:14:14 2020 +0200
+
+    ISPN-11324 Breadcumb component
+
+[33mcommit 2d52d6ba28c7de8213a801ce69f520b66c17072e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 28 18:22:54 2020 +0200
+
+    ISPN-12361 Upgrade patternfly version
+
+[33mcommit f5e0f4b81c8f529d349aa61e92fcc8acf45d5c85[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 28 17:30:31 2020 +0200
+
+    Next dev version 0.11
+
+[33mcommit e34838ef36b71444beb21034892f397592219640[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 28 11:15:54 2020 +0200
+
+    ISPN-11324 Fix caches manipulation with special characters in names
+
+[33mcommit df96ce84612a6743b0553bfb0a0a712370aec271[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 25 12:42:51 2020 +0200
+
+    ISPN-12300 About and Support modals tests
+
+[33mcommit 30fd3004d4486b91dcbd42a115b52ce0b9a17ee6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 24 22:50:53 2020 +0200
+
+    ISPN-12300 Fix caches refactoring
+
+[33mcommit 78bebd9134187e37b58cc2a54cae03ff591a2517[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 24 15:14:18 2020 +0200
+
+    ISPN-12300 Cleanup support modal test
+
+[33mcommit 71e9d4795ebaa4020262dac0a910cee4b987bd01[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 24 15:12:16 2020 +0200
+
+    ISPN-12300 Move tests and test Global statistics
+
+[33mcommit 74fe981ef8aca87db61587ca2fd09e4e447b2495[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 24 00:12:32 2020 +0200
+
+    ISPN-12300 Use custom hook and refactor caches
+
+[33mcommit eef8898c1eabdcb956b3cf082193d0e89124e4ae[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 22 18:09:47 2020 +0200
+
+    ISPN-12300 Elements testing Health
+
+[33mcommit 28c382695f76694570300d8981e0b43786e6990c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 22 17:09:34 2020 +0200
+
+    ISPN-12300 Refactor to use enums
+
+[33mcommit 25b05d707c93dc7339d5071342345fbd707f57d4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 17 11:51:35 2020 +0200
+
+    ISPN-12300 Delete counter, service mocked test
+    * Move to react test utils
+    * Create custom hooks for counters
+
+[33mcommit 01d4f89c15a45cbcdebe946df6320477abaed57b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 14 18:16:56 2020 +0200
+
+    ISPN-12300 Snapshot testing Support modal
+
+[33mcommit f4fa924f32085170ea30fb11f0db9e4a9e84da1f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 14 17:46:41 2020 +0200
+
+    ISPN-12300 Add tests execution to the build
+
+[33mcommit 84d01b1bfeea6ef617e5d06498801298692eb871[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 14 17:46:22 2020 +0200
+
+    ISPN-12300 Health render component test
+
+[33mcommit c6eb821152bfeae377414437306ed9909a7544ee[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 14 17:13:09 2020 +0200
+
+    ISPN-12300 Display utils unit test
+
+[33mcommit 1b219da44fe32ef14d82587188394ebaf84b482c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Sep 12 01:00:50 2020 +0200
+
+    ISPN-12300 Refactor services import
+
+[33mcommit 5b5497a480f97965c653a4eb684d2817f11b6130[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 11 23:55:03 2020 +0200
+
+    ISPN-12300 upgrade dependencies
+
+[33mcommit 80156353f9143510849c14bef85010b2cccf7f64[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 11 22:51:49 2020 +0200
+
+    ISPN-12311 Fix data access % in chart
+
+[33mcommit 5ad367c7321b7b91c2b4e8fb024b0efbc1739148[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Tue Sep 22 11:14:30 2020 +0100
+
+    Change license to Apache License 2.0
+
+[33mcommit 3fe7e2d16365727c413c46fae3bb0e3c1b0c6ad3[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Mon Sep 21 09:52:00 2020 +0100
+
+    ISPN-12329 Create licenses.xml with console dependencies
+    
+    * and store it in the jar
+
+[33mcommit 1115a553923cb8b914d528f621e0d56bd5ceea9e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 10 13:21:52 2020 +0200
+
+    ISPN-12310 Describe protobuf error
+
+[33mcommit 42dc8bc04cd23ec666e2e05d1d163c139cfb53b2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 8 16:40:51 2020 +0200
+
+    ISPN-12298 Highlight protobuf files when not editing them
+
+[33mcommit f301214c27ccb31c8def3947d92425aa46dd6dea[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 7 16:58:07 2020 +0200
+
+    next package 0.10.0
+
+[33mcommit cdea16b53b652f2d205d22ba8711c6984742ca87[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Mon Sep 7 05:25:54 2020 -0400
+
+    next version 0.10-SNAPSHOT
+
+[33mcommit a472515c744506273db084d0dad8b9a049ac92bc[m[33m ([m[1;33mtag: 0.9.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Mon Sep 7 05:25:40 2020 -0400
+
+    Releasing version 0.9.Final
+
+[33mcommit 03cd5e311b480aea5bd1b509838dd0e2607c746c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Aug 5 18:10:42 2020 +0200
+
+    ISPN-12200 Fix the landing into cache configuration templates page
+
+[33mcommit 274314077f160e90b811ac8c74abba43897f5c07[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 18:00:50 2020 +0200
+
+    ISPN-12264 Fix cache creation
+
+[33mcommit 1a69fafcbb0bef9d6500e55f7f229edfc5779a29[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 17:04:35 2020 +0200
+
+    fix error message for all browsers
+
+[33mcommit 0df59b93603694de69fc36d82a2b7d50cff56a55[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 15:14:34 2020 +0200
+
+    rebase ISPN-12161
+
+[33mcommit 365f48b54608dc46e93393d43897a71d60dd4c59[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 12:34:26 2020 +0200
+
+    fix tab style, extra espace
+
+[33mcommit 93ed3c24fe29b7d1fce245683dea3795f8277800[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 12:25:47 2020 +0200
+
+    fix unauth popup
+
+[33mcommit cc6ba1c0f58214fab783a20690f83b27074eb5ea[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 12:11:33 2020 +0200
+
+    Moved code to proper folders
+
+[33mcommit a56f18a498d59726199d9485041804104dd72cd1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Aug 28 12:03:15 2020 +0200
+
+    optimize imports
+
+[33mcommit 91be45054be19f6d3608fd1d4583b418760f457c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Aug 3 01:13:21 2020 +0200
+
+    ISPN-12092 Welcome page friendly
+    * Welcome page visible without login
+    * If Keycloak, when clicking the button, we land into keycloak login
+    * If Http, open the login endpoint
+    * If http but no user, open a pop up explaining how to create a user
+    * If the server fails, go to the console simply
+
+[33mcommit ae9d06ad94c8d374bf92d61081c7d78617b20854[m
+Author: Gustavo Fernandes <gustavonalle@gmail.com>
+Date:   Wed Sep 2 16:10:04 2020 +0100
+
+    ISPN-12054 Replace deprecated REST call
+
+[33mcommit 48cc9fc34611911ec0a934c160d0c0631c4490ad[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Aug 24 11:53:24 2020 +0200
+
+    ISPN-12248 Upgrade Patternfly
+
+[33mcommit bdfa8a0d86b0afb1f956ef116db055e340a214ba[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Jul 25 23:54:05 2020 +0200
+
+    ISPN-12161 clean recent activity table
+
+[33mcommit 18fedc179aa4efa0ba2a334414dfe6508533050e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Aug 27 15:34:20 2020 +0200
+
+    upgrade to 12.0
+
+[33mcommit 1205ae173787a3eefaea93b0d03445187cf61eb3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Aug 6 12:27:47 2020 +0200
+
+    minor refactor
+    * take url params from props
+    * align page headers correctly
+    * run formatter
+
+[33mcommit 4e7d6bdeb2adcf92a61d8f4ab0729c1117fee40a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Aug 27 14:46:46 2020 +0200
+
+    Update README.md
+
+[33mcommit 2c308f435dbdbf199d46d015ae29e085ea7c0626[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Aug 4 19:14:49 2020 +0200
+
+    ISPN-12195 About page for Infinispan Console
+
+[33mcommit 67ee3264ab7983dd19930d1a335ca781bf805d51[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Jul 26 14:03:08 2020 +0200
+
+    ISPN-12168 Upgrade favicons
+
+[33mcommit 0782cc013961e0689400c7667ff174afcac59073[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jul 23 16:08:52 2020 +0200
+
+    next release version 0.9-SNAPSHOT
+
+[33mcommit c12974fba150c141e75b886e7342675ebaff3233[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jul 22 19:42:56 2020 +0200
+
+    ISPN-12137 Fix protobuf display
+
+[33mcommit d7d09742a160fe39b37e0b685ffe35395504a182[m
+Author: Diego Lovison <diegolovison@gmail.com>
+Date:   Mon Jul 13 10:55:24 2020 -0300
+
+    Use shared volume
+
+[33mcommit 74c490e0f82237aa96ed557bb9f697f517c3024f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jul 8 18:43:52 2020 +0200
+
+    ISPN-12084 Delete counter
+
+[33mcommit 261f948ac12987444fd20e248e9b41c0b72e39d7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jul 6 11:03:56 2020 +0200
+
+    ISPN-12083 Filter counters
+
+[33mcommit b55fdfa895dc0a6bc31c542292c4ae0dcf7c0a50[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jun 30 16:34:28 2020 +0200
+
+    ISPN-12028 Improve welcome page and header
+
+[33mcommit 181df38db273647edb40f1618456e6631e33e5fb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jun 29 11:05:00 2020 +0200
+
+    ISPN-12061 Upgrade Patternfly Version
+
+[33mcommit 8b720aec7fe2bb8a21003781b8a038cefe11af67[m
+Author: Gustavo Fernandes <gustavonalle@gmail.com>
+Date:   Thu Jun 25 09:56:12 2020 +0100
+
+    ISPN-12054 remove deprecreated GET methods
+
+[33mcommit bde5504e4824ced2b58e20f91d0af6b440bdfeac[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jun 23 14:27:29 2020 +0200
+
+    upgrade to 11 final docker-compose for testing
+
+[33mcommit 356ba2a51a0eea34ac7b846a716cd4298ea47194[m
+Author: Pedro Ruivo <pruivo@redhat.com>
+Date:   Mon Jun 15 14:43:32 2020 +0100
+
+    ISPN-12001 Add jboss-parent
+
+[33mcommit 2b0b779c5e8dae2bf6a7c694f81da7aba0ba5786[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jun 11 18:55:38 2020 +0200
+
+    next dev release
+
+[33mcommit b01f80753e4fa15968e8aacae088095e3874a2b9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jun 11 17:48:02 2020 +0200
+
+    update to 0.7
+
+[33mcommit 5b11060116aab5688a10f66370ec9d19b6a4a813[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Jun 6 11:49:28 2020 +0200
+
+    Improve site name display in the data container header
+
+[33mcommit 42e3b3cc150fd2a5344adf46dbd8efd6672d58d1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Jun 3 14:34:57 2020 +0200
+
+    Cross Site Replication for a single Cache
+    * ISPN-11669 Display link for management
+    * ISPN-11669 Display the Site list
+    * ISPN-11670 Bring online/ Take offline a site
+    * ISPN-11671 Start state transfer for a cache
+    * ISPN-11672 Cancel state transfer for a cache
+
+[33mcommit c54ac872cc1c0d03fcf41f4b7dc2e28b985ab74c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jun 11 16:12:34 2020 +0200
+
+    use queryable to hide query tab
+
+[33mcommit a57de292339d2feed1ab1980e7568ef25a3a6bc1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Jun 11 14:47:45 2020 +0200
+
+    ISPN-11041 Integration with keycloak
+
+[33mcommit c67f92b89db92cc54e230f7ea8070182da6f406d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jun 2 16:08:31 2020 +0200
+
+    fix create cache like cache detail for location
+
+[33mcommit e933b5df2ac261a02360b68b8b07c282ee431e17[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jun 2 18:37:21 2020 +0200
+
+    ISPN-11656 Reindex cache
+
+[33mcommit ea4040e356e0f71861d7fb7ffb9c7b6345bd8ed1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jun 2 15:20:37 2020 +0200
+
+    ISPN-11657 Purge index
+
+[33mcommit 48f18df46258847a4164c6790510d888cca1b985[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 28 12:56:44 2020 +0200
+
+    ISPN-11653 Query stats display and reset
+
+[33mcommit ba5a1c91079b24883a26e5d459d914ac4d65caee[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed May 27 17:19:23 2020 +0200
+
+    reformat metrics tab
+
+[33mcommit 57a79d5b84490757ce7af04b4c80eb9f8a7ed1b9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jun 1 20:08:54 2020 +0200
+
+    ISPN-11655 Display index
+
+[33mcommit 9f3f8835183f6ff39590ce85b6e79089823ff83f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jun 1 00:39:05 2020 +0200
+
+    ISPN-11655 Add link in header
+
+[33mcommit 8cc489bd198e3cf27418e60091c25c9e798878fb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Jun 6 16:18:31 2020 +0200
+
+    upgrade patternly version
+
+[33mcommit fd7477132fff2d39fd78225ca5f394105be4bf5b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Jun 1 18:02:49 2020 +0200
+
+    ISPN-11811 Display correctly entry headers
+
+[33mcommit a40fe7a41dfd9afebc1b0fa8344efea15e44a298[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun May 24 10:36:58 2020 +0200
+
+    ISPN-11652 Query values
+
+[33mcommit 0bb8cc41ef32d9b87e9df2fdcf34ada03fa25a83[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 28 16:33:25 2020 +0200
+
+    ISPN-11652 Reload schemas on update
+
+[33mcommit 405c85ad52fe78b68e5fab91a92e7d415bc18125[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed May 20 16:39:58 2020 +0200
+
+    Protobuf Schemas manipulation
+    ISPN-11666 Create
+    ISPN-11665 Delete
+    ISPN-11664 Update
+    ISPN-11663 List
+
+[33mcommit 0096f81f4446c9e1dfa04aa774563c1076a4c00b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun May 10 01:06:08 2020 +0200
+
+    ISPN-11667 Ignore cache
+
+[33mcommit f6034709497938513b699ff8544e15f104572f83[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat May 9 15:41:07 2020 +0200
+
+    ISPN-11494 Refactor delete cache
+
+[33mcommit 4897c038ad4a62a368e1a9e9ccb356c5be58bacd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri May 15 19:24:08 2020 +0200
+
+    Update README.md
+
+[33mcommit 3c7f882a1b9968b8cf91818ab7549681882a822f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri May 15 17:11:08 2020 +0200
+
+    Update README.md
+
+[33mcommit 77c0020c8167b9f6ec7d5ed38977a34682407dfd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 14 17:10:35 2020 +0200
+
+    ISPN-11827 Upgrade to Node/Npm and Patternfly Version
+
+[33mcommit 0bba9c5bc760581c3cf494d453b210946a6102da[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun May 10 16:25:27 2020 +0200
+
+    ISPN-11766 Fix when the server is down
+
+[33mcommit 52524c452984f31e71de1161be394fd9123f45e9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 14 11:39:58 2020 +0200
+
+    ISPN-11821 Land correctly into detail cache
+
+[33mcommit 0cc19faa4d49f61fcd4cdf3daa8df3b1c3600193[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun May 10 15:27:36 2020 +0200
+
+    Relook create cache and configuration
+    
+    create cache and configurations had a different
+    look and feel
+
+[33mcommit 8e3f1c9305807fcb6507759aab33013b45650bf2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun May 10 11:14:31 2020 +0200
+
+    ISPN-11762 Local activity table per cache
+    
+    * Activity table 10/cache
+    * Change links and breadcrumb not to reload the app
+
+[33mcommit 22f87bae52ea4907f5dc94d67a382bb20eafac19[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu May 7 19:20:27 2020 +0200
+
+    ISPN-11498 Edit entry
+
+[33mcommit f068ab081d49bbfb8c4a6bff1302652d53959a0f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed May 6 17:00:17 2020 +0200
+
+    ISPN-11762 Local activity table
+
+[33mcommit 9da967e988f7f923238bbab456fe63e6010c228c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed May 6 23:31:34 2020 +0200
+
+    ISPN-11786 Fix menu nav selected
+
+[33mcommit 601691c4dc07de07b21252bed6adeb284f870600[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 18:12:25 2020 +0200
+
+    ISPN-11499 Delete entry
+
+[33mcommit 1a5a4e28da4f8e4c543f4758bfbf0d6513406e56[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 18:31:55 2020 +0200
+
+    ISPN-11500 Clear all
+
+[33mcommit c22c3321ea6d373f463ed5f346b476c1657099cc[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 16:51:30 2020 +0200
+
+    ISPN-11496 Expires never
+
+[33mcommit 86ca7bedc25e164344338825e9cb70a27e1efa93[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 16:43:01 2020 +0200
+
+    ISPN-11496 Fix fetch error and take headers
+
+[33mcommit a8e032f02b696781dc8ad93f750842e2ca5e8ee4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 15:34:24 2020 +0200
+
+    ISPN-11496 change content types values
+
+[33mcommit df1f809dc175055bed034968497677971270ba4b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 12:41:03 2020 +0200
+
+    try fix random error in cache service
+
+[33mcommit 564cfc6ae7634db8242073ce7d350a771c83ffb0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 12:33:44 2020 +0200
+
+    ISPN-11496 Fix clear actions
+
+[33mcommit f0e371201dd75e4d87b3a0855f5ed88640f5e7d1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 12:22:09 2020 +0200
+
+    ISPN-11497 Don't search with empty key
+
+[33mcommit 707386683a634663ab24feaae44ddd6e7ce6e4ce[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 12:07:47 2020 +0200
+
+    ISPN-11496 Fix negatif maxidle and timetolive
+
+[33mcommit edc15030e56405aedb68bfa59a2e67ae14ebc933[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 11:56:35 2020 +0200
+
+    pass arguments to create data  scripts
+
+[33mcommit 7fd2a255aced0e2d755f476ee855da9fb5704370[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue May 5 11:40:52 2020 +0200
+
+    ISPN-11496 Remove internal flags
+
+[33mcommit 9e9e6aaf6d68290d4b5720db81e3620dcb887295[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon May 4 22:57:27 2020 +0200
+
+    ISPN-11497 First simple get entry by key
+
+[33mcommit 3f0beb7e96c8c381a9efa737334c7623e33bc6e3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri May 1 01:25:53 2020 +0200
+
+    ISPN-11496 Add entry form
+    * Includes creation of entry modal form
+    * Still needs to be done
+       -  deal with headers
+       -  notification alert system
+
+[33mcommit 1294d7271cb6c5dde19610b70f67fa418b6983bb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Apr 30 16:55:32 2020 +0200
+
+    ISPN-11495 cache detail start relook
+
+[33mcommit b68d36ef59c5da1ce99c209550460091dd83f484[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon May 4 18:31:40 2020 +0200
+
+    ISPN-11754 Fix create cache when config template not provided
+
+[33mcommit b464719635dec79c62f0b8255a857d4d333f24d1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon May 4 15:20:58 2020 +0200
+
+    ISPN-11705 Global alert system
+    * Uses useContext
+    * Custom hook
+    * For one, one alert at a time
+    * Create and Delete refactored
+
+[33mcommit 625bdbcb4b893e4b5fe75fe270c5fd78d452c91b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun May 3 17:20:15 2020 +0200
+
+    next dev version
+
+[33mcommit e623de6793636c77a9adfb15e3dc583239a866c9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Apr 30 23:17:54 2020 +0200
+
+    ISPN-11490 Fix tabs count task counter
+
+[33mcommit edf510ab9b66508d393a7e167f9ca03fe6ca8475[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Apr 30 01:40:02 2020 +0200
+
+    ISPN-11494 Alert display
+
+[33mcommit a41174d5f481b8cbc91c56d5d678801acf2b979a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Apr 30 00:58:10 2020 +0200
+
+    ISPN-11490 Refactor Task and Counters
+
+[33mcommit d7bd70582be989ee39f1ea884b283fc5110a9fba[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Apr 29 19:46:40 2020 +0200
+
+    ISPN-11494 Delete cache
+
+[33mcommit de36e6c5d54b18aeb084d42c318c10c9697c8f11[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 28 15:52:16 2020 +0200
+
+    ISPN-11733 Prettier
+
+[33mcommit 28be99f6decfa104bd99d7b8198568adcc925e30[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 28 15:51:32 2020 +0200
+
+    ISPN-11733 Fix warning error in Clipboard Copy
+
+[33mcommit aa90d8e908df3999a69c3981715d1ea8bc57a387[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 28 15:45:38 2020 +0200
+
+    ISPN-11733 Chips filter
+
+[33mcommit b99c576c61e2e80e214c4b55203a120684d51fd6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 28 14:46:21 2020 +0200
+
+    ISPN-11733 change cache type look and feel
+
+[33mcommit f6857b0c7d06e59cb40a79e02762dcdab186f54d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 28 02:08:19 2020 +0200
+
+    ISPN-11733 Refactor to DataToolbar
+
+[33mcommit d17a75ac16e249f79f09bfa2885ee02bf010d610[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Apr 29 02:01:15 2020 +0200
+
+    Update README.md
+    
+    Co-Authored-By: Pedro Ruivo <pruivo@users.noreply.github.com>
+
+[33mcommit 9d1b47ad4ca417e20ae5b71cb5c2eeb3b017884b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Apr 27 18:23:10 2020 +0200
+
+    add instructions
+
+[33mcommit 4ec96e2546318a85e3f68ea4f3dbeb1378e3b745[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Apr 27 18:57:36 2020 +0200
+
+    Delete greetings.yml
+
+[33mcommit 9c3df318317d6ab30314f8ad0acf9685b1ac15f1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Apr 27 16:43:08 2020 +0200
+
+    ISPN-11705 disable axe
+
+[33mcommit eff83408e19cc26e944b742589a0594389383bcc[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Apr 27 14:59:56 2020 +0200
+
+    ISPN-11705 fix axe errors
+
+[33mcommit 0e9b6401cfb0d284684614942f020d0c8e9f4196[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Apr 27 01:46:45 2020 +0200
+
+    ISPN-11705 status component
+
+[33mcommit e221c8f39638c7fdf448f94c1ca042b84f46b42f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Apr 26 00:19:49 2020 +0200
+
+    ISPN-11705 use global spacers
+
+[33mcommit f67e2d860bea7e2725838f2fab66978db5dbc1c4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Apr 25 15:40:56 2020 +0200
+
+    ISPN-11705 Caches list style
+    * Degraded color to UX red
+    * Features simplification
+
+[33mcommit bab8dc3c179f63d144ab0f3c30684272bb83a0f2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Apr 25 14:47:31 2020 +0200
+
+    ISPN-11705 Fix create cache error react warning
+
+[33mcommit 36be5f014f269d8728bc5d88220957d31807359e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Apr 23 11:35:07 2020 +0200
+
+    ISPN-11705 Error handling and corrections
+
+[33mcommit b2dcb9e5db2c3b7bd25b21e42cd6b5a50181da84[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Apr 26 00:51:37 2020 +0200
+
+    Travis build status
+
+[33mcommit e7480bf3bdb739e1b338355b02991d5eb48911dd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Apr 26 00:29:10 2020 +0200
+
+    Create greetings.yml
+
+[33mcommit 7c47c62dd05673ab82fa3180fc09d448c75cab84[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Apr 25 11:06:40 2020 +0200
+
+    jenkins release agent
+
+[33mcommit 81d4d477dbd26f1b8212c0ff72969d89e1aa498b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Apr 23 00:39:05 2020 +0200
+
+    ISPN-11694 upgrade header
+
+[33mcommit ad4c5a18debd41741270b10b827561b50cafcb5e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Apr 22 17:25:04 2020 +0200
+
+    ISPN-11694 upgrade patternfly 4 version
+    * Red Hat font
+    * Use dark style - more classy
+    * Change from tab to nav
+
+[33mcommit 511a0fd4f3d36dc00d0a00d78cb2ec94f8fc7f1d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 21 13:53:41 2020 +0200
+
+    ISPN-11684 when the creation is not ok, handle errors correctly
+
+[33mcommit 76b2b315e4fd463c6d4f7c136fa1650fc8eb120b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Apr 22 14:01:15 2020 +0200
+
+    travis build
+
+[33mcommit f7c308cf632748665ff76227ebe8c82bc03488db[m[33m ([m[1;31mdon/master[m[33m)[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Apr 21 02:08:27 2020 +0200
+
+    ISPN-11490 Display cache configuration in the cache detail
+
+[33mcommit b562c1231d9561ccce8d8161170b1fc7f46916b3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Mar 2 09:55:42 2020 +0100
+
+    next dev version
+
+[33mcommit 6a66c94438015fcd33dcef8560d15bcd1cdd81bc[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 23 18:17:37 2020 +0100
+
+    ISPN-11375 Format numbers
+
+[33mcommit fbb7aebc99ec0c3b38cd37f86b3e861d612ac528[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Feb 17 00:31:19 2020 +0100
+
+    0.4-SNAPSHOT
+
+[33mcommit c8034c10c6f2f4b9b20dec3b978fcb85090ddae1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Feb 17 00:09:57 2020 +0100
+
+    prettier
+
+[33mcommit 6135fe4b5239ed0f532e40bd0d69a7f936edf3d5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Feb 17 00:09:20 2020 +0100
+
+    fix alignment in table
+
+[33mcommit b333f4868210b146301d593e564ba3dccac7c761[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 16 23:50:08 2020 +0100
+
+    bulk data
+
+[33mcommit af362232315658ed33517bf5916e29c9612fe3eb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 16 14:04:00 2020 +0100
+
+    Some display fixes on detail cache
+
+[33mcommit 2e8499fc2721111d32bda461649bf383dcce3aa7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 16 14:01:40 2020 +0100
+
+    Retrieve config method
+
+[33mcommit a685d39e64568e51dd3430575cdcfdb9168364ca[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 16 00:36:04 2020 +0100
+
+    change features display to avoid too much table
+
+[33mcommit 52ad02d8988e5cfaf737dc6221254eb79ba66b48[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 16 00:18:58 2020 +0100
+
+    display only user tasks
+
+[33mcommit 58df95603eb09af91ac50d8025194259177512a0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Feb 16 00:07:30 2020 +0100
+
+    fix warning pre inside p
+
+[33mcommit 40df1fa707f0559b95ddf86107d56e4b240b4bdd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Feb 15 22:52:07 2020 +0100
+
+    display configuration templates and table style
+
+[33mcommit dd9da97fe5c35db577ea27ef548434087e3cd03a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Feb 15 00:15:26 2020 +0100
+
+    fix some styles
+
+[33mcommit de4dcd48eb557251881c3d20bd7cb05523759e40[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Feb 14 23:33:54 2020 +0100
+
+    put numbers bold
+
+[33mcommit 51cce53c3971bf7046e9153fb3083e6c9d886845[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Feb 14 23:19:24 2020 +0100
+
+    toolbar use
+
+[33mcommit 630c2b0ac1fced08471cae1490d9ebfbfb18ddcb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Feb 14 16:14:07 2020 +0100
+
+    Rename columns into name and physical address
+
+[33mcommit d9cd6f305542ca851b3966fc10b6a4d711eb2167[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Feb 14 16:10:46 2020 +0100
+
+    fix health label color and running
+
+[33mcommit 27f5b2c23fbcbb2dc1818e9d43aeb72510a26fb7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Feb 14 15:35:55 2020 +0100
+
+    counters 100
+
+[33mcommit a91681c3cfba87132748f3d90da74661566407eb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 19:14:25 2020 +0100
+
+    add key to text in tasks
+
+[33mcommit 6b33bd19683e2232943d430178ec4d6fae818fb1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 19:05:33 2020 +0100
+
+    css magic to change the background color of the menu
+
+[33mcommit 757b3d53f632ca9a148c6ca590376ad58dab6366[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 18:19:53 2020 +0100
+
+    ISPN-11275 display local site name is such exist
+
+[33mcommit 2e0647050f8851e4044b229df4365cebf894477e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 17:31:16 2020 +0100
+
+    ISPN-11063 use some Breadcrumb
+
+[33mcommit 9f2f4c9f0a96eb023df8810bfc66f8b3f3621b99[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 17:15:02 2020 +0100
+
+    Change configurations title
+
+[33mcommit d086b99392ceaba57659dae810453e53cab6f2da[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 17:08:13 2020 +0100
+
+    ISPN-11313 UX table for cluster status
+
+[33mcommit d71eb8c5263148f2b157050058391d9f58e97cd3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 13:51:24 2020 +0100
+
+    fix cache creation button
+
+[33mcommit f7bdac368ba0a7ea82adb6809c3737896a5ac361[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 13:29:01 2020 +0100
+
+    ISPN-11330 Tasks page - UX improvement
+
+[33mcommit 1ab30a840f3072c1387ef60a61f3ae3511094cd5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 12:51:35 2020 +0100
+
+    Fix xsite extra call 500 and display cache type in details
+
+[33mcommit 178532cf56ece5f9668443a39828d2a92d026b64[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 12:21:07 2020 +0100
+
+    ISPN-11312 UX counters tab
+
+[33mcommit d117e0f65ca3ead751c369671e9b98e06980dea4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 11:31:11 2020 +0100
+
+    Delete not used detail stats
+
+[33mcommit 7f864933660ba6849f1e45055d798ba08296cdd0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 11:00:49 2020 +0100
+
+    ISPN-11326 Fix feature display that look like buttons
+
+[33mcommit 694e279ff0efa08940f4b8b5cd268f4327dbddcb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 01:49:18 2020 +0100
+
+    fix table lenght display
+
+[33mcommit fba665ff0f5df06e9c692273142b834ab9ac21fc[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 01:39:02 2020 +0100
+
+    ISPN-11326 Cache detail UX
+
+[33mcommit 7694595e67fde4e999a834faab80af8c1720a1ef[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 00:51:55 2020 +0100
+
+    change home page
+
+[33mcommit c3fec20efa8df66964020f6924f5fe19c210632d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 00:46:14 2020 +0100
+
+    prettier
+
+[33mcommit 1bcb657fbe9634b51aaefe782f6146f2009c50cc[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Feb 12 00:45:36 2020 +0100
+
+    ISPN-11310 fix title
+
+[33mcommit 9f6952b8521dde7b47f4f698092158a5b1fe3e41[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Feb 11 23:54:22 2020 +0100
+
+    ISPN-11311 caches list improvment
+
+[33mcommit 9bec3255e65b93ca16e47cefc1a3d7614268af9a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Feb 11 21:40:00 2020 +0100
+
+    ISPN-11309 UX home page
+
+[33mcommit 761eff6b7b7eda1286e4f696779856c858766a27[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Feb 11 19:53:26 2020 +0100
+
+    ISPN-11306 Delete actions in the header
+
+[33mcommit b90c86e20d7f0be407867d4c0e74663bfd4ef96f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Feb 11 19:32:41 2020 +0100
+
+    ISPN-11307 UX - Console navigation changes
+
+[33mcommit 1c22f86d0986d54f8fb7511b9db8e14f8c352826[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 28 16:33:08 2020 +0100
+
+    some counter data
+
+[33mcommit 760213ace024d140b4db493b39f3da9b9261509c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Jan 7 11:56:00 2020 +0100
+
+    upgrade dependencies
+
+[33mcommit defe6c1be2f0c12c017d38964f075903906d44e3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Dec 28 21:29:27 2019 +0100
+
+    prettier
+
+[33mcommit afeaca8195f2d58be25e6c21b0e923bab5cc2916[m
+Author: Mathieu Lorber <mathieu.lorber@gmail.com>
+Date:   Fri Dec 27 16:22:58 2019 +0100
+
+    'yarn prettier' command to format code, with minimal configuration
+
+[33mcommit 3468bc4bb16373a6b2aeb6416d4fd8fbb65665c8[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Fri Dec 20 11:38:46 2019 +0000
+
+    next version 0.2-SNAPSHOT
+
+[33mcommit aae7071977e81c268f637c487503167e8359d4d5[m[33m ([m[1;33mtag: 0.1.Final[m[33m)[m
+Author: Infinispan <infinispan@infinispan.org>
+Date:   Fri Dec 20 11:38:30 2019 +0000
+
+    Releasing version 0.1.Final
+
+[33mcommit 43ab0ed243cf2c1d7bd25abf8f82b684a4a0e545[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 20 12:36:20 2019 +0100
+
+    delete protolock file stage
+
+[33mcommit a714d89d520f62a6cf3212eb8e05773da21b8d35[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 20 12:22:02 2019 +0100
+
+    fix mixed filters
+
+[33mcommit 471e6b068cae71674a323b8cf9a128add13b39bd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 20 12:01:22 2019 +0100
+
+    more contrast on features
+
+[33mcommit 3fc1b0a1f936f2801195cff176d6fca6bb1f54a5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 20 11:58:29 2019 +0100
+
+    fix configurations path
+
+[33mcommit f813dfef4825177494cf35c4315c9c9a3c59e224[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 20 11:44:15 2019 +0100
+
+    initial data script
+
+[33mcommit aa66845acf8a6ca72950c156a43c11efce9db690[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 18 15:50:53 2019 +0100
+
+    ISPN-11062 remove more and add link in name
+
+[33mcommit a5d3964a021bb4cb742bfb5d24b98706b0dfb235[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 18 15:27:38 2019 +0100
+
+    menu on top
+
+[33mcommit 902b94e6769f23bf02396c1a23bd924b944c9cd8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 18 14:59:25 2019 +0100
+
+    delete isLogged boolean
+
+[33mcommit bb2e05a0a85837932f4e1cf389cd769311385b0a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Dec 12 21:22:56 2019 +0100
+
+    ISPN-11080 cache health instead of size
+
+[33mcommit 4021a72b9aa8e6cab618b276a914279d4410c515[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 11 16:24:24 2019 +0100
+
+    ISPN-11069 swap welcome page content
+
+[33mcommit ec9c9a060b0aeaec4cbedfb22a10d6b19ed03468[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Dec 10 22:31:23 2019 +0100
+
+    ISPN-11061 Fix form submission on enter
+
+[33mcommit a232df1ac33e71e36d974b97e7ceeb71e3410674[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sat Dec 7 01:10:01 2019 +0100
+
+    add url to login
+
+[33mcommit c337583e214abed2695cbd4f8b27f721391655ed[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 6 21:19:21 2019 +0100
+
+    remove Breadcrumb
+
+[33mcommit 2257ab9ada7a1932a9424a766aa564bcf7bd78e6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 6 16:49:03 2019 +0100
+
+    Welcome page
+
+[33mcommit 5fdf29a83674a6af041da210207a659d3e2fe66f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Dec 6 11:45:48 2019 +0100
+
+    add some gutter in cluster display
+
+[33mcommit 1cc824a9550ff043409a4145fba90a4eca565563[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Dec 5 18:45:25 2019 +0100
+
+    filter by cache feature
+
+[33mcommit 24c66828f47ef4f4724c25324fc2f17e188408b8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Dec 5 17:54:21 2019 +0100
+
+    filter cache type
+
+[33mcommit 2fd260ecfd3a955386493b5dbc2a637f012df042[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Dec 5 14:32:07 2019 +0100
+
+    start data stuff
+
+[33mcommit 99b863851c8e98c38023c105b1f2de355635365b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 4 17:17:42 2019 +0100
+
+    cluster display addresses
+
+[33mcommit 98cd27099f5817837cc6eddc4c3cc9175748922a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Dec 4 16:47:31 2019 +0100
+
+    remove login
+
+[33mcommit 6fe98405a53f1eea1bf6d5fde2f39946fcda6301[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Dec 3 16:08:31 2019 +0100
+
+    refactor display of cluster members
+
+[33mcommit 1eb64e257efa0f6ae741382ba0cbaf5d2a12ae0f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Dec 3 15:48:28 2019 +0100
+
+    cluster display refact
+
+[33mcommit 1f35c52f1f696ac7cca6ad00fd62a45ea2207e78[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Dec 3 15:02:37 2019 +0100
+
+    filter templates on create cache
+
+[33mcommit 4fb04893802b269cc79880fe878b5140c2b55d8c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Dec 3 14:32:00 2019 +0100
+
+    update gitignore
+
+[33mcommit 40d3e30fee5812e025abdb5d4f70be3f7fe694ee[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Dec 3 10:41:32 2019 +0100
+
+    remove ng from console name
+
+[33mcommit 200e175ca3ffc5cc38ce96511f65824ab0628fac[m
+Author: Mathieu Lorber <mathieu.lorber@gmail.com>
+Date:   Wed Nov 27 18:05:23 2019 +0100
+
+    React items instanciated from a collection must have a key
+
+[33mcommit 2e2b3a9fa64e8e3ceca4c7c7a6177a9385a0eeea[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 27 17:54:32 2019 +0100
+
+    colored chart
+
+[33mcommit c6d428e052556680fba584e9c2714d9119c068d5[m
+Author: Mathieu Lorber <mathieu.lorber@gmail.com>
+Date:   Wed Nov 27 17:02:31 2019 +0100
+
+    Resolve js application launch in a sub-route (aka /console/cache/test) in dev env
+
+[33mcommit 6fd32f62b86f786d89648a584b002f25caa1f6b4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 26 17:11:13 2019 +0100
+
+    upgrade to latest patternfly release
+
+[33mcommit 5e75221fa953ec6aa4844af0ee43dcbafe178dd6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 26 17:04:07 2019 +0100
+
+    breadcrumb in cache detail
+
+[33mcommit 3d0a48cfa5e43e2184ee46d26baad5c3ea7dddb3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 26 16:14:14 2019 +0100
+
+    cleanup and pagination on caches list
+
+[33mcommit bd6691231d1f8fb9f2d089ae277207476dcb3af4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 26 15:04:50 2019 +0100
+
+    favicon from infinispan
+
+[33mcommit 9ac2331b213be530458b1d3bc03219f11e9fe0f5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 26 11:49:18 2019 +0100
+
+    table caches instead of grid wip
+
+[33mcommit cbb344e17b7dafd77e6786e106a9c7b253ab9773[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Nov 25 13:03:13 2019 +0100
+
+    Improve creation message
+
+[33mcommit 901edec93e0b412452f3263df3009d30bc90a78c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 20 10:47:09 2019 +0100
+
+    fix ts warning
+
+[33mcommit 1023665d4da55a4a7f422fa6f02fcfa25ccbe525[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 20 10:45:43 2019 +0100
+
+    xsite for real
+
+[33mcommit 6ac60948bded4ad77051a14b3a6070ff943210b7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 20 10:34:18 2019 +0100
+
+    xsite poc
+
+[33mcommit ee2ca7bff05e2575f88f3f62d8c313c5a8ac639d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 20 09:30:23 2019 +0100
+
+    change logo
+
+[33mcommit 8851b9993ae69f07ab0acb7cdbb67dcdb870b148[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 19 16:20:32 2019 +0100
+
+    back instead of cancel
+
+[33mcommit 14c7d85454448f85ca20dd14003c1577915d33a4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 19 16:17:56 2019 +0100
+
+    some margin
+
+[33mcommit 1ac0c72146604f100ba841556a49149a6817c513[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 19 16:14:12 2019 +0100
+
+    display empty stats when not enabled
+
+[33mcommit 2da2d7f843920e796f39b065550f98eda3641879[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 19 15:43:06 2019 +0100
+
+    fix stats interface
+
+[33mcommit 087e9be2257e2fef86aad920393f63b6126e2b1f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 19 15:41:59 2019 +0100
+
+    remove request dependency
+
+[33mcommit b06d1d2e94ce5ce3578ad248383287826c8b92a0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Nov 19 15:41:38 2019 +0100
+
+    add margin on tabs
+
+[33mcommit 65fc984cf3f762d4bc92f76ba998043311d375ce[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 22:50:55 2019 +0100
+
+    first counter display
+
+[33mcommit cfd10025b7e0297fe297a4d752f75234c9a4d3f7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 22:14:10 2019 +0100
+
+    tasks display
+
+[33mcommit a37ed7ba951542c51d1de2204ea756c5c6e09ea9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 17:01:06 2019 +0100
+
+    status color
+
+[33mcommit b2294d57d7cc666680f0e829a749f9c658a38a5a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 16:50:35 2019 +0100
+
+    add tasks tab
+
+[33mcommit 603b67454580aa4bc3e6e1d34d43f1e5ec3c81a7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 16:42:57 2019 +0100
+
+    add colored labels
+
+[33mcommit 1ab8027e3715bee2fd052efa31f375f86a8de106[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 13:26:23 2019 +0100
+
+    display utils
+
+[33mcommit ba2e02564baca000681f640c677e568ce1db5227[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 13:22:38 2019 +0100
+
+    add health color
+
+[33mcommit 4de11b29d06ded8dded05130c95242fbded3d062[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 13:08:31 2019 +0100
+
+    8 and 4 grid for donut
+
+[33mcommit 8de34ed1126f1342fcf1e141fe8182c5c704006b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 13:04:26 2019 +0100
+
+    good version
+
+[33mcommit e647bce1de1b297cce56058c3ff16a0366d9c748[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 12:27:07 2019 +0100
+
+    Update README with the correct repository name
+
+[33mcommit 0d75881b00d84c37a9bdd3e2a95a92a099d71d73[m[33m ([m[1;33mtag: 0.1.Alpha1[m[33m)[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 11:59:42 2019 +0100
+
+    branch instead branch_name
+
+[33mcommit 341071b1cf9b23041dcc824c7ec35753b9a33c49[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 11:58:31 2019 +0100
+
+    branch_name
+
+[33mcommit 0c49a22d7a09738f8133a8764bcdc79495cb82bc[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 11:31:56 2019 +0100
+
+    release
+
+[33mcommit 39440fd2d7e9baa1b70b6d7fc324b1b4b33520dd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 11:20:48 2019 +0100
+
+    fix some cache detail
+
+[33mcommit 5c85a125fa2b6c98d2ad6e707028aac609b60828[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 15 10:27:14 2019 +0100
+
+    fix detail cache
+
+[33mcommit 18ff50bd38ffbefd515cdb653112d4f78f588f7a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 15:02:31 2019 +0100
+
+    fix console header link
+
+[33mcommit 0da048ce084c250c537667888da85c48b627d0ad[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 14:30:33 2019 +0100
+
+    test include
+
+[33mcommit 0b70ca3c5b1e544d0ce988d976bbb64138e52b30[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 13:55:44 2019 +0100
+
+    jenkins
+
+[33mcommit b5b8c2d2799ac6ead18a0ccaba9124c1b538ae5b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 13:26:06 2019 +0100
+
+    fix content type
+
+[33mcommit f6012e95dcb1403e4e53c117b78e6688fb57b57f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 12:33:58 2019 +0100
+
+    admin/admin
+
+[33mcommit cc164aafe701145b9078f876a35a39aeea15671d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 11:57:39 2019 +0100
+
+    restCall not auth for dev mode
+
+[33mcommit 884100aaac8641067af5e1e992be609e5200df02[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 11:56:42 2019 +0100
+
+    fix logo props
+
+[33mcommit c13239ad3e75bf23943800adb0f5a5ba172f24a3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 10:30:29 2019 +0100
+
+    remove cat chart
+
+[33mcommit 9d10ff2475931e8f87dfb2ac9102d1705911eae0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 10:29:33 2019 +0100
+
+    add fetch with auth
+
+[33mcommit 8f3ab529bf2f14cfa2a78d3a2f33fe1dbb0d4fb8[m
+Merge: ede6174 9706ce3
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Nov 14 09:27:25 2019 +0100
+
+    Merge pull request #1 from gustavonalle/router
+    
+    Deploy app to subpath
+
+[33mcommit 9706ce39a225009a97c56d328a9ab4ba9aeb7744[m
+Author: Your Name <you@example.com>
+Date:   Thu Nov 14 07:17:14 2019 +0000
+
+    Deploy app to subpath
+
+[33mcommit ede6174be17d7acb87373fb03379563994fbe9d6[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 19:59:46 2019 +0100
+
+    fix display legend
+
+[33mcommit 72c346d8f155c6534ecdad684f959d5c010a34d8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 19:57:23 2019 +0100
+
+    Global stats display properly
+
+[33mcommit 8c8560e7f8d4ec48db6ec29f8281c7ddc9cfe2b7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 18:19:52 2019 +0100
+
+    fix init error
+
+[33mcommit 0246de3ddfd360828750af3009eaba6276964ac1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 18:16:25 2019 +0100
+
+    fix some stats cluster manager
+
+[33mcommit 09911ec49190f023196d66295c6ab8b95b2978a1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 16:57:06 2019 +0100
+
+    back create cache button
+
+[33mcommit d7213610535cbd807c5be49d8f14f6d501293bf9[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 16:56:22 2019 +0100
+
+    cluster health
+
+[33mcommit 8add0669b60fbe6bc7534e810d56d01734ec0e9a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 15:50:49 2019 +0100
+
+    cluster_members_physical_addresses
+
+[33mcommit 36ad173784ec559bdf09669d71e1cbba93642c7b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 15:49:25 2019 +0100
+
+    cluster_members
+
+[33mcommit e3e9ca5e913e20b9b2ec7190906e3bc9294a0990[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 15:02:04 2019 +0100
+
+    disable create cache
+
+[33mcommit 444daf57636339985b8d2340160133c5fda9b659[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 14:57:57 2019 +0100
+
+    target _self
+
+[33mcommit 7a27e6835379745e59dee107c50b510ff9dfa31b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 14:54:59 2019 +0100
+
+    some login change
+
+[33mcommit 59cb017950c1ca5b6210b12083c9c9f9f7c772b1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 13 14:15:30 2019 +0100
+
+    cleanup applayout
+
+[33mcommit e43cea830e8a8df40bfa9e6e558ea6e3ad46a996[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 8 15:38:26 2019 +0100
+
+    change description
+
+[33mcommit 407e56bbcc6b97cbdda83a6b5da3754633553a67[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Nov 8 15:34:00 2019 +0100
+
+    delete jar goal
+
+[33mcommit b6139fd953cb4d6e530d6062046d2fa9fe9883d8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Nov 6 16:35:30 2019 +0100
+
+    update gitignore
+
+[33mcommit e6294cf380c3c7df5695b62379b791864a73aa6a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 25 23:57:37 2019 +0200
+
+    some detail refacto
+
+[33mcommit 52302c146c6c2242e8e3664cd1cb0aecd6cb99bf[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 25 17:45:03 2019 +0200
+
+    some improv on cache detail
+
+[33mcommit 48afd0c0f6f1af04cd9a5c4005e563fae2e229e1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 23 16:35:18 2019 +0200
+
+    cluster first steps
+
+[33mcommit 4b7462af39437f74e0ec8acf2ec6ebe62d89063f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 23 15:58:35 2019 +0200
+
+    images header fix
+
+[33mcommit 260b5f8ff902b0efabd5ada04d773e0c6673128c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 22 17:41:53 2019 +0200
+
+    endpoint cleanup
+
+[33mcommit 241b34c2e2f002bdf9ae87fdf5a26ab255b2136f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 22 16:35:25 2019 +0200
+
+    delete unused view
+
+[33mcommit 555484f09728582a743f22b19b916593cd68e6cb[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 21 16:26:45 2019 +0200
+
+    display features with colors
+
+[33mcommit 6a324dfe7c60a44ace39de8e6af5798dc9f3c500[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 21 11:58:14 2019 +0200
+
+    more icons
+
+[33mcommit 0a8919bcbdc7159f9aa3cdc61d4180db0efa0f0f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 18 19:03:08 2019 +0200
+
+    some icons on caches cards:
+
+[33mcommit 516493fac464f67e2847e28e06ece5db16f1ddf2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 18 18:16:35 2019 +0200
+
+    counter tab
+
+[33mcommit 5caa71cd1ad51d209e06a52a65935103eadc1475[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 18 17:36:52 2019 +0200
+
+    filter internal cache
+
+[33mcommit 27dad7f8d0c1a28644eff96a7ccb5150672e70b7[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 18 16:57:51 2019 +0200
+
+    fix cancel button in create cache form
+
+[33mcommit 3ffdb42bc29a2ac1d87cbd1a10c2b63431c2e66f[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 18 16:53:24 2019 +0200
+
+    creation alert
+
+[33mcommit e5b1767651789b2b6b5f6bf197f63c34027e21ec[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 18 15:58:14 2019 +0200
+
+    new rest endpoint used
+
+[33mcommit d6061144309f5fd896422f9f7cc6d8abae1e6ee4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 15 13:45:00 2019 +0200
+
+    filter internal template
+
+[33mcommit 41cb9af781383e7e082e6cb36eae80b280d879ee[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 15 13:42:22 2019 +0200
+
+    filter internal caches
+
+[33mcommit 647b8b58e548c17eb186e27d8df3b9f0be079252[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 14 15:30:29 2019 +0200
+
+    add clustering tab
+
+[33mcommit bbf96b1a672419b63f7801c8624a5aa4c9eb3768[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 14 15:25:55 2019 +0200
+
+    first try on header
+
+[33mcommit 8bdaa193f361bf240246122fcf44470c6d218db1[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 14 15:14:22 2019 +0200
+
+    change to yarn build instead of webpack
+
+[33mcommit 85a4503665fffc33ffebbefdf486f127fa3226c0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Oct 14 12:56:42 2019 +0200
+
+    delete menu
+
+[33mcommit 15270175fc29676239bd8c3ed7be187ec78f7699[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 11 00:27:22 2019 +0200
+
+    delete logout
+
+[33mcommit 871ae96c367aa65c2395578f2f7347549ea270a2[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 11 00:26:31 2019 +0200
+
+    refactor data container
+
+[33mcommit 88d7485eb1bdcf87531fb5738fe1c3f8dc7c4982[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 11 00:14:00 2019 +0200
+
+    refactor cachemanager view
+
+[33mcommit 400ce5890fd64cfac98a61276b2d4dc57326e19d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 10 22:49:50 2019 +0200
+
+    remove yarn.lock
+
+[33mcommit 61ef11fbeda4d33b0a4f1cb84e424c89d6998c6c[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 10 22:49:39 2019 +0200
+
+    rename to data container
+
+[33mcommit 1fad27d6551000b08bb2be973a20321216970780[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 10 22:47:47 2019 +0200
+
+    upgrade webpack version
+
+[33mcommit 5870313b79167d417956058fd353aa52cb573be5[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 8 22:55:13 2019 +0200
+
+    jenkins authors readme
+
+[33mcommit 70701713c41fa091c88c820e35b2e830d297910b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 8 22:49:04 2019 +0200
+
+    First maven and liscences
+
+[33mcommit cd6e88052d8f2b584dbf6b452efea2f33875e561[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Oct 4 18:13:39 2019 +0200
+
+    avoid hardcoded url
+
+[33mcommit 40f4ab0035f5037e07d10a691e177c30c3a3f6a8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 3 16:22:26 2019 +0200
+
+    rm dashboard
+
+[33mcommit 7e7fabcdd52de12b911113accd14454ae44ebc85[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 3 16:20:37 2019 +0200
+
+    some icons
+
+[33mcommit 308626e1a7fc72d9908ed45fa1ba01ce7826ea13[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Oct 3 14:44:30 2019 +0200
+
+    some fixes
+
+[33mcommit 083c9b832e1e7dc93d4331bf9914ed66ecc14614[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 2 17:12:10 2019 +0200
+
+    display json formatted
+
+[33mcommit 8879609395756e80e8607555bcb9e82e9fe405ac[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 2 17:05:49 2019 +0200
+
+    configs
+
+[33mcommit 872216391b454fff35711465c89399242074f582[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Oct 2 09:08:51 2019 +0200
+
+    lifecycle
+
+[33mcommit c83f52f5e4070fc8221f5026450adaa31a651a0a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 1 23:46:54 2019 +0200
+
+    some stats detail display
+
+[33mcommit e03e90189b7145b5b88c84c1c18dcc18ece948e4[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 1 23:26:47 2019 +0200
+
+    operations performance
+
+[33mcommit fbe946741c6bac694603d05a2c8e6bc110d18eef[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 1 22:24:55 2019 +0200
+
+    fix cancel button
+
+[33mcommit 6ac8a92a0ff6f523b5180f56109bc01ababa19da[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 1 16:55:11 2019 +0200
+
+    some checks on creation
+
+[33mcommit d00950f3aa1d4692246d40b40b6f8bd567c5a625[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 1 14:36:20 2019 +0200
+
+    some types
+
+[33mcommit df168f52514f64f46a33daafc0faee493f92f129[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Oct 1 13:01:34 2019 +0200
+
+    empty caches
+
+[33mcommit 8c978cfb9939463615098f01bea9e71c87ad7b42[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 27 18:01:23 2019 +0200
+
+    refactored calls
+
+[33mcommit 8753f0c86d13ecba62856da00e9def02b88a4491[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 26 19:18:05 2019 +0200
+
+    refactored to cacheService
+
+[33mcommit b7e556dc7323e704d870f86e15d7d77d2e8a6ea0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 26 18:54:32 2019 +0200
+
+    create cache
+
+[33mcommit be41aaba9d3d4a224086da5e6f22db8a06f36090[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 26 18:03:47 2019 +0200
+
+    advancing
+
+[33mcommit 52bedff3eb7f8c19f8768e9a6cac8593ae8357ee[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Sep 25 18:35:23 2019 +0200
+
+    wipooooooooo
+
+[33mcommit e58a35cae8cd83301360e6875a699e79487c481e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Mon Sep 23 13:22:28 2019 +0200
+
+    some refact
+
+[33mcommit f7237f7f1012d6afaef59e43776d958b55e21a21[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Sun Sep 22 12:32:06 2019 +0200
+
+    login wip and some changes
+
+[33mcommit 09751281074ed37137082c4574f48e87b09f5bd0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 20 19:26:42 2019 +0200
+
+    detail cache
+
+[33mcommit 279e7803e421a1df17f9f96669dbaa65fbc80544[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 20 19:22:18 2019 +0200
+
+    some grid
+
+[33mcommit 115b57db85ac784fb961cca8c66a2b81a50f35df[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Sep 20 19:13:29 2019 +0200
+
+    config
+
+[33mcommit a434e324944c0ddff49e662ea861f30449cf66e0[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 17 17:27:25 2019 +0200
+
+    create cache form - wip
+
+[33mcommit b9dcca1cd892cdb46842d5bd38448845c3dd7034[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 12 16:36:04 2019 +0200
+
+    add stat
+
+[33mcommit 6f97d89ffb73f53dd57d7a65e6c162dda4f7711a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Thu Sep 12 15:44:48 2019 +0200
+
+    Some server advance
+
+[33mcommit 402eca7935ce9a8f89ba81d2f9035b2024405b1b[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Sep 11 17:20:12 2019 +0200
+
+    menu true/false
+
+[33mcommit 9d2a1d489002b1b6ce2ea30d7dcbadefc0c8a806[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Sep 11 17:07:37 2019 +0200
+
+    advancing stuff
+
+[33mcommit ac868d25e158449a94bbf896808e0926b8f7133d[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Sep 4 16:42:48 2019 +0200
+
+    change to request
+
+[33mcommit 1986a6309d60513b2fc70b76df9b024a9f6a5d6a[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Wed Sep 4 16:41:10 2019 +0200
+
+    add axios and some names change
+
+[33mcommit 65e44ad15363ffe9b1fd2ab702de6ec6fea6906e[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Tue Sep 3 16:39:56 2019 +0200
+
+    add yarn.lock to gitignore
+
+[33mcommit ef11f4df89345993162178886bc0dc60eec5211c[m
+Author: Katia Aresti <karesti@ovpn-117-246.ams2.redhat.com>
+Date:   Tue Sep 3 16:33:11 2019 +0200
+
+    use patternfly seed as base
+
+[33mcommit 534e0b161841b1d0baf0fd3de651cb2cd18650cd[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jul 26 17:13:17 2019 +0100
+
+    Add prettier
+
+[33mcommit 83f7c0069730e3691bb8225dc0694f2f0e7a1b60[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jul 26 17:08:01 2019 +0100
+
+    Add patternfly html/css dependency
+
+[33mcommit dfd3411819d72ddaa6d71568a9acdd63886e8850[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jul 26 17:06:38 2019 +0100
+
+    Add Patternfly dependency
+
+[33mcommit e3712d71a8450498524be22a15f95d5acc1964c8[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jul 26 16:31:21 2019 +0100
+
+    ignore intellij
+
+[33mcommit d72e20833cbdc7e71b13bb4c982e93f93b45a7e3[m
+Author: Katia Aresti <karesti@redhat.com>
+Date:   Fri Jul 26 16:28:14 2019 +0100
+
+    Initial commit from Create React App
+
+[33mcommit ce772894978796da53b04945b8640827664a4551[m
+Author: Katia Aresti <katiaaresti@gmail.com>
+Date:   Fri Jul 26 16:33:02 2019 +0100
+
+    Initial commit

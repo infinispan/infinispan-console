@@ -128,17 +128,7 @@ export class CacheService {
     config: string,
     configType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
-    let contentType = ContentType.YAML;
-    if (configType == 'json') {
-      contentType = ContentType.JSON;
-    } else if (configType == 'xml') {
-      contentType = ContentType.XML;
-    }
-    let customHeaders = new Headers();
-    customHeaders.append(
-      'Content-Type',
-      ContentTypeHeaderMapper.fromContentType(contentType)
-    );
+    let customHeaders = this.createCustomHeader('Content-Type', configType);
 
     const urlCreateCache =
       this.endpoint + '/caches/' + encodeURIComponent(cacheName);
@@ -150,6 +140,21 @@ export class CacheService {
       customHeaders: customHeaders,
       body: config,
     });
+  }
+
+  private createCustomHeader(header:string, configType: "xml" | "json" | "yaml") {
+    let contentType = ContentType.YAML;
+    if (configType == 'json') {
+      contentType = ContentType.JSON;
+    } else if (configType == 'xml') {
+      contentType = ContentType.XML;
+    }
+    let customHeaders = new Headers();
+    customHeaders.append(
+      header,
+      ContentTypeHeaderMapper.fromContentType(contentType)
+    );
+    return customHeaders;
   }
 
   /**
@@ -508,18 +513,20 @@ export class CacheService {
    * @param cacheName
    */
   public async getConfiguration(
-    cacheName: string
-  ): Promise<Either<ActionResponse, CacheConfig>> {
+    cacheName: string,
+    configType: 'xml' | 'json' | 'yaml'
+  ): Promise<Either<ActionResponse, string>> {
+
+    let customHeaders = this.createCustomHeader('Accept', configType);
+
     return this.fetchCaller.get(
       this.endpoint +
         '/caches/' +
         encodeURIComponent(cacheName) +
         '?action=config',
-      (data) =>
-        <CacheConfig>{
-          name: cacheName,
-          config: JSON.stringify(data, null, 2),
-        }
+      (text) => text,
+      customHeaders,
+      true
     );
   }
 
@@ -596,5 +603,4 @@ export class CacheService {
       errorMessage: `An error occurred while changing cache ${cacheName} availability.`,
     });
   }
-
 }
