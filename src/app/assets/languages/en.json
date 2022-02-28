@@ -122,11 +122,11 @@
   "caches" : {
     "create" : {
       "page-title" : "Create a cache in {{cmName}}",
-      "cache-name": "Name",
+      "cache-name": "Cache name",
       "cache-name-help" : "Enter a unique name for your cache.",
       "cache-name-help-invalid" : "You must specify a unique name for each cache.",
       "configuration": "Configuration",
-      "configuration-help" : "Enter cache configuration in XML, JSON, or YAML format. You can use the distributed cache above for demonstration purposes.",
+      "configuration-help" : "Enter valid configuration in XML, JSON, or YAML format. You can use the distributed cache for demonstration purposes.",
       "configuration-info" : "Need help?",
       "cache-configuration-docs" : "See \"Configuring Caches\" in the documentation.",
       "configuration-help-invalid" : "Cache configuration must be valid and conform to the schema.",
@@ -135,7 +135,22 @@
       "templates-help" : "Create caches from a custom template.",
       "templates-placeholder" : "Select a cache template",
       "create-button-label": "Create",
-      "back-button-label": "Back"
+      "back-button-label": "Back",
+      "getting-started": {
+        "nav-title": "Get started",
+        "page-title": "Start with the basics",
+        "cache-name": "1. Enter a unique name for your cache.",
+        "cache-type": "2. Choose how to create your cache.",
+        "cache-type-radio1": "Create a new cache",
+        "cache-type-radio1-helper": "Build a cache with guided steps.",
+        "cache-type-radio2": "Add cache configuration",
+        "cache-type-radio2-helper": "Provide valid cache configuration."
+      },
+      "edit-config":{
+        "nav-title": "Configure the cache",
+        "page-title": "Provide cache configuration",
+        "template-help-invalid": "Select a template or enter a configuration"
+      }
     },
     "configuration" : {
       "title" : "Available cache templates",

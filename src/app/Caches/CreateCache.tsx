@@ -1,8 +1,11 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 import {
-  ActionGroup, Alert, AlertActionLink, AlertVariant,
+  ActionGroup,
+  Alert,
+  AlertActionLink,
+  AlertVariant,
   Button,
   Card,
   CardBody,
@@ -13,7 +16,8 @@ import {
   PageSectionVariants,
   Select,
   SelectOption,
-  SelectVariant, Spinner,
+  SelectVariant,
+  Spinner,
   Text,
   TextArea,
   TextContent,
@@ -22,15 +26,16 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import {CubeIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
+import { CubeIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
-import {useHistory} from 'react-router';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {CacheConfigUtils} from "@services/cacheConfigUtils";
+import { useHistory } from 'react-router';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useTranslation } from 'react-i18next';
+import { CreateCacheWizard } from './Create/CreateCacheWizard';
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
@@ -41,7 +46,8 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   const [validName, setValidName] = useState<'success' | 'error' | 'default'>(
     'default'
   );
-  const sampleConfig = '{\n' +
+  const sampleConfig =
+    '{\n' +
     '  "distributed-cache": {\n' +
     '    "mode": "SYNC",\n' +
     '    "encoding": {\n' +
@@ -162,7 +168,11 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         selectedConfig
       );
     } else {
-      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(name, config, configValidation.value);
+      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(
+        name,
+        config,
+        configValidation.value
+      );
     }
     createCacheCall
       .then((actionResponse) => {
@@ -198,16 +208,21 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
           validated={validConfig}
           rows={10}
         />
-        <Alert isInline title={t('caches.create.configuration-info')}
-               variant={AlertVariant.info}
-               actionLinks={
-                 <AlertActionLink onClick={() => window.open(configurationDocs, "_blank")}>
-                   {t('caches.create.cache-configuration-docs')}</AlertActionLink>
-               }
+        <Alert
+          isInline
+          title={t('caches.create.configuration-info')}
+          variant={AlertVariant.info}
+          actionLinks={
+            <AlertActionLink
+              onClick={() => window.open(configurationDocs, '_blank')}
+            >
+              {t('caches.create.cache-configuration-docs')}
+            </AlertActionLink>
+          }
         />
       </FormGroup>
-    )
-  }
+    );
+  };
 
   const handleTemplates = () => {
     if (configs.length == 0) {
@@ -258,14 +273,12 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
           {displayCacheConfigEditor()}
         </ExpandableSection>
       </React.Fragment>
-    )
-  }
+    );
+  };
 
   const displayPageContent = () => {
     if (loading) {
-      return (
-        <Spinner size={'lg'}/>
-      )
+      return <Spinner size={'lg'} />;
     }
 
     return (
@@ -306,7 +319,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         </ActionGroup>
       </Form>
     );
-  }
+  };
 
   return (
     <React.Fragment>
@@ -315,18 +328,14 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         <Toolbar id="create-cache-header">
           <ToolbarContent style={{ paddingLeft: 0 }}>
             <TextContent>
-              <Text component={TextVariants.h1}>{t('caches.create.page-title', {"cmName" : title})}</Text>
+              <Text component={TextVariants.h1}>
+                {t('caches.create.page-title', { cmName: title })}
+              </Text>
             </TextContent>
           </ToolbarContent>
         </Toolbar>
       </PageSection>
-      <PageSection>
-        <Card>
-          <CardBody>
-            {displayPageContent()}
-          </CardBody>
-        </Card>
-      </PageSection>
+      <CreateCacheWizard cmName={cmName} />
     </React.Fragment>
   );
 };
