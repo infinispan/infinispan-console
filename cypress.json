@@ -2,5 +2,10 @@
   "baseUrl": "http://localhost:11222/console/",
   "retries": 3,
   "video" : false,
-  "screenshotOnRunFailure": false
+  "screenshotOnRunFailure": true,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "reports/report-[hash].xml",
+    "toConsole": false
+  }
 }

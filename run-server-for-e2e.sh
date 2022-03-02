@@ -8,26 +8,44 @@ else
   trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 fi
 
-
-SERVER_VERSION="14.0.0.Dev01"
-SERVER_HOME=server/infinispan-server-$SERVER_VERSION
-CLUSTER_SIZE_MAIN="$SERVER_HOME/bin/cli.sh -c localhost:11322 -f batch "
+#Base directory where the server should be downloaded
+BASE_DIR="server"
+#The version of the server is either set as an environment variable or is the latest dev version
+SERVER_VERSION="${SERVER_VERSION:-"14.0.0.Dev01"}"
+#Root path from there the infinispan server should be downloaded
 ZIP_ROOT="http://downloads.jboss.org/infinispan"
+#If this environment variable is provided then it is used for downloading the server;
+SERVER_DOWNLOAD_URL="${SERVER_DOWNLOAD_URL}"
+#The name of the zip file;
+ZIP_NAME="${ZIP_NAME:-"infinispan-server-$SERVER_VERSION.zip"}"
+#The name of directory where the server should be extracted;
+SERVER_UNZIP_DIR="server-unzipped"
+#Path to the extracted server;
+SERVER_HOME=${BASE_DIR}/${SERVER_UNZIP_DIR}
 
 CONF_DIR_TO_COPY_FROM="scripts/"
 IS_SSL_PROCESSED=0
+#The working directory - the server is copied to this directory and later changes are done to this dir;
 SERVER_DIR="infinispan-server"
+#CLI command for getting the cluster size
+CLUSTER_SIZE_MAIN="$SERVER_HOME/bin/cli.sh -c localhost:11322 -f batch "
 
+#Function prepares the server directory, i.e. downloads, extracts, copies to working directory and makes changes to configuration;
 function prepareServerDir()
 {
     local isCi=$1
     local confPath=$2
     local dirName=${3}
 
-    if [ ! -f server/infinispan-server-$SERVER_VERSION.zip ]; then
-        cd server
-        wget $ZIP_ROOT/$SERVER_VERSION/infinispan-server-$SERVER_VERSION.zip
-        unzip  infinispan-server-$SERVER_VERSION.zip
+    if [ ! -f ${BASE_DIR}/${ZIP_NAME} ]; then
+        cd ${BASE_DIR}
+
+        if [ -n "$SERVER_DOWNLOAD_URL" ]; then
+          wget "${SERVER_DOWNLOAD_URL}"
+        else
+          wget "$ZIP_ROOT/$SERVER_VERSION/$ZIP_NAME";
+        fi
+        unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
         cd ..
     fi
 
@@ -36,12 +54,11 @@ function prepareServerDir()
          mkdir ${SERVER_TMP} 2>/dev/null
          echo "Created temporary directory: $SERVER_TMP"
 
-         cp -r ${SERVER_HOME}/* $SERVER_TMP
+         cp -r ${SERVER_HOME}/*/* $SERVER_TMP
          echo "Server copied to temporary directory."
     fi
 
-    cp -r ${SERVER_HOME}/server ${SERVER_TMP}/${dirName}
-
+    cp -r ${SERVER_HOME}/*/server ${SERVER_TMP}/${dirName}
 
     cp "${CONF_DIR_TO_COPY_FROM}/${confPath}" ${SERVER_TMP}/${dirName}/conf
     echo "Infinispan configuration file ${confPath} copied to server ${dirName}."
@@ -49,6 +66,7 @@ function prepareServerDir()
     export SERVER_TMP=${SERVER_TMP}
 }
 
+#Starts the server;
 function startServer()
 {
     local isCi=$1
