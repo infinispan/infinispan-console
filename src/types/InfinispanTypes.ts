@@ -270,3 +270,40 @@ interface ServiceCall {
   customHeaders?: Headers;
   body?: string;
 }
+
+interface TemplateOptionSelect {
+  value: string;
+  disabled?: boolean;
+  isPlaceholder?: boolean;
+}
+
+interface CacheEditorStep {
+  editorConfig: string;
+  configs: TemplateOptionSelect[];
+  validConfig: 'success' | 'error' | 'default';
+  errorConfig: string;
+  selectedConfig: string;
+  configExpanded: boolean;
+  editorExpanded: boolean;
+}
+
+interface BasicConfigurationStep {
+  topology: string;
+  mode: string;
+  numberOfOwners: number;
+  encoding: string;
+  statistics: boolean;
+}
+
+interface AdvancedConfigurationStep {
+  storage: string;
+  concurrencyLevel: number;
+  isolationLevel: string;
+  lockAcquisitionTimeout: number;
+  striping: boolean;
+}
+
+interface CacheConfiguration {
+  basic: BasicConfigurationStep;
+  advanced: AdvancedConfigurationStep;
+}

@@ -59,7 +59,10 @@ export class CacheService {
           };
         }
 
-        let keyValueEncoding = { key: CacheConfigUtils.toEncoding(data['key_storage']), value: CacheConfigUtils.toEncoding(data['value_storage']) };
+        let keyValueEncoding = {
+          key: CacheConfigUtils.toEncoding(data['key_storage']),
+          value: CacheConfigUtils.toEncoding(data['value_storage']),
+        };
         return <DetailedInfinispanCache>{
           name: cacheName,
           started: true,
@@ -142,7 +145,10 @@ export class CacheService {
     });
   }
 
-  private createCustomHeader(header:string, configType: "xml" | "json" | "yaml") {
+  private createCustomHeader(
+    header: string,
+    configType: 'xml' | 'json' | 'yaml'
+  ) {
     let contentType = ContentType.YAML;
     if (configType == 'json') {
       contentType = ContentType.JSON;
@@ -516,7 +522,6 @@ export class CacheService {
     cacheName: string,
     configType: 'xml' | 'json' | 'yaml'
   ): Promise<Either<ActionResponse, string>> {
-
     let customHeaders = this.createCustomHeader('Accept', configType);
 
     return this.fetchCaller.get(
@@ -590,8 +595,8 @@ export class CacheService {
    * Set Availability of cache
    * @param cacheName, the name of the cache
    * @author Dipanshu Gupta
-  */
-   public async setAvailability(cacheName: string): Promise<ActionResponse> {
+   */
+  public async setAvailability(cacheName: string): Promise<ActionResponse> {
     const availabilityUrl =
       this.endpoint +
       '/caches/' +
@@ -601,6 +606,21 @@ export class CacheService {
       url: availabilityUrl,
       successMessage: `Cache ${cacheName} is now available.`,
       errorMessage: `An error occurred while changing cache ${cacheName} availability.`,
+    });
+  }
+
+  /**
+   * Retrieve cache configuration
+   *
+   * @param cacheName
+   */
+  public async cacheExists(
+    cacheName: string
+  ): Promise<ActionResponse> {
+    return this.fetchCaller.head({
+      url: this.endpoint + '/caches/' + encodeURIComponent(cacheName),
+      successMessage: `Cache ${cacheName} name is available.`,
+      errorMessage: `Cache ${cacheName} already exists.`,
     });
   }
 }

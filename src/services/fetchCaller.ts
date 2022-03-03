@@ -98,6 +98,23 @@ export class FetchCaller {
   }
 
   /**
+   * HEAD REST API Calls
+   *
+   * @param url
+   */
+  public head(headCall: ServiceCall): Promise<ActionResponse> {
+    let responsePromise = this.fetch(
+      headCall.url,
+      'HEAD'
+    );
+    return this.handleCRUDActionResponse(
+      headCall.successMessage,
+      headCall.errorMessage,
+      responsePromise
+    );
+  }
+
+  /**
    * Perform a REST call
    *
    * @param url
