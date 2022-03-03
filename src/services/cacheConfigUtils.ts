@@ -1,5 +1,6 @@
 import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
+import { ConsoleServices } from '@services/ConsoleServices';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -145,5 +146,137 @@ export class CacheConfigUtils {
     }
 
     return contentTypes;
+  }
+
+  public static createCacheConfigFromData(data: CacheConfiguration): string {
+    let cache;
+
+    if (data.basic.topology === 'Distributed') {
+      cache = {
+        'distributed-cache': {
+          mode: data.basic.mode,
+          owners: data.basic.numberOfOwners,
+          statistics: data.basic.statistics,
+          encoding: {
+            'media-type': data.basic.encoding,
+          },
+          locking: {
+            isolation: data.advanced.isolationLevel,
+            striping: data.advanced.striping,
+            'concurrency-level': data.advanced.concurrencyLevel,
+            'acquire-timeout': data.advanced.lockAcquisitionTimeout,
+          },
+        },
+      };
+    } else if (data.basic.topology === 'Replicated') {
+      cache = {
+        'replicated-cache': {
+          mode: data.basic.mode,
+          statistics: data.basic.statistics,
+          encoding: {
+            'media-type': data.basic.encoding,
+          },
+          locking: {
+            isolation: data.advanced.isolationLevel,
+            striping: data.advanced.striping,
+            'concurrency-level': data.advanced.concurrencyLevel,
+            'acquire-timeout': data.advanced.lockAcquisitionTimeout,
+          },
+        },
+      };
+    }
+    return JSON.stringify(cache, null, 2);
+  }
+
+  public static createCacheWithEditorStep(
+    data: CacheEditorStep,
+    cacheName: string
+  ) : Promise<ActionResponse> {
+    const name = cacheName.trim();
+
+    // Validate Name
+    const isValidName: 'success' | 'error' =
+      name.length > 0 ? 'success' : 'error';
+
+    // Validate the config
+    let isValidConfig: 'success' | 'error';
+    let configValidation;
+
+    if (data.selectedConfig != '') {
+      // User has chosen a template
+      isValidConfig = 'success';
+    } else {
+      if (data.configs.length == 0 || data.editorExpanded) {
+        // there are no templates or the expanded area is opened, we validate the text area content
+        configValidation = CacheConfigUtils.validateConfig(data.editorConfig);
+
+        isValidConfig = configValidation.isRight() ? 'success' : 'error';
+        if (configValidation.isLeft()) {
+          data.errorConfig = configValidation.value;
+        }
+      } else {
+        // There are no templates chosen and the config text area is not visible
+        isValidConfig = 'error';
+      }
+    }
+
+    data.validConfig = isValidConfig;
+
+    if (isValidName == 'error' || isValidConfig == 'error') {
+      return Promise.resolve(<ActionResponse>{
+        message: `Unable to create cache ${cacheName}.`,
+        success: false,
+      });
+    }
+
+    let createCacheCall: Promise<ActionResponse>;
+
+    if (data.selectedConfig != '') {
+      createCacheCall = ConsoleServices.caches().createCacheByConfigName(
+        cacheName,
+        data.selectedConfig
+      );
+    } else {
+      createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(
+        cacheName,
+        data.editorConfig,
+        'json'
+      );
+    }
+
+    return createCacheCall;
+  }
+
+  public static createCacheWithWizardStep(
+    data: CacheConfiguration,
+    cacheName: string
+  ) : Promise<ActionResponse> {
+    const name = cacheName.trim();
+    const config = CacheConfigUtils.createCacheConfigFromData(data);
+
+    // Validate Name
+    const isValidName: 'success' | 'error' =
+      name.length > 0 ? 'success' : 'error';
+
+    // Validate the config
+    const configValidation = CacheConfigUtils.validateConfig(config);
+    const isValidConfig: 'success' | 'error' = configValidation.isRight()
+      ? 'success'
+      : 'error';
+
+    if (isValidName == 'error' || isValidConfig == 'error') {
+      return Promise.resolve(<ActionResponse>{
+        message: `Unable to create cache ${cacheName}.`,
+        success: false,
+      });
+    }
+
+    const createCacheCall: Promise<ActionResponse> = ConsoleServices.caches().createCacheWithConfiguration(
+      cacheName,
+      CacheConfigUtils.createCacheConfigFromData(data),
+      'json'
+    );
+
+    return createCacheCall;
   }
 }

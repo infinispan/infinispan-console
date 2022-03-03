@@ -135,7 +135,9 @@
       "templates-help" : "Create caches from a custom template.",
       "templates-placeholder" : "Select a cache template",
       "create-button-label": "Create",
+      "next-button-label": "Next",
       "back-button-label": "Back",
+      "cancel-button-label": "Cancel",
       "getting-started": {
         "nav-title": "Get started",
         "page-title": "Start with the basics",
@@ -150,6 +152,51 @@
         "nav-title": "Configure the cache",
         "page-title": "Provide cache configuration",
         "template-help-invalid": "Select a template or enter a configuration"
+      },
+      "configurations":{
+        "nav-title": "Configuration",
+        "basic":{
+          "nav-title": "Basic",
+          "page-title": "Basic configuration",
+          "topology-title": "Topology of the clustered cache",
+          "topology-tooltip": "Select the topology of the clustered cache.",
+          "topology-distributed": "Distributed",
+          "topology-replicated": "Replicated",
+          "mode-title": "Cache mode",
+          "mode-tooltip": "Select the cache mode.",
+          "mode-async": "Async",
+          "mode-sync": "Sync",
+          "number-owners": "Number of owners",
+          "number-owners-tooltip": "Number of owners of the cache.",
+          "statistics-title": "Statistics",
+          "statistics-tooltip": "Statistics enabled or disabled.",
+          "encoding-cache-title": "Encoding of the cache",
+          "encoding-cache-tooltip": "Encoding of the cache.",
+          "encoding-cache-select-label": "Select encoding"
+        },
+        "advanced-options": {
+          "nav-title": "Advanced options",
+          "page-title": "Advanced options",
+          "page-subtitle": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+          "storage-title": "Storage",
+          "storage-tooltip": "Storage of the cache.",
+          "radio-heap": "HEAP",
+          "radio-off-heap": "OFF_HEAP",
+          "locking-title": "Locking",
+          "locking-subtitle": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+          "concurrency-level-title": "Concurrency level",
+          "concurrency-level-tooltip": "Concurrency level of the cache.",
+          "isolation-level-title": "Isolation level",
+          "isolation-level-tooltip": "Isolation level of the cache.",
+          "lock-acquisition-timeout-title": "Lock acquisition timeout",
+          "lock-acquisition-timeout-tooltip": "Lock acquisition timeout of the cache.",
+          "striping": "Striping",
+          "striping-tooltip": "Striping of the cache."
+        }
+      },
+      "review": {
+        "nav-title": "Review",
+        "page-title": "Review"
       }
     },
     "configuration" : {
