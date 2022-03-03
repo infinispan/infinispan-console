@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Wizard } from '@patternfly/react-core';
+import { Button, Wizard, WizardFooter, WizardContextConsumer, } from '@patternfly/react-core';
 import GettingStarted from './GettingStarted';
 import EditCache from './EditConfig';
 import { useHistory } from 'react-router';
@@ -24,6 +24,11 @@ const CreateCacheWizard = (props) => {
     const [errorConfig, setErrorConfig] = useState('');
     const [selectedConfig, setSelectedConfig] = useState<string>('');
     const [configExpanded, setConfigExpanded] = useState(false);
+
+    //Steps
+    const [showEditCode, setShowEditCode] = useState(false)
+    const [showConfiguration, setShowConfiguration] = useState(false)
+
 
     const history = useHistory();
 
@@ -135,8 +140,9 @@ const CreateCacheWizard = (props) => {
     };
 
     const onNext = (step, prevStep) => {
-        setStepIdReached(step.id);
+        // setStepIdReached(step.id);
         // setIsFormValid(true);
+        console.log('onNext', step, prevStep);
     };
 
     const onBack = (step, prevStep) => {
@@ -149,6 +155,78 @@ const CreateCacheWizard = (props) => {
 
     const closeWizard = () => {
         history.push('/');
+    };
+
+    const onGoToStep = (id, prevId) => {
+        console.log(id, prevId);
+    };
+
+    const getNextStep = (activeStep, callback) => {
+        if (activeStep.name === t('caches.create.getting-started.nav-title')) {
+            if (state.getStartedStepRadio === 'Create') {
+                setState({
+                    showCreateStep: true,
+                    showUpdateStep: false,
+                    showOptionsStep: false,
+                    showReviewStep: false
+                }, () => {
+                    callback();
+                });
+            } else {
+                setState({
+                    showCreateStep: false,
+                    showUpdateStep: true,
+                    showOptionsStep: false,
+                    showReviewStep: false
+                }, () => {
+                    callback();
+                });
+            }
+        } else if (activeStep.name === 'Create options' || activeStep.name === 'Update options') {
+            setState({
+                showOptionsStep: true,
+                showReviewStep: false
+            }, () => {
+                callback();
+            });
+        } else if (activeStep.name === 'Substep 3') {
+            setState({
+                showReviewStep: true
+            }, () => {
+                callback();
+            });
+        } else {
+            callback();
+        }
+    };
+    const getPreviousStep = (activeStep, callback) => {
+        if (activeStep.name === 'Review') {
+            setState({
+                showReviewStep: false
+            }, () => {
+                callback();
+            });
+        } else if (activeStep.name === 'Substep 1') {
+            setState({
+                showOptionsStep: false
+            }, () => {
+                callback();
+            });
+        } else if (activeStep.name === 'Create options') {
+            setState({
+                showCreateStep: false
+            }, () => {
+                callback();
+            });
+        } else if (activeStep.name === 'Update options') {
+            setState({
+                showUpdateStep: false
+            }, () => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     };
 
     // Steps
@@ -177,7 +255,47 @@ const CreateCacheWizard = (props) => {
         nextButtonText: 'Create Cache',
     };
 
-    const steps = [stepGettingStarted, stepEditCode];
+    const stepConfigure = {
+        name: 'Configuration',
+        steps: [
+            {
+                id: 3,
+                name: 'Substep A with validation',
+                component: (
+                    <p>Subset A</p>
+                ),
+                // enableNext: isFormValid,
+                // canJumpTo: stepIdReached >= 2
+            },
+            { id: 4, name: 'Substep B', component: <p>Substep B</p> }
+        ]
+    };
+
+    const steps = [stepGettingStarted,
+        ...(showEditCode ? [stepEditCode] : []),
+        ...(showConfiguration ? [stepConfigure] : [])];
+
+    const CustomFooter = (
+        <WizardFooter>
+            <WizardContextConsumer>
+                {({ activeStep, goToStepByName, goToStepById, onNext, onBack, onClose }) => {
+                    return (
+                        <>
+                            <Button variant="primary" type="submit" onClick={() => getNextStep(activeStep, onNext)}>
+                                {activeStep.name === t('caches.create.edit-config.nav-title') ? 'Create Cache' : 'Next'}
+                            </Button>
+                            <Button variant="secondary" onClick={() => getPreviousStep(activeStep, onBack)}>
+                                Back
+                            </Button>
+                            <Button variant="link" onClick={onClose}>
+                                Cancel
+                            </Button>
+                        </>
+                    )
+                }}
+            </WizardContextConsumer>
+        </WizardFooter>
+    );
 
     return (
         <Wizard
@@ -188,6 +306,7 @@ const CreateCacheWizard = (props) => {
             onClose={closeWizard}
             onSave={onSave}
             steps={steps}
+            onGoToStep={onGoToStep}
         />
     );
 };
