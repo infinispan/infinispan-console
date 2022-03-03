@@ -83,3 +83,28 @@ export enum InfinispanFlags {
   SKIP_XSITE_BACKUP = 'SKIP_XSITE_BACKUP',
   ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT',
 }
+
+export enum EvictionStrategy {
+  NONE = 'NONE',
+  REMOVE = 'REMOVE',
+  MANUAL = 'MANUAL',
+  EXCEPTION = 'EXCEPTION',
+}
+
+export enum IsolationLevel {
+  NONE = 'NONE',
+  SERIALIZABLE = 'SERIALIZABLE',
+  REPEATABLE_READ = 'REPEATABLE_READ',
+  READ_COMMITTED = 'READ_COMMITTED',
+  READ_UNCOMMITTED = 'READ_UNCOMMITTED',
+}
+
+export enum StorageType {
+  HEAP = 'heap',
+  OFF_HEAP = 'off_heap',
+}
+
+export enum CacheMode {
+  ASYNC = 'ASYNC',
+  SYNC = 'SYNC',
+}
