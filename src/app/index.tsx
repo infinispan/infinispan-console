@@ -16,7 +16,7 @@ const App = () => {
     | 'PENDING'
     | 'DONE'
     | 'LOGIN'
-    | 'DIGEST_LOGIN'
+    | 'HTTP_LOGIN'
   >('PENDING');
   ConsoleServices.init();
 
@@ -57,9 +57,9 @@ const App = () => {
                 }
               });
           } else if (eitherAuth.value.ready) {
-            if (eitherAuth.value.digest) {
-              console.log('update init to digest login');
-              setInit('DIGEST_LOGIN');
+            if (eitherAuth.value.mode === 'HTTP') {
+              console.log('update init to http login');
+              setInit('HTTP_LOGIN');
             } else {
               ConsoleServices.authentication().noSecurityMode();
               setInit('READY');
