@@ -127,7 +127,7 @@ const Welcome = (props) => {
       );
     }
 
-    if (authState == 'DIGEST_LOGIN') {
+    if (authState == 'HTTP_LOGIN') {
       return (
         <Button
           onClick={() =>{
