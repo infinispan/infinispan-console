@@ -58,7 +58,7 @@ const SecuredCacheConfigurator = (props: {
 
     const rolesOptions = () => {
         const options = availableRoles.map((role) => (
-            <SelectOption key={role} value={role} />
+            <SelectOption inputId={role} key={role} value={role} />
         ))
         return options
     };
@@ -94,7 +94,7 @@ const SecuredCacheConfigurator = (props: {
                 </CardHeader>
                 <CardBody>
                     <FormGroup fieldId='select-roles'>
-                        <Select
+                        <Select toggleId="roleSelector"
                             variant={SelectVariant.checkbox}
                             aria-label="Select Roles"
                             onToggle={() => setIsOpenRoles(!isOpenRoles)}
@@ -109,7 +109,7 @@ const SecuredCacheConfigurator = (props: {
                 </CardBody>
                 <CardBody>
                     {roles.map(role => (
-                        <Label
+                        <Label data-cy={role}
                             color="blue"
                             closeBtnAriaLabel="Remove entity"
                             style={{ marginRight: global_spacer_sm.value }}

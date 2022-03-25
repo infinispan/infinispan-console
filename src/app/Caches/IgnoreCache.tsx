@@ -68,7 +68,7 @@ const IgnoreCache = (props: {
   };
 
   return (
-    <Modal
+    <Modal data-cy={`${props.action}CacheModal`} id="hideShowModal"
       titleIconVariant={props.action == 'ignore'? EyeSlashIcon : EyeIcon}
       className="pf-m-redhat-font"
       width={'50%'}
@@ -88,6 +88,11 @@ const IgnoreCache = (props: {
               : 'undo-ignore-modal'
           }
           onClick={handleIgnoreButton}
+          data-cy={
+            props.action == 'ignore'
+              ? 'hideCacheButton'
+              : 'showCacheButton'
+          }
         >
           {props.action == 'ignore' ? 'Hide' : 'Show'}
         </Button>,
@@ -95,6 +100,7 @@ const IgnoreCache = (props: {
           key="cancel"
           variant="link"
           onClick={() => clearIgnoreCacheModal(false)}
+          data-cy="cancelAction"
         >
           Cancel
         </Button>,

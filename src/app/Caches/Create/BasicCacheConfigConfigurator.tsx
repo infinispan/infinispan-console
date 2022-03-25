@@ -214,7 +214,7 @@ const BasicCacheConfigConfigurator = (props:
     // Options for Encoding Cache
     const encodingTypeOptions = () => {
         const a = Object.keys(EncodingType).map((key) => (
-            <SelectOption key={key} value={EncodingType[key]} />
+            <SelectOption id={key} key={key} value={EncodingType[key]} />
         ));
         a.pop(); // Removing 'Empty' option
         return a;
@@ -253,6 +253,7 @@ const BasicCacheConfigConfigurator = (props:
                         selections={selectedEncodingCache}
                         isOpen={isOpenEncodingCache}
                         aria-labelledby="toggle-id-number-owners"
+                        toggleId="cacheEncoding"
                     >
                         {encodingTypeOptions()}
                     </Select>
@@ -270,7 +271,7 @@ const BasicCacheConfigConfigurator = (props:
                 fieldId="form-expiration"
             >
                 <Switch
-                    aria-label="expiration"
+                    aria-label="expiration" data-cy="expirationSwitch"
                     id="expiration"
                     isChecked={isExpiration}
                     onChange={() => setIsExpiration(!isExpiration)}

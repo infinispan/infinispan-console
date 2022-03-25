@@ -8,7 +8,7 @@ const Status = (props: { status?: Status }) => {
   const status = props.status? props.status : UNKNOWN_STATUS;
 
   return (
-    <Flex>
+    <Flex data-cy='cacheManagerStatus'>
       <FlexItem>
         <AlertIcon
           variant={status.icon as AlertVariant}

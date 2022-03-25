@@ -116,7 +116,7 @@ const IndexedCacheConfigurator = (props: {
             toolTip={t('caches.create.configurations.feature.index-storage-entity-tooltip', { brandname: brandname })}
             textComponent={TextVariants.h3} />
           <InputGroup style={{ marginTop: global_spacer_sm.value }}>
-            <TextInput value={entityInput} type="text" onChange={setEntityInput} />
+            <TextInput data-cy="indexEntityInput" value={entityInput} type="text" onChange={setEntityInput} />
             <Button id="add-entity" variant="control" onClick={helperAddEntity}>
               {t('caches.create.configurations.feature.index-storage-add-btn')}
             </Button>
@@ -125,7 +125,7 @@ const IndexedCacheConfigurator = (props: {
       </CardBody>
       <CardBody>
         {indexedEntities.map(currentChip => (
-          <Label
+          <Label data-cy={currentChip}
             color="blue"
             closeBtnAriaLabel="Remove entity"
             onEditComplete={(text) => {

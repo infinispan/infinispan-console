@@ -184,7 +184,7 @@ const FeaturesSelector = (props: {
     const cacheFeatureOptions = () => {
         // const availableOptions = ['BOUNDED', 'INDEXED', 'SECURED', 'BACKUPS', 'TRANSACTIONAL', 'PERSISTENCE'];
         return Object.keys(CacheFeature).map((key) => (
-            <SelectOption key={key} value={CacheFeature[key]} />
+            <SelectOption id={key} key={key} value={CacheFeature[key]} />
         ));
     };
 
@@ -204,6 +204,7 @@ const FeaturesSelector = (props: {
                     isOpen={isOpenCacheFeature}
                     aria-labelledby="cache-feature"
                     placeholderText={t('caches.create.configurations.feature.cache-feature-list-placeholder')}
+                    toggleId="featuresSelect"
                 >
                     {cacheFeatureOptions()}
                 </Select>

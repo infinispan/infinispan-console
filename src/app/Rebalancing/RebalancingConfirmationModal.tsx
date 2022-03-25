@@ -14,7 +14,7 @@ const RebalancingConfirmationModal = (props: {
 }) => {
   const { t } = useTranslation();
   return (
-    <Modal
+    <Modal data-cy='rebalancingModal'
       titleIconVariant={props.enabled? 'warning' : 'info'}
       className="pf-m-redhat-font"
       width={'50%'}
@@ -32,11 +32,12 @@ const RebalancingConfirmationModal = (props: {
               ? 'disable-rebalancing'
               : 'enable-rebalancing'
           }
+          data-cy='rebalanceChangeButton'
           onClick={props.confirmAction}
         >
           {props.enabled ?  t(props.type + '.rebalancing.modal-disable-button') :  t(props.type + '.rebalancing.modal-enable-button')}
         </Button>,
-        <Button
+        <Button data-cy='rebalanceChangeCancelButton'
           key="cancel"
           variant="link"
           onClick={props.closeModal}

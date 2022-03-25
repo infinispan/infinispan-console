@@ -82,7 +82,7 @@ const CacheManagers = () => {
     }
 
     return (
-      <Nav
+      <Nav data-cy='navigationTabs'
         onSelect={handleTabClick}
         variant={'tertiary'}
         style={{ marginTop: global_spacer_md.value }}

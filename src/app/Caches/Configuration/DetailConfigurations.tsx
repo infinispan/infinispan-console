@@ -119,7 +119,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
       <ExpandableSection
         toggleTextExpanded={name}
         toggleTextCollapsed={name}
-        key={name + '-config-value'}
+        key={name + '-config-value'} contentId={name + 'ConfigExpanded'} data-cy={name + 'Config'}
       >
         <SyntaxHighlighter
           wrapLines={false}
@@ -150,7 +150,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
       <PageSection>
         <Card>
           <CardBody>
-            <Pagination
+            <Pagination data-cy='cacheConfigPagination'
               itemCount={cacheConfigs.length}
               perPage={pageConfigsPagination.perPage}
               page={pageConfigsPagination.page}

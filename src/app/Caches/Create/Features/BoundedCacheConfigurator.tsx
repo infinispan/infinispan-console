@@ -62,14 +62,14 @@ const BoundedCacheConfigurator = (props: {
     // Options for Eviction Strategy
     const evictionStrategyOptions = () => {
         return Object.keys(EvictionStrategy).map((key) => (
-            <SelectOption key={key} value={EvictionStrategy[key]} />
+            <SelectOption id={key} key={key} value={EvictionStrategy[key]} />
         ));
     };
 
     // Options for Max Size Unit
     const unitOptions = () => {
         return Object.keys(MaxSizeUnit).map((key) => (
-            <SelectOption key={key} value={MaxSizeUnit[key]} />
+            <SelectOption id={key} key={key} value={MaxSizeUnit[key]} />
         ));
     }
 
@@ -121,7 +121,7 @@ const BoundedCacheConfigurator = (props: {
               >
                 <MoreInfoTooltip label={t('caches.create.configurations.feature.max-size')} toolTip={t('caches.create.configurations.feature.max-size-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                 <InputGroup>
-                      <TextInput min={0} value={maxSize} type="number" onChange={(v)  => setMaxSize(parseInt(v))} aria-label="max-size-number-input"/>
+                      <TextInput data-cy='memorySizeInput' min={0} value={maxSize} type="number" onChange={(v)  => setMaxSize(parseInt(v))} aria-label="max-size-number-input"/>
                       <Select
                         variant={SelectVariant.single}
                         aria-label="max-size-unit-input"
@@ -130,7 +130,7 @@ const BoundedCacheConfigurator = (props: {
                         selections={maxSizeUnit}
                         isOpen={isOpenMaxSizeUnit}
                         aria-labelledby="toggle-id-max-size-unit"
-                        width={'20%'}
+                        width={'20%'} toggleId='memorySizeUnit'
                       >
                         {unitOptions()}
                       </Select>
@@ -146,7 +146,7 @@ const BoundedCacheConfigurator = (props: {
                 helperTextInvalid={t('caches.create.configurations.feature.max-count-helper-invalid')}
               >
                 <MoreInfoTooltip label={t('caches.create.configurations.feature.max-count')} toolTip={t('caches.create.configurations.feature.max-count-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
-                <TextInput min={0} value={maxCount} type="number" onChange={(v) => setMaxCount(parseInt(v))} aria-label="max-count-input" />
+                <TextInput data-cy='memorySizeMaxCount' min={0} value={maxCount} type="number" onChange={(v) => setMaxCount(parseInt(v))} aria-label="max-count-input" />
               </FormGroup>
             }
           </CardBody>
@@ -160,7 +160,7 @@ const BoundedCacheConfigurator = (props: {
                 onSelect={onSelectEvictionStrategy}
                 selections={evictionStrategy}
                 isOpen={isOpenEvictionStrategy}
-                aria-labelledby="toggle-id-eviction-strategy"
+                aria-labelledby="toggle-id-eviction-strategy" toggleId='evictionStrategy'
               >
                 {evictionStrategyOptions()}
               </Select>

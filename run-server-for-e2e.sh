@@ -24,11 +24,15 @@ SERVER_UNZIP_DIR="server-unzipped"
 SERVER_HOME=${BASE_DIR}/${SERVER_UNZIP_DIR}
 
 CONF_DIR_TO_COPY_FROM="scripts/"
+DATA_DIR="data/"
 IS_SSL_PROCESSED=0
 #The working directory - the server is copied to this directory and later changes are done to this dir;
 SERVER_DIR="infinispan-server"
 #CLI command for getting the cluster size
 CLUSTER_SIZE_MAIN="$SERVER_HOME/bin/cli.sh -c localhost:11322 -f batch "
+
+USER_NAME="admin"
+PASSWORD="admin"
 
 #Function prepares the server directory, i.e. downloads, extracts, copies to working directory and makes changes to configuration;
 function prepareServerDir()
@@ -37,17 +41,18 @@ function prepareServerDir()
     local confPath=$2
     local dirName=${3}
 
-    if [ ! -f ${BASE_DIR}/${ZIP_NAME} ]; then
-        cd ${BASE_DIR}
+    cd ${BASE_DIR}
+    if [ ! -f ${ZIP_NAME} ]; then
 
         if [ -n "$SERVER_DOWNLOAD_URL" ]; then
           wget "${SERVER_DOWNLOAD_URL}"
         else
           wget "$ZIP_ROOT/$SERVER_VERSION/$ZIP_NAME";
         fi
-        unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
-        cd ..
     fi
+
+    unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
+    cd ..
 
     if [[ -z "${SERVER_TMP}" ]]; then
          SERVER_TMP=server/${SERVER_DIR}
@@ -81,20 +86,27 @@ function startServer()
         portStr="-p ${port}"
     fi
 
+    $SERVER_TMP/bin/cli.sh user create ${USER_NAME} -p ${PASSWORD} -s ${nodeName}
 
     if [[ ${isCi} = "--ci" ]]; then
       nohup $SERVER_TMP/bin/server.sh -Djavax.net.debug -Dorg.infinispan.openssl=false -c ${confPath} -s ${SERVER_TMP}/${nodeName} ${portStr:-""} --node-name=${nodeName} ${jvmParam:-} &
     else
       ${SERVER_TMP}/bin/server.sh -Djavax.net.debug -Dorg.infinispan.openssl=false -c ${confPath} -s ${SERVER_TMP}/${nodeName} ${portStr:-} --node-name=${nodeName} ${jvmParam:-} &
     fi
+
+    #Creating data in the server
+    sleep 10
+    cd $DATA_DIR/
+    ./create-data.sh ${USER_NAME} ${PASSWORD}
 }
 
 #deleting the testable server directory
 rm -drf server/${SERVER_DIR}
+rm -drf server/${SERVER_UNZIP_DIR}
 
 export JAVA_OPTS="-Xms512m -Xmx1024m -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=512m"
 
-startServer "$1" infinispan-no-secured.xml 11222 infinispan-4-e2e
+startServer "$1" infinispan-basic-auth.xml 11222 infinispan-4-e2e
 echo "Infinispan Server for E2E tests has started."
 
 

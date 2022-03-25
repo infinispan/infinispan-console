@@ -4,7 +4,7 @@ import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/Alert
 import displayUtils from '@services/displayUtils';
 import {ComponentHealth} from "@services/infinispanRefData";
 
-const Health = (props: { health: string; displayIcon?: boolean }) => {
+const Health = (props: { health: string; displayIcon?: boolean; cacheName: string; }) => {
   const health = ComponentHealth[props.health];
   const displayIcon = props.displayIcon == undefined ? true : props.displayIcon;
 
@@ -25,7 +25,7 @@ const Health = (props: { health: string; displayIcon?: boolean }) => {
 
       <FlexItem>
         <TextContent>
-          <Text
+          <Text data-cy={`health-${props.cacheName}`}
             style={{
               color: displayUtils.healthColor(health, false),
             }}
