@@ -13,11 +13,7 @@
     "security": {
       "authorization": {
         "enabled": true,
-        "roles": [
-          "observer",
-          "admin",
-          "monitor"
-        ]
+        "roles": "observer admin monitor"
       }
     },
     "statistics": true

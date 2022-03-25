@@ -1,0 +1,9 @@
+{
+    "scattered-cache": {
+      "mode": "SYNC",
+      "encoding": {
+        "media-type": "application/x-protostream"
+      },
+      "statistics": true
+    }
+  }

@@ -368,7 +368,7 @@ const CreateCacheWizard = (props) => {
             variant="primary"
             type="submit"
             onClick={(event) => getNextStep(event, activeStep, onNext)}
-            isDisabled={!isFormValid}
+            isDisabled={!isFormValid} data-cy="wizardNextButton"
           >
             {activeStep.id === 2 || activeStep.id === 6 ? t('caches.create.create-button-label') : t('caches.create.next-button-label')}
           </Button>
@@ -386,6 +386,7 @@ const CreateCacheWizard = (props) => {
             <Button
               variant="secondary"
               onClick={(event) => getPreviousStep(event, activeStep, onBack)}
+              data-cy="wizardBackButton"
             >
               {t('caches.create.back-button-label')}
             </Button>
@@ -395,7 +396,7 @@ const CreateCacheWizard = (props) => {
     const cancelToolbarItem = (onClose) => {
       return (
         <ToolbarItem>
-          <Button variant="link" onClick={onClose}>
+          <Button variant="link" onClick={onClose} data-cy="cancelWizard">
             {t('caches.create.cancel-button-label')}
           </Button>
         </ToolbarItem>

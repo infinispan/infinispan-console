@@ -62,6 +62,7 @@ const DeleteCache = (props: {
       onClose={() => clearDeleteCacheModal(false)}
       aria-label="Delete cache modal"
       disableFocusTrap={true}
+      id="deleteCacheModal"
       description={
         <TextContent>
           <Text>
@@ -75,6 +76,7 @@ const DeleteCache = (props: {
           variant={ButtonVariant.danger}
           onClick={handleDeleteButton}
           isDisabled={cacheNameFormValue == ''}
+          data-cy="deleteCacheButton"
         >
           Delete
         </Button>,
@@ -82,6 +84,7 @@ const DeleteCache = (props: {
           key="cancel"
           variant="link"
           onClick={() => clearDeleteCacheModal(false)}
+          data-cy="cancelCacheDeleteButton"
         >
           Cancel
         </Button>,

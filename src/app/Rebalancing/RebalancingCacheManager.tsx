@@ -28,7 +28,7 @@ const RebalancingCacheManager = () => {
       <React.Fragment>
         <Divider isVertical />
         <FlexItem>
-          <Switch
+          <Switch data-cy='rebalancingSwitch'
             label={t('cache-managers.rebalancing.enabled')}
             labelOff={t('cache-managers.rebalancing.disabled')}
             isChecked={cm.rebalancing_enabled}

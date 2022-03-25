@@ -132,7 +132,7 @@ const AdvancedOptionsConfigurator = (props: {
     // Options for Storage
     const storageOptions = () => {
         return Object.keys(StorageType).map((key) => (
-            <SelectOption key={key} value={StorageType[key]} />
+            <SelectOption id={key} key={key} value={StorageType[key]} />
         ));
     };
 
@@ -156,7 +156,7 @@ const AdvancedOptionsConfigurator = (props: {
                             selections={storage}
                             isOpen={isOpenStorage}
                             aria-labelledby="toggle-id-storage"
-                            placeholderText={StorageType.HEAP}
+                            placeholderText={StorageType.HEAP} toggleId="storageSelector"
                         >
                             {storageOptions()}
                         </Select>
@@ -179,7 +179,7 @@ const AdvancedOptionsConfigurator = (props: {
                         fieldId="field-concurrency-level"
                     >
                         <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.concurrency-level-title')} toolTip={t('caches.create.configurations.advanced-options.concurrency-level-tooltip')} textComponent={TextVariants.h3} />
-                        <TextInput placeholder='32' value={concurrencyLevel} type="number" onChange={handleConcurrencyLevel} aria-label="concurrency-level-input" />
+                        <TextInput placeholder='32' value={concurrencyLevel} type="number" onChange={handleConcurrencyLevel} aria-label="concurrency-level-input" data-cy="concurencyLevel"/>
                     </FormGroup>
                 </CardBody>
                 <CardBody>
@@ -189,7 +189,7 @@ const AdvancedOptionsConfigurator = (props: {
                         fieldId="field-lock-acquisition-timeout"
                     >
                         <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')} toolTip={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-tooltip')} textComponent={TextVariants.h3} />
-                        <TextInput placeholder='10' value={lockAcquisitionTimeout} type="number" onChange={handleLockAcquisitionTimeout} aria-label="lock-acquisition-timeout-input" />
+                        <TextInput placeholder='10' value={lockAcquisitionTimeout} type="number" onChange={handleLockAcquisitionTimeout} aria-label="lock-acquisition-timeout-input" data-cy="lockTimeout"/>
                     </FormGroup>
                 </CardBody>
                 <CardBody>

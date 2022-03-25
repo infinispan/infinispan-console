@@ -5,19 +5,19 @@ import {ComponentHealth} from "@services/infinispanRefData";
 
 describe('Health Component Test', () => {
   test('by default both health label and icon are displayed', () => {
-    render(<Health health={ComponentHealth.HEALTHY} />);
+    render(<Health health={ComponentHealth.HEALTHY} cacheName="test"/>);
     expect(screen.getByText('Healthy')).toBeInTheDocument();
     expect(screen.queryByTestId('HealthIcon')).toBeInTheDocument();
   });
 
   test('when displayIcon is true health label and icon are displayed', () => {
-    render(<Health health={ComponentHealth.HEALTHY} displayIcon={true} />);
+    render(<Health health={ComponentHealth.HEALTHY} displayIcon={true} cacheName="test" />);
     expect(screen.getByText('Healthy')).toBeInTheDocument();
     expect(screen.queryByTestId('HealthIcon')).toBeInTheDocument();
   });
 
   test('when displayIcon is false only the health label is displayed', () => {
-    render(<Health health={ComponentHealth.HEALTHY} displayIcon={false} />);
+    render(<Health health={ComponentHealth.HEALTHY} displayIcon={false} cacheName="test"/>);
     expect(screen.getByText('Healthy')).toBeInTheDocument();
     expect(screen.queryByTestId('HealthIcon')).toBeNull();
   });

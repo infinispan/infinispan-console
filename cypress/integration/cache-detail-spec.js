@@ -1,11 +1,10 @@
 
 describe('Cache Detail Overview', () => {
+  beforeEach(() => {
+    cy.login(Cypress.env("username"), Cypress.env("password"), '/cache/people');
+  })
+
  it('successfully loads cache detail', () => {
-   cy.visit('http://localhost:11222/console/cache/people', {
-            headers: {
-                    "Accept-Encoding": "gzip, deflate, br"
-                     }
-   });
    cy.contains('people');
    cy.contains('Transactional');
    cy.contains('Distributed');

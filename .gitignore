@@ -11,7 +11,8 @@ node/
 .DS_Store
 cypress/screenshots
 cypress/videos
-server/infinispan-server*
+server/**
+reports/
 nohup.out
 batch
 server/server-unzipped/

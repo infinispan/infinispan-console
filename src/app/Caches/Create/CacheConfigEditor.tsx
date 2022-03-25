@@ -177,9 +177,10 @@ const CacheConfigEditor = (props: {
                         placeholderText={t('caches.create.templates-placeholder')}
                         onClear={clearSelection}
                         validated={validConfig}
+                        toggleId="template-selector"
                     >
                         {configs.map((option, index) => (
-                            <SelectOption
+                            <SelectOption id={index}
                                 key={index}
                                 value={option.value}
                             />

@@ -196,7 +196,7 @@ const ProtobufSchemasDisplay = (props: {
       );
     }
     return (
-      <TextArea
+      <TextArea data-cy="schemaEditArea"
         onChange={(v) =>
           setSchemasContent(new Map(schemasContent.set(name, v)))
         }
@@ -367,7 +367,7 @@ const ProtobufSchemasDisplay = (props: {
           <ToolbarContent>
             {buildCreateSchemaButton()}
             <ToolbarItem variant={ToolbarItemVariant.pagination}>
-              <Pagination
+              <Pagination data-cy="paginationArea"
                 itemCount={schemas.length}
                 perPage={schemasPagination.perPage}
                 page={schemasPagination.page}

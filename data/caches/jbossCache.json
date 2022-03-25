@@ -1,5 +1,5 @@
 {
-  "distributed-cache": {
+  "replicated-cache": {
     "mode": "SYNC",
     "remote-timeout": 17500,
     "state-transfer": {

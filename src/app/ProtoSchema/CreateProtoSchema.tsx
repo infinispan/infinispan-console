@@ -153,10 +153,10 @@ const CreateProtoSchema = (props: {
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
       actions={[
-        <Button aria-label="add-schema-button" key="add-schema-button" onClick={handleCreateButton}>
+        <Button data-cy='addSchemaButton' aria-label="add-schema-button" key="add-schema-button" onClick={handleCreateButton}>
           Add
         </Button>,
-        <Button
+        <Button data-cy='cancelAddSchemaButton'
           aria-label="cancel-add-schema-button"
           key="cancel-add-schema-button"
           variant="link"
