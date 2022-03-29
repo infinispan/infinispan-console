@@ -22,13 +22,12 @@ const AdvancedOptions = (props: {
     advancedOptionsModifier: (AdvancedConfigurationStep) => void,
 }) => {
     const { t } = useTranslation();
-    const brandname = t('brandname.brandname');
 
     const [storage, setStorage] = useState<StorageType>(props.advancedOptions.storage as StorageType);
-    const [concurrencyLevel, setConcurrencyLevel] = useState<number>(props.advancedOptions.concurrencyLevel || 0);
+    const [concurrencyLevel, setConcurrencyLevel] = useState<number>(props.advancedOptions.concurrencyLevel);
     const [isolationLevel, setIsolationLevel] = useState<IsolationLevel>(props.advancedOptions.isolationLevel as IsolationLevel);
-    const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<number>(props.advancedOptions.lockAcquisitionTimeout || 0);
-    const [striping, setStriping] = useState<boolean>(props.advancedOptions.striping || true);
+    const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<number>(props.advancedOptions.lockAcquisitionTimeout);
+    const [striping, setStriping] = useState<boolean>(props.advancedOptions.striping);
 
     const [isOpenIsolationLevel, setIsOpenIsolationLevel] = useState(false);
 
@@ -38,7 +37,7 @@ const AdvancedOptions = (props: {
             concurrencyLevel: concurrencyLevel,
             isolationLevel: isolationLevel,
             lockAcquisitionTimeout: lockAcquisitionTimeout,
-            striping: striping,
+            striping: striping
         });
     }, [storage, concurrencyLevel, isolationLevel, lockAcquisitionTimeout, striping]);
 
@@ -102,7 +101,7 @@ const AdvancedOptions = (props: {
     // Options for Isolation Level
     const isolationLevelOptions = () => {
         return Object.keys(IsolationLevel).map((key) => (
-            <SelectOption key={key} value={key} />
+            <SelectOption key={key} value={IsolationLevel[key]} />
         ));
     };
 
