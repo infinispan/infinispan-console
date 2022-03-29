@@ -4,6 +4,9 @@ import {
     Form,
     FormGroup,
     NumberInput,
+    InputGroup,
+    Grid,
+    GridItem,
     Radio,
     Stack,
     Select,
@@ -12,20 +15,21 @@ import {
     Switch,
     Text,
     TextContent,
+    TextInput,
     TextVariants,
 } from '@patternfly/react-core';
-import { CacheType, EncodingType, CacheMode } from "@services/infinispanRefData";
+import { CacheType, EncodingType, CacheMode, TimeUnits } from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 
 const ConfigurationBasic = (props:
     {
         basicConfiguration: BasicConfigurationStep,
-        basicConfigurationModifier: (BasicConfigurationStep) => void
+        basicConfigurationModifier: (BasicConfigurationStep) => void,
+        handleIsFormValid: (isFormValid: boolean) => void,
     }) => {
 
     const { t } = useTranslation();
-    const brandname = t('brandname.brandname');
 
     // State for the form
     // Passed to the parent component
@@ -34,9 +38,20 @@ const ConfigurationBasic = (props:
     const [selectedNumberOwners, setSelectedNumberOwners] = useState(props.basicConfiguration.numberOfOwners);
     const [selectedEncodingCache, setSelectedEncodingCache] = useState(props.basicConfiguration.encoding);
     const [isStatistics, setIsStatistics] = useState(props.basicConfiguration.statistics);
+    const [isExpiration, setIsExpiration] = useState(props.basicConfiguration.expiration);
+    const [lifeSpanNumber, setLifeSpanNumber] = useState(props.basicConfiguration.lifeSpanNumber);
+    const [lifeSpanUnit, setLifeSpanUnit] = useState(props.basicConfiguration.lifeSpanUnit);
+    const [maxIdleNumber, setMaxIdleNumber] = useState(props.basicConfiguration.maxIdleNumber);
+    const [maxIdleUnit, setMaxIdleUnit] = useState(props.basicConfiguration.maxIdleUnit);
 
     // Helper State
     const [isOpenEncodingCache, setIsOpenEncodingCache] = useState(false);
+    const [isOpenLifeSpanUnit, setIsOpenLifeSpanUnit] = useState(false);
+    const [isOpenMaxIdleUnit, setIsOpenMaxIdleUnit] = useState(false);
+
+    useEffect(() => {
+        topology === 'Replicated' ? setSelectedNumberOwners(undefined) : setSelectedNumberOwners(1);
+    }, [])
 
     useEffect(() => {
         // Update the form when the state changes
@@ -45,10 +60,15 @@ const ConfigurationBasic = (props:
             mode: mode,
             numberOfOwners: selectedNumberOwners,
             encoding: selectedEncodingCache,
-            statistics: isStatistics
+            statistics: isStatistics,
+            expiration: isExpiration,
+            lifeSpanNumber: lifeSpanNumber,
+            lifeSpanUnit: lifeSpanUnit,
+            maxIdleNumber: maxIdleNumber,
+            maxIdleUnit: maxIdleUnit
         });
-
-    }, [topology, mode, selectedNumberOwners, selectedEncodingCache, isStatistics]);
+        props.handleIsFormValid(lifeSpanNumber >= -1 && maxIdleNumber >= -1);
+    }, [topology, mode, selectedNumberOwners, selectedEncodingCache, isStatistics, isExpiration, lifeSpanNumber, lifeSpanUnit, maxIdleNumber, maxIdleUnit]);
 
 
     // Helper function for Number Owners Selection
@@ -76,6 +96,16 @@ const ConfigurationBasic = (props:
     const onSelectEncodingCache = (event, selection, isPlaceholder) => {
         setSelectedEncodingCache(selection);
         setIsOpenEncodingCache(false);
+    };
+
+    const onSelectLifeSpanUnit = (event, selection, isPlaceholder) => {
+        setLifeSpanUnit(selection);
+        setIsOpenLifeSpanUnit(false);
+    };
+
+    const onSelectMaxIdleUnit = (event, selection, isPlaceholder) => {
+        setMaxIdleUnit(selection);
+        setIsOpenMaxIdleUnit(false);
     };
 
     // Form Topology
@@ -225,6 +255,96 @@ const ConfigurationBasic = (props:
         )
     }
 
+    // Form expiration
+    const formExpiration = () => {
+        return (
+            <FormGroup
+                isInline
+                isRequired
+                fieldId="form-expiration"
+            >
+                <Switch
+                    aria-label="expiration"
+                    id="expiration"
+                    isChecked={isExpiration}
+                    onChange={() => setIsExpiration(!isExpiration)}
+                    isReversed
+                />
+                <MoreInfoTooltip label={t('caches.create.configurations.basic.expiration-title')} toolTip={t('caches.create.configurations.basic.expiration-tooltip')} textComponent={TextVariants.h2} />
+            </FormGroup>
+        )
+    }
+
+    // Options for Time Units
+    const unitOptions = () => {
+        return Object.keys(TimeUnits).map((key) => (
+            <SelectOption key={key} value={TimeUnits[key]} />
+        ));
+    }
+
+    // Form expiration settings
+    const formExpirationSettings = () => {
+        return (
+            <React.Fragment>
+                <FormGroup
+                    fieldId='form-life-span'
+                    validated={lifeSpanNumber >= -1 ? 'default' : 'error'}
+                    helperTextInvalid={t('caches.create.configurations.basic.lifespan-helper-invalid')}
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.basic.lifespan')} toolTip={t('caches.create.configurations.basic.lifespan-tooltip')} textComponent={TextVariants.h3} />
+                    <InputGroup>
+                        <Grid>
+                            <GridItem span={8}>
+                                <TextInput min={-1} value={lifeSpanNumber} type="number" onChange={(value) => setLifeSpanNumber(parseInt(value))} aria-label="life-span-input" />
+                            </GridItem>
+                            <GridItem span={4}>
+                                <Select
+                                    variant={SelectVariant.single}
+                                    aria-label="max-size-unit-input"
+                                    onToggle={() => setIsOpenLifeSpanUnit(!isOpenLifeSpanUnit)}
+                                    onSelect={onSelectLifeSpanUnit}
+                                    selections={lifeSpanUnit}
+                                    isOpen={isOpenLifeSpanUnit}
+                                    aria-labelledby="toggle-id-max-size-unit"
+                                >
+                                    {unitOptions()}
+                                </Select>
+                            </GridItem>
+                        </Grid>
+                    </InputGroup>
+                </FormGroup>
+
+                <FormGroup
+                    fieldId='form-max-idle'
+                    validated={maxIdleNumber >= -1 ? 'default' : 'error'}
+                    helperTextInvalid={t('caches.create.configurations.basic.max-idle-helper-invalid')}
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.basic.max-idle')} toolTip={t('caches.create.configurations.basic.max-idle-tooltip')} textComponent={TextVariants.h3} />
+                    <InputGroup>
+                        <Grid>
+                            <GridItem span={8}>
+                                <TextInput min={-1} value={maxIdleNumber} type="number" onChange={(value) => setMaxIdleNumber(parseInt(value))} aria-label="life-span-input" />
+                            </GridItem>
+                            <GridItem span={4}>
+                                <Select
+                                    variant={SelectVariant.single}
+                                    aria-label="max-size-unit-input"
+                                    onToggle={() => setIsOpenMaxIdleUnit(!isOpenMaxIdleUnit)}
+                                    onSelect={onSelectMaxIdleUnit}
+                                    selections={maxIdleUnit}
+                                    isOpen={isOpenMaxIdleUnit}
+                                    aria-labelledby="toggle-id-max-size-unit"
+                                >
+                                    {unitOptions()}
+                                </Select>
+                            </GridItem>
+                        </Grid>
+                    </InputGroup>
+                </FormGroup>
+            </React.Fragment>
+        )
+    }
+
     return (
         <Form>
 
@@ -234,8 +354,12 @@ const ConfigurationBasic = (props:
             {topology as CacheType == CacheType.Distributed && formNumberOwners()}
 
             <Divider />
-
             {formEncodingCache()}
+
+            <Divider />
+            {formExpiration()}
+            {isExpiration && formExpirationSettings()}
+
         </Form>
     );
 };

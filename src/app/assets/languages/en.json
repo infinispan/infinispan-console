@@ -160,7 +160,7 @@
       "configurations":{
         "nav-title": "Build configuration",
         "basic":{
-          "nav-title": "Basic configuration",
+          "nav-title": "Basic options",
           "mode-title": "Choose a cache mode",
           "mode-tooltip": "Clustered caches can be distributed or replicated. Distributed caches offer linear scalability and efficient memory usage. Replicated caches offer data guarantees and fault tolerance.",
           "mode-distributed": "Distributed",
@@ -174,7 +174,34 @@
           "statistics-title": "Statistics",
           "statistics-tooltip": "Enable statistics for your cache.",
           "encoding-cache-title": "Select an encoding",
-          "encoding-cache-tooltip": "Choose a media type that describes data that you store in the cache. Use ProtoStream encoding for optimal performance and interoperability between client applications."
+          "encoding-cache-tooltip": "Choose a media type that describes data that you store in the cache. Use ProtoStream encoding for optimal performance and interoperability between client applications.",
+          "expiration-title": "Expiration",
+          "expiration-tooltip": "Expiration tooltip",
+          "lifespan": "Lifespan",
+          "lifespan-tooltip": "Set the lifespan",
+          "lifespan-helper-invalid": "Minimum Life span can be -1",
+          "max-idle": "Max idle",
+          "max-idle-tooltip": "Set the maximum idle time",
+          "max-idle-helper-invalid": "Minimum Max Idle Time can be -1"
+        },
+        "feature": {
+          "nav-title": "{{brandname}} capabilities",
+          "cache-feature-list": "Add {{brandname}} capabilities",
+          "cache-feature-list-tooltip": "Add capabilities to your cache.",
+          "cache-feature-list-placeholder": "Select capabilities",
+          "cache-feature-list-typeahead": "Select capabilities",
+          "bounded": "Bounded",
+          "bounded-tooltip": "Control the size of the cache by configuring {{brandname}} to evict entries. You can configure an eviction threshold based on the maximum amount of memory that a cache can use or based on the total number of entries that a cache can hold.",
+          "radio-max-size": "Maximum amount of memory",
+          "radio-max-count": "Total number of entries",
+          "max-size": "Maximum amount of memory",
+          "max-size-tooltip": "Configure a maximum size for the cache. When the cache reaches this threshold, {{brandname}} removes entries according to the eviction strategy that you configure.",
+          "max-size-helper-invalid": "You must specify a positive number as the maximum size for the cache.",
+          "max-count": "Total number of entries",
+          "max-count-tooltip": "Configure the total number of entries that the cache can contain. When the cache reaches this threshold, {{brandname}} removes entries according to the eviction strategy that you configure.",
+          "max-count-helper-invalid": "You must specify a positive number as the total number of entries.",
+          "eviction-strategy": "Eviction strategy",
+          "eviction-strategy-tooltip": "Specify how {{brandname}} removes entries when the cache reaches the threshold that you configure. The REMOVE strategy evicts older entries to make space for new ones. The EXCEPTION strategy configures {{brandname}} to log an exception and prevent new entries from being created."
         },
         "advanced-options": {
           "nav-title": "Advanced options",

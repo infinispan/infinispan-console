@@ -1,6 +1,12 @@
-import { ContentType, EncodingType } from '@services/infinispanRefData';
+import {
+  CacheFeature,
+  ContentType,
+  EncodingType,
+  TimeUnits,
+} from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -150,48 +156,63 @@ export class CacheConfigUtils {
 
   public static createCacheConfigFromData(data: CacheConfiguration): string {
     let cache;
+    let cacheType;
 
-    if (data.basic.topology === 'Distributed') {
-      cache = {
-        'distributed-cache': {
-          mode: data.basic.mode,
-          owners: data.basic.numberOfOwners,
-          statistics: data.basic.statistics,
-          encoding: {
-            'media-type': data.basic.encoding,
-          },
-          locking: {
-            isolation: data.advanced.isolationLevel,
-            striping: data.advanced.striping,
-            'concurrency-level': data.advanced.concurrencyLevel,
-            'acquire-timeout': data.advanced.lockAcquisitionTimeout,
-          },
-        },
+    const distributedCache = 'distributed-cache';
+    const replicatedCache = 'replicated-cache';
+
+    const generalCache = {
+      mode: data.basic.mode,
+      owners: data.basic.numberOfOwners,
+      statistics: data.basic.statistics,
+      encoding: {
+        'media-type': data.basic.encoding,
+      },
+      locking: {
+        isolation: data.advanced.isolationLevel,
+        striping: data.advanced.striping,
+        'concurrency-level': data.advanced.concurrencyLevel,
+        'acquire-timeout': data.advanced.lockAcquisitionTimeout,
+      },
+    };
+
+    data.basic.topology === 'Distributed'
+      ? ((cache = { [distributedCache]: generalCache }),
+        (cacheType = distributedCache))
+      : ((cache = { [replicatedCache]: generalCache }),
+        (cacheType = replicatedCache));
+
+    const expiration = () => {
+      cache[cacheType]['expiration'] = {
+        lifespan: convertToMilliseconds(
+          data.basic.lifeSpanNumber,
+          data.basic.lifeSpanUnit
+        ),
+        'max-idle': convertToMilliseconds(
+          data.basic.maxIdleNumber,
+          data.basic.maxIdleUnit
+        ),
       };
-    } else if (data.basic.topology === 'Replicated') {
-      cache = {
-        'replicated-cache': {
-          mode: data.basic.mode,
-          statistics: data.basic.statistics,
-          encoding: {
-            'media-type': data.basic.encoding,
-          },
-          locking: {
-            isolation: data.advanced.isolationLevel,
-            striping: data.advanced.striping,
-            'concurrency-level': data.advanced.concurrencyLevel,
-            'acquire-timeout': data.advanced.lockAcquisitionTimeout,
-          },
-        },
+    };
+
+    const featureBounded = () => {
+      cache[cacheType]['memory'] = {
+        'max-count': data.feature.boundedCache.maxCount,
+        'max-size': data.feature.boundedCache.maxSize,
+        'when-full': data.feature.boundedCache.evictionStrategy,
       };
-    }
+    };
+
+    data.basic.expiration === true && expiration();
+    data.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED) &&
+      featureBounded();
     return JSON.stringify(cache, null, 2);
   }
 
   public static createCacheWithEditorStep(
     data: CacheEditorStep,
     cacheName: string
-  ) : Promise<ActionResponse> {
+  ): Promise<ActionResponse> {
     const name = cacheName.trim();
 
     // Validate Name
@@ -250,7 +271,7 @@ export class CacheConfigUtils {
   public static createCacheWithWizardStep(
     data: CacheConfiguration,
     cacheName: string
-  ) : Promise<ActionResponse> {
+  ): Promise<ActionResponse> {
     const name = cacheName.trim();
     const config = CacheConfigUtils.createCacheConfigFromData(data);
 

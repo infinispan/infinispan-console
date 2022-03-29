@@ -4,15 +4,14 @@ import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useTranslation } from 'react-i18next';
-import { CacheType, EncodingType, IsolationLevel, StorageType, CacheMode } from "@services/infinispanRefData";
+import { CacheType, EncodingType, IsolationLevel, StorageType, CacheMode, EvictionStrategy, TimeUnits, EvictionType } from "@services/infinispanRefData";
 import GettingStarted from './GettingStarted';
 import CacheEditor from './CacheEditor';
 import ConfigurationBasic from './ConfigurationBasic';
 import AdvancedOptions from './AdvancedOptions';
 import { useStateCallback } from '@app/services/stateCallbackHook';
 import Review from './Review';
-import { ConsoleServices } from '@services/ConsoleServices';
-
+import ConfigurationFeature from './ConfigurationFeature';
 export interface GettingStartedState {
     cacheName: '';
     createType: 'configure' | 'edit',
@@ -38,20 +37,38 @@ const BasicConfigurationInitialState: BasicConfigurationStep = {
     mode: CacheMode.ASYNC,
     numberOfOwners: 1,
     encoding: EncodingType.Protobuf,
-    statistics: true
+    statistics: true,
+    expiration: false,
+    lifeSpanNumber: -1,
+    lifeSpanUnit: TimeUnits.milliseconds,
+    maxIdleNumber: -1,
+    maxIdleUnit: TimeUnits.milliseconds,
+}
+
+const BoundedCacheInitialState: BoundedCache = {
+    evictionType: EvictionType.size,
+    maxSize: undefined,
+    maxCount: undefined,
+    evictionStrategy: EvictionStrategy.REMOVE,
+}
+
+const CacheFeatureInitialState: CacheFeatureStep = {
+    cacheFeatureSelected: [],
+    boundedCache: BoundedCacheInitialState
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
     storage: StorageType.HEAP,
-    concurrencyLevel: 0,
-    isolationLevel: IsolationLevel.READ_COMMITTED,
-    lockAcquisitionTimeout: 0,
-    striping: true
+    concurrencyLevel: 32,
+    isolationLevel: IsolationLevel.REPEATABLE_READ,
+    lockAcquisitionTimeout: 10,
+    striping: false,
 }
 
 const CreateCacheWizard = (props) => {
     const { addAlert } = useApiAlert();
     const { t } = useTranslation();
+    const brandname = t('brandname.brandname');
 
     // State for wizard steps
     const [stateObj, setStateObj] = useStateCallback({
@@ -72,10 +89,13 @@ const CreateCacheWizard = (props) => {
     // State for the form (Configuration Basic)
     const [basicConfiguration, setBasicConfiguration] = useState<BasicConfigurationStep>(BasicConfigurationInitialState);
 
+    // State for the form (Cache Feature)
+    const [cacheFeature, setCacheFeature] = useState<CacheFeatureStep>(CacheFeatureInitialState);
+
     // State for the form (Advanced Options)
     const [advancedOptions, setAdvancedOptions] = useState<AdvancedConfigurationStep>(AdvancedOptionsInitialState);
 
-    const [configuration, setConfiguration] = useState<CacheConfiguration>({ basic: basicConfiguration, advanced: advancedOptions })
+    const [configuration, setConfiguration] = useState<CacheConfiguration>({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions })
 
     const history = useHistory();
 
@@ -83,8 +103,8 @@ const CreateCacheWizard = (props) => {
 
     // TODO: quick stuff. I think we can handle all with the same state but we can do that in the end a refactoring.
     useEffect(() => {
-        setConfiguration({ basic: basicConfiguration, advanced: advancedOptions });
-    }, [basicConfiguration, advancedOptions]);
+        setConfiguration({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions });
+    }, [basicConfiguration, cacheFeature, advancedOptions]);
 
     const closeWizard = () => {
         history.push('/');
@@ -176,16 +196,30 @@ const CreateCacheWizard = (props) => {
             {
                 id: 3,
                 name: t('caches.create.configurations.basic.nav-title'),
-                component: (<ConfigurationBasic basicConfiguration={basicConfiguration} basicConfigurationModifier={setBasicConfiguration} />)
+                component: (<ConfigurationBasic basicConfiguration={basicConfiguration} basicConfigurationModifier={setBasicConfiguration} handleIsFormValid={setIsFormValid} />),
+                enableNext: isFormValid,
             },
-            { id: 5, name: t('caches.create.configurations.advanced-options.nav-title'), component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} /> },
+            {
+                id: 4,
+                name: t('caches.create.configurations.feature.nav-title', { brandname: brandname }),
+                component: <ConfigurationFeature cacheFeature={cacheFeature} cacheFeatureModifier={setCacheFeature} handleIsFormValid={setIsFormValid} />,
+                enableNext: isFormValid,
+                canJumpTo: isFormValid
+            },
+            {
+                id: 5,
+                name: t('caches.create.configurations.advanced-options.nav-title'),
+                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} />,
+                canJumpTo: isFormValid
+            },
         ]
     };
 
     const stepReview = {
         id: 6,
         name: t('caches.create.review.nav-title'),
-        component: <Review cacheName={gettingStarted.cacheName} cacheConfiguration={configuration} />
+        component: <Review cacheName={gettingStarted.cacheName} cacheConfiguration={configuration} />,
+        canJumpTo: isFormValid
     }
 
     const steps = [stepGettingStarted,
