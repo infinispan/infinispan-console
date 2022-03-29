@@ -151,6 +151,18 @@ export class CacheConfigUtils {
   public static createCacheConfigFromData(data: CacheConfiguration): string {
     let cache;
 
+    const featureBounded = () => {
+      cache['distributed-cache']['indexing'] = {
+        storage: data.feature.storageType,
+      };
+
+      cache['distributed-cache']['memory'] = {
+        'max-count': data.advanced.maxCount,
+        'max-size': data.advanced.maxSize,
+        'when-full': data.advanced.evictionStrategy,
+      };
+    };
+
     if (data.basic.topology === 'Distributed') {
       cache = {
         'distributed-cache': {
@@ -185,6 +197,9 @@ export class CacheConfigUtils {
         },
       };
     }
+
+    data.feature.cacheFeatureSelected.includes('BOUNDED') && featureBounded();
+
     return JSON.stringify(cache, null, 2);
   }
 

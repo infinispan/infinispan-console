@@ -295,15 +295,25 @@ interface BasicConfigurationStep {
   statistics: boolean;
 }
 
+interface CacheFeatureStep {
+  cacheFeatureSelected: [];
+  indexedEntitites: string;
+  storageType: string;
+}
+
 interface AdvancedConfigurationStep {
   storage: string;
   concurrencyLevel: number;
   isolationLevel: string;
   lockAcquisitionTimeout: number;
   striping: boolean;
+  maxSize: number;
+  maxCount: number;
+  evictionStrategy: string;
 }
 
 interface CacheConfiguration {
   basic: BasicConfigurationStep;
+  feature: CacheFeatureStep;
   advanced: AdvancedConfigurationStep;
 }

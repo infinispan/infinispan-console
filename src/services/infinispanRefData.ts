@@ -108,3 +108,12 @@ export enum CacheMode {
   ASYNC = 'ASYNC',
   SYNC = 'SYNC',
 }
+
+export enum CacheFeature {
+  BOUNDED = 'BOUNDED',
+  INDEXED = 'INDEXED',
+  PERSISTENCE = 'PERSISTENCE',
+  TRANSACTIONAL = 'TRANSACTIONAL',
+  SECURED = 'SECURED',
+  BACKUPS = 'BACKUPS',
+}

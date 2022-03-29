@@ -8,18 +8,20 @@ import {
     SelectOption,
     SelectVariant,
     Switch,
+    Slider,
     Text,
     TextContent,
     TextVariants,
     TextInput
 } from '@patternfly/react-core';
-import { IsolationLevel, StorageType } from "@services/infinispanRefData";
+import { CacheFeature, EvictionStrategy, IsolationLevel, StorageType } from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 
 const AdvancedOptions = (props: {
     advancedOptions: AdvancedConfigurationStep,
     advancedOptionsModifier: (AdvancedConfigurationStep) => void,
+    cacheFeatureSelected: []
 }) => {
     const { t } = useTranslation();
 
@@ -29,7 +31,12 @@ const AdvancedOptions = (props: {
     const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<number>(props.advancedOptions.lockAcquisitionTimeout || 0);
     const [striping, setStriping] = useState<boolean>(props.advancedOptions.striping || true);
 
+    const [maxSize, setMaxSize] = useState<number>(props.advancedOptions.maxSize);
+    const [maxCount, setMaxCount] = useState<number>(props.advancedOptions.maxCount);
+    const [evictionStrategy, setEvictionStrategy] = useState<string>(props.advancedOptions.evictionStrategy);
+
     const [isOpenIsolationLevel, setIsOpenIsolationLevel] = useState(false);
+    const [isOpenEvictionStrategy, setIsOpenEvictionStrategy] = useState(false);
 
     useEffect(() => {
         props.advancedOptionsModifier({
@@ -38,8 +45,11 @@ const AdvancedOptions = (props: {
             isolationLevel: isolationLevel,
             lockAcquisitionTimeout: lockAcquisitionTimeout,
             striping: striping,
+            maxSize: maxSize,
+            maxCount: maxCount,
+            evictionStrategy: evictionStrategy,
         });
-    }, [storage, concurrencyLevel, isolationLevel, lockAcquisitionTimeout, striping]);
+    }, [storage, concurrencyLevel, isolationLevel, lockAcquisitionTimeout, striping, maxSize, evictionStrategy]);
 
     const onToggleIsolationLevel = () => {
         setIsOpenIsolationLevel(!isOpenIsolationLevel);
@@ -57,6 +67,39 @@ const AdvancedOptions = (props: {
     const handleLockAcquisitionTimeout = (value) => {
         setLockAcquisitionTimeout(value);
     }
+
+    const helperSlider = (value, inputValue, setLocalInputValue) => {
+        let newValue;
+        if (inputValue === undefined) {
+            newValue = Math.floor(value);
+        } else {
+            if (inputValue > 100) {
+                newValue = 100;
+                setLocalInputValue(100);
+            } else if (inputValue < 0) {
+                newValue = 0;
+                setLocalInputValue(0);
+            } else {
+                newValue = Math.floor(inputValue);
+            }
+        }
+        return newValue;
+    };
+
+    const handleMaxSize = (value, inputValue, setLocalInputValue) => {
+        const newValue = helperSlider(value, inputValue, setLocalInputValue);
+        setMaxSize(newValue);
+    }
+
+    const handleMaxCount = (value, inputValue, setLocalInputValue) => {
+        const newValue = helperSlider(value, inputValue, setLocalInputValue);
+        setMaxCount(newValue);
+    }
+
+    const onSelectEvictionStrategy = (event, selection, isPlaceholder) => {
+        setEvictionStrategy(selection);
+        setIsOpenEvictionStrategy(false);
+    };
 
     const formMemory = () => {
         return (
@@ -102,6 +145,65 @@ const AdvancedOptions = (props: {
                 </FormGroup>
             </React.Fragment>
         );
+    }
+
+
+    // Options for Isolation Level
+    const evictionStrategyOptions = () => {
+        return Object.keys(EvictionStrategy).map((key) => (
+            <SelectOption key={key} value={EvictionStrategy[key]} />
+        ));
+    };
+
+    const formExpiration = () => {
+        return (
+            <React.Fragment>
+                <FormGroup
+                    isRequired
+                    fieldId="max-size"
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.max-size')} toolTip={t('caches.create.configurations.advanced-options.max-size-tooltip')} textComponent={TextVariants.h4} />
+                    <Slider
+                        min={0}
+                        max={100}
+                        hasTooltipOverThumb
+                        value={maxSize}
+                        isInputVisible
+                        inputValue={maxSize}
+                        onChange={handleMaxSize}
+                    />
+                </FormGroup>
+                <FormGroup
+                    isRequired
+                    fieldId="max-count"
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.max-count')} toolTip={t('caches.create.configurations.advanced-options.max-count-tooltip')} textComponent={TextVariants.h4} />
+                    <Slider
+                        min={0}
+                        max={100}
+                        hasTooltipOverThumb
+                        value={maxCount}
+                        isInputVisible
+                        inputValue={maxCount}
+                        onChange={handleMaxCount}
+                    />
+                </FormGroup>
+                <FormGroup fieldId='form-eviction-strategy'>
+                    <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.eviction-strategy')} toolTip={t('caches.create.configurations.advanced-options.eviction-strategy-tooltip')} textComponent={TextVariants.h4} />
+                    <Select
+                        variant={SelectVariant.single}
+                        aria-label="eviction-strategy-select"
+                        onToggle={() => setIsOpenEvictionStrategy(!isOpenEvictionStrategy)}
+                        onSelect={onSelectEvictionStrategy}
+                        selections={evictionStrategy}
+                        isOpen={isOpenEvictionStrategy}
+                        aria-labelledby="toggle-id-eviction-strategy"
+                    >
+                        {evictionStrategyOptions()}
+                    </Select>
+                </FormGroup>
+            </React.Fragment>
+        )
     }
 
     // Options for Isolation Level
@@ -174,6 +276,9 @@ const AdvancedOptions = (props: {
     return (
         <Form>
             {formMemory()}
+
+            {/* Show form expiration when cache feature bounded selected */}
+            {props.cacheFeatureSelected.includes('BOUNDED') && formExpiration()}
             <Divider />
             {formLocking()}
         </Form>

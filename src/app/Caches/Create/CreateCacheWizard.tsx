@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useTranslation } from 'react-i18next';
-import { CacheType, EncodingType, IsolationLevel, StorageType, CacheMode } from "@services/infinispanRefData";
+import { CacheType, EncodingType, IsolationLevel, StorageType, CacheMode, EvictionStrategy } from "@services/infinispanRefData";
 import GettingStarted from './GettingStarted';
 import CacheEditor from './CacheEditor';
 import ConfigurationBasic from './ConfigurationBasic';
@@ -41,12 +41,21 @@ const BasicConfigurationInitialState: BasicConfigurationStep = {
     statistics: true
 }
 
+const CacheFeatureInitialState: CacheFeatureStep = {
+    cacheFeatureSelected: [],
+    indexedEntitites: '',
+    storageType: 'file-system'
+}
+
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
     storage: StorageType.HEAP,
     concurrencyLevel: 0,
     isolationLevel: IsolationLevel.READ_COMMITTED,
     lockAcquisitionTimeout: 0,
-    striping: true
+    striping: true,
+    maxSize: 25,
+    maxCount: 25,
+    evictionStrategy: EvictionStrategy.NONE,
 }
 
 const CreateCacheWizard = (props) => {
@@ -72,10 +81,13 @@ const CreateCacheWizard = (props) => {
     // State for the form (Configuration Basic)
     const [basicConfiguration, setBasicConfiguration] = useState<BasicConfigurationStep>(BasicConfigurationInitialState);
 
+    // State for the form (Cache Feature)
+    const [cacheFeature, setCacheFeature] = useState<CacheFeatureStep>(CacheFeatureInitialState);
+
     // State for the form (Advanced Options)
     const [advancedOptions, setAdvancedOptions] = useState<AdvancedConfigurationStep>(AdvancedOptionsInitialState);
 
-    const [configuration, setConfiguration] = useState<CacheConfiguration>({ basic: basicConfiguration, advanced: advancedOptions })
+    const [configuration, setConfiguration] = useState<CacheConfiguration>({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions })
 
     const history = useHistory();
 
@@ -83,8 +95,8 @@ const CreateCacheWizard = (props) => {
 
     // TODO: quick stuff. I think we can handle all with the same state but we can do that in the end a refactoring.
     useEffect(() => {
-        setConfiguration({ basic: basicConfiguration, advanced: advancedOptions });
-    }, [basicConfiguration, advancedOptions]);
+        setConfiguration({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions });
+    }, [basicConfiguration, cacheFeature, advancedOptions]);
 
     const closeWizard = () => {
         history.push('/');
@@ -178,7 +190,8 @@ const CreateCacheWizard = (props) => {
                 name: t('caches.create.configurations.basic.nav-title'),
                 component: (<ConfigurationBasic basicConfiguration={basicConfiguration} basicConfigurationModifier={setBasicConfiguration} />)
             },
-            { id: 5, name: t('caches.create.configurations.advanced-options.nav-title'), component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} /> },
+            { id: 4, name: "Cache Feature", component: <ConfigurationFeature cacheFeature={cacheFeature} cacheFeatureModifier={setCacheFeature} /> },
+            { id: 5, name: t('caches.create.configurations.advanced-options.nav-title'), component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} cacheFeatureSelected={cacheFeature.cacheFeatureSelected} /> },
         ]
     };
 
