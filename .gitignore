@@ -14,3 +14,4 @@ cypress/videos
 server/infinispan-server*
 nohup.out
 batch
+server/server-unzipped/
