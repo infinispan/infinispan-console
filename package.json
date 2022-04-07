@@ -81,7 +81,6 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "@patternfly/react-catalog-view-extension": "^4.49.19",
     "@patternfly/react-charts": "^6.51.19",
     "@patternfly/react-core": "^4.198.19",
     "@patternfly/react-log-viewer": "^4.43.19",
