@@ -51,7 +51,7 @@ const ConfigurationBasic = (props:
 
     useEffect(() => {
         topology === 'Replicated' ? setSelectedNumberOwners(undefined) : setSelectedNumberOwners(1);
-    }, [])
+    }, [topology])
 
     useEffect(() => {
         // Update the form when the state changes
@@ -76,16 +76,20 @@ const ConfigurationBasic = (props:
     const maxValue = 10;
 
     const onMinus = () => {
-        setSelectedNumberOwners(selectedNumberOwners - 1);
+       if (selectedNumberOwners) {
+         setSelectedNumberOwners(selectedNumberOwners - 1);
+       }
+    };
+
+    const onPlus = () => {
+      if (selectedNumberOwners) {
+        setSelectedNumberOwners(selectedNumberOwners + 1);
+      }
     };
 
     const onChange = event => {
         const newValue = isNaN(event.target.value) ? 0 : Number(event.target.value);
         setSelectedNumberOwners(newValue > maxValue ? maxValue : newValue < minValue ? minValue : newValue);
-    };
-
-    const onPlus = () => {
-        setSelectedNumberOwners(selectedNumberOwners + 1);
     };
 
     // Helper function for Encoding Cache Selection
@@ -346,7 +350,9 @@ const ConfigurationBasic = (props:
     }
 
     return (
-        <Form>
+        <Form onSubmit={(e) => {
+          e.preventDefault();
+        }}>
 
             {formTopology()}
 

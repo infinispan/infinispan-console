@@ -126,7 +126,9 @@ const GettingStarted = (props: {
     };
 
     return (
-        <Form>
+        <Form onSubmit={(e) => {
+          e.preventDefault();
+        }}>
             <TextContent>
                 <Text component={TextVariants.h2}>{t('caches.create.getting-started.cache-name-title')}</Text>
             </TextContent>

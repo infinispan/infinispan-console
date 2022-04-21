@@ -7,7 +7,8 @@ import { CacheConfigUtils } from "@services/cacheConfigUtils";
 const Review = (props:
     {
         cacheName: string,
-        cacheConfiguration: CacheConfiguration
+        cacheConfiguration: CacheConfiguration,
+        setReviewConfig: (string) => void
     }) => {
 
     const { t } = useTranslation();
@@ -18,7 +19,7 @@ const Review = (props:
                 fieldId="cache-config"
             >
                 <CodeEditor
-
+                    onChange={props.setReviewConfig}
                     isLineNumbersVisible
                     isMinimapVisible
                     isLanguageLabelVisible
@@ -31,7 +32,9 @@ const Review = (props:
     };
 
     return (
-        <Form>
+        <Form onSubmit={(e) => {
+          e.preventDefault();
+        }}>
             <TextContent>
                 <Text component={TextVariants.h1}>{t('caches.create.review.review-title')}</Text>
                 <TextContent>

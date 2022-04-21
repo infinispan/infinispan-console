@@ -95,8 +95,8 @@ export enum IsolationLevel {
 }
 
 export enum StorageType {
-  HEAP = 'heap',
-  OFF_HEAP = 'off_heap',
+  HEAP = 'HEAP',
+  OFF_HEAP = 'OFF_HEAP',
 }
 
 export enum CacheMode {
@@ -134,4 +134,9 @@ export enum TimeUnits {
 export enum EvictionType {
   size = 'size',
   count = 'count',
+}
+
+export enum IndexedStorage {
+  persistent = 'filesystem',
+  volatile = 'local_heap',
 }

@@ -409,7 +409,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                 <TextInput
                   name="textSearchByKey"
                   id="textSearchByKey"
-                  type="search"
+                  type="text"
                   aria-label={t('caches.entries.get-entry-label')}
                   placeholder={t('caches.entries.get-entry-text') + keyType}
                   size={50}
