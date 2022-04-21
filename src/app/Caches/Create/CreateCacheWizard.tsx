@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useTranslation } from 'react-i18next';
-import { CacheType, EncodingType, IsolationLevel, StorageType, CacheMode, EvictionStrategy, TimeUnits, EvictionType } from "@services/infinispanRefData";
+import { CacheType, EncodingType, IsolationLevel, StorageType, CacheFeature, CacheMode, EvictionStrategy, TimeUnits, EvictionType, IndexedStorage } from "@services/infinispanRefData";
 import GettingStarted from './GettingStarted';
 import CacheEditor from './CacheEditor';
 import ConfigurationBasic from './ConfigurationBasic';
@@ -52,17 +52,34 @@ const BoundedCacheInitialState: BoundedCache = {
     evictionStrategy: EvictionStrategy.REMOVE,
 }
 
+const IndexWriterInitialState: IndexWriter = {
+    lowLevelTrace: false,
+
+}
+
+const IndexMergeInitialState: IndexMerge = {
+    calibrateByDeletes: false,
+}
+
+const IndexedCacheInitialState: IndexedCache = {
+    enableIndexing: true,
+    indexedStorage: IndexedStorage.persistent,
+    indexedEntities: [],
+}
+
 const CacheFeatureInitialState: CacheFeatureStep = {
     cacheFeatureSelected: [],
-    boundedCache: BoundedCacheInitialState
+    boundedCache: BoundedCacheInitialState,
+    indexedCache: IndexedCacheInitialState
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
-    storage: StorageType.HEAP,
-    concurrencyLevel: 32,
-    isolationLevel: IsolationLevel.REPEATABLE_READ,
-    lockAcquisitionTimeout: 10,
-    striping: false,
+    indexWriter: IndexWriterInitialState,
+    indexMerge: IndexMergeInitialState,
+    isOpenIndexMerge: false,
+    isOpenIndexReader: false,
+    isOpenIndexWriter: false,
+    disabledStriping: true,
 }
 
 const CreateCacheWizard = (props) => {
@@ -96,6 +113,7 @@ const CreateCacheWizard = (props) => {
     const [advancedOptions, setAdvancedOptions] = useState<AdvancedConfigurationStep>(AdvancedOptionsInitialState);
 
     const [configuration, setConfiguration] = useState<CacheConfiguration>({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions })
+    const [reviewConfig, setReviewConfig] = useState<string>('');
 
     const history = useHistory();
 
@@ -209,7 +227,7 @@ const CreateCacheWizard = (props) => {
             {
                 id: 5,
                 name: t('caches.create.configurations.advanced-options.nav-title'),
-                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} />,
+                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} />,
                 canJumpTo: isFormValid
             },
         ]
@@ -218,7 +236,7 @@ const CreateCacheWizard = (props) => {
     const stepReview = {
         id: 6,
         name: t('caches.create.review.nav-title'),
-        component: <Review cacheName={gettingStarted.cacheName} cacheConfiguration={configuration} />,
+        component: <Review cacheName={gettingStarted.cacheName} cacheConfiguration={configuration} setReviewConfig={setReviewConfig} />,
         canJumpTo: isFormValid
     }
 
@@ -263,7 +281,7 @@ const CreateCacheWizard = (props) => {
         const createCacheCall =
             gettingStarted.createType === 'edit' ?  // Check wizard option
                 CacheConfigUtils.createCacheWithEditorStep(cacheEditor, gettingStarted.cacheName) :
-                CacheConfigUtils.createCacheWithWizardStep(configuration, gettingStarted.cacheName)
+                CacheConfigUtils.createCacheWithWizardStep(reviewConfig === '' ? CacheConfigUtils.createCacheConfigFromData(configuration) : reviewConfig, gettingStarted.cacheName)
 
         createCacheCall
             .then((actionResponse) => {

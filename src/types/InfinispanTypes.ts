@@ -290,7 +290,7 @@ interface CacheEditorStep {
 interface BasicConfigurationStep {
   topology: string;
   mode: string;
-  numberOfOwners: number | undefined;
+  numberOfOwners?: number;
   encoding: string;
   statistics: boolean;
   expiration: boolean;
@@ -307,17 +307,48 @@ interface BoundedCache {
   evictionStrategy: string;
 }
 
+interface IndexWriter {
+  commitInterval?: number;
+  lowLevelTrace: boolean;
+  maxBufferedEntries?: number;
+  queueCount?: number;
+  queueSize?: number;
+  ramBufferSize?: number;
+  threadPoolSize?: number;
+}
+interface IndexMerge {
+  calibrateByDeletes: boolean;
+  factor?: number;
+  maxEntries?: number;
+  minSize?: number;
+  maxSize?: number;
+  maxForcedSize?: number;
+}
+interface IndexedCache {
+  enableIndexing: boolean;
+  indexedStorage: 'filesystem' | 'local_heap';
+  indexedEntities: string[];
+}
+
 interface CacheFeatureStep {
-  cacheFeatureSelected: [string];
+  cacheFeatureSelected: string[];
   boundedCache: BoundedCache;
+  indexedCache: IndexedCache;
 }
 
 interface AdvancedConfigurationStep {
-  storage: string;
-  concurrencyLevel: number;
-  isolationLevel: string;
-  lockAcquisitionTimeout: number;
-  striping: boolean;
+  storage?: string;
+  concurrencyLevel?: number;
+  isolationLevel?: string;
+  lockAcquisitionTimeout?: number;
+  striping?: boolean;
+  indexReader?: number;
+  indexWriter: IndexWriter;
+  indexMerge: IndexMerge;
+  isOpenIndexReader: boolean;
+  isOpenIndexMerge: boolean;
+  isOpenIndexWriter: boolean;
+  disabledStriping: boolean;
 }
 
 interface CacheConfiguration {

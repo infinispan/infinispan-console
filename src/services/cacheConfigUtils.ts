@@ -161,6 +161,7 @@ export class CacheConfigUtils {
     const distributedCache = 'distributed-cache';
     const replicatedCache = 'replicated-cache';
 
+    // Default cache configuration
     const generalCache = {
       mode: data.basic.mode,
       owners: data.basic.numberOfOwners,
@@ -168,20 +169,25 @@ export class CacheConfigUtils {
       encoding: {
         'media-type': data.basic.encoding,
       },
-      locking: {
-        isolation: data.advanced.isolationLevel,
-        striping: data.advanced.striping,
-        'concurrency-level': data.advanced.concurrencyLevel,
-        'acquire-timeout': data.advanced.lockAcquisitionTimeout,
-      },
     };
 
+    // Choose topology and add to the configuration
     data.basic.topology === 'Distributed'
       ? ((cache = { [distributedCache]: generalCache }),
         (cacheType = distributedCache))
       : ((cache = { [replicatedCache]: generalCache }),
         (cacheType = replicatedCache));
 
+    const locking = () => {
+      cache[cacheType].locking = {
+        isolation: data.advanced.isolationLevel,
+        striping: data.advanced.striping,
+        'concurrency-level': data.advanced.concurrencyLevel,
+        'acquire-timeout': data.advanced.lockAcquisitionTimeout,
+      };
+    };
+
+    // config for Expiration cache
     const expiration = () => {
       cache[cacheType]['expiration'] = {
         lifespan: convertToMilliseconds(
@@ -195,6 +201,7 @@ export class CacheConfigUtils {
       };
     };
 
+    // config for Bounded cache
     const featureBounded = () => {
       cache[cacheType]['memory'] = {
         'max-count': data.feature.boundedCache.maxCount,
@@ -203,9 +210,105 @@ export class CacheConfigUtils {
       };
     };
 
+    // config for Indexed cache
+    const featureIndexed = () => {
+      cache[cacheType]['indexing'] = {
+        enabled: true,
+        storage: data.feature.indexedCache.indexedStorage,
+        'indexed-entities': data.feature.indexedCache.indexedEntities,
+      };
+    };
+
+    const indexReader = () => {
+      cache[cacheType]['indexing']['index-reader'] = {
+        'refresh-interval': data.advanced.indexReader,
+      };
+    };
+
+    const indexWriter = () => {
+      cache[cacheType]['indexing']['index-writer'] = {
+        'commit-interval': data.advanced.indexWriter.commitInterval,
+        'max-buffered-entries': data.advanced.indexWriter.maxBufferedEntries,
+        'queue-count': data.advanced.indexWriter.queueCount,
+        'queue-size': data.advanced.indexWriter.queueSize,
+        'ram-buffer-size': data.advanced.indexWriter.ramBufferSize,
+        'thread-pool-size': data.advanced.indexWriter.threadPoolSize,
+      };
+    };
+
+    const indexMerge = () => {
+      // Add index merge config to the configuration
+      !cache[cacheType]['indexing']['index-writer'] &&
+        (cache[cacheType]['indexing']['index-writer'] = {});
+
+      cache[cacheType]['indexing']['index-writer']['index-merge'] = {
+        factor: data.advanced.indexMerge.factor,
+        'max-entries': data.advanced.indexMerge.maxEntries,
+        'min-size': data.advanced.indexMerge.minSize,
+        'max-size': data.advanced.indexMerge.maxSize,
+        'max-forced-size': data.advanced.indexMerge.maxForcedSize,
+      };
+    };
+
+    const helperLowLevelTrace = () => {
+      cache[cacheType]['indexing']['index-writer']['low-level-trace'] =
+        data.advanced.indexWriter.lowLevelTrace;
+    };
+
+    const helperCalibrateByDeletes = () => {
+      cache[cacheType]['indexing']['index-writer']['index-merge'][
+        'calibrate-by-deletes'
+      ] = data.advanced.indexMerge.calibrateByDeletes;
+    };
+
+    const helperMemoryStorageType = () => {
+      !cache[cacheType]['memory']
+        ? (cache[cacheType]['memory'] = {
+            storage: data.advanced.storage,
+          })
+        : (cache[cacheType]['memory'].storage = data.advanced.storage);
+    };
+
+    if (
+      data.advanced.concurrencyLevel ||
+      data.advanced.striping ||
+      data.advanced.isolationLevel ||
+      data.advanced.lockAcquisitionTimeout
+    )
+      locking();
+
     data.basic.expiration === true && expiration();
     data.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED) &&
       featureBounded();
+    data.advanced.storage && helperMemoryStorageType();
+
+    if (data.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
+      featureIndexed();
+      data.advanced.indexReader && indexReader();
+      if (
+        data.advanced.indexWriter.commitInterval ||
+        data.advanced.indexWriter.maxBufferedEntries ||
+        data.advanced.indexWriter.queueCount ||
+        data.advanced.indexWriter.queueSize ||
+        data.advanced.indexWriter.ramBufferSize ||
+        data.advanced.indexWriter.threadPoolSize
+      )
+        indexWriter();
+
+      if (
+        data.advanced.indexMerge.factor ||
+        data.advanced.indexMerge.maxEntries ||
+        data.advanced.indexMerge.minSize ||
+        data.advanced.indexMerge.maxSize ||
+        data.advanced.indexMerge.maxForcedSize
+      )
+        indexMerge();
+
+      data.advanced.indexWriter.lowLevelTrace && helperLowLevelTrace();
+      data.advanced.indexMerge.calibrateByDeletes && helperCalibrateByDeletes();
+    }
+    console.log('cache', cache[cacheType]['memory']);
+
     return JSON.stringify(cache, null, 2);
   }
 
@@ -269,12 +372,10 @@ export class CacheConfigUtils {
   }
 
   public static createCacheWithWizardStep(
-    data: CacheConfiguration,
+    config: string,
     cacheName: string
   ): Promise<ActionResponse> {
     const name = cacheName.trim();
-    const config = CacheConfigUtils.createCacheConfigFromData(data);
-
     // Validate Name
     const isValidName: 'success' | 'error' =
       name.length > 0 ? 'success' : 'error';
@@ -294,7 +395,7 @@ export class CacheConfigUtils {
 
     const createCacheCall: Promise<ActionResponse> = ConsoleServices.caches().createCacheWithConfiguration(
       cacheName,
-      CacheConfigUtils.createCacheConfigFromData(data),
+      config,
       'json'
     );
 
