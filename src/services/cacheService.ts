@@ -614,9 +614,7 @@ export class CacheService {
    *
    * @param cacheName
    */
-  public async cacheExists(
-    cacheName: string
-  ): Promise<ActionResponse> {
+  public async cacheExists(cacheName: string): Promise<ActionResponse> {
     return this.fetchCaller.head({
       url: this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} name is available.`,

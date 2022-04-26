@@ -103,10 +103,7 @@ export class FetchCaller {
    * @param url
    */
   public head(headCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(
-      headCall.url,
-      'HEAD'
-    );
+    let responsePromise = this.fetch(headCall.url, 'HEAD');
     return this.handleCRUDActionResponse(
       headCall.successMessage,
       headCall.errorMessage,
