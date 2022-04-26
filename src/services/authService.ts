@@ -84,14 +84,16 @@ export class AuthenticationService {
       })
       .then((json) => {
         let jsonLength = Object.keys(json).length;
-         if (jsonLength <= 1 ||
-            (jsonLength == 2 && json.mode === 'HTTP' && json.ready === 'true')) {
-           return right(<AuthInfo>{
-             mode: 'auth_disabled',
-             ready: true,
-             digest: false,
-           }) as Either<ActionResponse, AuthInfo>;
-         };
+        if (
+          jsonLength <= 1 ||
+          (jsonLength == 2 && json.mode === 'HTTP' && json.ready === 'true')
+        ) {
+          return right(<AuthInfo>{
+            mode: 'auth_disabled',
+            ready: true,
+            digest: false,
+          }) as Either<ActionResponse, AuthInfo>;
+        }
 
         const authInfo = <AuthInfo>{
           mode: json.mode,

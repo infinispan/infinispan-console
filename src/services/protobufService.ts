@@ -1,5 +1,5 @@
-import {Either} from '@services/either';
-import {FetchCaller} from '@services/fetchCaller';
+import { Either } from '@services/either';
+import { FetchCaller } from '@services/fetchCaller';
 
 /**
  * Protobuf schemas manipulation service
@@ -43,7 +43,7 @@ export class ProtobufService {
    */
   public async delete(schemaName: string): Promise<ActionResponse> {
     return this.utils.delete({
-      url: this.endpoint+ '/' + schemaName,
+      url: this.endpoint + '/' + schemaName,
       successMessage: `Schema ${schemaName} has been deleted.`,
       errorMessage: `Unexpected error happened when deleting schema ${schemaName}.`,
     });
@@ -90,5 +90,4 @@ export class ProtobufService {
         )
     );
   }
-
 }
