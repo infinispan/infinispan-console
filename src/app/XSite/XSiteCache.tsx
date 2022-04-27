@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Badge,
   Bullseye,
@@ -20,20 +20,20 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
 } from '@patternfly/react-core';
-import {Link} from 'react-router-dom';
-import {global_spacer_md, global_spacer_xs} from '@patternfly/react-tokens';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
-import {cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter,} from '@patternfly/react-table';
-import {TableEmptyState} from '@app/Common/TableEmptyState';
-import {StateTransfer} from '@app/XSite/StateTransfer';
-import {Status} from '@app/Common/Status';
-import {InfoCircleIcon} from '@patternfly/react-icons';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {ConsoleACL} from "@services/securityService";
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING} from "@services/displayUtils";
+import { Link } from 'react-router-dom';
+import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
+import { cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter, } from '@patternfly/react-table';
+import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { StateTransfer } from '@app/XSite/StateTransfer';
+import { Status } from '@app/Common/Status';
+import { InfoCircleIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from "@services/ConsoleServices";
+import { ConsoleACL } from "@services/securityService";
+import { useConnectedUser } from "@app/services/userManagementHook";
+import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from "@services/displayUtils";
 
 interface StateTransferModalState {
   site: string;
@@ -62,7 +62,7 @@ const XSiteCache = (props) => {
     if (loading) {
       // Load Sites
       // First check ADMIN
-      if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
         setLoading(false);
         setError('Connected user lacks ADMIN permission.');
         return;
@@ -91,21 +91,21 @@ const XSiteCache = (props) => {
             addAlert(eitherResponse.value);
           }
         }).then(() => {
-        // Third get state transfer status
-        crossSiteReplicationService
-          .stateTransferStatus(cacheName)
-          .then((eitherResponse) => {
-            let latestStStatus = new Map();
-            if (eitherResponse.isRight()) {
-              eitherResponse.value.map((stStatus) =>
-                latestStStatus.set(stStatus.site, stStatus.status)
-              );
-              setStateTransferStatus(latestStStatus);
-            } else {
-              addAlert(eitherResponse.value);
-            }
-          }).then(() => setLoading(false));
-      });
+          // Third get state transfer status
+          crossSiteReplicationService
+            .stateTransferStatus(cacheName)
+            .then((eitherResponse) => {
+              let latestStStatus = new Map();
+              if (eitherResponse.isRight()) {
+                eitherResponse.value.map((stStatus) =>
+                  latestStStatus.set(stStatus.site, stStatus.status)
+                );
+                setStateTransferStatus(latestStStatus);
+              } else {
+                addAlert(eitherResponse.value);
+              }
+            }).then(() => setLoading(false));
+        });
     }
   }, [loading]);
 
@@ -222,7 +222,7 @@ const XSiteCache = (props) => {
 
   const buildStateTransferButton = (backup: XSite) => {
     const maybeSTStatus = stateTransferStatus.get(backup.name);
-    const stStatus = maybeSTStatus != undefined? maybeSTStatus : ST_IDLE;
+    const stStatus = maybeSTStatus != undefined ? maybeSTStatus : ST_IDLE;
 
     if (stStatus == ST_SENDING) {
       return (
@@ -324,7 +324,7 @@ const XSiteCache = (props) => {
           heightAuto: true,
           cells: [
             { title: backup.name },
-            { title: buildStatus(backup.name, backup.status) },
+            { title: buildStatus(backup.name, backup.status.status) },
             { title: buildStateTransferStatus(backup.name) },
             { title: buildStateTransferButton(backup) },
           ],
