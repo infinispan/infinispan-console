@@ -61,6 +61,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       isOpen={props.isModalOpen}
       onClose={props.closeModal}
       aria-label={t('support.no-user-label')}
+      disableFocusTrap={true}
       actions={[
         <Button aria-label={'Reload'} key="reload" onClick={props.closeModal}>
           {t('support.reload-button')}

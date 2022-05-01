@@ -53,6 +53,7 @@ const About = (props: {
       brandImageSrc={icon}
       brandImageAlt="Infinispan Logo"
       backgroundImageSrc={backImage}
+      disableFocusTrap={true}
     >
       <Stack>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>

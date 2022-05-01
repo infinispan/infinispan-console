@@ -28,6 +28,7 @@ const DeleteCounter = (props: {
       title={'Permanently delete counter?'}
       onClose={props.closeModal}
       aria-label="Delete counter modal"
+      disableFocusTrap={true}
       actions={[
         <Button
           key={'Confirm'}

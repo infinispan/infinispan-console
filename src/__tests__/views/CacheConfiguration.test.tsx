@@ -57,9 +57,9 @@ describe('Configuration Page', () => {
         config={jsonConfig}
       />
     );
-    expect(screen.getByRole('button', { name: 'JSON' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'XML' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'YAML' })).toBeInTheDocument();
+    expect(screen.getByText('JSON')).toBeInTheDocument();
+    expect(screen.getByText('XML')).toBeInTheDocument();
+    expect(screen.getByText('YAML')).toBeInTheDocument();
   });
 
   test('XML Configuration testing', () => {
@@ -78,8 +78,8 @@ describe('Configuration Page', () => {
         config={jsonConfig}
       />
     );
-    expect(screen.getByRole('button', { name: 'JSON' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'XML' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'YAML' })).toBeInTheDocument();
+    expect(screen.getByText('JSON')).toBeInTheDocument();
+    expect(screen.getByText('XML')).toBeInTheDocument();
+    expect(screen.getByText('YAML')).toBeInTheDocument();
   });
 });
