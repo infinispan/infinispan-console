@@ -164,4 +164,12 @@ export class SecurityService {
   private notExistingCache(cacheName: string, user: ConnectedUser): boolean {
     return !user.acl || !user.acl.caches.has(cacheName);
   }
+
+  /**
+   * Retrieve security roles
+   *
+   */
+  public async getSecurityRoles(): Promise<Either<ActionResponse, string[]>> {
+    return this.utils.get(this.endpoint + '/roles', (text) => text);
+  }
 }

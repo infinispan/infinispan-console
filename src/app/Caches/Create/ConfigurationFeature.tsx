@@ -10,8 +10,10 @@ import {
 import { CacheFeature, EvictionType } from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import { ConsoleServices } from '@services/ConsoleServices';
 import BoundedCache from './Features/BoundedCache';
 import IndexedCache from './Features/IndexedCache';
+import SecuredCache from './Features/SecuredCache';
 
 const ConfigurationFeature = (props: {
     cacheFeature: CacheFeatureStep,
@@ -30,13 +32,33 @@ const ConfigurationFeature = (props: {
     //Indexed Cache
     const [indexedCache, setIndexedCache] = useState<IndexedCache>(props.cacheFeature.indexedCache);
 
+    //Secured Cache
+    const [securedCache, setSecuredCache] = useState<SecuredCache>(props.cacheFeature.securedCache);
+    const [isSecure, setIsSecure] = useState(false);
+
+    const [loading, setLoading] = useState(true);
+
     const [isOpenCacheFeature, setIsOpenCacheFeature] = useState(false);
+
+    useEffect(() => {
+        if (loading) {
+            // Check if secured cache is enabled
+            ConsoleServices.security()
+                .getSecurityRoles()
+                .then((r) => {
+                    if (r.isRight()) {
+                        r.value === [] ? setIsSecure(false) : setIsSecure(true);
+                    }
+                }).then(() => setLoading(false));
+        }
+    }, [loading]);
 
     useEffect(() => {
         props.cacheFeatureModifier({
             cacheFeatureSelected: cacheFeatureSelected,
             boundedCache: boundedCache,
-            indexedCache: indexedCache
+            indexedCache: indexedCache,
+            securedCache: securedCache
         });
         if (cacheFeatureSelected.length < 1)
             props.handleIsFormValid(true);
@@ -48,9 +70,12 @@ const ConfigurationFeature = (props: {
             if (indexedCache.indexedEntities.length > 0)
                 props.handleIsFormValid(true);
         }
+        else if (cacheFeatureSelected.includes(CacheFeature.SECURED)) {
+            securedCache.roles.length > 0 ? props.handleIsFormValid(true) : props.handleIsFormValid(false);
+        }
         else
             props.handleIsFormValid(false);
-    }, [cacheFeatureSelected, boundedCache, indexedCache]);
+    }, [cacheFeatureSelected, boundedCache, indexedCache, securedCache]);
 
     const onSelect = (event, selection) => {
         if (cacheFeatureSelected.includes(selection)) {
@@ -66,7 +91,7 @@ const ConfigurationFeature = (props: {
     };
 
     const cacheFeatureOptions = () => {
-        const availableOptions = ['BOUNDED', 'INDEXED'];
+        const availableOptions = ['BOUNDED', 'INDEXED', isSecure && 'SECURED'];
         return Object.keys(CacheFeature).map((key) => (
             <SelectOption key={key} value={CacheFeature[key]} isDisabled={!availableOptions.includes(key)} />
         ));
@@ -74,7 +99,7 @@ const ConfigurationFeature = (props: {
 
     return (
         <Form onSubmit={(e) => {
-          e.preventDefault();
+            e.preventDefault();
         }}>
             <FormGroup fieldId='cache-feature'>
                 <MoreInfoTooltip label={t('caches.create.configurations.feature.cache-feature-list', { brandname: brandname })} toolTip={t('caches.create.configurations.feature.cache-feature-list-tooltip')} textComponent={TextVariants.h2} />
@@ -95,6 +120,8 @@ const ConfigurationFeature = (props: {
 
             {cacheFeatureSelected.includes(CacheFeature.BOUNDED) && <BoundedCache boundedOptions={boundedCache} boundedOptionsModifier={setBoundedCache} handleIsFormValid={props.handleIsFormValid} />}
             {cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCache indexedOptions={indexedCache} indexedOptionsModifier={setIndexedCache} />}
+            {cacheFeatureSelected.includes(CacheFeature.SECURED) && <SecuredCache securedOptions={securedCache} securedOptionsModifier={setSecuredCache} />}
+            {console.log("securedCache.roles.length", securedCache.roles.length)}
         </Form>
     );
 };

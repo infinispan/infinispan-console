@@ -107,9 +107,9 @@ export enum CacheMode {
 export enum CacheFeature {
   BOUNDED = 'Bounded',
   INDEXED = 'Indexed',
+  SECURED = 'Authorization',
   PERSISTENCE = 'Persistence',
   TRANSACTIONAL = 'Transactional',
-  SECURED = 'Secured',
   BACKUPS = 'Backups',
 }
 

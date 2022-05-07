@@ -330,10 +330,15 @@ interface IndexedCache {
   indexedEntities: string[];
 }
 
+interface SecuredCache {
+  roles: string[];
+}
+
 interface CacheFeatureStep {
   cacheFeatureSelected: string[];
   boundedCache: BoundedCache;
   indexedCache: IndexedCache;
+  securedCache: SecuredCache;
 }
 
 interface AdvancedConfigurationStep {
