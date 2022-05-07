@@ -67,10 +67,15 @@ const IndexedCacheInitialState: IndexedCache = {
     indexedEntities: [],
 }
 
+const SecuredCacheInitialState: SecuredCache = {
+    roles: [],
+}
+
 const CacheFeatureInitialState: CacheFeatureStep = {
     cacheFeatureSelected: [],
     boundedCache: BoundedCacheInitialState,
-    indexedCache: IndexedCacheInitialState
+    indexedCache: IndexedCacheInitialState,
+    securedCache: SecuredCacheInitialState,
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {

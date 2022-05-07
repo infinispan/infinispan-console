@@ -211,7 +211,10 @@
           "index-storage-entity": "Entities to index",
           "index-storage-add-btn": "Add",
           "index-storage-entity-tooltip": "Specify the fully qualified class names of the entities you want {{brandname}} to include when building the index.",
-          "index-storage-entity-helper": "Each entity that you specify must be unique."
+          "index-storage-entity-helper": "Each entity that you specify must be unique.",
+          "secured": "Authorization",
+          "secured-description": "Configure {{brandname}} to use security to protect data in the cache.",
+          "select-roles": "Select roles"
         },
         "advanced-options": {
           "nav-title": "Cache tuning",

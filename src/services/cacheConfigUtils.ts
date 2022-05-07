@@ -250,6 +250,15 @@ export class CacheConfigUtils {
       };
     };
 
+    const featureSecured = () => {
+      cache[cacheType]['security'] = {
+        authorization: {
+          enabled: true,
+          roles: data.feature.securedCache.roles,
+        },
+      };
+    };
+
     const helperLowLevelTrace = () => {
       cache[cacheType]['indexing']['index-writer']['low-level-trace'] =
         data.advanced.indexWriter.lowLevelTrace;
@@ -308,6 +317,9 @@ export class CacheConfigUtils {
       data.advanced.indexMerge.calibrateByDeletes && helperCalibrateByDeletes();
     }
     console.log('cache', cache[cacheType]['memory']);
+
+    data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) &&
+      featureSecured();
 
     return JSON.stringify(cache, null, 2);
   }
