@@ -6,17 +6,19 @@ interface Status {
 
 interface CacheManager {
   name: string;
-  physical_addresses: [string];
+  physical_addresses: string[];
   coordinator: boolean;
   cluster_name: string;
   cache_manager_status: Status;
   cluster_size: number;
-  defined_caches: [DefinedCache];
-  cache_configuration_names: [string];
-  cluster_members: [ClusterMember];
+  defined_caches: DefinedCache[];
+  cache_configuration_names: string[];
+  cluster_members: ClusterMember[];
   health: string;
   local_site?: string;
   rebalancing_enabled?: boolean;
+  backups_enabled: boolean;
+  sites_view: string[];
 }
 
 interface ClusterMember {
@@ -173,6 +175,7 @@ interface SiteNode {
 interface XSite {
   name: string;
   status: string;
+  relay_node: boolean;
 }
 
 interface CacheAcl {
@@ -302,8 +305,9 @@ interface BasicConfigurationStep {
 
 interface BoundedCache {
   evictionType: 'size' | 'count';
-  maxSize: string | undefined;
-  maxCount: string | undefined;
+  maxSize: number;
+  maxSizeUnit: string;
+  maxCount: number;
   evictionStrategy: string;
 }
 
@@ -333,12 +337,58 @@ interface IndexedCache {
 interface SecuredCache {
   roles: string[];
 }
+interface BackupTakeOffline {
+  afterFailures?: number;
+  minWait?: number;
+}
+
+interface BackupStateTransfer {
+  chunckSize?: number;
+  timeout?: number;
+  maxRetries?: number;
+  waitTime?: number;
+  mode?: 'MANUAL' | 'AUTO';
+}
+interface BackupSite {
+  site?: string;
+  failurePolicy?: 'IGNORE' | 'WARN' | 'FAIL' | 'CUSTOM';
+  timeout?: number;
+  twoPhaseCommit?: boolean;
+  failurePolicyClass?: string;
+  takeOffline?: BackupTakeOffline;
+  stateTransfer?: BackupStateTransfer;
+}
+
+interface BackupFor {
+  remoteCache?: string;
+  remoteSite?: string;
+}
+
+interface BackupSiteBasic {
+  siteName?: string;
+  siteStrategy?: string;
+}
+
+interface BackupSetting {
+  mergePolicy?: string;
+  maxCleanupDelay?: number;
+  tombstoneMapSize?: number;
+}
+
+interface BackupsCache {
+  sites: BackupSiteBasic[];
+  backupFor?: BackupFor;
+  enableBackupFor: boolean;
+  isRemoteCacheValid: boolean;
+  isRemoteSiteValid: boolean;
+}
 
 interface CacheFeatureStep {
   cacheFeatureSelected: string[];
   boundedCache: BoundedCache;
   indexedCache: IndexedCache;
   securedCache: SecuredCache;
+  backupsCache: BackupsCache;
 }
 
 interface AdvancedConfigurationStep {
@@ -354,6 +404,8 @@ interface AdvancedConfigurationStep {
   isOpenIndexMerge: boolean;
   isOpenIndexWriter: boolean;
   disabledStriping: boolean;
+  backupSetting?: BackupSetting;
+  backupSiteData?: BackupSite[];
 }
 
 interface CacheConfiguration {

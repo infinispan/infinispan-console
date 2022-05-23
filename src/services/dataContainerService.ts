@@ -76,6 +76,8 @@ export class ContainerService {
               : maybeHealth.value.message,
             local_site: data.local_site,
             rebalancing_enabled: data.rebalancing_enabled,
+            backups_enabled: data.relay_node,
+            sites_view: data.sites_view,
           }
       )
     );

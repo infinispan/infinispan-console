@@ -1,10 +1,10 @@
 <infinispan
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:infinispan:config:12.1 https://infinispan.org/schemas/infinispan-config-12.1.xsd
-                            urn:infinispan:server:12.1 https://infinispan.org/schemas/infinispan-server-12.1.xsd
-                            urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.0.xsd"
-  xmlns="urn:infinispan:config:12.0"
-  xmlns:server="urn:infinispan:server:12.0">
+  xsi:schemaLocation="urn:infinispan:config:14.0 https://infinispan.org/schemas/infinispan-config-14.0.xsd
+                            urn:infinispan:server:14.0 https://infinispan.org/schemas/infinispan-server-14.0.xsd
+                            urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.2.xsd"
+  xmlns="urn:infinispan:config:14.0"
+  xmlns:server="urn:infinispan:server:14.0">
 
   <jgroups>
     <stack name="bridge">
@@ -128,12 +128,9 @@
 
   <cache-container name="default" statistics="true">
     <transport cluster="${infinispan.cluster.name}" stack="cluster"/>
-    <security>
-      <authorization/>
-    </security>
   </cache-container>
 
-  <server xmlns="urn:infinispan:server:12.1">
+  <server xmlns="urn:infinispan:server:14.0">
     <interfaces>
       <interface name="public">
         <inet-address value="${infinispan.bind.address:127.0.0.1}"/>
@@ -145,31 +142,6 @@
       <socket-binding name="memcached" port="11221"/>
     </socket-bindings>
 
-    <security>
-      <security-realms>
-        <security-realm name="default">
-          <!-- Uncomment to enable TLS on the realm -->
-          <!-- server-identities>
-             <ssl>
-                <keystore path="application.keystore" relative-to="infinispan.server.config.path"
-                          keystore-password="password" alias="server" key-password="password"
-                          generate-self-signed-certificate-host="localhost"/>
-             </ssl>
-          </server-identities-->
-          <properties-realm groups-attribute="Roles">
-            <user-properties path="users.properties" relative-to="infinispan.server.config.path"
-                             plain-text="true"/>
-            <group-properties path="groups.properties" relative-to="infinispan.server.config.path"/>
-          </properties-realm>
-        </security-realm>
-      </security-realms>
-    </security>
-
-    <endpoints socket-binding="default" security-realm="default">
-      <hotrod-connector name="hotrod"/>
-      <rest-connector name="rest"/>
-      <!-- Uncomment to enable the memcached connector -->
-      <!-- memcached-connector socket-binding="memcached" / -->
-    </endpoints>
+    <endpoints socket-binding="default"/>
   </server>
 </infinispan>

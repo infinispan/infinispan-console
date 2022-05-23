@@ -6,5 +6,5 @@ type: Opaque
 stringData:
   identities.yaml: |-
     credentials:
-    - username: user-siteb
-      password: pwd-siteb
+    - username: admin
+      password: password

@@ -1,33 +1,38 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    Divider,
-    ExpandableSection,
-    Flex,
-    FlexItem,
-    Form,
-    FormGroup,
-    Radio,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Switch,
-    Text,
-    TextContent,
-    TextVariants,
-    TextInput
+  Card,
+  CardBody,
+  CardHeader,
+  ExpandableSection,
+  Flex,
+  FlexItem,
+  Form,
+  FormGroup,
+  Radio,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Switch,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants
 } from '@patternfly/react-core';
-import { IsolationLevel, StorageType } from "@services/infinispanRefData";
-import { useTranslation } from 'react-i18next';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import {EvictionStrategy, IsolationLevel, StorageType} from "@services/infinispanRefData";
+import {useTranslation} from 'react-i18next';
+import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import BackupSite from './Features/Backups/BackupsSite';
+
+const BackupSiteInitialState: BackupSite = {
+}
 
 const AdvancedOptions = (props: {
     advancedOptions: AdvancedConfigurationStep,
     advancedOptionsModifier: (AdvancedConfigurationStep) => void,
     showIndexTuning: boolean,
+    showBackupsTuning: boolean,
+    backupsSite?: BackupSiteBasic[],
 }) => {
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
@@ -63,10 +68,19 @@ const AdvancedOptions = (props: {
     const [isOpenIndexWriter, setIsOpenIndexWriter] = useState(props.advancedOptions.isOpenIndexWriter);
     const [isOpenIndexMerge, setIsOpenIndexMerge] = useState(props.advancedOptions.isOpenIndexMerge);
 
+    // Backups tuning
+    //Todo: call initial state from props.advancedOption.backupSiteData
+    const [backupSiteData, setBackupSiteData] = useState<BackupSite[]>(props.advancedOptions.backupSiteData || Array(props.backupsSite?.length).fill(BackupSiteInitialState));
+    const [mergePolicy, setMergePolicy] = useState(props.advancedOptions.backupSetting?.mergePolicy);
+    const [maxCleanupDelay, setMaxCleanupDelay] = useState(props.advancedOptions.backupSetting?.maxCleanupDelay);
+    const [tombstoneMapSize, setTombstoneMapSize] = useState(props.advancedOptions.backupSetting?.tombstoneMapSize);
+
     const [isOpenIsolationLevel, setIsOpenIsolationLevel] = useState(false);
     const [disabledStriping, setDisabledStriping] = useState(props.advancedOptions.disabledStriping);
 
-    useEffect(() => {
+    const [isOpenStorage, setIsOpenStorage] = useState(false);
+
+  useEffect(() => {
         props.advancedOptionsModifier({
             storage: storage,
             concurrencyLevel: concurrencyLevel,
@@ -95,8 +109,14 @@ const AdvancedOptions = (props: {
             isOpenIndexWriter: isOpenIndexWriter,
             isOpenIndexMerge: isOpenIndexMerge,
             disabledStriping: disabledStriping,
+            backupSetting: {
+                mergePolicy: mergePolicy,
+                maxCleanupDelay: maxCleanupDelay,
+                tombstoneMapSize: tombstoneMapSize,
+            },
+            backupSiteData: backupSiteData,
         });
-    }, [storage, concurrencyLevel, isolationLevel, lockAcquisitionTimeout, striping, refreshInterval, commitInterval, lowLevelTrace, maxBufferedEntries, queueCount, queueSize, ramBufferSize, threadPoolSize, calibrateByDeletes, factor, maxEntries, minSize, maxSize, maxForcedSize, isOpenIndexReader, isOpenIndexWriter, isOpenIndexMerge, disabledStriping]);
+    }, [storage, concurrencyLevel, isolationLevel, lockAcquisitionTimeout, striping, refreshInterval, commitInterval, lowLevelTrace, maxBufferedEntries, queueCount, queueSize, ramBufferSize, threadPoolSize, calibrateByDeletes, factor, maxEntries, minSize, maxSize, maxForcedSize, isOpenIndexReader, isOpenIndexWriter, isOpenIndexMerge, disabledStriping, backupSiteData, mergePolicy, maxCleanupDelay, tombstoneMapSize]);
 
     const onToggleIsolationLevel = () => {
         setIsOpenIsolationLevel(!isOpenIsolationLevel);
@@ -115,6 +135,18 @@ const AdvancedOptions = (props: {
         setLockAcquisitionTimeout(value);
     }
 
+    const onSelectStorage = (event, selection, isPlaceholder) => {
+      setStorage(selection);
+      setIsOpenStorage(false);
+    };
+
+    // Options for Storage
+    const storageOptions = () => {
+      return Object.keys(StorageType).map((key) => (
+        <SelectOption key={key} value={StorageType[key]}/>
+      ));
+    };
+
     const formMemory = () => {
         return (
             <Card>
@@ -127,32 +159,18 @@ const AdvancedOptions = (props: {
                         isRequired
                         fieldId="field-storage"
                     >
-                        <Radio
-                            name="radio"
-                            id="heap"
-                            onChange={() => setStorage(StorageType.HEAP)}
-                            isChecked={storage as StorageType == StorageType.HEAP}
-                            label={
-                                <TextContent>
-                                    <Text component={TextVariants.h3}>
-                                        {t('caches.create.configurations.advanced-options.radio-heap')}
-                                    </Text>
-                                </TextContent>
-                            }
-                        />
-                        <Radio
-                            name="radio"
-                            id="off_heap"
-                            onChange={() => setStorage(StorageType.OFF_HEAP)}
-                            isChecked={storage as StorageType == StorageType.OFF_HEAP}
-                            label={
-                                <TextContent>
-                                    <Text component={TextVariants.h3}>
-                                        {t('caches.create.configurations.advanced-options.radio-off-heap')}
-                                    </Text>
-                                </TextContent>
-                            }
-                        />
+                      <Select
+                        variant={SelectVariant.single}
+                        aria-label="storage-select"
+                        onToggle={() => setIsOpenStorage(!isOpenStorage)}
+                        onSelect={onSelectStorage}
+                        selections={storage}
+                        isOpen={isOpenStorage}
+                        aria-labelledby="toggle-id-storage"
+                        placeholderText={StorageType.HEAP}
+                      >
+                        {storageOptions()}
+                      </Select>
                     </FormGroup>
                 </CardBody>
             </Card>
@@ -197,7 +215,7 @@ const AdvancedOptions = (props: {
                             selections={isolationLevel}
                             isOpen={isOpenIsolationLevel}
                             aria-labelledby="toggle-id-isolation-level"
-                            placeholderText='Select isolation level'
+                            placeholderText={IsolationLevel.REPEATABLE_READ}
                         >
                             {isolationLevelOptions()}
                         </Select>
@@ -435,6 +453,66 @@ const AdvancedOptions = (props: {
         );
     }
 
+    const formBackupsSetting = () => {
+        return (
+            <Form onSubmit={(e) => {
+                e.preventDefault();
+            }}>
+                <FormGroup
+                    fieldId='merge-policy'
+                    isRequired
+                    isInline
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.feature.merge-policy')} toolTip={t('caches.create.configurations.feature.merge-policy-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
+                    <TextInput placeholder='DEFAULT' value={mergePolicy} onChange={(val) => { val === "" ? setMergePolicy(undefined!) : setMergePolicy(val) }} aria-label="merge-policy-input" />
+                </FormGroup>
+
+                <FormGroup
+                    fieldId='max-cleanup-delay'
+                    isRequired
+                    isInline
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.feature.max-cleanup-delay')} toolTip={t('caches.create.configurations.feature.max-cleanup-delay-tooltip')} textComponent={TextVariants.h3} />
+                    <TextInput placeholder='30000' type='number' value={maxCleanupDelay} onChange={(val) => { isNaN(parseInt(val)) ? setMaxCleanupDelay(undefined!) : setMaxCleanupDelay(parseInt(val)) }} aria-label="max-cleanup-delay-input" />
+                </FormGroup>
+
+                <FormGroup
+                    fieldId='tombstone-map-size'
+                    isRequired
+                    isInline
+                >
+                    <MoreInfoTooltip label={t('caches.create.configurations.feature.tombstone-map-site')} toolTip={t('caches.create.configurations.feature.tombstone-map-site-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
+                    <TextInput placeholder='512000' type='number' value={tombstoneMapSize} onChange={(val) => { isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val)) }} aria-label="tombstone-map-size-input" />
+                </FormGroup>
+            </Form>
+        )
+    }
+
+    const formBackupsTuning = () => {
+        return (
+            <Card>
+                <CardHeader>
+                    <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.backups-tuning')} toolTip={t('caches.create.configurations.advanced-options.backups-tuning-tooltip', { brandname: brandname })} textComponent={TextVariants.h2} />
+                </CardHeader>
+                <CardBody>
+                    {formBackupsSetting()}
+                </CardBody>
+                {props.backupsSite && props.backupsSite.map((site, index) => {
+                    return (
+                        <CardBody key={index}>
+                            <ExpandableSection
+                                toggleText={site.siteName}
+                                displaySize='large'
+                            >
+                                <BackupSite backupSiteOptions={backupSiteData} backupSiteOptionsModifier={setBackupSiteData} index={index} siteBasic={site} />
+                            </ExpandableSection>
+                        </CardBody>
+                    )
+                })}
+            </Card>
+        )
+    }
+
     return (
         <Form onSubmit={(e) => {
             e.preventDefault();
@@ -442,6 +520,7 @@ const AdvancedOptions = (props: {
             {formMemory()}
             {formLocking()}
             {props.showIndexTuning && formIndexTuning()}
+            {props.showBackupsTuning && formBackupsTuning()}
         </Form>
     );
 };

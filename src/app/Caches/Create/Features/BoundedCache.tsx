@@ -19,9 +19,8 @@ import {useTranslation} from 'react-i18next';
 import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 
 const BoundedCache = (props: {
-    boundedOptions,
-    boundedOptionsModifier,
-    handleIsFormValid: (isFormValid: boolean) => void
+    boundedOptions: BoundedCache,
+    boundedOptionsModifier: (modifier: BoundedCache) => void,
 }) => {
 
     const { t } = useTranslation();
@@ -29,61 +28,26 @@ const BoundedCache = (props: {
 
     //Bounded Cache
     const [evictionType, setEvictionType] = useState<'size' | 'count'>(props.boundedOptions.evictionType);
-    const [maxSize, setMaxSize] = useState<string | undefined>(props.boundedOptions.maxSize);
-    const [maxCount, setMaxCount] = useState<string | undefined>(props.boundedOptions.maxCount);
+    const [maxSize, setMaxSize] = useState<number>(props.boundedOptions.maxSize);
+    const [maxCount, setMaxCount] = useState<number>(props.boundedOptions.maxCount);
     const [evictionStrategy, setEvictionStrategy] = useState<string>(props.boundedOptions.evictionStrategy);
 
     const [isOpenEvictionStrategy, setIsOpenEvictionStrategy] = useState(false);
     const [isOpenMaxSizeUnit, setIsOpenMaxSizeUnit] = useState(false);
 
     // Helper states for the maxSize input
-    const [maxSizeNumber, setMaxSizeNumber] = useState<string>();
     const [maxSizeUnit, setMaxSizeUnit] = useState<MaxSizeUnit>(MaxSizeUnit.MB);
 
-    useEffect(() => {
-        if (maxSize) {
-          // Splitting the maxSize string into number and unit
-          // @ts-ignore
-          const [num, unit] = maxSize.match(/\D+|\d+/g);
-          setMaxSizeNumber(num);
-          setMaxSizeUnit(MaxSizeUnit[unit]);
-        } else {
-          setMaxSizeNumber(undefined);
-        }
-    }, [maxSize])
-
-    useEffect(() => {
-        // Update maxSize string
-        if (maxSizeNumber) {
-            setMaxSize(maxSizeNumber + maxSizeUnit);
-        }
-        // Update maxSize number and count if string is null
-        if (maxSizeNumber === '') {
-            setMaxSize(undefined);
-            setMaxSizeNumber(undefined);
-        }
-        if (maxCount === '') setMaxCount(undefined);
-    }, [maxSizeNumber, maxSizeUnit, maxCount])
-
-    useEffect(() => {
-        // Update when evictionType changed
-        if (evictionType === EvictionType.count) {
-            setMaxSize(undefined);
-            setMaxSizeNumber(undefined);
-        }
-        else if (evictionType === EvictionType.size) {
-            setMaxCount(undefined);
-        }
-    }, [evictionType])
 
     useEffect(() => {
         props.boundedOptionsModifier({
             evictionType: evictionType,
             maxSize: maxSize,
             maxCount: maxCount,
-            evictionStrategy: evictionStrategy
+            evictionStrategy: evictionStrategy,
+            maxSizeUnit: maxSizeUnit.toString()
         });
-    }, [evictionType, maxSize, maxCount, evictionStrategy])
+    }, [evictionType, maxSize, maxCount, evictionStrategy, maxSizeUnit])
 
     const onSelectEvictionStrategy = (event, selection, isPlaceholder) => {
         setEvictionStrategy(selection);
@@ -152,12 +116,12 @@ const BoundedCache = (props: {
               <FormGroup
                 isRequired
                 fieldId="max-size"
-                validated={!maxSize || (maxSizeNumber && parseInt(maxSizeNumber) >= 0) ? 'default' : 'error'}
+                validated={evictionType === 'size' && maxSize >= 0? 'default' : 'error'}
                 helperTextInvalid={t('caches.create.configurations.feature.max-size-helper-invalid')}
               >
                 <MoreInfoTooltip label={t('caches.create.configurations.feature.max-size')} toolTip={t('caches.create.configurations.feature.max-size-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                 <InputGroup>
-                      <TextInput min={0} value={maxSizeNumber} type="number" onChange={(value) => setMaxSizeNumber(value)} aria-label="max-size-number-input"/>
+                      <TextInput min={0} value={maxSize} type="number" onChange={(v)  => setMaxSize(parseInt(v))} aria-label="max-size-number-input"/>
                       <Select
                         variant={SelectVariant.single}
                         aria-label="max-size-unit-input"
@@ -178,11 +142,11 @@ const BoundedCache = (props: {
               <FormGroup
                 isRequired
                 fieldId="max-count"
-                validated={!maxCount || (maxCount && parseInt(maxCount) >= 0) ? 'default' : 'error'}
+                validated={evictionType === 'count' && maxCount >= 0? 'default' : 'error'}
                 helperTextInvalid={t('caches.create.configurations.feature.max-count-helper-invalid')}
               >
                 <MoreInfoTooltip label={t('caches.create.configurations.feature.max-count')} toolTip={t('caches.create.configurations.feature.max-count-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
-                <TextInput min={0} value={maxCount} type="number" onChange={(value) => setMaxCount(value)} aria-label="max-count-input" />
+                <TextInput min={0} value={maxCount} type="number" onChange={(v) => setMaxCount(parseInt(v))} aria-label="max-count-input" />
               </FormGroup>
             }
           </CardBody>

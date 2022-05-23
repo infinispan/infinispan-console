@@ -4,9 +4,10 @@ metadata:
   name: mycache-site-b
 spec:
   clusterName: example-clusterb
-  name: mycache 
+  name: mycache
   template: |-
     <distributed-cache name="mycache" mode="SYNC">
+      <encoding media-type="application/x-protostream"/>
       <backups>
         <backup site="SiteA" strategy="SYNC" timeout="5000">
           <take-offline after-failures="10" min-wait="10000" />

@@ -140,3 +140,20 @@ export enum IndexedStorage {
   persistent = 'filesystem',
   volatile = 'local_heap',
 }
+
+export enum BackupSiteStrategy {
+  ASYNC = 'ASYNC',
+  SYNC = 'SYNC',
+}
+
+export enum BackupSiteFailurePolicy {
+  IGNORE = 'IGNORE',
+  WARN = 'WARN',
+  FAIL = 'FAIL',
+  CUSTOM = 'CUSTOM',
+}
+
+export enum BackupSiteStateTransferMode {
+  MANUAL = 'MANUAL',
+  AUTO = 'AUTO',
+}
