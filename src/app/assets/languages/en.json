@@ -212,8 +212,8 @@
           "index-storage-add-btn": "Add",
           "index-storage-entity-tooltip": "Specify the fully qualified class names of the entities you want {{brandname}} to include when building the index.",
           "index-storage-entity-helper": "Each entity that you specify must be unique.",
-          "secured": "Authorization",
-          "secured-description": "Configure {{brandname}} to use security to protect data in the cache.",
+          "secured": "Security authorization",
+          "secured-description": "Restrict access to the cache to protect data. {{brandname}} denies cache operations if users do not have one of the roles you select.",
           "select-roles": "Select roles"
         },
         "advanced-options": {
