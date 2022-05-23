@@ -1,12 +1,7 @@
-import {
-  CacheFeature,
-  ContentType,
-  EncodingType,
-  TimeUnits,
-} from '@services/infinispanRefData';
-import { Either, left, right } from '@services/either';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
+import {CacheFeature, ContentType, EncodingType,} from '@services/infinispanRefData';
+import {Either, left, right} from '@services/either';
+import {ConsoleServices} from '@services/ConsoleServices';
+import {convertToMilliseconds} from '@app/utils/convertToMilliseconds';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -201,13 +196,32 @@ export class CacheConfigUtils {
       };
     };
 
-    // config for Bounded cache
-    const featureBounded = () => {
-      cache[cacheType]['memory'] = {
-        'max-count': data.feature.boundedCache.maxCount,
-        'max-size': data.feature.boundedCache.maxSize,
-        'when-full': data.feature.boundedCache.evictionStrategy,
-      };
+    // config for Memory and Bounded cache
+    const memoryConfiguration = () => {
+      if (data.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED)) {
+        if (data.feature.boundedCache.evictionType === 'size') {
+          cache[cacheType]['memory'] = {
+            'max-size':
+              data.feature.boundedCache.maxSize +
+              data.feature.boundedCache.maxSizeUnit,
+            'when-full': data.feature.boundedCache.evictionStrategy,
+          };
+        } else {
+          cache[cacheType]['memory'] = {
+            'max-count': data.feature.boundedCache.maxCount,
+            'when-full': data.feature.boundedCache.evictionStrategy,
+          };
+        }
+        if (data.advanced.storage) {
+          cache[cacheType]['memory'].storage = data.advanced.storage;
+        }
+      } else {
+        if (data.feature.boundedCache && data.advanced.storage) {
+          cache[cacheType]['memory'] = {
+            storage: data.advanced.storage,
+          };
+        }
+      }
     };
 
     // config for Indexed cache
@@ -261,12 +275,79 @@ export class CacheConfigUtils {
       };
     };
 
-    const helperMemoryStorageType = () => {
-      !cache[cacheType]['memory']
-        ? (cache[cacheType]['memory'] = {
-            storage: data.advanced.storage,
-          })
-        : (cache[cacheType]['memory'].storage = data.advanced.storage);
+    const backups = () => {
+      cache[cacheType]['backups'] = {
+        'merge-policy': data.advanced.backupSetting?.mergePolicy,
+        'tombstone-map-size': data.advanced.backupSetting?.tombstoneMapSize,
+        'max-cleanup-delay': data.advanced.backupSetting?.maxCleanupDelay,
+      };
+    };
+
+    const helperBackups = () => {
+      data.feature.backupsCache.sites.forEach((site, index) => {
+        cache[cacheType]['backups'][site.siteName!] = {
+          backup: {
+            strategy: site.siteStrategy,
+            'failure-policy': data.advanced.backupSiteData![index]
+              .failurePolicy,
+            timeout: data.advanced.backupSiteData![index].timeout,
+            'two-phase-commit': data.advanced.backupSiteData![index]
+              .twoPhaseCommit,
+            'failure-policy-class': data.advanced.backupSiteData![index]
+              .failurePolicyClass,
+          },
+        };
+        if (
+          data.advanced.backupSiteData![index].takeOffline?.afterFailures ||
+          data.advanced.backupSiteData![index].takeOffline?.minWait
+        ) {
+          cache[cacheType]['backups'][site.siteName!].backup['take-offline'] = {
+            'after-failures': data.advanced.backupSiteData![index].takeOffline
+              ?.afterFailures,
+            'min-wait': data.advanced.backupSiteData![index].takeOffline
+              ?.minWait,
+          };
+        }
+        if (
+          data.advanced.backupSiteData![index].stateTransfer?.chunckSize ||
+          data.advanced.backupSiteData![index].stateTransfer?.maxRetries ||
+          data.advanced.backupSiteData![index].stateTransfer?.timeout ||
+          data.advanced.backupSiteData![index].stateTransfer?.mode ||
+          data.advanced.backupSiteData![index].stateTransfer?.waitTime
+        ) {
+          cache[cacheType]['backups'][site.siteName!].backup[
+            'state-transfer'
+          ] = {
+            'chunk-size': data.advanced.backupSiteData![index].stateTransfer
+              ?.chunckSize,
+            'max-retries': data.advanced.backupSiteData![index].stateTransfer
+              ?.maxRetries,
+            timeout: data.advanced.backupSiteData![index].stateTransfer
+              ?.timeout,
+            mode: data.advanced.backupSiteData![index].stateTransfer?.mode,
+            'wait-time': data.advanced.backupSiteData![index].stateTransfer
+              ?.waitTime,
+          };
+        }
+      });
+    };
+
+    const helperBackupsFor = () => {
+      cache[cacheType]['backup-for'] = {
+        'remote-cache': data.feature.backupsCache.backupFor?.remoteCache,
+        'remote-site': data.feature.backupsCache.backupFor?.remoteSite,
+      };
+    };
+
+    const helperLowLevelTrace = () => {
+      cache[cacheType]['indexing']['index-writer']['low-level-trace'] =
+        data.advanced.indexWriter.lowLevelTrace;
+    };
+
+    const helperCalibrateByDeletes = () => {
+      cache[cacheType]['indexing']['index-writer']['index-merge'][
+        'calibrate-by-deletes'
+      ] = data.advanced.indexMerge.calibrateByDeletes;
     };
 
     if (
@@ -278,9 +359,7 @@ export class CacheConfigUtils {
       locking();
 
     data.basic.expiration === true && expiration();
-    data.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED) &&
-      featureBounded();
-    data.advanced.storage && helperMemoryStorageType();
+    memoryConfiguration();
 
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
       featureIndexed();
@@ -305,6 +384,17 @@ export class CacheConfigUtils {
         data.advanced.indexMerge.calibrateByDeletes
       )
         indexMerge();
+    }
+
+    if (data.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
+      backups();
+      helperBackups();
+      if (
+        (data.feature.backupsCache.backupFor?.remoteCache ||
+          data.feature.backupsCache.backupFor?.remoteSite) &&
+        data.feature.backupsCache.enableBackupFor
+      )
+        helperBackupsFor();
     }
 
     data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) &&

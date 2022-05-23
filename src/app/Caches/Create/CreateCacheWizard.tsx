@@ -4,7 +4,19 @@ import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useTranslation } from 'react-i18next';
-import { CacheType, EncodingType, IsolationLevel, StorageType, CacheFeature, CacheMode, EvictionStrategy, TimeUnits, EvictionType, IndexedStorage } from "@services/infinispanRefData";
+import {
+  CacheType,
+  EncodingType,
+  IsolationLevel,
+  StorageType,
+  CacheFeature,
+  CacheMode,
+  EvictionStrategy,
+  TimeUnits,
+  EvictionType,
+  IndexedStorage,
+  MaxSizeUnit
+} from "@services/infinispanRefData";
 import GettingStarted from './GettingStarted';
 import CacheEditor from './CacheEditor';
 import ConfigurationBasic from './ConfigurationBasic';
@@ -47,9 +59,10 @@ const BasicConfigurationInitialState: BasicConfigurationStep = {
 
 const BoundedCacheInitialState: BoundedCache = {
     evictionType: EvictionType.size,
-    maxSize: undefined,
-    maxCount: undefined,
+    maxSize: 0,
+    maxCount: 0,
     evictionStrategy: EvictionStrategy.REMOVE,
+    maxSizeUnit: MaxSizeUnit.MB
 }
 
 const IndexWriterInitialState: IndexWriter = {
@@ -68,11 +81,22 @@ const SecuredCacheInitialState: SecuredCache = {
     roles: [],
 }
 
+const BackupsCacheInitialState: BackupsCache = {
+    sites: [],
+    enableBackupFor: false,
+    isRemoteCacheValid: false,
+    isRemoteSiteValid: false
+}
+
+const BackupSettingInitialState: BackupSetting = {
+}
+
 const CacheFeatureInitialState: CacheFeatureStep = {
     cacheFeatureSelected: [],
     boundedCache: BoundedCacheInitialState,
     indexedCache: IndexedCacheInitialState,
     securedCache: SecuredCacheInitialState,
+    backupsCache: BackupsCacheInitialState
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
@@ -82,6 +106,7 @@ const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
     isOpenIndexReader: false,
     isOpenIndexWriter: false,
     disabledStriping: true,
+    backupSetting: BackupSettingInitialState
 }
 
 const CreateCacheWizard = (props) => {
@@ -229,7 +254,7 @@ const CreateCacheWizard = (props) => {
             {
                 id: 5,
                 name: t('caches.create.configurations.advanced-options.nav-title'),
-                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} />,
+                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} showBackupsTuning={cacheFeature.backupsCache.sites.length > 0} backupsSite={cacheFeature.backupsCache.sites} />,
                 canJumpTo: isFormValid
             },
         ]
