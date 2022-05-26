@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Wizard, WizardContextConsumer, WizardFooter, } from '@patternfly/react-core';
-import { useHistory } from 'react-router';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { useTranslation } from 'react-i18next';
+import React, {useEffect, useState} from 'react';
+import {Button, Wizard, WizardContextConsumer, WizardFooter,} from '@patternfly/react-core';
+import {useHistory} from 'react-router';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {CacheConfigUtils} from '@services/cacheConfigUtils';
+import {useTranslation} from 'react-i18next';
 import {
-  CacheType,
-  EncodingType,
-  IsolationLevel,
-  StorageType,
   CacheFeature,
   CacheMode,
+  CacheType,
+  EncodingType,
   EvictionStrategy,
-  TimeUnits,
   EvictionType,
   IndexedStorage,
-  MaxSizeUnit
+  IsolationLevel,
+  Locking,
+  MaxSizeUnit,
+  TimeUnits,
+  TransactionalMode
 } from "@services/infinispanRefData";
-import GettingStarted from './GettingStarted';
-import CacheEditor from './CacheEditor';
-import ConfigurationBasic from './ConfigurationBasic';
-import AdvancedOptions from './AdvancedOptions';
-import { useStateCallback } from '@app/services/stateCallbackHook';
-import Review from './Review';
-import ConfigurationFeature from './ConfigurationFeature';
+import CreateCacheGettingStarted from '@app/Caches/Create/CreateCacheGettingStarted';
+import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
+import BasicCacheConfigConfigurator from '@app/Caches/Create/BasicCacheConfigConfigurator';
+import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
+import {useStateCallback} from '@app/services/stateCallbackHook';
+import ReviewCacheConfig from '@app/Caches/Create/ReviewCacheConfig';
+import FeaturesSelector from "@app/Caches/Create/FeaturesSelector";
+
 export interface GettingStartedState {
     cacheName: '';
     createType: 'configure' | 'edit',
@@ -44,9 +46,9 @@ const CacheEditorInitialState: CacheEditorStep = {
     editorExpanded: false
 }
 
-const BasicConfigurationInitialState: BasicConfigurationStep = {
+const BasicCacheConfigInitialState: BasicCacheConfig = {
     topology: CacheType.Distributed,
-    mode: CacheMode.ASYNC,
+    mode: CacheMode.SYNC,
     numberOfOwners: 1,
     encoding: EncodingType.Protobuf,
     statistics: true,
@@ -91,12 +93,22 @@ const BackupsCacheInitialState: BackupsCache = {
 const BackupSettingInitialState: BackupSetting = {
 }
 
+const TransactionalCacheInitialState: TransactionalCache = {
+    mode: TransactionalMode.NON_XA,
+    locking: Locking.OPTIMISTIC
+}
+
+const TransactionalCacheAdvanceInitialState: TransactionalCacheAdvance = {
+    isolationLevel: IsolationLevel.REPEATABLE_READ
+}
+
 const CacheFeatureInitialState: CacheFeatureStep = {
     cacheFeatureSelected: [],
     boundedCache: BoundedCacheInitialState,
     indexedCache: IndexedCacheInitialState,
     securedCache: SecuredCacheInitialState,
-    backupsCache: BackupsCacheInitialState
+    backupsCache: BackupsCacheInitialState,
+    transactionalCache: TransactionalCacheInitialState,
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
@@ -105,8 +117,8 @@ const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
     isOpenIndexMerge: false,
     isOpenIndexReader: false,
     isOpenIndexWriter: false,
-    disabledStriping: true,
-    backupSetting: BackupSettingInitialState
+    backupSetting: BackupSettingInitialState,
+    transactionalAdvance: TransactionalCacheAdvanceInitialState
 }
 
 const CreateCacheWizard = (props) => {
@@ -131,7 +143,7 @@ const CreateCacheWizard = (props) => {
     const [cacheEditor, setCacheEditor] = useState<CacheEditorStep>(CacheEditorInitialState);
 
     // State for the form (Configuration Basic)
-    const [basicConfiguration, setBasicConfiguration] = useState<BasicConfigurationStep>(BasicConfigurationInitialState);
+    const [basicConfiguration, setBasicConfiguration] = useState<BasicCacheConfig>(BasicCacheConfigInitialState);
 
     // State for the form (Cache Feature)
     const [cacheFeature, setCacheFeature] = useState<CacheFeatureStep>(CacheFeatureInitialState);
@@ -217,7 +229,7 @@ const CreateCacheWizard = (props) => {
         id: 1,
         name: t('caches.create.getting-started.nav-title'),
         component: (
-            <GettingStarted
+            <CreateCacheGettingStarted
                 gettingStarted={gettingStarted}
                 gettingStartedModifier={setGettingStarted}
                 isFormValid={isFormValid}
@@ -232,7 +244,7 @@ const CreateCacheWizard = (props) => {
     const stepCodeEditor = {
         id: 2,
         name: t('caches.create.edit-config.nav-title'),
-        component: <CacheEditor cacheEditor={cacheEditor} cacheEditorModifier={setCacheEditor} cmName={props.cmName} />,
+        component: <CacheConfigEditor cacheEditor={cacheEditor} cacheEditorModifier={setCacheEditor} cmName={props.cmName} />,
     };
 
     const stepConfigure = {
@@ -241,20 +253,26 @@ const CreateCacheWizard = (props) => {
             {
                 id: 3,
                 name: t('caches.create.configurations.basic.nav-title'),
-                component: (<ConfigurationBasic basicConfiguration={basicConfiguration} basicConfigurationModifier={setBasicConfiguration} handleIsFormValid={setIsFormValid} />),
+                component: (<BasicCacheConfigConfigurator basicConfiguration={basicConfiguration}
+                                                          basicConfigurationModifier={setBasicConfiguration}
+                                                          handleIsFormValid={setIsFormValid} />),
                 enableNext: isFormValid,
             },
             {
                 id: 4,
                 name: t('caches.create.configurations.feature.nav-title', { brandname: brandname }),
-                component: <ConfigurationFeature cacheFeature={cacheFeature} cacheFeatureModifier={setCacheFeature} handleIsFormValid={setIsFormValid} />,
+                component: <FeaturesSelector cacheFeature={cacheFeature}
+                                                 cacheFeatureModifier={setCacheFeature}
+                                                 handleIsFormValid={setIsFormValid}
+                                                 basicConfiguration={basicConfiguration}/>,
                 enableNext: isFormValid,
                 canJumpTo: isFormValid
             },
             {
                 id: 5,
                 name: t('caches.create.configurations.advanced-options.nav-title'),
-                component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} showBackupsTuning={cacheFeature.backupsCache.sites.length > 0} backupsSite={cacheFeature.backupsCache.sites} />,
+                // component: <AdvancedOptions advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} />,
+                component: <AdvancedOptionsConfigurator advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} showBackupsTuning={cacheFeature.backupsCache.sites.length > 0} backupsSite={cacheFeature.backupsCache.sites} showTransactionalTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)} transactionalMode={cacheFeature.transactionalCache.mode} />,
                 canJumpTo: isFormValid
             },
         ]
@@ -263,7 +281,7 @@ const CreateCacheWizard = (props) => {
     const stepReview = {
         id: 6,
         name: t('caches.create.review.nav-title'),
-        component: <Review cacheName={gettingStarted.cacheName} cacheConfiguration={configuration} setReviewConfig={setReviewConfig} />,
+        component: <ReviewCacheConfig cacheName={gettingStarted.cacheName} cacheConfiguration={configuration} setReviewConfig={setReviewConfig} />,
         canJumpTo: isFormValid
     }
 
