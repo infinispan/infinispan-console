@@ -53,12 +53,9 @@ const BoundedCacheInitialState: BoundedCache = {
 }
 
 const IndexWriterInitialState: IndexWriter = {
-    lowLevelTrace: false,
-
 }
 
 const IndexMergeInitialState: IndexMerge = {
-    calibrateByDeletes: false,
 }
 
 const IndexedCacheInitialState: IndexedCache = {

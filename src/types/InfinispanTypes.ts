@@ -309,7 +309,7 @@ interface BoundedCache {
 
 interface IndexWriter {
   commitInterval?: number;
-  lowLevelTrace: boolean;
+  lowLevelTrace?: boolean;
   maxBufferedEntries?: number;
   queueCount?: number;
   queueSize?: number;
@@ -317,7 +317,7 @@ interface IndexWriter {
   threadPoolSize?: number;
 }
 interface IndexMerge {
-  calibrateByDeletes: boolean;
+  calibrateByDeletes?: boolean;
   factor?: number;
   maxEntries?: number;
   minSize?: number;
