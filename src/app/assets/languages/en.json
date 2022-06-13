@@ -140,6 +140,7 @@
       "next-button-label": "Next",
       "back-button-label": "Back",
       "cancel-button-label": "Cancel",
+      "download-button-label": "Download {{format}}",
       "getting-started": {
         "nav-title": "Get started",
         "cache-name-title": "Enter a cache name",

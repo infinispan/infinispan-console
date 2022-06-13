@@ -1,5 +1,5 @@
-import React from 'react';
-import {Flex, Form, FormGroup, Text, TextContent, TextVariants} from '@patternfly/react-core';
+import React, {useEffect, useState} from 'react';
+import {Flex, Form, FormGroup, Text, TextContent, TextVariants,} from '@patternfly/react-core';
 import {CodeEditor, Language} from '@patternfly/react-code-editor';
 import {useTranslation} from 'react-i18next';
 import {CacheConfigUtils} from "@services/cacheConfigUtils";
@@ -12,6 +12,18 @@ const ReviewCacheConfig = (props:
     }) => {
 
     const { t } = useTranslation();
+    const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(props.cacheConfiguration));
+
+    useEffect(() => {
+      let jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(props.cacheConfiguration);
+      setConfig(jsonFormatConfig)
+      props.setReviewConfig(jsonFormatConfig);
+    }, [])
+
+    const onChangeConfig = (editedConfig) => {
+      props.setReviewConfig(editedConfig);
+      setConfig(config);
+    }
 
     const displayCacheConfigEditor = () => {
         return (
@@ -19,12 +31,12 @@ const ReviewCacheConfig = (props:
                 fieldId="cache-config"
             >
                 <CodeEditor
-                    onChange={props.setReviewConfig}
+                    onChange={onChangeConfig}
                     isLineNumbersVisible
                     isLanguageLabelVisible
-                    code={CacheConfigUtils.createCacheConfigFromData(props.cacheConfiguration)}
+                    code={config}
                     language={Language.json}
-                    height='400px'
+                    height='sizeToFit'
                 />
             </FormGroup>
         );
@@ -32,7 +44,7 @@ const ReviewCacheConfig = (props:
 
     return (
         <Form onSubmit={(e) => {
-          e.preventDefault();
+            e.preventDefault();
         }}>
             <TextContent>
                 <Text component={TextVariants.h1}>{t('caches.create.review.review-title')}</Text>

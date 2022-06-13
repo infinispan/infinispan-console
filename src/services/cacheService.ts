@@ -621,4 +621,61 @@ export class CacheService {
       errorMessage: `Cache ${cacheName} already exists.`,
     });
   }
+
+  private createTwoCustomHeader(
+    header1: string,
+    configType1: 'xml' | 'json' | 'yaml',
+    header2: string,
+    configType2: 'xml' | 'json' | 'yaml'
+  ) {
+    let customHeaders = new Headers();
+
+    let contentType1 = ContentType.YAML;
+    if (configType1 == 'json') {
+      contentType1 = ContentType.JSON;
+    } else if (configType1 == 'xml') {
+      contentType1 = ContentType.XML;
+    }
+    customHeaders.append(
+      header1,
+      ContentTypeHeaderMapper.fromContentType(contentType1)
+    );
+
+    let contentType2 = ContentType.YAML;
+    if (configType2 == 'json') {
+      contentType2 = ContentType.JSON;
+    } else if (configType2 == 'xml') {
+      contentType2 = ContentType.XML;
+    }
+    customHeaders.append(
+      header2,
+      ContentTypeHeaderMapper.fromContentType(contentType2)
+    );
+    return customHeaders;
+  }
+
+  /**
+   * Convert cache configuration to XML or JSON or YAML
+   */
+  public async convertConfigFormat(
+    cacheName: string,
+    config: string,
+    configType: 'xml' | 'json' | 'yaml'
+  ): Promise<ActionResponse> {
+    let customHeaders = this.createTwoCustomHeader(
+      'Accept',
+      configType,
+      'Content-Type',
+      'json'
+    );
+
+    const urlCreateCache = this.endpoint + '/caches?action=convert';
+    return this.fetchCaller.post({
+      url: urlCreateCache,
+      successMessage: `Cache ${cacheName} is converted to ${configType}.`,
+      errorMessage: `Unexpected error converting the cache to ${configType}.`,
+      customHeaders: customHeaders,
+      body: config,
+    });
+  }
 }
