@@ -223,7 +223,7 @@ interface CounterConfig {
 interface ActionResponse {
   message: string;
   success: boolean;
-  data?:string
+  data?: string;
 }
 
 interface SearchResut {
@@ -401,7 +401,7 @@ interface TransactionalCacheAdvance {
 interface PersistentCache {
   storage: string;
   config: string;
-  valid:boolean;
+  valid: boolean;
   passivation: boolean;
   connectionAttempts?: number;
   connectionInterval?: number;

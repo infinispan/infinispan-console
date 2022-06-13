@@ -360,11 +360,17 @@ export class CacheConfigUtils {
     };
 
     const featurePersistent = () => {
-      cache[cacheType]['persistence'] = JSON.parse(data.feature.persistentCache.config);
-      cache[cacheType]['persistence'].passivation = data.feature.persistentCache.passivation;
-      cache[cacheType]['persistence']['connection-attempts'] = data.feature.persistentCache.connectionAttempts;
-      cache[cacheType]['persistence']['connection-interval'] = data.feature.persistentCache.connectionInterval;
-      cache[cacheType]['persistence']['availability-interval'] = data.feature.persistentCache.availabilityInterval;
+      cache[cacheType]['persistence'] = JSON.parse(
+        data.feature.persistentCache.config
+      );
+      cache[cacheType]['persistence'].passivation =
+        data.feature.persistentCache.passivation;
+      cache[cacheType]['persistence']['connection-attempts'] =
+        data.feature.persistentCache.connectionAttempts;
+      cache[cacheType]['persistence']['connection-interval'] =
+        data.feature.persistentCache.connectionInterval;
+      cache[cacheType]['persistence']['availability-interval'] =
+        data.feature.persistentCache.availabilityInterval;
     };
 
     if (

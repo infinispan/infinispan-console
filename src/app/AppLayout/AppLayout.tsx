@@ -85,7 +85,9 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
           <FlexItem style={{marginTop: global_spacer_sm.value}}>
             <Link to={'/'}>
-              <Brand src={icon} alt={t('layout.console-name')} width={150}/>
+              <Brand src={icon} alt={t('layout.console-name')} widths={{ default: '150px'}}>
+                <source srcSet={icon} />
+              </Brand>
             </Link>
           </FlexItem>
           <FlexItem>

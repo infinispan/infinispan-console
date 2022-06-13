@@ -186,7 +186,7 @@ export class FetchCaller {
         return <ActionResponse>{
           message: successMessage,
           success: true,
-          data: message
+          data: message,
         };
       })
       .catch((err) => this.mapError(err, errorMessage));
