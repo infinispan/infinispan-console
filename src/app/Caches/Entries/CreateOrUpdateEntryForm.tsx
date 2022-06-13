@@ -15,7 +15,6 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import {SelectOptionObject} from '@patternfly/react-core/src/components/Select/SelectOption';
-import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {global_spacer_md} from '@patternfly/react-tokens';
 import formUtils, {IField, ISelectField} from '@services/formUtils';
@@ -26,6 +25,7 @@ import {CacheConfigUtils} from "@services/cacheConfigUtils";
 import {ContentType, EncodingType, InfinispanFlags} from "@services/infinispanRefData";
 import {ProtobufDataUtils} from "@services/protobufDataUtils";
 import {AddCircleOIcon, PencilAltIcon} from "@patternfly/react-icons";
+import {PopoverHelp} from "@app/Common/PopoverHelp";
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -365,20 +365,22 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const keyContentTypeFormGroup = () => {
-    const tooltip = <MoreInfoTooltip
+    const helper = <PopoverHelp
+      name="keyContentType"
       label={t('caches.entries.add-entry-form-key-type-label')}
-      toolTip={'Choose \'Custom Type\' to specify keys with custom `_type` json value type.'}
-    />
+      content={props.cacheEncoding.key == EncodingType.Protobuf? 'Choose \'Custom Type\' to specify keys with custom `_type` json value type.' : ''}
+    />;
 
     return (
       <FormGroup
-      label={props.cacheEncoding.key == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-key-type-label')}
-      fieldId="key-content-type-helper"
-      helperText={keyContentType.helperText}
-      placeholder={t('caches.entries.add-entry-form-key-type')}
-      disabled={isEdition}
-      isRequired
-    >
+        label={t('caches.entries.add-entry-form-key-type-label')}
+        labelIcon={props.cacheEncoding.key == EncodingType.Protobuf ? helper: undefined}
+        fieldId="key-content-type-helper"
+        helperText={keyContentType.helperText}
+        placeholder={t('caches.entries.add-entry-form-key-type')}
+        disabled={isEdition}
+        isRequired
+      >
       <Select
         maxHeight={200}
         placeholderText={t(
@@ -424,9 +426,10 @@ const CreateOrUpdateEntryForm = (props: {
   }
 
   const keyFormGroup = () => {
-    const tooltip = <MoreInfoTooltip
+    const helper = <PopoverHelp
+      name="key"
       label={t('caches.entries.add-entry-form-key')}
-      toolTip={
+      content={
         'The key can contain simple values but also JSON ' +
         'that are automatically converted to and from Protostream. \n' +
         'When writing JSON documents, a special field `_type` must be present.\n' +
@@ -440,14 +443,15 @@ const CreateOrUpdateEntryForm = (props: {
 
     return (
       <FormGroup
-        label={props.cacheEncoding.key == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-key')}
-      isRequired
-      helperText={key.helperText}
-      helperTextInvalid={key.invalidText}
-      fieldId="key-entry"
-      validated={key.validated}
-      disabled={isEdition}
-    >
+        label={t('caches.entries.add-entry-form-key')}
+        labelIcon={props.cacheEncoding.key == EncodingType.Protobuf? helper: undefined}
+        isRequired
+        helperText={key.helperText}
+        helperTextInvalid={key.invalidText}
+        fieldId="key-entry"
+        validated={key.validated}
+        disabled={isEdition}
+      >
       <TextArea
         isRequired
         validated={key.validated}
@@ -463,9 +467,10 @@ const CreateOrUpdateEntryForm = (props: {
   }
 
   const valueFormGroup = () => {
-    const tooltip = <MoreInfoTooltip
+    const helper = <PopoverHelp
+      name="value"
       label={t('caches.entries.add-entry-form-value')}
-      toolTip={
+      content={
         'The value can contain simple values but also JSON ' +
         'that are automatically converted to and from Protostream.\n ' +
         'When writing JSON documents, a special field _type must be present.\n' +
@@ -479,13 +484,14 @@ const CreateOrUpdateEntryForm = (props: {
 
     return (
       <FormGroup
-      label={props.cacheEncoding.value == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-value')}
-      isRequired
-      helperText={value.helperText}
-      helperTextInvalid={value.invalidText}
-      fieldId="value-entry"
-      validated={value.validated}
-    >
+        label={t('caches.entries.add-entry-form-value')}
+        labelIcon={props.cacheEncoding.value == EncodingType.Protobuf ? helper: undefined}
+        isRequired
+        helperText={value.helperText}
+        helperTextInvalid={value.invalidText}
+        fieldId="value-entry"
+        validated={value.validated}
+      >
       <TextArea
         isRequired
         validated={value.validated}
@@ -502,31 +508,33 @@ const CreateOrUpdateEntryForm = (props: {
   const lifespanFormGroup = () => {
     return (
       <FormGroup
-      label={
-        <MoreInfoTooltip
-          label={t('caches.entries.add-entry-form-lifespan')}
-          toolTip={
-            'Sets the number of seconds before ' +
-            'the entry is automatically deleted. If you do not set this parameter, ' +
-            'Infinispan uses the default value from the configuration. ' +
-            'If you set a negative value, the entry is never deleted.\n' +
-            '\n'
-          }
-        />
-      }
-      type="number"
-      helperText={timeToLiveField.helperText}
-      helperTextInvalid={timeToLiveField.invalidText}
-      fieldId="timeToLive"
-      validated={timeToLiveField.validated}
-    >
-      <TextInput
+        label={t('caches.entries.add-entry-form-lifespan')}
+        labelIcon={
+          <PopoverHelp
+            name="lifespan"
+            label={t('caches.entries.add-entry-form-lifespan')}
+            content={
+              'Sets the number of seconds before ' +
+              'the entry is automatically deleted. If you do not set this parameter, ' +
+              'Infinispan uses the default value from the configuration. ' +
+              'If you set a negative value, the entry is never deleted.\n' +
+              '\n'
+            }
+          />
+        }
+        type="number"
+        helperText={timeToLiveField.helperText}
+        helperTextInvalid={timeToLiveField.invalidText}
+        fieldId="timeToLive"
         validated={timeToLiveField.validated}
-        value={timeToLiveField.value}
-        id="timeToLive"
-        aria-describedby="timeToLive-helper"
-        onChange={onChangeTimeToLive}
-      />
+      >
+        <TextInput
+          validated={timeToLiveField.validated}
+          value={timeToLiveField.value}
+          id="timeToLive"
+          aria-describedby="timeToLive-helper"
+          onChange={onChangeTimeToLive}
+        />
     </FormGroup>
     );
   }
@@ -534,10 +542,12 @@ const CreateOrUpdateEntryForm = (props: {
   const maxIdleFormGroup = () => {
     return (
       <FormGroup
-      label={
-        <MoreInfoTooltip
+        label={t('caches.entries.add-entry-form-maxidle')}
+        labelIcon={
+        <PopoverHelp
+          name="maxidle"
           label={t('caches.entries.add-entry-form-maxidle')}
-          toolTip={
+          content={
             'Sets the number of seconds that entries can be idle. ' +
             'If a read or write operation does not occur for an entry after the maximum idle time elapses, ' +
             'the entry is automatically deleted. If you do not set this parameter, ' +
@@ -545,33 +555,35 @@ const CreateOrUpdateEntryForm = (props: {
             'If you set a negative value, the entry is never deleted.\n' +
             '\n'
           }
-        />
-      }
-      type="number"
-      helperText={maxIdleField.helperText}
-      helperTextInvalid={maxIdleField.invalidText}
-      fieldId="maxIdle"
-      validated={maxIdleField.validated}
-    >
-      <TextInput
+          />
+        }
+        type="number"
+        helperText={maxIdleField.helperText}
+        helperTextInvalid={maxIdleField.invalidText}
+        fieldId="maxIdle"
         validated={maxIdleField.validated}
-        value={maxIdleField.value}
-        id="maxIdle"
-        aria-describedby="maxIdle-helper"
-        onChange={onChangeMaxIdle}
-      />
+      >
+        <TextInput
+          validated={maxIdleField.validated}
+          value={maxIdleField.value}
+          id="maxIdle"
+          aria-describedby="maxIdle-helper"
+          onChange={onChangeMaxIdle}
+        />
     </FormGroup>
     );
   }
 
   const valueContentTypeFormGroup = () => {
-    const tooltip = <MoreInfoTooltip
+    const helper = <PopoverHelp
+      name="valueContentType"
       label={t('caches.entries.add-entry-form-value-type-label')}
-      toolTip={'Choose \'Custom Type\' to specify values with custom `_type` json value type.'}
+      content={'Choose \'Custom Type\' to specify values with custom `_type` json value type.'}
     />
     return (
       <FormGroup
-      label={props.cacheEncoding.value == EncodingType.Protobuf ? tooltip: t('caches.entries.add-entry-form-value-type-label')}
+      label={t('caches.entries.add-entry-form-value-type-label')}
+      labelIcon={props.cacheEncoding.value == EncodingType.Protobuf ? helper: undefined}
       helperTextInvalid={t(
         'caches.entries.add-entry-form-value-type-invalid'
       )}
@@ -605,21 +617,27 @@ const CreateOrUpdateEntryForm = (props: {
   }
 
   const flagsFormGroup = () => {
+    const helper = <PopoverHelp
+      name="flags"
+      label={t('caches.entries.add-entry-form-flags')}
+      content={'Apply flags to alter the default behavior adding or updating an entry.'}
+    />
     return (
       <FormGroup
-      label="Flags:"
+      label={t('caches.entries.add-entry-form-flags')}
+      labelIcon={helper}
       fieldId="flags-helper"
-      helperText="The flags used to add the entry. See 'org.infinispan.context.Flag' class for more information."
+      helperText={t('caches.entries.add-entry-form-flags-help')}
     >
       <Select
         variant={SelectVariant.typeaheadMulti}
-        aria-label="Select Flags"
+        aria-label={t('caches.entries.add-entry-form-flags-label')}
         onToggle={(isExpanded) => setExpanded(isExpanded, setFlags)}
         onSelect={onSelectFlags}
         onClear={() => setFlags(flagsInitialState)}
         selections={flags.selected}
         isOpen={flags.expanded}
-        placeholderText="Flags"
+        placeholderText={t('caches.entries.add-entry-form-flags-label')}
         maxHeight={150}
       >
         {flagsOptions()}

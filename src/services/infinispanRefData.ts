@@ -4,8 +4,8 @@ import {
   querySqlStore,
   remoteStore,
   rocksDB,
-  tableSqlStore
-} from "@app/utils/persistentStorageTemplate";
+  tableSqlStore,
+} from '@app/utils/persistentStorageTemplate';
 
 export enum ComponentHealth {
   HEALTHY = 'HEALTHY',
