@@ -52,7 +52,7 @@ const AdvancedOptions = (props: {
     const [threadPoolSize, setThreadPoolSize] = useState<number>(props.advancedOptions.indexWriter.threadPoolSize!);
 
     //Index Merge
-    const [calibrateByDeletes, setCalibrateByDeletes] = useState<boolean>(props.advancedOptions.indexMerge.calibrateByDeletes);
+    const [calibrateByDeletes, setCalibrateByDeletes] = useState<boolean>(props.advancedOptions.indexMerge.calibrateByDeletes!);
     const [factor, setFactor] = useState<number>(props.advancedOptions.indexMerge.factor!);
     const [maxEntries, setMaxEntries] = useState<number>(props.advancedOptions.indexMerge.maxEntries!);
     const [minSize, setMinSize] = useState<number>(props.advancedOptions.indexMerge.minSize!);
@@ -269,7 +269,7 @@ const AdvancedOptions = (props: {
                         <Switch
                             aria-label="low-level-trace"
                             id="low-level-trace"
-                            isChecked={lowLevelTrace}
+                            isChecked={lowLevelTrace === undefined ? false : lowLevelTrace}
                             onChange={() => setLowLevelTrace(!lowLevelTrace)}
                         />
                         <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.low-level-trace')} toolTip={t('caches.create.configurations.advanced-options.low-level-trace-tooltip')} textComponent={TextVariants.h3} />
@@ -354,7 +354,7 @@ const AdvancedOptions = (props: {
                         <Switch
                             aria-label="calibrate-by-deletes"
                             id="calibrate-by-deletes"
-                            isChecked={calibrateByDeletes}
+                            isChecked={calibrateByDeletes === undefined ? false : calibrateByDeletes}
                             onChange={() => setCalibrateByDeletes(!calibrateByDeletes)}
                         />
                         <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.calibrate-by-deletes')} toolTip={t('caches.create.configurations.advanced-options.calibrate-by-deletes-tooltip')} textComponent={TextVariants.h3} />

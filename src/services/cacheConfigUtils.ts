@@ -233,6 +233,7 @@ export class CacheConfigUtils {
         'queue-size': data.advanced.indexWriter.queueSize,
         'ram-buffer-size': data.advanced.indexWriter.ramBufferSize,
         'thread-pool-size': data.advanced.indexWriter.threadPoolSize,
+        'low-level-trace': data.advanced.indexWriter.lowLevelTrace,
       };
     };
 
@@ -247,6 +248,7 @@ export class CacheConfigUtils {
         'min-size': data.advanced.indexMerge.minSize,
         'max-size': data.advanced.indexMerge.maxSize,
         'max-forced-size': data.advanced.indexMerge.maxForcedSize,
+        'calibrate-by-deletes': data.advanced.indexMerge.calibrateByDeletes,
       };
     };
 
@@ -257,17 +259,6 @@ export class CacheConfigUtils {
           roles: data.feature.securedCache.roles,
         },
       };
-    };
-
-    const helperLowLevelTrace = () => {
-      cache[cacheType]['indexing']['index-writer']['low-level-trace'] =
-        data.advanced.indexWriter.lowLevelTrace;
-    };
-
-    const helperCalibrateByDeletes = () => {
-      cache[cacheType]['indexing']['index-writer']['index-merge'][
-        'calibrate-by-deletes'
-      ] = data.advanced.indexMerge.calibrateByDeletes;
     };
 
     const helperMemoryStorageType = () => {
@@ -300,7 +291,8 @@ export class CacheConfigUtils {
         data.advanced.indexWriter.queueCount ||
         data.advanced.indexWriter.queueSize ||
         data.advanced.indexWriter.ramBufferSize ||
-        data.advanced.indexWriter.threadPoolSize
+        data.advanced.indexWriter.threadPoolSize ||
+        data.advanced.indexWriter.lowLevelTrace
       )
         indexWriter();
 
@@ -309,14 +301,11 @@ export class CacheConfigUtils {
         data.advanced.indexMerge.maxEntries ||
         data.advanced.indexMerge.minSize ||
         data.advanced.indexMerge.maxSize ||
-        data.advanced.indexMerge.maxForcedSize
+        data.advanced.indexMerge.maxForcedSize ||
+        data.advanced.indexMerge.calibrateByDeletes
       )
         indexMerge();
-
-      data.advanced.indexWriter.lowLevelTrace && helperLowLevelTrace();
-      data.advanced.indexMerge.calibrateByDeletes && helperCalibrateByDeletes();
     }
-    console.log('cache', cache[cacheType]['memory']);
 
     data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) &&
       featureSecured();
