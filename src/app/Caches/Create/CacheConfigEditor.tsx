@@ -24,6 +24,7 @@ const CacheConfigEditor = (props: {
     cmName: string,
     cacheEditor: CacheEditorStep,
     cacheEditorModifier: (CacheEditorStep) => void,
+    setReviewConfig: (string) => void
 }) => {
     const sampleConfig =
         '{\n' +
@@ -77,9 +78,11 @@ const CacheConfigEditor = (props: {
             configExpanded: configExpanded,
             editorExpanded: editorExpanded,
         });
+        props.setReviewConfig(editorConfig);
     }, [editorConfig, configs, validConfig, errorConfig, selectedConfig, configExpanded, editorExpanded, loading]);
 
     const handleChangeConfig = (editorConfig) => {
+        props.setReviewConfig(editorConfig);
         setEditorConfig(editorConfig);
         setValidConfig('success')
     };
@@ -119,13 +122,12 @@ const CacheConfigEditor = (props: {
             >
                 <CodeEditor
                     isLineNumbersVisible
-                    isMinimapVisible
                     isLanguageLabelVisible
                     code={editorConfig}
                     onChange={handleChangeConfig}
                     id="cache-config"
                     language={Language.json}
-                    height='400px'
+                    height='200px'
                 />
                 <Alert
                     isInline
@@ -160,6 +162,7 @@ const CacheConfigEditor = (props: {
                     helperTextInvalid={t('caches.create.template-help-invalid')}
                 >
                     <Select
+                        id="template-selector"
                         data-testid="template-selector"
                         toggleIcon={<CubeIcon />}
                         variant={SelectVariant.typeahead}

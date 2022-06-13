@@ -223,6 +223,7 @@ interface CounterConfig {
 interface ActionResponse {
   message: string;
   success: boolean;
+  data?:string
 }
 
 interface SearchResut {

@@ -197,3 +197,9 @@ export const PersistentStorageConfig = new Map<string, string>([
   [PersistentCacheStorage.RocksDB, rocksDB],
   [PersistentCacheStorage.Custom, ''],
 ]);
+
+export enum ConfigDownloadType {
+  JSON = 'JSON',
+  XML = 'XML',
+  YAML = 'YAML',
+}

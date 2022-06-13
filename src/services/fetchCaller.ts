@@ -170,7 +170,7 @@ export class FetchCaller {
     return response
       .then((response) => {
         if (response.ok) {
-          return 'response.text()';
+          return response.text();
         }
         if (response.status == 404) {
           throw 'Not found.';
@@ -186,6 +186,7 @@ export class FetchCaller {
         return <ActionResponse>{
           message: successMessage,
           success: true,
+          data: message
         };
       })
       .catch((err) => this.mapError(err, errorMessage));
