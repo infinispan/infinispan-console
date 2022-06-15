@@ -194,7 +194,7 @@ const BackupsCacheConfigurator = (props: {
       <Alert variant={AlertVariant.info}
              isInline
              isPlain
-             title={t('caches.create.configurations.feature.backups-disabled')} />
+             title={t('caches.create.configurations.feature.backups-disabled', { brandname: brandname })} />
     )
   }
 

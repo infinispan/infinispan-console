@@ -46,8 +46,10 @@ const AdvancedTransactionalCacheConfigurator = (props: {
                     isChecked={isolationLevel as IsolationLevel == IsolationLevel.REPEATABLE_READ}
                     label={
                         <TextContent>
-                            <Text component={TextVariants.h4}>
-                                {t('caches.create.configurations.advanced-options.isolation-level-repeatable-read')}
+                            <Text>
+                                <MoreInfoTooltip
+                                  label={t('caches.create.configurations.advanced-options.isolation-level-repeatable-read')} toolTip={t('caches.create.configurations.advanced-options.isolation-level-repeatable-read-tooltip', { brandname: brandname })}
+                                  textComponent={TextVariants.h4} />
                             </Text>
                         </TextContent>
                     }
@@ -59,8 +61,10 @@ const AdvancedTransactionalCacheConfigurator = (props: {
                     isChecked={isolationLevel as IsolationLevel == IsolationLevel.READ_COMMITTED}
                     label={
                         <TextContent>
-                            <Text component={TextVariants.h4}>
-                                {t('caches.create.configurations.advanced-options.isolation-level-read-committed')}
+                            <Text>
+                                <MoreInfoTooltip
+                                  label={t('caches.create.configurations.advanced-options.isolation-level-read-committed')} toolTip={t('caches.create.configurations.advanced-options.isolation-level-read-committed-tooltip', { brandname: brandname })}
+                                  textComponent={TextVariants.h4} />
                             </Text>
                         </TextContent>
                     }
@@ -91,7 +95,7 @@ const AdvancedTransactionalCacheConfigurator = (props: {
             <Flex>
                 <FlexItem grow={{ default: 'grow' }} style={{ maxWidth: '25rem' }}>
                     <FormGroup fieldId='reaperInterval' isInline>
-                        <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.reaper-interval')} toolTip={t('caches.create.configurations.advanced-options.reaper-interval-tooltip')} textComponent={TextVariants.h3} />
+                        <MoreInfoTooltip label={t('caches.create.configurations.advanced-options.reaper-interval')} toolTip={t('caches.create.configurations.advanced-options.reaper-interval-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                         <TextInput placeholder='30000' value={reaperInterval} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setReaperInterval(undefined!) : setReaperInterval(parseInt(val)) }} aria-label="reaper-interval" />
                     </FormGroup>
                 </FlexItem>

@@ -56,7 +56,7 @@ const TransactionalCacheConfigurator = (props: {
 
                 <CardBody>
                     <TextContent style={{ marginBottom: global_spacer_sm.value, width: '100%' }}>
-                        <MoreInfoTooltip label={t('caches.create.configurations.feature.transactional-mode')} toolTip={t('caches.create.configurations.feature.transactional-mode-tooltip')} textComponent={TextVariants.h3} />
+                        <MoreInfoTooltip label={t('caches.create.configurations.feature.transactional-mode')} toolTip={t('caches.create.configurations.feature.transactional-mode-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                     </TextContent>
                     <FormGroup isInline fieldId='form-transaction-mode'>
                         <Flex>
@@ -68,7 +68,7 @@ const TransactionalCacheConfigurator = (props: {
                                     isChecked={mode as TransactionalMode == TransactionalMode.NON_XA}
                                     label={
                                         <TextContent>
-                                            <MoreInfoTooltip label={t('caches.create.configurations.feature.non-xa')} toolTip={t('caches.create.configurations.feature.non-xa-tooltip')} textComponent={TextVariants.h4} />
+                                            <MoreInfoTooltip label={t('caches.create.configurations.feature.non-xa')} toolTip={t('caches.create.configurations.feature.non-xa-tooltip', { brandname: brandname })} textComponent={TextVariants.h4} />
                                         </TextContent>
                                     }
                                 />
@@ -81,7 +81,7 @@ const TransactionalCacheConfigurator = (props: {
                                     isChecked={mode as TransactionalMode == TransactionalMode.NON_DURABLE_XA}
                                     label={
                                         <TextContent>
-                                            <MoreInfoTooltip label={t('caches.create.configurations.feature.non-durable-xa')} toolTip={t('caches.create.configurations.feature.non-durable-xa-tooltip')} textComponent={TextVariants.h4} />
+                                            <MoreInfoTooltip label={t('caches.create.configurations.feature.non-durable-xa')} toolTip={t('caches.create.configurations.feature.non-durable-xa-tooltip', { brandname: brandname })} textComponent={TextVariants.h4} />
                                         </TextContent>
                                     }
                                 />
@@ -94,7 +94,7 @@ const TransactionalCacheConfigurator = (props: {
                                     isChecked={mode as TransactionalMode == TransactionalMode.FULL_XA}
                                     label={
                                         <TextContent>
-                                            <MoreInfoTooltip label={t('caches.create.configurations.feature.full-xa')} toolTip={t('caches.create.configurations.feature.full-xa-tooltip')} textComponent={TextVariants.h4} />
+                                            <MoreInfoTooltip label={t('caches.create.configurations.feature.full-xa')} toolTip={t('caches.create.configurations.feature.full-xa-tooltip', { brandname: brandname })} textComponent={TextVariants.h4} />
                                         </TextContent>
                                     }
                                 />
@@ -105,7 +105,7 @@ const TransactionalCacheConfigurator = (props: {
 
                 <CardBody>
                     <TextContent style={{ marginBottom: global_spacer_sm.value, width: '100%' }}>
-                        <MoreInfoTooltip label={t('caches.create.configurations.feature.locking-mode')} toolTip={t('caches.create.configurations.feature.locking-mode-tooltip')} textComponent={TextVariants.h3} />
+                        <MoreInfoTooltip label={t('caches.create.configurations.feature.locking-mode')} toolTip={t('caches.create.configurations.feature.locking-mode-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                     </TextContent>
 
                     <FormGroup isInline fieldId='locking'>
@@ -116,8 +116,10 @@ const TransactionalCacheConfigurator = (props: {
                             isChecked={locking as Locking == Locking.OPTIMISTIC}
                             label={
                                 <TextContent>
-                                    <Text component={TextVariants.h4}>
-                                        {t('caches.create.configurations.feature.locking-mode-optimistic')}
+                                    <Text>
+                                        <MoreInfoTooltip
+                                          label={t('caches.create.configurations.feature.locking-mode-optimistic')} toolTip={t('caches.create.configurations.feature.locking-mode-optimistic-tooltip', { brandname: brandname })}
+                                          textComponent={TextVariants.h4} />
                                     </Text>
                                 </TextContent>
                             }
@@ -129,8 +131,10 @@ const TransactionalCacheConfigurator = (props: {
                             isChecked={locking as Locking == Locking.PESSIMISTIC}
                             label={
                                 <TextContent>
-                                    <Text component={TextVariants.h4}>
-                                        {t('caches.create.configurations.feature.locking-mode-pessimistic')}
+                                    <Text>
+                                        <MoreInfoTooltip
+                                          label={t('caches.create.configurations.feature.locking-mode-pessimistic')} toolTip={t('caches.create.configurations.feature.locking-mode-pessimistic-tooltip', { brandname: brandname })}
+                                          textComponent={TextVariants.h4} />
                                     </Text>
                                 </TextContent>
                             }
