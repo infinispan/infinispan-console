@@ -2,6 +2,7 @@
   "brandname": {
     "brandname" : "Infinispan",
     "encoding-docs-link": "https://infinispan.org/docs/stable/titles/encoding/encoding.html",
+    "persistence-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html#persistence",
     "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html"
   },
   "layout" : {
@@ -142,7 +143,7 @@
       "getting-started": {
         "nav-title": "Get started",
         "cache-name-title": "Enter a cache name",
-        "cache-name-label": "Give your cache a unique name.",
+        "cache-name-label": "Give your cache a unique name",
         "cache-name-label-invalid": "You must specify a cache name that does not already exist.",
         "cache-create-title": "Select a way to create your cache",
         "cache-create-builder": "Build cache configuration",
@@ -284,7 +285,30 @@
           "locking-mode-optimistic": "Optimistic",
           "locking-mode-optimistic-tooltip": "{{brandname}} locks keys when it invokes the commit() method. Keys are locked for shorter periods of time which reduces overall latency but makes transaction recovery less efficient.",
           "locking-mode-pessimistic": "Pessimistic",
-          "locking-mode-pessimistic-tooltip": "{{brandname}} locks keys when it invokes the put() method. Keys are locked for longer periods of time which increases latency but makes transaction recovery more efficient."
+          "locking-mode-pessimistic-tooltip": "{{brandname}} locks keys when it invokes the put() method. Keys are locked for longer periods of time which increases latency but makes transaction recovery more efficient.",
+          "persistent": "Persistent",
+          "persistent-description": "{{brandname}} cache stores and loaders allow to persist data to non-volatile storage so it survives restarts, act as a caching layer in front of persistent storages or use eviction and passivation techniques to ensure that {{brandname}} keeps only frequently used data in-memory and writes older entries to persistent storage.",
+          "persistent-error": "The configuration must be a valid json.",
+          "persistent-hint": "Provided configurations are example templates. Change the values to fit your needs.",
+          "persistent-hint-link": "Learn more about persistence.",
+          "passivation": "Passivation",
+          "passivation-tooltip": "Enable passivation of cache entries to disk. This is useful for caches that are frequently updated but rarely read.",
+          "connection-attempts": "Connection attempts",
+          "connection-attempts-tooltip": "Set the number of connection attempts to make to a backup site before giving up. The default value is 10.",
+          "connection-interval": "Connection interval",
+          "connection-interval-tooltip": "Set the interval, in milliseconds, between connection attempts. The default value is 50.",
+          "availability-interval": "Availability interval",
+          "availability-interval-tooltip": "Set the interval, in milliseconds, between availability checks. The default value is 1000.",
+          "storages": "Storages",
+          "storages-tooltip": "Specify the storage to use for the cache.",
+          "storage-placeholder": "Choose a persistent storage",
+          "file-store-description": "File-based cache stores provide persistent storage on the local host filesystem where {{brandname}} is running. For clustered caches, file-based cache stores are unique to each {{brandname}} node.",
+          "remote-store-description": "Persists data to a remote {{brandname}} cluster, over the Hot Rod wire protocol, effectively chaining clusters together. Used to perform rolling upgrades for {{brandname}} Server Clusters.",
+          "jdbc-store-description": "Persists data to a relational database via a JDBC driver.",
+          "table-sql-store-description": "Table SQL cache stores let you load {{brandname}} entries from a single database table.",
+          "query-sql-store-description": "Query SQL cache stores let {{brandname}} perform queries to load entries from single or multiple database tables, including from sub-columns within those tables, and perform insert, update, and delete operations.",
+          "rocks-db-description": "Persists data to RocksDB. RocksDB provides key-value filesystem-based storage with high performance and reliability for highly concurrent environments.",
+          "custom-description": "You can create custom cache stores through the {{brandname}} persistent SPI and provide the configuration."
         },
         "advanced-options": {
           "nav-title": "Cache tuning",

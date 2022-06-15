@@ -1,3 +1,12 @@
+import {
+  fileStore,
+  jdbcStore,
+  querySqlStore,
+  remoteStore,
+  rocksDB,
+  tableSqlStore
+} from "@app/utils/persistentStorageTemplate";
+
 export enum ComponentHealth {
   HEALTHY = 'HEALTHY',
   HEALTHY_REBALANCING = 'HEALTHY_REBALANCING',
@@ -168,3 +177,23 @@ export enum TransactionalMode {
   NON_DURABLE_XA = 'NON_DURABLE_XA',
   FULL_XA = 'FULL_XA',
 }
+
+export enum PersistentCacheStorage {
+  FileStore = 'File Store',
+  RemoteStore = 'Remote Store',
+  TableSQLStore = 'Table SQL Store',
+  QuerySQLStore = 'Query SQL Store',
+  JDBCStore = 'JDBC String Based Store',
+  RocksDB = 'RocksDB',
+  Custom = 'Custom',
+}
+
+export const PersistentStorageConfig = new Map<string, string>([
+  [PersistentCacheStorage.FileStore, fileStore],
+  [PersistentCacheStorage.RemoteStore, remoteStore],
+  [PersistentCacheStorage.TableSQLStore, tableSqlStore],
+  [PersistentCacheStorage.QuerySQLStore, querySqlStore],
+  [PersistentCacheStorage.JDBCStore, jdbcStore],
+  [PersistentCacheStorage.RocksDB, rocksDB],
+  [PersistentCacheStorage.Custom, ''],
+]);
