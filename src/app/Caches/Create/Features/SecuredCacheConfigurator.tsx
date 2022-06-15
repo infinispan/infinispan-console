@@ -80,7 +80,7 @@ const SecuredCacheConfigurator = (props: {
         <Alert variant={AlertVariant.info}
                isInline
                isPlain
-               title={t('caches.create.configurations.feature.secured-disabled')} />
+               title={t('caches.create.configurations.feature.secured-disabled', { brandname: brandname })} />
       )
     }
 
