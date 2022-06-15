@@ -7,7 +7,7 @@ import {
     SelectOption,
     SelectVariant,
 } from '@patternfly/react-core';
-import {CacheFeature, CacheMode, EvictionType} from "@services/infinispanRefData";
+import { CacheFeature, CacheMode, EvictionType } from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -16,6 +16,7 @@ import IndexedCacheConfigurator from '@app/Caches/Create/Features/IndexedCacheCo
 import SecuredCacheConfigurator from '@app/Caches/Create/Features/SecuredCacheConfigurator';
 import BackupsCacheConfigurator from '@app/Caches/Create/Features/Backups/BackupsCacheConfigurator';
 import TransactionalCacheConfigurator from '@app/Caches/Create/Features/TransactionalCache/TransactionalCacheConfigurator';
+import PersistentCacheConfigurator from '@app/Caches/Create/Features/PersistentCacheConfigurator';
 
 const FeaturesSelector = (props: {
     cacheFeature: CacheFeatureStep,
@@ -37,6 +38,10 @@ const FeaturesSelector = (props: {
 
     //Secured Cache
     const [securedCache, setSecuredCache] = useState<SecuredCache>(props.cacheFeature.securedCache);
+
+    //Persistent Cache
+    const [persistentCache, setPersistentCache] = useState<PersistentCache>(props.cacheFeature.persistentCache);
+
     const [isSecure, setIsSecure] = useState(false);
     const [isTransactional, setIsTransactional] = useState(props.basicConfiguration.mode === CacheMode.SYNC);
     const [loadingSecurityRoles, setLoadingSecurityRoles] = useState(true);
@@ -45,10 +50,9 @@ const FeaturesSelector = (props: {
     const [backupsCache, setBackupsCache] = useState<BackupsCache>(props.cacheFeature.backupsCache);
     const [loadingBackups, setLoadingBackups] = useState(true);
     const [isBackups, setIsBackups] = useState(false);
+
     //Transactional Cache
     const [transactionalCache, setTransactionalCache] = useState<TransactionalCache>(props.cacheFeature.transactionalCache);
-
-    const [loading, setLoading] = useState(true);
 
     const [isOpenCacheFeature, setIsOpenCacheFeature] = useState(false);
 
@@ -59,71 +63,82 @@ const FeaturesSelector = (props: {
             indexedCache: indexedCache,
             securedCache: securedCache,
             backupsCache: backupsCache,
-            transactionalCache: transactionalCache
+            transactionalCache: transactionalCache,
+            persistentCache: persistentCache
         });
 
         let validForm = true;
         if (cacheFeatureSelected.length > 0) {
-            validForm = boundedFeatureValidation(validForm)
-            validForm = indexingFeatureValidation(validForm);
-            validForm = securedFeatureValidation(validForm);
-            validForm = backupsFeatureValidation(validForm);
-            validForm = transactionalFeatureValidation(validForm);
+            const boundedValid = boundedFeatureValidation();
+            const indexingValid = indexingFeatureValidation();
+            const securedValid = securedFeatureValidation();
+            const backupsValid = backupsFeatureValidation();
+            const transactionalValid = transactionalFeatureValidation();
+            const persistentValid = persistentFeatureValidation();
+
+            validForm = boundedValid && indexingValid && securedValid && backupsValid && transactionalValid && persistentValid;
         }
         props.handleIsFormValid(validForm);
 
-    }, [cacheFeatureSelected, boundedCache, indexedCache, securedCache, backupsCache, transactionalCache]);
+    }, [cacheFeatureSelected, boundedCache, indexedCache, securedCache, backupsCache, transactionalCache, persistentCache]);
 
-    const boundedFeatureValidation = (validForm: boolean) => {
+    const boundedFeatureValidation = () => {
         if (cacheFeatureSelected.includes(CacheFeature.BOUNDED)) {
             if (boundedCache.evictionType === EvictionType.size) {
-                validForm = validForm && boundedCache.maxSize > 0;
+              return boundedCache.maxSize > 0;
             } else if (boundedCache.evictionType === EvictionType.count) {
-                validForm = validForm && boundedCache.maxCount > 0;
+              return boundedCache.maxCount > 0;
             }
         }
-        return validForm;
+        return true;
     }
 
-    function indexingFeatureValidation(validForm: boolean) {
+    function indexingFeatureValidation() {
         if (cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
-            validForm = validForm && indexedCache.indexedEntities.length > 0;
+            return indexedCache.indexedEntities.length > 0;
         }
-        return validForm;
+        return true;
     }
 
-    function securedFeatureValidation(validForm: boolean) {
+    function securedFeatureValidation() {
         if (cacheFeatureSelected.includes(CacheFeature.SECURED)) {
             if (!isSecure) {
-              return false;
+                return false;
             }
 
-            validForm = validForm && securedCache.roles.length > 0;
+            return securedCache.roles.length > 0;
         }
-        return validForm;
+        return true;
     }
 
-    function backupsFeatureValidation(validForm: boolean) {
+    function backupsFeatureValidation() {
         if (cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
             if (!isBackups) {
-              return false;
+                return false;
             }
             if (backupsCache.enableBackupFor) {
-                validForm = validForm && backupsCache.isRemoteCacheValid;
-                validForm = validForm && backupsCache.isRemoteSiteValid;
-                validForm = validForm && backupsCache.isRemoteCacheValid;
+                return backupsCache.isRemoteCacheValid
+                      && backupsCache.isRemoteSiteValid
+                      && backupsCache.isRemoteCacheValid;
             } else {
-                validForm = validForm && backupsCache.sites.length > 0;
+                return backupsCache.sites.length > 0;
             }
         }
-        return validForm;
+        return true;
     }
 
-    function transactionalFeatureValidation(validForm: boolean) {
+    function transactionalFeatureValidation() {
         if (cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && !isTransactional) {
             return false;
         }
-        return validForm;
+        return true;
+    }
+
+    function persistentFeatureValidation() {
+        if (cacheFeatureSelected.includes(CacheFeature.PERSISTENCE)) {
+           return persistentCache.valid;
+        }
+        return true;
     }
 
     useEffect(() => {
@@ -167,9 +182,9 @@ const FeaturesSelector = (props: {
     };
 
     const cacheFeatureOptions = () => {
-        const availableOptions = ['BOUNDED', 'INDEXED', 'SECURED', 'BACKUPS', 'TRANSACTIONAL'];
+        // const availableOptions = ['BOUNDED', 'INDEXED', 'SECURED', 'BACKUPS', 'TRANSACTIONAL', 'PERSISTENCE'];
         return Object.keys(CacheFeature).map((key) => (
-            <SelectOption key={key} value={CacheFeature[key]} isDisabled={!availableOptions.includes(key)} />
+            <SelectOption key={key} value={CacheFeature[key]} />
         ));
     };
 
@@ -197,11 +212,10 @@ const FeaturesSelector = (props: {
             {cacheFeatureSelected.includes(CacheFeature.BOUNDED) && <BoundedCacheConfigurator boundedOptions={boundedCache} boundedOptionsModifier={setBoundedCache} />}
             {cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCacheConfigurator indexedOptions={indexedCache} indexedOptionsModifier={setIndexedCache} />}
             {cacheFeatureSelected.includes(CacheFeature.SECURED) && <SecuredCacheConfigurator securedOptions={securedCache} securedOptionsModifier={setSecuredCache} isEnabled={isSecure} />}
-            {cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCacheConfigurator backupsOptions={backupsCache} backupsOptionsModifier={setBackupsCache} isEnabled={isBackups}/>}
-            {cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && <TransactionalCacheConfigurator transactionalOptions={transactionalCache}
-                                                                                                          transactionalOptionsModifier={setTransactionalCache}
-                                                                                                          isEnabled={isTransactional}/>}
-        </Form >
+            {cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCacheConfigurator backupsOptions={backupsCache} backupsOptionsModifier={setBackupsCache} isEnabled={isBackups} />}
+            {cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && <TransactionalCacheConfigurator transactionalOptions={transactionalCache} transactionalOptionsModifier={setTransactionalCache} isEnabled={isTransactional} />}
+            {cacheFeatureSelected.includes(CacheFeature.PERSISTENCE) && <PersistentCacheConfigurator persistentOptions={persistentCache} persistentOptionsModifier={setPersistentCache} />}
+        </Form>
     );
 };
 

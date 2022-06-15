@@ -3,10 +3,12 @@ import {
   CacheFeature,
   ContentType,
   EncodingType,
+  PersistentCacheStorage,
 } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
+import { camelCase, kebabCase } from '@app/utils/convertStringCase';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -357,6 +359,14 @@ export class CacheConfigUtils {
       };
     };
 
+    const featurePersistent = () => {
+      cache[cacheType]['persistence'] = JSON.parse(data.feature.persistentCache.config);
+      cache[cacheType]['persistence'].passivation = data.feature.persistentCache.passivation;
+      cache[cacheType]['persistence']['connection-attempts'] = data.feature.persistentCache.connectionAttempts;
+      cache[cacheType]['persistence']['connection-interval'] = data.feature.persistentCache.connectionInterval;
+      cache[cacheType]['persistence']['availability-interval'] = data.feature.persistentCache.availabilityInterval;
+    };
+
     if (
       data.advanced.concurrencyLevel ||
       data.advanced.striping ||
@@ -409,6 +419,10 @@ export class CacheConfigUtils {
 
     data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) &&
       featureTransactional();
+
+    if (data.feature.cacheFeatureSelected.includes(CacheFeature.PERSISTENCE)) {
+      featurePersistent();
+    }
 
     return JSON.stringify(cache, null, 2);
   }

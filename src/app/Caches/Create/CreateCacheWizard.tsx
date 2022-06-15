@@ -18,12 +18,12 @@ import {
   TimeUnits,
   TransactionalMode
 } from "@services/infinispanRefData";
-import CreateCacheGettingStarted from '@app/Caches/Create/CreateCacheGettingStarted';
 import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
-import BasicCacheConfigConfigurator from '@app/Caches/Create/BasicCacheConfigConfigurator';
 import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
 import {useStateCallback} from '@app/services/stateCallbackHook';
 import ReviewCacheConfig from '@app/Caches/Create/ReviewCacheConfig';
+import CreateCacheGettingStarted from "@app/Caches/Create/CreateCacheGettingStarted";
+import BasicCacheConfigConfigurator from "@app/Caches/Create/BasicCacheConfigConfigurator";
 import FeaturesSelector from "@app/Caches/Create/FeaturesSelector";
 
 export interface GettingStartedState {
@@ -102,6 +102,13 @@ const TransactionalCacheAdvanceInitialState: TransactionalCacheAdvance = {
     isolationLevel: IsolationLevel.REPEATABLE_READ
 }
 
+const PersistentCacheInitialState: PersistentCache = {
+    storage: '',
+    config: '',
+    valid: false,
+    passivation: false
+}
+
 const CacheFeatureInitialState: CacheFeatureStep = {
     cacheFeatureSelected: [],
     boundedCache: BoundedCacheInitialState,
@@ -109,6 +116,7 @@ const CacheFeatureInitialState: CacheFeatureStep = {
     securedCache: SecuredCacheInitialState,
     backupsCache: BackupsCacheInitialState,
     transactionalCache: TransactionalCacheInitialState,
+    persistentCache: PersistentCacheInitialState,
 }
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
@@ -254,17 +262,17 @@ const CreateCacheWizard = (props) => {
                 id: 3,
                 name: t('caches.create.configurations.basic.nav-title'),
                 component: (<BasicCacheConfigConfigurator basicConfiguration={basicConfiguration}
-                                                          basicConfigurationModifier={setBasicConfiguration}
-                                                          handleIsFormValid={setIsFormValid} />),
+                    basicConfigurationModifier={setBasicConfiguration}
+                    handleIsFormValid={setIsFormValid} />),
                 enableNext: isFormValid,
             },
             {
                 id: 4,
                 name: t('caches.create.configurations.feature.nav-title', { brandname: brandname }),
                 component: <FeaturesSelector cacheFeature={cacheFeature}
-                                                 cacheFeatureModifier={setCacheFeature}
-                                                 handleIsFormValid={setIsFormValid}
-                                                 basicConfiguration={basicConfiguration}/>,
+                    cacheFeatureModifier={setCacheFeature}
+                    handleIsFormValid={setIsFormValid}
+                    basicConfiguration={basicConfiguration} />,
                 enableNext: isFormValid,
                 canJumpTo: isFormValid
             },

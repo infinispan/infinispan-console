@@ -21,7 +21,6 @@ const ReviewCacheConfig = (props:
                 <CodeEditor
                     onChange={props.setReviewConfig}
                     isLineNumbersVisible
-                    isMinimapVisible
                     isLanguageLabelVisible
                     code={CacheConfigUtils.createCacheConfigFromData(props.cacheConfiguration)}
                     language={Language.json}

@@ -397,6 +397,16 @@ interface TransactionalCacheAdvance {
   isolationLevel?: string;
 }
 
+interface PersistentCache {
+  storage: string;
+  config: string;
+  valid:boolean;
+  passivation: boolean;
+  connectionAttempts?: number;
+  connectionInterval?: number;
+  availabilityInterval?: number;
+}
+
 interface CacheFeatureStep {
   cacheFeatureSelected: string[];
   boundedCache: BoundedCache;
@@ -404,6 +414,7 @@ interface CacheFeatureStep {
   securedCache: SecuredCache;
   backupsCache: BackupsCache;
   transactionalCache: TransactionalCache;
+  persistentCache: PersistentCache;
 }
 
 interface AdvancedConfigurationStep {
