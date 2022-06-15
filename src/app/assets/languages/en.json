@@ -272,7 +272,7 @@
           "transactional": "Transactions",
           "transactional-description": "Configure {{brandname}} to participate in JTA-compliant distributed transactions.",
           "transactional-mode": "Transaction mode",
-          "transactional-mode-tooltip": "Configure the mode that {{brandname}} uses when carrying out ACID (atomicity, consistency, isolation, durability) transactions to ensure the cache state is consistent.",
+          "transactional-mode-tooltip": "Configure the mode that {{brandname}} uses when carrying out transactions to ensure the cache state is consistent.",
           "non-xa": "NON_XA",
           "non-xa-tooltip": "{{brandname}} enlists the cache with the Java transaction manager through the Synchronization API. This means that {{brandname}} does not participate in transactions but receives notifications about the transaction lifecycle. You should use the NON_XA mode when there is an external system that handles transactions, for example when {{brandname}} provides a second-level (2LC) cache.",
           "non-durable-xa": "NON_DURABLE_XA",
