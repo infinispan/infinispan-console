@@ -85,7 +85,7 @@ const PersistentCacheConfigurator = (props: {
       return (
         <HelperText>
           <HelperTextItem variant="warning" hasIcon>
-            {t('caches.create.configurations.feature.persistent-error')}
+            {t('caches.create.configurations.feature.persistent-error', { brandname: brandname })}
           </HelperTextItem>
         </HelperText>
       );
@@ -152,7 +152,7 @@ const PersistentCacheConfigurator = (props: {
                             onChange={() => setPassivation(!passivation)}
                             isReversed
                         />
-                        <MoreInfoTooltip label={t('caches.create.configurations.feature.passivation')} toolTip={t('caches.create.configurations.feature.passivation-tooltip')} textComponent={TextVariants.h3} />
+                        <MoreInfoTooltip label={t('caches.create.configurations.feature.passivation')} toolTip={t('caches.create.configurations.feature.passivation-tooltip', {"brandname": brandname})} textComponent={TextVariants.h3} />
                     </FormGroup>
                 </CardBody>
                 <CardBody>
@@ -162,7 +162,7 @@ const PersistentCacheConfigurator = (props: {
                                 isInline
                                 fieldId='connection-attempts'
                             >
-                                <MoreInfoTooltip label={t('caches.create.configurations.feature.connection-attempts')} toolTip={t('caches.create.configurations.feature.connection-attempts-tooltip')} textComponent={TextVariants.h3} />
+                                <MoreInfoTooltip label={t('caches.create.configurations.feature.connection-attempts')} toolTip={t('caches.create.configurations.feature.connection-attempts-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                                 <TextInput placeholder='10' value={connectionAttempts} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setConnectionAttempts(undefined!) : setConnectionAttempts(parseInt(val)) }} aria-label="connection-attempts" />
                             </FormGroup>
                         </FlexItem>
@@ -171,7 +171,7 @@ const PersistentCacheConfigurator = (props: {
                                 isInline
                                 fieldId='connection-interval'
                             >
-                                <MoreInfoTooltip label={t('caches.create.configurations.feature.connection-interval')} toolTip={t('caches.create.configurations.feature.connection-interval-tooltip')} textComponent={TextVariants.h3} />
+                                <MoreInfoTooltip label={t('caches.create.configurations.feature.connection-interval')} toolTip={t('caches.create.configurations.feature.connection-interval-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                                 <TextInput placeholder='50' value={connectionInterval} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setConnectionInterval(undefined!) : setConnectionInterval(parseInt(val)) }} aria-label="connection-interval" />
                             </FormGroup>
                         </FlexItem>
@@ -180,7 +180,7 @@ const PersistentCacheConfigurator = (props: {
                                 isInline
                                 fieldId='availability-interval'
                             >
-                                <MoreInfoTooltip label={t('caches.create.configurations.feature.availability-interval')} toolTip={t('caches.create.configurations.feature.availability-interval-tooltip')} textComponent={TextVariants.h3} />
+                                <MoreInfoTooltip label={t('caches.create.configurations.feature.availability-interval')} toolTip={t('caches.create.configurations.feature.availability-interval-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                                 <TextInput placeholder='1000' value={availabilityInterval} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setAvailabilityInterval(undefined!) : setAvailabilityInterval(parseInt(val)) }} aria-label="availability-interval" />
                             </FormGroup>
                         </FlexItem>
@@ -188,7 +188,7 @@ const PersistentCacheConfigurator = (props: {
                 </CardBody>
                 <CardBody>
                     <FormGroup fieldId='storages'>
-                        <MoreInfoTooltip label={t('caches.create.configurations.feature.storages')} toolTip={t('caches.create.configurations.feature.storages-tooltip')} textComponent={TextVariants.h3} />
+                        <MoreInfoTooltip label={t('caches.create.configurations.feature.storages')} toolTip={t('caches.create.configurations.feature.storages-tooltip', {"brandname": brandname})} textComponent={TextVariants.h3} />
                         <Select
                             variant={SelectVariant.single}
                             typeAheadAriaLabel="persistent-storage"
