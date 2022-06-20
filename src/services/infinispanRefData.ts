@@ -179,13 +179,13 @@ export enum TransactionalMode {
 }
 
 export enum PersistentCacheStorage {
-  FileStore = 'File Store',
-  RemoteStore = 'Remote Store',
-  TableSQLStore = 'Table SQL Store',
-  QuerySQLStore = 'Query SQL Store',
-  JDBCStore = 'JDBC String Based Store',
-  RocksDB = 'RocksDB',
-  Custom = 'Custom',
+  FileStore = 'File store',
+  RemoteStore = 'Remote store',
+  TableSQLStore = 'Table SQL store',
+  QuerySQLStore = 'Query SQL store',
+  JDBCStore = 'JDBC string-based store',
+  RocksDB = 'RocksDB store',
+  Custom = 'Custom store',
 }
 
 export const PersistentStorageConfig = new Map<string, string>([
