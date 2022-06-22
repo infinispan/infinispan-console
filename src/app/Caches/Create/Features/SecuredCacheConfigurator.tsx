@@ -1,32 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Alert, AlertVariant,
-  Card,
-  CardBody,
-  CardHeader,
-  FormGroup,
-  Label,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Text,
-  TextContent,
-  TextVariants,
-} from '@patternfly/react-core';
+import {Alert, AlertVariant, FormGroup, Select, SelectOption, SelectVariant,} from '@patternfly/react-core';
 import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from '@services/ConsoleServices';
-import {global_spacer_sm} from '@patternfly/react-tokens';
+import {useCreateCache} from "@app/services/createCacheHook";
+import {FeatureCard} from "@app/Caches/Create/Features/FeatureCard";
+import {CacheFeature} from "@services/infinispanRefData";
+import {FeatureAlert} from "@app/Caches/Create/Features/FeatureAlert";
 
 const SecuredCacheConfigurator = (props: {
-    securedOptions: SecuredCache,
-    securedOptionsModifier: (SecuredCache) => void,
     isEnabled: boolean
 }) => {
-
+    const { configuration, setConfiguration } = useCreateCache();
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
 
-    const [roles, setRoles] = useState<string[]>(props.securedOptions.roles);
+    const [roles, setRoles] = useState<string[]>(configuration.feature.securedCache.roles);
 
     const [loading, setLoading] = useState(true);
     const [availableRoles, setAvailableRoles] = useState<string[]>([]);
@@ -51,10 +39,26 @@ const SecuredCacheConfigurator = (props: {
     }, [loading]);
 
     useEffect(() => {
-        props.securedOptionsModifier({
-            roles: roles,
-        });
+      setConfiguration((prevState) => {
+        return {
+          ...prevState,
+          feature : {
+            ...prevState.feature,
+            securedCache: {
+              roles: roles,
+              valid: securedFeatureValidation()
+            }
+          }
+        };
+      });
     }, [roles]);
+
+    const securedFeatureValidation = (): boolean => {
+      if (!props.isEnabled) {
+        return false;
+      }
+      return roles.length > 0;
+    }
 
     const rolesOptions = () => {
         const options = availableRoles.map((role) => (
@@ -77,50 +81,33 @@ const SecuredCacheConfigurator = (props: {
 
     if (!props.isEnabled) {
       return (
-        <Alert variant={AlertVariant.info}
-               isInline
-               isPlain
-               title={t('caches.create.configurations.feature.secured-disabled', { brandname: brandname })} />
+        <FeatureAlert feature={CacheFeature.SECURED}/>
       )
     }
 
     return (
-            <Card>
-                <CardHeader>
-                    <TextContent>
-                        <Text component={TextVariants.h2}>{t('caches.create.configurations.feature.secured')}</Text>
-                        <Text component={TextVariants.p}>{t('caches.create.configurations.feature.secured-description', { brandname: brandname })}</Text>
-                    </TextContent>
-                </CardHeader>
-                <CardBody>
-                    <FormGroup fieldId='select-roles'>
+            <FeatureCard title="caches.create.configurations.feature.secured" description="caches.create.configurations.feature.secured-description">
+                    <FormGroup fieldId='select-roles'
+                               isRequired
+                               label={'Roles'}
+                               helperTextInvalid={t('caches.create.configurations.feature.select-roles-helper')}
+                               validated={roles.length == 0 ? 'error' : 'success'}
+                    >
                         <Select toggleId="roleSelector"
-                            variant={SelectVariant.checkbox}
-                            aria-label="Select Roles"
-                            onToggle={() => setIsOpenRoles(!isOpenRoles)}
-                            onSelect={onSelectRoles}
-                            selections={roles}
-                            isOpen={isOpenRoles}
-                            placeholderText={t('caches.create.configurations.feature.select-roles')}
+                                chipGroupProps={{ numChips: 4, expandedText: 'Hide', collapsedText: 'Show ${remaining}' }}
+                                variant={SelectVariant.typeaheadMulti}
+                                aria-label="Select Roles"
+                                onToggle={() => setIsOpenRoles(!isOpenRoles)}
+                                onSelect={onSelectRoles}
+                                selections={roles}
+                                isOpen={isOpenRoles}
+                                validated={roles.length == 0 ? 'error' : 'success'}
+                                placeholderText={t('caches.create.configurations.feature.select-roles')}
                         >
                             {rolesOptions()}
                         </Select>
                     </FormGroup>
-                </CardBody>
-                <CardBody>
-                    {roles.map(role => (
-                        <Label data-cy={role}
-                            color="blue"
-                            closeBtnAriaLabel="Remove entity"
-                            style={{ marginRight: global_spacer_sm.value }}
-                            key={role}
-                            onClose={() => deleteRole(role)}
-                        >
-                            {role}
-                        </Label>
-                    ))}
-                </CardBody>
-            </Card>
+            </FeatureCard>
     );
 };
 

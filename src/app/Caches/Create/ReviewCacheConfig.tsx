@@ -3,19 +3,18 @@ import {Flex, Form, FormGroup, Text, TextContent, TextVariants,} from '@patternf
 import {CodeEditor, Language} from '@patternfly/react-code-editor';
 import {useTranslation} from 'react-i18next';
 import {CacheConfigUtils} from "@services/cacheConfigUtils";
+import {useCreateCache} from "@app/services/createCacheHook";
 
-const ReviewCacheConfig = (props:
-    {
-        cacheName: string,
-        cacheConfiguration: CacheConfiguration,
+const ReviewCacheConfig = (props: {
         setReviewConfig: (string) => void
     }) => {
 
+    const { configuration } = useCreateCache();
     const { t } = useTranslation();
-    const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(props.cacheConfiguration));
+    const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(configuration));
 
     useEffect(() => {
-      let jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(props.cacheConfiguration);
+      let jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(configuration);
       setConfig(jsonFormatConfig)
       props.setReviewConfig(jsonFormatConfig);
     }, [])
@@ -53,7 +52,7 @@ const ReviewCacheConfig = (props:
                 </TextContent>
                 <Flex>
                     <Text component={TextVariants.p}>{t('caches.create.review.review-cache-name')}</Text>
-                    <Text component={TextVariants.h4}>{props.cacheName}</Text>
+                    <Text component={TextVariants.h4}>{configuration.start.cacheName}</Text>
                 </Flex>
             </TextContent>
 

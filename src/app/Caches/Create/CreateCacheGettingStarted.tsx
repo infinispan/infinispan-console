@@ -1,31 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {
-    Form,
-    FormGroup,
-    Text,
-    TextContent,
-    TextInput,
-    TextVariants,
-    Radio,
-} from '@patternfly/react-core';
-import { useTranslation } from 'react-i18next';
-import { GettingStartedState } from "@app/Caches/Create/CreateCacheWizard";
-import { ConsoleServices } from "@services/ConsoleServices";
+import {Form, FormGroup, FormSection, Radio, TextInput,} from '@patternfly/react-core';
+import {useTranslation} from 'react-i18next';
+import {ConsoleServices} from "@services/ConsoleServices";
+import {ExclamationCircleIcon} from "@patternfly/react-icons";
+import {useCreateCache} from "@app/services/createCacheHook";
 
-const CreateCacheGettingStarted = (props: {
-    gettingStarted: GettingStartedState
-    gettingStartedModifier: (GettingStartedState) => void,
-    isFormValid: boolean,
-    handleIsFormValid: (isFormValid: boolean) => void,
-}) => {
+const CreateCacheGettingStarted = () => {
+    let { configuration, setConfiguration } = useCreateCache();
     const { t } = useTranslation();
-    const [cacheName, setCacheName] = useState(props.gettingStarted.cacheName);
+    const [cacheName, setCacheName] = useState(configuration.start.cacheName);
     const [validName, setValidName] = useState<'success' | 'error' | 'default'>(
-        props.isFormValid ? 'success' : 'default'
+        configuration.start.valid ? 'success' : 'default'
     );
     const [createType, setCreateType] = useState<'configure' | 'edit'>(
-        props.gettingStarted.createType
+        configuration.start.createType
     );
 
     const handleChangeName = (name) => {
@@ -33,17 +22,18 @@ const CreateCacheGettingStarted = (props: {
 
         // Check if name is not null or empty
         if (trimmedName.length > 0) {
-            setValidName('success');
-        }
-        else {
+            setValidName('default');
+        } else {
             setValidName('error');
         }
         setCacheName(trimmedName);
     };
 
     useEffect(() => {
-        if (cacheName === '')
-            return;
+        if (cacheName === '') {
+          setValidName('default');
+          return;
+        }
 
         ConsoleServices.caches().cacheExists(cacheName)
             .then(response => {
@@ -54,42 +44,52 @@ const CreateCacheGettingStarted = (props: {
                     setValidName('success');
                 }
             })
-            .catch(ex => setValidName('success'))
+            .catch(ex => setValidName('error'))
     }, [cacheName]);
 
     useEffect(() => {
-        props.gettingStartedModifier({
-            cacheName: cacheName,
-            createType: createType,
+      setConfiguration((prevState) => {
+          return {
+            ...prevState,
+            start : {
+              cacheName: cacheName,
+              createType: createType,
+              valid: validName === 'success'
+            }
+          };
         });
-        props.handleIsFormValid(validName === 'success');
     }, [cacheName, createType, validName]);
 
-    const formCache = () => {
+    const formCacheName = () => {
         return (
+          <FormSection title={t('caches.create.getting-started.cache-name-title')} titleElement="h2">
             <FormGroup
-                label={t('caches.create.getting-started.cache-name-label')}
-                isRequired
-                fieldId="cache-name"
-                validated={validName}
-                helperTextInvalid={t('caches.create.getting-started.cache-name-label-invalid')}
-            >
-                <TextInput
-                    isRequired
-                    type="text"
-                    id="cache-name"
-                    name="cache-name"
-                    aria-describedby="cache-name-helper"
-                    value={cacheName}
-                    onChange={handleChangeName}
-                    validated={validName}
-                />
-            </FormGroup>
+                  label={t('caches.create.getting-started.cache-name-label')}
+                  isRequired
+                  fieldId="cache-name"
+                  validated={validName}
+                  helperTextInvalid={t('caches.create.getting-started.cache-name-label-invalid')}
+                  helperText={t('caches.create.getting-started.cache-name-label-help')}
+                  helperTextInvalidIcon={<ExclamationCircleIcon />}
+              >
+                  <TextInput
+                      isRequired
+                      type="text"
+                      id="cache-name"
+                      name="cache-name"
+                      aria-describedby="cache-name-helper"
+                      value={cacheName}
+                      onChange={handleChangeName}
+                      validated={validName}
+                  />
+              </FormGroup>
+          </FormSection>
         );
     };
 
     const formConfigCache = () => {
         return (
+          <FormSection title={t('caches.create.getting-started.cache-create-title')} titleElement="h2">
             <FormGroup
                 isInline
                 isRequired
@@ -100,11 +100,7 @@ const CreateCacheGettingStarted = (props: {
                     id="configure"
                     onChange={() => setCreateType('configure')}
                     isChecked={createType === 'configure'}
-                    label={
-                        <TextContent>
-                            <Text component={TextVariants.h4}>{t('caches.create.getting-started.cache-create-builder')}</Text>
-                        </TextContent>
-                    }
+                    label={t('caches.create.getting-started.cache-create-builder')}
                     description={t('caches.create.getting-started.cache-create-builder-help')}
                 />
                 <Radio
@@ -112,37 +108,22 @@ const CreateCacheGettingStarted = (props: {
                     id="edit"
                     onChange={() => setCreateType('edit')}
                     isChecked={createType === 'edit'}
-                    label={
-                        <TextContent>
-                            <Text component={TextVariants.h4}>
-                                {t('caches.create.getting-started.cache-create-add')}
-                            </Text>
-                        </TextContent>
-                    }
+                    label={t('caches.create.getting-started.cache-create-add')}
                     description={t('caches.create.getting-started.cache-create-add-help')}
                 />
             </FormGroup>
+          </FormSection>
         );
     };
 
     return (
-        <Form onSubmit={(e) => {
+        <Form isWidthLimited onSubmit={(e) => {
           e.preventDefault();
         }}>
-            <TextContent>
-                <Text component={TextVariants.h2}>{t('caches.create.getting-started.cache-name-title')}</Text>
-            </TextContent>
-
-            {formCache()}
-
-            <TextContent>
-                <Text component={TextVariants.h2}>{t('caches.create.getting-started.cache-create-title')}</Text>
-            </TextContent>
-
-            {formConfigCache()}
-
+          {formCacheName()}
+          {formConfigCache()}
         </Form>
     );
-};
+}
 
 export default CreateCacheGettingStarted;

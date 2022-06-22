@@ -243,16 +243,18 @@ export class CacheService {
     create: boolean
   ): Promise<ActionResponse> {
     let headers = new Headers();
-    let keyContentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
-      cacheEncoding.key as EncodingType,
-      key,
-      keyContentType
-    );
-    let contentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
-      cacheEncoding.value as EncodingType,
-      value,
-      valueContentType
-    );
+    let keyContentTypeHeader =
+      ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
+        cacheEncoding.key as EncodingType,
+        key,
+        keyContentType
+      );
+    let contentTypeHeader =
+      ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
+        cacheEncoding.value as EncodingType,
+        value,
+        valueContentType
+      );
     headers.append('Key-Content-Type', keyContentTypeHeader);
     headers.append('Content-Type', contentTypeHeader);
     if (timeToLive.length > 0) headers.append('timeToLiveSeconds', timeToLive);
@@ -385,9 +387,8 @@ export class CacheService {
       }
       keyForURL = keyProtobuffed.value;
     } else {
-      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(
-        keyContentType
-      );
+      keyContentTypeHeader =
+        ContentTypeHeaderMapper.fromContentType(keyContentType);
       keyForURL = key;
     }
 
@@ -490,9 +491,8 @@ export class CacheService {
       }
       keyForURL = keyProtobuffed.value;
     } else {
-      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(
-        keyContentType
-      );
+      keyContentTypeHeader =
+        ContentTypeHeaderMapper.fromContentType(keyContentType);
       keyForURL = key;
     }
 

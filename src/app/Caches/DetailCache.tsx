@@ -407,7 +407,7 @@ const DetailCache = (props: { cacheName: string }) => {
                 </TextContent>
               </ToolbarItem>
               <ToolbarItem>
-                <CacheTypeBadge cacheType={cache.type} small={false} />
+                <CacheTypeBadge cacheType={cache.type} small={false} cacheName={cache.name}/>
               </ToolbarItem>
               {buildShowMoreHeader()}
             </ToolbarContent>

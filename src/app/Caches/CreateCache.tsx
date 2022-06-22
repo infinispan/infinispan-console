@@ -14,7 +14,8 @@ import displayUtils from '@services/displayUtils';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useTranslation } from 'react-i18next';
-import { CreateCacheWizard } from './Create/CreateCacheWizard';
+import { CreateCacheWizard } from '@app/Caches/Create/CreateCacheWizard';
+import {CreateCacheProvider} from "@app/providers/CreateCacheProvider";
 
 const CreateCache: React.FunctionComponent<any> = (props) => {
   const cmName = props.computedMatch.params.cmName;
@@ -46,7 +47,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
   }
 
   return (
-    <React.Fragment>
+    <CreateCacheProvider>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb currentPage="Create a cache" />
         <Toolbar id="create-cache-header">
@@ -63,7 +64,7 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
         </Toolbar>
       </PageSection>
       <CreateCacheWizard cmName={cmName} />
-    </React.Fragment>
+    </CreateCacheProvider>
   );
 };
 export { CreateCache };
