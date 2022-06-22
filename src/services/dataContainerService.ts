@@ -43,12 +43,11 @@ export class ContainerService {
   private getCacheManager(
     name: string
   ): Promise<Either<ActionResponse, CacheManager>> {
-    let healthPromise: Promise<
-      Either<ActionResponse, String>
-    > = this.fetchCaller.get(
-      this.endpoint + '/cache-managers/' + name + '/health',
-      (data) => data.cluster_health.health_status
-    );
+    let healthPromise: Promise<Either<ActionResponse, String>> =
+      this.fetchCaller.get(
+        this.endpoint + '/cache-managers/' + name + '/health',
+        (data) => data.cluster_health.health_status
+      );
 
     return healthPromise.then((maybeHealth) =>
       this.fetchCaller.get(

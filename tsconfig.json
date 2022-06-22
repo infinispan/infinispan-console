@@ -17,8 +17,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "resolveJsonModule": true,
-    "downlevelIteration": true,
     "paths": {
       "@app/*": ["src/app/*"],
       "@services/*": ["src/services/*"],
@@ -26,8 +24,7 @@
       "@assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
     },
     "importHelpers": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",

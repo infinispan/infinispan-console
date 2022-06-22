@@ -281,6 +281,12 @@ interface TemplateOptionSelect {
   isPlaceholder?: boolean;
 }
 
+interface GettingStartedState {
+  cacheName: '';
+  createType: 'configure' | 'edit';
+  valid: boolean;
+}
+
 interface CacheEditorStep {
   editorConfig: string;
   configs: TemplateOptionSelect[];
@@ -302,6 +308,7 @@ interface BasicCacheConfig {
   lifeSpanUnit: string;
   maxIdleNumber: number;
   maxIdleUnit: string;
+  valid: boolean;
 }
 
 interface BoundedCache {
@@ -310,6 +317,7 @@ interface BoundedCache {
   maxSizeUnit: string;
   maxCount: number;
   evictionStrategy: string;
+  valid: boolean;
 }
 
 interface IndexWriter {
@@ -330,13 +338,14 @@ interface IndexMerge {
   maxForcedSize?: number;
 }
 interface IndexedCache {
-  enableIndexing: boolean;
   indexedStorage: 'filesystem' | 'local_heap';
   indexedEntities: string[];
+  valid: boolean;
 }
 
 interface SecuredCache {
   roles: string[];
+  valid: boolean;
 }
 interface BackupTakeOffline {
   afterFailures?: number;
@@ -361,8 +370,9 @@ interface BackupSite {
 }
 
 interface BackupFor {
-  remoteCache?: string;
-  remoteSite?: string;
+  enabled: boolean;
+  remoteCache: string;
+  remoteSite: string;
 }
 
 interface BackupSiteBasic {
@@ -378,15 +388,14 @@ interface BackupSetting {
 
 interface BackupsCache {
   sites: BackupSiteBasic[];
-  backupFor?: BackupFor;
-  enableBackupFor: boolean;
-  isRemoteCacheValid: boolean;
-  isRemoteSiteValid: boolean;
+  backupFor: BackupFor;
+  valid: boolean;
 }
 
 interface TransactionalCache {
   mode?: string;
   locking?: string;
+  valid: boolean;
 }
 
 interface TransactionalCacheAdvance {
@@ -426,15 +435,14 @@ interface AdvancedConfigurationStep {
   indexReader?: number;
   indexWriter: IndexWriter;
   indexMerge: IndexMerge;
-  isOpenIndexReader: boolean;
-  isOpenIndexMerge: boolean;
-  isOpenIndexWriter: boolean;
   backupSetting?: BackupSetting;
   backupSiteData?: BackupSite[];
   transactionalAdvance?: TransactionalCacheAdvance;
+  valid: boolean;
 }
 
 interface CacheConfiguration {
+  start: GettingStartedState;
   basic: BasicCacheConfig;
   feature: CacheFeatureStep;
   advanced: AdvancedConfigurationStep;

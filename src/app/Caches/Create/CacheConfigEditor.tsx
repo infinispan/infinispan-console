@@ -180,7 +180,7 @@ const CacheConfigEditor = (props: {
                         toggleId="template-selector"
                     >
                         {configs.map((option, index) => (
-                            <SelectOption id={index}
+                            <SelectOption id={'template-' + index}
                                 key={index}
                                 value={option.value}
                             />

@@ -32,7 +32,7 @@ SERVER_DIR="infinispan-server"
 CLUSTER_SIZE_MAIN="$SERVER_HOME/bin/cli.sh -c localhost:11322 -f batch "
 
 USER_NAME="admin"
-PASSWORD="admin"
+PASSWORD="password"
 
 #Function prepares the server directory, i.e. downloads, extracts, copies to working directory and makes changes to configuration;
 function prepareServerDir()

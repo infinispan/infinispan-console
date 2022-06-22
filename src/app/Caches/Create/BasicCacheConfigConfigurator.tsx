@@ -1,48 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Divider,
-    Form,
-    FormGroup,
-    NumberInput,
-    InputGroup,
-    Grid,
-    GridItem,
-    Radio,
-    Stack,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Switch,
-    Text,
-    TextContent,
-    TextInput,
-    TextVariants,
+  Form,
+  FormGroup,
+  FormSection,
+  Grid,
+  GridItem,
+  InputGroup,
+  NumberInput,
+  Radio,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Switch, Text, TextContent,
+  TextInput, TextVariants,
 } from '@patternfly/react-core';
-import { CacheType, EncodingType, CacheMode, TimeUnits } from "@services/infinispanRefData";
-import { useTranslation } from 'react-i18next';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import {CacheMode, CacheType, EncodingType, TimeUnits} from "@services/infinispanRefData";
+import {useTranslation} from 'react-i18next';
+import {PopoverHelp} from "@app/Common/PopoverHelp";
+import {useCreateCache} from "@app/services/createCacheHook";
 
-const BasicCacheConfigConfigurator = (props:
-    {
-        basicConfiguration: BasicCacheConfig,
-        basicConfigurationModifier: (BasicConfigurationStep) => void,
-        handleIsFormValid: (isFormValid: boolean) => void,
-    }) => {
+const BasicCacheConfigConfigurator = () => {
 
     const { t } = useTranslation();
+    const {configuration, setConfiguration} = useCreateCache();
 
     // State for the form
     // Passed to the parent component
-    const [topology, setTopology] = useState<string>(props.basicConfiguration.topology);
-    const [mode, setMode] = useState<CacheMode>(props.basicConfiguration.mode as CacheMode);
-    const [selectedNumberOwners, setSelectedNumberOwners] = useState(props.basicConfiguration.numberOfOwners);
-    const [selectedEncodingCache, setSelectedEncodingCache] = useState(props.basicConfiguration.encoding);
-    const [isStatistics, setIsStatistics] = useState(props.basicConfiguration.statistics);
-    const [isExpiration, setIsExpiration] = useState(props.basicConfiguration.expiration);
-    const [lifeSpanNumber, setLifeSpanNumber] = useState(props.basicConfiguration.lifeSpanNumber);
-    const [lifeSpanUnit, setLifeSpanUnit] = useState(props.basicConfiguration.lifeSpanUnit);
-    const [maxIdleNumber, setMaxIdleNumber] = useState(props.basicConfiguration.maxIdleNumber);
-    const [maxIdleUnit, setMaxIdleUnit] = useState(props.basicConfiguration.maxIdleUnit);
+    const [topology, setTopology] = useState<string>(configuration.basic.topology);
+    const [mode, setMode] = useState<CacheMode>(configuration.basic.mode as CacheMode);
+    const [selectedNumberOwners, setSelectedNumberOwners] = useState(configuration.basic.numberOfOwners);
+    const [selectedEncodingCache, setSelectedEncodingCache] = useState(configuration.basic.encoding);
+    const [isStatistics, setIsStatistics] = useState(configuration.basic.statistics);
+    const [isExpiration, setIsExpiration] = useState(configuration.basic.expiration);
+    const [lifeSpanNumber, setLifeSpanNumber] = useState(configuration.basic.lifeSpanNumber);
+    const [lifeSpanUnit, setLifeSpanUnit] = useState(configuration.basic.lifeSpanUnit);
+    const [maxIdleNumber, setMaxIdleNumber] = useState(configuration.basic.maxIdleNumber);
+    const [maxIdleUnit, setMaxIdleUnit] = useState(configuration.basic.maxIdleUnit);
 
     // Helper State
     const [isOpenEncodingCache, setIsOpenEncodingCache] = useState(false);
@@ -50,24 +43,25 @@ const BasicCacheConfigConfigurator = (props:
     const [isOpenMaxIdleUnit, setIsOpenMaxIdleUnit] = useState(false);
 
     useEffect(() => {
-        topology === 'Replicated' ? setSelectedNumberOwners(undefined) : setSelectedNumberOwners(1);
-    }, [topology])
-
-    useEffect(() => {
         // Update the form when the state changes
-        props.basicConfigurationModifier({
-            topology: topology,
-            mode: mode,
-            numberOfOwners: selectedNumberOwners,
-            encoding: selectedEncodingCache,
-            statistics: isStatistics,
-            expiration: isExpiration,
-            lifeSpanNumber: lifeSpanNumber,
-            lifeSpanUnit: lifeSpanUnit,
-            maxIdleNumber: maxIdleNumber,
-            maxIdleUnit: maxIdleUnit
+        setConfiguration((prevState) => {
+          return {
+            ...prevState,
+            basic : {
+              topology: topology,
+              mode: mode,
+              numberOfOwners: topology == CacheType.Distributed ? selectedNumberOwners: undefined,
+              encoding: selectedEncodingCache,
+              statistics: isStatistics,
+              expiration: isExpiration,
+              lifeSpanNumber: lifeSpanNumber,
+              lifeSpanUnit: lifeSpanUnit,
+              maxIdleNumber: maxIdleNumber,
+              maxIdleUnit: maxIdleUnit,
+              valid: lifeSpanNumber >= -1 && maxIdleNumber >= -1
+            }
+          };
         });
-        props.handleIsFormValid(lifeSpanNumber >= -1 && maxIdleNumber >= -1);
     }, [topology, mode, selectedNumberOwners, selectedEncodingCache, isStatistics, isExpiration, lifeSpanNumber, lifeSpanUnit, maxIdleNumber, maxIdleUnit]);
 
 
@@ -112,90 +106,80 @@ const BasicCacheConfigConfigurator = (props:
         setIsOpenMaxIdleUnit(false);
     };
 
-    // Form Topology
-    const formTopology = () => {
+    const formMode = () => {
         return (
-            <React.Fragment>
-                <Stack hasGutter>
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.mode-title')} toolTip={t('caches.create.configurations.basic.mode-tooltip')} textComponent={TextVariants.h2} />
                     <FormGroup
-                        isInline
                         isRequired
+                        isInline
+                        label={t('caches.create.configurations.basic.mode-title')}
                         fieldId="topology"
+                        labelIcon={<PopoverHelp name={'Cache mode'}
+                                                label={t('caches.create.configurations.basic.mode-title')}
+                                                content={t('caches.create.configurations.basic.mode-tooltip')}/>}
                     >
                         <Radio
                             name="topology-radio"
                             id="distributed"
-                            onChange={() => setTopology(CacheType.Distributed)}
+                            onChange={() => {
+                              setTopology(CacheType.Distributed);
+                              setSelectedNumberOwners(1);
+                            }}
                             isChecked={topology as CacheType == CacheType.Distributed}
-                            label={
-                                <TextContent>
-                                    <Text component={TextVariants.h3}>
-                                        {t('caches.create.configurations.basic.mode-distributed')}
-                                    </Text>
-                                </TextContent>
-                            }
+                            label={t('caches.create.configurations.basic.mode-distributed')}
                         />
                         <Radio
                             name="topology-radio"
                             id="replicated"
                             onChange={() => setTopology(CacheType.Replicated)}
                             isChecked={topology as CacheType == CacheType.Replicated}
-                            label={
-                                <TextContent>
-                                    <Text component={TextVariants.h3}>{t('caches.create.configurations.basic.mode-replicated')}</Text>
-                                </TextContent>
-                            }
+                            label={t('caches.create.configurations.basic.mode-replicated')}
                         />
                     </FormGroup>
-                </Stack>
-
-                <Stack hasGutter>
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.cluster-repl-title')}
-                                     toolTip={t('caches.create.configurations.basic.cluster-repl-tooltip')}
-                                     textComponent={TextVariants.h2} />
-                    <FormGroup
-                        isInline
-                        isRequired
-                        fieldId="mode"
-                    >
-                        <Radio
-                            name="mode-radio"
-                            id="sync"
-                            onChange={() => setMode(() => CacheMode.SYNC)}
-                            isChecked={mode as CacheMode == CacheMode.SYNC}
-                            label={
-                                <TextContent>
-                                    <Text component={TextVariants.h3}>{t('caches.create.configurations.basic.cluster-repl-sync')}</Text>
-                                </TextContent>
-                            }
-                        />
-                        <Radio
-                          name="mode-radio"
-                          id="async"
-                          onChange={() => setMode(() => CacheMode.ASYNC)}
-                          isChecked={mode as CacheMode == CacheMode.ASYNC}
-                          label={
-                            <TextContent>
-                              <Text component={TextVariants.h3}>{t('caches.create.configurations.basic.cluster-repl-async')}</Text>
-                            </TextContent>
-                          }
-                        />
-                    </FormGroup>
-                </Stack>
-            </React.Fragment>
         );
     };
 
-    // Form Number of Owners
+  const formTopology = () => {
+    return (
+        <FormGroup
+          isRequired
+          isInline
+          fieldId="mode"
+          label={t('caches.create.configurations.basic.cluster-repl-title')}
+          labelIcon={ <PopoverHelp name={'mode'}
+                                   label={t('caches.create.configurations.basic.cluster-repl-title')}
+                                   content={t('caches.create.configurations.basic.cluster-repl-tooltip')}/>}
+        >
+          <Radio
+            name="mode-radio"
+            id="sync"
+            onChange={() => setMode(() => CacheMode.SYNC)}
+            isChecked={mode as CacheMode == CacheMode.SYNC}
+            label={t('caches.create.configurations.basic.cluster-repl-sync')}
+          />
+          <Radio
+            name="mode-radio"
+            id="async"
+            onChange={() => setMode(() => CacheMode.ASYNC)}
+            isChecked={mode as CacheMode == CacheMode.ASYNC}
+            label={t('caches.create.configurations.basic.cluster-repl-async')}
+          />
+        </FormGroup>
+    );
+  };
+
     const formNumberOwners = () => {
-        return (
+
+      return (
             <FormGroup
+                label={t('caches.create.configurations.basic.number-owners')}
+                labelIcon={<PopoverHelp name={'number-of-owners'}
+                                        label={t('caches.create.configurations.basic.number-owners')}
+                                        content={t('caches.create.configurations.basic.number-owners-tooltip')} />}
                 fieldId='field-number-owners'
-                isRequired={topology as CacheType == CacheType.Distributed}> {/*Required when topology is distributed */}
-                <MoreInfoTooltip label={t('caches.create.configurations.basic.number-owners')} toolTip={t('caches.create.configurations.basic.number-owners-tooltip')} textComponent={TextVariants.h2} />
+                isRequired={topology as CacheType == CacheType.Distributed}
+            >
                 <NumberInput
-                    value={selectedNumberOwners}
+                    value={topology as CacheType == CacheType.Distributed? selectedNumberOwners: 1}
                     min={minValue}
                     max={maxValue}
                     onMinus={onMinus}
@@ -206,12 +190,12 @@ const BasicCacheConfigConfigurator = (props:
                     minusBtnAriaLabel="minus"
                     plusBtnAriaLabel="plus"
                     widthChars={2}
+                    isDisabled={topology as CacheType != CacheType.Distributed}
                 />
             </FormGroup>
         )
     }
 
-    // Options for Encoding Cache
     const encodingTypeOptions = () => {
         const a = Object.keys(EncodingType).map((key) => (
             <SelectOption id={key} key={key} value={EncodingType[key]} />
@@ -221,32 +205,35 @@ const BasicCacheConfigConfigurator = (props:
 
     };
 
-    // Form Encoding Cache
+    const formStatistics = () => {
+      return (
+        <FormGroup
+          fieldId="field-statistics"
+        >
+          <Switch
+            aria-label="statistics"
+            id="statistics"
+            isChecked={isStatistics}
+            onChange={() => setIsStatistics(!isStatistics)}
+            label={t('caches.create.configurations.basic.statistics-disable')}
+            labelOff={t('caches.create.configurations.basic.statistics-enable')}
+            hasCheckIcon
+          />
+        </FormGroup>
+      );
+    }
+
     const formEncodingCache = () => {
         return (
-            <React.Fragment>
                 <FormGroup
-                    isInline
-                    isRequired
-                    fieldId="field-statistics"
-                >
-                    <Switch
-                        aria-label="statistics"
-                        id="statistics"
-                        isChecked={isStatistics}
-                        onChange={() => setIsStatistics(!isStatistics)}
-                        isReversed
-                    />
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.statistics-title')} toolTip={t('caches.create.configurations.basic.statistics-tooltip')} textComponent={TextVariants.h2} />
-                </FormGroup>
-                <FormGroup
+                    label={t('caches.create.configurations.basic.encoding-cache-title')}
                     isInline
                     isRequired
                     fieldId="field-encoding-cache"
+                    labelIcon={<PopoverHelp name={'encoding'} label={t('caches.create.configurations.basic.encoding-cache-title')} content={t('caches.create.configurations.basic.encoding-cache-tooltip')}/>}
                 >
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.encoding-cache-title')} toolTip={t('caches.create.configurations.basic.encoding-cache-tooltip')} textComponent={TextVariants.h2} />
                     <Select
-                        variant={SelectVariant.single}
+                        variant={SelectVariant.typeahead}
                         aria-label={t('caches.create.configurations.basic.encoding-select-label')}
                         onToggle={onToggleEncodingCache}
                         onSelect={onSelectEncodingCache}
@@ -254,55 +241,63 @@ const BasicCacheConfigConfigurator = (props:
                         isOpen={isOpenEncodingCache}
                         aria-labelledby="toggle-id-number-owners"
                         toggleId="cacheEncoding"
+                        width={300}
                     >
                         {encodingTypeOptions()}
                     </Select>
                 </FormGroup>
-            </React.Fragment>
         )
     }
 
-    // Form expiration
     const formExpiration = () => {
         return (
             <FormGroup
-                isInline
-                isRequired
                 fieldId="form-expiration"
             >
                 <Switch
-                    aria-label="expiration" data-cy="expirationSwitch"
+                    aria-label="expiration"
+                    data-cy="expirationSwitch"
                     id="expiration"
                     isChecked={isExpiration}
                     onChange={() => setIsExpiration(!isExpiration)}
-                    isReversed
+                    labelOff={t('caches.create.configurations.basic.expiration-enable')}
+                    label={t('caches.create.configurations.basic.expiration-disable')}
+                    hasCheckIcon
                 />
-                <MoreInfoTooltip label={t('caches.create.configurations.basic.expiration-title')} toolTip={t('caches.create.configurations.basic.expiration-tooltip')} textComponent={TextVariants.h2} />
+              <PopoverHelp name={'expiration'}
+                                      label={t('caches.create.configurations.basic.expiration-title')}
+                                      content={t('caches.create.configurations.basic.expiration-tooltip')}/>
             </FormGroup>
         )
     }
 
-    // Options for Time Units
     const unitOptions = () => {
         return Object.keys(TimeUnits).map((key) => (
             <SelectOption key={key} value={TimeUnits[key]} />
         ));
     }
 
-    // Form expiration settings
     const formExpirationSettings = () => {
         return (
-            <React.Fragment>
+            <Grid md={6} hasGutter>
                 <FormGroup
                     fieldId='form-life-span'
                     validated={lifeSpanNumber >= -1 ? 'default' : 'error'}
                     helperTextInvalid={t('caches.create.configurations.basic.lifespan-helper-invalid')}
+                    label={t('caches.create.configurations.basic.lifespan')}
+                    labelIcon={<PopoverHelp name={'lifespan'}
+                                            label={t('caches.create.configurations.basic.lifespan')}
+                                            content={t('caches.create.configurations.basic.lifespan-tooltip')}/>}
                 >
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.lifespan')} toolTip={t('caches.create.configurations.basic.lifespan-tooltip')} textComponent={TextVariants.h3} />
                     <InputGroup>
                         <Grid>
                             <GridItem span={8}>
-                                <TextInput min={-1} value={lifeSpanNumber} type="number" onChange={(value) => setLifeSpanNumber(parseInt(value))} aria-label="life-span-input" />
+                                <TextInput min={-1}
+                                           validated={lifeSpanNumber >= -1 ? 'default' : 'error'}
+                                           value={lifeSpanNumber}
+                                           type="number"
+                                           onChange={(value) => setLifeSpanNumber(parseInt(value))}
+                                           aria-label="life-span-input" />
                             </GridItem>
                             <GridItem span={4}>
                                 <Select
@@ -325,12 +320,19 @@ const BasicCacheConfigConfigurator = (props:
                     fieldId='form-max-idle'
                     validated={maxIdleNumber >= -1 ? 'default' : 'error'}
                     helperTextInvalid={t('caches.create.configurations.basic.max-idle-helper-invalid')}
+                    label={t('caches.create.configurations.basic.max-idle')}
+                    labelIcon={<PopoverHelp name={'maxidle'}
+                                            label={t('caches.create.configurations.basic.max-idle')}
+                                            content={t('caches.create.configurations.basic.max-idle-tooltip')}/>}
                 >
-                    <MoreInfoTooltip label={t('caches.create.configurations.basic.max-idle')} toolTip={t('caches.create.configurations.basic.max-idle-tooltip')} textComponent={TextVariants.h3} />
                     <InputGroup>
                         <Grid>
                             <GridItem span={8}>
-                                <TextInput min={-1} value={maxIdleNumber} type="number" onChange={(value) => setMaxIdleNumber(parseInt(value))} aria-label="life-span-input" />
+                                <TextInput min={-1} value={maxIdleNumber}
+                                           validated={maxIdleNumber >= -1 ? 'default' : 'error'}
+                                           type="number"
+                                           onChange={(value) => setMaxIdleNumber(parseInt(value))}
+                                           aria-label="life-span-input" />
                             </GridItem>
                             <GridItem span={4}>
                                 <Select
@@ -348,26 +350,27 @@ const BasicCacheConfigConfigurator = (props:
                         </Grid>
                     </InputGroup>
                 </FormGroup>
-            </React.Fragment>
+            </Grid>
         )
     }
 
     return (
-        <Form onSubmit={(e) => {
+        <Form isWidthLimited onSubmit={(e) => {
           e.preventDefault();
         }}>
-
-            {formTopology()}
-
+          <FormSection title={t('caches.create.configurations.basic.title')}>
+            {formMode()}
             {/* Display the number of owners of the cache when the topology is distributed. */}
             {topology as CacheType == CacheType.Distributed && formNumberOwners()}
-
-            <Divider />
+            {formTopology()}
             {formEncodingCache()}
-
-            <Divider />
+            {formStatistics()}
+          </FormSection>
+          <FormSection title={t('caches.create.configurations.basic.expiration-title')}>
             {formExpiration()}
             {isExpiration && formExpirationSettings()}
+          </FormSection>
+
 
         </Form>
     );

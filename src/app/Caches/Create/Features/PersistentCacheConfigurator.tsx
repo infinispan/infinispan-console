@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Flex,
   FlexItem,
-  FormGroup, HelperText, HelperTextItem,
-  Hint, HintBody, HintFooter,
+  FormGroup,
+  HelperText,
+  HelperTextItem,
+  Hint,
+  HintBody,
+  HintFooter,
   Select,
   SelectOption,
   SelectVariant,
@@ -20,38 +21,49 @@ import {
 import {CodeEditor, Language} from '@patternfly/react-code-editor';
 import {useTranslation} from 'react-i18next';
 import {PersistentCacheStorage, PersistentStorageConfig} from "@services/infinispanRefData";
-import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
 import {kebabCase} from "@app/utils/convertStringCase";
+import {useCreateCache} from "@app/services/createCacheHook";
+import {FeatureCard} from "@app/Caches/Create/Features/FeatureCard";
+import {PopoverHelp} from "@app/Common/PopoverHelp";
 
-const PersistentCacheConfigurator = (props: {
-    persistentOptions: PersistentCache,
-    persistentOptionsModifier: (PersistentCache) => void,
-}) => {
-
+const PersistentCacheConfigurator = () => {
+    const { configuration, setConfiguration } = useCreateCache();
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
 
-    const [passivation, setPassivation] = useState(props.persistentOptions.passivation);
-    const [connectionAttempts, setConnectionAttempts] = useState(props.persistentOptions.connectionAttempts);
-    const [connectionInterval, setConnectionInterval] = useState(props.persistentOptions.connectionInterval);
-    const [availabilityInterval, setAvailabilityInterval] = useState(props.persistentOptions.availabilityInterval);
+    const [passivation, setPassivation] = useState(configuration.feature.persistentCache.passivation);
+    const [connectionAttempts, setConnectionAttempts] = useState(configuration.feature.persistentCache.connectionAttempts);
+    const [connectionInterval, setConnectionInterval] = useState(configuration.feature.persistentCache.connectionInterval);
+    const [availabilityInterval, setAvailabilityInterval] = useState(configuration.feature.persistentCache.availabilityInterval);
 
-    const [storage, setStorage] = useState(props.persistentOptions.storage as PersistentCacheStorage);
-    const [config, setConfig] = useState(props.persistentOptions.config);
-    const [valid, setValid] = useState(props.persistentOptions.valid);
+    const [storage, setStorage] = useState(configuration.feature.persistentCache.storage as PersistentCacheStorage);
+    const [config, setConfig] = useState(configuration.feature.persistentCache.config);
+    const [valid, setValid] = useState(configuration.feature.persistentCache.valid);
     const [isOpenStorages, setIsOpenStorages] = useState(false);
 
     useEffect(() => {
-        props.persistentOptionsModifier({
-            passivation: passivation,
-            connectionAttempts: connectionAttempts,
-            connectionInterval: connectionInterval,
-            availabilityInterval: availabilityInterval,
-            storage: storage,
-            config: config,
-            valid: valid
-        });
+      setConfiguration((prevState) => {
+        return {
+          ...prevState,
+          feature : {
+            ...prevState.feature,
+            persistentCache: {
+              passivation: passivation,
+              connectionAttempts: connectionAttempts,
+              connectionInterval: connectionInterval,
+              availabilityInterval: availabilityInterval,
+              storage: storage,
+              config: config,
+              valid: persistentFeatureValidation()
+            }
+          }
+        };
+      });
     }, [passivation, connectionAttempts, connectionInterval, availabilityInterval, storage, config, valid]);
+
+    const persistentFeatureValidation = () : boolean => {
+      return valid;
+    }
 
     const onSelectStorage = (event, selection) => {
       setStorage(selection);
@@ -98,7 +110,6 @@ const PersistentCacheConfigurator = (props: {
 
       return (
         <React.Fragment>
-          <CardBody>
             <Hint>
               <HintBody>
                 {t('caches.create.configurations.feature.persistent-hint')}
@@ -109,8 +120,6 @@ const PersistentCacheConfigurator = (props: {
                 </Button>
               </HintFooter>
             </Hint>
-          </CardBody>
-          <CardBody>
             <FormGroup fieldId="storage-configuration"
                        isRequired>
               <TextContent>
@@ -127,23 +136,20 @@ const PersistentCacheConfigurator = (props: {
               />
               {displayValidationError()}
             </FormGroup>
-          </CardBody>
         </React.Fragment>
       )
     }
 
     return (
-            <Card>
-                <CardHeader>
-                    <TextContent>
-                        <Text component={TextVariants.h2}>{t('caches.create.configurations.feature.persistent')}</Text>
-                        <Text component={TextVariants.p}>{t('caches.create.configurations.feature.persistent-description', {"brandname": brandname})}</Text>
-                    </TextContent>
-                </CardHeader>
-                <CardBody>
+            <FeatureCard title="caches.create.configurations.feature.persistent"
+                         description="caches.create.configurations.feature.persistent-description">
                     <FormGroup
                         isInline
                         fieldId='passivation'
+                        label={t('caches.create.configurations.feature.passivation')}
+                        labelIcon={<PopoverHelp name={'passivation'}
+                                                label={t('caches.create.configurations.feature.passivation')}
+                                                content={t('caches.create.configurations.feature.passivation-tooltip', {"brandname": brandname})}/>}
                     >
                         <Switch
                             aria-label="passivation"
@@ -152,17 +158,17 @@ const PersistentCacheConfigurator = (props: {
                             onChange={() => setPassivation(!passivation)}
                             isReversed
                         />
-                        <MoreInfoTooltip label={t('caches.create.configurations.feature.passivation')} toolTip={t('caches.create.configurations.feature.passivation-tooltip', {"brandname": brandname})} textComponent={TextVariants.h3} />
                     </FormGroup>
-                </CardBody>
-                <CardBody>
                     <Flex>
                         <FlexItem grow={{ default: 'grow' }} style={{ maxWidth: '25rem' }}>
                             <FormGroup
                                 isInline
                                 fieldId='connection-attempts'
+                                label={t('caches.create.configurations.feature.connection-attempts')}
+                                labelIcon={<PopoverHelp name={'connection-attempts'}
+                                                        label={t('caches.create.configurations.feature.connection-attempts')}
+                                                        content={t('caches.create.configurations.feature.connection-attempts-tooltip', { brandname: brandname })}/>}
                             >
-                                <MoreInfoTooltip label={t('caches.create.configurations.feature.connection-attempts')} toolTip={t('caches.create.configurations.feature.connection-attempts-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                                 <TextInput placeholder='10' value={connectionAttempts} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setConnectionAttempts(undefined!) : setConnectionAttempts(parseInt(val)) }} aria-label="connection-attempts" />
                             </FormGroup>
                         </FlexItem>
@@ -170,8 +176,11 @@ const PersistentCacheConfigurator = (props: {
                             <FormGroup
                                 isInline
                                 fieldId='connection-interval'
+                                label={t('caches.create.configurations.feature.connection-interval')}
+                                labelIcon={<PopoverHelp name={'connection-interval'}
+                                                        label={t('caches.create.configurations.feature.connection-interval')}
+                                                        content={t('caches.create.configurations.feature.connection-interval-tooltip', { brandname: brandname })}/>}
                             >
-                                <MoreInfoTooltip label={t('caches.create.configurations.feature.connection-interval')} toolTip={t('caches.create.configurations.feature.connection-interval-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                                 <TextInput placeholder='50' value={connectionInterval} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setConnectionInterval(undefined!) : setConnectionInterval(parseInt(val)) }} aria-label="connection-interval" />
                             </FormGroup>
                         </FlexItem>
@@ -179,16 +188,23 @@ const PersistentCacheConfigurator = (props: {
                             <FormGroup
                                 isInline
                                 fieldId='availability-interval'
+                                label={t('caches.create.configurations.feature.availability-interval')}
+                                labelIcon={<PopoverHelp name={'availability-interval'}
+                                                        label={t('caches.create.configurations.feature.availability-interval')}
+                                                        content={t('caches.create.configurations.feature.availability-interval-tooltip', { brandname: brandname })}/>}
                             >
-                                <MoreInfoTooltip label={t('caches.create.configurations.feature.availability-interval')} toolTip={t('caches.create.configurations.feature.availability-interval-tooltip', { brandname: brandname })} textComponent={TextVariants.h3} />
                                 <TextInput placeholder='1000' value={availabilityInterval} type="number" onChange={(val) => { isNaN(parseInt(val)) ? setAvailabilityInterval(undefined!) : setAvailabilityInterval(parseInt(val)) }} aria-label="availability-interval" />
                             </FormGroup>
                         </FlexItem>
                     </Flex>
-                </CardBody>
-                <CardBody>
-                    <FormGroup fieldId='storages'>
-                        <MoreInfoTooltip label={t('caches.create.configurations.feature.storages')} toolTip={t('caches.create.configurations.feature.storages-tooltip', {"brandname": brandname})} textComponent={TextVariants.h3} />
+                    <FormGroup fieldId='storages'
+                               isRequired
+                               validated={storage.toString() !== '' ? 'success' : 'error'}
+                               label={t('caches.create.configurations.feature.storages')}
+                               labelIcon={<PopoverHelp name={'storages'}
+                                                       label={t('caches.create.configurations.feature.storages')}
+                                                       content={t('caches.create.configurations.feature.storages-tooltip', { brandname: brandname })}/>}
+                    >
                         <Select
                             variant={SelectVariant.single}
                             typeAheadAriaLabel="persistent-storage"
@@ -198,13 +214,13 @@ const PersistentCacheConfigurator = (props: {
                             isOpen={isOpenStorages}
                             aria-labelledby="persistent-storage"
                             placeholderText={t('caches.create.configurations.feature.storage-placeholder')}
+                            validated={storage.toString() !== '' ? 'success' : 'error'}
                         >
                             {persistentStorageOptions()}
                         </Select>
                     </FormGroup>
-                </CardBody>
                 {displayEditor()}
-            </Card>
+            </FeatureCard>
     );
 };
 

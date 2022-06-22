@@ -295,13 +295,13 @@ export class CacheConfigUtils {
         cache[cacheType]['backups'][site.siteName!] = {
           backup: {
             strategy: site.siteStrategy,
-            'failure-policy': data.advanced.backupSiteData![index]
-              .failurePolicy,
+            'failure-policy':
+              data.advanced.backupSiteData![index].failurePolicy,
             timeout: data.advanced.backupSiteData![index].timeout,
-            'two-phase-commit': data.advanced.backupSiteData![index]
-              .twoPhaseCommit,
-            'failure-policy-class': data.advanced.backupSiteData![index]
-              .failurePolicyClass,
+            'two-phase-commit':
+              data.advanced.backupSiteData![index].twoPhaseCommit,
+            'failure-policy-class':
+              data.advanced.backupSiteData![index].failurePolicyClass,
           },
         };
         if (
@@ -309,10 +309,10 @@ export class CacheConfigUtils {
           data.advanced.backupSiteData![index].takeOffline?.minWait
         ) {
           cache[cacheType]['backups'][site.siteName!].backup['take-offline'] = {
-            'after-failures': data.advanced.backupSiteData![index].takeOffline
-              ?.afterFailures,
-            'min-wait': data.advanced.backupSiteData![index].takeOffline
-              ?.minWait,
+            'after-failures':
+              data.advanced.backupSiteData![index].takeOffline?.afterFailures,
+            'min-wait':
+              data.advanced.backupSiteData![index].takeOffline?.minWait,
           };
         }
         if (
@@ -322,27 +322,26 @@ export class CacheConfigUtils {
           data.advanced.backupSiteData![index].stateTransfer?.mode ||
           data.advanced.backupSiteData![index].stateTransfer?.waitTime
         ) {
-          cache[cacheType]['backups'][site.siteName!].backup[
-            'state-transfer'
-          ] = {
-            'chunk-size': data.advanced.backupSiteData![index].stateTransfer
-              ?.chunckSize,
-            'max-retries': data.advanced.backupSiteData![index].stateTransfer
-              ?.maxRetries,
-            timeout: data.advanced.backupSiteData![index].stateTransfer
-              ?.timeout,
-            mode: data.advanced.backupSiteData![index].stateTransfer?.mode,
-            'wait-time': data.advanced.backupSiteData![index].stateTransfer
-              ?.waitTime,
-          };
+          cache[cacheType]['backups'][site.siteName!].backup['state-transfer'] =
+            {
+              'chunk-size':
+                data.advanced.backupSiteData![index].stateTransfer?.chunckSize,
+              'max-retries':
+                data.advanced.backupSiteData![index].stateTransfer?.maxRetries,
+              timeout:
+                data.advanced.backupSiteData![index].stateTransfer?.timeout,
+              mode: data.advanced.backupSiteData![index].stateTransfer?.mode,
+              'wait-time':
+                data.advanced.backupSiteData![index].stateTransfer?.waitTime,
+            };
         }
       });
     };
 
     const helperBackupsFor = () => {
       cache[cacheType]['backup-for'] = {
-        'remote-cache': data.feature.backupsCache.backupFor?.remoteCache,
-        'remote-site': data.feature.backupsCache.backupFor?.remoteSite,
+        'remote-cache': data.feature.backupsCache.backupFor.remoteCache,
+        'remote-site': data.feature.backupsCache.backupFor.remoteSite,
       };
     };
 
@@ -412,12 +411,9 @@ export class CacheConfigUtils {
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
       backups();
       helperBackups();
-      if (
-        (data.feature.backupsCache.backupFor?.remoteCache ||
-          data.feature.backupsCache.backupFor?.remoteSite) &&
-        data.feature.backupsCache.enableBackupFor
-      )
+      if (data.feature.backupsCache.backupFor.enabled) {
         helperBackupsFor();
+      }
     }
 
     data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) &&
@@ -514,11 +510,12 @@ export class CacheConfigUtils {
       });
     }
 
-    const createCacheCall: Promise<ActionResponse> = ConsoleServices.caches().createCacheWithConfiguration(
-      cacheName,
-      config,
-      'json'
-    );
+    const createCacheCall: Promise<ActionResponse> =
+      ConsoleServices.caches().createCacheWithConfiguration(
+        cacheName,
+        config,
+        'json'
+      );
 
     return createCacheCall;
   }

@@ -1,12 +1,12 @@
 import React from 'react';
-import {Popover} from '@patternfly/react-core';
+import {Popover, TextContent, TextVariants, Text} from '@patternfly/react-core';
 import {HelpIcon} from '@patternfly/react-icons';
 
 /**
  * This component is used to add pop over helps to forms
  */
-const PopoverHelp = (props: { name: string, label: string; content: string}) => {
-  return (
+const PopoverHelp = (props: { name: string, label: string; content: string, text?:string }) => {
+  const popOver = (
     <Popover
       headerContent={props.label}
       bodyContent={props.content}>
@@ -21,5 +21,15 @@ const PopoverHelp = (props: { name: string, label: string; content: string}) => 
       </button>
     </Popover>
   );
+
+  if (props.text) {
+      return (
+        <TextContent>
+          <Text component={TextVariants.p}>{props.text} {popOver}</Text>
+        </TextContent>
+      )
+  }
+
+  return popOver;
 };
 export { PopoverHelp };

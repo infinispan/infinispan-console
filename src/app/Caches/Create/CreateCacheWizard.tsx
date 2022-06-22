@@ -16,21 +16,7 @@ import {useHistory} from 'react-router';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {CacheConfigUtils} from '@services/cacheConfigUtils';
 import {useTranslation} from 'react-i18next';
-import {
-  CacheFeature,
-  CacheMode,
-  CacheType,
-  ConfigDownloadType,
-  EncodingType,
-  EvictionStrategy,
-  EvictionType,
-  IndexedStorage,
-  IsolationLevel,
-  Locking,
-  MaxSizeUnit,
-  TimeUnits,
-  TransactionalMode
-} from "@services/infinispanRefData";
+import {CacheFeature, ConfigDownloadType} from "@services/infinispanRefData";
 import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
 import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
 import {useStateCallback} from '@app/services/stateCallbackHook';
@@ -40,112 +26,23 @@ import BasicCacheConfigConfigurator from "@app/Caches/Create/BasicCacheConfigCon
 import FeaturesSelector from "@app/Caches/Create/FeaturesSelector";
 import {ConsoleServices} from "@services/ConsoleServices";
 import {DownloadIcon} from "@patternfly/react-icons";
-
-export interface GettingStartedState {
-    cacheName: '';
-    createType: 'configure' | 'edit',
-}
-
-const GettingStartedInitialState: GettingStartedState = {
-    cacheName: '',
-    createType: 'configure',
-}
+import {useCreateCache} from "@app/services/createCacheHook";
+import {validFeatures} from "@app/utils/featuresValidation";
 
 const CacheEditorInitialState: CacheEditorStep = {
-    editorConfig: '',
-    configs: [],
-    validConfig: 'default',
-    errorConfig: '',
-    selectedConfig: '',
-    configExpanded: false,
-    editorExpanded: false
-}
-
-const BasicCacheConfigInitialState: BasicCacheConfig = {
-    topology: CacheType.Distributed,
-    mode: CacheMode.SYNC,
-    numberOfOwners: 1,
-    encoding: EncodingType.Protobuf,
-    statistics: true,
-    expiration: false,
-    lifeSpanNumber: -1,
-    lifeSpanUnit: TimeUnits.milliseconds,
-    maxIdleNumber: -1,
-    maxIdleUnit: TimeUnits.milliseconds,
-}
-
-const BoundedCacheInitialState: BoundedCache = {
-    evictionType: EvictionType.size,
-    maxSize: 0,
-    maxCount: 0,
-    evictionStrategy: EvictionStrategy.REMOVE,
-    maxSizeUnit: MaxSizeUnit.MB
-}
-
-const IndexWriterInitialState: IndexWriter = {
-}
-
-const IndexMergeInitialState: IndexMerge = {
-}
-
-const IndexedCacheInitialState: IndexedCache = {
-    enableIndexing: true,
-    indexedStorage: IndexedStorage.persistent,
-    indexedEntities: [],
-}
-
-const SecuredCacheInitialState: SecuredCache = {
-    roles: [],
-}
-
-const BackupsCacheInitialState: BackupsCache = {
-    sites: [],
-    enableBackupFor: false,
-    isRemoteCacheValid: false,
-    isRemoteSiteValid: false
-}
-
-const BackupSettingInitialState: BackupSetting = {
-}
-
-const TransactionalCacheInitialState: TransactionalCache = {
-    mode: TransactionalMode.NON_XA,
-    locking: Locking.OPTIMISTIC
-}
-
-const TransactionalCacheAdvanceInitialState: TransactionalCacheAdvance = {
-    isolationLevel: IsolationLevel.REPEATABLE_READ
-}
-
-const PersistentCacheInitialState: PersistentCache = {
-    storage: '',
-    config: '',
-    valid: false,
-    passivation: false
-}
-
-const CacheFeatureInitialState: CacheFeatureStep = {
-    cacheFeatureSelected: [],
-    boundedCache: BoundedCacheInitialState,
-    indexedCache: IndexedCacheInitialState,
-    securedCache: SecuredCacheInitialState,
-    backupsCache: BackupsCacheInitialState,
-    transactionalCache: TransactionalCacheInitialState,
-    persistentCache: PersistentCacheInitialState,
-}
-
-const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
-    indexWriter: IndexWriterInitialState,
-    indexMerge: IndexMergeInitialState,
-    isOpenIndexMerge: false,
-    isOpenIndexReader: false,
-    isOpenIndexWriter: false,
-    backupSetting: BackupSettingInitialState,
-    transactionalAdvance: TransactionalCacheAdvanceInitialState
+  editorConfig: '',
+  configs: [],
+  validConfig: 'default',
+  errorConfig: '',
+  selectedConfig: '',
+  configExpanded: false,
+  editorExpanded: false
 }
 
 const CreateCacheWizard = (props) => {
     const { addAlert } = useApiAlert();
+    const { configuration } = useCreateCache();
+
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
 
@@ -156,25 +53,10 @@ const CreateCacheWizard = (props) => {
         showReviewStep: false
     });
 
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [stepIdReached, setStepIdReached] = useState(1);
-
-    // State for the form (Getting Started)
-    const [gettingStarted, setGettingStarted] = useState<GettingStartedState>(GettingStartedInitialState);
-
-    // State for the form (Edit Code)
     const [cacheEditor, setCacheEditor] = useState<CacheEditorStep>(CacheEditorInitialState);
 
-    // State for the form (Configuration Basic)
-    const [basicConfiguration, setBasicConfiguration] = useState<BasicCacheConfig>(BasicCacheConfigInitialState);
+    const [stepIdReached, setStepIdReached] = useState(1);
 
-    // State for the form (Cache Feature)
-    const [cacheFeature, setCacheFeature] = useState<CacheFeatureStep>(CacheFeatureInitialState);
-
-    // State for the form (Advanced Options)
-    const [advancedOptions, setAdvancedOptions] = useState<AdvancedConfigurationStep>(AdvancedOptionsInitialState);
-
-    const [configuration, setConfiguration] = useState<CacheConfiguration>({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions })
     const [reviewConfig, setReviewConfig] = useState<string>('');
 
     // Download type
@@ -184,35 +66,28 @@ const CreateCacheWizard = (props) => {
 
     const history = useHistory();
 
-    const title = 'Create Cache';
-
-    // TODO: quick stuff. I think we can handle all with the same state but we can do that in the end a refactoring.
-    useEffect(() => {
-        setConfiguration({ basic: basicConfiguration, feature: cacheFeature, advanced: advancedOptions });
-    }, [basicConfiguration, cacheFeature, advancedOptions]);
-
     const closeWizard = () => {
         history.push('/');
     };
 
     useEffect(() => {
-    if (downloadType === ConfigDownloadType.JSON) {
-      setDownloadURL("data:text/json;charset=utf-8," + encodeURIComponent(reviewConfig));
-    }
-    else if (downloadType === ConfigDownloadType.YAML) {
-      ConsoleServices.caches().convertConfigFormat(
-        gettingStarted.cacheName,
-        reviewConfig,
-        'yaml'
-      ).then(r => {
-        if (r.success) {
-          setDownloadURL("data:text/yaml;charset=utf-8," + encodeURIComponent(r.data ? r.data : ''));
-        }
-      })
-    }
+      if (downloadType === ConfigDownloadType.JSON) {
+        setDownloadURL("data:text/json;charset=utf-8," + encodeURIComponent(reviewConfig));
+      }
+      else if (downloadType === ConfigDownloadType.YAML) {
+        ConsoleServices.caches().convertConfigFormat(
+          configuration.start.cacheName,
+          reviewConfig,
+          'yaml'
+        ).then(r => {
+          if (r.success) {
+            setDownloadURL("data:text/yaml;charset=utf-8," + encodeURIComponent(r.data ? r.data : ''));
+          }
+        })
+      }
     else if (downloadType === ConfigDownloadType.XML) {
       ConsoleServices.caches().convertConfigFormat(
-        gettingStarted.cacheName,
+        configuration.start.cacheName,
         reviewConfig,
         'xml'
       ).then(r => {
@@ -226,7 +101,7 @@ const CreateCacheWizard = (props) => {
     const getNextStep = (event, activeStep, callback) => {
         event.stopPropagation();
         if (activeStep.id === 1) {
-            if (gettingStarted.createType === "configure") {
+            if (configuration.start.createType === "configure") {
                 setStateObj(
                     {
                         ...stateObj,
@@ -258,7 +133,7 @@ const CreateCacheWizard = (props) => {
 
     const getPreviousStep = (event, activeStep, callback) => {
         event.stopPropagation();
-        if (gettingStarted.createType === "configure") {
+        if (configuration.start.createType === "configure") {
             setStateObj(
                 {
                     ...stateObj,
@@ -266,7 +141,7 @@ const CreateCacheWizard = (props) => {
                 },
                 () => callback()
             );
-        } else if (gettingStarted.createType === "edit") {
+        } else if (configuration.start.createType === "edit") {
             setStateObj(
                 {
                     ...stateObj,
@@ -285,14 +160,9 @@ const CreateCacheWizard = (props) => {
         id: 1,
         name: t('caches.create.getting-started.nav-title'),
         component: (
-            <CreateCacheGettingStarted
-                gettingStarted={gettingStarted}
-                gettingStartedModifier={setGettingStarted}
-                isFormValid={isFormValid}
-                handleIsFormValid={setIsFormValid}
-            />
+            <CreateCacheGettingStarted/>
         ),
-        enableNext: isFormValid,
+        enableNext: configuration.start.valid,
         canJumpTo: stepIdReached >= 1,
         hideBackButton: true,
     };
@@ -300,7 +170,10 @@ const CreateCacheWizard = (props) => {
     const stepCodeEditor = {
         id: 2,
         name: t('caches.create.edit-config.nav-title'),
-        component: <CacheConfigEditor cacheEditor={cacheEditor} cacheEditorModifier={setCacheEditor} cmName={props.cmName} setReviewConfig={setReviewConfig} />,
+        component: <CacheConfigEditor cacheEditor={cacheEditor}
+                                      cacheEditorModifier={setCacheEditor}
+                                      cmName={props.cmName}
+                                      setReviewConfig={setReviewConfig} />,
     };
 
     const stepConfigure = {
@@ -309,26 +182,21 @@ const CreateCacheWizard = (props) => {
             {
                 id: 3,
                 name: t('caches.create.configurations.basic.nav-title'),
-                component: (<BasicCacheConfigConfigurator basicConfiguration={basicConfiguration}
-                    basicConfigurationModifier={setBasicConfiguration}
-                    handleIsFormValid={setIsFormValid} />),
-                enableNext: isFormValid,
+                component: (<BasicCacheConfigConfigurator />),
+                enableNext: configuration.basic.valid,
             },
             {
                 id: 4,
                 name: t('caches.create.configurations.feature.nav-title', { brandname: brandname }),
-                component: <FeaturesSelector cacheFeature={cacheFeature}
-                    cacheFeatureModifier={setCacheFeature}
-                    handleIsFormValid={setIsFormValid}
-                    basicConfiguration={basicConfiguration} />,
-                enableNext: isFormValid,
-                canJumpTo: isFormValid
+                component: <FeaturesSelector />,
+                enableNext: validFeatures(configuration),
             },
             {
                 id: 5,
                 name: t('caches.create.configurations.advanced-options.nav-title'),
-                component: <AdvancedOptionsConfigurator advancedOptions={advancedOptions} advancedOptionsModifier={setAdvancedOptions} showIndexTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.INDEXED)} showBackupsTuning={cacheFeature.backupsCache.sites.length > 0} backupsSite={cacheFeature.backupsCache.sites} showTransactionalTuning={cacheFeature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)} transactionalMode={cacheFeature.transactionalCache.mode} />,
-                canJumpTo: isFormValid
+                component: <AdvancedOptionsConfigurator />,
+                enableNext: configuration.advanced.valid,
+                canJumpTo: validFeatures(configuration)
             },
         ]
     };
@@ -336,10 +204,8 @@ const CreateCacheWizard = (props) => {
     const stepReview = {
         id: 6,
         name: t('caches.create.review.nav-title'),
-        component: <ReviewCacheConfig cacheName={gettingStarted.cacheName}
-                                      cacheConfiguration={configuration}
-                                      setReviewConfig={setReviewConfig} />,
-        canJumpTo: isFormValid
+        component: <ReviewCacheConfig setReviewConfig={setReviewConfig} />,
+        canJumpTo: false
     }
 
     const steps = [stepGettingStarted,
@@ -359,6 +225,22 @@ const CreateCacheWizard = (props) => {
       setIsOpenDownloadOption(false);
     };
 
+    const isNextOrCreateDisabled = (activeStepId: number) : boolean => {
+      let activeButton = true;
+      switch (activeStepId) {
+        case 1: activeButton = configuration.start.valid; break;
+        case 2: activeButton = true; break;
+        case 3: activeButton = configuration.basic.valid; break;
+        case 4: activeButton = validFeatures(configuration); break;
+        case 5: activeButton = configuration.advanced.valid; break;
+        case 6: activeButton = true; break
+
+        default:
+      }
+
+      return !activeButton;
+    }
+
     const nextOrCreateToolbarItem = (activeStep, onNext) => {
       return (
         <ToolbarItem>
@@ -368,7 +250,8 @@ const CreateCacheWizard = (props) => {
             variant="primary"
             type="submit"
             onClick={(event) => getNextStep(event, activeStep, onNext)}
-            isDisabled={!isFormValid} data-cy="wizardNextButton"
+            isDisabled={isNextOrCreateDisabled(activeStep.id)}
+            data-cy="wizardNextButton"
           >
             {activeStep.id === 2 || activeStep.id === 6 ? t('caches.create.create-button-label') : t('caches.create.next-button-label')}
           </Button>
@@ -427,7 +310,7 @@ const CreateCacheWizard = (props) => {
             </ToolbarItem>
             <ToolbarItem>
               <a href={downloadURL}
-                 download={gettingStarted.cacheName + `.` + downloadType.toLocaleLowerCase()}>
+                 download={configuration.start.cacheName + `.` + downloadType.toLocaleLowerCase()}>
                 <Button variant={ButtonVariant.tertiary}  icon={<DownloadIcon />}>
                   {t('caches.create.download-button-label', {"format" : downloadType })}
                 </Button>
@@ -460,9 +343,9 @@ const CreateCacheWizard = (props) => {
 
     const onSave = () => {
         const createCacheCall =
-            gettingStarted.createType === 'edit' ?  // Check wizard option
-                CacheConfigUtils.createCacheWithEditorStep(cacheEditor, gettingStarted.cacheName) :
-                CacheConfigUtils.createCacheWithWizardStep(reviewConfig === '' ? CacheConfigUtils.createCacheConfigFromData(configuration) : reviewConfig, gettingStarted.cacheName)
+            configuration.start.createType === 'edit' ?  // Check wizard option
+                CacheConfigUtils.createCacheWithEditorStep(cacheEditor, configuration.start.cacheName) :
+                CacheConfigUtils.createCacheWithWizardStep(reviewConfig === '' ? CacheConfigUtils.createCacheConfigFromData(configuration) : reviewConfig, configuration.start.cacheName)
 
         createCacheCall
             .then((actionResponse) => {
@@ -474,15 +357,17 @@ const CreateCacheWizard = (props) => {
             .then((actionResponse) => addAlert(actionResponse));
     }
 
+    const title = 'Create Cache';
+
     return (
-        <Wizard
+          <Wizard
             navAriaLabel={`${title} steps`}
             mainAriaLabel={`${title} content`}
             onClose={closeWizard}
             onSave={onSave}
             steps={steps}
             footer={CustomFooter}
-        />
+          />
     );
 };
 
