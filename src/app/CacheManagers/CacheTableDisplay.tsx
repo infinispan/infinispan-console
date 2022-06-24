@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter,} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import { cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter, } from '@patternfly/react-table';
 import {
   Bullseye,
   Button,
@@ -28,22 +28,22 @@ import {
   ToolbarItemVariant,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {FilterIcon, SearchIcon} from '@patternfly/react-icons';
-import {Link} from 'react-router-dom';
-import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
-import {DeleteCache} from '@app/Caches/DeleteCache';
-import {IgnoreCache} from '@app/Caches/IgnoreCache';
-import {SetAvailableCache} from '@app/Caches/SetAvailableCache'
-import {IExtraData, IRowData,} from '@patternfly/react-table/src/components/Table';
-import {Health} from '@app/Common/Health';
-import {useBanner} from '@app/utils/useApiAlert';
-import {useCaches, useDataContainer} from '@app/services/dataContainerHooks';
-import {useTranslation} from 'react-i18next';
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {ConsoleServices} from "@services/ConsoleServices";
-import {ConsoleACL} from "@services/securityService";
-import {global_spacer_sm} from '@patternfly/react-tokens';
-import {ComponentHealth} from "@services/infinispanRefData";
+import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
+import { Link } from 'react-router-dom';
+import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
+import { DeleteCache } from '@app/Caches/DeleteCache';
+import { IgnoreCache } from '@app/Caches/IgnoreCache';
+import { SetAvailableCache } from '@app/Caches/SetAvailableCache'
+import { IExtraData, IRowData, } from '@patternfly/react-table/src/components/Table';
+import { Health } from '@app/Common/Health';
+import { useBanner } from '@app/utils/useApiAlert';
+import { useCaches, useDataContainer } from '@app/services/dataContainerHooks';
+import { useTranslation } from 'react-i18next';
+import { useConnectedUser } from "@app/services/userManagementHook";
+import { ConsoleServices } from "@services/ConsoleServices";
+import { ConsoleACL } from "@services/securityService";
+import { global_spacer_sm } from '@patternfly/react-tokens';
+import { ComponentHealth } from "@services/infinispanRefData";
 
 interface CacheAction {
   cacheName: string;
@@ -206,9 +206,9 @@ const CacheTableDisplay = (props: {
 
   const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
     // @ts-ignore
-    let cacheName:string = rowData.cells[0].cacheName as string;
+    let cacheName: string = rowData.cells[0].cacheName as string;
 
-    if(!cacheName) {
+    if (!cacheName) {
       return [];
     }
 
@@ -220,7 +220,7 @@ const CacheTableDisplay = (props: {
     // @ts-ignore
     const health = rowData.cells[0].health;
 
-    if((!isAdmin && !isCreator) || (ignoredCache && !isAdmin)) {
+    if ((!isAdmin && !isCreator) || (ignoredCache && !isAdmin)) {
       return [];
     }
 
@@ -246,7 +246,8 @@ const CacheTableDisplay = (props: {
           cacheName: cacheName,
           action: 'delete',
         });
-      }}];
+      }
+    }];
 
     if (isAdmin) {
       actions.push({
@@ -260,7 +261,7 @@ const CacheTableDisplay = (props: {
       })
     }
 
-    if (isAdmin && health==="DEGRADED") {
+    if (isAdmin && health === "DEGRADED") {
       actions.push({
         'data-cy': 'openAvailableCacheAction',
         title: t('cache-managers.available'),
@@ -416,7 +417,7 @@ const CacheTableDisplay = (props: {
    * @param cacheInfo
    */
   const rebalancingOffBadge = (cacheInfo: CacheInfo) => {
-    if(!cm.rebalancing_enabled) {
+    if (!cm.rebalancing_enabled) {
       return '';
     }
 
@@ -492,9 +493,9 @@ const CacheTableDisplay = (props: {
   const cacheFeatures = [
     'Bounded',
     'Indexed',
-    'Persistent',
-    'Transactional',
-    'Secured',
+    'Persistence',
+    'Transactions',
+    'Authorization',
     'Backups',
   ];
 
@@ -523,7 +524,7 @@ const CacheTableDisplay = (props: {
     actualSelection: string[]
   ): boolean => {
     if (
-      actualSelection.includes('Transactional') &&
+      actualSelection.includes('Transactions') &&
       cacheInfo.features.transactional
     ) {
       return true;
@@ -537,13 +538,13 @@ const CacheTableDisplay = (props: {
     }
 
     if (
-      actualSelection.includes('Persistent') &&
+      actualSelection.includes('Persistence') &&
       cacheInfo.features.persistent
     ) {
       return true;
     }
 
-    if (actualSelection.includes('Secured') && cacheInfo.features.secured) {
+    if (actualSelection.includes('Authorization') && cacheInfo.features.secured) {
       return true;
     }
     if (
@@ -579,14 +580,14 @@ const CacheTableDisplay = (props: {
   };
 
   const buildCreateCacheButton = () => {
-    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return '';
     }
 
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-        <ToolbarItem style={{marginRight: global_spacer_sm.value}}>
+        <ToolbarItem style={{ marginRight: global_spacer_sm.value }}>
           <Link
             to={{
               pathname: '/container/' + props.cmName + '/caches/create',
@@ -601,7 +602,7 @@ const CacheTableDisplay = (props: {
           </Link>
         </ToolbarItem>
       </React.Fragment>
-      )
+    )
   };
 
   const buildViewConfigurationsButton = () => {
