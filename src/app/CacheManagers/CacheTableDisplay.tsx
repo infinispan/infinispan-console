@@ -509,7 +509,10 @@ const CacheTableDisplay = (props: {
     cacheInfo: CacheInfo,
     actualSelection: string[]
   ): boolean => {
-    return actualSelection.includes(cacheInfo.status);
+    if (actualSelection.includes("Hidden") && isCacheIgnored(cacheInfo))
+      return true;
+    else
+      return false;
   };
 
   const isCacheType = (
