@@ -141,7 +141,7 @@
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>install cypress@^8.5.0 --verbose</arguments>
+                  <arguments>install cypress@^10.0.3 --verbose</arguments>
                 </configuration>
               </execution>
               <execution>
