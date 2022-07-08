@@ -17,7 +17,7 @@ describe('Welcome page', () => {
     cy.contains('Default'); // cluster name
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
-    cy.contains('21 Caches'); 
+    cy.contains('17 Caches'); 
     cy.contains('10 Counters'); 
     cy.contains('0 Tasks'); 
     cy.contains('11 Schemas'); 

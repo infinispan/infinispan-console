@@ -8,58 +8,6 @@ describe('Cache Creation Wizard', () => {
     cy.login(Cypress.env("username"), Cypress.env("password"));
   })
 
-  it('exits cache creator with Cancel button and breadcrumb link.', () => {
-    const cacheName = createRandomCacheName();
-    //go to create cache page
-    cy.get('[data-cy=createCacheButton]').click();
-    cy.get('#cache-name').click();
-    cy.get('#cache-name').type(cacheName);
-    cy.get('[data-cy=cancelWizard]').click();
-
-    //Is redirected to Data Container page
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
-    cy.get('[data-cy=rebalancingSwitch]').should('exist');
-    cy.contains(cacheName).should('not.exist');
-
-    //go to create cache page
-    cy.get('[data-cy=createCacheButton]').click();
-    cy.get('#cache-name').click();
-    cy.get('#cache-name').type(cacheName);
-    cy.get('[data-cy=dataContainerLink]').click(); //Clicking on breadcrumb link.
-
-    //Is redirected to Data Container page
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
-    cy.get('[data-cy=rebalancingSwitch]').should('exist');
-    cy.contains(cacheName).should('not.exist');
-  })
-
-   //Create cache with duplicate name;
-   it('fails to create cache with duplicate name', () => {
-    //go to create cache page
-    const cacheName = createRandomCacheName();
-    cy.get('[data-cy=createCacheButton]').click();
-    cy.get('#edit').click();
-
-    cy.get('#cache-name').click();
-    cy.get('#cache-name').type(cacheName);
-
-    cy.get('[data-cy=wizardNextButton]').should('be.disabled');
-    cy.get('#cache-name-helper').should('exist');
-
-    cy.get('#cache-name').clear();
-    cy.get('#cache-name').click();
-    cy.get('#cache-name').type(cacheName);
-    cy.get('#cache-name-helper').should('not.exist');
-
-    cy.get('[data-cy=cancelWizard]').click();
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
-    cy.get('[data-cy=rebalancingSwitch]').should('exist');
-    cy.contains('aCache1').should('not.exist');
-  })
-
   it('successfully creates without a template', () => {
     //go to create cache page
     cy.get('[data-cy=createCacheButton]').click();
@@ -74,9 +22,60 @@ describe('Cache Creation Wizard', () => {
     cy.get('#cluster-manager-header').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
-    cy.contains('aCache');
     cy.contains('b-cache');
   })
+
+  // it('exits cache creator with Cancel button and breadcrumb link.', () => {
+  //   const cacheName = createRandomCacheName();
+  //   //go to create cache page
+  //   cy.get('[data-cy=createCacheButton]').click();
+  //   cy.get('#cache-name').click();
+  //   cy.get('#cache-name').type(cacheName);
+  //   cy.get('[data-cy=cancelWizard]').click();
+
+  //   //Is redirected to Data Container page
+  //   cy.get('#cluster-manager-header').should('exist');
+  //   cy.get('[data-cy=cacheManagerStatus]').should('exist');
+  //   cy.get('[data-cy=rebalancingSwitch]').should('exist');
+  //   cy.contains(cacheName).should('not.exist');
+
+  //   //go to create cache page
+  //   cy.get('[data-cy=createCacheButton]').click();
+  //   cy.get('#cache-name').click();
+  //   cy.get('#cache-name').type(cacheName);
+  //   cy.get('[data-cy=dataContainerLink]').click(); //Clicking on breadcrumb link.
+
+  //   //Is redirected to Data Container page
+  //   cy.get('#cluster-manager-header').should('exist');
+  //   cy.get('[data-cy=cacheManagerStatus]').should('exist');
+  //   cy.get('[data-cy=rebalancingSwitch]').should('exist');
+  //   cy.contains(cacheName).should('not.exist');
+  // })
+
+  //  //Create cache with duplicate name;
+  //  it('fails to create cache with duplicate name', () => {
+  //   //go to create cache page
+  //   const cacheName = createRandomCacheName();
+  //   cy.get('[data-cy=createCacheButton]').click();
+  //   cy.get('#edit').click();
+
+  //   cy.get('#cache-name').click();
+  //   cy.get('#cache-name').type(cacheName);
+
+  //   cy.get('[data-cy=wizardNextButton]').should('be.disabled');
+  //   cy.get('#cache-name-helper').should('exist');
+
+  //   cy.get('#cache-name').clear();
+  //   cy.get('#cache-name').click();
+  //   cy.get('#cache-name').type(cacheName);
+  //   cy.get('#cache-name-helper').should('not.exist');
+
+  //   cy.get('[data-cy=cancelWizard]').click();
+  //   cy.get('#cluster-manager-header').should('exist');
+  //   cy.get('[data-cy=cacheManagerStatus]').should('exist');
+  //   cy.get('[data-cy=rebalancingSwitch]').should('exist');
+  //   cy.contains('aCache1').should('not.exist');
+  // })
 
   // it('successfully creates bounded cache with memory size', () => {
   //   //go to create cache page

@@ -11,7 +11,7 @@ export default defineConfig({
   },
   env: {
     username: 'admin',
-    password: 'admin',
+    password: 'password',
   },
   e2e: {
     // We've imported your old cypress plugins here.
