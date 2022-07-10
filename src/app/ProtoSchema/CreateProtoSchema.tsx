@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   AlertVariant,
@@ -10,23 +10,18 @@ import {
   TextAreResizeOrientation,
   TextInput,
 } from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import formUtils, { IField } from '../../services/formUtils';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
-import { useTranslation } from 'react-i18next';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import formUtils, {IField} from '../../services/formUtils';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {AddCircleOIcon} from "@patternfly/react-icons";
+import {PopoverHelp} from "@app/Common/PopoverHelp";
 
-/**
- * Proto Schema creation form
- */
 const CreateProtoSchema = (props: {
   isModalOpen: boolean;
   closeModal: (boolean) => void;
 }) => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -91,13 +86,15 @@ const CreateProtoSchema = (props: {
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        style={{ marginBottom: global_spacer_md.value }}
       >
         {error && (
           <Alert variant={AlertVariant.danger} isInline title={error} />
         )}
 
-        <FormGroup label="Name:" isRequired fieldId="schema-name">
+        <FormGroup label={t('schemas.create.name')}
+                   isRequired
+                   fieldId="schema-name"
+        >
           <TextInput
             value={schemaName.value}
             id="schema-name"
@@ -112,12 +109,12 @@ const CreateProtoSchema = (props: {
           />
         </FormGroup>
         <FormGroup
-          label={
-            <MoreInfoTooltip
-              label="Schema:"
-              toolTip={
-                "Protobuf schema describe entries in your caches so you can query them."
-              }
+          label={t('schemas.create.schema')}
+          labelIcon={
+            <PopoverHelp
+              name="schema-content"
+              label={t('schemas.create.schema')}
+              content={t('schemas.create.schema-tooltip')}
             />
           }
           isRequired
@@ -149,12 +146,12 @@ const CreateProtoSchema = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Add Protobuf schema'}
+      title={t('schemas.create.modal-title')}
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
       actions={[
         <Button data-cy='addSchemaButton' aria-label="add-schema-button" key="add-schema-button" onClick={handleCreateButton}>
-          Add
+          {t('schemas.add-button')}
         </Button>,
         <Button data-cy='cancelAddSchemaButton'
           aria-label="cancel-add-schema-button"
@@ -162,7 +159,7 @@ const CreateProtoSchema = (props: {
           variant="link"
           onClick={() => clearCreateProtoSchema(false)}
         >
-          Cancel
+          {t('schemas.cancel-button')}
         </Button>,
       ]}
     >

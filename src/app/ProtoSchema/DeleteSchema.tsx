@@ -1,19 +1,9 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { useTranslation } from 'react-i18next';
+import {Button, ButtonVariant, Modal, Text, TextContent,} from '@patternfly/react-core';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
-import {EyeIcon, EyeSlashIcon} from "@patternfly/react-icons";
 
-/**
- * Delete schema modal
- */
 const DeleteSchema = (props: {
   schemaName: string;
   isModalOpen: boolean;
@@ -48,23 +38,22 @@ const DeleteSchema = (props: {
           variant={ButtonVariant.danger}
           onClick={onClickDeleteButton}
         >
-          Delete
+          {t('schemas.delete-button')}
         </Button>,
         <Button  id="cancel-delete-schema-button"
                  name="cancel-delete-schema-button"
                  key="cancel"
                  variant="link" onClick={props.closeModal}>
-          Cancel
+          {t('schemas.cancel-button')}
         </Button>,
       ]}
     >
       <TextContent>
         <Text>
-          {' '} will be permanently deleted
-          <strong>'{props.schemaName}'</strong> from the data container, and <br />
-          caches using this schema will be affected.
-          <br />
-          You can always recreate the schema.
+          {t('schemas.delete.modal-description-1', {"brandname": brandname, "schemaname": props.schemaName})}
+        </Text>
+        <Text>
+          {t('schemas.delete.modal-description-2')}
         </Text>
       </TextContent>
     </Modal>

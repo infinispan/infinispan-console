@@ -132,7 +132,6 @@ const CreateCacheProvider = ({ children }) => {
   );
 
   const removeFeature = (feature: CacheFeature) => {
-    console.log(configuration.feature.cacheFeatureSelected);
       let features = configuration.feature.cacheFeatureSelected.filter(item => item !== feature);
       setConfiguration((prevState) => {
         return {
