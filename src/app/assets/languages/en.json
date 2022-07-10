@@ -566,5 +566,24 @@
       "cache-size-heap":"Size of cache in heap memory",
       "cache-size-heap-tooltip":"Displays the amount of JVM heap memory that data in the cache uses. Total memory usage is higher because it includes internal data structures."
     }
+  },
+  "schemas" : {
+    "create-button" : "Create a Protobuf schema",
+    "add-button" : "Add",
+    "delete-button" : "Delete",
+    "cancel-button" : "Cancel",
+    "save-button" : "Save",
+    "edit-button" : "Edit",
+    "empty" : "No schemas yet",
+    "create": {
+      "modal-title": "Add Protobuf schema",
+      "name": "Name",
+      "schema": "Schema",
+      "schema-tooltip": "Protobuf schema describe entries in your caches so you can query them."
+    },
+    "delete" : {
+      "modal-description-1": "{{schemaname}} will be permanently deleted in {{brandname}} Server. Caches using this schema will be affected.",
+      "modal-description-2": "You can always recreate the schema."
+    }
   }
 }

@@ -178,6 +178,9 @@ export class FetchCaller {
         if (response.status == 403) {
           throw 'Unauthorized action.';
         }
+        if (response.status == 409) {
+          throw 'Already exists.';
+        }
         return response.text().then((text) => {
           throw text;
         });

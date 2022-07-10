@@ -11,8 +11,6 @@ import {
   DataListItemCells,
   DataListItemRow,
   DataListToggle,
-  Divider,
-  DividerVariant,
   Pagination,
   Spinner,
   Stack,
@@ -27,14 +25,14 @@ import {
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {useApiAlert} from '@app/utils/useApiAlert';
-import {global_FontSize_sm, global_spacer_md} from '@patternfly/react-tokens';
-import {CreateProtoSchema} from '@app/ProtoSchema/CreateProtoSchema';
-import {DeleteSchema} from '@app/ProtoSchema/DeleteSchema';
+import {global_FontSize_sm} from '@patternfly/react-tokens';
 import {TableEmptyState} from '@app/Common/TableEmptyState';
 import {useTranslation} from 'react-i18next';
 import {ConsoleServices} from "@services/ConsoleServices";
 import {useConnectedUser} from "@app/services/userManagementHook";
 import {ConsoleACL} from "@services/securityService";
+import {CreateProtoSchema} from "@app/ProtoSchema/CreateProtoSchema";
+import {DeleteSchema} from "@app/ProtoSchema/DeleteSchema";
 
 /**
  * Protobuf Schemas display
@@ -63,6 +61,7 @@ const ProtobufSchemasDisplay = (props: {
   );
   const [deleteSchemaName, setDeleteSchemaName] = useState<string>('');
   const [editSchemaName, setEditSchemaName] = useState<string>('');
+  const [editSchemaContent, setEditSchemaContent] = useState<string>('');
   const [schemasPagination, setSchemasPagination] = useState({
     page: 1,
     perPage: 10,
@@ -70,30 +69,32 @@ const ProtobufSchemasDisplay = (props: {
   const [expanded, setExpanded] = useState<string[]>([]);
 
   useEffect(() => {
-      if (props.isVisible || schemas.length == 0) {
-        loadSchemas();
+      if (loading) {
+        protobufService.getProtobufSchemas().then((eitherResponse) => {
+          if (eitherResponse.isRight()) {
+            setSchemas(eitherResponse.value);
+            props.setProtoSchemasCount(eitherResponse.value.length);
+            const initSlice =
+              (schemasPagination.page - 1) * schemasPagination.perPage;
+            setFilteredSchemas(
+              eitherResponse.value.slice(
+                initSlice,
+                initSlice + schemasPagination.perPage
+              )
+            );
+          } else {
+            setError(eitherResponse.value.message);
+          }
+        }).then(() => setLoading(false));
       }
-  }, [props.isVisible]);
+  }, [loading]);
 
-  const loadSchemas = () => {
-    protobufService.getProtobufSchemas().then((eitherResponse) => {
-      if (eitherResponse.isRight()) {
-        setSchemas(eitherResponse.value);
-        props.setProtoSchemasCount(eitherResponse.value.length);
-        const initSlice =
-          (schemasPagination.page - 1) * schemasPagination.perPage;
-        setFilteredSchemas(
-          eitherResponse.value.slice(
-            initSlice,
-            initSlice + schemasPagination.perPage
-          )
-        );
-      } else {
-        setError(eitherResponse.value.message);
-      }
-      setLoading(false);
-    });
-  };
+  useEffect(() => {
+    const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
+    setFilteredSchemas(
+      schemas.slice(initSlice, initSlice + schemasPagination.perPage)
+    );
+  }, [schemasPagination])
 
   const loadSchema = (schemaName: string) => {
     protobufService.getSchema(schemaName).then((eitherResponse) => {
@@ -124,29 +125,7 @@ const ProtobufSchemasDisplay = (props: {
   const closeDeleteSchemaModal = () => {
     setDeleteSchemaModalOpen(false);
     setDeleteSchemaName('');
-    loadSchemas();
-  };
-
-  const onSetPage = (_event, pageNumber) => {
-    setSchemasPagination({
-      page: pageNumber,
-      perPage: schemasPagination.perPage,
-    });
-    const initSlice = (pageNumber - 1) * schemasPagination.perPage;
-    setFilteredSchemas(
-      schemas.slice(initSlice, initSlice + schemasPagination.perPage)
-    );
-  };
-
-  const onPerPageSelect = (_event, perPage) => {
-    setSchemasPagination({
-      page: schemasPagination.page,
-      perPage: perPage,
-    });
-    const initSlice = (schemasPagination.page - 1) * perPage;
-    setFilteredSchemas(
-      schemas.slice(initSlice, initSlice + schemasPagination.perPage)
-    );
+    setLoading(true);
   };
 
   if (!props.isVisible) {
@@ -180,7 +159,9 @@ const ProtobufSchemasDisplay = (props: {
   const buildSchemaContent = (name) => {
     if (!schemasContent.get(name)) {
       loadSchema(name);
-      return <Spinner size={'sm'} />;
+      return (
+        <Spinner size={'sm'} />
+      );
     }
 
     if (editSchemaName != name) {
@@ -197,10 +178,8 @@ const ProtobufSchemasDisplay = (props: {
     }
     return (
       <TextArea data-cy="schemaEditArea"
-        onChange={(v) =>
-          setSchemasContent(new Map(schemasContent.set(name, v)))
-        }
-        value={schemasContent.get(name)}
+        onChange={(v) => setEditSchemaContent(v)}
+        value={editSchemaContent}
         isRequired={true}
         style={{ fontSize: global_FontSize_sm.value }}
         rows={15}
@@ -214,14 +193,6 @@ const ProtobufSchemasDisplay = (props: {
     }
 
     return (
-      <React.Fragment>
-        <Divider
-          component={DividerVariant.hr}
-          style={{
-            marginBottom: global_spacer_md.value,
-            marginTop: global_spacer_md.value,
-          }}
-        />
         <Toolbar>
           <ToolbarGroup>
             <ToolbarItem>
@@ -232,7 +203,7 @@ const ProtobufSchemasDisplay = (props: {
                 variant={ButtonVariant.secondary}
                 onClick={() => handleEdit(schemaName)}
               >
-                {editSchemaName == schemaName ? 'Save' : 'Edit'}
+                {editSchemaName == schemaName ?  t('schemas.save-button') :  t('schemas.edit-button')}
               </Button>
             </ToolbarItem>
             <ToolbarItem>
@@ -251,30 +222,32 @@ const ProtobufSchemasDisplay = (props: {
                 }}
               >
                 {editSchemaName == schemaName
-                  ? 'Cancel'
-                  : 'Delete'}
+                  ? t('schemas.cancel-button')
+                  : t('schemas.delete-button')}
               </Button>
             </ToolbarItem>
           </ToolbarGroup>
         </Toolbar>
-      </React.Fragment>
     );
   }
 
   const handleEdit = (schemaName: string) => {
     if (editSchemaName == '' || editSchemaName != schemaName) {
       setEditSchemaName(schemaName);
+      setEditSchemaContent(schemasContent.get(schemaName) as string);
     } else {
       setEditSchemaName('');
       if (!schemasContent.has(schemaName) || schemasContent.get(schemaName) == '') {
         return;
       }
+      schemasContent.set(schemaName, editSchemaContent);
       protobufService
-        .createOrUpdateSchema(schemaName, schemasContent.get(schemaName) as string, false)
+        .createOrUpdateSchema(schemaName, editSchemaContent, false)
         .then((eitherCreate) => {
           addAlert(eitherCreate);
-          loadSchemas();
-        });
+          loadSchema(schemaName);
+        })
+        .then(() => setLoading(true));
     }
   };
 
@@ -284,7 +257,7 @@ const ProtobufSchemasDisplay = (props: {
         <TableEmptyState
           loading={loading}
           error={error}
-          empty={'No schemas yet'}
+          empty={t('schemas.empty')}
         />
       );
     }
@@ -346,8 +319,10 @@ const ProtobufSchemasDisplay = (props: {
     }
     return (
       <ToolbarItem>
-        <Button aria-label="create-schema-button" variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
-          Add Protobuf schema
+        <Button aria-label="create-schema-button"
+                variant={'primary'}
+                onClick={() => setCreateSchemaFormOpen(true)}>
+          {t('schemas.create-button')}
         </Button>
       </ToolbarItem>
     );
@@ -355,13 +330,13 @@ const ProtobufSchemasDisplay = (props: {
 
   const closeCreateSchemaModal = (createDone: boolean) => {
     if (createDone) {
-      loadSchemas();
+      setLoading(true);
     }
     setCreateSchemaFormOpen(false);
   };
 
   return (
-    <Stack>
+    <Stack hasGutter>
       <StackItem>
         <Toolbar id="schemas-table-toolbar">
           <ToolbarContent>
@@ -371,9 +346,19 @@ const ProtobufSchemasDisplay = (props: {
                 itemCount={schemas.length}
                 perPage={schemasPagination.perPage}
                 page={schemasPagination.page}
-                onSetPage={onSetPage}
+                onSetPage={(onSetPage, pageNumber) => {
+                  setSchemasPagination({
+                    page: pageNumber,
+                    perPage: schemasPagination.perPage,
+                  });
+                }}
                 widgetId="pagination-schemas"
-                onPerPageSelect={onPerPageSelect}
+                onPerPageSelect={(_event, perPage) =>
+                  setSchemasPagination({
+                    page: 1,
+                    perPage: perPage,
+                  })
+                }
                 isCompact
               />
             </ToolbarItem>
