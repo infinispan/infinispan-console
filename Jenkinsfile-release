@@ -72,7 +72,7 @@ pipeline {
                 sh "$MAVEN_HOME/bin/mvn -B -V scm:tag -Dtag=${version}"
             }
         }
-
+      mvn -B -V scm:checkin -Dmessage="Releasing version 14.0.0.Dev04" -DpushChanges=false
         stage('Next version') {
             when {
                 expression { params.nextVersion != '' }
