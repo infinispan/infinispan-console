@@ -210,3 +210,8 @@ export enum ConfigDownloadType {
   XML = 'XML',
   YAML = 'YAML',
 }
+
+export enum DataDistributionStatsOption {
+  TotalEntries = 'Total number of entries',
+  MemoryEntries = 'Entries in memory',
+}
