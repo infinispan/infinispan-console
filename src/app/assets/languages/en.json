@@ -556,6 +556,13 @@
       "average-reads-tooltip":"Average time, in milliseconds, for read operations to complete.",
       "average-writes-tooltip":"Average time, in milliseconds, for write operations to complete.",
       "average-deletes-tooltip":"Average time, in milliseconds, for delete operations to complete.",
+      "data-access-hits": "Hits",
+      "data-access-misses": "Misses",
+      "data-access-stores": "Stores",
+      "data-access-retrievals": "Retrievals",
+      "data-access-remove-hits": "Remove hits",
+      "data-access-remove-misses": "Remove misses",
+      "data-access-evictions": "Evictions",
       "data-access-hits-info":"Hits displays the number of successful requests for cache entries.",
       "data-access-misses-info":"Misses displays the number of times that a client requested an entry that was not in the cache. Misses occur when an entry is never stored in the cache or after an entry is evicted from the cache.",
       "data-access-stores-info":"Stores displays the number of write operations that put entries in the cache.",
@@ -570,7 +577,13 @@
       "cache-size-off-heap":"Size of cache in off-heap memory",
       "cache-size-off-heap-tooltip":"Displays the amount of off-heap memory that data in the cache uses. Total memory usage is higher because it includes internal data structures.",
       "cache-size-heap":"Size of cache in heap memory",
-      "cache-size-heap-tooltip":"Displays the amount of JVM heap memory that data in the cache uses. Total memory usage is higher because it includes internal data structures."
+      "cache-size-heap-tooltip":"Displays the amount of JVM heap memory that data in the cache uses. Total memory usage is higher because it includes internal data structures.",
+      "data-distribution": "Data distribution",
+      "data-distribution-title": "Data for nodes",
+      "data-distribution-tooltip": "Displays the amount of data that is stored in each node in the cluster.",
+      "data-distribution-option-entries": "Total number of entries",
+      "data-distribution-option-memory": "Entries in memory",
+      "data-distribution-no-entry": "No entries"
     }
   },
   "schemas" : {

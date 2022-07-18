@@ -678,4 +678,16 @@ export class CacheService {
       body: config,
     });
   }
+
+  public async getDistribution(
+    cacheName: string
+  ): Promise<Either<ActionResponse, DataDistribution[]>> {
+    return this.fetchCaller.get(
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '?action=distribution',
+      (text) => text
+    );
+  }
 }
