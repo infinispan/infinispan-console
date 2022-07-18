@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -22,21 +22,22 @@ import {
   ListItem
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
-import {CubesIcon} from '@patternfly/react-icons';
-import {QueryMetrics} from '@app/Caches/Query/QueryMetrics';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {CustomCardTitle} from "@app/Common/CustomCardTitle";
-import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
+import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import { CubesIcon } from '@patternfly/react-icons';
+import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
+import { DataDistribution } from '@app/Caches/DataDistribution';
+import { ConsoleServices } from "@services/ConsoleServices";
+import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { ExpandableSection } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
+import { StorageType } from "@services/infinispanRefData";
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [stats, setStats] = useState<CacheStats | undefined>(undefined);
   const [statsError, setStatsError] = useState<string | undefined>(undefined);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
-  const [size, setSize] = useState<number|undefined>(0)
-  const [memory, setMemory] = useState<string|undefined>(undefined)
+  const [size, setSize] = useState<number | undefined>(0)
+  const [memory, setMemory] = useState<string | undefined>(undefined)
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
@@ -80,28 +81,34 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 {displayUtils.formatNumber(stats.average_read_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-              <MoreInfoTooltip
-                label={t('caches.cache-metrics.average-reads')}
-                toolTip={t('caches.cache-metrics.average-reads-tooltip')}
-              />
+                <PopoverHelp
+                  name='average-reads'
+                  label={t('caches.cache-metrics.average-reads')}
+                  content={t('caches.cache-metrics.average-reads-tooltip')}
+                  text={t('caches.cache-metrics.average-reads')}
+                />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_write_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-              <MoreInfoTooltip
-                label={t('caches.cache-metrics.average-writes')}
-                toolTip={t('caches.cache-metrics.average-writes-tooltip')}
-              />
+                <PopoverHelp
+                  name='average-writes'
+                  label={t('caches.cache-metrics.average-writes')}
+                  content={t('caches.cache-metrics.average-writes-tooltip')}
+                  text={t('caches.cache-metrics.average-writes')}
+                />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_remove_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-              <MoreInfoTooltip
-                label={t('caches.cache-metrics.average-deletes')}
-                toolTip={t('caches.cache-metrics.average-deletes-tooltip')}
-              />
+                <PopoverHelp
+                  name='average-deletes'
+                  label={t('caches.cache-metrics.average-deletes')}
+                  content={t('caches.cache-metrics.average-deletes-tooltip')}
+                  text={t('caches.cache-metrics.average-deletes')}
+                />
               </TextListItem>
             </TextList>
           </TextContent>
@@ -115,7 +122,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       return;
     }
     return (
-      <QueryMetrics cacheName={props.cacheName}/>
+      <QueryMetrics cacheName={props.cacheName} />
     );
   };
 
@@ -137,51 +144,51 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <Card>
         <CardTitle>{t('caches.cache-metrics.data-access-title')}</CardTitle>
         <CardBody>
-          <div style={{height: '300px', width: '70%'}}>
+          <div style={{ height: '300px', width: '70%' }}>
             <ChartDonut
               constrainToVisibleArea={true}
               data={[
-                {x: 'Hits', y: stats.hits},
-                {x: 'Misses', y: stats.misses},
-                {x: 'Stores', y: stats.stores},
-                {x: 'Retrievals', y: stats.retrievals},
-                {x: 'Remove Hits', y: stats.remove_hits},
-                {x: 'Removes Misses', y: stats.remove_misses},
-                {x: 'Evictions', y: stats.evictions},
+                { x: t('caches.cache-metrics.data-access-hits'), y: stats.hits },
+                { x: t('caches.cache-metrics.data-access-misses'), y: stats.misses },
+                { x: t('caches.cache-metrics.data-access-stores'), y: stats.stores },
+                { x: t('caches.cache-metrics.data-access-retrievals'), y: stats.retrievals },
+                { x: t('caches.cache-metrics.data-access-remove-hits'), y: stats.remove_hits },
+                { x: t('caches.cache-metrics.data-access-remove-misses'), y: stats.remove_misses },
+                { x: t('caches.cache-metrics.data-access-evictions'), y: stats.evictions },
               ]}
-              labels={({datum}) =>
+              labels={({ datum }) =>
                 `${datum.x}:${displayUtils.formatNumber(
                   (datum.y * 100) / all
                 )}%`
               }
               legendData={[
                 {
-                  name: 'Hits: ' + displayUtils.formatNumber(stats.hits),
+                  name: t('caches.cache-metrics.data-access-hits') + ': ' + displayUtils.formatNumber(stats.hits),
                 },
                 {
-                  name: 'Misses: ' + displayUtils.formatNumber(stats.misses),
+                  name: t('caches.cache-metrics.data-access-misses') + ': ' + displayUtils.formatNumber(stats.misses),
                 },
                 {
-                  name: 'Stores: ' + displayUtils.formatNumber(stats.stores),
+                  name: t('caches.cache-metrics.data-access-stores') + ': ' + displayUtils.formatNumber(stats.stores),
                 },
                 {
                   name:
-                    'Retrievals: ' +
+                    t('caches.cache-metrics.data-access-retrievals') + ': ' +
                     displayUtils.formatNumber(stats.retrievals),
                 },
                 {
                   name:
-                    'Remove hits: ' +
+                    t('caches.cache-metrics.data-access-remove-hits') + ': ' +
                     displayUtils.formatNumber(stats.remove_hits),
                 },
                 {
                   name:
-                    'Remove misses: ' +
+                    t('caches.cache-metrics.data-access-remove-misses') + ': ' +
                     displayUtils.formatNumber(stats.remove_misses),
                 },
                 {
                   name:
-                    'Evictions: ' + displayUtils.formatNumber(stats.evictions),
+                    t('caches.cache-metrics.data-access-evictions') + ': ' + displayUtils.formatNumber(stats.evictions),
                 },
               ]}
               legendOrientation="vertical"
@@ -192,31 +199,31 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 right: 0, // Adjusted to accommodate legend
                 top: 20,
               }}
-              title={ displayUtils.formatBigNumber(all) }
+              title={displayUtils.formatBigNumber(all)}
               width={600}
               themeColor={ChartThemeColor.multiOrdered}
             />
           </div>
         </CardBody>
         <CardFooter>
-        <ExpandableSection toggleTextExpanded={t('caches.cache-metrics.data-access-collapsed')} toggleTextCollapsed={t('caches.cache-metrics.data-access-expanded')}>
-        <List>
-        <ListItem>{t('caches.cache-metrics.data-access-hits-info')}</ListItem>
-        <ListItem>{t('caches.cache-metrics.data-access-misses-info')}</ListItem>
-        <ListItem>{t('caches.cache-metrics.data-access-stores-info')}</ListItem>
-        <ListItem>{t('caches.cache-metrics.data-access-retrievals-info')}</ListItem>
-        <ListItem>{t('caches.cache-metrics.data-access-remove-hits-info')}</ListItem>
-        <ListItem>{t('caches.cache-metrics.data-access-remove-misses-info')}</ListItem>
-        <ListItem>{t('caches.cache-metrics.data-access-evictions-info')}</ListItem>
-        </List>
-        </ExpandableSection>
+          <ExpandableSection toggleTextExpanded={t('caches.cache-metrics.data-access-collapsed')} toggleTextCollapsed={t('caches.cache-metrics.data-access-expanded')}>
+            <List>
+              <ListItem>{t('caches.cache-metrics.data-access-hits-info')}</ListItem>
+              <ListItem>{t('caches.cache-metrics.data-access-misses-info')}</ListItem>
+              <ListItem>{t('caches.cache-metrics.data-access-stores-info')}</ListItem>
+              <ListItem>{t('caches.cache-metrics.data-access-retrievals-info')}</ListItem>
+              <ListItem>{t('caches.cache-metrics.data-access-remove-hits-info')}</ListItem>
+              <ListItem>{t('caches.cache-metrics.data-access-remove-misses-info')}</ListItem>
+              <ListItem>{t('caches.cache-metrics.data-access-evictions-info')}</ListItem>
+            </List>
+          </ExpandableSection>
         </CardFooter>
       </Card>
     );
   };
 
   const buildEntriesCard = () => {
-  if (!stats) {
+    if (!stats) {
       return '';
     }
 
@@ -230,19 +237,23 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 {displayUtils.formatNumber(size)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-              <MoreInfoTooltip
-                label={t('caches.cache-metrics.current-number-entries')}
-                toolTip={t('caches.cache-metrics.current-number-entries-tooltip')}
-              />
+                <PopoverHelp
+                  name='current-number-entries'
+                  label={t('caches.cache-metrics.current-number-entries')}
+                  content={t('caches.cache-metrics.current-number-entries-tooltip')}
+                  text={t('caches.cache-metrics.current-number-entries')}
+                />
               </TextListItem>
               <TextListItem aria-label="view-cache-metrics-nodes" component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.required_minimum_number_of_nodes)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-              <MoreInfoTooltip
-              label={t('caches.cache-metrics.min-nodes')}
-              toolTip={t('caches.cache-metrics.min-nodes-tooltip')}
-              />
+                <PopoverHelp
+                  name='min-nodes'
+                  label={t('caches.cache-metrics.min-nodes')}
+                  content={t('caches.cache-metrics.min-nodes-tooltip')}
+                  text={t('caches.cache-metrics.min-nodes')}
+                />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>-</TextListItem>
             </TextList>
@@ -264,21 +275,25 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
           <TextContent>
             <TextList component={TextListVariants.dl}>
               <TextListItem aria-label="view-cache-metrics-off-heap" component={TextListItemVariants.dt}>
-                { memory==="OFF_HEAP" ? displayUtils.formatNumber(stats.off_heap_memory_used) : "-" }
+                {memory === StorageType.OFF_HEAP ? displayUtils.formatNumber(stats.off_heap_memory_used) : "-"}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                <MoreInfoTooltip
+                <PopoverHelp
+                  name='cache-size-off-heap'
                   label={t('caches.cache-metrics.cache-size-off-heap')}
-                  toolTip={memory==="OFF_HEAP" ? '': t('caches.cache-metrics.cache-size-off-heap-tooltip')}
+                  content={memory === StorageType.OFF_HEAP ? '' : t('caches.cache-metrics.cache-size-off-heap-tooltip')}
+                  text={t('caches.cache-metrics.cache-size-off-heap')}
                 />
               </TextListItem>
               <TextListItem aria-label="view-cache-metrics-heap" component={TextListItemVariants.dt}>
-                { memory==="HEAP" ? displayUtils.formatNumber(stats.data_memory_used) : "-" }
+                {memory === StorageType.HEAP ? displayUtils.formatNumber(stats.data_memory_used) : "-"}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
-                <MoreInfoTooltip
+                <PopoverHelp
+                  name='cache-size-heap'
                   label={t('caches.cache-metrics.cache-size-heap')}
-                  toolTip={memory==="HEAP" ? '': t('caches.cache-metrics.cache-size-heap-tooltip')}
+                  content={memory === StorageType.HEAP ? '' : t('caches.cache-metrics.cache-size-heap-tooltip')}
+                  text={t('caches.cache-metrics.cache-size-heap')}
                 />
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>-</TextListItem>
@@ -316,6 +331,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
+      <GridItem span={12}><DataDistribution cacheName={props.cacheName} /></GridItem>
       <GridItem span={12}>{buildDataAccess()}</GridItem>
       <GridItem span={12}>{buildQueryStats()}</GridItem>
     </Grid>
