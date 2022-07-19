@@ -587,6 +587,7 @@
     "delete" : {
       "modal-description-1": "{{schemaname}} will be permanently deleted in {{brandname}} Server. Caches using this schema will be affected.",
       "modal-description-2": "You can always recreate the schema."
-    }
+    },
+    "edit-alert": "You are about to change the schema of {{schemaname}}. Caches using this schema will be affected."
   }
 }

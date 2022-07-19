@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -23,16 +23,17 @@ import {
   ToolbarItemVariant,
 } from '@patternfly/react-core';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {global_FontSize_sm} from '@patternfly/react-tokens';
-import {TableEmptyState} from '@app/Common/TableEmptyState';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {ConsoleACL} from "@services/securityService";
-import {CreateProtoSchema} from "@app/ProtoSchema/CreateProtoSchema";
-import {DeleteSchema} from "@app/ProtoSchema/DeleteSchema";
+import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { global_FontSize_sm } from '@patternfly/react-tokens';
+import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from "@services/ConsoleServices";
+import { useConnectedUser } from "@app/services/userManagementHook";
+import { ConsoleACL } from "@services/securityService";
+import { CreateProtoSchema } from "@app/ProtoSchema/CreateProtoSchema";
+import { DeleteSchema } from "@app/ProtoSchema/DeleteSchema";
+import { useFetchProtobufSchemas } from '@app/services/protobufHooks';
 
 /**
  * Protobuf Schemas display
@@ -42,13 +43,11 @@ const ProtobufSchemasDisplay = (props: {
   isVisible: boolean;
 }) => {
   const protobufService = ConsoleServices.protobuf();
-  const {connectedUser} = useConnectedUser();
+  const { connectedUser } = useConnectedUser();
+  const { schemas, loading, setLoading, error } = useFetchProtobufSchemas()
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [schemas, setSchemas] = useState<ProtoSchema[]>([]);
   const [schemasContent, setSchemasContent] = useState(
     new Map<string, string>()
   );
@@ -69,25 +68,18 @@ const ProtobufSchemasDisplay = (props: {
   const [expanded, setExpanded] = useState<string[]>([]);
 
   useEffect(() => {
-      if (loading) {
-        protobufService.getProtobufSchemas().then((eitherResponse) => {
-          if (eitherResponse.isRight()) {
-            setSchemas(eitherResponse.value);
-            props.setProtoSchemasCount(eitherResponse.value.length);
-            const initSlice =
-              (schemasPagination.page - 1) * schemasPagination.perPage;
-            setFilteredSchemas(
-              eitherResponse.value.slice(
-                initSlice,
-                initSlice + schemasPagination.perPage
-              )
-            );
-          } else {
-            setError(eitherResponse.value.message);
-          }
-        }).then(() => setLoading(false));
-      }
-  }, [loading]);
+    if (loading) {
+      props.setProtoSchemasCount(schemas.length);
+      const initSlice =
+        (schemasPagination.page - 1) * schemasPagination.perPage;
+      setFilteredSchemas(
+        schemas.slice(
+          initSlice,
+          initSlice + schemasPagination.perPage
+        )
+      )
+    }
+  }, [loading, schemas])
 
   useEffect(() => {
     const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
@@ -115,9 +107,9 @@ const ProtobufSchemasDisplay = (props: {
     const newExpanded =
       index >= 0
         ? [
-            ...expanded.slice(0, index),
-            ...expanded.slice(index + 1, expanded.length),
-          ]
+          ...expanded.slice(0, index),
+          ...expanded.slice(index + 1, expanded.length),
+        ]
         : [...expanded, schemaName];
     setExpanded(newExpanded);
   };
@@ -177,10 +169,12 @@ const ProtobufSchemasDisplay = (props: {
       );
     }
     return (
-      <TextArea data-cy="schemaEditArea"
+      <TextArea
+        id='schema-edit-area'
+        data-cy="schemaEditArea"
         onChange={(v) => setEditSchemaContent(v)}
         value={editSchemaContent}
-        isRequired={true}
+        validated={editSchemaContent.length > 0 ? 'default' : 'error'}
         style={{ fontSize: global_FontSize_sm.value }}
         rows={15}
       />
@@ -188,46 +182,48 @@ const ProtobufSchemasDisplay = (props: {
   };
 
   const buildSchemaToolbar = (schemaName) => {
-    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return '';
     }
 
     return (
-        <Toolbar>
-          <ToolbarGroup>
-            <ToolbarItem>
-              <Button
-                id={'edit-button-schema-' +  schemaName}
-                name={'edit-button-schema-' +  schemaName}
-                aria-label={'edit-button-schema-' +  schemaName}
-                variant={ButtonVariant.secondary}
-                onClick={() => handleEdit(schemaName)}
-              >
-                {editSchemaName == schemaName ?  t('schemas.save-button') :  t('schemas.edit-button')}
-              </Button>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Button
-                id={'delete-button-schema-' +  schemaName}
-                name={'delete-button-schema-' +  schemaName}
-                aria-label={'delete-button-schema-' +  schemaName}
-                variant={ButtonVariant.link}
-                onClick={() => {
-                  if (editSchemaName == schemaName) {
-                    setEditSchemaName('');
-                  } else {
-                    setDeleteSchemaName(schemaName);
-                    setDeleteSchemaModalOpen(true);
-                  }
-                }}
-              >
-                {editSchemaName == schemaName
-                  ? t('schemas.cancel-button')
-                  : t('schemas.delete-button')}
-              </Button>
-            </ToolbarItem>
-          </ToolbarGroup>
-        </Toolbar>
+      <Toolbar>
+        {editSchemaName == schemaName && <Alert variant="warning" title={t('schemas.edit-alert', { schemaname: schemaName })} />}
+        <ToolbarGroup>
+          <ToolbarItem>
+            <Button
+              isDisabled={editSchemaName == schemaName && editSchemaContent.length == 0}
+              id={'edit-button-schema-' + schemaName}
+              name={'edit-button-schema-' + schemaName}
+              aria-label={'edit-button-schema-' + schemaName}
+              variant={ButtonVariant.secondary}
+              onClick={() => handleEdit(schemaName)}
+            >
+              {editSchemaName == schemaName ? t('schemas.save-button') : t('schemas.edit-button')}
+            </Button>
+          </ToolbarItem>
+          <ToolbarItem>
+            <Button
+              id={'delete-button-schema-' + schemaName}
+              name={'delete-button-schema-' + schemaName}
+              aria-label={'delete-button-schema-' + schemaName}
+              variant={ButtonVariant.link}
+              onClick={() => {
+                if (editSchemaName == schemaName) {
+                  setEditSchemaName('');
+                } else {
+                  setDeleteSchemaName(schemaName);
+                  setDeleteSchemaModalOpen(true);
+                }
+              }}
+            >
+              {editSchemaName == schemaName
+                ? t('schemas.cancel-button')
+                : t('schemas.delete-button')}
+            </Button>
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
     );
   }
 
@@ -314,14 +310,14 @@ const ProtobufSchemasDisplay = (props: {
   };
 
   const buildCreateSchemaButton = () => {
-    if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return '';
     }
     return (
       <ToolbarItem>
         <Button aria-label="create-schema-button"
-                variant={'primary'}
-                onClick={() => setCreateSchemaFormOpen(true)}>
+          variant={'primary'}
+          onClick={() => setCreateSchemaFormOpen(true)}>
           {t('schemas.create-button')}
         </Button>
       </ToolbarItem>
