@@ -201,6 +201,8 @@
           "backups-disabled-description": "Backups are available only when you configure {{brandname}} to perform cross-site replication. Remove the capability or enable cross-site replication.",
           "secured-disabled": "The server is not secured",
           "secured-disabled-description": "You must enable authentication and authorization in {{brandname}} Server to configure security. Remove the capability or enable security.",
+          "indexed-disabled": "This cache can not be indexed",
+          "indexed-disabled-description": "Indexing is only available when Protobuf Schemas are added",
           "nav-title": "{{brandname}} capabilities",
           "cache-feature-list": "Add {{brandname}} capabilities",
           "cache-feature-list-tooltip": "Add capabilities to your cache.",

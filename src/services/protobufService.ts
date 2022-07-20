@@ -1,5 +1,6 @@
 import { Either } from '@services/either';
 import { FetchCaller } from '@services/fetchCaller';
+import { filterSchema } from '@app/utils/filterProtobufSchema';
 
 /**
  * Protobuf schemas manipulation service
@@ -88,6 +89,15 @@ export class ProtobufService {
               'org/infinispan/protostream/message-wrapping.proto' &&
             schema.name != 'org/infinispan/query/remote/client/query.proto'
         )
+    );
+  }
+
+  /**
+   * List protobuf schemas
+   */
+  public async getSchemaList(): Promise<Either<ActionResponse, string[]>> {
+    return this.utils.get(this.endpoint + '?action=types', (data) =>
+      filterSchema(data)
     );
   }
 }
