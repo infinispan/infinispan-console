@@ -75,7 +75,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const entitiesOptions = () => {
-    return protobufTypes.map((schema, id) => <SelectOption key={id} value={schema} />);
+    return protobufTypes.map((schema, id) => <SelectOption id={id} key={id} value={schema} />);
   };
 
   const startupModeOptions = () => {

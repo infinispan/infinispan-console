@@ -59,7 +59,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const rolesOptions = () => {
-    const options = availableRoles.map((role) => <SelectOption inputId={role} key={role} value={role} />);
+    const options = availableRoles.map((role) => <SelectOption id={role} inputId={role} key={role} value={role} />);
     return options;
   };
 

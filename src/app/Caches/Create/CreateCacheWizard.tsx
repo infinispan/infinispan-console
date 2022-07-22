@@ -203,7 +203,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   ];
 
   const downloadOptions = () => {
-    return Object.keys(ConfigDownloadType).map((key) => <SelectOption key={key} value={ConfigDownloadType[key]} />);
+    return Object.keys(ConfigDownloadType).map((key) => <SelectOption id={key} key={key} value={ConfigDownloadType[key]} />);
   };
 
   const onSelectDownloadOption = (event, selection, isPlaceholder) => {
@@ -315,13 +315,14 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
             selections={downloadType}
             isOpen={isOpenDownloadOption}
             placeholderText="Select config format"
+            toggleId='downloadType'
           >
             {downloadOptions()}
           </Select>
         </ToolbarItem>
         <ToolbarItem>
           <a href={downloadURL} download={configuration.start.cacheName + `.` + downloadType.toLocaleLowerCase()}>
-            <Button variant={ButtonVariant.tertiary} icon={<DownloadIcon />}>
+            <Button data-cy='downloadButton' variant={ButtonVariant.tertiary} icon={<DownloadIcon />}>
               {t('caches.create.download-button-label', { format: downloadType })}
             </Button>
           </a>

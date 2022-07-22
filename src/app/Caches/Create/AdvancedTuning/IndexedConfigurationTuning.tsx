@@ -97,6 +97,7 @@ const IndexedConfigurationTuning = () => {
   const formIndexReader = () => {
     return (
       <FormFieldGroupExpandable
+        data-cy='indexReaderExpand'
         header={
           <FormFieldGroupHeader
             titleText={{
@@ -118,6 +119,7 @@ const IndexedConfigurationTuning = () => {
           }
         >
           <TextInput
+            data-cy='refreshInterval'
             size={150}
             placeholder="0"
             value={refreshInterval}
@@ -135,6 +137,7 @@ const IndexedConfigurationTuning = () => {
   const formIndexWriter = () => {
     return (
       <FormFieldGroupExpandable
+        data-cy='indexWriterExpand'
         header={
           <FormFieldGroupHeader
             titleText={{
@@ -148,6 +151,7 @@ const IndexedConfigurationTuning = () => {
           <GridItem span={12}>
             <FormGroup fieldId="low-level-trace">
               <Switch
+                data-cy='lowLevelTrace'
                 aria-label="low-level-trace"
                 id="low-level-trace"
                 isChecked={lowLevelTrace === undefined ? false : lowLevelTrace}
@@ -173,6 +177,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='commitInterval'
               placeholder="1000"
               value={commitInterval}
               type="number"
@@ -194,6 +199,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='ramBufferSize'
               placeholder="32"
               value={ramBufferSize}
               type="number"
@@ -215,6 +221,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='maxBufferedEntries'
               placeholder="32"
               value={maxBufferedEntries}
               type="number"
@@ -236,6 +243,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='threadPoolSize'
               placeholder="1"
               value={threadPoolSize}
               type="number"
@@ -257,6 +265,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='queueCount'
               placeholder="1"
               value={queueCount}
               type="number"
@@ -278,6 +287,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='queueSize'
               placeholder="1000"
               value={queueSize}
               type="number"
@@ -295,6 +305,7 @@ const IndexedConfigurationTuning = () => {
   const formIndexMerge = () => {
     return (
       <FormFieldGroupExpandable
+        data-cy='indexMerge'
         header={
           <FormFieldGroupHeader
             titleText={{
@@ -308,6 +319,7 @@ const IndexedConfigurationTuning = () => {
           <GridItem span={12}>
             <FormGroup fieldId="calibrate-by-deletes">
               <Switch
+                data-cy='calibrateByDeletes'
                 aria-label="calibrate-by-deletes"
                 id="calibrate-by-deletes"
                 isChecked={calibrateByDeletes === undefined ? false : calibrateByDeletes}
@@ -333,6 +345,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='factor'
               value={factor}
               type="number"
               onChange={(val) => {
@@ -353,6 +366,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='maxEntries'
               value={maxEntries}
               type="number"
               onChange={(val) => {
@@ -373,6 +387,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='minSize'
               value={minSize}
               type="number"
               onChange={(val) => {
@@ -393,6 +408,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='maxSize'
               value={maxSize}
               type="number"
               onChange={(val) => {
@@ -413,6 +429,7 @@ const IndexedConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy='maxForcedSize'
               value={maxForcedSize}
               type="number"
               onChange={(val) => {

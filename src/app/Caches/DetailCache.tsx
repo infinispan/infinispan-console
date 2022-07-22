@@ -83,11 +83,11 @@ const DetailCache = (props: { cacheName: string }) => {
         style={{ backgroundColor: 'white' }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
-        <Tab eventKey={10} title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}>
+        <Tab eventKey={10} title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>} data-cy="manageEntriesTab">
           <CacheEntries cacheName={cacheName} />
         </Tab>
         <Tab
-          eventKey={13}
+          eventKey={13} data-cy="queriesTab"
           title={
             <TabTitleText>
               <MoreInfoTooltip
@@ -215,7 +215,7 @@ const DetailCache = (props: { cacheName: string }) => {
                   pathname: encodeURIComponent(cacheName) + '/indexing'
                 }}
               >
-                <Button variant={ButtonVariant.link}>{t('caches.actions.action-manage-indexes')}</Button>
+                <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>{t('caches.actions.action-manage-indexes')}</Button>
               </Link>
             </FlexItem>
           </Flex>

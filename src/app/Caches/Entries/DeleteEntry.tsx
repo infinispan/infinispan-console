@@ -79,10 +79,10 @@ const DeleteEntry = (props: {
       onClose={props.closeModal}
       aria-label={t('caches.entries.modal-delete-label')}
       actions={[
-        <Button key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
+        <Button data-cy="deleteEntryButton" key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
           {t('caches.entries.modal-button-delete')}
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button data-cy="cancelDeleteEntry" key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
       ]}
