@@ -66,7 +66,7 @@ const IndexManagement = (props) => {
       return <Spinner size={'md'} />;
     }
     return (
-      <Button variant={ButtonVariant.secondary} onClick={() => setReindexModalOpen(true)}>
+      <Button data-cy="rebuildIndexButton" variant={ButtonVariant.secondary} onClick={() => setReindexModalOpen(true)}>
         {t('caches.index.button-rebuild')}
       </Button>
     );
@@ -79,7 +79,7 @@ const IndexManagement = (props) => {
 
     return (
       <LevelItem>
-        <Button variant={ButtonVariant.danger} disabled={!stats?.reindexing} onClick={() => setPurgeModalOpen(true)}>
+        <Button data-cy="clearIndexButton" variant={ButtonVariant.danger} disabled={!stats?.reindexing} onClick={() => setPurgeModalOpen(true)}>
           {t('caches.index.button-clear')}
         </Button>
       </LevelItem>
@@ -158,7 +158,7 @@ const IndexManagement = (props) => {
                       pathname: '/cache/' + encodeURIComponent(cacheName)
                     }}
                   >
-                    <Button> {t('caches.index.button-back-to-cache-detail')}</Button>
+                    <Button data-cy="backButton"> {t('caches.index.button-back-to-cache-detail')}</Button>
                   </Link>
                 </Text>
               </TextContent>

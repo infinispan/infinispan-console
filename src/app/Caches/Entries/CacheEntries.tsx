@@ -94,11 +94,13 @@ const CacheEntries = (props: { cacheName: string }) => {
 
   const entryActions = [
     {
+      'data-cy': 'editEntryAction',
       title: t('caches.entries.action-edit'),
       onClick: (event, rowId, rowData, extra) =>
         onClickEditEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType)
     },
     {
+      'data-cy': 'deleteEntryAction',
       title: t('caches.entries.action-delete'),
       onClick: (event, rowId, rowData, extra) =>
         onClickDeleteEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType)
@@ -154,6 +156,7 @@ const CacheEntries = (props: { cacheName: string }) => {
       rows = currentPageEntries.map((entry) => {
         return {
           heightAuto: true,
+          actionProps: { 'data-cy': `actions-${entry.key}` },
           cells: [
             {
               title: displayHighlighted(
@@ -274,7 +277,7 @@ const CacheEntries = (props: { cacheName: string }) => {
   };
   const keyContentTypeOptions = () => {
     return CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).map((contentType) => (
-      <SelectOption key={contentType as string} value={contentType} />
+      <SelectOption id={contentType as string} key={contentType as string} value={contentType} />
     ));
   };
 
@@ -327,7 +330,7 @@ const CacheEntries = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <Button key="add-entry-button" variant={ButtonVariant.primary} onClick={onClickAddEntryButton}>
+        <Button data-cy='addEntryButton' key="add-entry-button" variant={ButtonVariant.primary} onClick={onClickAddEntryButton}>
           Add entry
         </Button>
       </ToolbarItem>
@@ -341,7 +344,7 @@ const CacheEntries = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <Button variant={ButtonVariant.link} onClick={onClickClearAllButton}>
+        <Button data-cy='clearAllButton' variant={ButtonVariant.link} onClick={onClickClearAllButton}>
           {t('caches.entries.clear-entry-button-label')}
         </Button>
       </ToolbarItem>
@@ -367,6 +370,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                 }}
                 selections={keyType}
                 isOpen={expandedKey}
+                toggleId="keyType"
               >
                 {keyContentTypeOptions()}
               </Select>
@@ -384,6 +388,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                   onKeyPress={searchEntryOnKeyPress}
                 />
                 <Button
+                  data-cy="search-by-key"
                   variant="control"
                   aria-label={t('caches.entries.get-entry-button-label')}
                   onClick={() => searchEntryByKey()}

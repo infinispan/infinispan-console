@@ -33,10 +33,10 @@ const ClearAllEntries = (props: { cacheName: string; isModalOpen: boolean; close
       onClose={props.closeModal}
       aria-label={t('caches.entries.modal-clear-label')}
       actions={[
-        <Button key="confirm" variant={ButtonVariant.danger} onClick={onClickClearAllEntriesButton}>
+        <Button data-cy='deleteButton' key="confirm" variant={ButtonVariant.danger} onClick={onClickClearAllEntriesButton}>
           {t('caches.entries.modal-clear-button-click')}
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button data-cy='cancelButton' key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
       ]}

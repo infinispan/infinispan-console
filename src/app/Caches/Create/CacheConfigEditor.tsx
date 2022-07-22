@@ -183,6 +183,7 @@ const CacheConfigEditor = (props: {
           </Select>
         </FormGroup>
         <ExpandableSection
+          data-cy="provideConfigArea"
           toggleText={t('caches.create.configuration-provide')}
           isExpanded={editorExpanded}
           onToggle={onToggleConfigPanel}

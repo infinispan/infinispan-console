@@ -88,6 +88,13 @@ function startServer()
 
     $SERVER_TMP/bin/cli.sh user create ${USER_NAME} -p ${PASSWORD} -s ${nodeName}
 
+    #Installing nashorn engine before server startup
+    ${SERVER_TMP}/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4 --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm:9.4  --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm-commons:9.4  --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm-tree:9.4  --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm-util:9.4  --server-root=infinispan-4-e2e
+
     if [[ ${isCi} = "--ci" ]]; then
       nohup $SERVER_TMP/bin/server.sh -Djavax.net.debug -Dorg.infinispan.openssl=false -c ${confPath} -s ${SERVER_TMP}/${nodeName} ${portStr:-""} --node-name=${nodeName} ${jvmParam:-} &
     else
