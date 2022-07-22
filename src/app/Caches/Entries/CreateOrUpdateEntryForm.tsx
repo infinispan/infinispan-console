@@ -208,12 +208,12 @@ const CreateOrUpdateEntryForm = (props: {
 
   const contentTypeOptions = (encodingType: EncodingType) => {
     return CacheConfigUtils.getContentTypeOptions(encodingType).map((contentType) => (
-      <SelectOption key={contentType as string} value={contentType} />
+      <SelectOption id={contentType as string} key={contentType as string} value={contentType} />
     ));
   };
 
   const flagsOptions = () => {
-    return Object.keys(InfinispanFlags).map((key) => <SelectOption key={key} value={InfinispanFlags[key]} />);
+    return Object.keys(InfinispanFlags).map((key) => <SelectOption id={key} key={key} value={InfinispanFlags[key]} />);
   };
 
   const setExpanded = (expanded: boolean, stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>) => {
@@ -376,6 +376,7 @@ const CreateOrUpdateEntryForm = (props: {
           selections={keyContentType.selected}
           isOpen={keyContentType.expanded}
           isDisabled={isEdition}
+          toggleId="keyContentType"
         >
           {contentTypeOptions(props.cacheEncoding.key as EncodingType)}
         </Select>
@@ -571,6 +572,7 @@ const CreateOrUpdateEntryForm = (props: {
           onClear={() => setValueContentType(contentTypeInitialState)}
           selections={valueContentType.selected}
           isOpen={valueContentType.expanded}
+          toggleId="valueContentType"
         >
           {contentTypeOptions(props.cacheEncoding.value as EncodingType)}
         </Select>
@@ -603,6 +605,7 @@ const CreateOrUpdateEntryForm = (props: {
           isOpen={flags.expanded}
           placeholderText={t('caches.entries.add-entry-form-flags-label')}
           maxHeight={150}
+          toggleId="ispnFlags"
         >
           {flagsOptions()}
         </Select>
@@ -620,10 +623,10 @@ const CreateOrUpdateEntryForm = (props: {
       onClose={onClose}
       aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
       actions={[
-        <Button key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
+        <Button data-cy="addButton" key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
           {isEdition ? 'Edit' : 'Add'}
         </Button>,
-        <Button key="cancel" variant="link" onClick={onClose}>
+        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={onClose}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
       ]}

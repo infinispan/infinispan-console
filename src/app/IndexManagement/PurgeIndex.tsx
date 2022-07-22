@@ -31,10 +31,10 @@ const PurgeIndex = (props: { cacheName: string; isModalOpen: boolean; closeModal
       onClose={props.closeModal}
       aria-label="Clear index modal"
       actions={[
-        <Button key="purge" variant={ButtonVariant.danger} onClick={onClickPurgeButton}>
+        <Button data-cy="clearIndex" key="purge" variant={ButtonVariant.danger} onClick={onClickPurgeButton}>
           Clear
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           Cancel
         </Button>
       ]}

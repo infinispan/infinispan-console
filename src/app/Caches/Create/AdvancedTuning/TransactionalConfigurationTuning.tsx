@@ -117,6 +117,7 @@ const TransactionalConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy="stopTimeout"
               placeholder="30000"
               value={stopTimeout}
               type="number"
@@ -142,6 +143,7 @@ const TransactionalConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy="completeTimeout"
               placeholder="60000"
               value={completeTimeout}
               type="number"
@@ -167,6 +169,7 @@ const TransactionalConfigurationTuning = () => {
             }
           >
             <TextInput
+              data-cy="reaperInterval"
               placeholder="30000"
               value={reaperInterval}
               type="number"

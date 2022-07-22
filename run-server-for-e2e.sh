@@ -11,7 +11,7 @@ fi
 #Base directory where the server should be downloaded
 BASE_DIR="server"
 #The version of the server is either set as an environment variable or is the latest dev version
-SERVER_VERSION="${SERVER_VERSION:-"14.0.2.Final"}"
+SERVER_VERSION="${SERVER_VERSION:-"14.0.3.Final"}"
 #Root path from there the infinispan server should be downloaded
 ZIP_ROOT="http://downloads.jboss.org/infinispan"
 #If this environment variable is provided then it is used for downloading the server;
@@ -87,6 +87,13 @@ function startServer()
     fi
 
     $SERVER_TMP/bin/cli.sh user create ${USER_NAME} -p ${PASSWORD} -s ${nodeName}
+
+    #Installing nashorn engine before server startup
+    ${SERVER_TMP}/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4 --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm:9.4  --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm-commons:9.4  --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm-tree:9.4  --server-root=infinispan-4-e2e
+    ${SERVER_TMP}/bin/cli.sh install org.ow2.asm:asm-util:9.4  --server-root=infinispan-4-e2e
 
     if [[ ${isCi} = "--ci" ]]; then
       nohup $SERVER_TMP/bin/server.sh -Djavax.net.debug -Dorg.infinispan.openssl=false -c ${confPath} -s ${SERVER_TMP}/${nodeName} ${portStr:-""} --node-name=${nodeName} ${jvmParam:-} &

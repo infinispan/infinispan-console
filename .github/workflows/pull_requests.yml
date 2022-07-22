@@ -31,9 +31,35 @@ jobs:
         run: npm run build
 
       # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
-      - name: Start Infinispan Server
+      - if: github.base_ref == 'main'
+        name: Start Infinispan Server Latest Version
         run: |
           docker run -d -p 11222:11222 -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e USER=admin -e PASS=password quay.io/infinispan-test/server:main --node-name=infinispan-4-e2e
+          # Wait for server to startup
+          curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
+          #Installing Nashorn dependencies
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-util:9.4
+
+      - if: github.base_ref == '14.x'
+        name: Start Infinispan Server 14.x Version
+        run: |
+          docker run -d -p 11222:11222 -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e USER=admin -e PASS=password quay.io/infinispan-test/server:14.0.x --node-name=infinispan-4-e2e
+          # Wait for server to startup
+          curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
+          #Installing Nashorn dependencies
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-util:9.4
+
+      - name: Restarting Infnispan Server After Nashorn Installation
+        run: |
+          docker restart $(docker ps -q -l)
           # Wait for server to startup
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
 
@@ -44,6 +70,13 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           config-file: cypress.config.ts
+
+      - name: Uploading test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/cypress/screenshots/**/**
 
       - name: Get thread dump on failure
         if: failure()

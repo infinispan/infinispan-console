@@ -31,10 +31,10 @@ const Reindex = (props: { cacheName: string; isModalOpen: boolean; closeModal: (
       onClose={props.closeModal}
       aria-label="Reindex modal"
       actions={[
-        <Button key="reindex" onClick={onClickReindex}>
+        <Button key="reindex" onClick={onClickReindex} data-cy="reindexButton">
           Rebuild index
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button key="cancel" variant="link" onClick={props.closeModal} data-cy="cancelReindexButton">
           Cancel
         </Button>
       ]}
