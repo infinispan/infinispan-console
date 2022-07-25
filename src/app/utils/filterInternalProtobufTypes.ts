@@ -1,5 +1,5 @@
-export const filterSchema = (schemas: string[]) => {
-  const invalidSchemas = [
+export const filterInternalProtobufTypes = (schemas: string[]) => {
+  const internalProtobufTypes = [
     'org.infinispan.protostream',
     'org.infinispan.persistence',
     'org.infinispan.query',
@@ -8,6 +8,6 @@ export const filterSchema = (schemas: string[]) => {
   ];
 
   return schemas.filter(
-    (schema) => !invalidSchemas.some((item) => schema.includes(item))
+    (schema) => !internalProtobufTypes.some((item) => schema.includes(item))
   );
 };
