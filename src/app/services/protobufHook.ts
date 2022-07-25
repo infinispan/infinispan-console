@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 
-export function useFetchProtobufSchemas() {
-  const [schemas, setSchemas] = useState<string[]>([]);
+export function useFetchProtobufTypes() {
+  const [protobufTypes, setProtobufTypes] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -11,10 +11,10 @@ export function useFetchProtobufSchemas() {
   useEffect(() => {
     if (loading) {
       protobufService
-        .getSchemaList()
+        .getProtobufTypes()
         .then((r) => {
           if (r.isRight()) {
-            setSchemas(r.value);
+            setProtobufTypes(r.value);
           } else {
             setError(r.value.message);
           }
@@ -23,5 +23,5 @@ export function useFetchProtobufSchemas() {
     }
   }, [loading]);
 
-  return { loading, error, schemas };
+  return { loading, error, protobufTypes };
 }

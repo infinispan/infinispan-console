@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, CardBody, FormGroup, InputGroup, Label, LabelGroup, Radio, TextInput, Select, SelectVariant, SelectOption, Spinner } from '@patternfly/react-core';
+import {
+  Card,
+  CardBody,
+  FormGroup,
+  Label,
+  LabelGroup,
+  Radio,
+  Select,
+  SelectVariant,
+  SelectOption,
+  Spinner
+} from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { IndexedStorage } from "@services/infinispanRefData";
+import { IndexedStorage, CacheFeature, EncodingType } from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from "@app/services/createCacheHook";
 import { PopoverHelp } from "@app/Common/PopoverHelp";
 import { FeatureCard } from "@app/Caches/Create/Features/FeatureCard";
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { useFetchProtobufSchemas } from '@app/services/protobufHook';
-import { CacheFeature } from "@services/infinispanRefData";
+import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { FeatureAlert } from "@app/Caches/Create/Features/FeatureAlert";
 
 const IndexedCacheConfigurator = (props: {
@@ -18,7 +28,7 @@ const IndexedCacheConfigurator = (props: {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const { schemas, loading, error } = useFetchProtobufSchemas()
+  const { protobufTypes, loading, error } = useFetchProtobufTypes()
 
   const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local_heap'>(configuration.feature.indexedCache.indexedStorage);
   const [indexedEntities, setIndexedEntities] = useState<string[]>(configuration.feature.indexedCache.indexedEntities);
@@ -65,7 +75,7 @@ const IndexedCacheConfigurator = (props: {
   };
 
   const entitiesOptions = () => {
-    return schemas.map((schema, id) => (
+    return protobufTypes.map((schema, id) => (
       <SelectOption key={id} value={schema} />
     ))
   };
@@ -122,7 +132,13 @@ const IndexedCacheConfigurator = (props: {
 
   if (!props.isEnabled) {
     return (
-      <FeatureAlert feature={CacheFeature.INDEXED} />
+      <FeatureAlert feature={CacheFeature.INDEXED} error={t('caches.create.configurations.feature.indexed-types-disabled-description')} />
+    )
+  }
+
+  if (configuration.basic.encoding !== EncodingType.Protobuf) {
+    return (
+      <FeatureAlert feature={CacheFeature.INDEXED} error={t('caches.create.configurations.feature.indexed-encoding-disabled-description', { encoding: configuration.basic.encoding })} />
     )
   }
 
@@ -158,10 +174,6 @@ const IndexedCacheConfigurator = (props: {
           <Label data-cy={currentChip}
             color="blue"
             closeBtnAriaLabel="Remove entity"
-            onEditComplete={(text) => {
-              setIndexedEntities(indexedEntities.map(chip => chip === currentChip ? text : chip));
-            }}
-            isEditable
             style={{ marginRight: global_spacer_sm.value }}
             key={currentChip} onClose={() => deleteChip(currentChip)}>
             {currentChip}

@@ -21,12 +21,12 @@ import PersistentCacheConfigurator from '@app/Caches/Create/Features/PersistentC
 import { useCreateCache } from "@app/services/createCacheHook";
 import { useConnectedUser } from "@app/services/userManagementHook";
 import { validFeatures } from "@app/utils/featuresValidation";
-import { useFetchProtobufSchemas } from '@app/services/protobufHook';
+import { useFetchProtobufTypes } from '@app/services/protobufHook';
 
 const FeaturesSelector = () => {
   const { t } = useTranslation();
   const { notSecured } = useConnectedUser();
-  const { schemas } = useFetchProtobufSchemas();
+  const { protobufTypes } = useFetchProtobufTypes();
   const { configuration, setConfiguration, addFeature, removeFeature } = useCreateCache();
 
   const brandname = t('brandname.brandname');
@@ -115,7 +115,7 @@ const FeaturesSelector = () => {
       </FormSection>
       {displayAlert()}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED) && <BoundedCacheConfigurator />}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCacheConfigurator isEnabled={schemas.length > 0} />}
+      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED) && <IndexedCacheConfigurator isEnabled={protobufTypes.length > 0} />}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && <SecuredCacheConfigurator isEnabled={!notSecured} />}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCacheConfigurator isEnabled={isBackups} />}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && <TransactionalCacheConfigurator isEnabled={configuration.basic.mode === CacheMode.SYNC} />}

@@ -1,6 +1,6 @@
 import { Either } from '@services/either';
 import { FetchCaller } from '@services/fetchCaller';
-import { filterSchema } from '@app/utils/filterProtobufSchema';
+import { filterInternalProtobufTypes } from '@app/utils/filterInternalProtobufTypes';
 
 /**
  * Protobuf schemas manipulation service
@@ -93,11 +93,11 @@ export class ProtobufService {
   }
 
   /**
-   * List protobuf schemas
+   * List types of protobuf schemas
    */
-  public async getSchemaList(): Promise<Either<ActionResponse, string[]>> {
+  public async getProtobufTypes(): Promise<Either<ActionResponse, string[]>> {
     return this.utils.get(this.endpoint + '?action=types', (data) =>
-      filterSchema(data)
+      filterInternalProtobufTypes(data)
     );
   }
 }
