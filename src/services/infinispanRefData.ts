@@ -150,6 +150,13 @@ export enum IndexedStorage {
   volatile = 'local_heap',
 }
 
+export enum IndexedStartupMode {
+  none = 'None',
+  purge = 'Purge',
+  reindex = 'Reindex',
+  auto = 'Auto',
+}
+
 export enum BackupSiteStrategy {
   ASYNC = 'ASYNC',
   SYNC = 'SYNC',

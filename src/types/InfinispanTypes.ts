@@ -339,6 +339,7 @@ interface IndexMerge {
 }
 interface IndexedCache {
   indexedStorage: 'filesystem' | 'local_heap';
+  indexedStartupMode?: string;
   indexedEntities: string[];
   valid: boolean;
 }

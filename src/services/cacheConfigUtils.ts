@@ -236,6 +236,7 @@ export class CacheConfigUtils {
       cache[cacheType]['indexing'] = {
         enabled: true,
         storage: data.feature.indexedCache.indexedStorage,
+        'startup-mode': data.feature.indexedCache.indexedStartupMode,
         'indexed-entities': data.feature.indexedCache.indexedEntities,
       };
     };
