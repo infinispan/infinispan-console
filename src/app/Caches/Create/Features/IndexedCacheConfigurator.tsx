@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -12,7 +13,7 @@ import {
   Spinner
 } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { IndexedStorage, CacheFeature, EncodingType } from "@services/infinispanRefData";
+import { IndexedStorage, CacheFeature, EncodingType, IndexedStartupMode } from "@services/infinispanRefData";
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from "@app/services/createCacheHook";
 import { PopoverHelp } from "@app/Common/PopoverHelp";
@@ -33,8 +34,10 @@ const IndexedCacheConfigurator = (props: {
   const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local_heap'>(configuration.feature.indexedCache.indexedStorage);
   const [indexedEntities, setIndexedEntities] = useState<string[]>(configuration.feature.indexedCache.indexedEntities);
   const [validEntity, setValidEntity] = useState<'success' | 'error' | 'default'>('default');
+  const [indexedStartupMode, setIndexedStartupMode] = useState<string>(configuration.feature.indexedCache.indexedStartupMode!);
 
   const [isOpenEntities, setIsOpenEntities] = useState(false)
+  const [isOpenStartupMode, setIsOpenStartupMode] = useState(false)
 
   useEffect(() => {
     indexedEntities.length > 0 ? setValidEntity('success') : setValidEntity('error');
@@ -46,6 +49,7 @@ const IndexedCacheConfigurator = (props: {
           ...prevState.feature,
           indexedCache: {
             indexedStorage: indexedStorage,
+            indexedStartupMode: indexedStartupMode,
             indexedEntities: indexedEntities,
             valid: indexingFeatureValidation()
           }
@@ -78,6 +82,17 @@ const IndexedCacheConfigurator = (props: {
     return protobufTypes.map((schema, id) => (
       <SelectOption key={id} value={schema} />
     ))
+  };
+
+  const startupModeOptions = () => {
+    return Object.keys(IndexedStartupMode).map((key) => (
+      <SelectOption id={key} key={key} value={IndexedStartupMode[key]} />
+    ));
+  };
+
+  const onSelectStartupMode = (event, selection, isPlaceholder) => {
+    setIndexedStartupMode(selection);
+    setIsOpenStartupMode(false);
   };
 
   const formSelectEntities = () => {
@@ -167,6 +182,27 @@ const IndexedCacheConfigurator = (props: {
           isChecked={indexedStorage === IndexedStorage.volatile}
           label={t('caches.create.configurations.feature.index-storage-volatile')}
         />
+      </FormGroup>
+      <FormGroup
+        label={t('caches.create.configurations.feature.index-startup-mode')}
+        labelIcon={<PopoverHelp name={'indexed-startup-mode'}
+          label={t('caches.create.configurations.feature.index-startup-mode')}
+          content={t('caches.create.configurations.feature.index-startup-mode-tooltip', { brandname: brandname })} />}
+        fieldId='indexed-startup-mode'
+        isInline
+      >
+        <Select
+          variant={SelectVariant.single}
+          aria-label="startup-mode-select"
+          onToggle={() => setIsOpenStartupMode(!isOpenStartupMode)}
+          onSelect={onSelectStartupMode}
+          selections={indexedStartupMode}
+          isOpen={isOpenStartupMode}
+          aria-labelledby="toggle-id-startup-mode"
+          placeholderText={t('caches.create.configurations.feature.index-startup-mode-placeholder')}
+        >
+          {startupModeOptions()}
+        </Select>
       </FormGroup>
       {formSelectEntities()}
       <LabelGroup>
