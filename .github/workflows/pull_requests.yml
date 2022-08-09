@@ -1,0 +1,43 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      infinispan:
+        image: quay.io/infinispan-test/server:main
+        env:
+          USER: admin
+          PASS: password
+        options: >-
+          --health-cmd "curl --head GET http://localhost:11222/rest/v2/cache-managers/default/health/status"
+          --health-interval 10s
+          --health-timeout 80s
+          --health-retries 5
+        ports:
+          - 11222:11222
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Initialize Infnispan Server
+        run: cd data; bash ./create-data.sh admin password --digest
+
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v4

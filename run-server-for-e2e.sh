@@ -94,8 +94,9 @@ function startServer()
       ${SERVER_TMP}/bin/server.sh -Djavax.net.debug -Dorg.infinispan.openssl=false -c ${confPath} -s ${SERVER_TMP}/${nodeName} ${portStr:-} --node-name=${nodeName} ${jvmParam:-} &
     fi
 
+    # Wait for server to be ready
+    curl --head -X GET --retry 30 --retry-connrefused --retry-delay 1 http://localhost:${port}/rest/v2/cache-managers/default/health/status
     #Creating data in the server
-    sleep 10
     cd $DATA_DIR/
     ./create-data.sh ${USER_NAME} ${PASSWORD}
 }
