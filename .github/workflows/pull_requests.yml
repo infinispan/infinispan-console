@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 12.16.3
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Unit Test
+        run: npm test
+
+      - name: Build Distribution
+        run: npm run build
+
+      # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
+      - name: Start Infinispan Server
+        run: |
+          docker run -d -p 11222:11222 -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e USER=admin -e PASS=password quay.io/infinispan-test/server:main --node-name=infinispan-4-e2e
+          # Wait for server to startup
+          curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
+
+      - name: Initialize Infnispan Server
+        run: cd data; bash ./create-data.sh admin password
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          config-file: cypress.config.ts
+
+      - name: Get thread dump on failure
+        if: failure()
+        run: docker kill $(docker ps -q) -s 3
+
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
