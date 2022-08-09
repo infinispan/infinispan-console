@@ -75,7 +75,6 @@
 
     <version.maven.nexus-staging>1.6.13</version.maven.nexus-staging>
     <version.maven.gpg>3.0.1</version.maven.gpg>
-    <infinispan.gpg.key>9E31AB27445478DB</infinispan.gpg.key>
   </properties>
 
   <profiles>
@@ -266,8 +265,11 @@
                 <goal>sign</goal>
               </goals>
               <configuration>
-                <keyname>${infinispan.gpg.key}</keyname>
-                <passphraseServerId>${infinispan.gpg.key}</passphraseServerId>
+                <passphraseServerId>gpg.passphrase</passphraseServerId>
+                <gpgArguments>
+                  <arg>--pinentry-mode</arg>
+                  <arg>loopback</arg>
+                </gpgArguments>
               </configuration>
             </execution>
           </executions>
