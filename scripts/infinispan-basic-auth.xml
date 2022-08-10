@@ -28,9 +28,9 @@
       <transaction mode="NON_XA"/>
       <memory storage="OFF_HEAP"/>
     </distributed-cache>
-<!--    <invalidation-cache name="invalidationCache" mode="SYNC" statistics="true">-->
-<!--      <encoding media-type="application/x-protostream"/>-->
-<!--    </invalidation-cache>-->
+    <invalidation-cache name="invalidationCache" mode="SYNC" statistics="true">
+      <encoding media-type="application/x-protostream"/>
+    </invalidation-cache>
   </cache-container>
 
   <server xmlns="urn:infinispan:server:14.0">
