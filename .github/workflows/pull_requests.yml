@@ -11,21 +11,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      infinispan:
-        image: quay.io/infinispan-test/server:main
-        env:
-          USER: admin
-          PASS: password
-        options: >-
-          --health-cmd "curl --head GET http://localhost:11222/rest/v2/cache-managers/default/health/status"
-          --health-interval 10s
-          --health-timeout 80s
-          --health-retries 5
-        ports:
-          - 11222:11222
-        volumes:
-          - ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml
     steps:
       - uses: actions/checkout@v2
 
@@ -35,6 +20,13 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
+
+      # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
+      - name: Start Infinispan Server
+        run: |
+          docker run -d -p 11222:11222 -v  ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e USER=admin -e PASS=password quay.io/infinispan-test/server:main
+          # Wait for server to startup
+          curl --fail --silent --show-error --retry-all-errors --retry 5 --retry-delay 5 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
 
       - name: Initialize Infnispan Server
         run: cd data; bash ./create-data.sh admin password
