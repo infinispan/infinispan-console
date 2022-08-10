@@ -24,7 +24,7 @@ jobs:
       # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
       - name: Start Infinispan Server
         run: |
-          docker run -d -p 11222:11222 -v  ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e USER=admin -e PASS=password quay.io/infinispan-test/server:main
+          docker run -d -p 11222:11222 -v  ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e USER=admin -e PASS=password quay.io/infinispan/server:14.0.0.Dev04
           # Wait for server to startup
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
 
