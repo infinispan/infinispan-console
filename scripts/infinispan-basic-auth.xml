@@ -10,24 +10,24 @@
     <security>
       <authorization/>
     </security>
-<!--    <local-cache name="default"/>-->
-<!--    <distributed-cache name="people" statistics="true">-->
-<!--      <encoding media-type="application/x-protostream"/>-->
-<!--      <transaction mode="NON_XA"/>-->
-<!--    </distributed-cache>-->
-<!--    <distributed-cache-configuration name="e2e-test-template">-->
-<!--      <encoding media-type="application/x-protostream"/>-->
-<!--    </distributed-cache-configuration>-->
-<!--    <distributed-cache name="heap-test" statistics="true">-->
-<!--      <encoding media-type="application/x-protostream"/>-->
-<!--      <transaction mode="NON_XA"/>-->
-<!--      <memory storage="HEAP" max-size="1.5GB"/>-->
-<!--    </distributed-cache>-->
-<!--    <distributed-cache name="off-heap-test" statistics="true">-->
-<!--      <encoding media-type="application/x-protostream"/>-->
-<!--      <transaction mode="NON_XA"/>-->
-<!--      <memory storage="OFF_HEAP"/>-->
-<!--    </distributed-cache>-->
+    <local-cache name="default"/>
+    <distributed-cache name="people" statistics="true">
+      <encoding media-type="application/x-protostream"/>
+      <transaction mode="NON_XA"/>
+    </distributed-cache>
+    <distributed-cache-configuration name="e2e-test-template">
+      <encoding media-type="application/x-protostream"/>
+    </distributed-cache-configuration>
+    <distributed-cache name="heap-test" statistics="true">
+      <encoding media-type="application/x-protostream"/>
+      <transaction mode="NON_XA"/>
+      <memory storage="HEAP" max-size="1.5GB"/>
+    </distributed-cache>
+    <distributed-cache name="off-heap-test" statistics="true">
+      <encoding media-type="application/x-protostream"/>
+      <transaction mode="NON_XA"/>
+      <memory storage="OFF_HEAP"/>
+    </distributed-cache>
 <!--    <invalidation-cache name="invalidationCache" mode="SYNC" statistics="true">-->
 <!--      <encoding media-type="application/x-protostream"/>-->
 <!--    </invalidation-cache>-->
