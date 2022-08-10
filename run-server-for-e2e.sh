@@ -107,7 +107,7 @@ rm -drf server/${SERVER_UNZIP_DIR}
 
 export JAVA_OPTS="-Xms512m -Xmx1024m -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=512m"
 
-startServer "$1" infinispan.xml 11222 infinispan-4-e2e
+startServer "$1" infinispan-basic-auth.xml 11222 infinispan-4-e2e
 echo "Infinispan Server for E2E tests has started."
 
 

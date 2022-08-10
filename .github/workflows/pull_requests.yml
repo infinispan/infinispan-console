@@ -25,7 +25,7 @@ jobs:
         ports:
           - 11222:11222
         volumes:
-          - ${{ github.workspace }}/scripts:/opt/infinispan/server/conf
+          - ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml
     steps:
       - uses: actions/checkout@v2
 
