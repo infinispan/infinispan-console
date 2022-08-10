@@ -24,6 +24,8 @@ jobs:
           --health-retries 5
         ports:
           - 11222:11222
+        volumes:
+          - ${{ github.workspace }}/scripts:/opt/infinispan/server/conf
     steps:
       - uses: actions/checkout@v2
 
@@ -35,7 +37,7 @@ jobs:
           cache: maven
 
       - name: Initialize Infnispan Server
-        run: cd data; bash ./create-data.sh admin password --digest
+        run: cd data; bash ./create-data.sh admin password
 
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
