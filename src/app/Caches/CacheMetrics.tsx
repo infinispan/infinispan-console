@@ -45,7 +45,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       if (detail.isRight()) {
 
         // Load the memory storage and size eviction
-        const loadMemory = JSON.parse(detail.value.configuration.config)["distributed-cache"]
+        const loadMemory = JSON.parse(detail.value.configuration.config)[props.cacheName]["distributed-cache"]
         if(loadMemory.memory){
           if(loadMemory.memory.storage==="HEAP" && loadMemory.memory["max-size"])
             setMemory(loadMemory.memory.storage)
