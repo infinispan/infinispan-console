@@ -63,7 +63,7 @@ export class CacheService {
         return <DetailedInfinispanCache>{
           name: cacheName,
           started: true,
-          type: CacheConfigUtils.mapCacheType(data.configuration),
+          type: CacheConfigUtils.mapCacheType(data.configuration[cacheName]),
           encoding: keyValueEncoding,
           size: data['size'],
           rehash_in_progress: data['rehash_in_progress'],
