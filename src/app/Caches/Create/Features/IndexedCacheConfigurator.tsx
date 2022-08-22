@@ -59,10 +59,6 @@ const IndexedCacheConfigurator = (props: {
   }, [indexedStorage, indexedEntities]);
 
   const indexingFeatureValidation = (): boolean => {
-    if (!props.isEnabled) {
-      return false;
-    }
-
     return indexedEntities.length > 0;
   }
 
