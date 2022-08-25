@@ -482,10 +482,10 @@ export class CacheConfigUtils {
       createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(
         cacheName,
         data.editorConfig,
-        'json'
+        configValidation.value
       );
     }
-
+    
     return createCacheCall;
   }
 
