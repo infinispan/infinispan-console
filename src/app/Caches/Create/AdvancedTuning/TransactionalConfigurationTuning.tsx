@@ -74,7 +74,7 @@ const TransactionalConfigurationTuning = () => {
               label={<PopoverHelp name={'full-xa'}
                                   text={t('caches.create.configurations.advanced-options.isolation-level-repeatable-read')}
                                   label={t('caches.create.configurations.advanced-options.isolation-level-repeatable-read')}
-                                  content={t('caches.create.configurations.advanced.isolation-level-repeatable-read-tooltip', { brandname: brandname })}/>}
+                                  content={t('caches.create.configurations.advanced-options.isolation-level-repeatable-read-tooltip', { brandname: brandname })}/>}
             />
             <Radio
               name="radio-isolation-level"
@@ -84,7 +84,7 @@ const TransactionalConfigurationTuning = () => {
               label={<PopoverHelp name={'full-xa'}
                                   text={t('caches.create.configurations.advanced-options.isolation-level-read-committed')}
                                   label={t('caches.create.configurations.advanced-options.isolation-level-read-committed')}
-                                  content={t('caches.create.configurations.advanced.isolation-level-read-committed-tooltip', { brandname: brandname })}/>}
+                                  content={t('caches.create.configurations.advanced-options.isolation-level-read-committed-tooltip', { brandname: brandname })}/>}
             />
           </FormGroup>
         </GridItem>
