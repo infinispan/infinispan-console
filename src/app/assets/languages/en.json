@@ -582,6 +582,7 @@
       "data-distribution": "Data distribution",
       "data-distribution-title": "Data for nodes",
       "data-distribution-tooltip": "Displays the amount of data that is stored in each node in the cluster.",
+      "data-distribution-node-name": "Node name",
       "data-distribution-option-entries": "Total number of entries",
       "data-distribution-option-memory": "Entries in memory",
       "data-distribution-no-entry": "No entries"
