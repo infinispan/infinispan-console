@@ -583,9 +583,13 @@ const CacheTableDisplay = (props: {
   };
 
   const buildCreateCacheButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return '';
-    }
+
+    // Will remove comment when the feature is ready
+    
+    // if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+    //   console.log("User has no permission to create caches");
+    //   return '';
+    // }
 
     return (
       <React.Fragment>
