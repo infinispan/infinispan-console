@@ -16,7 +16,7 @@ import {useHistory} from 'react-router';
 import {useApiAlert} from '@app/utils/useApiAlert';
 import {CacheConfigUtils} from '@services/cacheConfigUtils';
 import {useTranslation} from 'react-i18next';
-import {CacheFeature, ConfigDownloadType} from "@services/infinispanRefData";
+import {ConfigDownloadType} from "@services/infinispanRefData";
 import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
 import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
 import {useStateCallback} from '@app/services/stateCallbackHook';
@@ -28,6 +28,8 @@ import {ConsoleServices} from "@services/ConsoleServices";
 import {DownloadIcon} from "@patternfly/react-icons";
 import {useCreateCache} from "@app/services/createCacheHook";
 import {validFeatures} from "@app/utils/featuresValidation";
+import {ConsoleACL} from "@services/securityService";
+import {useConnectedUser} from "@app/services/userManagementHook";
 
 const CacheEditorInitialState: CacheEditorStep = {
   editorConfig: '',
@@ -39,12 +41,15 @@ const CacheEditorInitialState: CacheEditorStep = {
   editorExpanded: false
 }
 
-const CreateCacheWizard = (props) => {
+const CreateCacheWizard = (props: {
+  cacheManager: CacheManager;
+}) => {
     const { addAlert } = useApiAlert();
     const { configuration } = useCreateCache();
 
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
+    const { connectedUser } = useConnectedUser();
 
     // State for wizard steps
     const [stateObj, setStateObj] = useStateCallback({
@@ -124,7 +129,7 @@ const CreateCacheWizard = (props) => {
             }
         }
         else if (activeStep.id === 2) {
-            onSave();
+          onSave();
         }
         else {
             callback();
@@ -172,7 +177,7 @@ const CreateCacheWizard = (props) => {
         name: t('caches.create.edit-config.nav-title'),
         component: <CacheConfigEditor cacheEditor={cacheEditor}
                                       cacheEditorModifier={setCacheEditor}
-                                      cmName={props.cmName}
+                                      cmName={props.cacheManager.name}
                                       setReviewConfig={setReviewConfig} />,
     };
 
@@ -229,12 +234,17 @@ const CreateCacheWizard = (props) => {
       let activeButton = true;
       switch (activeStepId) {
         case 1: activeButton = configuration.start.valid; break;
-        case 2: activeButton = true; break;
+        case 2:
+          if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser))
+            activeButton = false;  
+          break;
         case 3: activeButton = configuration.basic.valid; break;
         case 4: activeButton = validFeatures(configuration); break;
         case 5: activeButton = configuration.advanced.valid; break;
-        case 6: activeButton = true; break
-
+        case 6:
+          if(!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser))
+            activeButton = false;
+          break;
         default:
       }
 

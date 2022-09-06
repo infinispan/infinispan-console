@@ -583,9 +583,6 @@ const CacheTableDisplay = (props: {
   };
 
   const buildCreateCacheButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return '';
-    }
 
     return (
       <React.Fragment>
@@ -593,10 +590,7 @@ const CacheTableDisplay = (props: {
         <ToolbarItem style={{ marginRight: global_spacer_sm.value }}>
           <Link
             to={{
-              pathname: '/container/' + props.cmName + '/caches/create',
-              state: {
-                cmName: props.cmName,
-              },
+              pathname: '/container/caches/create',
             }}
           >
             <Button variant={ButtonVariant.primary} aria-label="create-cache-button" data-cy="createCacheButton">

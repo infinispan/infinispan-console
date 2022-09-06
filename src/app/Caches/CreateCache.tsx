@@ -2,11 +2,13 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 import {
+  Bullseye,
+  EmptyState, EmptyStateIcon,
   PageSection,
-  PageSectionVariants,
+  PageSectionVariants, Spinner,
   Text,
   TextContent,
-  TextVariants,
+  TextVariants, Title,
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
@@ -16,34 +18,57 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useTranslation } from 'react-i18next';
 import { CreateCacheWizard } from '@app/Caches/Create/CreateCacheWizard';
 import {CreateCacheProvider} from "@app/providers/CreateCacheProvider";
+import {TableErrorState} from "@app/Common/TableErrorState";
 
-const CreateCache: React.FunctionComponent<any> = (props) => {
-  const cmName = props.computedMatch.params.cmName;
-
+const CreateCache = () => {
+  const [cacheManager, setCacheManager] = useState<CacheManager | undefined>();
+  const [error, setError] = useState('');
   const [loadingBackups, setLoadingBackups] = useState(true);
   const [isBackupAvailable, setIsBackupAvailable] = useState(false);
   const [localSite, setLocalSite] = useState('');
-
+  const [title, setTitle] = useState('Data container is empty.');
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (loadingBackups) {
+    if (!cacheManager && loadingBackups) {
       ConsoleServices.dataContainer().getDefaultCacheManager()
         .then((r) => {
           if (r.isRight()) {
             const cm = r.value;
+            setCacheManager(cm);
+            setTitle(displayUtils.capitalize(displayUtils.capitalize(cm.name)));
             setIsBackupAvailable(cm.backups_enabled);
             if (cm.backups_enabled && cm.local_site) {
               setLocalSite(cm.local_site);
             }
+          } else {
+            setError(r.value.message);
           }
         }).then(() => setLoadingBackups(false));
     }
-  }, [loadingBackups]);
+  }, []);
 
-  let title = 'Data container is empty.';
-  if (cmName !== undefined) {
-    title = displayUtils.capitalize(cmName);
+  const displayError = () => {
+    return (
+      <PageSection variant={PageSectionVariants.light}>
+        <TableErrorState error={error}/>
+      </PageSection>
+    );
+  }
+
+  const displayLoading = () => {
+    return (
+      <PageSection variant={PageSectionVariants.light}>
+        <Bullseye>
+          <EmptyState>
+            <EmptyStateIcon variant="container" component={Spinner} />
+            <Title size="lg" headingLevel="h4">
+              Loading
+            </Title>
+          </EmptyState>
+        </Bullseye>
+      </PageSection>
+    )
   }
 
   return (
@@ -63,7 +88,9 @@ const CreateCache: React.FunctionComponent<any> = (props) => {
           </ToolbarContent>
         </Toolbar>
       </PageSection>
-      <CreateCacheWizard cmName={cmName} />
+      {!cacheManager && displayLoading()}
+      {error != '' && displayError()}
+      {cacheManager && <CreateCacheWizard cacheManager={cacheManager} />}
     </CreateCacheProvider>
   );
 };
