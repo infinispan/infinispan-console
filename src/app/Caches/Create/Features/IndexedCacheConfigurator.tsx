@@ -31,7 +31,7 @@ const IndexedCacheConfigurator = (props: {
 
   const { protobufTypes, loading, error } = useFetchProtobufTypes()
 
-  const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local_heap'>(configuration.feature.indexedCache.indexedStorage);
+  const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local-heap'>(configuration.feature.indexedCache.indexedStorage);
   const [indexedEntities, setIndexedEntities] = useState<string[]>(configuration.feature.indexedCache.indexedEntities);
   const [validEntity, setValidEntity] = useState<'success' | 'error' | 'default'>('default');
   const [indexedStartupMode, setIndexedStartupMode] = useState<string>(configuration.feature.indexedCache.indexedStartupMode!);
