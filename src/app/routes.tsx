@@ -117,10 +117,10 @@ const routes: IAppRoute[] = [
   {
     component: CreateCache,
     exact: true,
-    label: 'Caches',
+    label: 'Cache Wizard',
     path: '/container/:cmName/caches/create',
-    title: 'Caches',
-    menu: false,
+    title: 'Cache Wizard',
+    menu: true,
   },
   {
     component: IndexManagement,
