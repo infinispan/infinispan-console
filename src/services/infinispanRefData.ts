@@ -147,7 +147,7 @@ export enum EvictionType {
 
 export enum IndexedStorage {
   persistent = 'filesystem',
-  volatile = 'local_heap',
+  volatile = 'local-heap',
 }
 
 export enum IndexedStartupMode {

@@ -338,7 +338,7 @@ interface IndexMerge {
   maxForcedSize?: number;
 }
 interface IndexedCache {
-  indexedStorage: 'filesystem' | 'local_heap';
+  indexedStorage: 'filesystem' | 'local-heap';
   indexedStartupMode?: string;
   indexedEntities: string[];
   valid: boolean;
