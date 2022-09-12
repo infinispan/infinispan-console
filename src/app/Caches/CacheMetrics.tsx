@@ -225,8 +225,8 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
-              <TextListItem aria-label="view-cache-metrics-size" component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(size)}
+              <TextListItem aria-label="view-cache-metrics-current-number-entries" component={TextListItemVariants.dt}>
+                {displayUtils.formatNumber(stats.current_number_of_entries)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
               <MoreInfoTooltip
