@@ -446,3 +446,10 @@ interface DataDistribution {
   memory_entries: number;
   total_entries: number;
 }
+
+interface ClusterDistribution {
+  node_name: string;
+  node_addresses: string[];
+  memory_available: number;
+  memory_used: number;
+}

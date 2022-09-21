@@ -24,3 +24,26 @@ export function useDataDistribution(cacheName: string) {
 
   return { loading, error, dataDistribution };
 }
+
+export function useClusterDistribution(){
+  const [clusterDistribution, setClusterDistribution] = useState<ClusterDistribution[]>();
+  const [errorCluster, setErrorCluster] = useState('');
+  const [loadingCluster, setLoadingCluster] = useState(true);
+
+  useEffect(() => {
+    if (loadingCluster) {
+      ConsoleServices.caches()
+        .getClusterDistribution()
+        .then((r) => {
+          if (r.isRight()) {
+            setClusterDistribution(r.value);
+          } else {
+            setErrorCluster(r.value.message);
+          }
+        })
+        .then(() => setLoadingCluster(false));
+    }
+  }, [loadingCluster]);
+
+  return { loadingCluster, errorCluster, clusterDistribution };
+}
