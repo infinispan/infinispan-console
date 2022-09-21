@@ -143,21 +143,18 @@ const PersistentCacheConfigurator = () => {
     return (
             <FeatureCard title="caches.create.configurations.feature.persistent"
                          description="caches.create.configurations.feature.persistent-description">
-                    <FormGroup
-                        isInline
-                        fieldId='passivation'
-                        label={t('caches.create.configurations.feature.passivation')}
-                        labelIcon={<PopoverHelp name={'passivation'}
-                                                label={t('caches.create.configurations.feature.passivation')}
-                                                content={t('caches.create.configurations.feature.passivation-tooltip', {"brandname": brandname})}/>}
-                    >
-                        <Switch
-                            aria-label="passivation"
-                            id="passivation-switch"
-                            isChecked={passivation}
-                            onChange={() => setPassivation(!passivation)}
-                            isReversed
-                        />
+                    <FormGroup fieldId="passivation">
+                      <Switch
+                      aria-label="passivation"
+                      data-cy="passivationSwitch"
+                      id="passivation"
+                      isChecked={passivation === undefined ? false : passivation}
+                      onChange={() => setPassivation(!passivation)}
+                      label={t('caches.create.configurations.feature.passivation')}
+                      />
+                      <PopoverHelp name={'passivation'}
+                                    label={t('caches.create.configurations.feature.passivation')}
+                                    content={t('caches.create.configurations.feature.passivation-tooltip', {"brandname": brandname})}/>
                     </FormGroup>
                     <Flex>
                         <FlexItem grow={{ default: 'grow' }} style={{ maxWidth: '25rem' }}>
