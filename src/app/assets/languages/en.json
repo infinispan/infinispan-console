@@ -235,7 +235,7 @@
           "index-startup-mode-tooltip": "Configure how {{brandname}} builds the index.",
           "index-startup-mode-placeholder": "Select a startup mode",
           "secured": "Security authorization",
-          "secured-description": "To protect cache data, restrict user access. When a user does not have one of the roles selected from the menu below, {{brandname}} denies cache operations.",
+          "secured-description": "To protect data, restrict user access to the cache. When a user does not have one of the roles selected from the menu below, {{brandname}} denies cache operations.",
           "select-roles": "Select roles",
           "select-roles-helper": "You must select at least one role.",
           "backups": "Backups for {{local_site_name}}",
