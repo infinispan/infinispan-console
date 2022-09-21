@@ -260,7 +260,6 @@ const BackupsCacheConfigurator = (props: {
               id="backupfor"
               isChecked={enableBackupFor}
               onChange={() => setEnableBackupFor(!enableBackupFor)}
-              hasCheckIcon
               labelOff={t('caches.create.configurations.feature.backup-for')}
               label={t('caches.create.configurations.feature.backup-for')}
             />

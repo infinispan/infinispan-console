@@ -209,6 +209,7 @@ const BackupSiteConfigurator = (props: {
               id="twoPhaseCommit"
               isChecked={twoPhaseCommit === undefined ? false : twoPhaseCommit}
               onChange={() => setTwoPhaseCommit(!twoPhaseCommit)}
+              label={t('caches.create.configurations.feature.two-phase-commit')}
             />
             <PopoverHelp  name={'two-phase-commit'}
                           label={t('caches.create.configurations.feature.two-phase-commit')}

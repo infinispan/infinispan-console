@@ -215,9 +215,8 @@ const BasicCacheConfigConfigurator = () => {
             id="statistics"
             isChecked={isStatistics}
             onChange={() => setIsStatistics(!isStatistics)}
-            label={t('caches.create.configurations.basic.statistics-disable')}
-            labelOff={t('caches.create.configurations.basic.statistics-enable')}
-            hasCheckIcon
+            label={t('caches.create.configurations.basic.statistics-enable')}
+            labelOff={t('caches.create.configurations.basic.statistics-disable')}
           />
         </FormGroup>
       );
@@ -260,9 +259,8 @@ const BasicCacheConfigConfigurator = () => {
                     id="expiration"
                     isChecked={isExpiration}
                     onChange={() => setIsExpiration(!isExpiration)}
-                    labelOff={t('caches.create.configurations.basic.expiration-enable')}
-                    label={t('caches.create.configurations.basic.expiration-disable')}
-                    hasCheckIcon
+                    labelOff={t('caches.create.configurations.basic.expiration-disable')}
+                    label={t('caches.create.configurations.basic.expiration-enable')}
                 />
               <PopoverHelp name={'expiration'}
                                       label={t('caches.create.configurations.basic.expiration-title')}
