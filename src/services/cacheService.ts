@@ -665,4 +665,11 @@ export class CacheService {
       (text) => text
     );
   }
+
+  public async getClusterDistribution(): Promise<Either<ActionResponse, ClusterDistribution[]>>{
+    return this.fetchCaller.get(
+      this.endpoint + '/cluster?action=distribution',
+      (text) => text
+    );
+  }
 }

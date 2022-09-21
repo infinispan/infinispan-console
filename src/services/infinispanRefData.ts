@@ -213,3 +213,8 @@ export enum DataDistributionStatsOption {
   TotalEntries = 'Total number of entries',
   MemoryEntries = 'Entries in memory',
 }
+
+export enum ClusterDistributionStatsOption {
+  MemoryAvailable = 'Memory available',
+  MemoryUsed = 'Memory used',
+}

@@ -1,11 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import * as StatsHook from '@app/services/statsHook';
+import * as ClusterHook from '@app/services/dataDistributionHook';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { renderWithRouter } from '../../test-utils';
 
 jest.mock('@app/services/statsHook');
 const mockedStatsHook = StatsHook as jest.Mocked<typeof StatsHook>;
+jest.mock('@app/services/dataDistributionHook');
+const mockedClusterHook = ClusterHook as jest.Mocked<typeof ClusterHook>;
 
 const statsNotEnabledResponse = {
   statistics_enabled: false,
@@ -29,8 +32,16 @@ const statsEnabledResponse = {
   misses: -1,
 } as CacheManagerStats;
 
+const clusterDistributionResponse = [{
+    node_name: 'cluster',
+    node_addresses: ['172.17.0.2:7800'],
+    memory_available: 100,
+    memory_used: 50,
+  }] as ClusterDistribution[];
+
 beforeEach(() => {
   mockedStatsHook.useFetchGlobalStats.mockClear();
+  mockedClusterHook.useClusterDistribution.mockClear();
 });
 
 describe('Global stats page', () => {
@@ -61,6 +72,14 @@ describe('Global stats page', () => {
         loading: false,
         stats: statsEnabledResponse,
         error: '',
+      };
+    });
+
+    mockedClusterHook.useClusterDistribution.mockImplementationOnce(() => {
+      return {
+        loadingCluster: false,
+        errorCluster: '',
+        clusterDistribution: clusterDistributionResponse,
       };
     });
 
