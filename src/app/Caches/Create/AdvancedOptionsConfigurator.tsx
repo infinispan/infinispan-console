@@ -128,18 +128,19 @@ const AdvancedOptionsConfigurator = () => {
               </FormGroup>
               <GridItem span={12}>
                 <FormGroup
-                  isInline
                   fieldId="field-striping"
-                  label={t('caches.create.configurations.advanced-options.striping')}
-                  labelIcon={<PopoverHelp name="striping" label={t('caches.create.configurations.advanced-options.striping')} content={t('caches.create.configurations.advanced-options.striping-tooltip')} />}
                 >
                   <Switch
                     aria-label="striping"
+                    data-cy="stripingSwitch"
                     id="striping"
                     isChecked={striping === undefined ? false : striping}
                     onChange={() => setStriping(!striping)}
-                    isReversed
+                    label={t('caches.create.configurations.advanced-options.striping')}
                   />
+                  <PopoverHelp name={'striping'} 
+                                      label={t('caches.create.configurations.advanced-options.striping')}
+                                      content={t('caches.create.configurations.advanced-options.striping-tooltip')}/>
                 </FormGroup>
               </GridItem>
             </Grid>
