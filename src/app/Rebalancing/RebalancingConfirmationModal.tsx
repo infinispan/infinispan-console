@@ -8,7 +8,7 @@ import {useTranslation} from "react-i18next";
 const RebalancingConfirmationModal = (props: {
   isModalOpen: boolean;
   confirmAction: () => void;
-  closeModal: (boolean) => void;
+  closeModal: () => void;
   enabled: boolean;
   type: 'caches' | 'cache-managers'
 }) => {
@@ -20,7 +20,7 @@ const RebalancingConfirmationModal = (props: {
       width={'50%'}
       isOpen={props.isModalOpen}
       title={props.enabled? t(props.type + '.rebalancing.modal-disable-title') : t(props.type + '.rebalancing.modal-enable-title')}
-      onClose={() => props.closeModal}
+      onClose={() => props.closeModal()}
       aria-label={
         props.enabled? 'Disable' : 'Enable'
       }
