@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Button,
   Flex,
   FlexItem,
@@ -25,6 +26,7 @@ import {kebabCase} from "@app/utils/convertStringCase";
 import {useCreateCache} from "@app/services/createCacheHook";
 import {FeatureCard} from "@app/Caches/Create/Features/FeatureCard";
 import {PopoverHelp} from "@app/Common/PopoverHelp";
+import {global_spacer_md} from '@patternfly/react-tokens';
 
 const PersistentCacheConfigurator = () => {
     const { configuration, setConfiguration } = useCreateCache();
@@ -108,6 +110,11 @@ const PersistentCacheConfigurator = () => {
         return '';
       }
 
+      const storageJARS = [
+        PersistentCacheStorage.JDBCStore,
+        PersistentCacheStorage.Custom
+      ]
+
       return (
         <React.Fragment>
             <Hint>
@@ -124,8 +131,12 @@ const PersistentCacheConfigurator = () => {
                        isRequired>
               <TextContent>
                 <Text component={TextVariants.h3}>{PersistentCacheStorage[storage]}</Text>
-                <Text component={TextVariants.p}>{t('caches.create.configurations.feature.' +  kebabCase(storage) + "-description", {"brandname": brandname})}</Text>
+                <Text component={TextVariants.p}>{t('caches.create.configurations.feature.' +  kebabCase(storage) + "-description", {"brandname": brandname})}</Text>              
               </TextContent>
+
+              {storageJARS.includes(PersistentCacheStorage[storage]) &&
+              <Alert style={{margin: global_spacer_md.value + " 0"}} variant="warning" title={t('caches.create.configurations.feature.persistent-storage-jar-warning', {"persistentStorage": PersistentCacheStorage[storage]})} />}
+
               <CodeEditor
                 isLineNumbersVisible
                 isLanguageLabelVisible

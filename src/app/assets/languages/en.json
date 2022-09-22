@@ -309,6 +309,7 @@
           "persistent-error": "Persistent storage configuration must be in JSON format and conform to the {{brandname}} schema.",
           "persistent-hint": "The provided configuration is an example template that you should modify for your environment.",
           "persistent-hint-link": "Need help? See \"Configuring persistent storage\" in the documentation.",
+          "persistent-storage-jar-warning": "{{persistentStorage}} require a JAR added to the classpath before you can configure persistent storage.",
           "passivation": "Passivation",
           "passivation-tooltip": "Enable passivation to keep only frequently used data in the cache. {{brandname}} writes entries to persistent storage when it evicts those entries from memory.",
           "connection-attempts": "Connection attempts",
