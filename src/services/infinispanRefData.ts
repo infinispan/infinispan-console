@@ -191,7 +191,6 @@ export enum PersistentCacheStorage {
   TableSQLStore = 'Table SQL store',
   QuerySQLStore = 'Query SQL store',
   JDBCStore = 'JDBC string-based store',
-  RocksDB = 'RocksDB store',
   Custom = 'Custom store',
 }
 
@@ -201,7 +200,6 @@ export const PersistentStorageConfig = new Map<string, string>([
   [PersistentCacheStorage.TableSQLStore, tableSqlStore],
   [PersistentCacheStorage.QuerySQLStore, querySqlStore],
   [PersistentCacheStorage.JDBCStore, jdbcStore],
-  [PersistentCacheStorage.RocksDB, rocksDB],
   [PersistentCacheStorage.Custom, ''],
 ]);
 
