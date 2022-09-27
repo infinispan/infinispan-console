@@ -26,13 +26,14 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_FontSize_sm } from '@patternfly/react-tokens';
+import { global_spacer_md } from '@patternfly/react-tokens';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from "@services/ConsoleServices";
-import { useConnectedUser } from "@app/services/userManagementHook";
-import { ConsoleACL } from "@services/securityService";
-import { CreateProtoSchema } from "@app/ProtoSchema/CreateProtoSchema";
-import { DeleteSchema } from "@app/ProtoSchema/DeleteSchema";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleACL } from '@services/securityService';
+import { CreateProtoSchema } from '@app/ProtoSchema/CreateProtoSchema';
+import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
 import { useFetchProtobufSchemas } from '@app/services/protobufHooks';
 
 /**
@@ -44,7 +45,7 @@ const ProtobufSchemasDisplay = (props: {
 }) => {
   const protobufService = ConsoleServices.protobuf();
   const { connectedUser } = useConnectedUser();
-  const { schemas, loading, setLoading, error } = useFetchProtobufSchemas()
+  const { schemas, loading, setLoading, error } = useFetchProtobufSchemas();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
@@ -52,12 +53,10 @@ const ProtobufSchemasDisplay = (props: {
     new Map<string, string>()
   );
   const [filteredSchemas, setFilteredSchemas] = useState<ProtoSchema[]>([]);
-  const [createSchemaFormOpen, setCreateSchemaFormOpen] = useState<boolean>(
-    false
-  );
-  const [deleteSchemaModalOpen, setDeleteSchemaModalOpen] = useState<boolean>(
-    false
-  );
+  const [createSchemaFormOpen, setCreateSchemaFormOpen] =
+    useState<boolean>(false);
+  const [deleteSchemaModalOpen, setDeleteSchemaModalOpen] =
+    useState<boolean>(false);
   const [deleteSchemaName, setDeleteSchemaName] = useState<string>('');
   const [editSchemaName, setEditSchemaName] = useState<string>('');
   const [editSchemaContent, setEditSchemaContent] = useState<string>('');
@@ -73,20 +72,17 @@ const ProtobufSchemasDisplay = (props: {
       const initSlice =
         (schemasPagination.page - 1) * schemasPagination.perPage;
       setFilteredSchemas(
-        schemas.slice(
-          initSlice,
-          initSlice + schemasPagination.perPage
-        )
-      )
+        schemas.slice(initSlice, initSlice + schemasPagination.perPage)
+      );
     }
-  }, [loading, schemas])
+  }, [loading, schemas]);
 
   useEffect(() => {
     const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
     setFilteredSchemas(
       schemas.slice(initSlice, initSlice + schemasPagination.perPage)
     );
-  }, [schemasPagination])
+  }, [schemasPagination]);
 
   const loadSchema = (schemaName: string) => {
     protobufService.getSchema(schemaName).then((eitherResponse) => {
@@ -107,9 +103,9 @@ const ProtobufSchemasDisplay = (props: {
     const newExpanded =
       index >= 0
         ? [
-          ...expanded.slice(0, index),
-          ...expanded.slice(index + 1, expanded.length),
-        ]
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length),
+          ]
         : [...expanded, schemaName];
     setExpanded(newExpanded);
   };
@@ -151,9 +147,7 @@ const ProtobufSchemasDisplay = (props: {
   const buildSchemaContent = (name) => {
     if (!schemasContent.get(name)) {
       loadSchema(name);
-      return (
-        <Spinner size={'sm'} />
-      );
+      return <Spinner size={'sm'} />;
     }
 
     if (editSchemaName != name) {
@@ -170,7 +164,7 @@ const ProtobufSchemasDisplay = (props: {
     }
     return (
       <TextArea
-        id='schema-edit-area'
+        id="schema-edit-area"
         data-cy="schemaEditArea"
         onChange={(v) => setEditSchemaContent(v)}
         value={editSchemaContent}
@@ -182,24 +176,32 @@ const ProtobufSchemasDisplay = (props: {
   };
 
   const buildSchemaToolbar = (schemaName) => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+    if (
+      !ConsoleServices.security().hasConsoleACL(
+        ConsoleACL.CREATE,
+        connectedUser
+      )
+    ) {
       return '';
     }
 
     return (
       <Toolbar>
-        {editSchemaName == schemaName && <Alert variant="warning" title={t('schemas.edit-alert', { schemaname: schemaName })} />}
         <ToolbarGroup>
           <ToolbarItem>
             <Button
-              isDisabled={editSchemaName == schemaName && editSchemaContent.length == 0}
+              isDisabled={
+                editSchemaName == schemaName && editSchemaContent.length == 0
+              }
               id={'edit-button-schema-' + schemaName}
               name={'edit-button-schema-' + schemaName}
               aria-label={'edit-button-schema-' + schemaName}
               variant={ButtonVariant.secondary}
               onClick={() => handleEdit(schemaName)}
             >
-              {editSchemaName == schemaName ? t('schemas.save-button') : t('schemas.edit-button')}
+              {editSchemaName == schemaName
+                ? t('schemas.save-button')
+                : t('schemas.edit-button')}
             </Button>
           </ToolbarItem>
           <ToolbarItem>
@@ -225,7 +227,7 @@ const ProtobufSchemasDisplay = (props: {
         </ToolbarGroup>
       </Toolbar>
     );
-  }
+  };
 
   const handleEdit = (schemaName: string) => {
     if (editSchemaName == '' || editSchemaName != schemaName) {
@@ -233,7 +235,10 @@ const ProtobufSchemasDisplay = (props: {
       setEditSchemaContent(schemasContent.get(schemaName) as string);
     } else {
       setEditSchemaName('');
-      if (!schemasContent.has(schemaName) || schemasContent.get(schemaName) == '') {
+      if (
+        !schemasContent.has(schemaName) ||
+        schemasContent.get(schemaName) == ''
+      ) {
         return;
       }
       schemasContent.set(schemaName, editSchemaContent);
@@ -290,6 +295,11 @@ const ProtobufSchemasDisplay = (props: {
                     >
                       {displayProtoError(protoSchema.error)}
                     </DataListCell>,
+                    <DataListCell width={2}>
+                      {expanded.includes(protoSchema.name)
+                        ? buildSchemaToolbar(protoSchema.name)
+                        : ''}
+                    </DataListCell>,
                   ]}
                 />
               </DataListItemRow>
@@ -299,8 +309,16 @@ const ProtobufSchemasDisplay = (props: {
                 isHidden={!expanded.includes(protoSchema.name)}
                 style={{ boxShadow: 'none' }}
               >
+                {editSchemaName == protoSchema.name && (
+                  <Alert
+                    style={{ marginBottom: global_spacer_md.value }}
+                    variant="warning"
+                    title={t('schemas.edit-alert', {
+                      schemaname: protoSchema.name,
+                    })}
+                  />
+                )}
                 {buildSchemaContent(protoSchema.name)}
-                {buildSchemaToolbar(protoSchema.name)}
               </DataListContent>
             </DataListItem>
           );
@@ -310,14 +328,21 @@ const ProtobufSchemasDisplay = (props: {
   };
 
   const buildCreateSchemaButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+    if (
+      !ConsoleServices.security().hasConsoleACL(
+        ConsoleACL.CREATE,
+        connectedUser
+      )
+    ) {
       return '';
     }
     return (
       <ToolbarItem>
-        <Button aria-label="create-schema-button"
+        <Button
+          aria-label="create-schema-button"
           variant={'primary'}
-          onClick={() => setCreateSchemaFormOpen(true)}>
+          onClick={() => setCreateSchemaFormOpen(true)}
+        >
           {t('schemas.create-button')}
         </Button>
       </ToolbarItem>
@@ -338,7 +363,8 @@ const ProtobufSchemasDisplay = (props: {
           <ToolbarContent>
             {buildCreateSchemaButton()}
             <ToolbarItem variant={ToolbarItemVariant.pagination}>
-              <Pagination data-cy="paginationArea"
+              <Pagination
+                data-cy="paginationArea"
                 itemCount={schemas.length}
                 perPage={schemasPagination.perPage}
                 page={schemasPagination.page}
