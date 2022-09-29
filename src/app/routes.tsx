@@ -107,20 +107,20 @@ const routes: IAppRoute[] = [
     menu: true,
   },
   {
+    component: CreateCache,
+    exact: true,
+    label: 'Cache Setup',
+    path: '/container/:cmName/caches/create',
+    title: 'Cache Setup',
+    menu: true,
+  },
+  {
     component: DetailConfigurations,
     exact: true,
     label: 'Cache Manager Configurations',
     path: '/container/:cmName/configurations',
     title: 'Configurations',
     menu: false,
-  },
-  {
-    component: CreateCache,
-    exact: true,
-    label: 'Cache Wizard',
-    path: '/container/:cmName/caches/create',
-    title: 'Cache Wizard',
-    menu: true,
   },
   {
     component: IndexManagement,
