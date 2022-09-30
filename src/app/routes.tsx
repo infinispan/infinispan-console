@@ -110,7 +110,7 @@ const routes: IAppRoute[] = [
     component: CreateCache,
     exact: true,
     label: 'Cache Setup',
-    path: '/container/:cmName/caches/create',
+    path: '/container/caches/create',
     title: 'Cache Setup',
     menu: true,
   },

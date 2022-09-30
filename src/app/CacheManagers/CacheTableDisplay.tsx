@@ -585,7 +585,7 @@ const CacheTableDisplay = (props: {
   const buildCreateCacheButton = () => {
 
     // Will remove comment when the feature is ready
-    
+
     // if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
     //   console.log("User has no permission to create caches");
     //   return '';
@@ -597,10 +597,7 @@ const CacheTableDisplay = (props: {
         <ToolbarItem style={{ marginRight: global_spacer_sm.value }}>
           <Link
             to={{
-              pathname: '/container/' + props.cmName + '/caches/create',
-              state: {
-                cmName: props.cmName,
-              },
+              pathname: '/container/caches/create',
             }}
           >
             <Button variant={ButtonVariant.primary} aria-label="create-cache-button" data-cy="createCacheButton">
