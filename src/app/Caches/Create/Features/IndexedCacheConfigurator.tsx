@@ -56,7 +56,7 @@ const IndexedCacheConfigurator = (props: {
         }
       };
     });
-  }, [indexedStorage, indexedEntities]);
+  }, [indexedStorage, indexedEntities, indexedStartupMode]);
 
   const indexingFeatureValidation = (): boolean => {
     return indexedEntities.length > 0;
