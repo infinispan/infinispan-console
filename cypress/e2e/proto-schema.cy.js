@@ -88,7 +88,6 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-cy=schemaEditArea]').type('package org.infinispan; message ExampleProto { optional int32 other_id = 1; }', { parseSpecialCharSequences: false });
     cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({force: true});
     cy.contains('Schema aTestSchema.proto updated.', {timeout: 12000}).should('not.exist');
-    cy.get('button[aria-label="expand-schema-aTestSchema.proto"]').click({force: true});
     cy.contains('schemaNewValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema aTestSchema.proto has errors').should('not.exist');
