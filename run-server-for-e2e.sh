@@ -11,7 +11,7 @@ fi
 #Base directory where the server should be downloaded
 BASE_DIR="server"
 #The version of the server is either set as an environment variable or is the latest dev version
-SERVER_VERSION="${SERVER_VERSION:-"14.0.0.CR1"}"
+SERVER_VERSION="${SERVER_VERSION:-"14.0.0.Final"}"
 #Root path from there the infinispan server should be downloaded
 ZIP_ROOT="http://downloads.jboss.org/infinispan"
 #If this environment variable is provided then it is used for downloading the server;

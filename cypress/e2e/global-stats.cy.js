@@ -18,7 +18,6 @@ describe('Global stats', () => {
     cy.get('.pf-m-2-row .pf-c-button').click();
 
     //Verify that page is properly loaded after click;
-    cy.get('h2').invoke('text').should('match', /Server .* Console/); // header
     cy.contains('Default'); // cluster name
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status

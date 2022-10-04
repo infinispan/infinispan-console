@@ -13,7 +13,6 @@ describe('Welcome page', () => {
   it('successfully logs in and logs out', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
 
-    cy.get('h2').invoke('text').should('match', /Server .* Console/); // header
     cy.contains('Default'); // cluster name
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
@@ -34,7 +33,6 @@ describe('Welcome page', () => {
   it('successfully opens and navigates side menu', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
 
-    cy.get('h2').invoke('text').should('match', /Server .* Console/); // header
     cy.contains('Default'); // cluster name
     cy.contains('Running'); // cluster status
     
@@ -55,12 +53,18 @@ describe('Welcome page', () => {
     cy.contains('About').click();
     cy.get('[role=dialog]').should('be.visible');
     cy.contains('Version');
-    //Checks if links from About dialog work properly
-    cy.get('a[href*="github"').should('exist');
-    cy.get('a[href*="zulipchat"').should('exist');
-    cy.get('a[href*="stackoverflow"').should('exist');
-    cy.get('a[href*="twitter"').should('exist');
-    cy.get('a[href*="facebook"').should('exist');
+    cy.get('body').then(($body) => {
+      if (!$body.text().includes('Red Hat Data Grid')) {
+        //Checks if links from About dialog work properly
+        cy.get('a[href*="github"').should('exist');
+        cy.get('a[href*="zulipchat"').should('exist');
+        cy.get('a[href*="stackoverflow"').should('exist');
+        cy.get('a[href*="twitter"').should('exist');
+        cy.get('a[href*="facebook"').should('exist');
+      } else {
+        cy.contains("Sponsored by Red Hat");
+      }
+    })
     cy.get('[aria-label="Close Dialog"]').click();
     cy.get('[role=dialog]').should('not.exist');  //Closes About dialog
 
