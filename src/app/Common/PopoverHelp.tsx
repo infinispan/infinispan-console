@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {Popover, TextContent, TextVariants, Text} from '@patternfly/react-core';
 import {HelpIcon} from '@patternfly/react-icons';
 
 /**
  * This component is used to add pop over helps to forms
  */
-const PopoverHelp = (props: { name: string, label: string; content: string, text?:string }) => {
+const PopoverHelp = (props: { name: string, label: string; content: string | ReactNode, text?:string }) => {
   const popOver = (
     <Popover
       headerContent={props.label}

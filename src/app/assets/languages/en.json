@@ -545,6 +545,8 @@
       "modal-available-button-cancel": "Cancel"
     },
     "cache-metrics":{
+      "metrics-title": "Metrics",
+      "metrics-disabled": "Metrics are disabled",
       "entries-title":"Entries",
       "memory-title":"Memory",
       "performance-title":"Performance",
@@ -571,8 +573,12 @@
       "data-access-remove-hits-info":"Remove hits displays the number of successful requests to delete cache entries.",
       "data-access-remove-misses-info":"Remove misses displays the number of times that a client attempted to delete an entry that was not in the cache.",
       "data-access-evictions-info":"Evictions displays the number of entries that have been evicted from the cache. Eviction removes entries from the cache when it reaches a configured threshold.",
-      "current-number-entries":"Current number of entries",
-      "current-number-entries-tooltip":"Displays the number of entries that are stored in the cache. Each entry is counted only once so the number does not include replicas.",
+      "approximate-entries":"Approximate number of entries",
+      "approximate-entries-tooltip":"Displays the approximate number of entries that are stored in the cache. May include replicas.",
+      "approximate-unique-entries":"Approximate unique number of entries",
+      "approximate-unique-entries-tooltip":"Displays the approximate unique number of entries that are stored in the cache. Each entry is counted only once so the number does not include replicas.",
+      "approximate-entries-in-memory":"Approximate entries in memory",
+      "approximate-entries-in-memory-tooltip":"Displays the approximate number of entries in memory. May include replicas.",
       "min-nodes":"Minimum number of nodes",
       "min-nodes-tooltip":"Displays the number of nodes that must remain in the cluster to avoid data loss.",
       "cache-size-off-heap":"Size of cache in off-heap memory",
