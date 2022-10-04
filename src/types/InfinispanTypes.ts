@@ -127,17 +127,20 @@ interface DetailedInfinispanCache {
 
 interface CacheStats {
   enabled: boolean;
-  misses: number;
   time_since_start: number;
   time_since_reset: number;
-  hits: number;
-  current_number_of_entries: number;
-  current_number_of_entries_in_memory: number;
-  total_number_of_entries: number;
-  stores: number;
-  off_heap_memory_used: number;
-  data_memory_used: number;
+  approximate_entries: number;
+  approximate_entries_in_memory: number;
+  approximate_entries_unique: number;
+  current_number_of_entries: number;// usually -1
+  current_number_of_entries_in_memory: number;  // usually -1
+  total_number_of_entries: number; // deprecated
+  off_heap_memory_used: number; // Memory
+  data_memory_used: number; // Memory
+  stores: number;  // Stats for pie chart
   retrievals: number;
+  hits: number;
+  misses: number;
   remove_hits: number;
   remove_misses: number;
   evictions: number;
@@ -148,18 +151,6 @@ interface CacheStats {
   average_remove_time: number;
   average_remove_time_nanos: number;
   required_minimum_number_of_nodes: number;
-}
-
-interface QueryStats {
-  search_query_execution_count: number;
-  search_query_total_time: number;
-  search_query_execution_max_time: number;
-  search_query_execution_avg_time: number;
-  object_loading_total_time: number;
-  object_loading_execution_max_time: number;
-  object_loading_execution_avg_time: number;
-  objects_loaded_count: number;
-  search_query_execution_max_time_query_string: string;
 }
 
 interface StateTransferStatus {

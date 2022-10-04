@@ -1,47 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Card,
-    CardBody,
-    CardTitle,
-    Level,
-    LevelItem,
-    Select,
-    SelectOption,
-    SelectVariant,
-    Spinner,
-    Toolbar,
-    ToolbarContent,
-    ToolbarItem,
-    ToolbarItemVariant,
-    Pagination
+  Card,
+  CardBody,
+  CardTitle,
+  Level,
+  LevelItem,
+  Pagination,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Spinner,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import { 
-    TableComposable, 
-    Thead, 
-    Tr, 
-    Th, 
-    Tbody, 
-    Td,
-    TableVariant
-} from '@patternfly/react-table';
-import { Chart, ChartBar, ChartGroup, ChartVoronoiContainer } from '@patternfly/react-charts';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { useTranslation } from 'react-i18next';
-import { useDataDistribution } from '@app/services/dataDistributionHook';
-import { DataDistributionStatsOption } from "@services/infinispanRefData";
-import { PopoverHelp } from '@app/Common/PopoverHelp';
+import {TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr} from '@patternfly/react-table';
+import {Chart, ChartBar, ChartGroup, ChartVoronoiContainer} from '@patternfly/react-charts';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {useTranslation} from 'react-i18next';
+import {useDataDistribution} from '@app/services/dataDistributionHook';
+import {DataDistributionStatsOption} from "@services/infinispanRefData";
+import {PopoverHelp} from '@app/Common/PopoverHelp';
 
-const DataDistribution = (props: {
+const DataDistributionChart = (props: {
     cacheName: string;
 }) => {
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
-
+    const MAX_NUMBER_FOR_CHART = 5;
     const [isOpenStatsOptions, setIsOpenStatsOptions] = useState<boolean>(false);
     const [statsOption, setStatsOption] = useState<string>(DataDistributionStatsOption.TotalEntries);
     const [tablePagination, setTablePagination] = useState({
         page: 1,
-        perPage: 5,
+        perPage: 10,
       });
     const [tableRow, setTableRow] = useState<DataDistribution[]>()
 
@@ -79,7 +71,7 @@ const DataDistribution = (props: {
     }
 
     const buildCardContent = () => {
-        if (loading && dataDistribution === undefined) {
+        if (loading && !dataDistribution) {
             return (
                 <Spinner size={'lg'} />
             );
@@ -108,9 +100,9 @@ const DataDistribution = (props: {
             }
         }
 
-        const data = dataDistribution?.map((item) => {
+        const data = dataDistribution?.map((item, index) => {
             const yaxis = statsOption === DataDistributionStatsOption.TotalEntries ? item.total_entries : item.memory_entries;
-            return { name: item.node_name, y: yaxis, x: item.node_name }
+            return { name: 'N ' + index + ': ' + item.node_name, y: yaxis, x: 'N ' + index + ':' + item.node_name }
         }
         );
 
@@ -121,12 +113,12 @@ const DataDistribution = (props: {
         };
 
         const distributionTable = (
-            <div>
+            <div style={{ height: '480px', margin: "auto" }}>
                 <Toolbar id="distribution-table-toolbar">
                     <ToolbarContent>
                         <ToolbarItem variant={ToolbarItemVariant.pagination}>
                             <Pagination
-                                perPageOptions={[{'title': '5', 'value': 5}, {'title': '10', 'value': 10}, {'title': '20', 'value': 20}, {'title': '50', 'value': 50}, {'title': '100', 'value': 100}]}
+                                perPageOptions={[{'title': '5', 'value': 5}, {'title': '10', 'value': 10}]}
                                 itemCount={size}
                                 perPage={tablePagination.perPage}
                                 page={tablePagination.page}
@@ -162,29 +154,29 @@ const DataDistribution = (props: {
                 </TableComposable>
             </div>
         )
-        
+
         const distributionChart = (
-            <div style={{ height: '450px', width: '700px', margin: "auto" }}>
+            <div style={{ height: '470px', width: '700px', margin: "auto" }}>
                 <Chart
                     ariaDesc={t('caches.cache-metrics.data-distribution')}
                     ariaTitle={t('caches.cache-metrics.data-distribution')}
-                    containerComponent={<ChartVoronoiContainer 
-                                            labels={({ datum }) => datum.y !== 0 ? `${datum.y}` : `${t('caches.cache-metrics.data-distribution-no-entry')}`} 
+                    containerComponent={<ChartVoronoiContainer
+                                            labels={({ datum }) => datum.y !== 0 ? `${datum.y}` : `${t('caches.cache-metrics.data-distribution-no-entry')}`}
                                             constrainToVisibleArea />}
                     domain={{ y: [0, maxDomain] }}
                     domainPadding={{ x: [30, 25] }}
-                    legendData={[{ 
-                        name: statsOption === DataDistributionStatsOption.TotalEntries ? 
+                    legendData={[{
+                        name: statsOption === DataDistributionStatsOption.TotalEntries ?
                                         t('caches.cache-metrics.data-distribution-option-entries')
                                         : t('caches.cache-metrics.data-distribution-option-memory')}]}
                     legendOrientation="horizontal"
                     legendPosition="bottom"
                     height={350}
                     padding={{
-                        bottom: 50,
-                        left: 200, // Adjusted to accommodate y axis label
-                        right: 100, // Adjusted to accommodate legend
-                        top: 50
+                        bottom: 10,
+                        left: 250, // Adjusted to accommodate y axis label
+                        right: 50, // Adjusted to accommodate legend
+                        top: 0
                     }}
                     width={700}
                 >
@@ -195,11 +187,12 @@ const DataDistribution = (props: {
             </div>
         );
 
-        return size < 5 ? distributionChart : distributionTable;
+        return size <= MAX_NUMBER_FOR_CHART ? distributionChart : distributionTable;
     };
 
     const buildStatsOption = () => {
         return (
+          <LevelItem>
             <Select
                 variant={SelectVariant.single}
                 aria-label="storage-select"
@@ -209,12 +202,13 @@ const DataDistribution = (props: {
                 isOpen={isOpenStatsOptions}
                 aria-labelledby="toggle-id-storage"
                 toggleId="storageSelector"
-                width={200}
+                width={'100%'}
                 position="right"
             >
                 <SelectOption key={0} value={t('caches.cache-metrics.data-distribution-option-entries')} />
                 <SelectOption key={1} value={t('caches.cache-metrics.data-distribution-option-memory')} />
             </Select>
+          </LevelItem>
         );
     }
 
@@ -230,7 +224,7 @@ const DataDistribution = (props: {
                             text={t('caches.cache-metrics.data-distribution-title')}
                         />
                     </LevelItem>
-                    {dataDistribution && dataDistribution.length < 5 && buildStatsOption()}
+                    {dataDistribution && dataDistribution.length <= MAX_NUMBER_FOR_CHART && buildStatsOption()}
                 </Level>
             </CardTitle>
             <CardBody>{buildCardContent()}</CardBody>
@@ -238,4 +232,4 @@ const DataDistribution = (props: {
     );
 };
 
-export { DataDistribution };
+export { DataDistributionChart };

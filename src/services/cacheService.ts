@@ -29,36 +29,11 @@ export class CacheService {
     return this.fetchCaller.get(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       (data) => {
-        let cacheStats;
+        let cacheStats = <CacheStats>{enabled: false};
         if (data['stats']) {
-          cacheStats = <CacheStats>{
-            enabled: data.statistics,
-            misses: data.stats.misses,
-            time_since_start: data.stats.time_since_start,
-            time_since_reset: data.stats.time_since_reset,
-            hits: data.stats.hits,
-            current_number_of_entries: data.stats.current_number_of_entries,
-            current_number_of_entries_in_memory:
-              data.stats.current_number_of_entries_in_memory,
-            total_number_of_entries: data.stats.total_number_of_entries,
-            stores: data.stats.stores,
-            off_heap_memory_used: data.stats.off_heap_memory_used,
-            data_memory_used: data.stats.data_memory_used,
-            retrievals: data.stats.retrievals,
-            remove_hits: data.stats.remove_hits,
-            remove_misses: data.stats.remove_misses,
-            evictions: data.stats.evictions,
-            average_read_time: data.stats.average_read_time,
-            average_read_time_nanos: data.stats.average_read_time_nanos,
-            average_write_time: data.stats.average_write_time,
-            average_write_time_nanos: data.stats.average_write_time_nanos,
-            average_remove_time: data.stats.average_remove_time,
-            average_remove_time_nanos: data.stats.average_remove_time_nanos,
-            required_minimum_number_of_nodes:
-              data.stats.required_minimum_number_of_nodes,
-          };
+          cacheStats = data.stats;
+          cacheStats.enabled = data.statistics;
         }
-
         let keyValueEncoding = {
           key: CacheConfigUtils.toEncoding(data['key_storage']),
           value: CacheConfigUtils.toEncoding(data['value_storage']),

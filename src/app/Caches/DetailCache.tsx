@@ -4,12 +4,16 @@ import {
   Button,
   ButtonVariant,
   Card,
-  CardBody, Divider,
+  CardBody,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStatePrimary,
-  EmptyStateVariant, Flex, FlexItem, Label,
+  EmptyStateVariant,
+  Flex,
+  FlexItem,
+  Label,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -25,7 +29,6 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import {CacheMetrics} from '@app/Caches/CacheMetrics';
@@ -34,7 +37,7 @@ import {CacheConfiguration} from '@app/Caches/Configuration/CacheConfiguration';
 import {CacheTypeBadge} from '@app/Common/CacheTypeBadge';
 import {DataContainerBreadcrumb} from '@app/Common/DataContainerBreadcrumb';
 import {global_danger_color_200} from '@patternfly/react-tokens';
-import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon,ExternalLinkSquareAltIcon} from '@patternfly/react-icons';
+import {AngleDownIcon, AngleRightIcon, ExclamationCircleIcon} from '@patternfly/react-icons';
 import {QueryEntries} from '@app/Caches/Query/QueryEntries';
 import {Link} from 'react-router-dom';
 import {MoreInfoTooltip} from '@app/Common/MoreInfoTooltip';
@@ -162,23 +165,6 @@ const DetailCache = (props: { cacheName: string }) => {
     }
   };
 
-  const buildRebalancing = () => {
-    if (!cache) return ;
-
-    if (!cache?.rehash_in_progress) {
-      return (
-        <ToolbarItem>
-          <Label>Rebalanced</Label>
-        </ToolbarItem>
-      );
-    }
-    return (
-      <ToolbarItem>
-        <Spinner size={'md'} /> Rebalancing
-      </ToolbarItem>
-    );
-  };
-
   const buildBackupsManage = () => {
     if (!cache?.features.hasRemoteBackup) return;
 
@@ -188,7 +174,7 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <React.Fragment>
-        <ToolbarItem><Divider isVertical/></ToolbarItem>
+        <ToolbarItem><Divider orientation={{default: 'vertical'}}/></ToolbarItem>
         <ToolbarItem>
           <Label>Backups</Label>
         </ToolbarItem>
@@ -232,7 +218,7 @@ const DetailCache = (props: { cacheName: string }) => {
       <React.Fragment>
         <ToolbarItem>
           <Flex>
-            <Divider isVertical inset={{default: 'insetMd'}} />
+            <Divider orientation={{default: 'vertical'}} inset={{default: 'insetMd'}} />
             {buildDisplayReindexing()}
             <FlexItem>
               <Link
