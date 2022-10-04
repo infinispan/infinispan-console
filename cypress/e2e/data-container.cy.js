@@ -7,7 +7,6 @@ describe('Data Container Overview', () => {
 
 //Data Container Overview
  it('successfully loads Data Container Overview', () => {
-   cy.get('h2').invoke('text').should('match', /Server .* Console/); // header
    cy.contains('Default'); // cluster name
    cy.contains('Running'); // cluster status
    cy.contains('Cluster rebalancing on'); // rebalancing status
