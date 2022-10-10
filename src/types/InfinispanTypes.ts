@@ -443,6 +443,7 @@ interface DataDistribution {
   node_addresses: string[];
   memory_entries: number;
   total_entries: number;
+  memory_used: number;
 }
 
 interface ClusterDistribution {
