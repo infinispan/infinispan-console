@@ -22,9 +22,11 @@ import { useTranslation } from 'react-i18next';
 import { useDataDistribution } from '@app/services/dataDistributionHook';
 import { DataDistributionStatsOption } from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { useCacheDetail } from '@app/services/cachesHook';
 
 const DataDistributionChart = (props: { cacheName: string }) => {
   const { t } = useTranslation();
+  const { cache } = useCacheDetail();
   const brandname = t('brandname.brandname');
   const MAX_NUMBER_FOR_CHART = 5;
   const [isOpenStatsOptions, setIsOpenStatsOptions] = useState<boolean>(false);
@@ -37,6 +39,17 @@ const DataDistributionChart = (props: { cacheName: string }) => {
 
   const { dataDistribution, loading, error } = useDataDistribution(props.cacheName);
 
+  const [displayMemoryUsed, setDisplayMemoryUsed] = useState<boolean>(false);
+
+  useEffect(() => {
+    // To display memory_used
+    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName];
+    const cacheMode = Object.keys(loadMemory)[0];
+    loadMemory[cacheMode].memory && loadMemory[cacheMode].memory['max-size']
+      ? setDisplayMemoryUsed(true)
+      : setDisplayMemoryUsed(false);
+  }, [cache, dataDistribution]);
+
   useEffect(() => {
     if (dataDistribution) {
       const initSlice = (tablePagination.page - 1) * tablePagination.perPage;
@@ -47,8 +60,10 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   const onSelectStatsOptions = (event, selection, isPlaceholder) => {
     if (selection === t('caches.cache-metrics.data-distribution-option-entries'))
       setStatsOption(DataDistributionStatsOption.TotalEntries);
-    else if (selection === t('caches.cache-metrics.data-distribution-option-memory'))
+    else if (selection === t('caches.cache-metrics.data-distribution-option-memory-entries'))
       setStatsOption(DataDistributionStatsOption.MemoryEntries);
+    else if (selection === t('caches.cache-metrics.data-distribution-option-memory-used'))
+      setStatsOption(DataDistributionStatsOption.MemoryUsed);
     setIsOpenStatsOptions(false);
   };
 
@@ -84,22 +99,36 @@ const DataDistributionChart = (props: { cacheName: string }) => {
         maxDomain = dataDistribution.reduce((max, entry) => {
           return Math.max(max, entry.total_entries);
         }, 1);
-      } else {
+      } else if (statsOption === DataDistributionStatsOption.MemoryEntries) {
         maxDomain = dataDistribution.reduce((max, entry) => {
           return Math.max(max, entry.memory_entries);
+        }, 1);
+      } else if (statsOption === DataDistributionStatsOption.MemoryUsed) {
+        maxDomain = dataDistribution.reduce((max, entry) => {
+          return Math.max(max, entry.memory_used);
         }, 1);
       }
     }
 
     const data = dataDistribution?.map((item, index) => {
-      const yaxis = statsOption === DataDistributionStatsOption.TotalEntries ? item.total_entries : item.memory_entries;
-      return { name: 'N ' + index + ': ' + item.node_name, y: yaxis, x: 'N ' + index + ':' + item.node_name };
+      const yaxis =
+        statsOption === DataDistributionStatsOption.TotalEntries
+          ? item.total_entries
+          : statsOption === DataDistributionStatsOption.MemoryEntries
+          ? item.memory_entries
+          : item.memory_used;
+      return {
+        name: 'N ' + index + ': ' + item.node_name,
+        y: yaxis > 0 ? yaxis : 0,
+        x: 'N ' + index + ':' + item.node_name
+      };
     });
 
     const columnNames = {
       nodeName: t('caches.cache-metrics.data-distribution-node-name'),
       entries: t('caches.cache-metrics.data-distribution-option-entries'),
-      memory: t('caches.cache-metrics.data-distribution-option-memory')
+      memory_entries: t('caches.cache-metrics.data-distribution-option-memory-entries'),
+      memory_used: t('caches.cache-metrics.data-distribution-option-memory-used')
     };
 
     const distributionTable = (
@@ -123,12 +152,17 @@ const DataDistributionChart = (props: { cacheName: string }) => {
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <TableComposable aria-label="Data Distribution Table" variant={TableVariant.compact} borders>
+        <TableComposable
+          aria-label={t('caches.cache-metrics.data-distribution-table')}
+          variant={TableVariant.compact}
+          borders
+        >
           <Thead>
             <Tr>
               <Th>{columnNames.nodeName}</Th>
               <Th>{columnNames.entries}</Th>
-              <Th>{columnNames.memory}</Th>
+              <Th>{columnNames.memory_entries}</Th>
+              <Th>{columnNames.memory_used}</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -136,7 +170,8 @@ const DataDistributionChart = (props: { cacheName: string }) => {
               <Tr key={row.node_name}>
                 <Td dataLabel={columnNames.nodeName}>{row.node_name}</Td>
                 <Td dataLabel={columnNames.entries}>{row.total_entries}</Td>
-                <Td dataLabel={columnNames.memory}>{row.memory_entries}</Td>
+                <Td dataLabel={columnNames.memory_entries}>{row.memory_entries}</Td>
+                <Td dataLabel={columnNames.memory_used}>{row.memory_used}</Td>
               </Tr>
             ))}
           </Tbody>
@@ -152,7 +187,11 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           containerComponent={
             <ChartVoronoiContainer
               labels={({ datum }) =>
-                datum.y !== 0 ? `${datum.y}` : `${t('caches.cache-metrics.data-distribution-no-entry')}`
+                datum.y !== 0
+                  ? `${datum.y}`
+                  : statsOption !== DataDistributionStatsOption.MemoryUsed
+                  ? `${t('caches.cache-metrics.data-distribution-no-entry')}`
+                  : `${t('caches.cache-metrics.data-distribution-no-memory')}`
               }
               constrainToVisibleArea
             />
@@ -162,9 +201,11 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           legendData={[
             {
               name:
-                statsOption === DataDistributionStatsOption.TotalEntries
+                statsOption === DataDistributionStatsOption.MemoryUsed
+                  ? t('caches.cache-metrics.data-distribution-option-memory-used')
+                  : statsOption === DataDistributionStatsOption.TotalEntries
                   ? t('caches.cache-metrics.data-distribution-option-entries')
-                  : t('caches.cache-metrics.data-distribution-option-memory')
+                  : t('caches.cache-metrics.data-distribution-option-memory-entries')
             }
           ]}
           legendOrientation="horizontal"
@@ -204,7 +245,12 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           position="right"
         >
           <SelectOption key={0} value={t('caches.cache-metrics.data-distribution-option-entries')} />
-          <SelectOption key={1} value={t('caches.cache-metrics.data-distribution-option-memory')} />
+          <SelectOption key={1} value={t('caches.cache-metrics.data-distribution-option-memory-entries')} />
+          <SelectOption
+            hidden={!displayMemoryUsed}
+            key={2}
+            value={t('caches.cache-metrics.data-distribution-option-memory-used')}
+          />
         </Select>
       </LevelItem>
     );
