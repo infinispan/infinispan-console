@@ -15,12 +15,12 @@ import {
     ToolbarItemVariant,
     Pagination
 } from '@patternfly/react-core';
-import { 
-    TableComposable, 
-    Thead, 
-    Tr, 
-    Th, 
-    Tbody, 
+import {
+    TableComposable,
+    Thead,
+    Tr,
+    Th,
+    Tbody,
     Td,
     TableVariant
 } from '@patternfly/react-table';
@@ -31,7 +31,7 @@ import { useClusterDistribution } from '@app/services/dataDistributionHook';
 import { ClusterDistributionStatsOption } from "@services/infinispanRefData";
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 
-const ClusterDistribution = () => {
+const ClusterDistributionChart = () => {
     const { t } = useTranslation();
     const brandname = t('brandname.brandname');
 
@@ -280,4 +280,4 @@ const ClusterDistribution = () => {
     );
 };
 
-export { ClusterDistribution };
+export default ClusterDistributionChart;
