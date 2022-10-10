@@ -1,14 +1,15 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import * as StatsHook from '@app/services/statsHook';
-import * as ClusterHook from '@app/services/dataDistributionHook';
-import { GlobalStats } from '@app/GlobalStats/GlobalStats';
-import { renderWithRouter } from '../../test-utils';
+import {GlobalStats} from '@app/GlobalStats/GlobalStats';
+import {renderWithRouter} from '../../test-utils';
+// import ClusterDistributionChart from "@app/GlobalStats/ClusterDistributionChart";
 
 jest.mock('@app/services/statsHook');
+jest.mock('@app/GlobalStats/ClusterDistributionChart',
+  () => 'ClusterDistributionChart');
+
 const mockedStatsHook = StatsHook as jest.Mocked<typeof StatsHook>;
-jest.mock('@app/services/dataDistributionHook');
-const mockedClusterHook = ClusterHook as jest.Mocked<typeof ClusterHook>;
 
 const statsNotEnabledResponse = {
   statistics_enabled: false,
@@ -32,16 +33,8 @@ const statsEnabledResponse = {
   misses: -1,
 } as CacheManagerStats;
 
-const clusterDistributionResponse = [{
-    node_name: 'cluster',
-    node_addresses: ['172.17.0.2:7800'],
-    memory_available: 100,
-    memory_used: 50,
-  }] as ClusterDistribution[];
-
 beforeEach(() => {
   mockedStatsHook.useFetchGlobalStats.mockClear();
-  mockedClusterHook.useClusterDistribution.mockClear();
 });
 
 describe('Global stats page', () => {
@@ -56,12 +49,12 @@ describe('Global stats page', () => {
 
     render(<GlobalStats />);
     expect(
-      screen.getByRole('heading', { name: 'Global statistics' })
+      screen.getByRole('heading', { name: 'global-stats.title' })
     ).toBeInTheDocument();
-    expect(screen.queryByText('Global statistics disabled')).toBeInTheDocument();
+    expect(screen.queryByText('global-stats.global-stats-disable-msg')).toBeInTheDocument();
     expect(
       screen.queryByText(
-        'Statistics are disabled. To enable statistics, set statistics=true in the configuration.'
+        'global-stats.global-stats-disabled-help'
       )
     ).toBeInTheDocument();
   });
@@ -75,43 +68,21 @@ describe('Global stats page', () => {
       };
     });
 
-    mockedClusterHook.useClusterDistribution.mockImplementationOnce(() => {
-      return {
-        loadingCluster: false,
-        errorCluster: '',
-        clusterDistribution: clusterDistributionResponse,
-      };
-    });
-
     renderWithRouter(<GlobalStats />);
 
+    expect(screen.getByRole('heading', { name: 'global-stats.title' })).toBeInTheDocument();
+    expect(screen.queryByText('global-stats.cluster-wide-stats')).toBeInTheDocument();
+    expect(screen.queryByText('global-stats.data-access-stats')).toBeInTheDocument();
+    expect(screen.queryByText('global-stats.operation-performance-values')).toBeInTheDocument();
+    expect(screen.queryByText('global-stats.cache-manager-lifecycle')).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Global statistics' })
+      screen.getByRole('link', { name: 'global-stats.view-caches-link' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Cluster-wide statistics' })
+      screen.getByRole('link', { name: 'global-stats.view-cluster-membership-link' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Data access statistics' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Operation performance values' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Cache Manager lifecycle values' })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('link', { name: 'View all caches' })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('link', { name: 'View cluster membership' })
-    ).toBeInTheDocument();
-
-    expect(screen.queryByText('Global statistics disabled')).not.toBeInTheDocument();
-    expect(
-      screen.getByText('Global statistics for all caches in the cluster')
+      screen.getByText('global-stats.global-stats-enable-msg')
     ).toBeInTheDocument();
   });
 });

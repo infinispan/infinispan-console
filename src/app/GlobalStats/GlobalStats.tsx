@@ -25,17 +25,15 @@ import {
   TextVariants,
   Title,
 } from '@patternfly/react-core';
-import { ArrowIcon, CubesIcon } from '@patternfly/react-icons';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
-import { Link } from 'react-router-dom';
-import { CustomCardTitle } from '@app/Common/CustomCardTitle';
+import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
+import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
+import {Link} from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
-import { global_spacer_2xl } from '@patternfly/react-tokens';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { useFetchGlobalStats } from '@app/services/statsHook';
-import { ClusterDistribution } from '@app/GlobalStats/ClusterDistribution';
-import { useTranslation } from 'react-i18next';
-import { PopoverHelp } from '@app/Common/PopoverHelp';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {useFetchGlobalStats} from '@app/services/statsHook';
+import {useTranslation} from 'react-i18next';
+import {PopoverHelp} from '@app/Common/PopoverHelp';
+import ClusterDistributionChart from "@app/GlobalStats/ClusterDistributionChart";
 
 const GlobalStats = () => {
   const { t } = useTranslation();
@@ -72,7 +70,7 @@ const GlobalStats = () => {
             <LevelItem>
               <Link to={{ pathname: '/' }}>
                 <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
-                  {t('global-stats.view-cache-link')}
+                  {t('global-stats.view-caches-link')}
                 </Button>
               </Link>
             </LevelItem>
@@ -361,7 +359,7 @@ const GlobalStats = () => {
           {cacheManagerLifecycleCard()}
         </GridItem>
         <GridItem span={7}>
-          <ClusterDistribution />
+          <ClusterDistributionChart />
         </GridItem>
         <GridItem span={5}>{dataAccessCard()}</GridItem>
       </Grid>

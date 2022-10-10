@@ -620,7 +620,7 @@
     "global-stats-disabled-help": "Statistics are disabled. To  statistics, set statistics=true in the configuration.",
     "cluster-wide-stats": "Cluster-wide statistics",
     "cluster-wide-stats-tooltip": "Statistics for all caches across the cluster.",
-    "view-cache-link": "View all caches",
+    "view-caches-link": "View all caches",
     "no-of-entries": "Number of entries",
     "current-entry-in-memory": "Current number of entries in memory",
     "total-no-entries": "Total number of entries",
@@ -654,6 +654,6 @@
     "cluster-distribution-option-memory-available": "Memory Available",
     "cluster-distribution-option-no-memory": "No memory",
     "global-stats-enable-msg": "Global statistics for all caches in the cluster",
-    "global-stats-disable-msg": "You must enable global statistics in the Cache Manager configuration to display values." 
+    "global-stats-disable-msg": "You must enable global statistics in the Cache Manager configuration to display values."
   }
 }
