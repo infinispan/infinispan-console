@@ -590,8 +590,11 @@
       "data-distribution-tooltip": "Displays the amount of data that is stored in each node in the cluster.",
       "data-distribution-node-name": "Node name",
       "data-distribution-option-entries": "Total number of entries",
-      "data-distribution-option-memory": "Entries in memory",
-      "data-distribution-no-entry": "No entries"
+      "data-distribution-option-memory-entries": "Entries in memory",
+      "data-distribution-option-memory-used": "Total memory used",
+      "data-distribution-no-entry": "No entries",
+      "data-distribution-no-memory": "No memory",
+      "data-distribution-table": "Data distribution table"
     }
   },
   "schemas": {
