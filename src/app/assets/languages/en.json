@@ -650,8 +650,8 @@
     "cluster-distribution": "Cluster distribution",
     "cluster-distribution-tooltip": "Displays the number of nodes in the cluster.",
     "cluster-distribution-node-name": "Node name",
-    "cluster-distribution-option-memory-used": "Memory Used",
-    "cluster-distribution-option-memory-available": "Memory Available",
+    "cluster-distribution-option-memory-used": "Memory used",
+    "cluster-distribution-option-memory-available": "Memory available",
     "cluster-distribution-option-no-memory": "No memory",
     "global-stats-enable-msg": "Global statistics for all caches in the cluster",
     "global-stats-disable-msg": "You must enable global statistics in the Cache Manager configuration to display values."
