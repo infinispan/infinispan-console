@@ -21,7 +21,8 @@
       "@app/*": ["src/app/*"],
       "@services/*": ["src/services/*"],
       "@languages/*": ["src/app/assets/languages/*"],
-      "@assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"]
+      "@assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"],
+      "@utils/*": ["src/app/utils/*"],
     },
     "importHelpers": true,
     "skipLibCheck": true
