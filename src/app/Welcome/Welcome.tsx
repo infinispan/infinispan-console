@@ -54,7 +54,7 @@ const Welcome = (props) => {
           </TextContent>
         </StackItem>
         <StackItem>
-          <Button component="a" href={hotRodClientsLink} variant="link" icon={<CatalogIcon />}>
+          <Button component="a" href={hotRodClientsLink} variant="link" target="_blank" icon={<CatalogIcon />}>
             {t('welcome-page.download')}
           </Button>
         </StackItem>
@@ -64,7 +64,7 @@ const Welcome = (props) => {
           </TextContent>
         </StackItem>
         <StackItem>
-          <Button component="a" href={aboutLink} variant="link" icon={<InfoIcon />}>
+          <Button component="a" href={aboutLink} variant="link" target="_blank" icon={<InfoIcon />}>
             {t('welcome-page.learn-more')}
           </Button>
         </StackItem>
@@ -74,7 +74,7 @@ const Welcome = (props) => {
           </TextContent>
         </StackItem>
         <StackItem>
-          <Button component="a" href={tutorialsLink} variant="link" icon={<GithubIcon />}>
+          <Button component="a" href={tutorialsLink} variant="link" target="_blank" icon={<GithubIcon />}>
             {t('welcome-page.tutorials')}
           </Button>
         </StackItem>

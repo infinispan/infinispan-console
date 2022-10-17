@@ -69,28 +69,28 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
         <StackItem style={{ paddingTop: global_spacer_3xl.value }}>
           <Flex>
             <FlexItem>
-              <Button component={'a'} href={infinispanGithubLink} variant={ButtonVariant.link}>
+              <Button component={'a'} href={infinispanGithubLink} variant={ButtonVariant.link} target="_blank">
                 <GithubIcon size={'lg'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanZulipLink} variant={ButtonVariant.link}>
+              <Button component={'a'} href={infinispanZulipLink} variant={ButtonVariant.link} target="_blank">
                 <OutlinedCommentsIcon size={'lg'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanStackOverflowLink} variant={ButtonVariant.link}>
+              <Button component={'a'} href={infinispanStackOverflowLink} variant={ButtonVariant.link} target="_blank">
                 <StackOverflowIcon size={'lg'} />
               </Button>
             </FlexItem>
 
             <FlexItem>
-              <Button component={'a'} href={infinispanTwitterLink} variant={ButtonVariant.link}>
+              <Button component={'a'} href={infinispanTwitterLink} variant={ButtonVariant.link} target="_blank">
                 <TwitterIcon size={'lg'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanFacebookLink} variant={ButtonVariant.link}>
+              <Button component={'a'} href={infinispanFacebookLink} variant={ButtonVariant.link} target="_blank">
                 <FacebookIcon size={'lg'} />
               </Button>
             </FlexItem>
