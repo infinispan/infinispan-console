@@ -25,14 +25,14 @@ import {
   TextVariants,
   Title,
 } from '@patternfly/react-core';
-import {ArrowIcon, CubesIcon} from '@patternfly/react-icons';
-import {ChartDonut, ChartThemeColor} from '@patternfly/react-charts';
-import {Link} from 'react-router-dom';
+import { ArrowIcon, CubesIcon } from '@patternfly/react-icons';
+import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import { Link } from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
-import {TableErrorState} from '@app/Common/TableErrorState';
-import {useFetchGlobalStats} from '@app/services/statsHook';
-import {useTranslation} from 'react-i18next';
-import {PopoverHelp} from '@app/Common/PopoverHelp';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { useFetchGlobalStats } from '@app/services/statsHook';
+import { useTranslation } from 'react-i18next';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
 import ClusterDistributionChart from "@app/GlobalStats/ClusterDistributionChart";
 
 const GlobalStats = () => {
@@ -69,7 +69,7 @@ const GlobalStats = () => {
             </LevelItem>
             <LevelItem>
               <Link to={{ pathname: '/' }}>
-                <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
+                <Button data-cy="viewCachesLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
                   {t('global-stats.view-caches-link')}
                 </Button>
               </Link>
