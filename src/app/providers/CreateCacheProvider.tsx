@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   CacheFeature,
   CacheMode,
@@ -11,15 +11,14 @@ import {
   Locking,
   MaxSizeUnit,
   TimeUnits,
-  TransactionalMode
-} from "@services/infinispanRefData";
-
+  TransactionalMode,
+} from '@services/infinispanRefData';
 
 const GettingStartedInitialState: GettingStartedState = {
   cacheName: '',
   createType: 'configure',
-  valid: false
-}
+  valid: false,
+};
 
 const BasicCacheConfigInitialState: BasicCacheConfig = {
   topology: CacheType.Distributed,
@@ -32,8 +31,8 @@ const BasicCacheConfigInitialState: BasicCacheConfig = {
   lifeSpanUnit: TimeUnits.milliseconds,
   maxIdleNumber: -1,
   maxIdleUnit: TimeUnits.milliseconds,
-  valid: false
-}
+  valid: false,
+};
 
 const BoundedCacheInitialState: BoundedCache = {
   evictionType: EvictionType.size,
@@ -41,55 +40,52 @@ const BoundedCacheInitialState: BoundedCache = {
   maxCount: 0,
   evictionStrategy: EvictionStrategy.REMOVE,
   maxSizeUnit: MaxSizeUnit.MB,
-  valid: true
-}
+  valid: true,
+};
 
-const IndexWriterInitialState: IndexWriter = {
-}
+const IndexWriterInitialState: IndexWriter = {};
 
-const IndexMergeInitialState: IndexMerge = {
-}
+const IndexMergeInitialState: IndexMerge = {};
 
 const IndexedCacheInitialState: IndexedCache = {
   indexedStorage: IndexedStorage.persistent,
   indexedEntities: [],
-  valid: true
-}
+  valid: true,
+};
 
 const SecuredCacheInitialState: SecuredCache = {
   roles: [],
-  valid: true
-}
+  valid: true,
+};
 
 const BackupsCacheInitialState: BackupsCache = {
   sites: [],
   backupFor: {
     enabled: false,
     remoteSite: '',
-    remoteCache: ''
+    remoteCache: '',
   },
-  valid: false
-}
+  valid: false,
+};
 
-const BackupSettingInitialState: BackupSetting = {
-}
+const BackupSettingInitialState: BackupSetting = {};
 
 const TransactionalCacheInitialState: TransactionalCache = {
   mode: TransactionalMode.NON_XA,
   locking: Locking.OPTIMISTIC,
-  valid: true
-}
+  valid: true,
+};
 
 const TransactionalCacheAdvanceInitialState: TransactionalCacheAdvance = {
-  isolationLevel: IsolationLevel.REPEATABLE_READ
-}
+  isolationLevel: IsolationLevel.REPEATABLE_READ,
+};
 
 const PersistentCacheInitialState: PersistentCache = {
   storage: '',
   config: '',
   passivation: false,
-  valid: false
-}
+  valid: false,
+};
 
 const CacheFeatureInitialState: CacheFeatureStep = {
   cacheFeatureSelected: [],
@@ -99,50 +95,55 @@ const CacheFeatureInitialState: CacheFeatureStep = {
   backupsCache: BackupsCacheInitialState,
   transactionalCache: TransactionalCacheInitialState,
   persistentCache: PersistentCacheInitialState,
-}
+};
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
   indexWriter: IndexWriterInitialState,
   indexMerge: IndexMergeInitialState,
   backupSetting: BackupSettingInitialState,
   transactionalAdvance: TransactionalCacheAdvanceInitialState,
-  valid: true
-}
+  valid: true,
+};
 
 const cacheConfigurationInitialState: CacheConfiguration = {
   start: GettingStartedInitialState,
   basic: BasicCacheConfigInitialState,
   feature: CacheFeatureInitialState,
-  advanced: AdvancedOptionsInitialState
-}
+  advanced: AdvancedOptionsInitialState,
+};
 
 const initialContext = {
   configuration: cacheConfigurationInitialState,
-  setConfiguration: (value: (((prevState: CacheConfiguration) => CacheConfiguration) | CacheConfiguration)) => {},
+  setConfiguration: (
+    value:
+      | ((prevState: CacheConfiguration) => CacheConfiguration)
+      | CacheConfiguration
+  ) => {},
   addFeature: (feature: CacheFeature) => {},
-  removeFeature: (feature: CacheFeature) => {}
+  removeFeature: (feature: CacheFeature) => {},
 };
 
 export const CreateCacheContext = React.createContext(initialContext);
 
 const CreateCacheProvider = ({ children }) => {
-
   const [configuration, setConfiguration] = useState<CacheConfiguration>(
     initialContext.configuration
   );
 
   const removeFeature = (feature: CacheFeature) => {
-      let features = configuration.feature.cacheFeatureSelected.filter(item => item !== feature);
-      setConfiguration((prevState) => {
-        return {
-          ...prevState,
-          feature: {
-            ...prevState.feature,
-            cacheFeatureSelected: features,
-          }
-        };
-      });
-  }
+    let features = configuration.feature.cacheFeatureSelected.filter(
+      (item) => item !== feature
+    );
+    setConfiguration((prevState) => {
+      return {
+        ...prevState,
+        feature: {
+          ...prevState.feature,
+          cacheFeatureSelected: features,
+        },
+      };
+    });
+  };
 
   const addFeature = (feature: CacheFeature) => {
     setConfiguration((prevState) => {
@@ -150,17 +151,20 @@ const CreateCacheProvider = ({ children }) => {
         ...prevState,
         feature: {
           ...prevState.feature,
-          cacheFeatureSelected: [...configuration.feature.cacheFeatureSelected, feature],
-        }
+          cacheFeatureSelected: [
+            ...configuration.feature.cacheFeatureSelected,
+            feature,
+          ],
+        },
       };
     });
-  }
+  };
 
   const contextValue = {
     configuration: configuration,
     setConfiguration: setConfiguration,
     addFeature: addFeature,
-    removeFeature: removeFeature
+    removeFeature: removeFeature,
   };
 
   return (

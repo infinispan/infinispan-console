@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -10,12 +10,12 @@ import {
   TextAreResizeOrientation,
   TextInput,
 } from '@patternfly/react-core';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import formUtils, {IField} from '../../services/formUtils';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {AddCircleOIcon} from "@patternfly/react-icons";
-import {PopoverHelp} from "@app/Common/PopoverHelp";
+import { useApiAlert } from '@app/utils/useApiAlert';
+import formUtils, { IField } from '../../services/formUtils';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { AddCircleOIcon } from '@patternfly/react-icons';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
 
 const CreateProtoSchema = (props: {
   isModalOpen: boolean;
@@ -91,9 +91,10 @@ const CreateProtoSchema = (props: {
           <Alert variant={AlertVariant.danger} isInline title={error} />
         )}
 
-        <FormGroup label={t('schemas.create.name')}
-                   isRequired
-                   fieldId="schema-name"
+        <FormGroup
+          label={t('schemas.create.name')}
+          isRequired
+          fieldId="schema-name"
         >
           <TextInput
             value={schemaName.value}
@@ -150,10 +151,16 @@ const CreateProtoSchema = (props: {
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
       actions={[
-        <Button data-cy='addSchemaButton' aria-label="add-schema-button" key="add-schema-button" onClick={handleCreateButton}>
+        <Button
+          data-cy="addSchemaButton"
+          aria-label="add-schema-button"
+          key="add-schema-button"
+          onClick={handleCreateButton}
+        >
           {t('schemas.add-button')}
         </Button>,
-        <Button data-cy='cancelAddSchemaButton'
+        <Button
+          data-cy="cancelAddSchemaButton"
           aria-label="cancel-add-schema-button"
           key="cancel-add-schema-button"
           variant="link"

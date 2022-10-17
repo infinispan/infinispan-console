@@ -31,7 +31,7 @@ import { Health } from '@app/Common/Health';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
@@ -58,16 +58,18 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
   ];
 
   useEffect(() => {
-    ConsoleServices.dataContainer().getDefaultCacheManager().then((eitherDefaultCm) => {
-      setLoading(false);
-      if (eitherDefaultCm.isRight()) {
-        setCacheManager(eitherDefaultCm.value);
-        setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
-        updateRows(eitherDefaultCm.value.cluster_members);
-      } else {
-        setError(eitherDefaultCm.value.message);
-      }
-    });
+    ConsoleServices.dataContainer()
+      .getDefaultCacheManager()
+      .then((eitherDefaultCm) => {
+        setLoading(false);
+        if (eitherDefaultCm.isRight()) {
+          setCacheManager(eitherDefaultCm.value);
+          setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
+          updateRows(eitherDefaultCm.value.cluster_members);
+        } else {
+          setError(eitherDefaultCm.value.message);
+        }
+      });
   }, []);
 
   useEffect(() => {

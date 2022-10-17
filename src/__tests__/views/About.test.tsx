@@ -13,7 +13,7 @@ mockedGetVersionHook.useFetchVersion.mockImplementation(() => {
     version: 'Infinispan Corona 1.9',
     loading: false,
     error: '',
-    setLoading: () => {}
+    setLoading: () => {},
   };
 });
 

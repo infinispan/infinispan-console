@@ -6,7 +6,7 @@ import {
   TextContent,
   Tooltip,
   TooltipPosition,
-  TextVariants
+  TextVariants,
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import {
@@ -14,13 +14,17 @@ import {
   global_FontSize_md,
   global_FontSize_sm,
   global_spacer_xs,
-  global_FontWeight_bold
+  global_FontWeight_bold,
 } from '@patternfly/react-tokens';
 
 /**
  * This component is used to add tooltips in the labels of the forms
  */
-const MoreInfoTooltip = (props: { label: string; toolTip: string, textComponent?: TextVariants }) => {
+const MoreInfoTooltip = (props: {
+  label: string;
+  toolTip: string;
+  textComponent?: TextVariants;
+}) => {
   const buildTooltipContent = () => {
     return (
       <TextContent>
@@ -41,12 +45,10 @@ const MoreInfoTooltip = (props: { label: string; toolTip: string, textComponent?
       <Flex spaceItems={{ default: 'spaceItemsNone' }}>
         <FlexItem>
           <TextContent>
-            <Text component={props.textComponent}>
-              {props.label}
-            </Text>
+            <Text component={props.textComponent}>{props.label}</Text>
           </TextContent>
         </FlexItem>
-        <FlexItem >
+        <FlexItem>
           <Tooltip
             className={'pf-m-redhat-font'}
             position={TooltipPosition.right}
@@ -63,7 +65,7 @@ const MoreInfoTooltip = (props: { label: string; toolTip: string, textComponent?
           </Tooltip>
         </FlexItem>
       </Flex>
-    </React.Fragment >
+    </React.Fragment>
   );
 };
 export { MoreInfoTooltip };

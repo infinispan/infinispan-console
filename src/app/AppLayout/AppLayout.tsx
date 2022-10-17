@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Brand,
   Dropdown,
   DropdownGroup,
   DropdownItem,
-  DropdownToggle, Flex, FlexItem,
+  DropdownToggle,
+  Flex,
+  FlexItem,
   Nav,
   NavItem,
   NavList,
@@ -24,20 +26,20 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import {Link, NavLink, Redirect} from 'react-router-dom';
-import {routes} from '@app/routes';
-import {APIAlertProvider} from '@app/providers/APIAlertProvider';
-import {ActionResponseAlert} from '@app/Common/ActionResponseAlert';
-import {useHistory} from 'react-router';
-import {global_spacer_sm} from '@patternfly/react-tokens';
-import {About} from '@app/About/About';
-import {ErrorBoundary} from '@app/ErrorBoundary';
-import {BannerAlert} from '@app/Common/BannerAlert';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {KeycloakService} from "@services/keycloakService";
-import {InfoCircleIcon} from "@patternfly/react-icons";
+import { Link, NavLink, Redirect } from 'react-router-dom';
+import { routes } from '@app/routes';
+import { APIAlertProvider } from '@app/providers/APIAlertProvider';
+import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
+import { useHistory } from 'react-router';
+import { global_spacer_sm } from '@patternfly/react-tokens';
+import { About } from '@app/About/About';
+import { ErrorBoundary } from '@app/ErrorBoundary';
+import { BannerAlert } from '@app/Common/BannerAlert';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { KeycloakService } from '@services/keycloakService';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 
 interface IAppLayout {
   init: string;
@@ -46,14 +48,16 @@ interface IAppLayout {
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const history = useHistory();
-  const {connectedUser, notSecured, logUser} = useConnectedUser();
-  const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
+  const { connectedUser, notSecured, logUser } = useConnectedUser();
+  const [isWelcomePage, setIsWelcomePage] = useState(
+    ConsoleServices.isWelcomePage()
+  );
   const logoProps = {
     target: '_self',
     onClick: () => history.push('/'),
   };
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
   const [isNavOpen, setIsNavOpen] = useState(true);
@@ -67,7 +71,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       const isWelcomePage = location.pathname == '/welcome';
       setIsWelcomePage(isWelcomePage);
     });
-  }, [])
+  }, []);
 
   const onNavToggleMobile = () => {
     setIsNavOpenMobile(!isNavOpenMobile);
@@ -83,38 +87,54 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
 
   const Logo = (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
-          <FlexItem style={{marginTop: global_spacer_sm.value}}>
-            <Link to={'/'}>
-              <Brand src={icon} alt={t('layout.console-name')} widths={{ default: '150px'}}>
-                <source srcSet={icon} />
-              </Brand>
-            </Link>
-          </FlexItem>
-          <FlexItem>
-            <TextContent>
-              <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
-            </TextContent>
-          </FlexItem>
+      <FlexItem style={{ marginTop: global_spacer_sm.value }}>
+        <Link to={'/'}>
+          <Brand
+            src={icon}
+            alt={t('layout.console-name')}
+            widths={{ default: '150px' }}
+          >
+            <source srcSet={icon} />
+          </Brand>
+        </Link>
+      </FlexItem>
+      <FlexItem>
+        <TextContent>
+          <Text component={TextVariants.h2}>{t('layout.console-name')}</Text>
+        </TextContent>
+      </FlexItem>
     </Flex>
   );
 
   const userDropdownItems = [
     <DropdownGroup key="user-action-group">
-      <DropdownItem key="user-action-group-1 logout" onClick={() => {
-        if (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()) {
-          KeycloakService.Instance.logout(ConsoleServices.landing());
-        } else {
-          ConsoleServices.authentication().logOutLink();
-          history.push('/welcome');
-          window.location.reload();
-        }
-      }}>Logout</DropdownItem>
-    </DropdownGroup>
+      <DropdownItem
+        key="user-action-group-1 logout"
+        onClick={() => {
+          if (
+            KeycloakService.Instance.isInitialized() &&
+            KeycloakService.Instance.authenticated()
+          ) {
+            KeycloakService.Instance.logout(ConsoleServices.landing());
+          } else {
+            ConsoleServices.authentication().logOutLink();
+            history.push('/welcome');
+            window.location.reload();
+          }
+        }}
+      >
+        Logout
+      </DropdownItem>
+    </DropdownGroup>,
   ];
 
   const userActions = () => {
-    let chromeAgent = navigator.userAgent.toString().indexOf("Chrome") > -1;
-    if (chromeAgent || (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated())) {
+    let chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
+    if (
+      chromeAgent ||
+      (KeycloakService.Instance.isInitialized() &&
+        KeycloakService.Instance.authenticated())
+    ) {
       return (
         <PageHeaderTools>
           <Dropdown
@@ -122,28 +142,44 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
             position="right"
             onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
             isOpen={isDropdownOpen}
-            toggle={<DropdownToggle onToggle={() => setIsDropdownOpen(!isDropdownOpen)}>{connectedUser.name}</DropdownToggle>}
+            toggle={
+              <DropdownToggle
+                onToggle={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                {connectedUser.name}
+              </DropdownToggle>
+            }
             dropdownItems={userDropdownItems}
           />
         </PageHeaderTools>
       );
     }
-   return (
-     <PageHeaderTools>
-       {connectedUser.name}
-       <Tooltip
-         position="left"
-         content={
-           <div>Close the browser or open an incognito window to log again.</div>
-         }
-       >
-      <span aria-label="Close the browser or open an incognito window to log again." tabIndex={0}>
-        <InfoCircleIcon style={{marginLeft: global_spacer_sm.value, marginTop: global_spacer_sm.value}}/>
-      </span>
-       </Tooltip>
-     </PageHeaderTools>
-   )
-  }
+    return (
+      <PageHeaderTools>
+        {connectedUser.name}
+        <Tooltip
+          position="left"
+          content={
+            <div>
+              Close the browser or open an incognito window to log again.
+            </div>
+          }
+        >
+          <span
+            aria-label="Close the browser or open an incognito window to log again."
+            tabIndex={0}
+          >
+            <InfoCircleIcon
+              style={{
+                marginLeft: global_spacer_sm.value,
+                marginTop: global_spacer_sm.value,
+              }}
+            />
+          </span>
+        </Tooltip>
+      </PageHeaderTools>
+    );
+  };
 
   const Header = (
     <PageHeader
@@ -152,7 +188,9 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       logoProps={logoProps}
       showNavToggle={true}
       isNavOpen={isNavOpen}
-      headerTools={ConsoleServices.authentication().isNotSecured() ? null : userActions()}
+      headerTools={
+        ConsoleServices.authentication().isNotSecured() ? null : userActions()
+      }
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
   );
@@ -219,18 +257,19 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const displayPage = () => {
     if (init == 'PENDING') {
       return (
-        <Page
-          mainContainerId="primary-app-container"
-        >
-          <ErrorBoundary><Spinner/></ErrorBoundary>
+        <Page mainContainerId="primary-app-container">
+          <ErrorBoundary>
+            <Spinner />
+          </ErrorBoundary>
         </Page>
-      )
+      );
     }
 
-    if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
-      return (
-        <Redirect to="/welcome"/>
-      )
+    if (
+      (init == 'NOT_READY' || init == 'SERVER_ERROR') &&
+      !ConsoleServices.isWelcomePage()
+    ) {
+      return <Redirect to="/welcome" />;
     }
 
     return (
@@ -241,18 +280,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
         skipToContent={PageSkipToContent}
         sidebar={isWelcomePage ? null : Sidebar}
       >
-        <ActionResponseAlert/>
-        <BannerAlert/>
+        <ActionResponseAlert />
+        <BannerAlert />
         <ErrorBoundary>{children}</ErrorBoundary>
       </Page>
-    )
-
-  }
-  return (
-    <APIAlertProvider>
-      {displayPage()}
-    </APIAlertProvider>
-  );
-}
+    );
+  };
+  return <APIAlertProvider>{displayPage()}</APIAlertProvider>;
+};
 
 export { AppLayout };

@@ -24,16 +24,30 @@ import { Link } from 'react-router-dom';
 import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter, } from '@patternfly/react-table';
+import {
+  cellWidth,
+  IRow,
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+  textCenter,
+} from '@patternfly/react-table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { StateTransfer } from '@app/XSite/StateTransfer';
 import { Status } from '@app/Common/Status';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from "@services/ConsoleServices";
-import { ConsoleACL } from "@services/securityService";
-import { useConnectedUser } from "@app/services/userManagementHook";
-import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from "@services/displayUtils";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import {
+  ST_IDLE,
+  ST_SEND_CANCELED,
+  ST_SEND_FAILED,
+  ST_SEND_OK,
+  ST_SENDING,
+} from '@services/displayUtils';
 
 interface StateTransferModalState {
   site: string;
@@ -50,19 +64,25 @@ const XSiteCache = (props) => {
   const { connectedUser } = useConnectedUser();
   const [backups, setBackups] = useState<XSite[]>([]);
   const [rows, setRows] = useState<IRow[]>([]);
-  const [stateTransferStatus, setStateTransferStatus] = useState(new Map<string, Status>());
+  const [stateTransferStatus, setStateTransferStatus] = useState(
+    new Map<string, Status>()
+  );
   const [backupsStatus, setBackupsStatus] = useState(new Map());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [stateTransferModal, setStateTransferModal] = useState<
-    StateTransferModalState
-  >({ site: '', open: false, action: '' });
+  const [stateTransferModal, setStateTransferModal] =
+    useState<StateTransferModalState>({ site: '', open: false, action: '' });
 
   useEffect(() => {
     if (loading) {
       // Load Sites
       // First check ADMIN
-      if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      if (
+        !ConsoleServices.security().hasConsoleACL(
+          ConsoleACL.ADMIN,
+          connectedUser
+        )
+      ) {
         setLoading(false);
         setError('Connected user lacks ADMIN permission.');
         return;
@@ -90,7 +110,8 @@ const XSiteCache = (props) => {
             setError(eitherResponse.value.message);
             addAlert(eitherResponse.value);
           }
-        }).then(() => {
+        })
+        .then(() => {
           // Third get state transfer status
           crossSiteReplicationService
             .stateTransferStatus(cacheName)
@@ -104,7 +125,8 @@ const XSiteCache = (props) => {
               } else {
                 addAlert(eitherResponse.value);
               }
-            }).then(() => setLoading(false));
+            })
+            .then(() => setLoading(false));
         });
     }
   }, [loading]);
@@ -156,7 +178,8 @@ const XSiteCache = (props) => {
       .clearStateTransferState(cacheName, site)
       .then((result) => {
         addAlert(result);
-      }).finally(() => setLoading(true));
+      })
+      .finally(() => setLoading(true));
   };
 
   const buildStatus = (site: string, status: string) => {
@@ -279,13 +302,15 @@ const XSiteCache = (props) => {
           .startStateTransfer(cacheName, stateTransferModal.site)
           .then((result) => {
             addAlert(result);
-          }).finally(() => setLoading(true));
+          })
+          .finally(() => setLoading(true));
       } else if (stateTransferModal.action == 'cancel') {
         crossSiteReplicationService
           .cancelStateTransfer(cacheName, stateTransferModal.site)
           .then((result) => {
             addAlert(result);
-          }).finally(() => setLoading(true));
+          })
+          .finally(() => setLoading(true));
       } else {
         setLoading(true);
       }

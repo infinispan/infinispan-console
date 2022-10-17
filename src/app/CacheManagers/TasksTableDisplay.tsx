@@ -30,7 +30,7 @@ import {
   global_spacer_xs,
 } from '@patternfly/react-tokens';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const TasksTableDisplay = (props: {
   setTasksCount: (number) => void;
@@ -48,7 +48,7 @@ const TasksTableDisplay = (props: {
   const brandname = t('brandname.brandname');
 
   const columns = [
-    { title: t('cache-managers.task-name'), },
+    { title: t('cache-managers.task-name') },
     {
       title: t('cache-managers.task-type'),
     },
@@ -63,22 +63,29 @@ const TasksTableDisplay = (props: {
     },
     {
       title: t('cache-managers.allowed-role'),
-    }
+    },
   ];
 
   useEffect(() => {
-    ConsoleServices.tasks().getTasks().then((maybeTasks) => {
-      if (maybeTasks.isRight()) {
-        setTasks(maybeTasks.value);
-        setFilteredTasks(maybeTasks.value);
-        props.setTasksCount(maybeTasks.value.length);
-        const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
-        updateRows(maybeTasks.value.slice(initSlice, initSlice + tasksPagination.perPage));
-      } else {
-        // TODO: deal loading, error, empty status
-      }
-
-    });
+    ConsoleServices.tasks()
+      .getTasks()
+      .then((maybeTasks) => {
+        if (maybeTasks.isRight()) {
+          setTasks(maybeTasks.value);
+          setFilteredTasks(maybeTasks.value);
+          props.setTasksCount(maybeTasks.value.length);
+          const initSlice =
+            (tasksPagination.page - 1) * tasksPagination.perPage;
+          updateRows(
+            maybeTasks.value.slice(
+              initSlice,
+              initSlice + tasksPagination.perPage
+            )
+          );
+        } else {
+          // TODO: deal loading, error, empty status
+        }
+      });
   }, []);
 
   const onSetPage = (_event, pageNumber) => {

@@ -4,27 +4,23 @@ import {
   Invalidated,
   Local,
   Replicated,
-  Scattered
-} from "@services/cacheConfigUtils";
-import {ContentType, EncodingType} from "@services/infinispanRefData";
+  Scattered,
+} from '@services/cacheConfigUtils';
+import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 describe('Cache Config Utils tests', () => {
   test('cache topology', () => {
-    let distributed =
-      '{\n' +
-      '  "distributed-cache": {\n' +
-      '  }\n' +
-      '}';
+    let distributed = '{\n' + '  "distributed-cache": {\n' + '  }\n' + '}';
 
-    expect(CacheConfigUtils.mapCacheType(JSON.parse(distributed))).toBe('Distributed');
+    expect(CacheConfigUtils.mapCacheType(JSON.parse(distributed))).toBe(
+      'Distributed'
+    );
 
-    let replicated =
-      '{\n' +
-      '  "replicated-cache": {\n' +
-      '  }\n' +
-      '}';
+    let replicated = '{\n' + '  "replicated-cache": {\n' + '  }\n' + '}';
 
-    expect(CacheConfigUtils.mapCacheType(JSON.parse(replicated))).toBe('Replicated');
+    expect(CacheConfigUtils.mapCacheType(JSON.parse(replicated))).toBe(
+      'Replicated'
+    );
 
     expect(CacheConfigUtils.mapCacheType(Distributed)).toBe('Distributed');
     expect(CacheConfigUtils.mapCacheType(Replicated)).toBe('Replicated');
@@ -39,17 +35,26 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.isEditable(EncodingType.XML)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Text)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JSON)).toBeTruthy();
-    expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy()
-    expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeFalsy();
+    expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy();
+    expect(
+      CacheConfigUtils.isEditable(EncodingType.JavaSerialized)
+    ).toBeFalsy();
     expect(CacheConfigUtils.isEditable(EncodingType.Octet)).toBeFalsy();
     expect(CacheConfigUtils.isEditable(EncodingType.Empty)).toBeFalsy();
   });
 
   test('content types depending on encoding', () => {
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Text)).toStrictEqual([ContentType.StringContentType]);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)).toStrictEqual([ContentType.JSON]);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.XML)).toStrictEqual([ContentType.XML]);
-    const javaContentTypes = [ContentType.StringContentType,
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.Text)
+    ).toStrictEqual([ContentType.StringContentType]);
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)
+    ).toStrictEqual([ContentType.JSON]);
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.XML)
+    ).toStrictEqual([ContentType.XML]);
+    const javaContentTypes = [
+      ContentType.StringContentType,
       ContentType.IntegerContentType,
       ContentType.LongContentType,
       ContentType.FloatContentType,
@@ -58,10 +63,18 @@ describe('Cache Config Utils tests', () => {
       ContentType.JSON,
     ];
 
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Java)).toStrictEqual(javaContentTypes);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JavaSerialized)).toStrictEqual(javaContentTypes);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JBoss)).toStrictEqual(javaContentTypes);
-    expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Protobuf)).toStrictEqual([
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.Java)
+    ).toStrictEqual(javaContentTypes);
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.JavaSerialized)
+    ).toStrictEqual(javaContentTypes);
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.JBoss)
+    ).toStrictEqual(javaContentTypes);
+    expect(
+      CacheConfigUtils.getContentTypeOptions(EncodingType.Protobuf)
+    ).toStrictEqual([
       ContentType.string,
       ContentType.customType,
       ContentType.int32,
@@ -77,7 +90,7 @@ describe('Cache Config Utils tests', () => {
       ContentType.fixed32,
       ContentType.fixed64,
       ContentType.sfixed32,
-      ContentType.sfixed64
+      ContentType.sfixed64,
     ]);
   });
 
@@ -85,7 +98,9 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.validateConfig('').isLeft()).toBeTruthy();
     expect(CacheConfigUtils.validateConfig('    ').isLeft()).toBeTruthy();
     expect(CacheConfigUtils.validateConfig('{}').isRight()).toBeTruthy();
-    expect(CacheConfigUtils.validateConfig('<xml>foo</xml>').isRight()).toBeTruthy();
+    expect(
+      CacheConfigUtils.validateConfig('<xml>foo</xml>').isRight()
+    ).toBeTruthy();
     expect(CacheConfigUtils.validateConfig('something').isRight()).toBeTruthy();
   });
 });

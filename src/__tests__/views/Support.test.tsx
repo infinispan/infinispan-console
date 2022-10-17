@@ -11,9 +11,15 @@ describe('Support page', () => {
       <Support isModalOpen={true} closeModal={handleClose} />
     );
 
-    expect(getByRole('dialog', { name: 'support.no-user-label' })).toBeInTheDocument();
-    expect(getByRole('heading', { name: 'support.no-user' })).toBeInTheDocument();
-    expect(getByRole('heading', { name: 'support.text-create-user' })).toBeInTheDocument();
+    expect(
+      getByRole('dialog', { name: 'support.no-user-label' })
+    ).toBeInTheDocument();
+    expect(
+      getByRole('heading', { name: 'support.no-user' })
+    ).toBeInTheDocument();
+    expect(
+      getByRole('heading', { name: 'support.text-create-user' })
+    ).toBeInTheDocument();
 
     fireEvent.click(getByRole('button', { name: 'Close' }));
     fireEvent.click(getByRole('button', { name: 'Reload' }));

@@ -15,7 +15,7 @@
     "test": "jest",
     "eslint": "eslint --ext .tsx,.js ./src/",
     "lint": "npm run eslint",
-    "format": "prettier --check --write ./src/**/*.{tsx,ts,js}",
+    "format": "prettier --check --write ./src/**/**/*.{tsx,ts,js} --config ./.prettierrc",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "npm run build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",

@@ -3,8 +3,8 @@ import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {CheckCircleIcon} from "@patternfly/react-icons";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { CheckCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Set Available cache modal
@@ -48,15 +48,13 @@ const SetAvailableCache = (props: {
       description={
         <TextContent>
           <Text>
-            <strong>'{props.cacheName}'</strong> {t('caches.availability.modal-available-description')}
+            <strong>'{props.cacheName}'</strong>{' '}
+            {t('caches.availability.modal-available-description')}
           </Text>
         </TextContent>
       }
       actions={[
-        <Button
-          key="available"
-          onClick={handleAvailableButton}
-        >
+        <Button key="available" onClick={handleAvailableButton}>
           {t('caches.availability.modal-available-button-done')}
         </Button>,
         <Button

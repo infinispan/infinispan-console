@@ -7,14 +7,13 @@ export function useDataContainer() {
     loading,
     error,
     cm,
-    reload
+    reload,
   };
 }
 
 export function useCaches() {
-  const { caches, loadingCaches, errorCaches, reloadCaches } = useContext(
-    DataContainerContext
-  );
+  const { caches, loadingCaches, errorCaches, reloadCaches } =
+    useContext(DataContainerContext);
   return {
     loadingCaches,
     errorCaches,

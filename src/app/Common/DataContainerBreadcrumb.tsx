@@ -9,7 +9,7 @@ const DataContainerBreadcrumb = (props: {
   const addCacheName = () => {
     if (props.cacheName) {
       return (
-        <BreadcrumbItem data-cy='cacheNameLink'>
+        <BreadcrumbItem data-cy="cacheNameLink">
           <Link
             to={{
               pathname: '/cache/' + encodeURIComponent(props.cacheName),
@@ -25,7 +25,7 @@ const DataContainerBreadcrumb = (props: {
 
   return (
     <Breadcrumb>
-      <BreadcrumbItem data-cy='dataContainerLink'>
+      <BreadcrumbItem data-cy="dataContainerLink">
         <Link
           to={{
             pathname: '/',

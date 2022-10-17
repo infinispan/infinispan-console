@@ -2,9 +2,13 @@ import React from 'react';
 import { Flex, FlexItem, Text, TextContent } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import displayUtils from '@services/displayUtils';
-import {ComponentHealth} from "@services/infinispanRefData";
+import { ComponentHealth } from '@services/infinispanRefData';
 
-const Health = (props: { health: string; displayIcon?: boolean; cacheName: string; }) => {
+const Health = (props: {
+  health: string;
+  displayIcon?: boolean;
+  cacheName: string;
+}) => {
   const health = ComponentHealth[props.health];
   const displayIcon = props.displayIcon == undefined ? true : props.displayIcon;
 
@@ -25,7 +29,8 @@ const Health = (props: { health: string; displayIcon?: boolean; cacheName: strin
 
       <FlexItem>
         <TextContent>
-          <Text data-cy={`health-${props.cacheName}`}
+          <Text
+            data-cy={`health-${props.cacheName}`}
             style={{
               color: displayUtils.healthColor(health, false),
             }}

@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import {
+  cellWidth,
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant,
+} from '@patternfly/react-table';
 import {
   Bullseye,
   EmptyState,
@@ -21,11 +27,11 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
-import {DeleteCounter} from '@app/Counters/DeleteCounter';
-import {useFetchCounters} from '@app/services/countersHook';
-import {useTranslation} from 'react-i18next';
+import { DeleteCounter } from '@app/Counters/DeleteCounter';
+import { useFetchCounters } from '@app/services/countersHook';
+import { useTranslation } from 'react-i18next';
 
 const CounterTableDisplay = (props: {
   setCountersCount: (number) => void;
@@ -37,9 +43,8 @@ const CounterTableDisplay = (props: {
   const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
   const [weakCounters, setWeakCounters] = useState<Counter[]>([]);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [selectedCounterType, setSelectedCounterType] = useState(
-    STRONG_COUNTER
-  );
+  const [selectedCounterType, setSelectedCounterType] =
+    useState(STRONG_COUNTER);
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
@@ -75,28 +80,32 @@ const CounterTableDisplay = (props: {
   const columns = [
     {
       title: t('cache-managers.counter-name'),
-      transforms: [cellWidth(15)]
+      transforms: [cellWidth(15)],
     },
     {
       title: t('cache-managers.current-value'),
-      transforms: [cellWidth(15)]
+      transforms: [cellWidth(15)],
     },
     {
       title: t('cache-managers.initial-value'),
-      transforms: [cellWidth(15)]
+      transforms: [cellWidth(15)],
     },
     {
-      title: t('cache-managers.storage')
+      title: t('cache-managers.storage'),
     },
     {
-      title: t('cache-managers.counter-configuration')
-    }
+      title: t('cache-managers.counter-configuration'),
+    },
   ];
 
   const loadCounters = () => {
-      if(counters) {
-        const weakCounters = counters.filter(counter => counter.config.type == t('cache-managers.weak'));
-        const strongCounters = counters.filter(counter => counter.config.type == t('cache-managers.strong'));
+    if (counters) {
+      const weakCounters = counters.filter(
+        (counter) => counter.config.type == t('cache-managers.weak')
+      );
+      const strongCounters = counters.filter(
+        (counter) => counter.config.type == t('cache-managers.strong')
+      );
 
       setWeakCounters(weakCounters);
       setStrongCounters(strongCounters);
@@ -145,14 +154,16 @@ const CounterTableDisplay = (props: {
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                {t('cache-managers.lower-bound')} {displayUtils.formatNumber(config.lowerBound)}
+                {t('cache-managers.lower-bound')}{' '}
+                {displayUtils.formatNumber(config.lowerBound)}
               </Text>
             </TextContent>
           </GridItem>
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                {t('cache-managers.upper-bound')} {displayUtils.formatNumber(config.upperBound)}
+                {t('cache-managers.upper-bound')}{' '}
+                {displayUtils.formatNumber(config.upperBound)}
               </Text>
             </TextContent>
           </GridItem>

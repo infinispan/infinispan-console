@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {useConnectedUser} from "@app/services/userManagementHook";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const initialContext = {
   error: '',
   loading: true,
-  cm: (undefined as unknown) as CacheManager,
+  cm: undefined as unknown as CacheManager,
   caches: [] as CacheInfo[],
   loadingCaches: true,
   errorCaches: '',
@@ -16,7 +16,7 @@ const initialContext = {
 export const DataContainerContext = React.createContext(initialContext);
 
 const ContainerDataProvider = ({ children }) => {
-  const {connectedUser, reloadAcl} = useConnectedUser();
+  const { connectedUser, reloadAcl } = useConnectedUser();
   const [cm, setCm] = useState<CacheManager>(initialContext.cm);
   const [caches, setCaches] = useState<CacheInfo[]>(initialContext.caches);
   const [error, setError] = useState(initialContext.error);
@@ -27,7 +27,11 @@ const ContainerDataProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    if (loading && (connectedUser.name != '' || ConsoleServices.authentication().isNotSecured())) {
+    if (
+      loading &&
+      (connectedUser.name != '' ||
+        ConsoleServices.authentication().isNotSecured())
+    ) {
       ConsoleServices.dataContainer()
         .getDefaultCacheManager()
         .then((eitherCm) => {
@@ -55,7 +59,7 @@ const ContainerDataProvider = ({ children }) => {
           })
           .then(() => setLoadingCaches(false));
       } else {
-        reloadAcl().then(r => {
+        reloadAcl().then((r) => {
           if (r) {
             ConsoleServices.dataContainer()
               .getCaches(cm.name)
@@ -71,9 +75,8 @@ const ContainerDataProvider = ({ children }) => {
             setErrorCaches('Unable to load ACL for caches. Reconnect');
             setLoadingCaches(false);
           }
-        })
+        });
       }
-
     }
   }, [cm, loadingCaches]);
 

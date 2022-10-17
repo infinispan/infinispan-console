@@ -7,13 +7,18 @@ import {
 } from '@patternfly/react-tokens';
 import { Badge } from '@patternfly/react-core';
 import React from 'react';
-import {CacheType} from "@services/infinispanRefData";
+import { CacheType } from '@services/infinispanRefData';
 
-const CacheTypeBadge = (props: { cacheType: string; small: boolean; cacheName: string; }) => {
+const CacheTypeBadge = (props: {
+  cacheType: string;
+  small: boolean;
+  cacheName: string;
+}) => {
   const cacheTypeEnum = CacheType[props.cacheType];
 
   return (
-    <Badge data-cy={`type-${props.cacheName}`}
+    <Badge
+      data-cy={`type-${props.cacheName}`}
       style={{
         backgroundColor: displayUtils.cacheTypeColor(cacheTypeEnum),
         color: displayUtils.cacheTypeColorLabel(cacheTypeEnum),

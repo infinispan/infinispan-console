@@ -1,8 +1,14 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent,} from '@patternfly/react-core';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const DeleteSchema = (props: {
   schemaName: string;
@@ -14,10 +20,12 @@ const DeleteSchema = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickDeleteButton = () => {
-    ConsoleServices.protobuf().delete(props.schemaName).then((actionResponse) => {
-      addAlert(actionResponse);
-      props.closeModal();
-    });
+    ConsoleServices.protobuf()
+      .delete(props.schemaName)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+        props.closeModal();
+      });
   };
 
   return (
@@ -40,21 +48,25 @@ const DeleteSchema = (props: {
         >
           {t('schemas.delete-button')}
         </Button>,
-        <Button  id="cancel-delete-schema-button"
-                 name="cancel-delete-schema-button"
-                 key="cancel"
-                 variant="link" onClick={props.closeModal}>
+        <Button
+          id="cancel-delete-schema-button"
+          name="cancel-delete-schema-button"
+          key="cancel"
+          variant="link"
+          onClick={props.closeModal}
+        >
           {t('schemas.cancel-button')}
         </Button>,
       ]}
     >
       <TextContent>
         <Text>
-          {t('schemas.delete.modal-description-1', {"brandname": brandname, "schemaname": props.schemaName})}
+          {t('schemas.delete.modal-description-1', {
+            brandname: brandname,
+            schemaname: props.schemaName,
+          })}
         </Text>
-        <Text>
-          {t('schemas.delete.modal-description-2')}
-        </Text>
+        <Text>{t('schemas.delete.modal-description-2')}</Text>
       </TextContent>
     </Modal>
   );

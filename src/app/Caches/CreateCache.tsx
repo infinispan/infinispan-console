@@ -3,12 +3,15 @@ import { useEffect, useState } from 'react';
 
 import {
   Bullseye,
-  EmptyState, EmptyStateIcon,
+  EmptyState,
+  EmptyStateIcon,
   PageSection,
-  PageSectionVariants, Spinner,
+  PageSectionVariants,
+  Spinner,
   Text,
   TextContent,
-  TextVariants, Title,
+  TextVariants,
+  Title,
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
@@ -17,8 +20,8 @@ import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useTranslation } from 'react-i18next';
 import { CreateCacheWizard } from '@app/Caches/Create/CreateCacheWizard';
-import {CreateCacheProvider} from "@app/providers/CreateCacheProvider";
-import {TableErrorState} from "@app/Common/TableErrorState";
+import { CreateCacheProvider } from '@app/providers/CreateCacheProvider';
+import { TableErrorState } from '@app/Common/TableErrorState';
 
 const CreateCache = () => {
   const [cacheManager, setCacheManager] = useState<CacheManager | undefined>();
@@ -31,7 +34,8 @@ const CreateCache = () => {
 
   useEffect(() => {
     if (!cacheManager && loadingBackups) {
-      ConsoleServices.dataContainer().getDefaultCacheManager()
+      ConsoleServices.dataContainer()
+        .getDefaultCacheManager()
         .then((r) => {
           if (r.isRight()) {
             const cm = r.value;
@@ -44,17 +48,18 @@ const CreateCache = () => {
           } else {
             setError(r.value.message);
           }
-        }).then(() => setLoadingBackups(false));
+        })
+        .then(() => setLoadingBackups(false));
     }
   }, []);
 
   const displayError = () => {
     return (
       <PageSection variant={PageSectionVariants.light}>
-        <TableErrorState error={error}/>
+        <TableErrorState error={error} />
       </PageSection>
     );
-  }
+  };
 
   const displayLoading = () => {
     return (
@@ -68,8 +73,8 @@ const CreateCache = () => {
           </EmptyState>
         </Bullseye>
       </PageSection>
-    )
-  }
+    );
+  };
 
   return (
     <CreateCacheProvider>
@@ -79,10 +84,12 @@ const CreateCache = () => {
           <ToolbarContent style={{ paddingLeft: 0 }}>
             <TextContent>
               <Text component={TextVariants.h1}>
-                {!isBackupAvailable ?
-                  t('caches.create.page-title', { cmName: title })
-                  : t('caches.create.page-title-with-backups', { cmName: title, localsite: localSite })
-                }
+                {!isBackupAvailable
+                  ? t('caches.create.page-title', { cmName: title })
+                  : t('caches.create.page-title-with-backups', {
+                      cmName: title,
+                      localsite: localSite,
+                    })}
               </Text>
             </TextContent>
           </ToolbarContent>

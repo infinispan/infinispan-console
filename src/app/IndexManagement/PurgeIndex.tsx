@@ -8,7 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 /**
  * Purge index modal
@@ -23,10 +23,12 @@ const PurgeIndex = (props: {
   const { addAlert } = useApiAlert();
 
   const onClickPurgeButton = () => {
-    ConsoleServices.search().purgeIndexes(props.cacheName).then((actionResponse) => {
-      props.closeModal();
-      addAlert(actionResponse);
-    });
+    ConsoleServices.search()
+      .purgeIndexes(props.cacheName)
+      .then((actionResponse) => {
+        props.closeModal();
+        addAlert(actionResponse);
+      });
   };
 
   return (
@@ -53,7 +55,7 @@ const PurgeIndex = (props: {
     >
       <TextContent>
         <Text>
-          All indexes in {' '} <strong>{props.cacheName}</strong> will be deleted.
+          All indexes in <strong>{props.cacheName}</strong> will be deleted.
         </Text>
       </TextContent>
     </Modal>

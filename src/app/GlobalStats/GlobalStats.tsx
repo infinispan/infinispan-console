@@ -155,7 +155,9 @@ const GlobalStats = () => {
             <CardTitle>
               <CustomCardTitle
                 title={'Data access statistics'}
-                toolTip={'Data access statistics for all caches across the cluster.'}
+                toolTip={
+                  'Data access statistics for all caches across the cluster.'
+                }
               />
             </CardTitle>
             <CardBody style={{ paddingBottom: global_spacer_2xl.value }}>
@@ -228,7 +230,9 @@ const GlobalStats = () => {
             <CardTitle>
               <CustomCardTitle
                 title={'Operation performance values'}
-                toolTip={'Average values, in milliseconds, for operations on all caches across the cluster.'}
+                toolTip={
+                  'Average values, in milliseconds, for operations on all caches across the cluster.'
+                }
               />
             </CardTitle>
             <CardBody>
@@ -277,7 +281,9 @@ const GlobalStats = () => {
                 <LevelItem>
                   <CustomCardTitle
                     title={'Cache Manager lifecycle values'}
-                    toolTip={'Lifecycle values, in milliseconds, for the Cache Manager.'}
+                    toolTip={
+                      'Lifecycle values, in milliseconds, for the Cache Manager.'
+                    }
                   />
                 </LevelItem>
                 <LevelItem>

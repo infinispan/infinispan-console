@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 /**
  * Reindex modal
@@ -17,10 +17,12 @@ const Reindex = (props: {
   const brandname = t('brandname.brandname');
 
   const onClickReindex = () => {
-    ConsoleServices.search().reindex(props.cacheName).then((actionResponse) => {
-      props.closeModal();
-      addAlert(actionResponse);
-    });
+    ConsoleServices.search()
+      .reindex(props.cacheName)
+      .then((actionResponse) => {
+        props.closeModal();
+        addAlert(actionResponse);
+      });
   };
 
   return (
@@ -43,7 +45,8 @@ const Reindex = (props: {
     >
       <TextContent>
         <Text>
-          All indexes will be rebuilt. To ensure accurate results, do not query caches until rebuilding is complete.
+          All indexes will be rebuilt. To ensure accurate results, do not query
+          caches until rebuilding is complete.
           <br />
           This process may take a few minutes.
         </Text>

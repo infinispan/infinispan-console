@@ -47,7 +47,9 @@ describe('Global stats page', () => {
     expect(
       screen.getByRole('heading', { name: 'Global statistics' })
     ).toBeInTheDocument();
-    expect(screen.queryByText('Global statistics disabled')).toBeInTheDocument();
+    expect(
+      screen.queryByText('Global statistics disabled')
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(
         'Statistics are disabled. To enable statistics, set statistics=true in the configuration.'
@@ -90,7 +92,9 @@ describe('Global stats page', () => {
       screen.getByRole('link', { name: 'View cluster membership' })
     ).toBeInTheDocument();
 
-    expect(screen.queryByText('Global statistics disabled')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Global statistics disabled')
+    ).not.toBeInTheDocument();
     expect(
       screen.getByText('Global statistics for all caches in the cluster')
     ).toBeInTheDocument();

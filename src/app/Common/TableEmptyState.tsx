@@ -46,7 +46,7 @@ const TableEmptyState = (props: {
   }
 
   return (
-    <Bullseye data-cy='noCacheConfigsFound'>
+    <Bullseye data-cy="noCacheConfigsFound">
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={SearchIcon} />
         <Title headingLevel="h2" size="lg">

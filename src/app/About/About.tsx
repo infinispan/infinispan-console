@@ -25,12 +25,9 @@ import {
 } from '@patternfly/react-icons';
 import { global_spacer_3xl, global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
-import {useEffect} from "react";
+import { useEffect } from 'react';
 
-const About = (props: {
-  isModalOpen: boolean;
-  closeModal: () => void;
-}) => {
+const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const { loading, version, error, setLoading } = useFetchVersion();
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
@@ -40,10 +37,10 @@ const About = (props: {
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
 
   useEffect(() => {
-    if(props.isModalOpen) {
+    if (props.isModalOpen) {
       setLoading(true);
     }
-  }, [props.isModalOpen])
+  }, [props.isModalOpen]);
 
   return (
     <AboutModal

@@ -24,16 +24,16 @@ import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {useHistory} from "react-router";
-import {useConnectedUser} from "@app/services/userManagementHook";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useHistory } from 'react-router';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const Welcome = (props) => {
   const authState = props.init;
   const { t } = useTranslation();
   const history = useHistory();
   const [supportOpen, setSupportOpen] = useState(false);
-  const {notSecuredModeOn, logUser} = useConnectedUser();
+  const { notSecuredModeOn, logUser } = useConnectedUser();
 
   const brandname = t('brandname.brandname');
 
@@ -106,13 +106,15 @@ const Welcome = (props) => {
 
   const login = () => {
     if (authState == 'LOGIN' && !KeycloakService.Instance.authenticated()) {
-      KeycloakService.Instance.login({ redirectUri: ConsoleServices.landing() });
+      KeycloakService.Instance.login({
+        redirectUri: ConsoleServices.landing(),
+      });
     }
   };
 
   const notSecured = () => {
-    history.push('/')
-  }
+    history.push('/');
+  };
 
   const goToTheConsole = t('welcome-page.go-to-console');
 
@@ -130,15 +132,17 @@ const Welcome = (props) => {
     if (authState == 'HTTP_LOGIN') {
       return (
         <Button
-          onClick={() =>{
-            ConsoleServices.authentication().loginLink().then( (r) => {
-              if(r.success) {
-                logUser();
-                history.push('/');
-              } else {
-                // Do nothing
-              }
-            })
+          onClick={() => {
+            ConsoleServices.authentication()
+              .loginLink()
+              .then((r) => {
+                if (r.success) {
+                  logUser();
+                  history.push('/');
+                } else {
+                  // Do nothing
+                }
+              });
           }}
           component={'button'}
           style={{ backgroundColor: chart_color_blue_500.value }}

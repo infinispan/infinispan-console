@@ -44,9 +44,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       </StackItem>
       <StackItem>
         <TextContent>
-          <Text>
-            {t('support.no-user-text')}
-          </Text>
+          <Text>{t('support.no-user-text')}</Text>
         </TextContent>
       </StackItem>
     </Stack>
@@ -70,9 +68,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
     >
       <TextContent>
         <Text component={TextVariants.h6}>{t('support.text-create-user')}</Text>
-        <Text component={TextVariants.pre}>
-          {t('support.text-command')}
-        </Text>
+        <Text component={TextVariants.pre}>{t('support.text-command')}</Text>
       </TextContent>
     </Modal>
   );
