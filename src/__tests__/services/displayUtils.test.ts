@@ -1,9 +1,16 @@
 import displayUtils, {
-  CANCEL_STATUS, ERROR_STATUS,
+  CANCEL_STATUS,
+  ERROR_STATUS,
   FAILED_STATUS,
-  INIT_STATUS, INSTANTIATED_STATUS,
+  INIT_STATUS,
+  INSTANTIATED_STATUS,
   OK_STATUS,
-  RUNNING_STATUS, ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING,
+  RUNNING_STATUS,
+  ST_IDLE,
+  ST_SEND_CANCELED,
+  ST_SEND_FAILED,
+  ST_SEND_OK,
+  ST_SENDING,
   STOPPING_STATUS,
   TERMINATED_STATUS,
   UNKNOWN_STATUS
@@ -16,10 +23,10 @@ import {
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
-  global_warning_color_100,
+  global_warning_color_100
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
-import {CacheType, ComponentHealth} from "@services/infinispanRefData";
+import { CacheType, ComponentHealth } from '@services/infinispanRefData';
 
 describe('Display Utils tests', () => {
   test('parseStateTransferStatus', () => {
@@ -51,75 +58,37 @@ describe('Display Utils tests', () => {
   });
 
   test('cache type color', () => {
-    expect(displayUtils.cacheTypeColor(CacheType.Distributed)).toBe(
-      global_palette_blue_50.value
-    );
-    expect(displayUtils.cacheTypeColor(CacheType.Replicated)).toBe(
-      global_palette_purple_100.value
-    );
-    expect(displayUtils.cacheTypeColor(CacheType.Invalidated)).toBe(
-      chart_color_gold_100.value
-    );
-    expect(displayUtils.cacheTypeColor(CacheType.Local)).toBe(
-      chart_color_cyan_100.value
-    );
+    expect(displayUtils.cacheTypeColor(CacheType.Distributed)).toBe(global_palette_blue_50.value);
+    expect(displayUtils.cacheTypeColor(CacheType.Replicated)).toBe(global_palette_purple_100.value);
+    expect(displayUtils.cacheTypeColor(CacheType.Invalidated)).toBe(chart_color_gold_100.value);
+    expect(displayUtils.cacheTypeColor(CacheType.Local)).toBe(chart_color_cyan_100.value);
   });
 
   test('health alert variant', () => {
-    expect(displayUtils.healthAlertVariant(undefined)).toBe(
-      AlertVariant.default
-    );
-    expect(displayUtils.healthAlertVariant(ComponentHealth.DEGRADED)).toBe(
-      AlertVariant.danger
-    );
-    expect(
-      displayUtils.healthAlertVariant(ComponentHealth.HEALTHY_REBALANCING)
-    ).toBe(AlertVariant.warning);
-    expect(displayUtils.healthAlertVariant(ComponentHealth.HEALTHY)).toBe(
-      AlertVariant.success
-    );
-    expect(displayUtils.healthAlertVariant(ComponentHealth.FAILED)).toBe(
-      AlertVariant.danger
-    );
+    expect(displayUtils.healthAlertVariant(undefined)).toBe(AlertVariant.default);
+    expect(displayUtils.healthAlertVariant(ComponentHealth.DEGRADED)).toBe(AlertVariant.danger);
+    expect(displayUtils.healthAlertVariant(ComponentHealth.HEALTHY_REBALANCING)).toBe(AlertVariant.warning);
+    expect(displayUtils.healthAlertVariant(ComponentHealth.HEALTHY)).toBe(AlertVariant.success);
+    expect(displayUtils.healthAlertVariant(ComponentHealth.FAILED)).toBe(AlertVariant.danger);
   });
 
   test('health label', () => {
     expect(displayUtils.healthLabel(ComponentHealth.HEALTHY)).toBe('Healthy');
-    expect(displayUtils.healthLabel(ComponentHealth.HEALTHY_REBALANCING)).toBe(
-      'Rebalancing'
-    );
+    expect(displayUtils.healthLabel(ComponentHealth.HEALTHY_REBALANCING)).toBe('Rebalancing');
     expect(displayUtils.healthLabel(ComponentHealth.DEGRADED)).toBe('Degraded');
     expect(displayUtils.healthLabel(ComponentHealth.FAILED)).toBe('Failed');
   });
 
   test('health color', () => {
-    expect(displayUtils.healthColor(undefined, false)).toBe(
-      chart_global_label_Fill.value
-    );
-    expect(displayUtils.healthColor(ComponentHealth.HEALTHY, false)).toBe(
-      chart_global_label_Fill.value
-    );
-    expect(displayUtils.healthColor(ComponentHealth.DEGRADED, false)).toBe(
-      global_danger_color_100.value
-    );
-    expect(
-      displayUtils.healthColor(ComponentHealth.HEALTHY_REBALANCING, false)
-    ).toBe(chart_global_label_Fill.value);
-    expect(displayUtils.healthColor(ComponentHealth.FAILED, false)).toBe(
-      global_danger_color_100.value
-    );
+    expect(displayUtils.healthColor(undefined, false)).toBe(chart_global_label_Fill.value);
+    expect(displayUtils.healthColor(ComponentHealth.HEALTHY, false)).toBe(chart_global_label_Fill.value);
+    expect(displayUtils.healthColor(ComponentHealth.DEGRADED, false)).toBe(global_danger_color_100.value);
+    expect(displayUtils.healthColor(ComponentHealth.HEALTHY_REBALANCING, false)).toBe(chart_global_label_Fill.value);
+    expect(displayUtils.healthColor(ComponentHealth.FAILED, false)).toBe(global_danger_color_100.value);
 
-    expect(displayUtils.healthColor(ComponentHealth.HEALTHY, true)).toBe(
-      global_success_color_100.value
-    );
-    expect(displayUtils.healthColor(ComponentHealth.DEGRADED, true)).toBe(
-      global_danger_color_100.value
-    );
-    expect(
-      displayUtils.healthColor(ComponentHealth.HEALTHY_REBALANCING, true)
-    ).toBe(global_warning_color_100.value);
-    expect(displayUtils.healthColor(ComponentHealth.FAILED, true)).toBe(
-      global_danger_color_100.value
-    );
+    expect(displayUtils.healthColor(ComponentHealth.HEALTHY, true)).toBe(global_success_color_100.value);
+    expect(displayUtils.healthColor(ComponentHealth.DEGRADED, true)).toBe(global_danger_color_100.value);
+    expect(displayUtils.healthColor(ComponentHealth.HEALTHY_REBALANCING, true)).toBe(global_warning_color_100.value);
+    expect(displayUtils.healthColor(ComponentHealth.FAILED, true)).toBe(global_danger_color_100.value);
   });
 });

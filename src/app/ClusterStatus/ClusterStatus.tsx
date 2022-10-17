@@ -18,20 +18,15 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
+  Title
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon } from '@patternfly/react-icons';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import { Health } from '@app/Common/Health';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { addAlert } = useApiAlert();
@@ -39,66 +34,53 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const brandname = t('brandname.brandname');
   const [error, setError] = useState<undefined | string>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(
-    undefined
-  );
-  const [filteredClusterMembers, setFilteredClusterMembers] = useState<
-    ClusterMember[]
-  >([]);
+  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(undefined);
+  const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
   const [clusterMembersPagination, setClusterMembersPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const columns = [
     { title: 'Name' },
     {
-      title: 'Physical address',
-    },
+      title: 'Physical address'
+    }
   ];
 
   useEffect(() => {
-    ConsoleServices.dataContainer().getDefaultCacheManager().then((eitherDefaultCm) => {
-      setLoading(false);
-      if (eitherDefaultCm.isRight()) {
-        setCacheManager(eitherDefaultCm.value);
-        setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
-        updateRows(eitherDefaultCm.value.cluster_members);
-      } else {
-        setError(eitherDefaultCm.value.message);
-      }
-    });
+    ConsoleServices.dataContainer()
+      .getDefaultCacheManager()
+      .then((eitherDefaultCm) => {
+        setLoading(false);
+        if (eitherDefaultCm.isRight()) {
+          setCacheManager(eitherDefaultCm.value);
+          setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
+          updateRows(eitherDefaultCm.value.cluster_members);
+        } else {
+          setError(eitherDefaultCm.value.message);
+        }
+      });
   }, []);
 
   useEffect(() => {
-    const initSlice =
-      (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
-    updateRows(
-      filteredClusterMembers.slice(
-        initSlice,
-        initSlice + clusterMembersPagination.perPage
-      )
-    );
+    const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
+    updateRows(filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
   }, [error, cacheManager]);
 
   const onSetPage = (_event, pageNumber) => {
     setClusterMembersPagination({
       page: pageNumber,
-      perPage: clusterMembersPagination.perPage,
+      perPage: clusterMembersPagination.perPage
     });
     const initSlice = (pageNumber - 1) * clusterMembersPagination.perPage;
-    updateRows(
-      filteredClusterMembers.slice(
-        initSlice,
-        initSlice + clusterMembersPagination.perPage
-      )
-    );
+    updateRows(filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setClusterMembersPagination({
       page: clusterMembersPagination.page,
-      perPage: perPage,
+      perPage: perPage
     });
     const initSlice = (clusterMembersPagination.page - 1) * perPage;
     updateRows(filteredClusterMembers.slice(initSlice, initSlice + perPage));
@@ -127,16 +109,16 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
           cells: [
             {
               props: { colSpan: 2 },
-              title: buildEmptyState(),
-            },
-          ],
-        },
+              title: buildEmptyState()
+            }
+          ]
+        }
       ];
     } else {
       rows = clusterMembers.map((member) => {
         return {
           heightAuto: true,
-          cells: [{ title: member.name }, { title: member.physical_address }],
+          cells: [{ title: member.name }, { title: member.physical_address }]
         };
       });
     }
@@ -221,12 +203,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
             onPerPageSelect={onPerPageSelect}
             isCompact
           />
-          <Table
-            variant={TableVariant.compact}
-            aria-label="Cluster status table"
-            cells={columns}
-            rows={rows}
-          >
+          <Table variant={TableVariant.compact} aria-label="Cluster status table" cells={columns} rows={rows}>
             <TableHeader />
             <TableBody />
           </Table>
@@ -237,9 +214,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
 
   return (
     <React.Fragment>
-      <PageSection variant={PageSectionVariants.light}>
-        {buildHeader()}
-      </PageSection>
+      <PageSection variant={PageSectionVariants.light}>{buildHeader()}</PageSection>
       <PageSection>{buildClusterStatus()}</PageSection>
     </React.Fragment>
   );

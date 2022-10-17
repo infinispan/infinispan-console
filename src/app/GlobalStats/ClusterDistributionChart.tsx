@@ -15,15 +15,7 @@ import {
   ToolbarItemVariant,
   Pagination
 } from '@patternfly/react-core';
-import {
-  TableComposable,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  TableVariant
-} from '@patternfly/react-table';
+import { TableComposable, Thead, Tr, Th, Tbody, Td, TableVariant } from '@patternfly/react-table';
 import { Chart, ChartAxis, ChartBar, ChartGroup, ChartVoronoiContainer } from '@patternfly/react-charts';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
@@ -40,22 +32,16 @@ const ClusterDistributionChart = () => {
   const [statsOption, setStatsOption] = useState<string>(ClusterDistributionStatsOption.MemoryAvailable);
   const [tablePagination, setTablePagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [tableRow, setTableRow] = useState<ClusterDistribution[]>();
 
-  const { clusterDistribution, loadingCluster, errorCluster } =
-    useClusterDistribution();
+  const { clusterDistribution, loadingCluster, errorCluster } = useClusterDistribution();
 
   useEffect(() => {
     if (clusterDistribution) {
       const initSlice = (tablePagination.page - 1) * tablePagination.perPage;
-      setTableRow(
-        clusterDistribution.slice(
-          initSlice,
-          initSlice + tablePagination.perPage
-        )
-      );
+      setTableRow(clusterDistribution.slice(initSlice, initSlice + tablePagination.perPage));
     }
   }, [tablePagination, clusterDistribution]);
 
@@ -70,14 +56,14 @@ const ClusterDistributionChart = () => {
   const onPerPageSelect = (event, selection) => {
     setTablePagination({
       page: 1,
-      perPage: selection,
+      perPage: selection
     });
   };
 
   const onSetPage = (event, selection) => {
     setTablePagination({
       ...tablePagination,
-      page: selection,
+      page: selection
     });
   };
 
@@ -107,34 +93,30 @@ const ClusterDistributionChart = () => {
     }
 
     const data = clusterDistribution?.map((item, index) => {
-      const yaxis = statsOption === ClusterDistributionStatsOption.MemoryAvailable
-        ? item.memory_available
-        : item.memory_used;
+      const yaxis =
+        statsOption === ClusterDistributionStatsOption.MemoryAvailable ? item.memory_available : item.memory_used;
       return {
         name: 'N ' + index + ': ' + item.node_name,
         y: yaxis,
-        x: 'N ' + index + ':' + item.node_name,
+        x: 'N ' + index + ':' + item.node_name
       };
     });
 
     const columnNames = {
       nodeName: t('global-stats.cluster-distribution-node-name'),
       memoryAvailable: t('global-stats.cluster-distribution-option-memory-used'),
-      memoryUsed: t('global-stats.cluster-distribution-option-memory-available'),
+      memoryUsed: t('global-stats.cluster-distribution-option-memory-available')
     };
 
     const clusterTable = (
       <div style={{ height: '480px', margin: 'auto' }}>
-        <Toolbar
-          style={{ paddingTop: '0' }}
-          id="cluster-distribution-table-toolbar"
-        >
+        <Toolbar style={{ paddingTop: '0' }} id="cluster-distribution-table-toolbar">
           <ToolbarContent>
             <ToolbarItem variant={ToolbarItemVariant.pagination}>
               <Pagination
                 perPageOptions={[
                   { title: '5', value: 5 },
-                  { title: '10', value: 10 },
+                  { title: '10', value: 10 }
                 ]}
                 itemCount={size}
                 perPage={tablePagination.perPage}
@@ -147,11 +129,7 @@ const ClusterDistributionChart = () => {
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <TableComposable
-          aria-label="Cluster Distribution Table"
-          variant={TableVariant.compact}
-          borders
-        >
+        <TableComposable aria-label="Cluster Distribution Table" variant={TableVariant.compact} borders>
           <Thead>
             <Tr>
               <Th>{columnNames.nodeName}</Th>
@@ -163,9 +141,7 @@ const ClusterDistributionChart = () => {
             {tableRow?.map((row) => (
               <Tr key={row.node_name}>
                 <Td dataLabel={columnNames.nodeName}>{row.node_name}</Td>
-                <Td dataLabel={columnNames.memoryAvailable}>
-                  {row.memory_available}
-                </Td>
+                <Td dataLabel={columnNames.memoryAvailable}>{row.memory_available}</Td>
                 <Td dataLabel={columnNames.memoryUsed}>{row.memory_used}</Td>
               </Tr>
             ))}
@@ -181,9 +157,8 @@ const ClusterDistributionChart = () => {
           ariaTitle={t('global-stats.cluster-distribution')}
           containerComponent={
             <ChartVoronoiContainer
-              labels={({ datum }) => datum.y !== 0
-                ? `${datum.y}`
-                : `${t('global-stats.cluster-distribution-no-memory')}`
+              labels={({ datum }) =>
+                datum.y !== 0 ? `${datum.y}` : `${t('global-stats.cluster-distribution-no-memory')}`
               }
               constrainToVisibleArea
             />
@@ -195,8 +170,8 @@ const ClusterDistributionChart = () => {
               name:
                 statsOption === ClusterDistributionStatsOption.MemoryAvailable
                   ? t('global-stats.cluster-distribution-option-memory-available')
-                  : t('global-stats.cluster-distribution-option-memory-used'),
-            },
+                  : t('global-stats.cluster-distribution-option-memory-used')
+            }
           ]}
           legendOrientation="horizontal"
           legendPosition="bottom"
@@ -205,7 +180,7 @@ const ClusterDistributionChart = () => {
             bottom: 10,
             left: 250, // Adjusted to accommodate y axis label
             right: 50, // Adjusted to accommodate legend
-            top: 0,
+            top: 0
           }}
           width={700}
         >
@@ -235,14 +210,8 @@ const ClusterDistributionChart = () => {
           width={'100%'}
           position="right"
         >
-          <SelectOption
-            key={0}
-            value={t('global-stats.cluster-distribution-option-memory-available')}
-          />
-          <SelectOption
-            key={1}
-            value={t('global-stats.cluster-distribution-option-memory-used')}
-          />
+          <SelectOption key={0} value={t('global-stats.cluster-distribution-option-memory-available')} />
+          <SelectOption key={1} value={t('global-stats.cluster-distribution-option-memory-used')} />
         </Select>
       </LevelItem>
     );

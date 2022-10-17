@@ -3,17 +3,13 @@ import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {CheckCircleIcon} from "@patternfly/react-icons";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { CheckCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Set Available cache modal
  */
-const SetAvailableCache = (props: {
-  cacheName: string;
-  isModalOpen: boolean;
-  closeModal: (boolean) => void;
-}) => {
+const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { addAlert } = useApiAlert();
   const { reloadCaches } = useCaches();
 
@@ -53,19 +49,12 @@ const SetAvailableCache = (props: {
         </TextContent>
       }
       actions={[
-        <Button
-          key="available"
-          onClick={handleAvailableButton}
-        >
+        <Button key="available" onClick={handleAvailableButton}>
           {t('caches.availability.modal-available-button-done')}
         </Button>,
-        <Button
-          key="cancel"
-          variant="link"
-          onClick={() => clearSetAvailableCacheModal(false)}
-        >
+        <Button key="cancel" variant="link" onClick={() => clearSetAvailableCacheModal(false)}>
           {t('caches.availability.modal-available-button-cancel')}
-        </Button>,
+        </Button>
       ]}
     >
       {/* {buildContent()} */}

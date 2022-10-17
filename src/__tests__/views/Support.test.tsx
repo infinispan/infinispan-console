@@ -7,9 +7,7 @@ describe('Support page', () => {
   test.only('modal shows the children and a close button', () => {
     const handleClose = jest.fn();
 
-    const { getByRole } = renderWithRouter(
-      <Support isModalOpen={true} closeModal={handleClose} />
-    );
+    const { getByRole } = renderWithRouter(<Support isModalOpen={true} closeModal={handleClose} />);
 
     expect(getByRole('dialog', { name: 'support.no-user-label' })).toBeInTheDocument();
     expect(getByRole('heading', { name: 'support.no-user' })).toBeInTheDocument();

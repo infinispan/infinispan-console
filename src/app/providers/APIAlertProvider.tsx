@@ -5,7 +5,7 @@ const initialAlertState = {
   setBanner: (banner: string) => {},
   alertMap: new Map(),
   addAlert: (alert: ActionResponse) => {},
-  removeAlert: (pos: number) => {},
+  removeAlert: (pos: number) => {}
 };
 
 export const APIAlertContext = React.createContext(initialAlertState);
@@ -32,14 +32,10 @@ const APIAlertProvider = ({ children }) => {
     setBanner: useCallback(setBanner, []),
     alertMap,
     addAlert: useCallback(addAlert, []),
-    removeAlert: useCallback(removeAlert, []),
+    removeAlert: useCallback(removeAlert, [])
   };
 
-  return (
-    <APIAlertContext.Provider value={contextValue}>
-      {children}
-    </APIAlertContext.Provider>
-  );
+  return <APIAlertContext.Provider value={contextValue}>{children}</APIAlertContext.Provider>;
 };
 
 export { APIAlertProvider };

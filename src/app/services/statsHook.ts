@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import {ConsoleServices} from "@services/ConsoleServices";
-
+import { ConsoleServices } from '@services/ConsoleServices';
 
 export function useFetchGlobalStats() {
   const [stats, setStats] = useState<CacheManagerStats>({
@@ -11,7 +10,7 @@ export function useFetchGlobalStats() {
     remove_hits: -1,
     evictions: -1,
     stores: -1,
-    misses: -1,
+    misses: -1
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,15 +41,15 @@ export function useFetchGlobalStats() {
   return {
     loading,
     stats,
-    error,
+    error
   };
 }
 
-export function useSearchStats(cacheName:string) {
+export function useSearchStats(cacheName: string) {
   const [stats, setStats] = useState<SearchStats>({
     reindexing: false,
     query: [],
-    index: [],
+    index: []
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -60,11 +59,11 @@ export function useSearchStats(cacheName:string) {
       ConsoleServices.search()
         .retrieveStats(cacheName)
         .then((eitherStats) => {
-           if(eitherStats.isRight()) {
-             setStats(eitherStats.value)
-           } else {
-             setError(eitherStats.value.message);
-           }
+          if (eitherStats.isRight()) {
+            setStats(eitherStats.value);
+          } else {
+            setError(eitherStats.value.message);
+          }
         })
         .then(() => setLoading(false));
     }

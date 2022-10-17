@@ -3,8 +3,8 @@ import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {EyeIcon, EyeSlashIcon} from "@patternfly/react-icons";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { EyeIcon, EyeSlashIcon } from '@patternfly/react-icons';
 
 /**
  * Ignore cache modal
@@ -68,42 +68,27 @@ const IgnoreCache = (props: {
   };
 
   return (
-    <Modal data-cy={`${props.action}CacheModal`} id="hideShowModal"
-      titleIconVariant={props.action == 'ignore'? EyeSlashIcon : EyeIcon}
+    <Modal
+      data-cy={`${props.action}CacheModal`}
+      id="hideShowModal"
+      titleIconVariant={props.action == 'ignore' ? EyeSlashIcon : EyeIcon}
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
       title={props.action == 'ignore' ? 'Hide cache?' : 'Show cache?'}
       onClose={() => clearIgnoreCacheModal(false)}
-      aria-label={
-        props.action == 'ignore'
-          ? 'Hide cache modal'
-          : 'Show cache modal'
-      }
+      aria-label={props.action == 'ignore' ? 'Hide cache modal' : 'Show cache modal'}
       actions={[
         <Button
-          key={
-            props.action == 'ignore'
-              ? 'ignore-modal-button'
-              : 'undo-ignore-modal'
-          }
+          key={props.action == 'ignore' ? 'ignore-modal-button' : 'undo-ignore-modal'}
           onClick={handleIgnoreButton}
-          data-cy={
-            props.action == 'ignore'
-              ? 'hideCacheButton'
-              : 'showCacheButton'
-          }
+          data-cy={props.action == 'ignore' ? 'hideCacheButton' : 'showCacheButton'}
         >
           {props.action == 'ignore' ? 'Hide' : 'Show'}
         </Button>,
-        <Button
-          key="cancel"
-          variant="link"
-          onClick={() => clearIgnoreCacheModal(false)}
-          data-cy="cancelAction"
-        >
+        <Button key="cancel" variant="link" onClick={() => clearIgnoreCacheModal(false)} data-cy="cancelAction">
           Cancel
-        </Button>,
+        </Button>
       ]}
     >
       {buildContent()}

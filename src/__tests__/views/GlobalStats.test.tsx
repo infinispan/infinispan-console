@@ -1,13 +1,12 @@
 import React from 'react';
-import {render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import * as StatsHook from '@app/services/statsHook';
-import {GlobalStats} from '@app/GlobalStats/GlobalStats';
-import {renderWithRouter} from '../../test-utils';
+import { GlobalStats } from '@app/GlobalStats/GlobalStats';
+import { renderWithRouter } from '../../test-utils';
 // import ClusterDistributionChart from "@app/GlobalStats/ClusterDistributionChart";
 
 jest.mock('@app/services/statsHook');
-jest.mock('@app/GlobalStats/ClusterDistributionChart',
-  () => 'ClusterDistributionChart');
+jest.mock('@app/GlobalStats/ClusterDistributionChart', () => 'ClusterDistributionChart');
 
 const mockedStatsHook = StatsHook as jest.Mocked<typeof StatsHook>;
 
@@ -19,7 +18,7 @@ const statsNotEnabledResponse = {
   remove_hits: -1,
   evictions: -1,
   stores: -1,
-  misses: -1,
+  misses: -1
 } as CacheManagerStats;
 
 const statsEnabledResponse = {
@@ -30,7 +29,7 @@ const statsEnabledResponse = {
   remove_hits: -1,
   evictions: -1,
   stores: -1,
-  misses: -1,
+  misses: -1
 } as CacheManagerStats;
 
 beforeEach(() => {
@@ -43,20 +42,14 @@ describe('Global stats page', () => {
       return {
         loading: false,
         stats: statsNotEnabledResponse,
-        error: '',
+        error: ''
       };
     });
 
     render(<GlobalStats />);
-    expect(
-      screen.getByRole('heading', { name: 'global-stats.title' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'global-stats.title' })).toBeInTheDocument();
     expect(screen.queryByText('global-stats.global-stats-disable-msg')).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        'global-stats.global-stats-disabled-help'
-      )
-    ).toBeInTheDocument();
+    expect(screen.queryByText('global-stats.global-stats-disabled-help')).toBeInTheDocument();
   });
 
   test('render stats when statistics are enabled', () => {
@@ -64,7 +57,7 @@ describe('Global stats page', () => {
       return {
         loading: false,
         stats: statsEnabledResponse,
-        error: '',
+        error: ''
       };
     });
 
@@ -75,14 +68,8 @@ describe('Global stats page', () => {
     expect(screen.queryByText('global-stats.data-access-stats')).toBeInTheDocument();
     expect(screen.queryByText('global-stats.operation-performance-values')).toBeInTheDocument();
     expect(screen.queryByText('global-stats.cache-manager-lifecycle')).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'global-stats.view-caches-link' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'global-stats.view-cluster-membership-link' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('global-stats.global-stats-enable-msg')
-    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'global-stats.view-caches-link' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'global-stats.view-cluster-membership-link' })).toBeInTheDocument();
+    expect(screen.getByText('global-stats.global-stats-enable-msg')).toBeInTheDocument();
   });
 });

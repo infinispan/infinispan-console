@@ -4,9 +4,7 @@ import { About } from '@app/About/About';
 import * as GetVersionHook from '@app/services/serverHook';
 
 jest.mock('@app/services/serverHook');
-const mockedGetVersionHook = GetVersionHook as jest.Mocked<
-  typeof GetVersionHook
->;
+const mockedGetVersionHook = GetVersionHook as jest.Mocked<typeof GetVersionHook>;
 
 mockedGetVersionHook.useFetchVersion.mockImplementation(() => {
   return {
@@ -21,9 +19,7 @@ describe('About page', () => {
   test('modal shows the children and a close button', () => {
     const handleClose = jest.fn();
 
-    const { getByText, getByRole } = render(
-      <About isModalOpen={true} closeModal={handleClose} />
-    );
+    const { getByText, getByRole } = render(<About isModalOpen={true} closeModal={handleClose} />);
 
     expect(getByText('Sponsored by Red Hat')).toBeTruthy();
 

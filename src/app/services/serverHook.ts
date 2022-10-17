@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 export function useFetchVersion() {
   const [version, setVersion] = useState('');
@@ -7,7 +7,7 @@ export function useFetchVersion() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (loading && version =='') {
+    if (loading && version == '') {
       ConsoleServices.server()
         .getVersion()
         .then((eitherVersion) => {
@@ -25,6 +25,6 @@ export function useFetchVersion() {
     setLoading,
     loading,
     version,
-    error,
+    error
   };
 }

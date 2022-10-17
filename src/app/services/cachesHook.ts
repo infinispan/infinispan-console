@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 export function useFetchCaches(cacheManager: string) {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
@@ -30,19 +30,13 @@ export function useFetchCaches(cacheManager: string) {
     loading,
     caches,
     error,
-    reload,
+    reload
   };
 }
 
 export function useCacheEntries() {
-  const {
-    cacheEntries,
-    loadingEntries,
-    errorEntries,
-    infoEntries,
-    reloadEntries,
-    getByKey,
-  } = useContext(CacheDetailContext);
+  const { cacheEntries, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
+    useContext(CacheDetailContext);
   return {
     cacheEntries,
     loadingEntries,
@@ -54,9 +48,7 @@ export function useCacheEntries() {
 }
 
 export function useCacheDetail() {
-  const { cache, loading, error, loadCache, reload, cacheManager } = useContext(
-    CacheDetailContext
-  );
+  const { cache, loading, error, loadCache, reload, cacheManager } = useContext(CacheDetailContext);
 
   return { cache, loading, error, loadCache, reload, cacheManager };
 }

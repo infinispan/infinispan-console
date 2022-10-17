@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import {
   Badge,
   Bullseye,
@@ -18,7 +13,7 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
+  Title
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
@@ -27,75 +22,71 @@ import {
   global_FontSize_sm,
   global_spacer_md,
   global_spacer_sm,
-  global_spacer_xs,
+  global_spacer_xs
 } from '@patternfly/react-tokens';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
-const TasksTableDisplay = (props: {
-  setTasksCount: (number) => void;
-  isVisible: boolean;
-}) => {
+const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: boolean }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
   const [tasksPagination, setTasksPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
   const columns = [
-    { title: t('cache-managers.task-name'), },
+    { title: t('cache-managers.task-name') },
     {
-      title: t('cache-managers.task-type'),
+      title: t('cache-managers.task-type')
     },
     {
-      title: t('cache-managers.context-name'),
+      title: t('cache-managers.context-name')
     },
     {
-      title: t('cache-managers.operation-name'),
+      title: t('cache-managers.operation-name')
     },
     {
-      title: t('cache-managers.parameters'),
+      title: t('cache-managers.parameters')
     },
     {
-      title: t('cache-managers.allowed-role'),
+      title: t('cache-managers.allowed-role')
     }
   ];
 
   useEffect(() => {
-    ConsoleServices.tasks().getTasks().then((maybeTasks) => {
-      if (maybeTasks.isRight()) {
-        setTasks(maybeTasks.value);
-        setFilteredTasks(maybeTasks.value);
-        props.setTasksCount(maybeTasks.value.length);
-        const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
-        updateRows(maybeTasks.value.slice(initSlice, initSlice + tasksPagination.perPage));
-      } else {
-        // TODO: deal loading, error, empty status
-      }
-
-    });
+    ConsoleServices.tasks()
+      .getTasks()
+      .then((maybeTasks) => {
+        if (maybeTasks.isRight()) {
+          setTasks(maybeTasks.value);
+          setFilteredTasks(maybeTasks.value);
+          props.setTasksCount(maybeTasks.value.length);
+          const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
+          updateRows(maybeTasks.value.slice(initSlice, initSlice + tasksPagination.perPage));
+        } else {
+          // TODO: deal loading, error, empty status
+        }
+      });
   }, []);
 
   const onSetPage = (_event, pageNumber) => {
     setTasksPagination({
       page: pageNumber,
-      perPage: tasksPagination.perPage,
+      perPage: tasksPagination.perPage
     });
     const initSlice = (pageNumber - 1) * tasksPagination.perPage;
-    updateRows(
-      filteredTasks.slice(initSlice, initSlice + tasksPagination.perPage)
-    );
+    updateRows(filteredTasks.slice(initSlice, initSlice + tasksPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setTasksPagination({
       page: tasksPagination.page,
-      perPage: perPage,
+      perPage: perPage
     });
     const initSlice = (tasksPagination.page - 1) * perPage;
     updateRows(filteredTasks.slice(initSlice, initSlice + perPage));
@@ -112,7 +103,7 @@ const TasksTableDisplay = (props: {
           marginRight: global_spacer_md.value,
           padding: global_spacer_xs.value,
           paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value,
+          paddingLeft: global_spacer_sm.value
         }}
       >
         {type}
@@ -160,15 +151,13 @@ const TasksTableDisplay = (props: {
                     <Title headingLevel="h2" size="lg">
                       {t('cache-managers.no-tasks-status')}
                     </Title>
-                    <EmptyStateBody>
-                      {t('cache-managers.no-tasks-body')}
-                    </EmptyStateBody>
+                    <EmptyStateBody>{t('cache-managers.no-tasks-body')}</EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
-              ),
-            },
-          ],
-        },
+              )
+            }
+          ]
+        }
       ];
     } else {
       rows = tasks.map((task) => {
@@ -180,8 +169,8 @@ const TasksTableDisplay = (props: {
             { title: task.task_context_name },
             { title: task.task_operation_name },
             { title: taskParameters(task.parameters) },
-            { title: taskAllowedRoles(task.allowed_role) },
-          ],
+            { title: taskAllowedRoles(task.allowed_role) }
+          ]
           //TODO {title: <TasksActionLinks name={task.name}/>}]
         };
       });

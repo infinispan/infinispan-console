@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter, } from '@patternfly/react-table';
+import { cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter } from '@patternfly/react-table';
 import {
   Bullseye,
   Button,
@@ -25,7 +25,7 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
@@ -33,28 +33,24 @@ import { Link } from 'react-router-dom';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
-import { SetAvailableCache } from '@app/Caches/SetAvailableCache'
-import { IExtraData, IRowData, } from '@patternfly/react-table/src/components/Table';
+import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
+import { IExtraData, IRowData } from '@patternfly/react-table/src/components/Table';
 import { Health } from '@app/Common/Health';
 import { useBanner } from '@app/utils/useApiAlert';
 import { useCaches, useDataContainer } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
-import { useConnectedUser } from "@app/services/userManagementHook";
-import { ConsoleServices } from "@services/ConsoleServices";
-import { ConsoleACL } from "@services/securityService";
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { ComponentHealth } from "@services/infinispanRefData";
+import { ComponentHealth } from '@services/infinispanRefData';
 
 interface CacheAction {
   cacheName: string;
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
 }
 
-const CacheTableDisplay = (props: {
-  cmName: string;
-  setCachesCount: (count: number) => void;
-  isVisible: boolean;
-}) => {
+const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: number) => void; isVisible: boolean }) => {
   const { setBanner } = useBanner();
   const { connectedUser } = useConnectedUser();
   const { cm } = useDataContainer();
@@ -62,19 +58,17 @@ const CacheTableDisplay = (props: {
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [rows, setRows] = useState<any[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
   const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
   const [chipsCacheStatus, setChipsCacheStatus] = useState<string[]>([]);
-  const [isFilterSelectExpanded, setIsFilterSelectExpanded] = useState<boolean>(
-    false
-  );
+  const [isFilterSelectExpanded, setIsFilterSelectExpanded] = useState<boolean>(false);
   const [cacheAction, setCacheAction] = useState<CacheAction>({
     cacheName: '',
-    action: '',
+    action: ''
   });
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -84,26 +78,19 @@ const CacheTableDisplay = (props: {
     if (loadingCaches) {
       return;
     }
-    const failedCaches = caches.reduce(
-      (failedCaches: string, cacheInfo: CacheInfo) => {
-        if (
-          (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
-          (cacheInfo.health as ComponentHealth) == ComponentHealth.DEGRADED
-        ) {
-          return failedCaches == ''
-            ? cacheInfo.name
-            : failedCaches + ', ' + cacheInfo.name;
-        } else {
-          return failedCaches;
-        }
-      },
-      ''
-    );
+    const failedCaches = caches.reduce((failedCaches: string, cacheInfo: CacheInfo) => {
+      if (
+        (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
+        (cacheInfo.health as ComponentHealth) == ComponentHealth.DEGRADED
+      ) {
+        return failedCaches == '' ? cacheInfo.name : failedCaches + ', ' + cacheInfo.name;
+      } else {
+        return failedCaches;
+      }
+    }, '');
 
     if (failedCaches.length > 0) {
-      setBanner(
-        '[' + failedCaches + ']' + ' caches health is FAILED or DEGRADED'
-      );
+      setBanner('[' + failedCaches + ']' + ' caches health is FAILED or DEGRADED');
     } else {
       setBanner('');
     }
@@ -128,23 +115,17 @@ const CacheTableDisplay = (props: {
 
       // Filter caches by status
       if (filterStatus.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
-          isCacheStatus(cacheInfo, filterStatus)
-        );
+        newFilteredCaches = newFilteredCaches.filter((cacheInfo) => isCacheStatus(cacheInfo, filterStatus));
       }
 
       // Filter caches by cache type
       if (filterCacheType.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
-          isCacheType(cacheInfo, filterCacheType)
-        );
+        newFilteredCaches = newFilteredCaches.filter((cacheInfo) => isCacheType(cacheInfo, filterCacheType));
       }
 
       // Filter caches by features
       if (filterFeatures.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) =>
-          hasFeatures(cacheInfo, filterFeatures)
-        );
+        newFilteredCaches = newFilteredCaches.filter((cacheInfo) => hasFeatures(cacheInfo, filterFeatures));
       }
     }
 
@@ -157,15 +138,13 @@ const CacheTableDisplay = (props: {
     let paginationUpgrade = false;
     // Upgrade Pagination in necessary
     if (cachesPagination.page > 1) {
-      const completePagesNum = Math.floor(
-        filteredCaches.length / cachesPagination.perPage
-      );
+      const completePagesNum = Math.floor(filteredCaches.length / cachesPagination.perPage);
       const lastPageCount = filteredCaches.length % cachesPagination.perPage;
       if (lastPageCount == 0 && cachesPagination.page > completePagesNum) {
         paginationUpgrade = true;
         setCachesPagination({
           page: completePagesNum,
-          perPage: cachesPagination.perPage,
+          perPage: cachesPagination.perPage
         });
       }
     }
@@ -185,23 +164,23 @@ const CacheTableDisplay = (props: {
     {
       title: t('cache-managers.cache-mode'),
       transforms: [cellWidth(15), textCenter],
-      cellTransforms: [textCenter],
+      cellTransforms: [textCenter]
     },
     {
       title: t('cache-managers.cache-health'),
-      transforms: [cellWidth(10)],
+      transforms: [cellWidth(10)]
     },
     {
       title: t('cache-managers.cache-features'),
       transforms: [textCenter, cellWidth(30)],
-      cellTransforms: [textCenter],
+      cellTransforms: [textCenter]
     },
     {
       // Will display 'ignored' if the cache is ignored
       title: t('cache-managers.cache-status'),
       transforms: [textCenter],
-      cellTransforms: [textCenter],
-    },
+      cellTransforms: [textCenter]
+    }
   ];
 
   const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
@@ -229,47 +208,38 @@ const CacheTableDisplay = (props: {
         {
           'data-cy': 'showCacheAction',
           title: t('cache-managers.undo-ignore'),
-          onClick: (event, rowId, rowData, extra) =>
-            openIgnoreCacheModal(
-              cacheName,
-              rowData.cells[0].isIgnored
-            ),
-        },
+          onClick: (event, rowId, rowData, extra) => openIgnoreCacheModal(cacheName, rowData.cells[0].isIgnored)
+        }
       ];
     }
 
-    let actions = [{
-      'data-cy': 'deleteCacheAction',
-      title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) => {
-        setCacheAction({
-          cacheName: cacheName,
-          action: 'delete',
-        });
+    let actions = [
+      {
+        'data-cy': 'deleteCacheAction',
+        title: t('cache-managers.delete'),
+        onClick: (event, rowId, rowData, extra) => {
+          setCacheAction({
+            cacheName: cacheName,
+            action: 'delete'
+          });
+        }
       }
-    }];
+    ];
 
     if (isAdmin) {
       actions.push({
         'data-cy': 'ignoreCacheAction',
         title: t('cache-managers.ignore'),
-        onClick: (event, rowId, rowData, extra) =>
-          openIgnoreCacheModal(
-            cacheName,
-            rowData.cells[0].isIgnored
-          ),
-      })
+        onClick: (event, rowId, rowData, extra) => openIgnoreCacheModal(cacheName, rowData.cells[0].isIgnored)
+      });
     }
 
-    if (isAdmin && health === "DEGRADED") {
+    if (isAdmin && health === 'DEGRADED') {
       actions.push({
         'data-cy': 'openAvailableCacheAction',
         title: t('cache-managers.available'),
-        onClick: (event, rowId, rowData, extra) =>
-          openAvailableCacheModal(
-            cacheName
-          ),
-      })
+        onClick: (event, rowId, rowData, extra) => openAvailableCacheModal(cacheName)
+      });
     }
     return actions;
   };
@@ -280,11 +250,7 @@ const CacheTableDisplay = (props: {
 
   const closeDeleteModal = (deleteDone: boolean) => {
     if (deleteDone) {
-      setFilteredCaches(
-        filteredCaches.filter(
-          (cacheInfo) => cacheInfo.name !== cacheAction.cacheName
-        )
-      );
+      setFilteredCaches(filteredCaches.filter((cacheInfo) => cacheInfo.name !== cacheAction.cacheName));
     }
     setCacheAction({ cacheName: '', action: '' });
   };
@@ -304,23 +270,20 @@ const CacheTableDisplay = (props: {
   const openIgnoreCacheModal = (cacheName: string, ignored: boolean) => {
     setCacheAction({
       cacheName: cacheName,
-      action: ignored ? 'undo' : 'ignore',
+      action: ignored ? 'undo' : 'ignore'
     });
   };
 
   const openAvailableCacheModal = (cacheName: string) => {
     setCacheAction({
       cacheName: cacheName,
-      action: 'available',
+      action: 'available'
     });
   };
 
   const updateRows = () => {
     const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
-    const currentPageCaches = filteredCaches.slice(
-      initSlice,
-      initSlice + cachesPagination.perPage
-    );
+    const currentPageCaches = filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage);
 
     let currentRows: {
       heightAuto: boolean;
@@ -343,15 +306,13 @@ const CacheTableDisplay = (props: {
                     <Title headingLevel="h2" size="lg">
                       {t('cache-managers.no-caches-status')}
                     </Title>
-                    <EmptyStateBody>
-                      {t('cache-managers.no-caches-body')}
-                    </EmptyStateBody>
+                    <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
-              ),
-            },
-          ],
-        },
+              )
+            }
+          ]
+        }
       ];
     } else {
       currentRows = currentPageCaches.map((cacheInfo) => {
@@ -364,25 +325,23 @@ const CacheTableDisplay = (props: {
               cacheName: cacheInfo.name,
               health: cacheInfo.health,
               isIgnored: isCacheIgnored(cacheInfo),
-              title: displayCacheName(cacheInfo),
+              title: displayCacheName(cacheInfo)
             },
             {
-              title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} cacheName={cacheInfo.name} />,
+              title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} cacheName={cacheInfo.name} />
             },
             {
               title: (
                 <Health
                   health={cacheInfo.health}
-                  displayIcon={
-                    ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED
-                  }
+                  displayIcon={ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED}
                   cacheName={cacheInfo.name}
                 />
-              ),
+              )
             },
             { title: displayCacheFeatures(cacheInfo) },
-            { title: displayBadges(cacheInfo) },
-          ],
+            { title: displayBadges(cacheInfo) }
+          ]
         };
       });
     }
@@ -406,8 +365,9 @@ const CacheTableDisplay = (props: {
     return (
       <Label key={`ignore-${cacheInfo.name}`} data-cy={`ignoreBadge-${cacheInfo.name}`}>
         {t('cache-managers.ignored-status')}
-      </Label>);
-  }
+      </Label>
+    );
+  };
 
   /**
    * Display the badge only of rebalancing is enabled at cluster level
@@ -425,12 +385,8 @@ const CacheTableDisplay = (props: {
       return '';
     }
 
-    return (
-      <Label key={`ignore-${cacheInfo.name}`}>
-        {t('cache-managers.rebalancing.disabled-status')}
-      </Label>
-    )
-  }
+    return <Label key={`ignore-${cacheInfo.name}`}>{t('cache-managers.rebalancing.disabled-status')}</Label>;
+  };
 
   const displayBadges = (cacheInfo: CacheInfo) => {
     const badgeIgnore = ignoreCacheBadge(cacheInfo);
@@ -445,7 +401,6 @@ const CacheTableDisplay = (props: {
         {badgeIgnore}
         {badgeRebalancing}
       </LabelGroup>
-
     );
   };
 
@@ -456,10 +411,12 @@ const CacheTableDisplay = (props: {
     }
 
     const disableCacheDetail =
-      isCacheIgnored(cacheInfo) || !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.MONITOR, cacheInfo.name, connectedUser)
+      isCacheIgnored(cacheInfo) ||
+      !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.MONITOR, cacheInfo.name, connectedUser);
 
     const cacheDetailAccess = (
-      <Button data-cy={`detailButton-${cacheInfo.name}`}
+      <Button
+        data-cy={`detailButton-${cacheInfo.name}`}
         key={`detail-button-${cacheInfo.name}`}
         variant={ButtonVariant.link}
         isDisabled={disableCacheDetail}
@@ -474,7 +431,8 @@ const CacheTableDisplay = (props: {
     }
 
     return (
-      <Link data-cy={`detailLink-${cacheInfo.name}`}
+      <Link
+        data-cy={`detailLink-${cacheInfo.name}`}
         key={cacheInfo.name}
         to={'/cache/' + encodeURIComponent(cacheInfo.name)}
       >
@@ -483,21 +441,8 @@ const CacheTableDisplay = (props: {
     );
   };
 
-  const cacheTypes = [
-    'Local',
-    'Replicated',
-    'Distributed',
-    'Invalidated',
-    'Scattered',
-  ];
-  const cacheFeatures = [
-    'Bounded',
-    'Indexed',
-    'Persistence',
-    'Transactions',
-    'Authorization',
-    'Backups',
-  ];
+  const cacheTypes = ['Local', 'Replicated', 'Distributed', 'Invalidated', 'Scattered'];
+  const cacheFeatures = ['Bounded', 'Indexed', 'Persistence', 'Transactions', 'Authorization', 'Backups'];
 
   const cacheStatus = [t('cache-managers.ignored-status')];
 
@@ -505,31 +450,17 @@ const CacheTableDisplay = (props: {
     return actualSelection.filter((s) => ref.includes(s));
   };
 
-  const isCacheStatus = (
-    cacheInfo: CacheInfo,
-    actualSelection: string[]
-  ): boolean => {
-    if (actualSelection.includes("Hidden") && isCacheIgnored(cacheInfo))
-      return true;
-    else
-      return false;
+  const isCacheStatus = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
+    if (actualSelection.includes('Hidden') && isCacheIgnored(cacheInfo)) return true;
+    else return false;
   };
 
-  const isCacheType = (
-    cacheInfo: CacheInfo,
-    actualSelection: string[]
-  ): boolean => {
+  const isCacheType = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
     return actualSelection.includes(cacheInfo.type);
   };
 
-  const hasFeatures = (
-    cacheInfo: CacheInfo,
-    actualSelection: string[]
-  ): boolean => {
-    if (
-      actualSelection.includes('Transactions') &&
-      cacheInfo.features.transactional
-    ) {
+  const hasFeatures = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
+    if (actualSelection.includes('Transactions') && cacheInfo.features.transactional) {
       return true;
     }
     if (actualSelection.includes('Bounded') && cacheInfo.features.bounded) {
@@ -540,20 +471,14 @@ const CacheTableDisplay = (props: {
       return true;
     }
 
-    if (
-      actualSelection.includes('Persistence') &&
-      cacheInfo.features.persistent
-    ) {
+    if (actualSelection.includes('Persistence') && cacheInfo.features.persistent) {
       return true;
     }
 
     if (actualSelection.includes('Authorization') && cacheInfo.features.secured) {
       return true;
     }
-    if (
-      actualSelection.includes('Backups') &&
-      cacheInfo.features.hasRemoteBackup
-    ) {
+    if (actualSelection.includes('Backups') && cacheInfo.features.hasRemoteBackup) {
       return true;
     }
     return false;
@@ -583,14 +508,13 @@ const CacheTableDisplay = (props: {
   };
 
   const buildCreateCacheButton = () => {
-
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
         <ToolbarItem style={{ marginRight: global_spacer_sm.value }}>
           <Link
             to={{
-              pathname: '/container/caches/create',
+              pathname: '/container/caches/create'
             }}
           >
             <Button variant={ButtonVariant.primary} aria-label="create-cache-button" data-cy="createCacheButton">
@@ -599,7 +523,7 @@ const CacheTableDisplay = (props: {
           </Link>
         </ToolbarItem>
       </React.Fragment>
-    )
+    );
   };
 
   const buildViewConfigurationsButton = () => {
@@ -608,8 +532,8 @@ const CacheTableDisplay = (props: {
         to={{
           pathname: '/container/' + props.cmName + '/configurations/',
           state: {
-            cmName: props.cmName,
-          },
+            cmName: props.cmName
+          }
         }}
       >
         <Button variant={'link'} aria-label="view-cache-configurations-button" data-cy="showTemplatesButton">
@@ -660,21 +584,22 @@ const CacheTableDisplay = (props: {
 
   const buildPagination = () => {
     return (
-      <Pagination data-cy="paginationArea"
+      <Pagination
+        data-cy="paginationArea"
         itemCount={filteredCaches.length}
         perPage={cachesPagination.perPage}
         page={cachesPagination.page}
         onSetPage={(_event, pageNumber) =>
           setCachesPagination({
             page: pageNumber,
-            perPage: cachesPagination.perPage,
+            perPage: cachesPagination.perPage
           })
         }
         widgetId="pagination-caches"
         onPerPageSelect={(_event, perPage) =>
           setCachesPagination({
             page: 1,
-            perPage: perPage,
+            perPage: perPage
           })
         }
         isCompact
@@ -688,11 +613,7 @@ const CacheTableDisplay = (props: {
     }
 
     return (
-      <Button
-        variant={ButtonVariant.link}
-        isInline
-        onClick={onDeleteAllFilters} data-cy="clearAllButton"
-      >
+      <Button variant={ButtonVariant.link} isInline onClick={onDeleteAllFilters} data-cy="clearAllButton">
         {t('cache-managers.clear-all-button')}
       </Button>
     );
@@ -706,14 +627,10 @@ const CacheTableDisplay = (props: {
     <React.Fragment>
       <Toolbar id="cache-table-toolbar">
         <ToolbarContent>
-          <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
-            {buildFilter()}
-          </ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant['search-filter']}>{buildFilter()}</ToolbarItem>
           {buildCreateCacheButton()}
           <ToolbarItem>{buildViewConfigurationsButton()}</ToolbarItem>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>
-            {buildPagination()}
-          </ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>{buildPagination()}</ToolbarItem>
         </ToolbarContent>
         <ToolbarContent>
           <ToolbarItem variant={ToolbarItemVariant['chip-group']}>
@@ -749,7 +666,7 @@ const CacheTableDisplay = (props: {
         className={'caches-table'}
         actionResolver={actionResolver}
         variant={TableVariant.compact}
-        data-cy='cachesTable'
+        data-cy="cachesTable"
       >
         <TableHeader />
         <TableBody />
@@ -762,17 +679,13 @@ const CacheTableDisplay = (props: {
       <IgnoreCache
         cmName={props.cmName}
         cacheName={cacheAction.cacheName}
-        isModalOpen={
-          cacheAction.action == 'ignore' || cacheAction.action == 'undo'
-        }
+        isModalOpen={cacheAction.action == 'ignore' || cacheAction.action == 'undo'}
         action={cacheAction.action}
         closeModal={closeIgnoreModal}
       />
       <SetAvailableCache
         cacheName={cacheAction.cacheName}
-        isModalOpen={
-          cacheAction.action == 'available'
-        }
+        isModalOpen={cacheAction.action == 'available'}
         closeModal={closeAvailableModal}
       />
     </React.Fragment>

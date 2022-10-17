@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardBody,
@@ -14,22 +14,22 @@ import {
   Spinner,
   Text,
   TextContent,
-  TextVariants,
+  TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {CacheTableDisplay} from '@app/CacheManagers/CacheTableDisplay';
-import {CounterTableDisplay} from '@app/CacheManagers/CounterTableDisplay';
-import {TasksTableDisplay} from '@app/CacheManagers/TasksTableDisplay';
-import {ProtobufSchemasDisplay} from '@app/ProtoSchema/ProtobufSchemasDisplay';
-import {Status} from '@app/Common/Status';
-import {global_spacer_md, global_spacer_sm} from '@patternfly/react-tokens';
-import {TableErrorState} from '@app/Common/TableErrorState';
-import {useDataContainer} from '@app/services/dataContainerHooks';
-import {useTranslation} from 'react-i18next';
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {ConsoleServices} from "@services/ConsoleServices";
-import {ConsoleACL} from "@services/securityService";
-import {RebalancingCacheManager} from "@app/Rebalancing/RebalancingCacheManager";
+import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
+import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
+import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
+import { ProtobufSchemasDisplay } from '@app/ProtoSchema/ProtobufSchemasDisplay';
+import { Status } from '@app/Common/Status';
+import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { useDataContainer } from '@app/services/dataContainerHooks';
+import { useTranslation } from 'react-i18next';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { RebalancingCacheManager } from '@app/Rebalancing/RebalancingCacheManager';
 
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();
@@ -42,9 +42,7 @@ const CacheManagers = () => {
   const [showCaches, setShowCaches] = useState(true);
   const [showCounters, setShowCounters] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
-  const [showSerializationContext, setShowSerializationContext] = useState(
-    false
-  );
+  const [showSerializationContext, setShowSerializationContext] = useState(false);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
@@ -74,7 +72,7 @@ const CacheManagers = () => {
     ];
 
     if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
-      tabs.push({name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2'});
+      tabs.push({ name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2' });
     }
 
     if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
@@ -82,7 +80,8 @@ const CacheManagers = () => {
     }
 
     return (
-      <Nav data-cy='navigationTabs'
+      <Nav
+        data-cy="navigationTabs"
         onSelect={handleTabClick}
         variant={'tertiary'}
         style={{ marginTop: global_spacer_md.value }}
@@ -95,10 +94,7 @@ const CacheManagers = () => {
               itemId={tab.key}
               isActive={activeTabKey === tab.key}
             >
-              <strong style={{ marginRight: global_spacer_sm.value }}>
-                {tab.count}
-              </strong>{' '}
-              {tab.name}
+              <strong style={{ marginRight: global_spacer_sm.value }}>{tab.count}</strong> {tab.name}
             </NavItem>
           ))}
         </NavList>
@@ -130,30 +126,11 @@ const CacheManagers = () => {
     return (
       <Card>
         <CardBody>
+          {cm && <CacheTableDisplay cmName={cm.name} setCachesCount={setCachesCount} isVisible={showCaches} />}
+          {cm && <CounterTableDisplay setCountersCount={setCountersCount} isVisible={showCounters} />}
+          {cm && <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />}
           {cm && (
-            <CacheTableDisplay
-              cmName={cm.name}
-              setCachesCount={setCachesCount}
-              isVisible={showCaches}
-            />
-          )}
-          {cm && (
-            <CounterTableDisplay
-              setCountersCount={setCountersCount}
-              isVisible={showCounters}
-            />
-          )}
-          {cm && (
-            <TasksTableDisplay
-              setTasksCount={setTasksCount}
-              isVisible={showTasks}
-            />
-          )}
-          {cm && (
-            <ProtobufSchemasDisplay
-              setProtoSchemasCount={setProtoSchemasCount}
-              isVisible={showSerializationContext}
-            />
+            <ProtobufSchemasDisplay setProtoSchemasCount={setProtoSchemasCount} isVisible={showSerializationContext} />
           )}
         </CardBody>
       </Card>
@@ -191,10 +168,7 @@ const CacheManagers = () => {
 
     title = displayUtils.capitalize(cm.name);
     return (
-      <PageSection
-        variant={PageSectionVariants.light}
-        style={{ paddingBottom: 0 }}
-      >
+      <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
         <Flex id="cluster-manager-header" direction={{ default: 'column' }}>
           <Flex>
             <FlexItem>
@@ -208,7 +182,7 @@ const CacheManagers = () => {
               <Status status={cm.cache_manager_status} />
             </FlexItem>
             {buildSiteDisplay(cm.local_site)}
-            <RebalancingCacheManager/>
+            <RebalancingCacheManager />
           </Flex>
         </Flex>
         {buildTabs()}
@@ -219,9 +193,7 @@ const CacheManagers = () => {
   return (
     <React.Fragment>
       {buildHeader()}
-      <PageSection variant={PageSectionVariants.default}>
-        {buildSelectedContent()}
-      </PageSection>
+      <PageSection variant={PageSectionVariants.default}>{buildSelectedContent()}</PageSection>
     </React.Fragment>
   );
 };

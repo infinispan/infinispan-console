@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {cellWidth, Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
+import React, { useEffect, useState } from 'react';
+import { cellWidth, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import {
   Bullseye,
   EmptyState,
@@ -19,27 +19,22 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
-import {DeleteCounter} from '@app/Counters/DeleteCounter';
-import {useFetchCounters} from '@app/services/countersHook';
-import {useTranslation} from 'react-i18next';
+import { DeleteCounter } from '@app/Counters/DeleteCounter';
+import { useFetchCounters } from '@app/services/countersHook';
+import { useTranslation } from 'react-i18next';
 
-const CounterTableDisplay = (props: {
-  setCountersCount: (number) => void;
-  isVisible: boolean;
-}) => {
+const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
   const STRONG_COUNTER = '0';
   const WEAK_COUNTER = '1';
   const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
   const [weakCounters, setWeakCounters] = useState<Counter[]>([]);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [selectedCounterType, setSelectedCounterType] = useState(
-    STRONG_COUNTER
-  );
+  const [selectedCounterType, setSelectedCounterType] = useState(STRONG_COUNTER);
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
@@ -53,22 +48,20 @@ const CounterTableDisplay = (props: {
   const strongCountersActions = [
     {
       title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) =>
-        setCounterToDelete(rowData.cells[0].title),
-    },
+      onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
+    }
   ];
 
   const weakCountersActions = [
     {
       title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) =>
-        setCounterToDelete(rowData.cells[0].title),
-    },
+      onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
+    }
   ];
 
   const [countersPagination, setCountersPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
 
@@ -94,9 +87,9 @@ const CounterTableDisplay = (props: {
   ];
 
   const loadCounters = () => {
-      if(counters) {
-        const weakCounters = counters.filter(counter => counter.config.type == t('cache-managers.weak'));
-        const strongCounters = counters.filter(counter => counter.config.type == t('cache-managers.strong'));
+    if (counters) {
+      const weakCounters = counters.filter((counter) => counter.config.type == t('cache-managers.weak'));
+      const strongCounters = counters.filter((counter) => counter.config.type == t('cache-managers.strong'));
 
       setWeakCounters(weakCounters);
       setStrongCounters(strongCounters);
@@ -110,29 +103,24 @@ const CounterTableDisplay = (props: {
 
       setFilteredCounters(currentCounters);
       props.setCountersCount(counters.length);
-      const initSlice =
-        (countersPagination.page - 1) * countersPagination.perPage;
-      updateRows(
-        currentCounters.slice(initSlice, initSlice + countersPagination.perPage)
-      );
+      const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
+      updateRows(currentCounters.slice(initSlice, initSlice + countersPagination.perPage));
     }
   };
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
       page: pageNumber,
-      perPage: countersPagination.perPage,
+      perPage: countersPagination.perPage
     });
     const initSlice = (pageNumber - 1) * countersPagination.perPage;
-    updateRows(
-      filteredCounters.slice(initSlice, initSlice + countersPagination.perPage)
-    );
+    updateRows(filteredCounters.slice(initSlice, initSlice + countersPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setCountersPagination({
       page: countersPagination.page,
-      perPage: perPage,
+      perPage: perPage
     });
     const initSlice = (countersPagination.page - 1) * perPage;
     updateRows(filteredCounters.slice(initSlice, initSlice + perPage));
@@ -186,15 +174,13 @@ const CounterTableDisplay = (props: {
                     <Title headingLevel="h2" size="lg">
                       {t('cache-managers.no-counters-status')}
                     </Title>
-                    <EmptyStateBody>
-                      {t('cache-managers.no-counters-body')}
-                    </EmptyStateBody>
+                    <EmptyStateBody>{t('cache-managers.no-counters-body')}</EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
-              ),
-            },
-          ],
-        },
+              )
+            }
+          ]
+        }
       ];
       setActions([]);
     } else {
@@ -206,15 +192,11 @@ const CounterTableDisplay = (props: {
             { title: displayUtils.formatNumber(counter.value) },
             { title: displayUtils.formatNumber(counter.config.initialValue) },
             { title: counter.config.storage },
-            { title: displayConfig(counter.config) },
-          ],
+            { title: displayConfig(counter.config) }
+          ]
         };
       });
-      setActions(
-        selectedCounterType === STRONG_COUNTER
-          ? strongCountersActions
-          : weakCountersActions
-      );
+      setActions(selectedCounterType === STRONG_COUNTER ? strongCountersActions : weakCountersActions);
     }
     setRows(rows);
   };
@@ -255,7 +237,7 @@ const CounterTableDisplay = (props: {
         key="weak-counter"
       >
         {t('cache-managers.weak-counters')}
-      </OptionsMenuItem>,
+      </OptionsMenuItem>
     ];
     const toggle = (
       <OptionsMenuToggle
@@ -268,14 +250,7 @@ const CounterTableDisplay = (props: {
       />
     );
 
-    return (
-      <OptionsMenu
-        id="filter-counter-menu"
-        menuItems={menuItems}
-        isOpen={isOpenFilter}
-        toggle={toggle}
-      />
-    );
+    return <OptionsMenu id="filter-counter-menu" menuItems={menuItems} isOpen={isOpenFilter} toggle={toggle} />;
   };
 
   return (

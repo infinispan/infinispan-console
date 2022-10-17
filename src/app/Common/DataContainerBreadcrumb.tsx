@@ -2,17 +2,14 @@ import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import * as React from 'react';
 
-const DataContainerBreadcrumb = (props: {
-  currentPage: string;
-  cacheName?: string;
-}) => {
+const DataContainerBreadcrumb = (props: { currentPage: string; cacheName?: string }) => {
   const addCacheName = () => {
     if (props.cacheName) {
       return (
-        <BreadcrumbItem data-cy='cacheNameLink'>
+        <BreadcrumbItem data-cy="cacheNameLink">
           <Link
             to={{
-              pathname: '/cache/' + encodeURIComponent(props.cacheName),
+              pathname: '/cache/' + encodeURIComponent(props.cacheName)
             }}
           >
             {props.cacheName}
@@ -25,10 +22,10 @@ const DataContainerBreadcrumb = (props: {
 
   return (
     <Breadcrumb>
-      <BreadcrumbItem data-cy='dataContainerLink'>
+      <BreadcrumbItem data-cy="dataContainerLink">
         <Link
           to={{
-            pathname: '/',
+            pathname: '/'
           }}
         >
           Data container

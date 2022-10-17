@@ -12,7 +12,7 @@ const ConsoleBackground = () => {
     sm: sm,
     sm2x: sm2x,
     xs: xs,
-    xs2x: xs2x,
+    xs2x: xs2x
   };
 
   const defaultFilter = (

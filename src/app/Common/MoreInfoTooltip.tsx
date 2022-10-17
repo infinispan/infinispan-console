@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Flex,
-  FlexItem,
-  Text,
-  TextContent,
-  Tooltip,
-  TooltipPosition,
-  TextVariants
-} from '@patternfly/react-core';
+import { Flex, FlexItem, Text, TextContent, Tooltip, TooltipPosition, TextVariants } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import {
   chart_global_Fill_Color_white,
@@ -20,14 +12,14 @@ import {
 /**
  * This component is used to add tooltips in the labels of the forms
  */
-const MoreInfoTooltip = (props: { label: string; toolTip: string, textComponent?: TextVariants }) => {
+const MoreInfoTooltip = (props: { label: string; toolTip: string; textComponent?: TextVariants }) => {
   const buildTooltipContent = () => {
     return (
       <TextContent>
         <Text
           style={{
             fontSize: global_FontSize_sm.value,
-            color: chart_global_Fill_Color_white.value,
+            color: chart_global_Fill_Color_white.value
           }}
         >
           {props.toolTip}
@@ -41,12 +33,10 @@ const MoreInfoTooltip = (props: { label: string; toolTip: string, textComponent?
       <Flex spaceItems={{ default: 'spaceItemsNone' }}>
         <FlexItem>
           <TextContent>
-            <Text component={props.textComponent}>
-              {props.label}
-            </Text>
+            <Text component={props.textComponent}>{props.label}</Text>
           </TextContent>
         </FlexItem>
-        <FlexItem >
+        <FlexItem>
           <Tooltip
             className={'pf-m-redhat-font'}
             position={TooltipPosition.right}
@@ -57,13 +47,13 @@ const MoreInfoTooltip = (props: { label: string; toolTip: string, textComponent?
               style={{
                 fontSize: global_FontSize_md.value,
                 paddingLeft: global_spacer_xs.value,
-                paddingTop: global_spacer_xs.value,
+                paddingTop: global_spacer_xs.value
               }}
             />
           </Tooltip>
         </FlexItem>
       </Flex>
-    </React.Fragment >
+    </React.Fragment>
   );
 };
 export { MoreInfoTooltip };

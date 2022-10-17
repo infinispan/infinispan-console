@@ -1,5 +1,5 @@
-import {useContext} from 'react';
-import {CreateCacheContext} from "@app/providers/CreateCacheProvider";
+import { useContext } from 'react';
+import { CreateCacheContext } from '@app/providers/CreateCacheProvider';
 
 export function useCreateCache() {
   const { configuration, setConfiguration, addFeature, removeFeature } = useContext(CreateCacheContext);

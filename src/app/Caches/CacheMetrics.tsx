@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -8,7 +8,8 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
-  GridItem, Spinner,
+  GridItem,
+  Spinner,
   Text,
   TextContent,
   TextList,
@@ -19,38 +20,36 @@ import {
   Title
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import {CubesIcon} from '@patternfly/react-icons';
-import {QueryMetrics} from '@app/Caches/Query/QueryMetrics';
-import {DataDistributionChart} from './DataDistributionChart';
-import {PopoverHelp} from '@app/Common/PopoverHelp';
-import {useTranslation} from 'react-i18next';
-import {StorageType} from "@services/infinispanRefData";
-import {DataAccessChart} from "./DataAccessChart";
-import {useCacheDetail} from "@app/services/cachesHook";
+import { CubesIcon } from '@patternfly/react-icons';
+import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
+import { DataDistributionChart } from './DataDistributionChart';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { useTranslation } from 'react-i18next';
+import { StorageType } from '@services/infinispanRefData';
+import { DataAccessChart } from './DataAccessChart';
+import { useCacheDetail } from '@app/services/cachesHook';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
-  const {cache, error, loading} = useCacheDetail();
+  const { cache, error, loading } = useCacheDetail();
   const [stats, setStats] = useState<CacheStats | undefined>(cache.stats);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
-  const [memory, setMemory] = useState<string | undefined>(undefined)
+  const [memory, setMemory] = useState<string | undefined>(undefined);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
   useEffect(() => {
-    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName]
-    const cacheMode = Object.keys(loadMemory)[0]
-    if(loadMemory[cacheMode].memory){
-      if(loadMemory[cacheMode].memory.storage==="HEAP" && loadMemory[cacheMode].memory["max-size"])
-        setMemory(loadMemory[cacheMode].memory.storage)
-      else if(loadMemory[cacheMode].memory.storage==="OFF_HEAP")
-        setMemory(loadMemory[cacheMode].memory.storage)
+    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName];
+    const cacheMode = Object.keys(loadMemory)[0];
+    if (loadMemory[cacheMode].memory) {
+      if (loadMemory[cacheMode].memory.storage === 'HEAP' && loadMemory[cacheMode].memory['max-size'])
+        setMemory(loadMemory[cacheMode].memory.storage);
+      else if (loadMemory[cacheMode].memory.storage === 'OFF_HEAP') setMemory(loadMemory[cacheMode].memory.storage);
     } else {
-      setMemory("HEAP");
+      setMemory('HEAP');
     }
 
     setStats(cache.stats);
-    let loadQueryStats =
-      cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
+    let loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
     setDisplayQueryStats(loadQueryStats);
   }, [cache, error]);
 
@@ -75,7 +74,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='average-reads'
+                  name="average-reads"
                   label={t('caches.cache-metrics.average-reads')}
                   content={t('caches.cache-metrics.average-reads-tooltip')}
                   text={t('caches.cache-metrics.average-reads')}
@@ -86,7 +85,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='average-writes'
+                  name="average-writes"
                   label={t('caches.cache-metrics.average-writes')}
                   content={t('caches.cache-metrics.average-writes-tooltip')}
                   text={t('caches.cache-metrics.average-writes')}
@@ -97,7 +96,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='average-deletes'
+                  name="average-deletes"
                   label={t('caches.cache-metrics.average-deletes')}
                   content={t('caches.cache-metrics.average-deletes-tooltip')}
                   text={t('caches.cache-metrics.average-deletes')}
@@ -114,9 +113,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     if (!displayQueryStats) {
       return;
     }
-    return (
-      <QueryMetrics cacheName={props.cacheName} />
-    );
+    return <QueryMetrics cacheName={props.cacheName} />;
   };
 
   const buildEntriesCard = () => {
@@ -135,7 +132,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='approximate-unique-entries'
+                  name="approximate-unique-entries"
                   label={t('caches.cache-metrics.approximate-unique-entries')}
                   content={t('caches.cache-metrics.approximate-unique-entries-tooltip')}
                   text={t('caches.cache-metrics.approximate-unique-entries')}
@@ -146,7 +143,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='min-nodes'
+                  name="min-nodes"
                   label={t('caches.cache-metrics.approximate-entries-in-memory')}
                   content={t('caches.cache-metrics.approximate-entries-in-memory-tooltip')}
                   text={t('caches.cache-metrics.approximate-entries-in-memory')}
@@ -157,7 +154,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='approximate-unique-entries'
+                  name="approximate-unique-entries"
                   label={t('caches.cache-metrics.approximate-entries')}
                   content={t('caches.cache-metrics.approximate-entries-tooltip')}
                   text={t('caches.cache-metrics.approximate-entries')}
@@ -183,28 +180,28 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             <PopoverHelp
-              name='cache-size-off-heap'
+              name="cache-size-off-heap"
               label={t('caches.cache-metrics.cache-size-off-heap')}
               content={t('caches.cache-metrics.cache-size-off-heap-tooltip')}
               text={t('caches.cache-metrics.cache-size-off-heap')}
             />
           </TextListItem>
         </React.Fragment>
-      )
+      );
     } else {
       content = (
         <React.Fragment>
-            <TextListItem aria-label="view-cache-metrics-heap" component={TextListItemVariants.dt}>
-              {displayUtils.formatNumber(stats.data_memory_used)}
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
-              <PopoverHelp
-                name='cache-size-heap'
-                label={t('caches.cache-metrics.cache-size-heap')}
-                content={t('caches.cache-metrics.cache-size-heap-tooltip')}
-                text={t('caches.cache-metrics.cache-size-heap')}
-              />
-            </TextListItem>
+          <TextListItem aria-label="view-cache-metrics-heap" component={TextListItemVariants.dt}>
+            {displayUtils.formatNumber(stats.data_memory_used)}
+          </TextListItem>
+          <TextListItem component={TextListItemVariants.dd}>
+            <PopoverHelp
+              name="cache-size-heap"
+              label={t('caches.cache-metrics.cache-size-heap')}
+              content={t('caches.cache-metrics.cache-size-heap-tooltip')}
+              text={t('caches.cache-metrics.cache-size-heap')}
+            />
+          </TextListItem>
         </React.Fragment>
       );
     }
@@ -221,7 +218,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 <PopoverHelp
-                  name='min-nodes'
+                  name="min-nodes"
                   label={t('caches.cache-metrics.min-nodes')}
                   content={t('caches.cache-metrics.min-nodes-tooltip')}
                   text={t('caches.cache-metrics.min-nodes')}
@@ -241,9 +238,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   }
 
   if (!stats || loading) {
-    return (
-      <Spinner size={'xl'}/>
-    )
+    return <Spinner size={'xl'} />;
   }
 
   if (!stats.enabled) {
@@ -267,11 +262,15 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={7}><DataDistributionChart cacheName={props.cacheName} /></GridItem>
-      <GridItem span={5}><DataAccessChart stats={stats}/></GridItem>
+      <GridItem span={7}>
+        <DataDistributionChart cacheName={props.cacheName} />
+      </GridItem>
+      <GridItem span={5}>
+        <DataAccessChart stats={stats} />
+      </GridItem>
       <GridItem span={12}>{buildQueryStats()}</GridItem>
     </Grid>
   );
-}
+};
 
 export { CacheMetrics };
