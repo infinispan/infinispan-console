@@ -1,17 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput,} from '@patternfly/react-core';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useCaches} from '@app/services/dataContainerHooks';
-import {ConsoleServices} from "@services/ConsoleServices";
+import React, { useEffect, useState } from 'react';
+import { Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput } from '@patternfly/react-core';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useCaches } from '@app/services/dataContainerHooks';
+import { ConsoleServices } from '@services/ConsoleServices';
 
 /**
  * Delete cache modal
  */
-const DeleteCache = (props: {
-  cacheName: string;
-  isModalOpen: boolean;
-  closeModal: (boolean) => void;
-}) => {
+const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { addAlert } = useApiAlert();
   const { reloadCaches } = useCaches();
   const nameInputRef = React.useRef(null);
@@ -22,9 +18,7 @@ const DeleteCache = (props: {
     }
   }, [props.isModalOpen]);
 
-  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<
-    'success' | 'error' | 'default'
-  >('default');
+  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<'success' | 'error' | 'default'>('default');
   const [cacheNameFormValue, setCacheNameFormValue] = useState('');
 
   const clearDeleteCacheModal = (deleteDone: boolean) => {
@@ -44,11 +38,13 @@ const DeleteCache = (props: {
     let validCacheName = trim === props.cacheName;
     setIsValidCacheNameValue(validCacheName ? 'success' : 'error');
     if (validCacheName) {
-      ConsoleServices.caches().deleteCache(props.cacheName).then((actionResponse) => {
-        clearDeleteCacheModal(actionResponse.success);
-        addAlert(actionResponse);
-        reloadCaches();
-      });
+      ConsoleServices.caches()
+        .deleteCache(props.cacheName)
+        .then((actionResponse) => {
+          clearDeleteCacheModal(actionResponse.success);
+          addAlert(actionResponse);
+          reloadCaches();
+        });
     }
   };
 
@@ -87,12 +83,14 @@ const DeleteCache = (props: {
           data-cy="cancelCacheDeleteButton"
         >
           Cancel
-        </Button>,
+        </Button>
       ]}
     >
-      <Form onSubmit={(e) => {
-        e.preventDefault();
-      }}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <FormGroup
           label="Enter the cache name to delete it."
           helperTextInvalid="Cache names do not match."

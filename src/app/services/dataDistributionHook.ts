@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 
 export function useDataDistribution(cacheName: string) {
-  const [dataDistribution, setDataDistribution] =
-    useState<DataDistribution[]>();
+  const [dataDistribution, setDataDistribution] = useState<DataDistribution[]>();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +24,7 @@ export function useDataDistribution(cacheName: string) {
   return { loading, error, dataDistribution };
 }
 
-export function useClusterDistribution(){
+export function useClusterDistribution() {
   const [clusterDistribution, setClusterDistribution] = useState<ClusterDistribution[]>();
   const [errorCluster, setErrorCluster] = useState('');
   const [loadingCluster, setLoadingCluster] = useState(true);

@@ -1,5 +1,5 @@
-import {ProtobufDataUtils} from "@services/protobufDataUtils";
-import {ContentType} from "@services/infinispanRefData";
+import { ProtobufDataUtils } from '@services/protobufDataUtils';
+import { ContentType } from '@services/infinispanRefData';
 
 describe('ProtobufData tests', () => {
   test('from protobuf type to ContentType', () => {

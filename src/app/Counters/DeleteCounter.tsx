@@ -1,21 +1,11 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useDeleteCounter } from '@app/services/countersHook';
 
 /**
  * Delete counter modal
  */
-const DeleteCounter = (props: {
-  name: string;
-  isModalOpen: boolean;
-  closeModal: () => void;
-}) => {
+const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: () => void }) => {
   const { onDelete } = useDeleteCounter(props.name);
 
   return (
@@ -41,20 +31,14 @@ const DeleteCounter = (props: {
         >
           Delete
         </Button>,
-        <Button
-          key={'Cancel'}
-          aria-label={'Cancel'}
-          variant={ButtonVariant.link}
-          onClick={props.closeModal}
-        >
+        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal}>
           Cancel
-        </Button>,
+        </Button>
       ]}
     >
       <TextContent>
         <Text>
-          The counter will be permanently deleted from the cluster{' '}
-          <strong>'{props.name}'</strong>
+          The counter will be permanently deleted from the cluster <strong>'{props.name}'</strong>
           <br />
           You can always recreate the counter.
         </Text>

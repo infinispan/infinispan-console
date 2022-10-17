@@ -11,7 +11,7 @@ describe('Banner Alert Test', () => {
     mockedBannerHook.useBanner.mockImplementation(() => {
       return {
         banner: 'There is a big bug',
-        setBanner: (string) => {},
+        setBanner: (string) => {}
       };
     });
 
@@ -24,7 +24,7 @@ describe('Banner Alert Test', () => {
     mockedBannerHook.useBanner.mockImplementation(() => {
       return {
         banner: '',
-        setBanner: (string) => {},
+        setBanner: (string) => {}
       };
     });
 

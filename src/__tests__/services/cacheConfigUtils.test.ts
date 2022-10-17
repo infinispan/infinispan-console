@@ -1,28 +1,13 @@
-import {
-  CacheConfigUtils,
-  Distributed,
-  Invalidated,
-  Local,
-  Replicated,
-  Scattered
-} from "@services/cacheConfigUtils";
-import {ContentType, EncodingType} from "@services/infinispanRefData";
+import { CacheConfigUtils, Distributed, Invalidated, Local, Replicated, Scattered } from '@services/cacheConfigUtils';
+import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 describe('Cache Config Utils tests', () => {
   test('cache topology', () => {
-    let distributed =
-      '{\n' +
-      '  "distributed-cache": {\n' +
-      '  }\n' +
-      '}';
+    let distributed = '{\n' + '  "distributed-cache": {\n' + '  }\n' + '}';
 
     expect(CacheConfigUtils.mapCacheType(JSON.parse(distributed))).toBe('Distributed');
 
-    let replicated =
-      '{\n' +
-      '  "replicated-cache": {\n' +
-      '  }\n' +
-      '}';
+    let replicated = '{\n' + '  "replicated-cache": {\n' + '  }\n' + '}';
 
     expect(CacheConfigUtils.mapCacheType(JSON.parse(replicated))).toBe('Replicated');
 
@@ -39,7 +24,7 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.isEditable(EncodingType.XML)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Text)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JSON)).toBeTruthy();
-    expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy()
+    expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeFalsy();
     expect(CacheConfigUtils.isEditable(EncodingType.Octet)).toBeFalsy();
     expect(CacheConfigUtils.isEditable(EncodingType.Empty)).toBeFalsy();
@@ -49,13 +34,14 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Text)).toStrictEqual([ContentType.StringContentType]);
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.JSON)).toStrictEqual([ContentType.JSON]);
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.XML)).toStrictEqual([ContentType.XML]);
-    const javaContentTypes = [ContentType.StringContentType,
+    const javaContentTypes = [
+      ContentType.StringContentType,
       ContentType.IntegerContentType,
       ContentType.LongContentType,
       ContentType.FloatContentType,
       ContentType.DoubleContentType,
       ContentType.BooleanContentType,
-      ContentType.JSON,
+      ContentType.JSON
     ];
 
     expect(CacheConfigUtils.getContentTypeOptions(EncodingType.Java)).toStrictEqual(javaContentTypes);

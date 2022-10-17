@@ -1,18 +1,10 @@
 import * as React from 'react';
-import {
-  Button,
-  Modal,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
-  TextVariants,
-} from '@patternfly/react-core';
+import { Button, Modal, Stack, StackItem, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import {
   global_FontSize_4xl,
   global_spacer_md,
   global_spacer_sm,
-  global_warning_color_100,
+  global_warning_color_100
 } from '@patternfly/react-tokens';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +27,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 fontSize: global_FontSize_4xl.value,
                 verticalAlign: 'middle',
                 marginRight: global_spacer_md.value,
-                marginBottom: global_spacer_sm.value,
+                marginBottom: global_spacer_sm.value
               }}
             />
             {t('support.no-user')}
@@ -44,9 +36,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       </StackItem>
       <StackItem>
         <TextContent>
-          <Text>
-            {t('support.no-user-text')}
-          </Text>
+          <Text>{t('support.no-user-text')}</Text>
         </TextContent>
       </StackItem>
     </Stack>
@@ -65,14 +55,12 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       actions={[
         <Button aria-label={'Reload'} key="reload" onClick={props.closeModal}>
           {t('support.reload-button')}
-        </Button>,
+        </Button>
       ]}
     >
       <TextContent>
         <Text component={TextVariants.h6}>{t('support.text-create-user')}</Text>
-        <Text component={TextVariants.pre}>
-          {t('support.text-command')}
-        </Text>
+        <Text component={TextVariants.pre}>{t('support.text-command')}</Text>
       </TextContent>
     </Modal>
   );

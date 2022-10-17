@@ -4,10 +4,8 @@ export const filterInternalProtobufTypes = (schemas: string[]) => {
     'org.infinispan.persistence',
     'org.infinispan.query',
     'org.infinispan.commons',
-    'google',
+    'google'
   ];
 
-  return schemas.filter(
-    (schema) => !internalProtobufTypes.some((item) => schema.includes(item))
-  );
+  return schemas.filter((schema) => !internalProtobufTypes.some((item) => schema.includes(item)));
 };

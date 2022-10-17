@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  TextVariants,
-  Tooltip,
-  TooltipPosition,
-} from '@patternfly/react-core';
+import { Text, TextContent, TextVariants, Tooltip, TooltipPosition } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { global_FontSize_sm, global_spacer_sm } from '@patternfly/react-tokens';
 
@@ -16,14 +10,11 @@ const CustomCardTitle = (props: { title: string; toolTip?: string }) => {
     }
 
     return (
-      <Tooltip
-        position={TooltipPosition.top}
-        content={<div>{props.toolTip}</div>}
-      >
+      <Tooltip position={TooltipPosition.top} content={<div>{props.toolTip}</div>}>
         <OutlinedQuestionCircleIcon
           style={{
             fontSize: global_FontSize_sm.value,
-            marginLeft: global_spacer_sm.value,
+            marginLeft: global_spacer_sm.value
           }}
         />
       </Tooltip>

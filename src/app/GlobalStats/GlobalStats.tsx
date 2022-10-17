@@ -23,7 +23,7 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title,
+  Title
 } from '@patternfly/react-core';
 import { ArrowIcon, CubesIcon } from '@patternfly/react-icons';
 import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
@@ -33,7 +33,7 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { useFetchGlobalStats } from '@app/services/statsHook';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import ClusterDistributionChart from "@app/GlobalStats/ClusterDistributionChart";
+import ClusterDistributionChart from '@app/GlobalStats/ClusterDistributionChart';
 
 const GlobalStats = () => {
   const { t } = useTranslation();
@@ -41,14 +41,7 @@ const GlobalStats = () => {
   const { stats, error, loading } = useFetchGlobalStats();
 
   const allOps = () => {
-    return (
-      stats.hits +
-      stats.misses +
-      stats.remove_hits +
-      stats.remove_misses +
-      stats.stores +
-      stats.evictions
-    );
+    return stats.hits + stats.misses + stats.remove_hits + stats.remove_misses + stats.stores + stats.evictions;
     if (stats?.statistics_enabled) {
     }
     return 0;
@@ -82,13 +75,9 @@ const GlobalStats = () => {
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.number_of_entries)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.no-of-entries')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.no-of-entries')}</TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
-                {displayUtils.formatNumber(
-                  stats.current_number_of_entries_in_memory
-                )}
+                {displayUtils.formatNumber(stats.current_number_of_entries_in_memory)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
                 {t('global-stats.current-entry-in-memory')}
@@ -96,21 +85,15 @@ const GlobalStats = () => {
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.total_number_of_entries)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.total-no-entries')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.total-no-entries')}</TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.data_memory_used)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.data-memory-used')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.data-memory-used')}</TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.off_heap_memory_used)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.off-heap-memory-used')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.off-heap-memory-used')}</TextListItem>
             </TextList>
           </TextContent>
         </CardBody>
@@ -141,59 +124,38 @@ const GlobalStats = () => {
                 { x: t('global-stats.data-access-stores'), y: stats.stores },
                 {
                   x: t('global-stats.data-access-remove-hits'),
-                  y: stats.remove_hits,
+                  y: stats.remove_hits
                 },
                 {
                   x: t('global-stats.data-access-remove-misses'),
-                  y: stats.remove_misses,
+                  y: stats.remove_misses
                 },
                 {
                   x: t('global-stats.data-access-evictions'),
-                  y: stats.evictions,
-                },
+                  y: stats.evictions
+                }
               ]}
-              labels={({ datum }) =>
-                `${datum.x}: ${displayUtils.formatNumber(
-                  (datum.y * 100) / allOps()
-                )}%`
-              }
+              labels={({ datum }) => `${datum.x}: ${displayUtils.formatNumber((datum.y * 100) / allOps())}%`}
               legendData={[
                 {
-                  name:
-                    t('global-stats.data-access-hits') +
-                    ': ' +
-                    displayUtils.formatNumber(stats.hits),
+                  name: t('global-stats.data-access-hits') + ': ' + displayUtils.formatNumber(stats.hits)
+                },
+                {
+                  name: t('global-stats.data-access-misses') + ': ' + displayUtils.formatNumber(stats.misses)
+                },
+                {
+                  name: t('global-stats.data-access-stores') + ': ' + displayUtils.formatNumber(stats.stores)
+                },
+                {
+                  name: t('global-stats.data-access-remove-hits') + ': ' + displayUtils.formatNumber(stats.remove_hits)
                 },
                 {
                   name:
-                    t('global-stats.data-access-misses') +
-                    ': ' +
-                    displayUtils.formatNumber(stats.misses),
+                    t('global-stats.data-access-remove-misses') + ': ' + displayUtils.formatNumber(stats.remove_misses)
                 },
                 {
-                  name:
-                    t('global-stats.data-access-stores') +
-                    ': ' +
-                    displayUtils.formatNumber(stats.stores),
-                },
-                {
-                  name:
-                    t('global-stats.data-access-remove-hits') +
-                    ': ' +
-                    displayUtils.formatNumber(stats.remove_hits),
-                },
-                {
-                  name:
-                    t('global-stats.data-access-remove-misses') +
-                    ': ' +
-                    displayUtils.formatNumber(stats.remove_misses),
-                },
-                {
-                  name:
-                    t('global-stats.data-access-evictions') +
-                    ': ' +
-                    displayUtils.formatNumber(stats.evictions),
-                },
+                  name: t('global-stats.data-access-evictions') + ': ' + displayUtils.formatNumber(stats.evictions)
+                }
               ]}
               legendOrientation="vertical"
               legendPosition="bottom"
@@ -201,7 +163,7 @@ const GlobalStats = () => {
                 bottom: 160,
                 left: 0,
                 right: 0, // Adjusted to accommodate legend
-                top: 0,
+                top: 0
               }}
               subTitle={t('global-stats.data-access-subtitle')}
               title={displayUtils.formatBigNumber(allOps())}
@@ -230,21 +192,15 @@ const GlobalStats = () => {
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_read_time)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.average-reads')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-reads')}</TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_remove_time)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.average-writes')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-writes')}</TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.average_write_time)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.average-removes')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-removes')}</TextListItem>
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.read_write_ratio)}
               </TextListItem>
@@ -254,9 +210,7 @@ const GlobalStats = () => {
               <TextListItem component={TextListItemVariants.dt}>
                 {displayUtils.formatNumber(stats.hit_ratio)}
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {t('global-stats.average-hits-ratio')}
-              </TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>{t('global-stats.average-hits-ratio')}</TextListItem>
             </TextList>
           </TextContent>
         </CardBody>
@@ -338,9 +292,7 @@ const GlobalStats = () => {
               <Title headingLevel="h5" size="lg">
                 {t('global-stats.global-stats-disabled')}
               </Title>
-              <EmptyStateBody>
-                {t('global-stats.global-stats-disabled-help')}
-              </EmptyStateBody>
+              <EmptyStateBody>{t('global-stats.global-stats-disabled-help')}</EmptyStateBody>
             </EmptyState>
           </CardBody>
         </Card>

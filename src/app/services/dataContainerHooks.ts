@@ -12,13 +12,11 @@ export function useDataContainer() {
 }
 
 export function useCaches() {
-  const { caches, loadingCaches, errorCaches, reloadCaches } = useContext(
-    DataContainerContext
-  );
+  const { caches, loadingCaches, errorCaches, reloadCaches } = useContext(DataContainerContext);
   return {
     loadingCaches,
     errorCaches,
     caches,
-    reloadCaches,
+    reloadCaches
   };
 }

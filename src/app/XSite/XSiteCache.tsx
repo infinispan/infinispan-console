@@ -18,22 +18,22 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter, } from '@patternfly/react-table';
+import { cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter } from '@patternfly/react-table';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { StateTransfer } from '@app/XSite/StateTransfer';
 import { Status } from '@app/Common/Status';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from "@services/ConsoleServices";
-import { ConsoleACL } from "@services/securityService";
-import { useConnectedUser } from "@app/services/userManagementHook";
-import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from "@services/displayUtils";
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from '@services/displayUtils';
 
 interface StateTransferModalState {
   site: string;
@@ -54,9 +54,11 @@ const XSiteCache = (props) => {
   const [backupsStatus, setBackupsStatus] = useState(new Map());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [stateTransferModal, setStateTransferModal] = useState<
-    StateTransferModalState
-  >({ site: '', open: false, action: '' });
+  const [stateTransferModal, setStateTransferModal] = useState<StateTransferModalState>({
+    site: '',
+    open: false,
+    action: ''
+  });
 
   useEffect(() => {
     if (loading) {
@@ -75,36 +77,34 @@ const XSiteCache = (props) => {
             setBackups(eitherResponse.value);
             eitherResponse.value.map((xsite) => {
               let latestBackups = new Map();
-              crossSiteReplicationService
-                .backupsForSite(cacheName, xsite.name)
-                .then((eitherResponse) => {
-                  if (eitherResponse.isRight()) {
-                    latestBackups.set(xsite.name, eitherResponse.value);
-                    setBackupsStatus(latestBackups);
-                  } else {
-                    addAlert(eitherResponse.value);
-                  }
-                });
+              crossSiteReplicationService.backupsForSite(cacheName, xsite.name).then((eitherResponse) => {
+                if (eitherResponse.isRight()) {
+                  latestBackups.set(xsite.name, eitherResponse.value);
+                  setBackupsStatus(latestBackups);
+                } else {
+                  addAlert(eitherResponse.value);
+                }
+              });
             });
           } else {
             setError(eitherResponse.value.message);
             addAlert(eitherResponse.value);
           }
-        }).then(() => {
+        })
+        .then(() => {
           // Third get state transfer status
           crossSiteReplicationService
             .stateTransferStatus(cacheName)
             .then((eitherResponse) => {
               let latestStStatus = new Map();
               if (eitherResponse.isRight()) {
-                eitherResponse.value.map((stStatus) =>
-                  latestStStatus.set(stStatus.site, stStatus.status)
-                );
+                eitherResponse.value.map((stStatus) => latestStStatus.set(stStatus.site, stStatus.status));
                 setStateTransferStatus(latestStStatus);
               } else {
                 addAlert(eitherResponse.value);
               }
-            }).then(() => setLoading(false));
+            })
+            .then(() => setLoading(false));
         });
     }
   }, [loading]);
@@ -118,18 +118,18 @@ const XSiteCache = (props) => {
     {
       title: 'Status',
       transforms: [cellWidth(30), textCenter],
-      cellTransforms: [textCenter],
+      cellTransforms: [textCenter]
     },
     {
       title: 'Transfer status / Result',
       transforms: [cellWidth(40), textCenter],
-      cellTransforms: [textCenter],
+      cellTransforms: [textCenter]
     },
     {
       title: 'Action',
       transforms: [cellWidth(20), textCenter],
-      cellTransforms: [textCenter],
-    },
+      cellTransforms: [textCenter]
+    }
   ];
 
   const bringOnlineTakeOffLine = (site: string, status: string) => {
@@ -156,7 +156,8 @@ const XSiteCache = (props) => {
       .clearStateTransferState(cacheName, site)
       .then((result) => {
         addAlert(result);
-      }).finally(() => setLoading(true));
+      })
+      .finally(() => setLoading(true));
   };
 
   const buildStatus = (site: string, status: string) => {
@@ -169,26 +170,20 @@ const XSiteCache = (props) => {
                 <InfoCircleIcon
                   style={{
                     marginRight: global_spacer_xs.value,
-                    marginTop: global_spacer_xs.value,
+                    marginTop: global_spacer_xs.value
                   }}
                 />
                 Mixed
               </Badge>
             </ToolbarItem>
             <ToolbarItem>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() => bringOnlineTakeOffLine(site, 'offline')}
-              >
+              <Button variant={ButtonVariant.link} onClick={() => bringOnlineTakeOffLine(site, 'offline')}>
                 Bring all online
               </Button>
             </ToolbarItem>
             <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
             <ToolbarItem>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() => bringOnlineTakeOffLine(site, 'online')}
-              >
+              <Button variant={ButtonVariant.link} onClick={() => bringOnlineTakeOffLine(site, 'online')}>
                 Take all offline
               </Button>
             </ToolbarItem>
@@ -232,7 +227,7 @@ const XSiteCache = (props) => {
             setStateTransferModal({
               site: backup.name,
               open: true,
-              action: 'cancel',
+              action: 'cancel'
             })
           }
         >
@@ -241,16 +236,9 @@ const XSiteCache = (props) => {
       );
     }
 
-    if (
-      stStatus == ST_SEND_OK ||
-      stStatus == ST_SEND_FAILED ||
-      stStatus == ST_SEND_CANCELED
-    ) {
+    if (stStatus == ST_SEND_OK || stStatus == ST_SEND_FAILED || stStatus == ST_SEND_CANCELED) {
       return (
-        <Button
-          variant={ButtonVariant.tertiary}
-          onClick={() => clearStateTransfer(backup.name)}
-        >
+        <Button variant={ButtonVariant.tertiary} onClick={() => clearStateTransfer(backup.name)}>
           Clear state
         </Button>
       );
@@ -263,7 +251,7 @@ const XSiteCache = (props) => {
           setStateTransferModal({
             site: backup.name,
             open: true,
-            action: 'start',
+            action: 'start'
           })
         }
       >
@@ -279,13 +267,15 @@ const XSiteCache = (props) => {
           .startStateTransfer(cacheName, stateTransferModal.site)
           .then((result) => {
             addAlert(result);
-          }).finally(() => setLoading(true));
+          })
+          .finally(() => setLoading(true));
       } else if (stateTransferModal.action == 'cancel') {
         crossSiteReplicationService
           .cancelStateTransfer(cacheName, stateTransferModal.site)
           .then((result) => {
             addAlert(result);
-          }).finally(() => setLoading(true));
+          })
+          .finally(() => setLoading(true));
       } else {
         setLoading(true);
       }
@@ -307,16 +297,10 @@ const XSiteCache = (props) => {
           cells: [
             {
               props: { colSpan: 4 },
-              title: (
-                <TableEmptyState
-                  loading={loading}
-                  error={error}
-                  empty={'Sites not found'}
-                />
-              ),
-            },
-          ],
-        },
+              title: <TableEmptyState loading={loading} error={error} empty={'Sites not found'} />
+            }
+          ]
+        }
       ];
     } else {
       currentRows = backups.map((backup) => {
@@ -326,8 +310,8 @@ const XSiteCache = (props) => {
             { title: backup.name },
             { title: buildStatus(backup.name, backup.status.status) },
             { title: buildStateTransferStatus(backup.name) },
-            { title: buildStateTransferButton(backup) },
-          ],
+            { title: buildStateTransferButton(backup) }
+          ]
         };
       });
     }
@@ -337,16 +321,10 @@ const XSiteCache = (props) => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb
-          currentPage="Backup management"
-          cacheName={cacheName}
-        />
+        <DataContainerBreadcrumb currentPage="Backup management" cacheName={cacheName} />
         <Level>
           <LevelItem>
-            <TextContent
-              style={{ marginTop: global_spacer_md.value }}
-              key={'title-backups'}
-            >
+            <TextContent style={{ marginTop: global_spacer_md.value }} key={'title-backups'}>
               <Text component={TextVariants.h1} key={'title-value-backups'}>
                 Backups management
               </Text>
@@ -356,7 +334,7 @@ const XSiteCache = (props) => {
             <Text key={'button-back'}>
               <Link
                 to={{
-                  pathname: '/cache/' + encodeURIComponent(cacheName),
+                  pathname: '/cache/' + encodeURIComponent(cacheName)
                 }}
               >
                 <Button variant={ButtonVariant.secondary}>Back</Button>

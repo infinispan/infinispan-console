@@ -20,7 +20,7 @@ const langDetectorOptions = {
   excludeCacheFor: ['cimode'], // languages to not persist (cookie, localStorage)
 
   // only detect languages that are in the whitelist
-  checkWhitelist: true,
+  checkWhitelist: true
 };
 
 const backendOptions = {
@@ -29,10 +29,10 @@ const backendOptions = {
     Promise.resolve(enBundle).then((data) => {
       callback(null, {
         data: JSON.stringify(data),
-        status: 200,
+        status: 200
       });
     });
-  },
+  }
 };
 
 i18n
@@ -49,9 +49,9 @@ i18n
     debug: true,
     detection: langDetectorOptions,
     interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
+      escapeValue: false // not needed for react as it escapes by default
     },
-    backend: backendOptions,
+    backend: backendOptions
   });
 
 export default i18n;

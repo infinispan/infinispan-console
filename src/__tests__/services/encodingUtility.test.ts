@@ -1,5 +1,5 @@
-import { ContentTypeHeaderMapper} from '@services/contentTypeHeaderMapper';
-import {ContentType} from "@services/infinispanRefData";
+import { ContentTypeHeaderMapper } from '@services/contentTypeHeaderMapper';
+import { ContentType } from '@services/infinispanRefData';
 
 describe('Encoding Utility tests', () => {
   test('from ContentType to string', () => {
@@ -31,21 +31,21 @@ describe('Encoding Utility tests', () => {
     expect(ContentTypeHeaderMapper.toContentType(null)).toBe(ContentType.StringContentType);
     expect(ContentTypeHeaderMapper.toContentType(undefined)).toBe(ContentType.StringContentType);
     expect(ContentTypeHeaderMapper.toContentType(null, ContentType.JSON)).toBe(ContentType.JSON);
-    expect(
-      ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.String')
-    ).toBe(ContentType.StringContentType);
-    expect(
-      ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Long')
-    ).toBe(ContentType.LongContentType);
-    expect(
-      ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Integer')
-    ).toBe(ContentType.IntegerContentType);
-    expect(
-      ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Boolean')
-    ).toBe(ContentType.BooleanContentType);
-    expect(
-      ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Double')
-    ).toBe(ContentType.DoubleContentType);
+    expect(ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.String')).toBe(
+      ContentType.StringContentType
+    );
+    expect(ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Long')).toBe(
+      ContentType.LongContentType
+    );
+    expect(ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Integer')).toBe(
+      ContentType.IntegerContentType
+    );
+    expect(ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Boolean')).toBe(
+      ContentType.BooleanContentType
+    );
+    expect(ContentTypeHeaderMapper.toContentType('application/x-java-object;type=java.lang.Double')).toBe(
+      ContentType.DoubleContentType
+    );
     expect(ContentTypeHeaderMapper.toContentType('application/json')).toBe(ContentType.JSON);
     expect(ContentTypeHeaderMapper.toContentType('application/xml')).toBe(ContentType.XML);
     expect(ContentTypeHeaderMapper.toContentType('application/yaml')).toBe(ContentType.YAML);
