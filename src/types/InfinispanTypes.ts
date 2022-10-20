@@ -197,7 +197,7 @@ interface Task {
 
 interface Counter {
   name: string;
-  value: number;
+  value: string;
   config: CounterConfig;
 }
 

@@ -31,7 +31,7 @@ export class CountersService {
   private getCounter(name: string): Promise<Counter> {
     let counter: Promise<Counter> = this.utils
       .fetch(this.endpoint + '/' + name, 'GET')
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((value) => <Counter>{ name: name, value: value });
 
     let counterConfig: Promise<CounterConfig> = this.getCounterConfig(name);
