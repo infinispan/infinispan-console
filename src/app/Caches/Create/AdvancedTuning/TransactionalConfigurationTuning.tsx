@@ -25,7 +25,6 @@ const TransactionalConfigurationTuning = () => {
   );
   const [completeTimeout, setCompleteTimeout] = useState(configuration.advanced.transactionalAdvance?.completeTimeout);
   const [reaperInterval, setReaperInterval] = useState(configuration.advanced.transactionalAdvance?.reaperInterval);
-  const [recoveryCache, setRecoveryCache] = useState(configuration.advanced.transactionalAdvance?.recoveryCache);
   const [isolationLevel, setIsolationLevel] = useState<IsolationLevel | undefined>(
     configuration.advanced.transactionalAdvance?.isolationLevel as IsolationLevel
   );
@@ -41,13 +40,12 @@ const TransactionalConfigurationTuning = () => {
             transactionManagerLookup: transactionManagerLookup,
             completeTimeout: completeTimeout,
             reaperInterval: reaperInterval,
-            recoveryCache: recoveryCache,
             isolationLevel: isolationLevel
           }
         }
       };
     });
-  }, [stopTimeout, transactionManagerLookup, completeTimeout, reaperInterval, recoveryCache, isolationLevel]);
+  }, [stopTimeout, transactionManagerLookup, completeTimeout, reaperInterval, isolationLevel]);
 
   if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
     return <div />;
@@ -108,75 +106,81 @@ const TransactionalConfigurationTuning = () => {
             />
           </FormGroup>
         </GridItem>
-        <FormGroup
-          fieldId="stopTimeout"
-          label={t('caches.create.configurations.advanced-options.stop-timeout')}
-          labelIcon={
-            <PopoverHelp
-              name="stopTimeout"
-              label={t('caches.create.configurations.advanced-options.stop-timeout')}
-              content={t('caches.create.configurations.advanced-options.stop-timeout-tooltip', {
-                brandname: brandname
-              })}
+        <GridItem span={6}>
+          <FormGroup
+            fieldId="stopTimeout"
+            label={t('caches.create.configurations.advanced-options.stop-timeout')}
+            labelIcon={
+              <PopoverHelp
+                name="stopTimeout"
+                label={t('caches.create.configurations.advanced-options.stop-timeout')}
+                content={t('caches.create.configurations.advanced-options.stop-timeout-tooltip', {
+                  brandname: brandname
+                })}
+              />
+            }
+          >
+            <TextInput
+              placeholder="30000"
+              value={stopTimeout}
+              type="number"
+              onChange={(val) => {
+                isNaN(parseInt(val)) ? setStopTimeout(undefined!) : setStopTimeout(parseInt(val));
+              }}
+              aria-label="stop-timeout"
             />
-          }
-        >
-          <TextInput
-            placeholder="30000"
-            value={stopTimeout}
-            type="number"
-            onChange={(val) => {
-              isNaN(parseInt(val)) ? setStopTimeout(undefined!) : setStopTimeout(parseInt(val));
-            }}
-            aria-label="stop-timeout"
-          />
-        </FormGroup>
-        <FormGroup
-          fieldId="completeTimeout"
-          label={t('caches.create.configurations.advanced-options.complete-timeout')}
-          labelIcon={
-            <PopoverHelp
-              name="completeTimeout"
-              label={t('caches.create.configurations.advanced-options.complete-timeout')}
-              content={t('caches.create.configurations.advanced-options.complete-timeout-tooltip', {
-                brandname: brandname
-              })}
+          </FormGroup>
+        </GridItem>
+        <GridItem span={6}>
+          <FormGroup
+            fieldId="completeTimeout"
+            label={t('caches.create.configurations.advanced-options.complete-timeout')}
+            labelIcon={
+              <PopoverHelp
+                name="completeTimeout"
+                label={t('caches.create.configurations.advanced-options.complete-timeout')}
+                content={t('caches.create.configurations.advanced-options.complete-timeout-tooltip', {
+                  brandname: brandname
+                })}
+              />
+            }
+          >
+            <TextInput
+              placeholder="60000"
+              value={completeTimeout}
+              type="number"
+              onChange={(val) => {
+                isNaN(parseInt(val)) ? setCompleteTimeout(undefined!) : setCompleteTimeout(parseInt(val));
+              }}
+              aria-label="complete-timeout"
             />
-          }
-        >
-          <TextInput
-            placeholder="60000"
-            value={completeTimeout}
-            type="number"
-            onChange={(val) => {
-              isNaN(parseInt(val)) ? setCompleteTimeout(undefined!) : setCompleteTimeout(parseInt(val));
-            }}
-            aria-label="complete-timeout"
-          />
-        </FormGroup>
-        <FormGroup
-          fieldId="reaperInterval"
-          label={t('caches.create.configurations.advanced-options.reaper-interval')}
-          labelIcon={
-            <PopoverHelp
-              name="reaperInterval"
-              label={t('caches.create.configurations.advanced-options.reaper-interval')}
-              content={t('caches.create.configurations.advanced-options.reaper-interval-tooltip', {
-                brandname: brandname
-              })}
+          </FormGroup>
+        </GridItem>
+        <GridItem span={6}>
+          <FormGroup
+            fieldId="reaperInterval"
+            label={t('caches.create.configurations.advanced-options.reaper-interval')}
+            labelIcon={
+              <PopoverHelp
+                name="reaperInterval"
+                label={t('caches.create.configurations.advanced-options.reaper-interval')}
+                content={t('caches.create.configurations.advanced-options.reaper-interval-tooltip', {
+                  brandname: brandname
+                })}
+              />
+            }
+          >
+            <TextInput
+              placeholder="30000"
+              value={reaperInterval}
+              type="number"
+              onChange={(val) => {
+                isNaN(parseInt(val)) ? setReaperInterval(undefined!) : setReaperInterval(parseInt(val));
+              }}
+              aria-label="reaper-interval"
             />
-          }
-        >
-          <TextInput
-            placeholder="30000"
-            value={reaperInterval}
-            type="number"
-            onChange={(val) => {
-              isNaN(parseInt(val)) ? setReaperInterval(undefined!) : setReaperInterval(parseInt(val));
-            }}
-            aria-label="reaper-interval"
-          />
-        </FormGroup>
+          </FormGroup>
+        </GridItem>
         <GridItem span={6}>
           <FormGroup
             fieldId="transactionManagerLookup"
@@ -196,29 +200,6 @@ const TransactionalConfigurationTuning = () => {
                 val === '' ? setTransactionManagerLookup(undefined) : setTransactionManagerLookup(val);
               }}
               aria-label="transaction-manager-lookup"
-            />
-          </FormGroup>
-        </GridItem>
-        <GridItem span={6}>
-          <FormGroup
-            fieldId="recoveryCache"
-            label={t('caches.create.configurations.advanced-options.recovery-cache')}
-            labelIcon={
-              <PopoverHelp
-                name="recoveryCache"
-                label={t('caches.create.configurations.advanced-options.recovery-cache')}
-                content={t('caches.create.configurations.advanced-options.recovery-cache-tooltip')}
-              />
-            }
-          >
-            <TextInput
-              placeholder="__recoveryInfoCacheName__"
-              value={recoveryCache}
-              type="text"
-              onChange={(val) => {
-                val === '' ? setRecoveryCache(undefined) : setRecoveryCache(val);
-              }}
-              aria-label="recovery-cache"
             />
           </FormGroup>
         </GridItem>

@@ -319,8 +319,7 @@ export class CacheConfigUtils {
         'stop-timeout': data.advanced.transactionalAdvance?.stopTimeout,
         'transaction-manager-lookup': data.advanced.transactionalAdvance?.transactionManagerLookup,
         'complete-timeout': data.advanced.transactionalAdvance?.completeTimeout,
-        'reaper-interval': data.advanced.transactionalAdvance?.reaperInterval,
-        'recovery-cache': data.advanced.transactionalAdvance?.recoveryCache
+        'reaper-interval': data.advanced.transactionalAdvance?.reaperInterval
       };
     };
 

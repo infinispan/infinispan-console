@@ -395,7 +395,6 @@ interface TransactionalCacheAdvance {
   transactionManagerLookup?: string;
   completeTimeout?: number;
   reaperInterval?: number;
-  recoveryCache?: string;
   isolationLevel?: string;
 }
 
