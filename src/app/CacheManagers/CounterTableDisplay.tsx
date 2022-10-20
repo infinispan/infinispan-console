@@ -26,6 +26,7 @@ import displayUtils from '@services/displayUtils';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
+import { numberWithCommas } from '@utils/numberWithComma';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
@@ -133,14 +134,14 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                {t('cache-managers.lower-bound')} {displayUtils.formatNumber(config.lowerBound)}
+                {t('cache-managers.lower-bound')} {numberWithCommas(config.lowerBound)}
               </Text>
             </TextContent>
           </GridItem>
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                {t('cache-managers.upper-bound')} {displayUtils.formatNumber(config.upperBound)}
+                {t('cache-managers.upper-bound')} {numberWithCommas(config.upperBound)}
               </Text>
             </TextContent>
           </GridItem>
@@ -189,8 +190,8 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           heightAuto: true,
           cells: [
             { title: counter.name },
-            { title: displayUtils.formatNumber(counter.value) },
-            { title: displayUtils.formatNumber(counter.config.initialValue) },
+            { title: numberWithCommas(counter.value) },
+            { title: numberWithCommas(counter.config.initialValue) },
             { title: counter.config.storage },
             { title: displayConfig(counter.config) }
           ]
