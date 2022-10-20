@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   ButtonVariant,
@@ -16,45 +16,33 @@ import {
   ToolbarGroup,
   ToolbarItem,
   ToolbarItemVariant,
-  Tooltip,
+  Tooltip
 } from '@patternfly/react-core';
-import {SearchIcon} from '@patternfly/react-icons';
-import {CreateOrUpdateEntryForm} from '@app/Caches/Entries/CreateOrUpdateEntryForm';
-import {cellWidth, Table, TableBody, TableHeader, TableVariant,} from '@patternfly/react-table';
-import {ClearAllEntries} from '@app/Caches/Entries/ClearAllEntries';
-import {DeleteEntry} from '@app/Caches/Entries/DeleteEntry';
+import { SearchIcon } from '@patternfly/react-icons';
+import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
+import { cellWidth, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
+import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import {githubGist} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
-import {useTranslation} from 'react-i18next';
-import {TableEmptyState} from '@app/Common/TableEmptyState';
-import {useCacheDetail, useCacheEntries} from '@app/services/cachesHook';
-import {MoreInfoTooltip} from "@app/Common/MoreInfoTooltip";
-import {ConsoleServices} from "@services/ConsoleServices";
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {ConsoleACL} from "@services/securityService";
-import {CacheConfigUtils} from "@services/cacheConfigUtils";
-import {ContentType, EncodingType} from "@services/infinispanRefData";
+import { useTranslation } from 'react-i18next';
+import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { useCacheDetail, useCacheEntries } from '@app/services/cachesHook';
+import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleACL } from '@services/securityService';
+import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 const CacheEntries = (props: { cacheName: string }) => {
-  const [
-    isCreateOrUpdateEntryFormOpen,
-    setCreateOrUpdateEntryFormOpen,
-  ] = useState<boolean>(false);
+  const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] = useState<boolean>(false);
 
-  const {
-    cacheEntries,
-    loadingEntries,
-    errorEntries,
-    infoEntries,
-    reloadEntries,
-    getByKey
-  } = useCacheEntries();
+  const { cacheEntries, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } = useCacheEntries();
   const { cache } = useCacheDetail();
-  const {connectedUser} = useConnectedUser();
-  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(
-    false
-  );
+  const { connectedUser } = useConnectedUser();
+  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
   const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [keyToEdit, setKeyToEdit] = useState<string>('');
   const [keyContentTypeToEdit, setKeyContentTypeToEdit] = useState<ContentType>(ContentType.StringContentType);
@@ -64,7 +52,7 @@ const CacheEntries = (props: { cacheName: string }) => {
   const [actions, setActions] = useState<any[]>([]);
   const [entriesPagination, setEntriesPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
 
   const { t } = useTranslation();
@@ -84,15 +72,13 @@ const CacheEntries = (props: { cacheName: string }) => {
     let paginationUpgrade = false;
     // Upgrade Pagination in necessary
     if (entriesPagination.page > 1) {
-      const completePagesNum = Math.floor(
-        cacheEntries.length / entriesPagination.perPage
-      );
+      const completePagesNum = Math.floor(cacheEntries.length / entriesPagination.perPage);
       const lastPageCount = cacheEntries.length % entriesPagination.perPage;
       if (lastPageCount == 0 && entriesPagination.page > completePagesNum) {
         paginationUpgrade = true;
         setEntriesPagination({
           page: completePagesNum,
-          perPage: entriesPagination.perPage,
+          perPage: entriesPagination.perPage
         });
       }
     }
@@ -103,57 +89,45 @@ const CacheEntries = (props: { cacheName: string }) => {
   }, [cacheEntries, errorEntries]);
 
   useEffect(() => {
-      updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
+    updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
   }, [entriesPagination]);
 
   const entryActions = [
     {
       title: t('caches.entries.action-edit'),
       onClick: (event, rowId, rowData, extra) =>
-        onClickEditEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType),
+        onClickEditEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType)
     },
     {
       title: t('caches.entries.action-delete'),
       onClick: (event, rowId, rowData, extra) =>
-        onClickDeleteEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType),
-    },
+        onClickDeleteEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType)
+    }
   ];
 
   const columns = [
-    { title: t('caches.entries.column-key'), transforms: [cellWidth(30)]},
-    { title: t('caches.entries.column-value'), transforms: [cellWidth(40)]},
+    { title: t('caches.entries.column-key'), transforms: [cellWidth(30)] },
+    { title: t('caches.entries.column-value'), transforms: [cellWidth(40)] },
     { title: t('caches.entries.column-lifespan'), transforms: [cellWidth(10)] },
     { title: t('caches.entries.column-maxidle'), transforms: [cellWidth(10)] },
     { title: t('caches.entries.column-expires'), transforms: [cellWidth(10)] }
   ];
 
-  const displayEmptyMessage = (info:string) => {
-    if(keyToSearch.trim() != '') {
+  const displayEmptyMessage = (info: string) => {
+    if (keyToSearch.trim() != '') {
       return (
         <Text>
           {t('caches.entries.get-entry-not-found')} <strong>{keyToSearch}</strong>
         </Text>
-      )
+      );
     }
 
-    return (
-      <Text>
-        {info? info : t('caches.entries.empty-cache')}
-      </Text>
-    )
-  }
+    return <Text>{info ? info : t('caches.entries.empty-cache')}</Text>;
+  };
 
-  const updateRows = (
-    entries: CacheEntry[],
-    loading: boolean,
-    error: string,
-    info: string
-  ) => {
+  const updateRows = (entries: CacheEntry[], loading: boolean, error: string, info: string) => {
     const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
-    const currentPageEntries = entries.slice(
-      initSlice,
-      initSlice + entriesPagination.perPage
-    );
+    const currentPageEntries = entries.slice(initSlice, initSlice + entriesPagination.perPage);
 
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
 
@@ -168,16 +142,12 @@ const CacheEntries = (props: { cacheName: string }) => {
                 <TableEmptyState
                   loading={loading}
                   error={error}
-                  empty={
-                    <TextContent>
-                      {displayEmptyMessage(info)}
-                    </TextContent>
-                  }
+                  empty={<TextContent>{displayEmptyMessage(info)}</TextContent>}
                 />
-              ),
-            },
-          ],
-        },
+              )
+            }
+          ]
+        }
       ];
       setActions([]);
     } else {
@@ -185,24 +155,32 @@ const CacheEntries = (props: { cacheName: string }) => {
         return {
           heightAuto: true,
           cells: [
-            { title: displayHighlighted(entry.key, cache.encoding.key as EncodingType, entry.keyContentType as ContentType), keyForAction: entry.key, keyContentType: entry.keyContentType },
-            { title: displayHighlighted(entry.value, cache.encoding.value as EncodingType, entry.valueContentType as ContentType) },
             {
-              title: entry.timeToLive
-                ? entry.timeToLive
-                : t('caches.entries.lifespan-immortal'),
+              title: displayHighlighted(
+                entry.key,
+                cache.encoding.key as EncodingType,
+                entry.keyContentType as ContentType
+              ),
+              keyForAction: entry.key,
+              keyContentType: entry.keyContentType
             },
             {
-              title: entry.maxIdle
-                ? entry.maxIdle
-                : t('caches.entries.maxidle-immortal'),
+              title: displayHighlighted(
+                entry.value,
+                cache.encoding.value as EncodingType,
+                entry.valueContentType as ContentType
+              )
             },
             {
-              title: entry.expires
-                ? entry.expires
-                : t('caches.entries.never-expire'),
+              title: entry.timeToLive ? entry.timeToLive : t('caches.entries.lifespan-immortal')
+            },
+            {
+              title: entry.maxIdle ? entry.maxIdle : t('caches.entries.maxidle-immortal')
+            },
+            {
+              title: entry.expires ? entry.expires : t('caches.entries.never-expire')
             }
-          ],
+          ]
         };
       });
       setActions(entryActions);
@@ -213,22 +191,19 @@ const CacheEntries = (props: { cacheName: string }) => {
   const displayHighlighted = (value: string, encodingType: EncodingType, contentType?: ContentType) => {
     const highlightedContent = (
       <SyntaxHighlighter
-      language="json"
-      lineProps={{style: {wordBreak: 'break-all'}}}
-      style={githubGist}
-      useInlineStyles={true}
-      wrapLongLines={true}
-    >
-      {displayUtils.formatContentToDisplay(value, contentType)}
-    </SyntaxHighlighter>
+        language="json"
+        lineProps={{ style: { wordBreak: 'break-all' } }}
+        style={githubGist}
+        useInlineStyles={true}
+        wrapLongLines={true}
+      >
+        {displayUtils.formatContentToDisplay(value, contentType)}
+      </SyntaxHighlighter>
     );
 
     if (encodingType == EncodingType.Protobuf && contentType) {
       return (
-        <Tooltip
-          position="top"
-          content={<div>{contentType}</div>}
-        >
+        <Tooltip position="top" content={<div>{contentType}</div>}>
           {highlightedContent}
         </Tooltip>
       );
@@ -251,7 +226,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     setCreateOrUpdateEntryFormOpen(true);
   };
 
-  const onClickDeleteEntryButton = (entryKey: string,  keyContentType: ContentType) => {
+  const onClickDeleteEntryButton = (entryKey: string, keyContentType: ContentType) => {
     setDeleteEntryModalOpen(true);
     setKeyToDelete(entryKey);
     setKeyContentTypeToEdit(keyContentType);
@@ -304,82 +279,74 @@ const CacheEntries = (props: { cacheName: string }) => {
   };
 
   const [expandedKey, setExpandedKey] = useState(false);
-  const [keyType, setKeyType] = useState<
-    string | SelectOptionObject | (string | SelectOptionObject)[]
-  >(CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType)[0]);
+  const [keyType, setKeyType] = useState<string | SelectOptionObject | (string | SelectOptionObject)[]>(
+    CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType)[0]
+  );
 
   const buildPagination = () => {
     return (
-        <Pagination
-          itemCount={cacheEntries.length}
-          perPage={entriesPagination.perPage}
-          page={entriesPagination.page}
-          onSetPage={(_event, pageNumber) =>
-            setEntriesPagination({
-              page: pageNumber,
-              perPage: entriesPagination.perPage,
-            })
-          }
-          widgetId="pagination-entries"
-          onPerPageSelect={(_event, perPage) =>
-            setEntriesPagination({
-              page: 1,
-              perPage: perPage,
-            })
-          }
-          isCompact
-        />
+      <Pagination
+        itemCount={cacheEntries.length}
+        perPage={entriesPagination.perPage}
+        page={entriesPagination.page}
+        onSetPage={(_event, pageNumber) =>
+          setEntriesPagination({
+            page: pageNumber,
+            perPage: entriesPagination.perPage
+          })
+        }
+        widgetId="pagination-entries"
+        onPerPageSelect={(_event, perPage) =>
+          setEntriesPagination({
+            page: 1,
+            perPage: perPage
+          })
+        }
+        isCompact
+      />
     );
   };
 
   const secondRowItems = (
-      <Toolbar>
-        <ToolbarContent>
-          <ToolbarItem variant={ToolbarItemVariant.pagination} alignment={{ default: "alignRight"}}>
-            {buildPagination()}
-          </ToolbarItem>
-          <ToolbarItem><MoreInfoTooltip
-            label={''}
-            toolTip={'Shows up to 100 entries of the cache'}
-          /></ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
+    <Toolbar>
+      <ToolbarContent>
+        <ToolbarItem variant={ToolbarItemVariant.pagination} alignment={{ default: 'alignRight' }}>
+          {buildPagination()}
+        </ToolbarItem>
+        <ToolbarItem>
+          <MoreInfoTooltip label={''} toolTip={'Shows up to 100 entries of the cache'} />
+        </ToolbarItem>
+      </ToolbarContent>
+    </Toolbar>
   );
 
   const addEntryAction = () => {
-    if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
       return '';
     }
 
     return (
-        <ToolbarItem>
-          <Button
-            key="add-entry-button"
-            variant={ButtonVariant.primary}
-            onClick={onClickAddEntryButton}
-          >
-            Add entry
-          </Button>
-        </ToolbarItem>
-    )
-  }
+      <ToolbarItem>
+        <Button key="add-entry-button" variant={ButtonVariant.primary} onClick={onClickAddEntryButton}>
+          Add entry
+        </Button>
+      </ToolbarItem>
+    );
+  };
 
   const clearAllAction = () => {
-    if(!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_WRITE, cache.name, connectedUser)) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_WRITE, cache.name, connectedUser)) {
       return '';
     }
 
     return (
-        <ToolbarItem>
-          <Button
-            variant={ButtonVariant.link}
-            onClick={onClickClearAllButton}
-          >
-            {t('caches.entries.clear-entry-button-label')}
-          </Button>
-        </ToolbarItem>
-    )
-  }
+      <ToolbarItem>
+        <Button variant={ButtonVariant.link} onClick={onClickClearAllButton}>
+          {t('caches.entries.clear-entry-button-label')}
+        </Button>
+      </ToolbarItem>
+    );
+  };
 
   return (
     <React.Fragment>

@@ -42,7 +42,7 @@ export class SearchService {
       (data) =>
         <SearchResut>{
           total: data.total_results,
-          values: data.hits.map((hit) => JSON.stringify(hit.hit, null, 2)),
+          values: data.hits.map((hit) => JSON.stringify(hit.hit, null, 2))
         }
     );
   }
@@ -52,45 +52,33 @@ export class SearchService {
    *
    * @param cacheName
    */
-  public async retrieveStats(
-    cacheName: string
-  ): Promise<Either<ActionResponse, SearchStats>> {
-    return this.utils.get(
-      this.endpoint + encodeURIComponent(cacheName) + '/search/stats',
-      (data) => {
-        const queryStats = Object.keys(data.query).map(
-          (stat) =>
-            <QueryStat>{
-              name: (stat.charAt(0).toUpperCase() + stat.slice(1)).replace(
-                '_',
-                ' '
-              ),
-              count: displayUtils.formatNumber(data.query[stat].count),
-              max: displayUtils.formatNumber(data.query[stat].max),
-              average: displayUtils.formatNumber(data.query[stat].average),
-              slowest: data.query[stat].slowest,
-            }
-        );
+  public async retrieveStats(cacheName: string): Promise<Either<ActionResponse, SearchStats>> {
+    return this.utils.get(this.endpoint + encodeURIComponent(cacheName) + '/search/stats', (data) => {
+      const queryStats = Object.keys(data.query).map(
+        (stat) =>
+          <QueryStat>{
+            name: (stat.charAt(0).toUpperCase() + stat.slice(1)).replace('_', ' '),
+            count: displayUtils.formatNumber(data.query[stat].count),
+            max: displayUtils.formatNumber(data.query[stat].max),
+            average: displayUtils.formatNumber(data.query[stat].average),
+            slowest: data.query[stat].slowest
+          }
+      );
 
-        const indexStats = Object.keys(data.index.types).map(
-          (indexType) =>
-            <IndexStat>{
-              name: indexType,
-              count: displayUtils.formatNumber(
-                data.index.types[indexType].count
-              ),
-              size: displayUtils.formatBigNumber(
-                data.index.types[indexType].size
-              ),
-            }
-        );
-        return <SearchStats>{
-          query: queryStats,
-          index: indexStats,
-          reindexing: data.reindexing,
-        };
-      }
-    );
+      const indexStats = Object.keys(data.index.types).map(
+        (indexType) =>
+          <IndexStat>{
+            name: indexType,
+            count: displayUtils.formatNumber(data.index.types[indexType].count),
+            size: displayUtils.formatBigNumber(data.index.types[indexType].size)
+          }
+      );
+      return <SearchStats>{
+        query: queryStats,
+        index: indexStats,
+        reindexing: data.reindexing
+      };
+    });
   }
 
   /**
@@ -100,12 +88,9 @@ export class SearchService {
    */
   public async purgeIndexes(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url:
-        this.endpoint +
-        encodeURIComponent(cacheName) +
-        '/search/indexes?action=clear',
+      url: this.endpoint + encodeURIComponent(cacheName) + '/search/indexes?action=clear',
       successMessage: `Index of cache ${cacheName} cleared.`,
-      errorMessage: `An error occurred when clearing the index for cache ${cacheName}.`,
+      errorMessage: `An error occurred when clearing the index for cache ${cacheName}.`
     });
   }
 
@@ -116,12 +101,9 @@ export class SearchService {
    */
   public async reindex(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url:
-        this.endpoint +
-        encodeURIComponent(cacheName) +
-        '/search/indexes?action=mass-index&mode=async',
+      url: this.endpoint + encodeURIComponent(cacheName) + '/search/indexes?action=mass-index&mode=async',
       successMessage: `Reindexing cache ${cacheName} started.`,
-      errorMessage: `An error occurred when starting to rebuild the index for cache ${cacheName}.`,
+      errorMessage: `An error occurred when starting to rebuild the index for cache ${cacheName}.`
     });
   }
 
@@ -132,12 +114,9 @@ export class SearchService {
    */
   public async clearQueryStats(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url:
-        this.endpoint +
-        encodeURIComponent(cacheName) +
-        '/search/stats?action=clear',
+      url: this.endpoint + encodeURIComponent(cacheName) + '/search/stats?action=clear',
       successMessage: `Query statistics of cache ${cacheName} cleared.`,
-      errorMessage: `Cannot clear query statistics of cache ${cacheName}.`,
+      errorMessage: `Cannot clear query statistics of cache ${cacheName}.`
     });
   }
 }

@@ -132,12 +132,12 @@ interface CacheStats {
   approximate_entries: number;
   approximate_entries_in_memory: number;
   approximate_entries_unique: number;
-  current_number_of_entries: number;// usually -1
-  current_number_of_entries_in_memory: number;  // usually -1
+  current_number_of_entries: number; // usually -1
+  current_number_of_entries_in_memory: number; // usually -1
   total_number_of_entries: number; // deprecated
   off_heap_memory_used: number; // Memory
   data_memory_used: number; // Memory
-  stores: number;  // Stats for pie chart
+  stores: number; // Stats for pie chart
   retrievals: number;
   hits: number;
   misses: number;

@@ -21,7 +21,7 @@ export class TasksService {
             name: task.name,
             type: task.type,
             execution_mode: task.execution_mode,
-            allowed_role: task.allowed_role,
+            allowed_role: task.allowed_role
           }
       )
     );

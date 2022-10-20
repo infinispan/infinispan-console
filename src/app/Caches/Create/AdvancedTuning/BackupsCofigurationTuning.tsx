@@ -1,25 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  ExpandableSection, FormFieldGroupExpandable, FormFieldGroupHeader,
+  ExpandableSection,
+  FormFieldGroupExpandable,
+  FormFieldGroupHeader,
   FormGroup,
   FormSection,
   Grid,
   HelperText,
   HelperTextItem,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
-import {CacheFeature} from "@services/infinispanRefData";
-import {useTranslation} from 'react-i18next';
-import {useCreateCache} from "@app/services/createCacheHook";
-import {PopoverHelp} from "@app/Common/PopoverHelp";
-import BackupSiteConfigurator from "@app/Caches/Create/AdvancedTuning/BackupsSiteConfigurator";
+import { CacheFeature } from '@services/infinispanRefData';
+import { useTranslation } from 'react-i18next';
+import { useCreateCache } from '@app/services/createCacheHook';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
+import BackupSiteConfigurator from '@app/Caches/Create/AdvancedTuning/BackupsSiteConfigurator';
 
 const BackupsConfigurationTuning = () => {
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const [backupSiteData, setBackupSiteData] = useState<BackupSite[]>(configuration.advanced.backupSiteData || Array(configuration.feature.backupsCache?.sites.length).fill({}));
+  const [backupSiteData, setBackupSiteData] = useState<BackupSite[]>(
+    configuration.advanced.backupSiteData || Array(configuration.feature.backupsCache?.sites.length).fill({})
+  );
   const [mergePolicy, setMergePolicy] = useState(configuration.advanced.backupSetting?.mergePolicy);
   const [maxCleanupDelay, setMaxCleanupDelay] = useState(configuration.advanced.backupSetting?.maxCleanupDelay);
   const [tombstoneMapSize, setTombstoneMapSize] = useState(configuration.advanced.backupSetting?.tombstoneMapSize);
@@ -28,63 +32,94 @@ const BackupsConfigurationTuning = () => {
     setConfiguration((prevState) => {
       return {
         ...prevState,
-        advanced : {
+        advanced: {
           ...prevState.advanced,
           backupSetting: {
             mergePolicy: mergePolicy,
             maxCleanupDelay: maxCleanupDelay,
-            tombstoneMapSize: tombstoneMapSize,
+            tombstoneMapSize: tombstoneMapSize
           },
           backupSiteData: backupSiteData,
           valid: true
         }
       };
     });
-
-  }, [ backupSiteData, mergePolicy, maxCleanupDelay, tombstoneMapSize]);
+  }, [backupSiteData, mergePolicy, maxCleanupDelay, tombstoneMapSize]);
 
   if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
-    return (
-      <div/>
-    );
+    return <div />;
   }
 
   const formBackupsSetting = () => {
     return (
       <Grid hasGutter md={4}>
         <FormGroup
-          fieldId='merge-policy'
+          fieldId="merge-policy"
           label={t('caches.create.configurations.feature.merge-policy')}
-          labelIcon={<PopoverHelp name="merge-policy"
-                                  label={t('caches.create.configurations.feature.merge-policy')}
-                                  content={t('caches.create.configurations.feature.merge-policy-tooltip', { brandname: brandname })} />}
+          labelIcon={
+            <PopoverHelp
+              name="merge-policy"
+              label={t('caches.create.configurations.feature.merge-policy')}
+              content={t('caches.create.configurations.feature.merge-policy-tooltip', { brandname: brandname })}
+            />
+          }
         >
-
-          <TextInput placeholder='DEFAULT' value={mergePolicy} onChange={(val) => { val === '' ? setMergePolicy(undefined!) : setMergePolicy(val) }} aria-label="merge-policy-input" />
+          <TextInput
+            placeholder="DEFAULT"
+            value={mergePolicy}
+            onChange={(val) => {
+              val === '' ? setMergePolicy(undefined!) : setMergePolicy(val);
+            }}
+            aria-label="merge-policy-input"
+          />
         </FormGroup>
 
         <FormGroup
-          fieldId='max-cleanup-delay'
+          fieldId="max-cleanup-delay"
           label={t('caches.create.configurations.feature.max-cleanup-delay')}
-          labelIcon={<PopoverHelp name="cleanup-delay"
-                                  label={t('caches.create.configurations.feature.max-cleanup-delay')}
-                                  content={t('caches.create.configurations.feature.max-cleanup-delay-tooltip')} />}
+          labelIcon={
+            <PopoverHelp
+              name="cleanup-delay"
+              label={t('caches.create.configurations.feature.max-cleanup-delay')}
+              content={t('caches.create.configurations.feature.max-cleanup-delay-tooltip')}
+            />
+          }
         >
-          <TextInput placeholder='30000' type='number' value={maxCleanupDelay} onChange={(val) => { isNaN(parseInt(val)) ? setMaxCleanupDelay(undefined!) : setMaxCleanupDelay(parseInt(val)) }} aria-label="max-cleanup-delay-input" />
+          <TextInput
+            placeholder="30000"
+            type="number"
+            value={maxCleanupDelay}
+            onChange={(val) => {
+              isNaN(parseInt(val)) ? setMaxCleanupDelay(undefined!) : setMaxCleanupDelay(parseInt(val));
+            }}
+            aria-label="max-cleanup-delay-input"
+          />
         </FormGroup>
 
         <FormGroup
-          fieldId='tombstone-map-size'
+          fieldId="tombstone-map-size"
           label={t('caches.create.configurations.feature.tombstone-map-site')}
-          labelIcon={ <PopoverHelp name="tombstone-map-size"
-                                   label={t('caches.create.configurations.feature.tombstone-map-site')}
-                                   content={t('caches.create.configurations.feature.tombstone-map-site-tooltip', { brandname: brandname })} />}
+          labelIcon={
+            <PopoverHelp
+              name="tombstone-map-size"
+              label={t('caches.create.configurations.feature.tombstone-map-site')}
+              content={t('caches.create.configurations.feature.tombstone-map-site-tooltip', { brandname: brandname })}
+            />
+          }
         >
-          <TextInput placeholder='512000' type='number' value={tombstoneMapSize} onChange={(val) => { isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val)) }} aria-label="tombstone-map-size-input" />
+          <TextInput
+            placeholder="512000"
+            type="number"
+            value={tombstoneMapSize}
+            onChange={(val) => {
+              isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val));
+            }}
+            aria-label="tombstone-map-size-input"
+          />
         </FormGroup>
       </Grid>
-    )
-  }
+    );
+  };
 
   return (
     <FormSection title={t('caches.create.configurations.advanced-options.backups-tuning')}>
@@ -94,19 +129,22 @@ const BackupsConfigurationTuning = () => {
         </HelperTextItem>
       </HelperText>
       {formBackupsSetting()}
-      {configuration.feature.backupsCache && configuration.feature.backupsCache.sites.map((site, index) => {
-        return (
-          <FormFieldGroupExpandable key={site.siteName + '-expand'}
-            header={
-              <FormFieldGroupHeader
-                titleText={{ text: site.siteName,
-                  id: site.siteName+'-titleText-id' }}
-              />}
-          >
-            <BackupSiteConfigurator backupSiteOptions={backupSiteData} backupSiteOptionsModifier={setBackupSiteData} index={index} siteBasic={site} />
-          </FormFieldGroupExpandable>
-        )
-      })}
+      {configuration.feature.backupsCache &&
+        configuration.feature.backupsCache.sites.map((site, index) => {
+          return (
+            <FormFieldGroupExpandable
+              key={site.siteName + '-expand'}
+              header={<FormFieldGroupHeader titleText={{ text: site.siteName, id: site.siteName + '-titleText-id' }} />}
+            >
+              <BackupSiteConfigurator
+                backupSiteOptions={backupSiteData}
+                backupSiteOptionsModifier={setBackupSiteData}
+                index={index}
+                siteBasic={site}
+              />
+            </FormFieldGroupExpandable>
+          );
+        })}
     </FormSection>
   );
 };

@@ -1,17 +1,17 @@
 import React from 'react';
-import {Button, ButtonVariant, Modal, Text, TextContent,} from '@patternfly/react-core';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {useCacheDetail} from '@app/services/cachesHook';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
-import {ContentType, EncodingType} from "@services/infinispanRefData";
+import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { useCacheDetail } from '@app/services/cachesHook';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 /**
  * Delete entry modal
  */
 const DeleteEntry = (props: {
   cacheName: string;
-  cacheEncoding: CacheEncoding,
+  cacheEncoding: CacheEncoding;
   entryKey: string;
   keyContentType: ContentType;
   isModalOpen: boolean;
@@ -22,37 +22,41 @@ const DeleteEntry = (props: {
   const { t } = useTranslation();
 
   const onClickDeleteButton = () => {
-    if (props.cacheEncoding.key as EncodingType == EncodingType.Java
-      || props.cacheEncoding.key as EncodingType == EncodingType.JBoss) {
+    if (
+      (props.cacheEncoding.key as EncodingType) == EncodingType.Java ||
+      (props.cacheEncoding.key as EncodingType) == EncodingType.JBoss
+    ) {
       tryDeleteEntry(props.keyContentType, true)
-        .then(r => {
+        .then((r) => {
           if (r && !Number.isNaN(props.entryKey)) {
             return tryDeleteEntry(ContentType.IntegerContentType, true);
           }
           return false;
-        }).then(r => {
-        if (r) {
-          return tryDeleteEntry(ContentType.LongContentType, true);
-        }
-        return false;
-      })
-        .then(r => {
+        })
+        .then((r) => {
+          if (r) {
+            return tryDeleteEntry(ContentType.LongContentType, true);
+          }
+          return false;
+        })
+        .then((r) => {
           if (r) {
             return tryDeleteEntry(ContentType.FloatContentType, true);
           }
           return false;
-        }).then(r => {
-        if (r) {
-          return tryDeleteEntry(ContentType.DoubleContentType, false);
-        }
-        return false;
-      });
+        })
+        .then((r) => {
+          if (r) {
+            return tryDeleteEntry(ContentType.DoubleContentType, false);
+          }
+          return false;
+        });
     } else {
       tryDeleteEntry(props.keyContentType, false);
     }
   };
 
-  const tryDeleteEntry = (keyContentType :ContentType, retry: boolean) : Promise<boolean> => {
+  const tryDeleteEntry = (keyContentType: ContentType, retry: boolean): Promise<boolean> => {
     return ConsoleServices.caches()
       .deleteEntry(props.cacheName, props.entryKey, props.cacheEncoding.key as EncodingType, keyContentType)
       .then((actionResponse) => {
@@ -63,7 +67,7 @@ const DeleteEntry = (props: {
         addAlert(actionResponse);
         return false;
       });
-  }
+  };
 
   return (
     <Modal
@@ -75,24 +79,18 @@ const DeleteEntry = (props: {
       onClose={props.closeModal}
       aria-label={t('caches.entries.modal-delete-label')}
       actions={[
-        <Button
-          key="confirm"
-          variant={ButtonVariant.danger}
-          onClick={onClickDeleteButton}
-        >
+        <Button key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
           {t('caches.entries.modal-button-delete')}
         </Button>,
         <Button key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.entries.modal-button-cancel')}
-        </Button>,
+        </Button>
       ]}
     >
       <TextContent>
         <Text>
-          {t('caches.entries.modal-delete-body-line-one')}{' '}
-          <strong>'{props.entryKey}'</strong>{' '}
-          {t('caches.entries.modal-delete-body-line-two')}{' '}
-          <strong>{props.cacheName}</strong>.
+          {t('caches.entries.modal-delete-body-line-one')} <strong>'{props.entryKey}'</strong>{' '}
+          {t('caches.entries.modal-delete-body-line-two')} <strong>{props.cacheName}</strong>.
           <br />
           {t('caches.entries.modal-delete-body-line-three')}
         </Text>

@@ -9,7 +9,7 @@ export enum ConsoleACL {
   BULK_READ = 'BULK_READ',
   BULK_WRITE = 'BULK_WRITE',
   CREATE = 'CREATE',
-  ADMIN = 'ADMIN',
+  ADMIN = 'ADMIN'
 }
 
 export enum ACL {
@@ -26,7 +26,7 @@ export enum ACL {
   ALL = 'ALL',
   ALL_READ = 'ALL_READ',
   ALL_WRITE = 'ALL_WRITE',
-  NONE = 'NONE',
+  NONE = 'NONE'
 }
 
 /**
@@ -39,11 +39,7 @@ export class SecurityService {
   utils: FetchCaller;
   authenticationService: AuthenticationService;
 
-  constructor(
-    endpoint: string,
-    restUtils: FetchCaller,
-    authenticationService: AuthenticationService
-  ) {
+  constructor(endpoint: string, restUtils: FetchCaller, authenticationService: AuthenticationService) {
     this.endpoint = endpoint;
     this.utils = restUtils;
     this.authenticationService = authenticationService;
@@ -67,14 +63,14 @@ export class SecurityService {
       for (let cacheName of Object.keys(data.caches)) {
         cachesAcl.set(cacheName, <CacheAcl>{
           name: cacheName,
-          acl: data.caches[cacheName].map((aclStr) => aclStr as ACL),
+          acl: data.caches[cacheName].map((aclStr) => aclStr as ACL)
         });
       }
 
       return <Acl>{
         user: username,
         global: global.map((aclStr) => aclStr as ACL),
-        caches: cachesAcl,
+        caches: cachesAcl
       };
     });
   }
@@ -103,11 +99,7 @@ export class SecurityService {
    * Console ACL for caches
    * @param user
    */
-  public hasCacheConsoleACL(
-    consoleACL: ConsoleACL,
-    cacheName: string,
-    user: ConnectedUser
-  ) {
+  public hasCacheConsoleACL(consoleACL: ConsoleACL, cacheName: string, user: ConnectedUser) {
     if (this.isNotSecuredAccess()) {
       return true;
     }
@@ -116,10 +108,7 @@ export class SecurityService {
       return false;
     }
 
-    return this.checkConsoleAcl(
-      consoleACL,
-      this.getCacheACL(cacheName, user).acl
-    );
+    return this.checkConsoleAcl(consoleACL, this.getCacheACL(cacheName, user).acl);
   }
 
   private checkConsoleAcl(consoleACL: ConsoleACL, aclList: string[]) {
@@ -133,12 +122,10 @@ export class SecurityService {
         hasAcl = aclList.includes(ACL.ADMIN);
         break;
       case ConsoleACL.BULK_READ:
-        hasAcl =
-          aclList.includes(ACL.ALL_READ) || aclList.includes(ACL.BULK_READ);
+        hasAcl = aclList.includes(ACL.ALL_READ) || aclList.includes(ACL.BULK_READ);
         break;
       case ConsoleACL.BULK_WRITE:
-        hasAcl =
-          aclList.includes(ACL.ALL_WRITE) || aclList.includes(ACL.BULK_WRITE);
+        hasAcl = aclList.includes(ACL.ALL_WRITE) || aclList.includes(ACL.BULK_WRITE);
         break;
       case ConsoleACL.READ:
         hasAcl = aclList.includes(ACL.ALL_READ) || aclList.includes(ACL.READ);

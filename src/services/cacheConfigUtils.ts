@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  CacheFeature,
-  ContentType,
-  EncodingType,
-  PersistentCacheStorage,
-} from '@services/infinispanRefData';
+import { CacheFeature, ContentType, EncodingType, PersistentCacheStorage } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
@@ -26,9 +21,7 @@ export class CacheConfigUtils {
    *
    * @param config
    */
-  public static validateConfig(
-    config: string
-  ): Either<string, 'xml' | 'json' | 'yaml'> {
+  public static validateConfig(config: string): Either<string, 'xml' | 'json' | 'yaml'> {
     const trimmedConf = config.trim();
 
     if (trimmedConf.length == 0) {
@@ -99,11 +92,7 @@ export class CacheConfigUtils {
    * @param encoding
    */
   public static isEditable(encoding: EncodingType): boolean {
-    return (
-      encoding != EncodingType.Empty &&
-      encoding != EncodingType.JavaSerialized &&
-      encoding != EncodingType.Octet
-    );
+    return encoding != EncodingType.Empty && encoding != EncodingType.JavaSerialized && encoding != EncodingType.Octet;
   }
 
   /**
@@ -111,9 +100,7 @@ export class CacheConfigUtils {
    *
    * @param encodingType
    */
-  public static getContentTypeOptions(
-    encodingType: EncodingType
-  ): ContentType[] {
+  public static getContentTypeOptions(encodingType: EncodingType): ContentType[] {
     let contentTypes: ContentType[] = [];
 
     if (
@@ -169,37 +156,29 @@ export class CacheConfigUtils {
       owners: data.basic.numberOfOwners,
       statistics: data.basic.statistics,
       encoding: {
-        'media-type': data.basic.encoding,
-      },
+        'media-type': data.basic.encoding
+      }
     };
 
     // Choose topology and add to the configuration
     data.basic.topology === 'Distributed'
-      ? ((cache = { [distributedCache]: generalCache }),
-        (cacheType = distributedCache))
-      : ((cache = { [replicatedCache]: generalCache }),
-        (cacheType = replicatedCache));
+      ? ((cache = { [distributedCache]: generalCache }), (cacheType = distributedCache))
+      : ((cache = { [replicatedCache]: generalCache }), (cacheType = replicatedCache));
 
     const locking = () => {
       cache[cacheType].locking = {
         isolation: data.advanced.transactionalAdvance?.isolationLevel,
         striping: data.advanced.striping,
         'concurrency-level': data.advanced.concurrencyLevel,
-        'acquire-timeout': data.advanced.lockAcquisitionTimeout,
+        'acquire-timeout': data.advanced.lockAcquisitionTimeout
       };
     };
 
     // config for Expiration cache
     const expiration = () => {
       cache[cacheType]['expiration'] = {
-        lifespan: convertToMilliseconds(
-          data.basic.lifeSpanNumber,
-          data.basic.lifeSpanUnit
-        ),
-        'max-idle': convertToMilliseconds(
-          data.basic.maxIdleNumber,
-          data.basic.maxIdleUnit
-        ),
+        lifespan: convertToMilliseconds(data.basic.lifeSpanNumber, data.basic.lifeSpanUnit),
+        'max-idle': convertToMilliseconds(data.basic.maxIdleNumber, data.basic.maxIdleUnit)
       };
     };
 
@@ -208,15 +187,13 @@ export class CacheConfigUtils {
       if (data.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED)) {
         if (data.feature.boundedCache.evictionType === 'size') {
           cache[cacheType]['memory'] = {
-            'max-size':
-              data.feature.boundedCache.maxSize +
-              data.feature.boundedCache.maxSizeUnit,
-            'when-full': data.feature.boundedCache.evictionStrategy,
+            'max-size': data.feature.boundedCache.maxSize + data.feature.boundedCache.maxSizeUnit,
+            'when-full': data.feature.boundedCache.evictionStrategy
           };
         } else {
           cache[cacheType]['memory'] = {
             'max-count': data.feature.boundedCache.maxCount,
-            'when-full': data.feature.boundedCache.evictionStrategy,
+            'when-full': data.feature.boundedCache.evictionStrategy
           };
         }
         if (data.advanced.storage) {
@@ -225,7 +202,7 @@ export class CacheConfigUtils {
       } else {
         if (data.feature.boundedCache && data.advanced.storage) {
           cache[cacheType]['memory'] = {
-            storage: data.advanced.storage,
+            storage: data.advanced.storage
           };
         }
       }
@@ -237,13 +214,13 @@ export class CacheConfigUtils {
         enabled: true,
         storage: data.feature.indexedCache.indexedStorage,
         'startup-mode': data.feature.indexedCache.indexedStartupMode,
-        'indexed-entities': data.feature.indexedCache.indexedEntities,
+        'indexed-entities': data.feature.indexedCache.indexedEntities
       };
     };
 
     const indexReader = () => {
       cache[cacheType]['indexing']['index-reader'] = {
-        'refresh-interval': data.advanced.indexReader,
+        'refresh-interval': data.advanced.indexReader
       };
     };
 
@@ -255,14 +232,13 @@ export class CacheConfigUtils {
         'queue-size': data.advanced.indexWriter.queueSize,
         'ram-buffer-size': data.advanced.indexWriter.ramBufferSize,
         'thread-pool-size': data.advanced.indexWriter.threadPoolSize,
-        'low-level-trace': data.advanced.indexWriter.lowLevelTrace,
+        'low-level-trace': data.advanced.indexWriter.lowLevelTrace
       };
     };
 
     const indexMerge = () => {
       // Add index merge config to the configuration
-      !cache[cacheType]['indexing']['index-writer'] &&
-        (cache[cacheType]['indexing']['index-writer'] = {});
+      !cache[cacheType]['indexing']['index-writer'] && (cache[cacheType]['indexing']['index-writer'] = {});
 
       cache[cacheType]['indexing']['index-writer']['index-merge'] = {
         factor: data.advanced.indexMerge.factor,
@@ -270,7 +246,7 @@ export class CacheConfigUtils {
         'min-size': data.advanced.indexMerge.minSize,
         'max-size': data.advanced.indexMerge.maxSize,
         'max-forced-size': data.advanced.indexMerge.maxForcedSize,
-        'calibrate-by-deletes': data.advanced.indexMerge.calibrateByDeletes,
+        'calibrate-by-deletes': data.advanced.indexMerge.calibrateByDeletes
       };
     };
 
@@ -278,8 +254,8 @@ export class CacheConfigUtils {
       cache[cacheType]['security'] = {
         authorization: {
           enabled: true,
-          roles: data.feature.securedCache.roles,
-        },
+          roles: data.feature.securedCache.roles
+        }
       };
     };
 
@@ -287,7 +263,7 @@ export class CacheConfigUtils {
       cache[cacheType]['backups'] = {
         'merge-policy': data.advanced.backupSetting?.mergePolicy,
         'tombstone-map-size': data.advanced.backupSetting?.tombstoneMapSize,
-        'max-cleanup-delay': data.advanced.backupSetting?.maxCleanupDelay,
+        'max-cleanup-delay': data.advanced.backupSetting?.maxCleanupDelay
       };
     };
 
@@ -296,24 +272,19 @@ export class CacheConfigUtils {
         cache[cacheType]['backups'][site.siteName!] = {
           backup: {
             strategy: site.siteStrategy,
-            'failure-policy':
-              data.advanced.backupSiteData![index].failurePolicy,
+            'failure-policy': data.advanced.backupSiteData![index].failurePolicy,
             timeout: data.advanced.backupSiteData![index].timeout,
-            'two-phase-commit':
-              data.advanced.backupSiteData![index].twoPhaseCommit,
-            'failure-policy-class':
-              data.advanced.backupSiteData![index].failurePolicyClass,
-          },
+            'two-phase-commit': data.advanced.backupSiteData![index].twoPhaseCommit,
+            'failure-policy-class': data.advanced.backupSiteData![index].failurePolicyClass
+          }
         };
         if (
           data.advanced.backupSiteData![index].takeOffline?.afterFailures ||
           data.advanced.backupSiteData![index].takeOffline?.minWait
         ) {
           cache[cacheType]['backups'][site.siteName!].backup['take-offline'] = {
-            'after-failures':
-              data.advanced.backupSiteData![index].takeOffline?.afterFailures,
-            'min-wait':
-              data.advanced.backupSiteData![index].takeOffline?.minWait,
+            'after-failures': data.advanced.backupSiteData![index].takeOffline?.afterFailures,
+            'min-wait': data.advanced.backupSiteData![index].takeOffline?.minWait
           };
         }
         if (
@@ -323,18 +294,13 @@ export class CacheConfigUtils {
           data.advanced.backupSiteData![index].stateTransfer?.mode ||
           data.advanced.backupSiteData![index].stateTransfer?.waitTime
         ) {
-          cache[cacheType]['backups'][site.siteName!].backup['state-transfer'] =
-            {
-              'chunk-size':
-                data.advanced.backupSiteData![index].stateTransfer?.chunckSize,
-              'max-retries':
-                data.advanced.backupSiteData![index].stateTransfer?.maxRetries,
-              timeout:
-                data.advanced.backupSiteData![index].stateTransfer?.timeout,
-              mode: data.advanced.backupSiteData![index].stateTransfer?.mode,
-              'wait-time':
-                data.advanced.backupSiteData![index].stateTransfer?.waitTime,
-            };
+          cache[cacheType]['backups'][site.siteName!].backup['state-transfer'] = {
+            'chunk-size': data.advanced.backupSiteData![index].stateTransfer?.chunckSize,
+            'max-retries': data.advanced.backupSiteData![index].stateTransfer?.maxRetries,
+            timeout: data.advanced.backupSiteData![index].stateTransfer?.timeout,
+            mode: data.advanced.backupSiteData![index].stateTransfer?.mode,
+            'wait-time': data.advanced.backupSiteData![index].stateTransfer?.waitTime
+          };
         }
       });
     };
@@ -342,7 +308,7 @@ export class CacheConfigUtils {
     const helperBackupsFor = () => {
       cache[cacheType]['backup-for'] = {
         'remote-cache': data.feature.backupsCache.backupFor.remoteCache,
-        'remote-site': data.feature.backupsCache.backupFor.remoteSite,
+        'remote-site': data.feature.backupsCache.backupFor.remoteSite
       };
     };
 
@@ -351,26 +317,19 @@ export class CacheConfigUtils {
         mode: data.feature.transactionalCache.mode,
         locking: data.feature.transactionalCache.locking,
         'stop-timeout': data.advanced.transactionalAdvance?.stopTimeout,
-        'transaction-manager-lookup':
-          data.advanced.transactionalAdvance?.transactionManagerLookup,
+        'transaction-manager-lookup': data.advanced.transactionalAdvance?.transactionManagerLookup,
         'complete-timeout': data.advanced.transactionalAdvance?.completeTimeout,
         'reaper-interval': data.advanced.transactionalAdvance?.reaperInterval,
-        'recovery-cache': data.advanced.transactionalAdvance?.recoveryCache,
+        'recovery-cache': data.advanced.transactionalAdvance?.recoveryCache
       };
     };
 
     const featurePersistent = () => {
-      cache[cacheType]['persistence'] = JSON.parse(
-        data.feature.persistentCache.config
-      );
-      cache[cacheType]['persistence'].passivation =
-        data.feature.persistentCache.passivation;
-      cache[cacheType]['persistence']['connection-attempts'] =
-        data.feature.persistentCache.connectionAttempts;
-      cache[cacheType]['persistence']['connection-interval'] =
-        data.feature.persistentCache.connectionInterval;
-      cache[cacheType]['persistence']['availability-interval'] =
-        data.feature.persistentCache.availabilityInterval;
+      cache[cacheType]['persistence'] = JSON.parse(data.feature.persistentCache.config);
+      cache[cacheType]['persistence'].passivation = data.feature.persistentCache.passivation;
+      cache[cacheType]['persistence']['connection-attempts'] = data.feature.persistentCache.connectionAttempts;
+      cache[cacheType]['persistence']['connection-interval'] = data.feature.persistentCache.connectionInterval;
+      cache[cacheType]['persistence']['availability-interval'] = data.feature.persistentCache.availabilityInterval;
     };
 
     if (
@@ -417,11 +376,9 @@ export class CacheConfigUtils {
       }
     }
 
-    data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) &&
-      featureSecured();
+    data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && featureSecured();
 
-    data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) &&
-      featureTransactional();
+    data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && featureTransactional();
 
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.PERSISTENCE)) {
       featurePersistent();
@@ -430,15 +387,11 @@ export class CacheConfigUtils {
     return JSON.stringify(cache, null, 2);
   }
 
-  public static createCacheWithEditorStep(
-    data: CacheEditorStep,
-    cacheName: string
-  ): Promise<ActionResponse> {
+  public static createCacheWithEditorStep(data: CacheEditorStep, cacheName: string): Promise<ActionResponse> {
     const name = cacheName.trim();
 
     // Validate Name
-    const isValidName: 'success' | 'error' =
-      name.length > 0 ? 'success' : 'error';
+    const isValidName: 'success' | 'error' = name.length > 0 ? 'success' : 'error';
 
     // Validate the config
     let isValidConfig: 'success' | 'error';
@@ -467,17 +420,14 @@ export class CacheConfigUtils {
     if (isValidName == 'error' || isValidConfig == 'error') {
       return Promise.resolve(<ActionResponse>{
         message: `Unable to create cache ${cacheName}.`,
-        success: false,
+        success: false
       });
     }
 
     let createCacheCall: Promise<ActionResponse>;
 
     if (data.selectedConfig != '') {
-      createCacheCall = ConsoleServices.caches().createCacheByConfigName(
-        cacheName,
-        data.selectedConfig
-      );
+      createCacheCall = ConsoleServices.caches().createCacheByConfigName(cacheName, data.selectedConfig);
     } else {
       createCacheCall = ConsoleServices.caches().createCacheWithConfiguration(
         cacheName,
@@ -489,34 +439,27 @@ export class CacheConfigUtils {
     return createCacheCall;
   }
 
-  public static createCacheWithWizardStep(
-    config: string,
-    cacheName: string
-  ): Promise<ActionResponse> {
+  public static createCacheWithWizardStep(config: string, cacheName: string): Promise<ActionResponse> {
     const name = cacheName.trim();
     // Validate Name
-    const isValidName: 'success' | 'error' =
-      name.length > 0 ? 'success' : 'error';
+    const isValidName: 'success' | 'error' = name.length > 0 ? 'success' : 'error';
 
     // Validate the config
     const configValidation = CacheConfigUtils.validateConfig(config);
-    const isValidConfig: 'success' | 'error' = configValidation.isRight()
-      ? 'success'
-      : 'error';
+    const isValidConfig: 'success' | 'error' = configValidation.isRight() ? 'success' : 'error';
 
     if (isValidName == 'error' || isValidConfig == 'error') {
       return Promise.resolve(<ActionResponse>{
         message: `Unable to create cache ${cacheName}.`,
-        success: false,
+        success: false
       });
     }
 
-    const createCacheCall: Promise<ActionResponse> =
-      ConsoleServices.caches().createCacheWithConfiguration(
-        cacheName,
-        config,
-        'json'
-      );
+    const createCacheCall: Promise<ActionResponse> = ConsoleServices.caches().createCacheWithConfiguration(
+      cacheName,
+      config,
+      'json'
+    );
 
     return createCacheCall;
   }

@@ -4,10 +4,7 @@ import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 import { CacheManagerPage } from '@app/CacheManagers/CacheMangerPage';
 import { NotFound } from '@app/NotFound/NotFound';
-import {
-  LastLocationProvider,
-  useLastLocation,
-} from 'react-router-last-location';
+import { LastLocationProvider, useLastLocation } from 'react-router-last-location';
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
@@ -35,12 +32,7 @@ const useA11yRouteChange = (isAsync: boolean) => {
   }, [isAsync, lastNavigation]);
 };
 
-const RouteWithTitleUpdates = ({
-  component: Component,
-  isAsync = false,
-  title,
-  ...rest
-}: IAppRoute) => {
+const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, ...rest }: IAppRoute) => {
   useA11yRouteChange(isAsync);
   useDocumentTitle(title);
 
@@ -59,9 +51,7 @@ const PageNotFound = ({ title }: { title: string }) => {
 export interface IAppRoute {
   label?: string;
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  component:
-    | React.ComponentType<RouteComponentProps<any>>
-    | React.ComponentType<any>;
+  component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
   /* eslint-enable @typescript-eslint/no-explicit-any */
   exact?: boolean;
   path: string;
@@ -79,7 +69,7 @@ const routes: IAppRoute[] = [
     label: 'Welcome to the server',
     path: '/welcome',
     title: 'Welcome to the server',
-    menu: false,
+    menu: false
   },
   {
     component: CacheManagerPage,
@@ -88,7 +78,7 @@ const routes: IAppRoute[] = [
     path: '/',
     title: 'Data Container',
     menu: true,
-    subRoutes: ['container', 'cache'],
+    subRoutes: ['container', 'cache']
   },
   {
     component: GlobalStats,
@@ -96,7 +86,7 @@ const routes: IAppRoute[] = [
     label: 'Global Statistics',
     path: '/global-stats',
     title: 'Global Statistics',
-    menu: true,
+    menu: true
   },
   {
     component: ClusterStatus,
@@ -104,7 +94,7 @@ const routes: IAppRoute[] = [
     label: 'Cluster Membership',
     path: '/cluster-membership',
     title: 'Cluster Membership',
-    menu: true,
+    menu: true
   },
   {
     component: CreateCache,
@@ -112,7 +102,7 @@ const routes: IAppRoute[] = [
     label: 'Cache Setup',
     path: '/container/caches/create',
     title: 'Cache Setup',
-    menu: true,
+    menu: true
   },
   {
     component: DetailConfigurations,
@@ -120,7 +110,7 @@ const routes: IAppRoute[] = [
     label: 'Cache Manager Configurations',
     path: '/container/:cmName/configurations',
     title: 'Configurations',
-    menu: false,
+    menu: false
   },
   {
     component: IndexManagement,
@@ -128,7 +118,7 @@ const routes: IAppRoute[] = [
     label: 'Index management',
     path: '/cache/:cacheName/indexing',
     title: 'Index management',
-    menu: false,
+    menu: false
   },
   {
     component: XSiteCache,
@@ -136,7 +126,7 @@ const routes: IAppRoute[] = [
     label: 'XSite Replication Cache',
     path: '/cache/:cacheName/backups',
     title: 'XSite management caches',
-    menu: false,
+    menu: false
   },
   {
     component: DetailCachePage,
@@ -144,8 +134,8 @@ const routes: IAppRoute[] = [
     label: 'Cache',
     path: '/cache/:cacheName',
     title: 'Cache',
-    menu: false,
-  },
+    menu: false
+  }
 ];
 
 const AppRoutes = (props: { init: string }) => {

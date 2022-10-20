@@ -1,12 +1,13 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
-.caches-table{
+.caches-table {
 }
 
 .pf-c-brand {
-
 }
 .pf-c-nav {
   /*--pf-c-nav--m-dark__item--m-current--BackgroundColor: #004B95;*/
@@ -17,8 +18,8 @@ html, body, #root {
 }
 
 .status-icon {
-  padding-left:  var(--pf-global--spacer--md);
-  padding-right:  var(--pf-global--spacer--sm);
+  padding-left: var(--pf-global--spacer--md);
+  padding-right: var(--pf-global--spacer--sm);
   padding-bottom: var(--pf-global--spacer--sm);
 }
 

@@ -13,14 +13,10 @@ export class KeycloakService {
     return this.instance;
   }
 
-  public static init(
-    configOptions: Keycloak.KeycloakConfig | undefined
-  ): Promise<void> {
+  public static init(configOptions: Keycloak.KeycloakConfig | undefined): Promise<void> {
     if (!configOptions) {
       console.error('Unable to init Keycloak with undefined configOptions');
-      return new Promise((resolve, reject) =>
-        reject('Unable to init Keycloak with undefined configOptions')
-      );
+      return new Promise((resolve, reject) => reject('Unable to init Keycloak with undefined configOptions'));
     } else {
       KeycloakService.keycloakAuth = Keycloak(configOptions);
 
@@ -43,9 +39,7 @@ export class KeycloakService {
   }
 
   public authenticated(): boolean {
-    return KeycloakService.keycloakAuth.authenticated
-      ? KeycloakService.keycloakAuth.authenticated
-      : false;
+    return KeycloakService.keycloakAuth.authenticated ? KeycloakService.keycloakAuth.authenticated : false;
   }
 
   public login(options?: KeycloakLoginOptions): Promise<boolean> {
@@ -71,9 +65,7 @@ export class KeycloakService {
 
   public authServerUrl(): string | undefined {
     const authServerUrl = KeycloakService.keycloakAuth.authServerUrl;
-    return authServerUrl!.charAt(authServerUrl!.length - 1) === '/'
-      ? authServerUrl
-      : authServerUrl + '/';
+    return authServerUrl!.charAt(authServerUrl!.length - 1) === '/' ? authServerUrl : authServerUrl + '/';
   }
 
   public realm(): string | undefined {

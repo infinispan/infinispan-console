@@ -36,9 +36,7 @@ export class FetchCaller {
       .then((data) => {
         return right(transformer(data));
       })
-      .catch((err) =>
-        left(this.mapError(err, 'Unexpected error retrieving data.'))
-      );
+      .catch((err) => left(this.mapError(err, 'Unexpected error retrieving data.')));
   }
 
   /**
@@ -47,16 +45,8 @@ export class FetchCaller {
    * @param deleteCall
    */
   public delete(deleteCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(
-      deleteCall.url,
-      'DELETE',
-      deleteCall.customHeaders
-    );
-    return this.handleCRUDActionResponse(
-      deleteCall.successMessage,
-      deleteCall.errorMessage,
-      responsePromise
-    );
+    let responsePromise = this.fetch(deleteCall.url, 'DELETE', deleteCall.customHeaders);
+    return this.handleCRUDActionResponse(deleteCall.successMessage, deleteCall.errorMessage, responsePromise);
   }
 
   /**
@@ -65,17 +55,8 @@ export class FetchCaller {
    * @param putCall
    */
   public put(putCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(
-      putCall.url,
-      'PUT',
-      putCall.customHeaders,
-      putCall.body
-    );
-    return this.handleCRUDActionResponse(
-      putCall.successMessage,
-      putCall.errorMessage,
-      responsePromise
-    );
+    let responsePromise = this.fetch(putCall.url, 'PUT', putCall.customHeaders, putCall.body);
+    return this.handleCRUDActionResponse(putCall.successMessage, putCall.errorMessage, responsePromise);
   }
 
   /**
@@ -84,17 +65,8 @@ export class FetchCaller {
    * @param postCall
    */
   public post(postCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(
-      postCall.url,
-      'POST',
-      postCall.customHeaders,
-      postCall.body
-    );
-    return this.handleCRUDActionResponse(
-      postCall.successMessage,
-      postCall.errorMessage,
-      responsePromise
-    );
+    let responsePromise = this.fetch(postCall.url, 'POST', postCall.customHeaders, postCall.body);
+    return this.handleCRUDActionResponse(postCall.successMessage, postCall.errorMessage, responsePromise);
   }
 
   /**
@@ -104,11 +76,7 @@ export class FetchCaller {
    */
   public head(headCall: ServiceCall): Promise<ActionResponse> {
     let responsePromise = this.fetch(headCall.url, 'HEAD');
-    return this.handleCRUDActionResponse(
-      headCall.successMessage,
-      headCall.errorMessage,
-      responsePromise
-    );
+    return this.handleCRUDActionResponse(headCall.successMessage, headCall.errorMessage, responsePromise);
   }
 
   /**
@@ -117,12 +85,7 @@ export class FetchCaller {
    * @param url
    * @param method
    */
-  public fetch(
-    url: string,
-    method: string,
-    customHeaders?: Headers,
-    body?: string
-  ): Promise<Response> {
+  public fetch(url: string, method: string, customHeaders?: Headers, body?: string): Promise<Response> {
     let headers = this.createAuthenticatedHeader();
 
     if (customHeaders) {
@@ -132,7 +95,7 @@ export class FetchCaller {
     let fetchOptions: RequestInit = {
       method: method,
       headers: headers,
-      credentials: 'include',
+      credentials: 'include'
     };
     if (body && body.length > 0) {
       fetchOptions['body'] = body;
@@ -147,10 +110,7 @@ export class FetchCaller {
   private createAuthenticatedHeader = (): Headers => {
     let headers = new Headers();
     if (KeycloakService.Instance.isInitialized()) {
-      headers.append(
-        'Authorization',
-        'Bearer ' + localStorage.getItem('react-token')
-      );
+      headers.append('Authorization', 'Bearer ' + localStorage.getItem('react-token'));
     }
     return headers;
   };
@@ -189,7 +149,7 @@ export class FetchCaller {
         return <ActionResponse>{
           message: successMessage,
           success: true,
-          data: message,
+          data: message
         };
       })
       .catch((err) => this.mapError(err, errorMessage));
@@ -199,17 +159,15 @@ export class FetchCaller {
     if (err instanceof TypeError) {
       return <ActionResponse>{
         message: !errorMessage ? err.message : errorMessage,
-        success: false,
+        success: false
       };
     }
 
     if (err instanceof Response) {
       if (err.status == 401) {
         return <ActionResponse>{
-          message:
-            errorMessage +
-            '\nUnauthorized action. Check your credentials and try again.',
-          success: false,
+          message: errorMessage + '\nUnauthorized action. Check your credentials and try again.',
+          success: false
         };
       }
     }
@@ -217,14 +175,11 @@ export class FetchCaller {
     return this.interpret(err as string, errorMessage);
   }
 
-  private interpret(
-    error: any | undefined,
-    errorMessage: string
-  ): ActionResponse {
+  private interpret(error: any | undefined, errorMessage: string): ActionResponse {
     if (!error) {
       return <ActionResponse>{
         message: errorMessage,
-        success: false,
+        success: false
       };
     }
 
@@ -233,15 +188,12 @@ export class FetchCaller {
     let text = JSON.stringify(error);
 
     if (text.includes("missing type id property '_type'")) {
-      message =
-        "You are trying to write a JSON key or value that needs '_type' field in this cache.";
+      message = "You are trying to write a JSON key or value that needs '_type' field in this cache.";
     } else if (text.includes('Unknown type id : 5901')) {
-      message =
-        'This cache contains Spring Session entries that can not be read or edited from the Console.';
+      message = 'This cache contains Spring Session entries that can not be read or edited from the Console.';
       success = true;
     } else if (text.includes('Unknown type id')) {
-      message =
-        'This cache contains entries that can not be read or edited from the Console.';
+      message = 'This cache contains entries that can not be read or edited from the Console.';
       success = true;
     } else if (text != '') {
       message = errorMessage + '\n' + text;
@@ -251,7 +203,7 @@ export class FetchCaller {
 
     return <ActionResponse>{
       message: message,
-      success: success,
+      success: success
     };
   }
 }

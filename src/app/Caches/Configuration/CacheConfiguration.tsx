@@ -11,21 +11,14 @@ import {
   Spinner,
   Tabs,
   Tab,
-  TabTitleText,
+  TabTitleText
 } from '@patternfly/react-core';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
-import {
-  useFetchConfigurationYAML,
-  useFetchConfigurationXML,
-} from '@app/services/configHook';
+import { useFetchConfigurationYAML, useFetchConfigurationXML } from '@app/services/configHook';
 
-const CacheConfiguration = (props: {
-  cacheName: string;
-  editable: boolean;
-  config: string;
-}) => {
+const CacheConfiguration = (props: { cacheName: string; editable: boolean; config: string }) => {
   const { t } = useTranslation();
   const encodingDocs = t('brandname.encoding-docs-link');
 
@@ -48,9 +41,7 @@ const CacheConfiguration = (props: {
           title={t('caches.configuration.no-encoding-warning')}
           variant={AlertVariant.warning}
           actionLinks={
-            <AlertActionLink
-              onClick={() => window.open(encodingDocs, '_blank')}
-            >
+            <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
               {t('caches.configuration.no-encoding-docs')}
             </AlertActionLink>
           }
@@ -68,19 +59,10 @@ const CacheConfiguration = (props: {
       <Card>
         {displayHeaderAlert()}
         <CardBody>
-          <SyntaxHighlighter
-            wrapLines={false}
-            style={githubGist}
-            useInlineStyles={true}
-            showLineNumbers={true}
-          >
+          <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
             {config}
           </SyntaxHighlighter>
-          <ClipboardCopy
-            isReadOnly
-            isCode
-            variant={ClipboardCopyVariant.inline}
-          >
+          <ClipboardCopy isReadOnly isCode variant={ClipboardCopyVariant.inline}>
             {config}
           </ClipboardCopy>
         </CardBody>

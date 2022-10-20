@@ -10,13 +10,7 @@ import { UserContextProvider } from '@app/providers/UserContextProvider';
 
 const App = () => {
   const [init, setInit] = useState<
-    | 'SERVER_ERROR'
-    | 'READY'
-    | 'NOT_READY'
-    | 'PENDING'
-    | 'DONE'
-    | 'LOGIN'
-    | 'HTTP_LOGIN'
+    'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN' | 'HTTP_LOGIN'
   >('PENDING');
   ConsoleServices.init();
 
@@ -40,14 +34,8 @@ const App = () => {
                   if (!KeycloakService.Instance.authenticated()) {
                     KeycloakService.Instance.login();
                   }
-                  localStorage.setItem(
-                    'react-token',
-                    KeycloakService.keycloakAuth.token
-                  );
-                  localStorage.setItem(
-                    'react-refresh-token',
-                    KeycloakService.keycloakAuth.refreshToken
-                  );
+                  localStorage.setItem('react-token', KeycloakService.keycloakAuth.token);
+                  localStorage.setItem('react-refresh-token', KeycloakService.keycloakAuth.refreshToken);
                   setTimeout(() => {
                     KeycloakService.Instance.getToken().then((token) => {
                       localStorage.setItem('react-token', token);

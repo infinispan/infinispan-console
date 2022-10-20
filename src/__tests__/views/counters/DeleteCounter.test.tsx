@@ -4,9 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import * as DeleteCounterHook from '@app/services/countersHook';
 
 jest.mock('@app/services/countersHook');
-const mockedCounterHook = DeleteCounterHook as jest.Mocked<
-  typeof DeleteCounterHook
->;
+const mockedCounterHook = DeleteCounterHook as jest.Mocked<typeof DeleteCounterHook>;
 
 let closeModalCalls;
 let onDeleteCalls;
@@ -18,32 +16,20 @@ beforeEach(() => {
 
 mockedCounterHook.useDeleteCounter.mockImplementation(() => {
   return {
-    onDelete: () => onDeleteCalls++,
+    onDelete: () => onDeleteCalls++
   };
 });
 
 describe('Delete counter', () => {
   test('not render the dialog if the modal is closed', () => {
-    render(
-      <DeleteCounter
-        name={'count-1'}
-        isModalOpen={false}
-        closeModal={() => {}}
-      />
-    );
+    render(<DeleteCounter name={'count-1'} isModalOpen={false} closeModal={() => {}} />);
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
     expect(onDeleteCalls).toBe(0);
   });
 
   test('render the dialog and buttons work', () => {
-    render(
-      <DeleteCounter
-        name={'count-1'}
-        isModalOpen={true}
-        closeModal={() => closeModalCalls++}
-      />
-    );
+    render(<DeleteCounter name={'count-1'} isModalOpen={true} closeModal={() => closeModalCalls++} />);
 
     expect(mockedCounterHook.useDeleteCounter).toHaveBeenCalledWith('count-1');
 

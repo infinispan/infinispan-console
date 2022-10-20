@@ -13,31 +13,33 @@ import {
   Spinner
 } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { IndexedStorage, CacheFeature, EncodingType, IndexedStartupMode } from "@services/infinispanRefData";
+import { IndexedStorage, CacheFeature, EncodingType, IndexedStartupMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
-import { useCreateCache } from "@app/services/createCacheHook";
-import { PopoverHelp } from "@app/Common/PopoverHelp";
-import { FeatureCard } from "@app/Caches/Create/Features/FeatureCard";
+import { useCreateCache } from '@app/services/createCacheHook';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useFetchProtobufTypes } from '@app/services/protobufHook';
-import { FeatureAlert } from "@app/Caches/Create/Features/FeatureAlert";
+import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 
-const IndexedCacheConfigurator = (props: {
-  isEnabled: boolean
-}) => {
+const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const { protobufTypes, loading, error } = useFetchProtobufTypes()
+  const { protobufTypes, loading, error } = useFetchProtobufTypes();
 
-  const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local-heap'>(configuration.feature.indexedCache.indexedStorage);
+  const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local-heap'>(
+    configuration.feature.indexedCache.indexedStorage
+  );
   const [indexedEntities, setIndexedEntities] = useState<string[]>(configuration.feature.indexedCache.indexedEntities);
   const [validEntity, setValidEntity] = useState<'success' | 'error' | 'default'>('default');
-  const [indexedStartupMode, setIndexedStartupMode] = useState<string>(configuration.feature.indexedCache.indexedStartupMode!);
+  const [indexedStartupMode, setIndexedStartupMode] = useState<string>(
+    configuration.feature.indexedCache.indexedStartupMode!
+  );
 
-  const [isOpenEntities, setIsOpenEntities] = useState(false)
-  const [isOpenStartupMode, setIsOpenStartupMode] = useState(false)
+  const [isOpenEntities, setIsOpenEntities] = useState(false);
+  const [isOpenStartupMode, setIsOpenStartupMode] = useState(false);
 
   useEffect(() => {
     indexedEntities.length > 0 ? setValidEntity('success') : setValidEntity('error');
@@ -60,24 +62,20 @@ const IndexedCacheConfigurator = (props: {
 
   const indexingFeatureValidation = (): boolean => {
     return indexedEntities.length > 0;
-  }
+  };
 
   const deleteChip = (chipToDelete: string) => {
-    const newChips = indexedEntities.filter(chip => !Object.is(chip, chipToDelete));
+    const newChips = indexedEntities.filter((chip) => !Object.is(chip, chipToDelete));
     setIndexedEntities(newChips);
   };
 
   const onSelectSchemas = (event, selection, isPlaceholder) => {
-    if (indexedEntities.includes(selection))
-      setIndexedEntities(indexedEntities.filter(role => role !== selection));
-    else
-      setIndexedEntities([...indexedEntities, selection]);
+    if (indexedEntities.includes(selection)) setIndexedEntities(indexedEntities.filter((role) => role !== selection));
+    else setIndexedEntities([...indexedEntities, selection]);
   };
 
   const entitiesOptions = () => {
-    return protobufTypes.map((schema, id) => (
-      <SelectOption key={id} value={schema} />
-    ))
+    return protobufTypes.map((schema, id) => <SelectOption key={id} value={schema} />);
   };
 
   const startupModeOptions = () => {
@@ -116,14 +114,19 @@ const IndexedCacheConfigurator = (props: {
       <FormGroup
         isRequired
         label={t('caches.create.configurations.feature.index-storage-entity')}
-        labelIcon={<PopoverHelp name={'index-storage-entity'}
-          label={t('caches.create.configurations.feature.index-storage-entity')}
-          content={t('caches.create.configurations.feature.index-storage-entity-tooltip', { brandname: brandname })} />}
-        fieldId='indexed-entities'
+        labelIcon={
+          <PopoverHelp
+            name={'index-storage-entity'}
+            label={t('caches.create.configurations.feature.index-storage-entity')}
+            content={t('caches.create.configurations.feature.index-storage-entity-tooltip', { brandname: brandname })}
+          />
+        }
+        fieldId="indexed-entities"
         validated={validEntity}
-        helperTextInvalid={t('caches.create.configurations.feature.index-storage-entity-helper')}>
+        helperTextInvalid={t('caches.create.configurations.feature.index-storage-entity-helper')}
+      >
         <Select
-          placeholderText={"Select an entity"}
+          placeholderText={'Select an entity'}
           variant={SelectVariant.checkbox}
           aria-label="entities-select"
           onToggle={() => setIsOpenEntities(!isOpenEntities)}
@@ -138,30 +141,44 @@ const IndexedCacheConfigurator = (props: {
           {entitiesOptions()}
         </Select>
       </FormGroup>
-    )
-  }
+    );
+  };
 
   if (!props.isEnabled) {
     return (
-      <FeatureAlert feature={CacheFeature.INDEXED} error={t('caches.create.configurations.feature.indexed-types-disabled-description')} />
-    )
+      <FeatureAlert
+        feature={CacheFeature.INDEXED}
+        error={t('caches.create.configurations.feature.indexed-types-disabled-description')}
+      />
+    );
   }
 
   if (configuration.basic.encoding !== EncodingType.Protobuf) {
     return (
-      <FeatureAlert feature={CacheFeature.INDEXED} error={t('caches.create.configurations.feature.indexed-encoding-disabled-description', { encoding: configuration.basic.encoding })} />
-    )
+      <FeatureAlert
+        feature={CacheFeature.INDEXED}
+        error={t('caches.create.configurations.feature.indexed-encoding-disabled-description', {
+          encoding: configuration.basic.encoding
+        })}
+      />
+    );
   }
 
   return (
-    <FeatureCard title="caches.create.configurations.feature.indexed"
-      description="caches.create.configurations.feature.indexed-tooltip">
+    <FeatureCard
+      title="caches.create.configurations.feature.indexed"
+      description="caches.create.configurations.feature.indexed-tooltip"
+    >
       <FormGroup
         label={t('caches.create.configurations.feature.index-storage')}
-        labelIcon={<PopoverHelp name={'indexed-storage'}
-          label={t('caches.create.configurations.feature.index-storage')}
-          content={t('caches.create.configurations.feature.index-storage-tooltip', { brandname: brandname })} />}
-        fieldId='indexed-storage'
+        labelIcon={
+          <PopoverHelp
+            name={'indexed-storage'}
+            label={t('caches.create.configurations.feature.index-storage')}
+            content={t('caches.create.configurations.feature.index-storage-tooltip', { brandname: brandname })}
+          />
+        }
+        fieldId="indexed-storage"
         isInline
       >
         <Radio
@@ -181,10 +198,14 @@ const IndexedCacheConfigurator = (props: {
       </FormGroup>
       <FormGroup
         label={t('caches.create.configurations.feature.index-startup-mode')}
-        labelIcon={<PopoverHelp name={'indexed-startup-mode'}
-          label={t('caches.create.configurations.feature.index-startup-mode')}
-          content={t('caches.create.configurations.feature.index-startup-mode-tooltip', { brandname: brandname })} />}
-        fieldId='indexed-startup-mode'
+        labelIcon={
+          <PopoverHelp
+            name={'indexed-startup-mode'}
+            label={t('caches.create.configurations.feature.index-startup-mode')}
+            content={t('caches.create.configurations.feature.index-startup-mode-tooltip', { brandname: brandname })}
+          />
+        }
+        fieldId="indexed-startup-mode"
         isInline
       >
         <Select
@@ -202,12 +223,15 @@ const IndexedCacheConfigurator = (props: {
       </FormGroup>
       {formSelectEntities()}
       <LabelGroup>
-        {indexedEntities.map(currentChip => (
-          <Label data-cy={currentChip}
+        {indexedEntities.map((currentChip) => (
+          <Label
+            data-cy={currentChip}
             color="blue"
             closeBtnAriaLabel="Remove entity"
             style={{ marginRight: global_spacer_sm.value }}
-            key={currentChip} onClose={() => deleteChip(currentChip)}>
+            key={currentChip}
+            onClose={() => deleteChip(currentChip)}
+          >
             {currentChip}
           </Label>
         ))}
