@@ -21,15 +21,11 @@ export class CountersService {
       .fetch(this.endpoint, 'GET')
       .then((response) => response.json())
       .then((jsonList) => {
-        const counters: Promise<Counter>[] = jsonList.map((name) =>
-          this.getCounter(name)
-        );
+        const counters: Promise<Counter>[] = jsonList.map((name) => this.getCounter(name));
         return Promise.all(counters);
       })
       .then((counters) => right(counters) as Either<ActionResponse, Counter[]>)
-      .catch((err) =>
-        left(this.utils.mapError(err, 'Unable to retrieve counters'))
-      );
+      .catch((err) => left(this.utils.mapError(err, 'Unable to retrieve counters')));
   }
 
   private getCounter(name: string): Promise<Counter> {
@@ -61,7 +57,7 @@ export class CountersService {
             type: 'Weak',
             initialValue: weakCounter['initial-value'],
             storage: weakCounter.storage,
-            concurrencyLevel: weakCounter['concurrency-level'],
+            concurrencyLevel: weakCounter['concurrency-level']
           };
         } else {
           const strongCounter = value['strong-counter'];
@@ -71,7 +67,7 @@ export class CountersService {
             initialValue: strongCounter['initial-value'],
             storage: strongCounter.storage,
             lowerBound: strongCounter['lower-bound'],
-            upperBound: strongCounter['upper-bound'],
+            upperBound: strongCounter['upper-bound']
           };
         }
         return counterConfig;
@@ -87,7 +83,7 @@ export class CountersService {
     return this.utils.delete({
       url: this.endpoint + '/' + name,
       successMessage: `Counter ${name} has been deleted.`,
-      errorMessage: `Unexpected error deleting the counter ${name}.`,
+      errorMessage: `Unexpected error deleting the counter ${name}.`
     });
   }
 }

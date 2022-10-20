@@ -27,23 +27,18 @@ export class CacheRequestResponseMapper {
         content != 'false' &&
         !(content.startsWith('{') || content.startsWith('['))
       ) {
-        return content.startsWith('"') && content.endsWith('"')
-          ? right(content)
-          : right(JSON.stringify(content));
+        return content.startsWith('"') && content.endsWith('"') ? right(content) : right(JSON.stringify(content));
       } else if (content.startsWith('{') || content.startsWith('[')) {
         try {
           JSON.parse(content);
         } catch (e) {
           return left({
             message: 'Provided Json content is not correctly formed.',
-            success: false,
+            success: false
           });
         }
       }
-    } else if (
-      encoding == EncodingType.Protobuf &&
-      contentType != ContentType.customType
-    ) {
+    } else if (encoding == EncodingType.Protobuf && contentType != ContentType.customType) {
       const protobufType = contentType;
       let contentToPut: any = content;
       if (protobufType == ContentType.bool) {
@@ -88,23 +83,15 @@ export class CacheRequestResponseMapper {
       keyContentType: keyContentType,
       // We need to specifically ask to parse if it's json since the value is string typed and not JSON
       value: this.extractData(value, encoding.value as EncodingType, true),
-      valueContentType: this.extractContentType(
-        value,
-        encoding.value as EncodingType,
-        true
-      ),
+      valueContentType: this.extractContentType(value, encoding.value as EncodingType, true),
       timeToLive: this.parseMetadataNumber(timeToLive),
       maxIdle: this.parseMetadataNumber(maxIdleTimeSeconds),
       created: this.parseMetadataDate(created),
       lastUsed: this.parseMetadataDate(lastUsed),
-      lastModified: lastModified
-        ? this.parseMetadataDate(Date.parse(lastModified))
-        : undefined,
-      expires: expires
-        ? this.parseMetadataDate(Date.parse(expires))
-        : undefined,
+      lastModified: lastModified ? this.parseMetadataDate(Date.parse(lastModified)) : undefined,
+      expires: expires ? this.parseMetadataDate(Date.parse(expires)) : undefined,
       cacheControl: cacheControl,
-      eTag: etag,
+      eTag: etag
     };
 
     return entry;
@@ -121,29 +108,19 @@ export class CacheRequestResponseMapper {
       (entry) =>
         <CacheEntry>{
           key: this.extractData(entry.key, encoding.key as EncodingType),
-          keyContentType: this.extractContentType(
-            entry.key,
-            encoding.key as EncodingType
-          ),
+          keyContentType: this.extractContentType(entry.key, encoding.key as EncodingType),
           value: this.extractData(entry.value, encoding.value as EncodingType),
-          valueContentType: this.extractContentType(
-            entry.value,
-            encoding.value as EncodingType
-          ),
+          valueContentType: this.extractContentType(entry.value, encoding.value as EncodingType),
           timeToLive: this.parseMetadataNumber(entry.timeToLiveSeconds),
           maxIdle: this.parseMetadataNumber(entry.maxIdleTimeSeconds),
           created: this.parseMetadataDate(entry.created),
           lastUsed: this.parseMetadataDate(entry.lastUsed),
-          expires: this.parseMetadataDate(entry.expireTime),
+          expires: this.parseMetadataDate(entry.expireTime)
         }
     );
   }
 
-  private static extractData(
-    data: any,
-    dataEncoding: EncodingType,
-    parse: boolean = false
-  ): string {
+  private static extractData(data: any, dataEncoding: EncodingType, parse: boolean = false): string {
     if (data == null) {
       return '';
     }
@@ -159,9 +136,7 @@ export class CacheRequestResponseMapper {
       }
       const dataType = protobufJson['_type'];
       const dataValue = protobufJson['_value'];
-      if (
-        ProtobufDataUtils.fromProtobufType(dataType) == ContentType.customType
-      ) {
+      if (ProtobufDataUtils.fromProtobufType(dataType) == ContentType.customType) {
         return JSON.stringify(protobufJson);
       }
       return dataValue.toString();
@@ -200,9 +175,7 @@ export class CacheRequestResponseMapper {
     return ContentType.StringContentType;
   }
 
-  private static parseMetadataDate(
-    entryMetadata: string | number | undefined | null
-  ): string | undefined {
+  private static parseMetadataDate(entryMetadata: string | number | undefined | null): string | undefined {
     if (!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
       return undefined;
     }
@@ -217,9 +190,7 @@ export class CacheRequestResponseMapper {
     return new Date(entryMetadataNumber).toLocaleString();
   }
 
-  private static parseMetadataNumber(
-    entryMetadata: number | undefined | null | string
-  ): string | undefined {
+  private static parseMetadataNumber(entryMetadata: number | undefined | null | string): string | undefined {
     if (!entryMetadata || entryMetadata == -1 || entryMetadata == '-1') {
       return undefined;
     }
@@ -230,7 +201,7 @@ export class CacheRequestResponseMapper {
       entryMetadataNumber = Number.parseInt(entryMetadata as string);
     }
     return entryMetadataNumber.toLocaleString('en', {
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 0
     });
   }
 }

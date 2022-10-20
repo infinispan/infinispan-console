@@ -19,8 +19,7 @@ export class ContentTypeHeaderMapper {
       case ContentType.LongContentType:
       case ContentType.FloatContentType:
       case ContentType.BooleanContentType:
-        stringContentType =
-          'application/x-java-object;type=java.lang.' + contentType.toString();
+        stringContentType = 'application/x-java-object;type=java.lang.' + contentType.toString();
         break;
       case ContentType.XML:
         stringContentType = 'application/xml';
@@ -46,17 +45,10 @@ export class ContentTypeHeaderMapper {
     defaultContentType?: ContentType
   ): ContentType {
     if (contentTypeHeader == null) {
-      return defaultContentType
-        ? defaultContentType
-        : ContentType.StringContentType;
+      return defaultContentType ? defaultContentType : ContentType.StringContentType;
     }
-    if (
-      contentTypeHeader.startsWith('application/x-java-object;type=java.lang.')
-    ) {
-      const contentType = contentTypeHeader.replace(
-        'application/x-java-object;type=java.lang.',
-        ''
-      );
+    if (contentTypeHeader.startsWith('application/x-java-object;type=java.lang.')) {
+      const contentType = contentTypeHeader.replace('application/x-java-object;type=java.lang.', '');
       return contentType as ContentType;
     }
 
@@ -84,10 +76,7 @@ export class ContentTypeHeaderMapper {
       return ContentTypeHeaderMapper.fromContentType(ContentType.XML);
     }
 
-    if (
-      encodingType == EncodingType.JSON ||
-      encodingType == EncodingType.Protobuf
-    ) {
+    if (encodingType == EncodingType.JSON || encodingType == EncodingType.Protobuf) {
       return ContentTypeHeaderMapper.fromContentType(ContentType.JSON);
     }
 

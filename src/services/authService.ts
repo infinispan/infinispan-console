@@ -37,20 +37,20 @@ export class AuthenticationService {
 
   public logOut() {
     return fetch(ConsoleServices.endpoint() + '/server', {
-      headers: { Authorization: 'Basic xxx' },
+      headers: { Authorization: 'Basic xxx' }
     })
       .then((response) => {
         console.log(response);
         if (response.ok) {
           return <ActionResponse>{
             success: true,
-            message: ' logged in',
+            message: ' logged in'
           };
         }
         if (response.status == 401) {
           return <ActionResponse>{
             success: false,
-            message: 'not authorized',
+            message: 'not authorized'
           };
         }
 
@@ -60,7 +60,7 @@ export class AuthenticationService {
         console.error(err);
         return <ActionResponse>{
           success: false,
-          message: 'Unexpected error. Check the logs',
+          message: 'Unexpected error. Check the logs'
         };
       });
   }
@@ -74,7 +74,7 @@ export class AuthenticationService {
    */
   public async config(): Promise<Either<ActionResponse, AuthInfo>> {
     return fetch(this.endpoint + '/login?action=config', {
-      method: 'GET',
+      method: 'GET'
     })
       .then((response) => {
         if (response.ok) {
@@ -84,28 +84,25 @@ export class AuthenticationService {
       })
       .then((json) => {
         let jsonLength = Object.keys(json).length;
-        if (
-          jsonLength <= 1 ||
-          (jsonLength == 2 && json.mode === 'HTTP' && json.ready === 'true')
-        ) {
+        if (jsonLength <= 1 || (jsonLength == 2 && json.mode === 'HTTP' && json.ready === 'true')) {
           return right(<AuthInfo>{
             mode: 'auth_disabled',
             ready: true,
-            digest: false,
+            digest: false
           }) as Either<ActionResponse, AuthInfo>;
         }
 
         const authInfo = <AuthInfo>{
           mode: json.mode,
           ready: json.ready == 'true',
-          digest: json.DIGEST == 'true',
+          digest: json.DIGEST == 'true'
         };
 
         if (authInfo.mode == 'OIDC') {
           authInfo.keycloakConfig = <Keycloak.KeycloakConfig>{
             url: json.url,
             realm: json.realm,
-            clientId: json.clientId,
+            clientId: json.clientId
           };
         }
 
@@ -120,19 +117,14 @@ export class AuthenticationService {
           }
           actionResponse = <ActionResponse>{
             message: errorMessage,
-            success: false,
+            success: false
           };
         } else if (err instanceof Response) {
-          actionResponse = err
-            .text()
-            .then(
-              (errorMessage) =>
-                <ActionResponse>{ message: errorMessage, success: false }
-            );
+          actionResponse = err.text().then((errorMessage) => <ActionResponse>{ message: errorMessage, success: false });
         } else {
           actionResponse = <ActionResponse>{
             message: 'Server Error',
-            success: false,
+            success: false
           };
         }
         return left(actionResponse);
@@ -149,7 +141,7 @@ export class AuthenticationService {
 
     let fetchOptions: RequestInit = {
       headers: headers,
-      credentials: 'include',
+      credentials: 'include'
     };
     return fetch(ConsoleServices.endpoint() + '/server', fetchOptions)
       .then((response) => {})
@@ -158,19 +150,19 @@ export class AuthenticationService {
 
   public loginLink(): Promise<ActionResponse> {
     return fetch(ConsoleServices.endpoint() + '/server', {
-      credentials: 'include',
+      credentials: 'include'
     })
       .then((response) => {
         if (response.ok) {
           return <ActionResponse>{
             success: true,
-            message: ' logged in',
+            message: ' logged in'
           };
         }
         if (response.status == 401) {
           return <ActionResponse>{
             success: false,
-            message: 'not authorized',
+            message: 'not authorized'
           };
         }
 
@@ -180,7 +172,7 @@ export class AuthenticationService {
         console.error(err);
         return <ActionResponse>{
           success: false,
-          message: 'Unexpected error. Check the logs',
+          message: 'Unexpected error. Check the logs'
         };
       });
   }

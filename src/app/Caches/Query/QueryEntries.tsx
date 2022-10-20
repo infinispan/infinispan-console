@@ -15,21 +15,16 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const QueryEntries: React.FunctionComponent<any> = (props: {
   cacheName: string;
@@ -43,7 +38,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
   const [queryPagination, setQueryPagination] = useState({
     page: 1,
     perPage: 10,
-    total: 0,
+    total: 0
   });
 
   const columns = [{ title: 'Value' }];
@@ -57,10 +52,10 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
           cells: [
             {
               props: { colSpan: 1 },
-              title: <TableErrorState error={'Query error'} detail={error} />,
-            },
-          ],
-        },
+              title: <TableErrorState error={'Query error'} detail={error} />
+            }
+          ]
+        }
       ];
     } else if (values.length == 0) {
       rows = [
@@ -78,16 +73,16 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                     </Title>
                   </EmptyState>
                 </Bullseye>
-              ),
-            },
-          ],
-        },
+              )
+            }
+          ]
+        }
       ];
     } else {
       rows = values.map((value) => {
         return {
           heightAuto: true,
-          cells: [{ title: displayValue(value) }],
+          cells: [{ title: displayValue(value) }]
         };
       });
     }
@@ -97,7 +92,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
   const displayValue = (value: string) => {
     return (
       <SyntaxHighlighter
-        lineProps={{style: {wordBreak: 'break-all'}}}
+        lineProps={{ style: { wordBreak: 'break-all' } }}
         style={githubGist}
         useInlineStyles={true}
         wrapLongLines={true}
@@ -158,10 +153,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
 
     return (
       <ToolbarItem>
-        <Button
-          variant={ButtonVariant.secondary}
-          onClick={() => props.changeTab()}
-        >
+        <Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()}>
           View all query statistics
         </Button>
       </ToolbarItem>
@@ -187,9 +179,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
               <Button
                 variant="control"
                 aria-label="Search input button"
-                onClick={() =>
-                  searchByQuery(queryPagination.perPage, queryPagination.page)
-                }
+                onClick={() => searchByQuery(queryPagination.perPage, queryPagination.page)}
               >
                 <SearchIcon />
               </Button>

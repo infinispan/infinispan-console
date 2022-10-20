@@ -4,14 +4,14 @@ import {
   querySqlStore,
   remoteStore,
   rocksDB,
-  tableSqlStore,
+  tableSqlStore
 } from '@app/utils/persistentStorageTemplate';
 
 export enum ComponentHealth {
   HEALTHY = 'HEALTHY',
   HEALTHY_REBALANCING = 'HEALTHY_REBALANCING',
   DEGRADED = 'DEGRADED',
-  FAILED = 'FAILED',
+  FAILED = 'FAILED'
 }
 /**
  * Cache configuration utils class
@@ -45,7 +45,7 @@ export enum ContentType {
   fixed64 = 'fixed64',
   sfixed32 = 'sfixed32',
   sfixed64 = 'sfixed64',
-  customType = 'Custom Type',
+  customType = 'Custom Type'
 }
 
 export enum CacheType {
@@ -53,7 +53,7 @@ export enum CacheType {
   Replicated = 'Replicated',
   Local = 'Local',
   Invalidated = 'Invalidated',
-  Scattered = 'Scattered',
+  Scattered = 'Scattered'
 }
 
 export enum EncodingType {
@@ -65,7 +65,7 @@ export enum EncodingType {
   Text = 'text/plain',
   JBoss = 'application/x-jboss-marshalling',
   Octet = 'application/octet-stream',
-  Empty = 'Empty',
+  Empty = 'Empty'
 }
 
 export enum InfinispanFlags {
@@ -90,27 +90,27 @@ export enum InfinispanFlags {
   SKIP_SIZE_OPTIMIZATION = 'SKIP_SIZE_OPTIMIZATION',
   SKIP_STATISTICS = 'SKIP_STATISTICS',
   SKIP_XSITE_BACKUP = 'SKIP_XSITE_BACKUP',
-  ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT',
+  ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT'
 }
 
 export enum EvictionStrategy {
   REMOVE = 'REMOVE',
-  EXCEPTION = 'EXCEPTION',
+  EXCEPTION = 'EXCEPTION'
 }
 
 export enum IsolationLevel {
   REPEATABLE_READ = 'REPEATABLE_READ',
-  READ_COMMITTED = 'READ_COMMITTED',
+  READ_COMMITTED = 'READ_COMMITTED'
 }
 
 export enum StorageType {
   HEAP = 'HEAP',
-  OFF_HEAP = 'OFF_HEAP',
+  OFF_HEAP = 'OFF_HEAP'
 }
 
 export enum CacheMode {
   ASYNC = 'ASYNC',
-  SYNC = 'SYNC',
+  SYNC = 'SYNC'
 }
 
 export enum CacheFeature {
@@ -119,7 +119,7 @@ export enum CacheFeature {
   SECURED = 'Authorization',
   PERSISTENCE = 'Persistence',
   TRANSACTIONAL = 'Transactional',
-  BACKUPS = 'Backups',
+  BACKUPS = 'Backups'
 }
 
 export enum MaxSizeUnit {
@@ -130,59 +130,59 @@ export enum MaxSizeUnit {
   KiB = 'KiB',
   MiB = 'MiB',
   GiB = 'GiB',
-  TiB = 'TiB',
+  TiB = 'TiB'
 }
 
 export enum TimeUnits {
   milliseconds = 'milliseconds',
   seconds = 'seconds',
   minutes = 'minutes',
-  hours = 'hours',
+  hours = 'hours'
 }
 
 export enum EvictionType {
   size = 'size',
-  count = 'count',
+  count = 'count'
 }
 
 export enum IndexedStorage {
   persistent = 'filesystem',
-  volatile = 'local-heap',
+  volatile = 'local-heap'
 }
 
 export enum IndexedStartupMode {
   none = 'None',
   purge = 'Purge',
   reindex = 'Reindex',
-  auto = 'Auto',
+  auto = 'Auto'
 }
 
 export enum BackupSiteStrategy {
   ASYNC = 'ASYNC',
-  SYNC = 'SYNC',
+  SYNC = 'SYNC'
 }
 
 export enum BackupSiteFailurePolicy {
   IGNORE = 'IGNORE',
   WARN = 'WARN',
   FAIL = 'FAIL',
-  CUSTOM = 'CUSTOM',
+  CUSTOM = 'CUSTOM'
 }
 
 export enum BackupSiteStateTransferMode {
   MANUAL = 'MANUAL',
-  AUTO = 'AUTO',
+  AUTO = 'AUTO'
 }
 
 export enum Locking {
   OPTIMISTIC = 'OPTIMISTIC',
-  PESSIMISTIC = 'PESSIMISTIC',
+  PESSIMISTIC = 'PESSIMISTIC'
 }
 
 export enum TransactionalMode {
   NON_XA = 'NON_XA',
   NON_DURABLE_XA = 'NON_DURABLE_XA',
-  FULL_XA = 'FULL_XA',
+  FULL_XA = 'FULL_XA'
 }
 
 export enum PersistentCacheStorage {
@@ -191,7 +191,7 @@ export enum PersistentCacheStorage {
   TableSQLStore = 'Table SQL store',
   QuerySQLStore = 'Query SQL store',
   JDBCStore = 'JDBC string-based store',
-  Custom = 'Custom store',
+  Custom = 'Custom store'
 }
 
 export const PersistentStorageConfig = new Map<string, string>([
@@ -200,21 +200,21 @@ export const PersistentStorageConfig = new Map<string, string>([
   [PersistentCacheStorage.TableSQLStore, tableSqlStore],
   [PersistentCacheStorage.QuerySQLStore, querySqlStore],
   [PersistentCacheStorage.JDBCStore, jdbcStore],
-  [PersistentCacheStorage.Custom, ''],
+  [PersistentCacheStorage.Custom, '']
 ]);
 
 export enum ConfigDownloadType {
   JSON = 'JSON',
   XML = 'XML',
-  YAML = 'YAML',
+  YAML = 'YAML'
 }
 
 export enum DataDistributionStatsOption {
   TotalEntries = 'Total number of entries',
-  MemoryEntries = 'Entries in memory',
+  MemoryEntries = 'Entries in memory'
 }
 
 export enum ClusterDistributionStatsOption {
   MemoryAvailable = 'Memory available',
-  MemoryUsed = 'Memory used',
+  MemoryUsed = 'Memory used'
 }

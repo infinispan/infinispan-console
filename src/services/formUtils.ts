@@ -29,7 +29,7 @@ class FormUtils {
         isValid: isValid,
         invalidText: '',
         helperText: fieldName + ' is valid',
-        validated: isEmpty ? 'default' : 'success',
+        validated: isEmpty ? 'default' : 'success'
       });
     } else {
       stateDispatch({
@@ -37,7 +37,7 @@ class FormUtils {
         isValid: isValid,
         invalidText: fieldName + ' has to be a number',
         helperText: 'Validating...',
-        validated: 'error',
+        validated: 'error'
       });
     }
     return isValid;
@@ -55,7 +55,7 @@ class FormUtils {
         isValid: isValid,
         invalidText: '',
         helperText: fieldName + ' is valid',
-        validated: 'success',
+        validated: 'success'
       });
     } else {
       stateDispatch({
@@ -63,7 +63,7 @@ class FormUtils {
         isValid: isValid,
         invalidText: fieldName + ' is required',
         helperText: 'Validating...',
-        validated: 'error',
+        validated: 'error'
       });
     }
     return isValid;

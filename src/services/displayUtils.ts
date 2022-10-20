@@ -15,15 +15,11 @@ import {
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
-  global_warning_color_100,
+  global_warning_color_100
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
 import numeral from 'numeral';
-import {
-  CacheType,
-  ComponentHealth,
-  ContentType,
-} from '@services/infinispanRefData';
+import { CacheType, ComponentHealth, ContentType } from '@services/infinispanRefData';
 
 /**
  * Utility class to manage display features
@@ -33,78 +29,78 @@ import {
 export const UNKNOWN_STATUS = {
   name: 'Unknown',
   color: chart_global_label_Fill.value,
-  icon: AlertVariant.warning,
+  icon: AlertVariant.warning
 };
 export const OK_STATUS = {
   name: 'Ok',
   color: global_success_color_100.value,
-  icon: AlertVariant.success,
+  icon: AlertVariant.success
 };
 export const RUNNING_STATUS = {
   name: 'Running',
   color: global_success_color_100.value,
-  icon: AlertVariant.success,
+  icon: AlertVariant.success
 };
 export const INIT_STATUS = {
   name: 'Initializing',
   color: global_warning_color_100.value,
-  icon: AlertVariant.warning,
+  icon: AlertVariant.warning
 };
 export const CANCEL_STATUS = {
   name: 'Cancelling',
   color: global_warning_color_100.value,
-  icon: AlertVariant.warning,
+  icon: AlertVariant.warning
 };
 export const FAILED_STATUS = {
   name: 'Failed',
   color: global_danger_color_100.value,
-  icon: AlertVariant.danger,
+  icon: AlertVariant.danger
 };
 export const ERROR_STATUS = {
   name: 'Error',
   color: global_danger_color_100.value,
-  icon: AlertVariant.danger,
+  icon: AlertVariant.danger
 };
 export const TERMINATED_STATUS = {
   name: 'Terminated',
   color: global_info_color_100.value,
-  icon: AlertVariant.info,
+  icon: AlertVariant.info
 };
 export const STOPPING_STATUS = {
   name: 'Stopping',
   color: global_info_color_100.value,
-  icon: AlertVariant.info,
+  icon: AlertVariant.info
 };
 export const INSTANTIATED_STATUS = {
   name: 'Instantiated',
   color: global_info_color_100.value,
-  icon: AlertVariant.info,
+  icon: AlertVariant.info
 };
 
 export const ST_IDLE = {
   name: 'Inactive',
   color: global_default_color_100.value,
-  icon: AlertVariant.success,
+  icon: AlertVariant.success
 };
 export const ST_SENDING = {
   name: 'Sending',
   color: global_info_color_100.value,
-  icon: AlertVariant.info,
+  icon: AlertVariant.info
 };
 export const ST_SEND_OK = {
   name: 'Transfer Ok',
   color: global_success_color_100.value,
-  icon: AlertVariant.success,
+  icon: AlertVariant.success
 };
 export const ST_SEND_FAILED = {
   name: 'Transfer Failed',
   color: global_danger_color_100.value,
-  icon: AlertVariant.danger,
+  icon: AlertVariant.danger
 };
 export const ST_SEND_CANCELED = {
   name: 'Transfer Cancelled',
   color: global_warning_color_100.value,
-  icon: AlertVariant.warning,
+  icon: AlertVariant.warning
 };
 
 class DisplayUtils {
@@ -176,19 +172,13 @@ class DisplayUtils {
    * @param health, string value
    * @param isIcon, color depends on the icon as well
    */
-  public healthColor(
-    health: ComponentHealth | undefined,
-    isIcon: boolean
-  ): string {
+  public healthColor(health: ComponentHealth | undefined, isIcon: boolean): string {
     if (health == undefined) {
       return chart_global_label_Fill.value;
     }
 
     if (!isIcon) {
-      if (
-        health == ComponentHealth.FAILED ||
-        health == ComponentHealth.DEGRADED
-      ) {
+      if (health == ComponentHealth.FAILED || health == ComponentHealth.DEGRADED) {
         return global_danger_color_100.value;
       }
       return chart_global_label_Fill.value;
@@ -402,15 +392,8 @@ class DisplayUtils {
     return featuresString;
   }
 
-  public formatContentToDisplay(
-    content: any,
-    contentType?: ContentType
-  ): string {
-    if (
-      !contentType ||
-      contentType == ContentType.JSON ||
-      contentType == ContentType.customType
-    ) {
+  public formatContentToDisplay(content: any, contentType?: ContentType): string {
+    if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
       // Try parse and stringify
       try {
         return JSON.stringify(JSON.parse(content), null, 2);

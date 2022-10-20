@@ -8,7 +8,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { TableErrorState } from '@app/Common/TableErrorState';
 
@@ -38,10 +38,7 @@ class ErrorBoundary extends React.Component<{}, ErrorBoundaryProps> {
       // You can render any custom fallback UI
       return (
         <React.Fragment>
-          <PageSection
-            variant={PageSectionVariants.light}
-            style={{ paddingBottom: 0 }}
-          >
+          <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
             <Toolbar id="console-error-header">
               <ToolbarGroup>
                 <ToolbarContent style={{ paddingLeft: 0 }}>
@@ -55,10 +52,7 @@ class ErrorBoundary extends React.Component<{}, ErrorBoundaryProps> {
             </Toolbar>
           </PageSection>
           <PageSection>
-            <TableErrorState
-              error={'Something went wrong'}
-              detail={this.state.error}
-            />
+            <TableErrorState error={'Something went wrong'} detail={this.state.error} />
           </PageSection>
         </React.Fragment>
       );

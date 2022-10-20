@@ -61,29 +61,19 @@ export class ConsoleServices {
   }
 
   public static isWelcomePage(): boolean {
-    return (
-      location.pathname == '/console/welcome' ||
-      location.pathname == '/console/welcome/'
-    );
+    return location.pathname == '/console/welcome' || location.pathname == '/console/welcome/';
   }
 
   public static init() {
     if (!this.instance.initialized) {
       console.info('Init Console Services');
-      this.instance.authenticationService = new AuthenticationService(
-        ConsoleServices.endpoint()
-      );
-      this.instance.fetchCaller = new FetchCaller(
-        this.instance.authenticationService
-      );
+      this.instance.authenticationService = new AuthenticationService(ConsoleServices.endpoint());
+      this.instance.fetchCaller = new FetchCaller(this.instance.authenticationService);
       this.instance.protobufService = new ProtobufService(
         ConsoleServices.endpoint() + '/schemas',
         this.instance.fetchCaller
       );
-      this.instance.taskService = new TasksService(
-        ConsoleServices.endpoint() + '/tasks',
-        this.instance.fetchCaller
-      );
+      this.instance.taskService = new TasksService(ConsoleServices.endpoint() + '/tasks', this.instance.fetchCaller);
       this.instance.serverService = new ServerService(
         ConsoleServices.endpoint() + '/server',
         this.instance.fetchCaller
@@ -96,14 +86,8 @@ export class ConsoleServices {
         ConsoleServices.endpoint(),
         this.instance.fetchCaller
       );
-      this.instance.cacheService = new CacheService(
-        ConsoleServices.endpoint(),
-        this.instance.fetchCaller
-      );
-      this.instance.dataContainerService = new ContainerService(
-        ConsoleServices.endpoint(),
-        this.instance.fetchCaller
-      );
+      this.instance.cacheService = new CacheService(ConsoleServices.endpoint(), this.instance.fetchCaller);
+      this.instance.dataContainerService = new ContainerService(ConsoleServices.endpoint(), this.instance.fetchCaller);
       this.instance.userService = new SecurityService(
         ConsoleServices.endpoint() + '/security',
         this.instance.fetchCaller,

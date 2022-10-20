@@ -11,20 +11,15 @@ import {
   TextContent,
   TextVariants,
   Toolbar,
-  ToolbarContent,
+  ToolbarContent
 } from '@patternfly/react-core';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableVariant,
-} from '@patternfly/react-table';
+import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
-import {ConsoleServices} from "@services/ConsoleServices";
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   const [cmName, setCmName] = useState(props.computedMatch.params.cmName);
@@ -33,7 +28,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   const [cacheConfigs, setCacheConfigs] = useState<CacheConfig[]>([]);
   const [pageConfigsPagination, setCacheConfigsPagination] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 10
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const { t } = useTranslation();
@@ -59,24 +54,21 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   }, [cmName]);
 
   useEffect(() => {
-    const slice =
-      (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
-    updateRows(
-      cacheConfigs.slice(slice, slice + pageConfigsPagination.perPage)
-    );
+    const slice = (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
+    updateRows(cacheConfigs.slice(slice, slice + pageConfigsPagination.perPage));
   }, [cacheConfigs, pageConfigsPagination]);
 
   const onSetPage = (_event, pageNumber) => {
     setCacheConfigsPagination({
       page: pageNumber,
-      perPage: pageConfigsPagination.perPage,
+      perPage: pageConfigsPagination.perPage
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setCacheConfigsPagination({
       page: pageConfigsPagination.page,
-      perPage: perPage,
+      perPage: perPage
     });
   };
 
@@ -89,15 +81,11 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
           cells: [
             {
               title: (
-                <TableEmptyState
-                  loading={loading}
-                  error={error}
-                  empty={t('caches.configuration.no-templates-body')}
-                />
-              ),
-            },
-          ],
-        },
+                <TableEmptyState loading={loading} error={error} empty={t('caches.configuration.no-templates-body')} />
+              )
+            }
+          ]
+        }
       ];
     } else {
       rows = configs.map((config) => {
@@ -105,9 +93,9 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
           heightAuto: true,
           cells: [
             {
-              title: displayConfig(config.name, config.config),
-            },
-          ],
+              title: displayConfig(config.name, config.config)
+            }
+          ]
         };
       });
     }
@@ -119,14 +107,11 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
       <ExpandableSection
         toggleTextExpanded={name}
         toggleTextCollapsed={name}
-        key={name + '-config-value'} contentId={name + 'ConfigExpanded'} data-cy={name + 'Config'}
+        key={name + '-config-value'}
+        contentId={name + 'ConfigExpanded'}
+        data-cy={name + 'Config'}
       >
-        <SyntaxHighlighter
-          wrapLines={false}
-          style={githubGist}
-          useInlineStyles={true}
-          showLineNumbers={true}
-        >
+        <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
           {config}
         </SyntaxHighlighter>
       </ExpandableSection>
@@ -150,7 +135,8 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
       <PageSection>
         <Card>
           <CardBody>
-            <Pagination data-cy='cacheConfigPagination'
+            <Pagination
+              data-cy="cacheConfigPagination"
               itemCount={cacheConfigs.length}
               perPage={pageConfigsPagination.perPage}
               page={pageConfigsPagination.page}
