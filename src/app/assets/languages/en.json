@@ -392,8 +392,6 @@
           "complete-timeout-tooltip": "Sets the maximum amount of time, in milliseconds, that transactions can run. {{brandname}} aborts transactions that do not complete before reaching the timeout.",
           "reaper-interval": "Reaper interval",
           "reaper-interval-tooltip": "Sets the amount of time, in milliseconds, between which {{brandname}} checks if transactions are complete.",
-          "recovery-cache": "Recovery cache",
-          "recovery-cache-tooltip": "Specifies the cache that stores information to recover in-doubt transactions.",
           "transactional-tuning": "Transaction tuning",
           "transactional-tuning-tooltip": "Adjust settings for transactional caches."
         }
