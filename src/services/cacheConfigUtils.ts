@@ -317,7 +317,6 @@ export class CacheConfigUtils {
         mode: data.feature.transactionalCache.mode,
         locking: data.feature.transactionalCache.locking,
         'stop-timeout': data.advanced.transactionalAdvance?.stopTimeout,
-        'transaction-manager-lookup': data.advanced.transactionalAdvance?.transactionManagerLookup,
         'complete-timeout': data.advanced.transactionalAdvance?.completeTimeout,
         'reaper-interval': data.advanced.transactionalAdvance?.reaperInterval
       };
