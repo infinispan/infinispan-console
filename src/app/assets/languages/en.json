@@ -386,8 +386,6 @@
           "backups-tuning-tooltip": "Configure cross-site replication settings for backup locations.",
           "stop-timeout": "Stop timeout",
           "stop-timeout-tooltip": "Sets the amount of time, in milliseconds, that {{brandname}} waits for ongoing transactions when the cache is stopped.",
-          "transaction-manager-lookup": "Transaction manager lookup",
-          "transaction-manager-lookup-tooltip": "Specifies a lookup class that returns the TransactionManager to initialize.",
           "complete-timeout": "Complete timeout",
           "complete-timeout-tooltip": "Sets the maximum amount of time, in milliseconds, that transactions can run. {{brandname}} aborts transactions that do not complete before reaching the timeout.",
           "reaper-interval": "Reaper interval",

@@ -392,7 +392,6 @@ interface TransactionalCache {
 
 interface TransactionalCacheAdvance {
   stopTimeout?: number;
-  transactionManagerLookup?: string;
   completeTimeout?: number;
   reaperInterval?: number;
   isolationLevel?: string;

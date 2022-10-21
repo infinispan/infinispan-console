@@ -20,9 +20,6 @@ const TransactionalConfigurationTuning = () => {
   const brandname = t('brandname.brandname');
 
   const [stopTimeout, setStopTimeout] = useState(configuration.advanced.transactionalAdvance?.stopTimeout);
-  const [transactionManagerLookup, setTransactionManagerLookup] = useState(
-    configuration.advanced.transactionalAdvance?.transactionManagerLookup
-  );
   const [completeTimeout, setCompleteTimeout] = useState(configuration.advanced.transactionalAdvance?.completeTimeout);
   const [reaperInterval, setReaperInterval] = useState(configuration.advanced.transactionalAdvance?.reaperInterval);
   const [isolationLevel, setIsolationLevel] = useState<IsolationLevel | undefined>(
@@ -37,7 +34,6 @@ const TransactionalConfigurationTuning = () => {
           ...prevState.advanced,
           transactionalAdvance: {
             stopTimeout: stopTimeout,
-            transactionManagerLookup: transactionManagerLookup,
             completeTimeout: completeTimeout,
             reaperInterval: reaperInterval,
             isolationLevel: isolationLevel
@@ -45,7 +41,7 @@ const TransactionalConfigurationTuning = () => {
         }
       };
     });
-  }, [stopTimeout, transactionManagerLookup, completeTimeout, reaperInterval, isolationLevel]);
+  }, [stopTimeout, completeTimeout, reaperInterval, isolationLevel]);
 
   if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
     return <div />;
@@ -106,7 +102,7 @@ const TransactionalConfigurationTuning = () => {
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={6}>
+        <GridItem span={4}>
           <FormGroup
             fieldId="stopTimeout"
             label={t('caches.create.configurations.advanced-options.stop-timeout')}
@@ -131,7 +127,7 @@ const TransactionalConfigurationTuning = () => {
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={6}>
+        <GridItem span={4}>
           <FormGroup
             fieldId="completeTimeout"
             label={t('caches.create.configurations.advanced-options.complete-timeout')}
@@ -156,7 +152,7 @@ const TransactionalConfigurationTuning = () => {
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={6}>
+        <GridItem span={4}>
           <FormGroup
             fieldId="reaperInterval"
             label={t('caches.create.configurations.advanced-options.reaper-interval')}
@@ -178,28 +174,6 @@ const TransactionalConfigurationTuning = () => {
                 isNaN(parseInt(val)) ? setReaperInterval(undefined!) : setReaperInterval(parseInt(val));
               }}
               aria-label="reaper-interval"
-            />
-          </FormGroup>
-        </GridItem>
-        <GridItem span={6}>
-          <FormGroup
-            fieldId="transactionManagerLookup"
-            label={t('caches.create.configurations.advanced-options.transaction-manager-lookup')}
-            labelIcon={
-              <PopoverHelp
-                name="transactionManagerLookup"
-                label={t('caches.create.configurations.advanced-options.transaction-manager-lookup')}
-                content={t('caches.create.configurations.advanced-options.transaction-manager-lookup-tooltip')}
-              />
-            }
-          >
-            <TextInput
-              placeholder="org.infinispan.transaction.lookup.GenericTransactionManagerLookup"
-              value={transactionManagerLookup}
-              onChange={(val) => {
-                val === '' ? setTransactionManagerLookup(undefined) : setTransactionManagerLookup(val);
-              }}
-              aria-label="transaction-manager-lookup"
             />
           </FormGroup>
         </GridItem>
