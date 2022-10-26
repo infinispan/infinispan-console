@@ -27,7 +27,6 @@ To run the latest release version
 Or use the ```identities.batch``` running from the scripts folder
 
 ```bash
-docker volume create user-config 
 docker run -v $(pwd):/user-config -e IDENTITIES_BATCH="/user-config/identities.batch" -p 11222:11222 infinispan/server
 ```
 
