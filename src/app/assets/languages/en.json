@@ -121,7 +121,15 @@
     }
   },
   "caches": {
+    "setup": {
+      "page-title": "Configure a cache in {{cmName}}",
+      "page-title-with-backups": "Configure a cache in {{cmName}} on site {{localsite}}",
+      "getting-started": {
+        "cache-setup-title": "Select a way to configure your cache"
+      }
+    },
     "create": {
+      "breadcrumb": "Create a cache",
       "page-title": "Create a cache in {{cmName}}",
       "page-title-with-backups": "Create a cache in {{cmName}} on site {{localsite}}",
       "cache-name": "Cache name",
