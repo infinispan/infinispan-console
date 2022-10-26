@@ -18,10 +18,17 @@ server bundle, so the console is served from the server in production.
 
 ### Use Docker
 
-To run the latest development release version, run 13.0
+To run the latest release version
 
 ```bash
- docker run -it --rm -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:13.0
+ docker run -it --rm -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server
+```
+
+Or use the ```identities.batch``` running from the scripts folder
+
+```bash
+docker volume create user-config 
+docker run -v $(pwd):/user-config -e IDENTITIES_BATCH="/user-config/identities.batch" -p 11222:11222 infinispan/server
 ```
 
 ### Direct download
@@ -31,7 +38,7 @@ You can always download the server from the [Infinispan website](https://infinis
 ```bash
 git clone https://github.com/infinispan/infinispan-console # clone the project
 cd infinispan-console # navigate into the project directory
-npm install # install infinispan-consoledependencies
+npm install # install infinispan-console dependencies
 npm run start:dev # start the development server
 ```
 ## Development Scripts
