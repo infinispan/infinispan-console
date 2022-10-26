@@ -508,6 +508,11 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   };
 
   const buildCreateCacheButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return (
+        <ToolbarItem/>
+      );
+    }
     return (
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>

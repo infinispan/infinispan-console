@@ -6,7 +6,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useCreateCache } from '@app/services/createCacheHook';
 
-const CreateCacheGettingStarted = () => {
+const CreateCacheGettingStarted = (props: { create: boolean }) => {
   let { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const [cacheName, setCacheName] = useState(configuration.start.cacheName);
@@ -14,6 +14,7 @@ const CreateCacheGettingStarted = () => {
     configuration.start.valid ? 'success' : 'default'
   );
   const [createType, setCreateType] = useState<'configure' | 'edit'>(configuration.start.createType);
+  const id = props.create ? 'create' : 'setup';
 
   const handleChangeName = (name) => {
     let trimmedName = name.trim();
@@ -88,7 +89,7 @@ const CreateCacheGettingStarted = () => {
 
   const formConfigCache = () => {
     return (
-      <FormSection title={t('caches.create.getting-started.cache-create-title')} titleElement="h2">
+      <FormSection title={t(`caches.${id}.getting-started.cache-${id}-title`)} titleElement="h2">
         <FormGroup isInline isRequired fieldId="create-type">
           <Radio
             name="radio"

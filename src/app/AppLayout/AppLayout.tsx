@@ -40,6 +40,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import {ConsoleACL} from "@services/securityService";
 
 interface IAppLayout {
   init: string;
@@ -163,10 +164,15 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
 
   const PageSkipToContent = <SkipToContent href="#primary-app-container">Skip to Content</SkipToContent>;
 
+  const create = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+
+  // The menu for non admin users
+  const filteredRoutes = routes.filter(route =>  !route.readonlyUser || (!create && route.readonlyUser));
+
   const Navigation = (
     <Nav id="nav-primary-simple" theme="dark">
       <NavList id="nav-list-simple">
-        {routes.map(
+        {filteredRoutes.map(
           (route, idx) =>
             route.menu &&
             route.label && (

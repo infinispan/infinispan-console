@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   ButtonVariant,
@@ -12,24 +12,22 @@ import {
   WizardContextConsumer,
   WizardFooter
 } from '@patternfly/react-core';
-import { useHistory } from 'react-router';
-import { useApiAlert } from '@app/utils/useApiAlert';
-import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { useTranslation } from 'react-i18next';
-import { ConfigDownloadType } from '@services/infinispanRefData';
+import {useHistory} from 'react-router';
+import {useApiAlert} from '@app/utils/useApiAlert';
+import {CacheConfigUtils} from '@services/cacheConfigUtils';
+import {useTranslation} from 'react-i18next';
+import {ConfigDownloadType} from '@services/infinispanRefData';
 import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
 import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
-import { useStateCallback } from '@app/services/stateCallbackHook';
+import {useStateCallback} from '@app/services/stateCallbackHook';
 import ReviewCacheConfig from '@app/Caches/Create/ReviewCacheConfig';
 import CreateCacheGettingStarted from '@app/Caches/Create/CreateCacheGettingStarted';
 import BasicCacheConfigConfigurator from '@app/Caches/Create/BasicCacheConfigConfigurator';
 import FeaturesSelector from '@app/Caches/Create/FeaturesSelector';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { DownloadIcon } from '@patternfly/react-icons';
-import { useCreateCache } from '@app/services/createCacheHook';
-import { validFeatures } from '@app/utils/featuresValidation';
-import { ConsoleACL } from '@services/securityService';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import {ConsoleServices} from '@services/ConsoleServices';
+import {DownloadIcon} from '@patternfly/react-icons';
+import {useCreateCache} from '@app/services/createCacheHook';
+import {validFeatures} from '@app/utils/featuresValidation';
 
 const CacheEditorInitialState: CacheEditorStep = {
   editorConfig: '',
@@ -41,19 +39,17 @@ const CacheEditorInitialState: CacheEditorStep = {
   editorExpanded: false
 };
 
-const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
+const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean }) => {
   const { addAlert } = useApiAlert();
   const { configuration } = useCreateCache();
 
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const { connectedUser } = useConnectedUser();
 
   // State for wizard steps
   const [stateObj, setStateObj] = useStateCallback({
     showCacheEditor: false,
-    showConfigurationStep: false,
-    showReviewStep: false
+    showConfigurationSteps: false
   });
 
   const [cacheEditor, setCacheEditor] = useState<CacheEditorStep>(CacheEditorInitialState);
@@ -103,8 +99,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
           {
             ...stateObj,
             showCacheEditor: false,
-            showConfigurationStep: true,
-            showReviewStep: true
+            showConfigurationSteps: true,
           },
           () => callback()
         );
@@ -113,8 +108,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
           {
             ...stateObj,
             showCacheEditor: true,
-            showConfigurationStep: false,
-            showReviewStep: false
+            showConfigurationSteps: false,
           },
           () => callback()
         );
@@ -128,33 +122,21 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
 
   const getPreviousStep = (event, activeStep, callback) => {
     event.stopPropagation();
-    if (configuration.start.createType === 'configure') {
-      setStateObj(
-        {
-          ...stateObj,
-          showCacheEditor: false
-        },
-        () => callback()
-      );
-    } else if (configuration.start.createType === 'edit') {
-      setStateObj(
-        {
-          ...stateObj,
-          showConfigurationStep: false,
-          showReviewStep: false
-        },
-        () => callback()
-      );
-    } else {
-      callback();
-    }
+    setStateObj(
+      {
+        ...stateObj,
+        showCacheEditor: false,
+        showConfigurationSteps: false,
+      },
+      () => callback()
+    );
   };
 
   // Steps
   const stepGettingStarted = {
     id: 1,
     name: t('caches.create.getting-started.nav-title'),
-    component: <CreateCacheGettingStarted />,
+    component: <CreateCacheGettingStarted create={props.create}/>,
     enableNext: configuration.start.valid,
     canJumpTo: stepIdReached >= 1,
     hideBackButton: true
@@ -202,14 +184,13 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
     id: 6,
     name: t('caches.create.review.nav-title'),
     component: <ReviewCacheConfig setReviewConfig={setReviewConfig} />,
-    canJumpTo: false
+    canJumpTo: validFeatures(configuration)
   };
 
   const steps = [
     stepGettingStarted,
-    ...(stateObj.showConfigurationStep ? [stepConfigure] : []),
-    ...(stateObj.showCacheEditor ? [stepCodeEditor] : []),
-    ...(stateObj.showReviewStep ? [stepReview] : [])
+    ...(stateObj.showConfigurationSteps ? [stepConfigure, stepReview] : []),
+    ...(stateObj.showCacheEditor ? [stepCodeEditor] : [])
   ];
 
   const downloadOptions = () => {
@@ -221,14 +202,18 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
     setIsOpenDownloadOption(false);
   };
 
-  const isNextOrCreateDisabled = (activeStepId: number): boolean => {
+  const isCreateButton = (activeStepId: number): boolean => {
+    return activeStepId === 2 || activeStepId === 6;
+  }
+
+  const isButtonNextOrCreateDisabled = (activeStepId: number): boolean => {
     let activeButton = true;
     switch (activeStepId) {
       case 1:
         activeButton = configuration.start.valid;
         break;
       case 2:
-        if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) activeButton = false;
+        if (!props.create) activeButton = false;
         break;
       case 3:
         activeButton = configuration.basic.valid;
@@ -240,7 +225,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
         activeButton = configuration.advanced.valid;
         break;
       case 6:
-        if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) activeButton = false;
+        if (!props.create) activeButton = false;
         break;
       default:
     }
@@ -249,18 +234,29 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager }) => {
   };
 
   const nextOrCreateToolbarItem = (activeStep, onNext) => {
+    const activeStepId = activeStep.id;
+
+    if (isCreateButton(activeStepId) && isButtonNextOrCreateDisabled(activeStepId)) {
+      // The user is not allowed to create a cache, don't display the create button
+      return (
+        <ToolbarItem>
+        </ToolbarItem>
+      )
+    }
+
+    const buttonId = isCreateButton(activeStepId) ? 'create-cache' : 'next-step';
     return (
       <ToolbarItem>
         <Button
-          id={activeStep.id === 2 || activeStep.id === 6 ? 'create-cache' : 'next-step'}
-          name={activeStep.id === 2 || activeStep.id === 6 ? 'create-cache' : 'next-step'}
+          id={buttonId}
+          name={buttonId}
           variant="primary"
           type="submit"
           onClick={(event) => getNextStep(event, activeStep, onNext)}
-          isDisabled={isNextOrCreateDisabled(activeStep.id)}
+          isDisabled={isButtonNextOrCreateDisabled(activeStep.id)}
           data-cy="wizardNextButton"
         >
-          {activeStep.id === 2 || activeStep.id === 6
+          {isCreateButton(activeStep.id)
             ? t('caches.create.create-button-label')
             : t('caches.create.next-button-label')}
         </Button>
