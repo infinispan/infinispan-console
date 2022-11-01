@@ -72,7 +72,7 @@
           </authentication>
         </hotrod-connector>
         <rest-connector name="rest">
-          <authentication mechanisms="BASIC"/>
+          <authentication mechanisms="BASIC DIGEST"/>
         </rest-connector>
       </endpoint>
     </endpoints>
