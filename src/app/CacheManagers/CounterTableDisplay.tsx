@@ -66,6 +66,13 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
 
+  useEffect(() => {
+    if (filteredCounters) {
+      const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
+      updateRows(filteredCounters.slice(initSlice, initSlice + countersPagination.perPage));
+    }
+  }, [countersPagination, filteredCounters]);
+
   const columns = [
     {
       title: t('cache-managers.counter-name'),
@@ -104,27 +111,21 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
       setFilteredCounters(currentCounters);
       props.setCountersCount(counters.length);
-      const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
-      updateRows(currentCounters.slice(initSlice, initSlice + countersPagination.perPage));
     }
   };
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
-      page: pageNumber,
-      perPage: countersPagination.perPage
+      ...countersPagination,
+      page: pageNumber
     });
-    const initSlice = (pageNumber - 1) * countersPagination.perPage;
-    updateRows(filteredCounters.slice(initSlice, initSlice + countersPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setCountersPagination({
-      page: countersPagination.page,
+      page: 1,
       perPage: perPage
     });
-    const initSlice = (countersPagination.page - 1) * perPage;
-    updateRows(filteredCounters.slice(initSlice, initSlice + perPage));
   };
 
   const displayConfig = (config: CounterConfig) => {
@@ -216,7 +217,6 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     }
 
     setFilteredCounters(switchCounters);
-    updateRows(switchCounters);
     setSelectedCounterType(id);
     setIsOpenFilter(false);
   };
