@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   ButtonVariant,
@@ -12,22 +12,22 @@ import {
   WizardContextConsumer,
   WizardFooter
 } from '@patternfly/react-core';
-import {useHistory} from 'react-router';
-import {useApiAlert} from '@app/utils/useApiAlert';
-import {CacheConfigUtils} from '@services/cacheConfigUtils';
-import {useTranslation} from 'react-i18next';
-import {ConfigDownloadType} from '@services/infinispanRefData';
+import { useHistory } from 'react-router';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import { useTranslation } from 'react-i18next';
+import { ConfigDownloadType } from '@services/infinispanRefData';
 import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
 import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
-import {useStateCallback} from '@app/services/stateCallbackHook';
+import { useStateCallback } from '@app/services/stateCallbackHook';
 import ReviewCacheConfig from '@app/Caches/Create/ReviewCacheConfig';
 import CreateCacheGettingStarted from '@app/Caches/Create/CreateCacheGettingStarted';
 import BasicCacheConfigConfigurator from '@app/Caches/Create/BasicCacheConfigConfigurator';
 import FeaturesSelector from '@app/Caches/Create/FeaturesSelector';
-import {ConsoleServices} from '@services/ConsoleServices';
-import {DownloadIcon} from '@patternfly/react-icons';
-import {useCreateCache} from '@app/services/createCacheHook';
-import {validFeatures} from '@app/utils/featuresValidation';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { DownloadIcon } from '@patternfly/react-icons';
+import { useCreateCache } from '@app/services/createCacheHook';
+import { validFeatures } from '@app/utils/featuresValidation';
 
 const CacheEditorInitialState: CacheEditorStep = {
   editorConfig: '',
@@ -39,7 +39,7 @@ const CacheEditorInitialState: CacheEditorStep = {
   editorExpanded: false
 };
 
-const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean }) => {
+const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean }) => {
   const { addAlert } = useApiAlert();
   const { configuration } = useCreateCache();
 
@@ -99,7 +99,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean 
           {
             ...stateObj,
             showCacheEditor: false,
-            showConfigurationSteps: true,
+            showConfigurationSteps: true
           },
           () => callback()
         );
@@ -108,7 +108,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean 
           {
             ...stateObj,
             showCacheEditor: true,
-            showConfigurationSteps: false,
+            showConfigurationSteps: false
           },
           () => callback()
         );
@@ -122,21 +122,30 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean 
 
   const getPreviousStep = (event, activeStep, callback) => {
     event.stopPropagation();
-    setStateObj(
-      {
-        ...stateObj,
-        showCacheEditor: false,
-        showConfigurationSteps: false,
-      },
-      () => callback()
-    );
+    if (configuration.start.createType === 'configure') {
+      setStateObj(
+        {
+          ...stateObj,
+          showCacheEditor: false
+        },
+        () => callback()
+      );
+    } else if (configuration.start.createType === 'edit') {
+      setStateObj(
+        {
+          ...stateObj,
+          showConfigurationStep: false
+        },
+        () => callback()
+      );
+    }
   };
 
   // Steps
   const stepGettingStarted = {
     id: 1,
     name: t('caches.create.getting-started.nav-title'),
-    component: <CreateCacheGettingStarted create={props.create}/>,
+    component: <CreateCacheGettingStarted create={props.create} />,
     enableNext: configuration.start.valid,
     canJumpTo: stepIdReached >= 1,
     hideBackButton: true
@@ -204,7 +213,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean 
 
   const isCreateButton = (activeStepId: number): boolean => {
     return activeStepId === 2 || activeStepId === 6;
-  }
+  };
 
   const isButtonNextOrCreateDisabled = (activeStepId: number): boolean => {
     let activeButton = true;
@@ -238,10 +247,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager, create: boolean 
 
     if (isCreateButton(activeStepId) && isButtonNextOrCreateDisabled(activeStepId)) {
       // The user is not allowed to create a cache, don't display the create button
-      return (
-        <ToolbarItem>
-        </ToolbarItem>
-      )
+      return <ToolbarItem></ToolbarItem>;
     }
 
     const buttonId = isCreateButton(activeStepId) ? 'create-cache' : 'next-step';
