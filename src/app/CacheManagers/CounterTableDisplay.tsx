@@ -8,9 +8,10 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  OptionsMenu,
-  OptionsMenuItem,
-  OptionsMenuToggle,
+  Select,
+  SelectOption,
+  SelectVariant,
+  SelectGroup,
   Pagination,
   Text,
   TextContent,
@@ -22,20 +23,21 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
-import displayUtils from '@services/displayUtils';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 import { numberWithCommas } from '@utils/numberWithComma';
+import { CounterType, CounterStorage } from '@services/infinispanRefData';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
-  const STRONG_COUNTER = '0';
-  const WEAK_COUNTER = '1';
   const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
   const [weakCounters, setWeakCounters] = useState<Counter[]>([]);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [selectedCounterType, setSelectedCounterType] = useState(STRONG_COUNTER);
+  const [selectedFilter, setSelectedFilter] = useState({
+    counterType: CounterType.STRONG_COUNTER,
+    storageType: ''
+  });
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
@@ -44,7 +46,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
   useEffect(() => {
     loadCounters();
-  }, [loading, counters, error, selectedCounterType]);
+  }, [loading, counters, error]);
 
   const strongCountersActions = [
     {
@@ -103,7 +105,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       setStrongCounters(strongCounters);
 
       let currentCounters;
-      if (selectedCounterType == STRONG_COUNTER) {
+      if (selectedFilter.counterType == CounterType.STRONG_COUNTER) {
         currentCounters = strongCounters;
       } else {
         currentCounters = weakCounters;
@@ -198,7 +200,9 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           ]
         };
       });
-      setActions(selectedCounterType === STRONG_COUNTER ? strongCountersActions : weakCountersActions);
+      setActions(
+        selectedFilter.counterType === CounterType.STRONG_COUNTER ? strongCountersActions : weakCountersActions
+      );
     }
     setRows(rows);
   };
@@ -207,51 +211,62 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     return <span />;
   }
 
-  const onSelectCounterType = (event) => {
-    const id = event.currentTarget.id;
-    let switchCounters;
-    if (id === STRONG_COUNTER) {
-      switchCounters = strongCounters;
-    } else {
-      switchCounters = weakCounters;
+  const onSelectFilter = (event, selection) => {
+    let currentCounters;
+
+    if (selection === CounterType.STRONG_COUNTER || selection === CounterType.WEAK_COUNTER) {
+      setSelectedFilter({ ...selectedFilter, counterType: selection });
+      selection === CounterType.STRONG_COUNTER ? (currentCounters = strongCounters) : (currentCounters = weakCounters);
+
+      // Case when storage was already selected
+      if (selectedFilter.storageType !== '')
+        currentCounters = currentCounters.filter((counter) => counter.config.storage === selectedFilter.storageType);
+    } else if (selection === CounterStorage.PERSISTENT || selection === CounterStorage.VOLATILE) {
+      // Case when storage is un-selected
+      if (selectedFilter.storageType === selection) {
+        setSelectedFilter({ ...selectedFilter, storageType: '' });
+        selectedFilter.counterType === CounterType.STRONG_COUNTER
+          ? (currentCounters = strongCounters)
+          : (currentCounters = weakCounters);
+      } else {
+        setSelectedFilter({ ...selectedFilter, storageType: selection });
+        currentCounters = counters.filter(
+          (counter) => counter.config.storage === selection && counter.config.type === selectedFilter.counterType
+        );
+      }
     }
 
-    setFilteredCounters(switchCounters);
-    setSelectedCounterType(id);
-    setIsOpenFilter(false);
+    setFilteredCounters(currentCounters);
   };
 
   const countersFilter = () => {
     const menuItems = [
-      <OptionsMenuItem
-        onSelect={onSelectCounterType}
-        isSelected={selectedCounterType === STRONG_COUNTER}
-        id={STRONG_COUNTER}
-        key="strong-counter"
-      >
-        {t('cache-managers.strong-counters')}
-      </OptionsMenuItem>,
-      <OptionsMenuItem
-        onSelect={onSelectCounterType}
-        isSelected={selectedCounterType === WEAK_COUNTER}
-        id={WEAK_COUNTER}
-        key="weak-counter"
-      >
-        {t('cache-managers.weak-counters')}
-      </OptionsMenuItem>
+      <SelectGroup label="Counter Type" key="group1">
+        <SelectOption key={0} value={CounterType.STRONG_COUNTER} />
+        <SelectOption key={1} value={CounterType.WEAK_COUNTER} />
+      </SelectGroup>,
+      <SelectGroup label="Storage" key="group2">
+        <SelectOption key={2} value={CounterStorage.PERSISTENT} />
+        <SelectOption key={3} value={CounterStorage.VOLATILE} />
+      </SelectGroup>
     ];
-    const toggle = (
-      <OptionsMenuToggle
-        onToggle={() => setIsOpenFilter(!isOpenFilter)}
-        toggleTemplate={
-          selectedCounterType === STRONG_COUNTER
-            ? t('cache-managers.strong-counters')
-            : t('cache-managers.weak-counters')
-        }
-      />
-    );
 
-    return <OptionsMenu id="filter-counter-menu" menuItems={menuItems} isOpen={isOpenFilter} toggle={toggle} />;
+    return (
+      <Select
+        variant={SelectVariant.checkbox}
+        onToggle={() => setIsOpenFilter(!isOpenFilter)}
+        onSelect={onSelectFilter}
+        selections={[selectedFilter.counterType, selectedFilter.storageType]}
+        isOpen={isOpenFilter}
+        placeholderText={
+          selectedFilter.counterType === CounterType.STRONG_COUNTER ? 'Strong counters' : 'Weak counters'
+        }
+        aria-labelledby={'filter-counter-menu'}
+        isGrouped
+      >
+        {menuItems}
+      </Select>
+    );
   };
 
   return (
