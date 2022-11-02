@@ -8,9 +8,10 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  OptionsMenu,
-  OptionsMenuItem,
-  OptionsMenuToggle,
+  Select,
+  SelectOption,
+  SelectVariant,
+  SelectGroup,
   Pagination,
   Text,
   TextContent,
@@ -19,32 +20,31 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
+  ToolbarGroup
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
-import displayUtils from '@services/displayUtils';
+import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 import { numberWithCommas } from '@utils/numberWithComma';
+import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
+import { CounterType, CounterStorage } from '@services/infinispanRefData';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
-  const STRONG_COUNTER = '0';
-  const WEAK_COUNTER = '1';
   const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
   const [weakCounters, setWeakCounters] = useState<Counter[]>([]);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [selectedCounterType, setSelectedCounterType] = useState(STRONG_COUNTER);
+  const [selectedFilters, setSelectedFilters] = useState({
+    counterType: '',
+    storageType: ''
+  });
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-
-  useEffect(() => {
-    loadCounters();
-  }, [loading, counters, error, selectedCounterType]);
 
   const strongCountersActions = [
     {
@@ -66,53 +66,32 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
 
+  const columnNames = {
+    name: t('cache-managers.counters.counter-name'),
+    currVal: t('cache-managers.counters.current-value'),
+    initVal: t('cache-managers.counters.initial-value'),
+    storage: t('cache-managers.counters.storage'),
+    config: t('cache-managers.counters.counter-configuration')
+  };
+
+  useEffect(() => {
+    if (counters) {
+      const weakCounters = counters.filter((counter) => counter.config.type === CounterType.WEAK_COUNTER);
+      const strongCounters = counters.filter((counter) => counter.config.type === CounterType.STRONG_COUNTER);
+
+      setWeakCounters(weakCounters);
+      setStrongCounters(strongCounters);
+      setFilteredCounters(counters);
+      props.setCountersCount(counters.length);
+    }
+  }, [loading, counters, error]);
+
   useEffect(() => {
     if (filteredCounters) {
       const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
       updateRows(filteredCounters.slice(initSlice, initSlice + countersPagination.perPage));
     }
   }, [countersPagination, filteredCounters]);
-
-  const columns = [
-    {
-      title: t('cache-managers.counter-name'),
-      transforms: [cellWidth(15)]
-    },
-    {
-      title: t('cache-managers.current-value'),
-      transforms: [cellWidth(15)]
-    },
-    {
-      title: t('cache-managers.initial-value'),
-      transforms: [cellWidth(15)]
-    },
-    {
-      title: t('cache-managers.storage')
-    },
-    {
-      title: t('cache-managers.counter-configuration')
-    }
-  ];
-
-  const loadCounters = () => {
-    if (counters) {
-      const weakCounters = counters.filter((counter) => counter.config.type == t('cache-managers.weak'));
-      const strongCounters = counters.filter((counter) => counter.config.type == t('cache-managers.strong'));
-
-      setWeakCounters(weakCounters);
-      setStrongCounters(strongCounters);
-
-      let currentCounters;
-      if (selectedCounterType == STRONG_COUNTER) {
-        currentCounters = strongCounters;
-      } else {
-        currentCounters = weakCounters;
-      }
-
-      setFilteredCounters(currentCounters);
-      props.setCountersCount(counters.length);
-    }
-  };
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
@@ -128,6 +107,109 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     });
   };
 
+  const updateRows = (counters: Counter[]) => {
+    let rows: Array<any> | React.SetStateAction<any>;
+
+    if (counters.length == 0) {
+      rows = [];
+      setActions([]);
+    } else {
+      rows = counters;
+      setActions(
+        selectedFilters.counterType === CounterType.STRONG_COUNTER ? strongCountersActions : weakCountersActions
+      );
+    }
+    setRows(rows);
+  };
+
+  const onSelectFilter = (event, selection) => {
+    let currentCounters;
+
+    if (selection === CounterType.STRONG_COUNTER || selection === CounterType.WEAK_COUNTER) {
+      if (selectedFilters.counterType == selection) {
+        setSelectedFilters({ ...selectedFilters, counterType: '' });
+        selectedFilters.storageType == ''
+          ? (currentCounters = counters)
+          : (currentCounters = counters.filter(
+              (counter) => counter.config.storage == selectedFilters.storageType.toUpperCase()
+            ));
+      } else {
+        setSelectedFilters({ ...selectedFilters, counterType: selection });
+        selectedFilters.storageType === ''
+          ? selection === CounterType.STRONG_COUNTER
+            ? (currentCounters = strongCounters)
+            : (currentCounters = weakCounters)
+          : selection === CounterType.STRONG_COUNTER
+          ? (currentCounters = strongCounters.filter(
+              (counter) => counter.config.storage == selectedFilters.storageType.toUpperCase()
+            ))
+          : (currentCounters = weakCounters.filter(
+              (counter) => counter.config.storage == selectedFilters.storageType.toUpperCase()
+            ));
+      }
+    }
+
+    if (selection === CounterStorage.VOLATILE || selection === CounterStorage.PERSISTENT) {
+      if (selectedFilters.storageType == selection) {
+        setSelectedFilters({ ...selectedFilters, storageType: '' });
+        selectedFilters.counterType == ''
+          ? (currentCounters = counters)
+          : (currentCounters = counters.filter((counter) => counter.config.type == selectedFilters.counterType));
+      } else {
+        setSelectedFilters({ ...selectedFilters, storageType: selection });
+        selectedFilters.counterType === ''
+          ? selection === CounterStorage.VOLATILE
+            ? (currentCounters = counters.filter(
+                (counter) => counter.config.storage == CounterStorage.VOLATILE.toUpperCase()
+              ))
+            : (currentCounters = counters.filter(
+                (counter) => counter.config.storage == CounterStorage.PERSISTENT.toUpperCase()
+              ))
+          : selectedFilters.counterType === CounterType.STRONG_COUNTER
+          ? (currentCounters = strongCounters.filter((counter) => counter.config.storage == selection.toUpperCase()))
+          : (currentCounters = weakCounters.filter((counter) => counter.config.storage == selection.toUpperCase()));
+      }
+    }
+
+    setFilteredCounters(currentCounters);
+  };
+
+  const countersFilter = () => {
+    const menuItems = [
+      <SelectGroup label={t('cache-managers.counters.counter-type')} key="group1">
+        <SelectOption key={0} value={CounterType.STRONG_COUNTER} />
+        <SelectOption key={1} value={CounterType.WEAK_COUNTER} />
+      </SelectGroup>,
+      <SelectGroup label={t('cache-managers.counters.storage')} key="group2">
+        <SelectOption key={2} value={CounterStorage.PERSISTENT} />
+        <SelectOption key={3} value={CounterStorage.VOLATILE} />
+      </SelectGroup>
+    ];
+
+    return (
+      <ToolbarGroup variant="filter-group">
+        <ToolbarItem style={{ width: 250 }} data-cy="counterFilterSelect">
+          <Select
+            variant={SelectVariant.checkbox}
+            aria-label={t('cache-managers.cache-filter-label')}
+            onToggle={() => setIsOpenFilter(!isOpenFilter)}
+            onSelect={onSelectFilter}
+            selections={[selectedFilters.counterType, selectedFilters.storageType]}
+            isOpen={isOpenFilter}
+            toggleIcon={<FilterIcon />}
+            maxHeight={200}
+            placeholderText={t('cache-managers.cache-filter-label')}
+            isGrouped={true}
+            data-cy="counterFilterSelectExpanded"
+            isCheckboxSelectionBadgeHidden={true}
+          >
+            {menuItems}
+          </Select>
+        </ToolbarItem>
+      </ToolbarGroup>
+    );
+  };
+
   const displayConfig = (config: CounterConfig) => {
     if (config.upperBound) {
       return (
@@ -135,14 +217,14 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                {t('cache-managers.lower-bound')} {numberWithCommas(config.lowerBound)}
+                {t('cache-managers.counters.lower-bound')} {numberWithCommas(config.lowerBound)}
               </Text>
             </TextContent>
           </GridItem>
           <GridItem>
             <TextContent>
               <Text component={TextVariants.small}>
-                {t('cache-managers.upper-bound')} {numberWithCommas(config.upperBound)}
+                {t('cache-managers.counters.upper-bound')} {numberWithCommas(config.upperBound)}
               </Text>
             </TextContent>
           </GridItem>
@@ -153,106 +235,15 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     return (
       <TextContent>
         <Text component={TextVariants.small}>
-          {t('cache-managers.concurrency-level')} {config.concurrencyLevel}
+          {t('cache-managers.counters.concurrency-level')} {config.concurrencyLevel}
         </Text>
       </TextContent>
     );
   };
 
-  const updateRows = (counters: Counter[]) => {
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-
-    if (counters.length == 0) {
-      rows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              props: { colSpan: 8 },
-              title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.no-counters-status')}
-                    </Title>
-                    <EmptyStateBody>{t('cache-managers.no-counters-body')}</EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              )
-            }
-          ]
-        }
-      ];
-      setActions([]);
-    } else {
-      rows = counters.map((counter) => {
-        return {
-          heightAuto: true,
-          cells: [
-            { title: counter.name },
-            { title: numberWithCommas(counter.value) },
-            { title: numberWithCommas(counter.config.initialValue) },
-            { title: counter.config.storage },
-            { title: displayConfig(counter.config) }
-          ]
-        };
-      });
-      setActions(selectedCounterType === STRONG_COUNTER ? strongCountersActions : weakCountersActions);
-    }
-    setRows(rows);
-  };
-
   if (!props.isVisible) {
     return <span />;
   }
-
-  const onSelectCounterType = (event) => {
-    const id = event.currentTarget.id;
-    let switchCounters;
-    if (id === STRONG_COUNTER) {
-      switchCounters = strongCounters;
-    } else {
-      switchCounters = weakCounters;
-    }
-
-    setFilteredCounters(switchCounters);
-    setSelectedCounterType(id);
-    setIsOpenFilter(false);
-  };
-
-  const countersFilter = () => {
-    const menuItems = [
-      <OptionsMenuItem
-        onSelect={onSelectCounterType}
-        isSelected={selectedCounterType === STRONG_COUNTER}
-        id={STRONG_COUNTER}
-        key="strong-counter"
-      >
-        {t('cache-managers.strong-counters')}
-      </OptionsMenuItem>,
-      <OptionsMenuItem
-        onSelect={onSelectCounterType}
-        isSelected={selectedCounterType === WEAK_COUNTER}
-        id={WEAK_COUNTER}
-        key="weak-counter"
-      >
-        {t('cache-managers.weak-counters')}
-      </OptionsMenuItem>
-    ];
-    const toggle = (
-      <OptionsMenuToggle
-        onToggle={() => setIsOpenFilter(!isOpenFilter)}
-        toggleTemplate={
-          selectedCounterType === STRONG_COUNTER
-            ? t('cache-managers.strong-counters')
-            : t('cache-managers.weak-counters')
-        }
-      />
-    );
-
-    return <OptionsMenu id="filter-counter-menu" menuItems={menuItems} isOpen={isOpenFilter} toggle={toggle} />;
-  };
 
   return (
     <React.Fragment>
@@ -274,17 +265,52 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table
-        aria-label={t('cache-managers.counters-table-label')}
-        cells={columns}
-        rows={rows}
-        actions={actions}
+      <TableComposable
         className={'strongCounters-table'}
-        variant={TableVariant.compact}
+        aria-label={t('cache-managers.counters.counters-table-label')}
+        variant={'compact'}
       >
-        <TableHeader />
-        <TableBody />
-      </Table>
+        <Thead>
+          <Tr>
+            <Th colSpan={1}>{columnNames.name}</Th>
+            <Th colSpan={1}>{columnNames.currVal}</Th>
+            <Th colSpan={1}>{columnNames.initVal}</Th>
+            <Th colSpan={1}>{columnNames.storage}</Th>
+            <Th colSpan={2}>{columnNames.config}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {counters.length == 0 || filteredCounters.length == 0 ? (
+            <Tr>
+              <Td colSpan={6}>
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      {t('cache-managers.counters.no-counters-status')}
+                    </Title>
+                    <EmptyStateBody>
+                      {counters.length == 0
+                        ? t('cache-managers.counters.no-counters-body')
+                        : t('cache-managers.counters.no-filtered-counter-body')}
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              </Td>
+            </Tr>
+          ) : (
+            rows.map((row) => (
+              <Tr key={row.name}>
+                <Td dataLabel={columnNames.name}>{row.name}</Td>
+                <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
+                <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+              </Tr>
+            ))
+          )}
+        </Tbody>
+      </TableComposable>
       <DeleteCounter
         name={counterToDelete}
         isModalOpen={counterToDelete != ''}
