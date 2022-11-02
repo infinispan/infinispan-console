@@ -219,3 +219,13 @@ export enum ClusterDistributionStatsOption {
   MemoryAvailable = 'Memory available',
   MemoryUsed = 'Memory used'
 }
+
+export enum CounterType {
+  STRONG_COUNTER = 'Strong',
+  WEAK_COUNTER = 'Weak'
+}
+
+export enum CounterStorage {
+  VOLATILE = 'Volatile',
+  PERSISTENT = 'Persistent'
+}
