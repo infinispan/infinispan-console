@@ -22,6 +22,7 @@ import {
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
+import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { SearchIcon } from '@patternfly/react-icons';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
@@ -75,26 +76,13 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     }
   }, [countersPagination, filteredCounters]);
 
-  const columns = [
-    {
-      title: t('cache-managers.counter-name'),
-      transforms: [cellWidth(15)]
-    },
-    {
-      title: t('cache-managers.current-value'),
-      transforms: [cellWidth(15)]
-    },
-    {
-      title: t('cache-managers.initial-value'),
-      transforms: [cellWidth(15)]
-    },
-    {
-      title: t('cache-managers.storage')
-    },
-    {
-      title: t('cache-managers.counter-configuration')
-    }
-  ];
+  const columnNames = {
+    name: t('cache-managers.counter-name'),
+    currVal: t('cache-managers.current-value'),
+    initVal: t('cache-managers.initial-value'),
+    storage: t('cache-managers.storage'),
+    config: t('cache-managers.counter-configuration')
+  };
 
   const loadCounters = () => {
     if (counters) {
@@ -162,44 +150,23 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   };
 
   const updateRows = (counters: Counter[]) => {
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
+    let rows: Array<any> | React.SetStateAction<any>;
 
     if (counters.length == 0) {
-      rows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              props: { colSpan: 8 },
-              title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.no-counters-status')}
-                    </Title>
-                    <EmptyStateBody>{t('cache-managers.no-counters-body')}</EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              )
-            }
-          ]
-        }
-      ];
+      rows = (
+        <Bullseye>
+          <EmptyState variant={EmptyStateVariant.small}>
+            <EmptyStateIcon icon={SearchIcon} />
+            <Title headingLevel="h2" size="lg">
+              {t('cache-managers.no-counters-status')}
+            </Title>
+            <EmptyStateBody>{t('cache-managers.no-counters-body')}</EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
+      );
       setActions([]);
     } else {
-      rows = counters.map((counter) => {
-        return {
-          heightAuto: true,
-          cells: [
-            { title: counter.name },
-            { title: numberWithCommas(counter.value) },
-            { title: numberWithCommas(counter.config.initialValue) },
-            { title: counter.config.storage },
-            { title: displayConfig(counter.config) }
-          ]
-        };
-      });
+      rows = counters;
       setActions(
         selectedFilter.counterType === CounterType.STRONG_COUNTER ? strongCountersActions : weakCountersActions
       );
@@ -289,17 +256,40 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table
-        aria-label={t('cache-managers.counters-table-label')}
-        cells={columns}
-        rows={rows}
-        actions={actions}
+      <TableComposable
         className={'strongCounters-table'}
-        variant={TableVariant.compact}
+        aria-label={t('cache-managers.counters-table-label')}
+        variant={'compact'}
       >
-        <TableHeader />
-        <TableBody />
-      </Table>
+        <Thead>
+          <Tr>
+            <Th colSpan={1}>{columnNames.name}</Th>
+            <Th colSpan={1}>{columnNames.currVal}</Th>
+            <Th colSpan={1}>{columnNames.initVal}</Th>
+            <Th colSpan={1}>{columnNames.storage}</Th>
+            <Th colSpan={2}>{columnNames.config}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {Array.isArray(rows) ? (
+            rows.map((row) => (
+              <Tr key={row.name}>
+                <Td dataLabel={columnNames.name}>{row.name}</Td>
+                <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
+                <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+              </Tr>
+            ))
+          ) : (
+            <Tr>
+              <Td colSpan={8} dataLabel={columnNames.name}>
+                {rows}
+              </Td>
+            </Tr>
+          )}
+        </Tbody>
+      </TableComposable>
       <DeleteCounter
         name={counterToDelete}
         isModalOpen={counterToDelete != ''}
