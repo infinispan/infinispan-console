@@ -22,13 +22,14 @@ import {
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { ActionsColumn, IAction, TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { SearchIcon } from '@patternfly/react-icons';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 import { numberWithCommas } from '@utils/numberWithComma';
 import { CounterType, CounterStorage } from '@services/infinispanRefData';
+import { SetDeltaCounter } from '@app/Counters/SetDeltaCounter';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
@@ -45,21 +46,59 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
+  const [counterToEdit, setCounterToEdit] = useState('');
+  const [deltaValue, setDeltaValue] = useState<number>(0);
+
   useEffect(() => {
     loadCounters();
   }, [loading, counters, error]);
 
-  const strongCountersActions = [
+  // Features to add in next commit
+  const strongCountersActions = (row): IAction[] => [
+    {
+      title: 'Set value',
+      onClick: () => {
+        console.log('Set value');
+      }
+    },
+    {
+      title: 'Set delta',
+      onClick: () => {
+        setCounterToEdit(row.name);
+      }
+    },
+    {
+      title: 'Increment value',
+      onClick: () => {
+        console.log('Increment value');
+      }
+    },
+    {
+      title: 'Decrement value',
+      onClick: () => {
+        console.log('Decrement value');
+      }
+    },
+    {
+      title: 'Reset value',
+      onClick: () => {
+        console.log('Reset value');
+      }
+    },
     {
       title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
+      onClick: () => {
+        setCounterToDelete(row.name);
+      }
     }
   ];
 
-  const weakCountersActions = [
+  const weakCountersActions = (row): IAction[] => [
     {
       title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
+      onClick: () => {
+        setCounterToDelete(row.name);
+      }
     }
   ];
 
@@ -272,15 +311,25 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         </Thead>
         <Tbody>
           {Array.isArray(rows) ? (
-            rows.map((row) => (
-              <Tr key={row.name}>
-                <Td dataLabel={columnNames.name}>{row.name}</Td>
-                <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
-                <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
-                <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
-                <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
-              </Tr>
-            ))
+            rows.map((row) => {
+              let rowActions: IAction[] | null = null;
+              if (row.config.type === CounterType.STRONG_COUNTER) {
+                rowActions = strongCountersActions(row);
+              } else if (row.config.type === CounterType.WEAK_COUNTER) {
+                rowActions = weakCountersActions(row);
+              }
+
+              return (
+                <Tr key={row.name}>
+                  <Td dataLabel={columnNames.name}>{row.name}</Td>
+                  <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                  <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                  <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
+                  <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+                  <Td isActionCell>{rowActions ? <ActionsColumn items={rowActions} /> : null}</Td>
+                </Tr>
+              );
+            })
           ) : (
             <Tr>
               <Td colSpan={8} dataLabel={columnNames.name}>
@@ -295,6 +344,16 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         isModalOpen={counterToDelete != ''}
         closeModal={() => {
           setCounterToDelete('');
+          reload();
+        }}
+      />
+      <SetDeltaCounter
+        name={counterToEdit}
+        deltaValue={deltaValue}
+        isModalOpen={counterToEdit != ''}
+        closeModal={() => {
+          setCounterToEdit('');
+          setDeltaValue(0);
           reload();
         }}
       />
