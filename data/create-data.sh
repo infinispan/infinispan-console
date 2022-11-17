@@ -70,7 +70,7 @@ do
   curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@counters/strongCounter.json" "http://localhost:11222/rest/v2/counters/strong-$i"
 done
 
-#echo "= Create some tasks"
-#curl -XPOST  -u $userPass -H "Content-Type: application/javascript" -d "@tasks/hello.js" "http://localhost:11222/rest/v2/tasks/hello"
+echo "= Create some tasks"
+curl -XPOST  -u $userPass -H "Content-Type: application/javascript" -d "@tasks/hello.js" "http://localhost:11222/rest/v2/tasks/hello"
 
 echo "= End"
