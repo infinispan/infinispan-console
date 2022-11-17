@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { cellWidth, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import {
   Bullseye,
   EmptyState,
@@ -23,13 +22,14 @@ import {
   ToolbarItemVariant,
   ToolbarGroup
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 import { numberWithCommas } from '@utils/numberWithComma';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import { CounterType, CounterStorage } from '@services/infinispanRefData';
+import { AddDeltaCounter } from '@app/Counters/AddDeltaCounter';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
@@ -41,22 +41,33 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     storageType: ''
   });
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
-  const [actions, setActions] = useState<any[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const [counterToEdit, setCounterToEdit] = useState('');
+  const [deltaValue, setDeltaValue] = useState(0);
 
-  const strongCountersActions = [
+  const strongCountersActions = (row): IAction[] => [
     {
-      title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
+      title: t('cache-managers.counters.add-delta-action'),
+      onClick: () => {
+        setCounterToEdit(row.name);
+      }
+    },
+    {
+      title: t('cache-managers.counters.delete-action'),
+      onClick: () => {
+        setCounterToDelete(row.name);
+      }
     }
   ];
 
-  const weakCountersActions = [
+  const weakCountersActions = (row): IAction[] => [
     {
-      title: t('cache-managers.delete'),
-      onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
+      title: t('cache-managers.counters.delete-action'),
+      onClick: () => {
+        setCounterToDelete(row.name);
+      }
     }
   ];
 
@@ -89,7 +100,8 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   useEffect(() => {
     if (filteredCounters) {
       const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
-      updateRows(filteredCounters.slice(initSlice, initSlice + countersPagination.perPage));
+      const updateRows = filteredCounters.slice(initSlice, initSlice + countersPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
     }
   }, [countersPagination, filteredCounters]);
 
@@ -105,21 +117,6 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       page: 1,
       perPage: perPage
     });
-  };
-
-  const updateRows = (counters: Counter[]) => {
-    let rows: Array<any> | React.SetStateAction<any>;
-
-    if (counters.length == 0) {
-      rows = [];
-      setActions([]);
-    } else {
-      rows = counters;
-      setActions(
-        selectedFilters.counterType === CounterType.STRONG_COUNTER ? strongCountersActions : weakCountersActions
-      );
-    }
-    setRows(rows);
   };
 
   const onSelectFilter = (event, selection) => {
@@ -299,15 +296,25 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
               </Td>
             </Tr>
           ) : (
-            rows.map((row) => (
-              <Tr key={row.name}>
-                <Td dataLabel={columnNames.name}>{row.name}</Td>
-                <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
-                <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
-                <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
-                <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
-              </Tr>
-            ))
+            rows.map((row) => {
+              let rowActions: IAction[];
+              row.config.type === CounterType.STRONG_COUNTER
+                ? (rowActions = strongCountersActions(row))
+                : (rowActions = weakCountersActions(row));
+
+              return (
+                <Tr key={row.name}>
+                  <Td dataLabel={columnNames.name}>{row.name}</Td>
+                  <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                  <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                  <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
+                  <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+                  <Td isActionCell>
+                    <ActionsColumn items={rowActions} />
+                  </Td>
+                </Tr>
+              );
+            })
           )}
         </Tbody>
       </TableComposable>
@@ -317,6 +324,22 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         closeModal={() => {
           setCounterToDelete('');
           reload();
+        }}
+      />
+      <AddDeltaCounter
+        name={counterToEdit}
+        deltaValue={deltaValue}
+        setDeltaValue={setDeltaValue}
+        isModalOpen={counterToEdit != ''}
+        submitModal={() => {
+          setCounterToEdit('');
+          setDeltaValue(0);
+          setSelectedFilters({ counterType: '', storageType: '' });
+          reload();
+        }}
+        closeModal={() => {
+          setCounterToEdit('');
+          setDeltaValue(0);
         }}
       />
     </React.Fragment>
