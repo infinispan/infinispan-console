@@ -48,3 +48,18 @@ export function useDeleteCounter(name: string) {
     onDelete
   };
 }
+
+export function useAddDeltaCounter(name: string, deltaValue: number) {
+  const { addAlert } = useApiAlert();
+
+  const onAddDelta = () => {
+    ConsoleServices.counters()
+      .setDelta(name, deltaValue)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onAddDelta
+  };
+}

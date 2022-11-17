@@ -86,4 +86,17 @@ export class CountersService {
       errorMessage: `Unexpected error deleting the counter ${name}.`
     });
   }
+
+  /**
+   * Set delta value for a counter
+   * @param name, counter to be updated
+   * @param deltaValue, delta value to be set
+   */
+  public setDelta(name: string, deltaValue: number): Promise<ActionResponse> {
+    return this.utils.post({
+      url: this.endpoint + '/' + name + '?action=add&delta=' + deltaValue,
+      successMessage: `Delta value for counter ${name} has been set.`,
+      errorMessage: `Unexpected error setting delta value for counter ${name}.`
+    });
+  }
 }

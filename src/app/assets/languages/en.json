@@ -121,7 +121,13 @@
       "counter-type": "Counter type",
       "no-counters-status": "No counters yet",
       "no-counters-body": "Click \"Create a counter\" and configure a counter. You can also create counters from the CLI or remote clients.",
-      "no-filtered-counter-body": "No counters match your filter criteria. Click \"Create a counter\" and configure a counter."
+      "no-filtered-counter-body": "No counters match your filter criteria. Click \"Create a counter\" and configure a counter.",
+      "delete-action": "Delete",
+      "add-delta-action": "Add a delta",
+      "modal-delta-title": "Set a value for the delta",
+      "delta-text-input": "Increment or decrement counters with arbitrary values. To subtract counter value use negative numbers.",
+      "modal-confirm-button": "Confirm",
+      "modal-cancel-button": "Cancel"
     }
   },
   "caches": {
