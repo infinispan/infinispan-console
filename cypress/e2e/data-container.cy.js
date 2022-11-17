@@ -62,7 +62,7 @@ it('successfully navigates through the caches as well as changes number of viewe
   cy.contains('xml-cache').should('not.exist');
 
   //Changing the number of items on the page
-  cy.get('[id^="pagination-caches-toggle"]').click();
+  cy.get('[id^="pagination-caches-top-pagination"]').click();
   cy.get('[data-action=per-page-10] > div').should('exist'); //Verifying the selected option
   cy.get('[data-action=per-page-20] > div').should('not.exist');
   cy.get('[data-action=per-page-50] > div').should('not.exist');
@@ -70,7 +70,7 @@ it('successfully navigates through the caches as well as changes number of viewe
   cy.get('[data-action=per-page-20]').click();
 
   //Verifying that all caches are shown and navigation buttons are disabled
-  cy.get('[id^="pagination-caches-toggle"]').click();
+  cy.get('[id^="pagination-caches-top-pagination"]').click();
   cy.get('[data-action=per-page-10] > div').should('not.exist'); //Verifying the selected option
   cy.get('[data-action=per-page-20] > div').should('exist');
   cy.get('[data-action=per-page-50] > div').should('not.exist');
@@ -84,7 +84,7 @@ it('successfully navigates through the caches as well as changes number of viewe
 
   //Changing the number of items on the page to 3rd option
   cy.get('[data-action=per-page-50]').click();
-  cy.get('[id^="pagination-caches-toggle"]').click();
+  cy.get('[id^="pagination-caches-top-pagination"]').click();
   cy.get('[data-action=per-page-10] > div').should('not.exist'); //Verifying the selected option
   cy.get('[data-action=per-page-20] > div').should('not.exist');
   cy.get('[data-action=per-page-50] > div').should('exist');
@@ -98,7 +98,7 @@ it('successfully navigates through the caches as well as changes number of viewe
 
   //Changing the number of items on the page to 4th option
   cy.get('[data-action=per-page-100]').click();
-  cy.get('[id^="pagination-caches-toggle"]').click();
+  cy.get('[id^="pagination-caches-top-pagination"]').click();
   cy.get('[data-action=per-page-10] > div').should('not.exist'); //Verifying the selected option
   cy.get('[data-action=per-page-20] > div').should('not.exist');
   cy.get('[data-action=per-page-50] > div').should('not.exist');
@@ -157,7 +157,7 @@ it('sucessfully filters caches by type and features', () => {
   cy.get('[id$="Invalidated"]').click(); //Filtering invalidated caches
   cy.get('[id$="Scattered"]').click(); //Filtering scattered caches
   cy.get('[data-cy=cacheFilterSelect]').click(); //Closing filter selectbox
-  
+
   //Verifying that only replicated,invalidated and scattered caches are shown
   cy.contains('jboss-cache');
   cy.contains('invalidationCache');
@@ -190,7 +190,7 @@ it('sucessfully filters caches by type and features', () => {
   cy.contains('java-serialized-cache').should('not.exist');
 
   //Changing the number of caches on the page to view them all
-  cy.get('[id^="pagination-caches-toggle"]').click();
+  cy.get('[id^="pagination-caches-top-pagination"]').click();
   cy.get('[data-action=per-page-20]').click();
   cy.contains('not-encoded')
   cy.contains('xml-cache');
@@ -267,7 +267,7 @@ it('sucessfully filters caches by type and features', () => {
 
   //Clearing all filters
   cy.get('[data-cy=clearAllButton]').click();
-  cy.get('[data-cy=cachesTable] tr').should('have.length', 18); //18 including header row because upper the items per page is changed 
+  cy.get('[data-cy=cachesTable] tr').should('have.length', 18); //18 including header row because upper the items per page is changed
   cy.contains('default');
   cy.contains('java-serialized-cache');
   cy.contains('people');
@@ -306,7 +306,7 @@ it('successfully ignores the cache', () => {
 
   cy.contains('Cache b-cache hidden.').should('exist');
   cy.contains('Cache b-cache hidden.', {timeout: 10000}).should('not.exist');
-  cy.get('[data-cy=ignoreBadge-b-cache]').should('exist');   
+  cy.get('[data-cy=ignoreBadge-b-cache]').should('exist');
 
   //Adding Hidden filter @TODO uncomment this when issue ISPN-13805 is fixed
   // cy.get('[data-cy=cacheFilterSelect]').click();
@@ -339,7 +339,7 @@ it('successfully undos the ignore the cache action', () => {
 
   cy.contains('Cache b-cache is now visible.').should('exist');
   cy.contains('Cache b-cache is now visible.', {timeout: 10000}).should('not.exist');
-  cy.get('[data-cy=ignoreBadge-b-cache]').should('not.exist');   
+  cy.get('[data-cy=ignoreBadge-b-cache]').should('not.exist');
  })
 
 //Delete created cache
@@ -379,7 +379,7 @@ it('successfully deletes a cache', () => {
   //Is redirected to Data Container page
   cy.get('#cluster-manager-header').should('exist');
   cy.get('[data-cy=cacheManagerStatus]').should('exist');
-  cy.get('[data-cy=rebalancingSwitch]').should('exist'); 
+  cy.get('[data-cy=rebalancingSwitch]').should('exist');
 
   //Go to Config page again
   cy.get('[data-cy=showTemplatesButton]').click();
