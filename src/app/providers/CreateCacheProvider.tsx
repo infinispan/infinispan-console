@@ -23,7 +23,7 @@ const GettingStartedInitialState: GettingStartedState = {
 const BasicCacheConfigInitialState: BasicCacheConfig = {
   topology: CacheType.Distributed,
   mode: CacheMode.SYNC,
-  numberOfOwners: 1,
+  numberOfOwners: 2,
   encoding: EncodingType.Protobuf,
   statistics: true,
   expiration: false,
