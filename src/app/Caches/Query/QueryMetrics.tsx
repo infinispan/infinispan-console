@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonVariant,
@@ -18,14 +18,14 @@ import {
   TextListVariants,
   TextVariants
 } from '@patternfly/react-core';
-import {TableErrorState} from '@app/Common/TableErrorState';
-import {ClearQueryMetrics} from '@app/Caches/Query/ClearQueryMetrics';
-import {useTranslation} from 'react-i18next';
-import {ConsoleServices} from '@services/ConsoleServices';
-import {useConnectedUser} from '@app/services/userManagementHook';
-import {ConsoleACL} from '@services/securityService';
-import {useSearchStats} from '@app/services/statsHook';
-import {PopoverHelp} from "@app/Common/PopoverHelp";
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
+import { useTranslation } from 'react-i18next';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleACL } from '@services/securityService';
+import { useSearchStats } from '@app/services/statsHook';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
 
 /**
  * Query stats for indexed caches only
