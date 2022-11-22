@@ -508,6 +508,8 @@
       "add-entry-form-value-type-select-label": "Select Value Content Type"
     },
     "query": {
+      "query-metrics-title": "Query metrics",
+      "query-metrics-tooltip": "Average time, in nanoseconds, for queries on this cache.",
       "button-clear-query-stats": "Clear all stats",
       "stat-max": "Max",
       "stat-count": "Count",
