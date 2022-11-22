@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Button,
   ButtonVariant,
@@ -18,21 +18,20 @@ import {
   TextListVariants,
   TextVariants
 } from '@patternfly/react-core';
-import { TableErrorState } from '@app/Common/TableErrorState';
-import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
-import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { useConnectedUser } from '@app/services/userManagementHook';
-import { ConsoleACL } from '@services/securityService';
-import { useSearchStats } from '@app/services/statsHook';
-import { CustomCardTitle } from '@app/Common/CustomCardTitle';
+import {TableErrorState} from '@app/Common/TableErrorState';
+import {ClearQueryMetrics} from '@app/Caches/Query/ClearQueryMetrics';
+import {useTranslation} from 'react-i18next';
+import {ConsoleServices} from '@services/ConsoleServices';
+import {useConnectedUser} from '@app/services/userManagementHook';
+import {ConsoleACL} from '@services/securityService';
+import {useSearchStats} from '@app/services/statsHook';
+import {PopoverHelp} from "@app/Common/PopoverHelp";
 
 /**
  * Query stats for indexed caches only
  */
 const QueryMetrics = (props: { cacheName: string }) => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { connectedUser } = useConnectedUser();
   const { stats, loading, error, setLoading } = useSearchStats(props.cacheName);
 
@@ -131,9 +130,11 @@ const QueryMetrics = (props: { cacheName: string }) => {
       <CardTitle>
         <Level id={'query-stats'}>
           <LevelItem>
-            <CustomCardTitle
-              title={'Query statistics'}
-              toolTip={'Average time, in nanoseconds, for queries on this cache.'}
+            <PopoverHelp
+              name="query-metrics"
+              label={t('caches.query.query-metrics-title')}
+              content={t('caches.query.query-metrics-tooltip')}
+              text={t('caches.query.query-metrics-title')}
             />
           </LevelItem>
           {buildClearStatsButton()}
