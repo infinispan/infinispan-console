@@ -7,6 +7,7 @@ import {
   Select,
   SelectOption,
   SelectVariant,
+  Spinner,
   Switch,
   TextInput
 } from '@patternfly/react-core';
@@ -92,15 +93,13 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
         .then((r) => {
           if (r.isRight()) {
             const cm = r.value;
-            setAvailableSites(cm.sites_view);
-            setLocalSite(cm.local_site ? cm.local_site : '');
+            const localSiteName = cm.local_site ? cm.local_site : '';
+            const siteView = cm.sites_view.filter((s) => s !== localSiteName);
+            setLocalSite(localSiteName);
+            setAvailableSites(siteView);
           }
         })
         .then(() => setLoadingBackups(false));
-    }
-    // Remove local site from available sites
-    if (localSite) {
-      setAvailableSites(availableSites.filter((s) => s !== localSite));
     }
   }, [loadingBackups]);
 
@@ -114,8 +113,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const sitesOptions = () => {
-    const options = availableSites.map((role) => <SelectOption key={role} value={role} />);
-    return options;
+    return availableSites.map((role) => <SelectOption key={role} value={role} />);
   };
 
   const clearSelection = () => {
@@ -144,8 +142,9 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
         }
       >
         <Select
+          isCreatable={true}
           variant={SelectVariant.typeaheadMulti}
-          aria-label="Select sites"
+          aria-label={t('caches.create.configurations.feature.select-sites')}
           chipGroupProps={{ numChips: 4, expandedText: 'Hide', collapsedText: 'Show ${remaining}' }}
           onToggle={() => setIsOpenSites(!isOpenSites)}
           onSelect={helperAddSite}
@@ -154,6 +153,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           isOpen={isOpenSites}
           validated={sites.length == 0 ? 'error' : 'success'}
           placeholderText={t('caches.create.configurations.feature.select-sites')}
+          noResultsFoundText={t('caches.create.configurations.feature.select-sites-not-found')}
         >
           {sitesOptions()}
         </Select>
@@ -270,6 +270,10 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
 
   if (!props.isEnabled) {
     return <FeatureAlert feature={CacheFeature.BACKUPS} />;
+  }
+
+  if (loadingBackups) {
+    return <Spinner size={'md'} />;
   }
 
   return (
