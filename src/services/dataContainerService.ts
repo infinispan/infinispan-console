@@ -61,7 +61,7 @@ export class ContainerService {
             health: maybeHealth.isRight() ? maybeHealth.value : maybeHealth.value.message,
             local_site: data.local_site,
             rebalancing_enabled: data.rebalancing_enabled,
-            backups_enabled: data.relay_node,
+            backups_enabled: data.relay_node || data.local_site !== '', // relay node might be false if not coordinator
             sites_view: data.sites_view
           }
       )
