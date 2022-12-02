@@ -262,7 +262,7 @@ const BasicCacheConfigConfigurator = () => {
           onSelect={onSelectEncodingCache}
           selections={selectedEncodingCache}
           isOpen={isOpenEncodingCache}
-          aria-labelledby="toggle-id-number-owners"
+          aria-labelledby="toggle-id-encoding"
           toggleId="cacheEncoding"
           width={300}
         >

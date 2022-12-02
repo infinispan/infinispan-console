@@ -188,6 +188,7 @@
           "statistics-enable": "Statistics enabled",
           "statistics-disable": "Statistics disabled",
           "encoding-cache-title": "Select an encoding",
+          "encoding-select-title": "Select an encoding",
           "encoding-cache-tooltip": "Choose a media type that describes data that you store in the cache. Select ProtoStream encoding for optimal performance and interoperability between client applications.",
           "expiration-title": "Expiration",
           "expiration-tooltip": "Enable expiration to limit the amount of time that entries can remain in the cache. Expiration takes place across the cluster and removes entries based on a lifespan or maximum idle time.",
