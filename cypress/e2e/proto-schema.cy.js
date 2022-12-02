@@ -28,7 +28,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('test-10.proto');
 
     //Changing the number of items on the page
-    cy.get('[id^="pagination-schemas-toggle"]').click();
+    cy.get('[id^="pagination-schemas-top-toggle"]').click();
     cy.get('[data-action=per-page-10] > div').should('exist'); //Verifying the selected option
     cy.get('[data-action=per-page-20] > div').should('not.exist');
     cy.get('[data-action=per-page-50] > div').should('not.exist');
@@ -42,7 +42,7 @@ describe('Proto Schema CRUD', () => {
 
     //Changing the number of items on the page back to 10
     cy.get('#primary-app-container').scrollTo('bottom');
-    cy.get('[id^="pagination-schemas-toggle"]').click();
+    cy.get('[id^="pagination-schemas-top-toggle"]').click();
     cy.get('[data-action=per-page-10] > div').should('not.exist'); //Verifying the selected option
     cy.get('[data-action=per-page-20] > div').should('exist');
     cy.get('[data-action=per-page-50] > div').should('not.exist');
