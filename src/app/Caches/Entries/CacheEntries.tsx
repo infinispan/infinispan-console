@@ -330,7 +330,12 @@ const CacheEntries = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <Button data-cy='addEntryButton' key="add-entry-button" variant={ButtonVariant.primary} onClick={onClickAddEntryButton}>
+        <Button
+          data-cy="addEntryButton"
+          key="add-entry-button"
+          variant={ButtonVariant.primary}
+          onClick={onClickAddEntryButton}
+        >
           Add entry
         </Button>
       </ToolbarItem>
@@ -344,7 +349,7 @@ const CacheEntries = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <Button data-cy='clearAllButton' variant={ButtonVariant.link} onClick={onClickClearAllButton}>
+        <Button data-cy="clearAllButton" variant={ButtonVariant.link} onClick={onClickClearAllButton}>
           {t('caches.entries.clear-entry-button-label')}
         </Button>
       </ToolbarItem>

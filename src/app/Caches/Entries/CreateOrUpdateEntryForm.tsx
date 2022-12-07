@@ -376,7 +376,7 @@ const CreateOrUpdateEntryForm = (props: {
           selections={keyContentType.selected}
           isOpen={keyContentType.expanded}
           isDisabled={isEdition}
-          toggleId='keyContentType'
+          toggleId="keyContentType"
         >
           {contentTypeOptions(props.cacheEncoding.key as EncodingType)}
         </Select>
@@ -572,7 +572,7 @@ const CreateOrUpdateEntryForm = (props: {
           onClear={() => setValueContentType(contentTypeInitialState)}
           selections={valueContentType.selected}
           isOpen={valueContentType.expanded}
-          toggleId='valueContentType'
+          toggleId="valueContentType"
         >
           {contentTypeOptions(props.cacheEncoding.value as EncodingType)}
         </Select>
@@ -605,7 +605,7 @@ const CreateOrUpdateEntryForm = (props: {
           isOpen={flags.expanded}
           placeholderText={t('caches.entries.add-entry-form-flags-label')}
           maxHeight={150}
-          toggleId='ispnFlags'
+          toggleId="ispnFlags"
         >
           {flagsOptions()}
         </Select>
@@ -623,10 +623,10 @@ const CreateOrUpdateEntryForm = (props: {
       onClose={onClose}
       aria-label={isEdition ? 'Edit entry form' : 'Add new entry form'}
       actions={[
-        <Button data-cy='addButton' key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
+        <Button data-cy="addButton" key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
           {isEdition ? 'Edit' : 'Add'}
         </Button>,
-        <Button data-cy='cancelButton' key="cancel" variant="link" onClick={onClose}>
+        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={onClose}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
       ]}

@@ -201,7 +201,7 @@ const PersistentCacheConfigurator = () => {
             }
           >
             <TextInput
-              data-cy='connectionAttempts'
+              data-cy="connectionAttempts"
               placeholder="10"
               value={connectionAttempts}
               type="number"
@@ -228,7 +228,7 @@ const PersistentCacheConfigurator = () => {
             }
           >
             <TextInput
-              data-cy='connectionInterval'
+              data-cy="connectionInterval"
               placeholder="50"
               value={connectionInterval}
               type="number"
@@ -255,7 +255,7 @@ const PersistentCacheConfigurator = () => {
             }
           >
             <TextInput
-              data-cy='availabilityInterval'
+              data-cy="availabilityInterval"
               placeholder="1000"
               value={availabilityInterval}
               type="number"
@@ -290,7 +290,7 @@ const PersistentCacheConfigurator = () => {
           aria-labelledby="persistent-storage"
           placeholderText={t('caches.create.configurations.feature.storage-placeholder')}
           validated={storage.toString() !== '' ? 'success' : 'error'}
-          toggleId='persistentStorage'
+          toggleId="persistentStorage"
         >
           {persistentStorageOptions()}
         </Select>

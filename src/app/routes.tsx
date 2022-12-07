@@ -14,9 +14,9 @@ import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
-import {useConnectedUser} from "@app/services/userManagementHook";
-import {ConsoleServices} from "@services/ConsoleServices";
-import {ConsoleACL} from "@services/securityService";
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
 
 let routeFocusTimer: number;
 
@@ -63,7 +63,7 @@ export interface IAppRoute {
   menu?: boolean;
   subRoutes?: string[];
   init?: string;
-  readonlyUser?:boolean;
+  readonlyUser?: boolean;
 }
 
 const routes: IAppRoute[] = [
@@ -115,7 +115,7 @@ const routes: IAppRoute[] = [
     label: 'Create cache',
     path: '/container/caches/create',
     title: 'Create cache',
-    menu: false,
+    menu: false
   },
   {
     component: DetailConfigurations,
