@@ -22,8 +22,8 @@ import { useTranslation } from 'react-i18next';
 import { CreateCacheWizard } from '@app/Caches/Create/CreateCacheWizard';
 import { CreateCacheProvider } from '@app/providers/CreateCacheProvider';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import {ConsoleACL} from "@services/securityService";
-import {useConnectedUser} from "@app/services/userManagementHook";
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const CreateCache = () => {
   const [cacheManager, setCacheManager] = useState<CacheManager | undefined>();

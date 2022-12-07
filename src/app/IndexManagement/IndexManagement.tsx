@@ -79,7 +79,12 @@ const IndexManagement = (props) => {
 
     return (
       <LevelItem>
-        <Button data-cy="clearIndexButton" variant={ButtonVariant.danger} disabled={!stats?.reindexing} onClick={() => setPurgeModalOpen(true)}>
+        <Button
+          data-cy="clearIndexButton"
+          variant={ButtonVariant.danger}
+          disabled={!stats?.reindexing}
+          onClick={() => setPurgeModalOpen(true)}
+        >
           {t('caches.index.button-clear')}
         </Button>
       </LevelItem>

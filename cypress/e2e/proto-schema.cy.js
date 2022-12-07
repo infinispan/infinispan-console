@@ -1,9 +1,7 @@
-
 describe('Proto Schema CRUD', () => {
-
   beforeEach(() => {
-    cy.login(Cypress.env("username"), Cypress.env("password"));
-  })
+    cy.login(Cypress.env('username'), Cypress.env('password'));
+  });
 
   it('successfully navigates through schemas', () => {
     cy.get('a[aria-label="nav-item-Schemas"]').click();
@@ -67,32 +65,35 @@ describe('Proto Schema CRUD', () => {
     cy.contains('aTestSchema.proto');
     //Updating existing schema
     cy.contains('Schema aTestSchema.proto has errors');
-    cy.get('button[aria-label="expand-schema-aTestSchema.proto"]').click({force: true});
+    cy.get('button[aria-label="expand-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('schemaValue');
     cy.contains('Edit');
-    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({force: true});
+    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('Save');
-    cy.get('[data-cy=schemaEditArea]',  {timeout: 10000}).contains('schemaValue');
-    cy.get('[data-cy=schemaEditArea]').type('{selectall}', {timeout: 10000});
+    cy.get('[data-cy=schemaEditArea]', { timeout: 10000 }).contains('schemaValue');
+    cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
     cy.get('[data-cy=schemaEditArea]').type('schemaNewValue');
-    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({force: true});
+    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('Schema aTestSchema.proto updated.');
     cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
     cy.contains('schemaNewValue');
     //Updating existing schema with correct value
     cy.contains('Schema aTestSchema.proto has errors');
-    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({force: true});
+    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({ force: true });
     cy.get('[data-cy=schemaEditArea]').contains('schemaNewValue');
-    cy.get('[data-cy=schemaEditArea]').type('{selectall}', {timeout: 10000});
-    cy.get('[data-cy=schemaEditArea]').type('package org.infinispan; message ExampleProto { optional int32 other_id = 1; }', { parseSpecialCharSequences: false });
-    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({force: true});
+    cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
+    cy.get('[data-cy=schemaEditArea]').type(
+      'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
+      { parseSpecialCharSequences: false }
+    );
+    cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('Schema aTestSchema.proto updated.');
     cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
     cy.contains('schemaNewValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema aTestSchema.proto has errors').should('not.exist');
     //Deleting schema
-    cy.get('button[aria-label="delete-button-schema-aTestSchema.proto"]').click({force: true});
+    cy.get('button[aria-label="delete-button-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('Permanently delete schema?');
     cy.get('button[aria-label="confirm-delete-schema-button"]').click();
     cy.contains('Schema aTestSchema.proto has been deleted.');
@@ -121,6 +122,4 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Unexpected error');
     cy.get('[data-cy="cancelAddSchemaButton"]').click();
   });
-
 });
-

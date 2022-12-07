@@ -3,10 +3,9 @@ function createRandomCacheName() {
 }
 
 describe('Cache Creation Wizard', () => {
-
   beforeEach(() => {
-    cy.login(Cypress.env("username"), Cypress.env("password"));
-  })
+    cy.login(Cypress.env('username'), Cypress.env('password'));
+  });
 
   it('successfully creates cache with all building options', () => {
     //go to create cache page
@@ -17,7 +16,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.get('#sync').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    
+
     //Filling bounded  cache properties
     cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('boun');
     cy.get('#BOUNDED > button').click();
@@ -28,7 +27,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('#evictionStrategy').click();
     cy.get('#REMOVE').click();
 
-    //Filling indexed cache properties  
+    //Filling indexed cache properties
     cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('ind');
     cy.get('#INDEXED > button').click();
     cy.get('#persistent').click();
@@ -53,15 +52,15 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=availabilityInterval]').type(5000);
     cy.get('#persistentStorage').click();
     cy.get('#FileStore').click();
-    
+
     //Filling transactional cache properties
     cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('trans');
     cy.get('#TRANSACTIONAL > button').click();
     cy.get('#non_xa').click();
     cy.get('#pessimistic').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    
-    cy.get("#storageSelector").click();
+
+    cy.get('#storageSelector').click();
     cy.get('#HEAP').click();
     cy.get('[data-cy=concurencyLevel]').clear().type(40);
     cy.get('[data-cy=lockTimeout]').clear().type(15);
@@ -90,7 +89,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=completeTimeout]').type(50000);
     cy.get('[data-cy=reaperInterval]').type(20000);
     cy.get('[data-cy=wizardNextButton]').click();
-  
+
     //Verify before submitting and downloading file
     cy.contains('super-cache');
     cy.get('[data-cy=downloadButton]').click();
@@ -110,9 +109,9 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=downloadButton]').click();
     downloadedFile = cy.readFile('./cypress/downloads/super-cache.yaml');
     downloadedFile.should('exist');
-    
+
     cy.get('[data-cy=wizardNextButton]').click();
-  
+
     // Once the cache created, redirection to main page is done and the cache should be visible
     cy.get('#cluster-manager-header').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
@@ -124,5 +123,5 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=feature-super-cache]').contains('Secured');
     cy.get('[data-cy=feature-super-cache]').contains('Persistent');
     cy.get('[data-cy=feature-super-cache]').contains('Transactional');
-  })
+  });
 });

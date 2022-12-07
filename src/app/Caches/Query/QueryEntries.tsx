@@ -176,7 +176,8 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                 onChange={onChangeSearch}
                 onKeyPress={searchEntryOnKeyPress}
               />
-              <Button data-cy="searchButton"
+              <Button
+                data-cy="searchButton"
                 variant="control"
                 aria-label="Search input button"
                 onClick={() => searchByQuery(queryPagination.perPage, queryPagination.page)}
