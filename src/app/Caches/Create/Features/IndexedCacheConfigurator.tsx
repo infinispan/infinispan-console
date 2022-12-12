@@ -61,7 +61,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   }, [indexedStorage, indexedEntities, indexedStartupMode]);
 
   const indexingFeatureValidation = (): boolean => {
-    return indexedEntities.length > 0;
+    return indexedEntities.length > 0 && configuration.basic.encoding === EncodingType.Protobuf;
   };
 
   const deleteChip = (chipToDelete: string) => {

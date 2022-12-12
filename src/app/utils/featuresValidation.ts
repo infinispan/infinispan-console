@@ -1,4 +1,4 @@
-import { CacheFeature } from '@services/infinispanRefData';
+import { CacheFeature, EncodingType, CacheMode } from '@services/infinispanRefData';
 
 export function validFeatures(configuration: CacheConfiguration): boolean {
   return (
@@ -15,5 +15,18 @@ function validateFeature(feature: CacheFeature, property: string, configuration:
   if (configuration.feature.cacheFeatureSelected.includes(feature)) {
     return configuration.feature[property].valid;
   }
+  return true;
+}
+
+export function validateIndexedFeature(configuration: CacheConfiguration, encoding: string): boolean {
+  if (configuration.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED))
+    return configuration.feature.indexedCache.indexedEntities.length > 0 && encoding === EncodingType.Protobuf;
+
+  return true;
+}
+
+export function validateTransactionalFeature(configuration: CacheConfiguration, mode: string): boolean {
+  if (configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) return mode === CacheMode.SYNC;
+
   return true;
 }
