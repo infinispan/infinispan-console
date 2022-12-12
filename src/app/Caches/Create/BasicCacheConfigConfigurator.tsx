@@ -17,10 +17,11 @@ import {
   TextInput,
   TextVariants
 } from '@patternfly/react-core';
-import { CacheMode, CacheType, EncodingType, TimeUnits } from '@services/infinispanRefData';
+import { CacheMode, CacheType, EncodingType, TimeUnits, CacheFeature } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
+import { validateIndexedFeature, validateTransactionalFeature } from '@app/utils/featuresValidation';
 
 const BasicCacheConfigConfigurator = () => {
   const { t } = useTranslation();
@@ -61,6 +62,17 @@ const BasicCacheConfigConfigurator = () => {
           maxIdleNumber: maxIdleNumber,
           maxIdleUnit: maxIdleUnit,
           valid: lifeSpanNumber >= -1 && maxIdleNumber >= -1
+        },
+        feature: {
+          ...prevState.feature,
+          indexedCache: {
+            ...prevState.feature.indexedCache,
+            valid: validateIndexedFeature(configuration, selectedEncodingCache)
+          },
+          transactionalCache: {
+            ...prevState.feature.transactionalCache,
+            valid: validateTransactionalFeature(configuration, mode)
+          }
         }
       };
     });
