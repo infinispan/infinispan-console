@@ -305,7 +305,8 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <Tab
+      <Tab 
+        data-cy="cacheEntriesTab"
         eventKey={0}
         title={
           cache.size
@@ -322,7 +323,7 @@ const DetailCache = (props: { cacheName: string }) => {
       eventKey = 0;
     }
 
-    return <Tab eventKey={eventKey} title={t('caches.tabs.configuration')} />;
+    return <Tab data-cy="cacheConfigurationTab" eventKey={eventKey} title={t('caches.tabs.configuration')} />;
   };
 
   const displayCacheStats = () => {
@@ -332,6 +333,7 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <Tab
+        data-cy="cacheMetricsTab"
         eventKey={2}
         title={cache.stats?.enabled ? t('caches.tabs.metrics-enabled') : t('caches.tabs.metrics-disabled')}
       />

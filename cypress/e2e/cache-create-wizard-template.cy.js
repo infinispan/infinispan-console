@@ -28,62 +28,90 @@ describe('Cache Creation Wizard', () => {
     cy.contains(cacheName);
   });
 
-  //   it.only('successfully creates without a template a JSON config', () => {
-  //     //go to create cache page
-  //     cy.get('[data-cy=createCacheButton]').click();
-  //     cy.get('#cache-name').click();
-  //     cy.get('#cache-name').type('aSimpleCache');
-  //     cy.get('#edit').click();
-  //     cy.get('[data-cy=wizardNextButton]').click();
-  //     cy.get('[data-cy=provideConfigArea] > button').click();
-  //     cy.get('.pf-c-code-editor__code textarea').clear({force: true});
-  //     cy.get('.pf-c-code-editor__code textarea').type("{selectAll}", {force: true});
-  //     cy.get('.pf-c-code-editor__code textarea').type("{backspace}");
-  //     cy.get('[style="top:19px;height:19px;"] > :nth-child(1) > .mtk1').clear({force: true});
-  //     cy.get('.pf-c-code-editor__code textarea').type('{selectall}{backspace}');
-  //     cy.get('.pf-c-code-editor__code').type('{"distributed-cache": {"mode": "ASYNC", "statistics": true }    }', { delay: 100, parseSpecialCharSequences: false });
-  //     // cy.get('[data-cy=wizardNextButton]').click();
-  //     // cy.contains('Unexpected error creating the cache');
+  it('successfully creates without a template a JSON config', () => {
+    //go to create cache page
+    cy.get('[data-cy=createCacheButton]').click();
+    cy.get('#cache-name').click();
+    cy.get('#cache-name').type('aSimpleCache');
+    cy.get('#edit').click();
+    cy.get('[data-cy=wizardNextButton]').click();
+    cy.get('[data-cy=provideConfigArea] > button').click();
 
-  //     cy.get('.pf-c-code-editor__code textarea').type("{selectAll}", {force: true});
-  //     cy.get('.pf-c-code-editor__code textarea').type("{backspace}");
+    cy.get('.pf-c-code-editor__code textarea:first')
+      .click({ force: true })
+      .focused()
+      .type('{downArrow}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{enter}{upArrow}')
+      .type('"distributed-cache": {{}"mode": "ASYNC", "statistics": true }{del}');
 
-  //     cy.get('.pf-c-code-editor__code textarea').type('{selectall}{backspace}');
-  //     // cy.readFile('data/caches/aSimpleCache.json').then((str) => {
+    cy.get('[data-cy=wizardNextButton]').click();
+    cy.contains('Cache aSimpleCache created with the provided configuration.');
+    // Once the cache created, redirection to main page is done and the cache should be visible
+    cy.get('#cluster-manager-header').should('exist');
+    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-cy=rebalancingSwitch]').should('exist');
+    cy.contains('aSimpleCache');
+  });
 
-  //     //   cy.get('.pf-c-code-editor__code textarea').type(JSON.stringify(str), { parseSpecialCharSequences: false });
-  //     // })
+  it('successfully creates without a template a XML config', () => {
+    //go to create cache page
+    cy.get('[data-cy=createCacheButton]').click();
+    cy.get('#cache-name').click();
+    cy.get('#cache-name').type('aSimpleXmlCache');
+    cy.get('#edit').click();
+    cy.get('[data-cy=wizardNextButton]').click();
+    cy.get('[data-cy=provideConfigArea] > button').click();
 
-  //     //cy.get('[data-cy=wizardNextButton]').click();
-  //     //cy.contains('Cache simpleCache created with the provided configuration.');
-  //     // Once the cache created, redirection to main page is done and the cache should be visible
-  //     //cy.get('#cluster-manager-header').should('exist');
-  //     //cy.get('[data-cy=cacheManagerStatus]').should('exist');
-  //     //cy.get('[data-cy=rebalancingSwitch]').should('exist');
-  //     //cy.contains('aSimpleCache');
-  //   })
-
-  //   it('successfully creates without a template a XML config', () => {
-  //     //go to create cache page
-  //     cy.get('[data-cy=createCacheButton]').click();
-  //     cy.get('#cache-name').click();
-  //     cy.get('#cache-name').type('aSimpleXmlCache');
-  //     cy.get('#edit').click();
-  //     cy.get('[data-cy=wizardNextButton]').click();
-  //     cy.get('[data-cy=provideConfigArea] > button').click();
-
-  //     cy.get('.pf-c-code-editor__code textarea').clear({force: true}).type('<local-cache name="evictionCache">\
-  //     <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
-  //     <memory>\
-  //        <object strategy="REMOVE" size="5000"/>\
-  //     </memory>\
-  //  </local-cache>', { parseSpecialCharSequences: false });
-  //     cy.get('[data-cy=wizardNextButton]').click();
-  //     cy.contains('Cache simpleCache created with the provided configuration.');
-  //     // Once the cache created, redirection to main page is done and the cache should be visible
-  //     cy.get('#cluster-manager-header').should('exist');
-  //     cy.get('[data-cy=cacheManagerStatus]').should('exist');
-  //     cy.get('[data-cy=rebalancingSwitch]').should('exist');
-  //     cy.contains('aSimpleXmlCache');
-  //   })
+    cy.get('.pf-c-code-editor__code textarea:first')
+      .click({ force: true })
+      .focused()
+      .type('{downArrow}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{shift}{end}')
+      .type('{del}{del}')
+      .type('{enter}{upArrow}')
+      .type(
+        '<local-cache name="evictionCache">\
+    <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
+    <memory>\
+       <object strategy="REMOVE" size="5000"/>\
+    </memory>\
+ </local-cache>',
+        { parseSpecialCharSequences: false }
+      )
+      .type('{del}{del}')
+      .type('{upArrow}{backspace}');
+    cy.get('[data-cy=wizardNextButton]').click();
+    cy.contains('Cache aSimpleXmlCache created with the provided configuration.');
+    // Once the cache created, redirection to main page is done and the cache should be visible
+    cy.get('#cluster-manager-header').should('exist');
+    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-cy=rebalancingSwitch]').should('exist');
+    cy.contains('aSimpleXmlCache');
+  });
 });

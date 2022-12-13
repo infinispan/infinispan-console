@@ -52,6 +52,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
   const strongCountersActions = [
     {
+      'data-cy': 'deleteCounter',
       title: t('cache-managers.delete'),
       onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
     }
@@ -59,6 +60,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
   const weakCountersActions = [
     {
+      'data-cy': 'deleteCounter',
       title: t('cache-managers.delete'),
       onClick: (event, rowId, rowData, extra) => setCounterToDelete(rowData.cells[0].title)
     }
@@ -193,6 +195,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       rows = counters.map((counter) => {
         return {
           heightAuto: true,
+          actionProps: { 'data-cy': `actions-${counter.name}` },
           cells: [
             { title: counter.name },
             { title: numberWithCommas(counter.value) },

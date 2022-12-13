@@ -1,0 +1,15 @@
+{
+    "distributed-cache": {
+      "mode": "SYNC",
+      "memory": {
+        "storage": "HEAP"
+      },
+      "indexing": {
+        "indexed-entities": [
+          "org.infinispan.Child"
+        ],
+        "enabled": true
+      },
+      "statistics": true
+    }
+  }
