@@ -49,7 +49,7 @@ const DataAccessChart = (props: { stats: CacheStats }) => {
       </CardTitle>
       <CardBody>
         <div style={{ width: '100%', height: '480px' }}>
-          <ChartDonut
+          <ChartDonut data-cy='data-access-chart'
             width={600}
             height={400}
             constrainToVisibleArea={true}

@@ -17,10 +17,10 @@ describe('Welcome page', () => {
     cy.contains('Default'); // cluster name
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
-    cy.contains('17 Caches');
+    cy.contains('20 Caches');
     cy.contains('10 Counters');
     cy.contains('1 Tasks');
-    cy.contains('11 Schemas');
+    cy.contains('13 Schemas');
     cy.contains('invalidationCache');
 
     //Checks that user's dropbox exists on the page.

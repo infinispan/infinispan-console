@@ -69,7 +69,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
         <CardBody>
           <TextContent>
             <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>
+              <TextListItem component={TextListItemVariants.dt} aria-label="average-cache-read-time">
                 {displayUtils.formatNumber(stats.average_read_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
@@ -80,7 +80,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                   text={t('caches.cache-metrics.average-reads')}
                 />
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
+              <TextListItem component={TextListItemVariants.dt} aria-label="average-cache-write-time">
                 {displayUtils.formatNumber(stats.average_write_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>
@@ -91,7 +91,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                   text={t('caches.cache-metrics.average-writes')}
                 />
               </TextListItem>
-              <TextListItem component={TextListItemVariants.dt}>
+              <TextListItem component={TextListItemVariants.dt} aria-label="average-cache-delete-time">
                 {displayUtils.formatNumber(stats.average_remove_time)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>

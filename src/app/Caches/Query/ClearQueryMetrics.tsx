@@ -31,10 +31,10 @@ const ClearQueryMetrics = (props: { cacheName: string; isModalOpen: boolean; clo
       onClose={props.closeModal}
       aria-label={t('caches.query.modal-clear-query-stats-label')}
       actions={[
-        <Button key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
+        <Button data-cy='confirmButton' key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
           {t('caches.query.modal-button-query-clear-stats')}
         </Button>,
-        <Button key="cancel" variant="link" onClick={props.closeModal}>
+        <Button data-cy='cancelButton' key="cancel" variant="link" onClick={props.closeModal}>
           {t('caches.query.modal-button-cancel')}
         </Button>
       ]}

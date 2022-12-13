@@ -185,7 +185,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           ariaDesc={t('caches.cache-metrics.data-distribution')}
           ariaTitle={t('caches.cache-metrics.data-distribution')}
           containerComponent={
-            <ChartVoronoiContainer
+            <ChartVoronoiContainer data-cy='data-distribution-chart'
               labels={({ datum }) =>
                 datum.y !== 0
                   ? `${datum.y}`
