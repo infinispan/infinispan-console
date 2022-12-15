@@ -180,7 +180,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     );
 
     const distributionChart = (
-      <div style={{ height: '470px', width: '700px', margin: 'auto' }}>
+      <div style={{ height: '470px', width: '100%', maxWidth: '700px', margin: 'auto' }}>
         <Chart
           ariaDesc={t('caches.cache-metrics.data-distribution')}
           ariaTitle={t('caches.cache-metrics.data-distribution')}
