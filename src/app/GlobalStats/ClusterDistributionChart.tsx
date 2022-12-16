@@ -151,7 +151,7 @@ const ClusterDistributionChart = () => {
     );
 
     const clusterChart = (
-      <div style={{ height: '470px', width: '700px', margin: 'auto' }}>
+      <div style={{ height: '470px', width: '100%', maxWidth: '700px', margin: 'auto' }}>
         <Chart
           ariaDesc={t('global-stats.cluster-distribution')}
           ariaTitle={t('global-stats.cluster-distribution')}
