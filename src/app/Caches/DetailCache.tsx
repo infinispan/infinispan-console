@@ -396,7 +396,7 @@ const DetailCache = (props: { cacheName: string }) => {
           component={TabsComponent.nav}
           onSelect={(event, tabIndex) => {
             setActiveTabKey1(tabIndex);
-            if (tabIndex == 0) {
+            if (tabIndex == 0 || tabIndex == 2) {
               loadCache(cacheName);
             }
           }}
