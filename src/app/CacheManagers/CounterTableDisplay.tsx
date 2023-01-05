@@ -30,6 +30,7 @@ import { numberWithCommas } from '@utils/numberWithComma';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import { CounterType, CounterStorage } from '@services/infinispanRefData';
 import { AddDeltaCounter } from '@app/Counters/AddDeltaCounter';
+import { ResetCounter } from '@app/Counters/ResetCounter';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
@@ -46,12 +47,19 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const brandname = t('brandname.brandname');
   const [counterToEdit, setCounterToEdit] = useState('');
   const [deltaValue, setDeltaValue] = useState(0);
+  const [counterToReset, setCounterToReset] = useState('');
 
   const strongCountersActions = (row): IAction[] => [
     {
       title: t('cache-managers.counters.add-delta-action'),
       onClick: () => {
         setCounterToEdit(row.name);
+      }
+    },
+    {
+      title: t('cache-managers.counters.reset-action'),
+      onClick: () => {
+        setCounterToReset(row.name);
       }
     },
     {
@@ -340,6 +348,18 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         closeModal={() => {
           setCounterToEdit('');
           setDeltaValue(0);
+        }}
+      />
+      <ResetCounter
+        name={counterToReset}
+        isModalOpen={counterToReset != ''}
+        submitModal={() => {
+          setCounterToReset('');
+          setSelectedFilters({ counterType: '', storageType: '' });
+          reload();
+        }}
+        closeModal={() => {
+          setCounterToReset('');
         }}
       />
     </React.Fragment>

@@ -99,4 +99,12 @@ export class CountersService {
       errorMessage: `Unexpected error setting delta value for counter ${name}.`
     });
   }
+
+  public resetCounter(name: string): Promise<ActionResponse> {
+    return this.utils.post({
+      url: this.endpoint + '/' + name + '?action=reset',
+      successMessage: `Counter ${name} has been reset.`,
+      errorMessage: `Unexpected error resetting counter ${name}.`
+    });
+  }
 }

@@ -63,3 +63,18 @@ export function useAddDeltaCounter(name: string, deltaValue: number) {
     onAddDelta
   };
 }
+
+export function useResetCounter(name: string) {
+  const { addAlert } = useApiAlert();
+
+  const onResetCounter = () => {
+    ConsoleServices.counters()
+      .resetCounter(name)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onResetCounter
+  };
+}
