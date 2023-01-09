@@ -2,19 +2,20 @@ import React from 'react';
 import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useDeleteCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { ConsoleACL } from '@services/securityService';
-import { useConnectedUser } from '@app/services/userManagementHook';
 
 /**
  * Delete counter modal
  */
-const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: () => void }) => {
+const DeleteCounter = (props: {
+  name: string;
+  isModalOpen: boolean;
+  submitModal: () => void;
+  closeModal: () => void;
+  isDisabled: boolean;
+}) => {
   const { t } = useTranslation();
 
   const { onDelete } = useDeleteCounter(props.name);
-  const { connectedUser } = useConnectedUser();
-  const canDelete = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
 
   return (
     <Modal
@@ -25,7 +26,7 @@ const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: 
       isOpen={props.isModalOpen}
       title={t('cache-managers.counters.modal-delete-modal')}
       onClose={props.closeModal}
-      aria-label="Delete counter modal"
+      aria-label={t('cache-managers.counters.modal-delete-modal')}
       disableFocusTrap={true}
       actions={[
         <Button
@@ -34,9 +35,9 @@ const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: 
           variant={ButtonVariant.danger}
           onClick={() => {
             onDelete();
-            props.closeModal();
+            props.submitModal();
           }}
-          isDisabled={!canDelete}
+          isDisabled={props.isDisabled}
         >
           {t('cache-managers.counters.delete-action')}
         </Button>,

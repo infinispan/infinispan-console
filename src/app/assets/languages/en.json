@@ -131,7 +131,20 @@
       "modal-delete-modal": "Permanently delete counter?",
       "reset-action": "Reset",
       "modal-reset-title": "Reset counter",
-      "reset-text-input": "Restores the initial value of counter"
+      "reset-text-input": "Restores the initial value of counter",
+      "create-action": "Create",
+      "modal-create-title": "Create counter",
+      "modal-lower-bound": "Lower bound",
+      "modal-upper-bound": "Upper bound",
+      "modal-concurrency-level": "Concurrency level",
+      "modal-counter-name": "Counter name",
+      "modal-storage": "Storage",
+      "modal-strong-counter": "Strong counter",
+      "modal-weak-counter": "Weak counter",
+      "modal-initial-value-invalid": "Initial value must be between lowerbound and upperbound (inclusive)",
+      "modal-lower-bound-invalid": "Lower bound must be lesser than upper bound",
+      "modal-storage-tooltip": "Storage tooltip",
+      "modal-counter-type-tooltip": "Counter type tooltip"
     }
   },
   "caches": {

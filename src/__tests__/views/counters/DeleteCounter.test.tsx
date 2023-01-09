@@ -8,10 +8,12 @@ const mockedCounterHook = DeleteCounterHook as jest.Mocked<typeof DeleteCounterH
 
 let closeModalCalls;
 let onDeleteCalls;
+let submitModalCalls;
 
 beforeEach(() => {
   closeModalCalls = 0;
   onDeleteCalls = 0;
+  submitModalCalls = 0;
 });
 
 mockedCounterHook.useDeleteCounter.mockImplementation(() => {
@@ -22,14 +24,31 @@ mockedCounterHook.useDeleteCounter.mockImplementation(() => {
 
 describe('Delete counter', () => {
   test('not render the dialog if the modal is closed', () => {
-    render(<DeleteCounter name={'count-1'} isModalOpen={false} closeModal={() => {}} />);
+    render(
+      <DeleteCounter
+        name={'count-1'}
+        isModalOpen={false}
+        closeModal={() => {}}
+        submitModal={() => {}}
+        isDisabled={false}
+      />
+    );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
+    expect(submitModalCalls).toBe(0);
     expect(onDeleteCalls).toBe(0);
   });
 
   test('render the dialog and buttons work', () => {
-    render(<DeleteCounter name={'count-1'} isModalOpen={true} closeModal={() => closeModalCalls++} />);
+    render(
+      <DeleteCounter
+        name={'count-1'}
+        isModalOpen={true}
+        closeModal={() => closeModalCalls++}
+        submitModal={() => submitModalCalls++}
+        isDisabled={false}
+      />
+    );
 
     expect(mockedCounterHook.useDeleteCounter).toHaveBeenCalledWith('count-1');
 
@@ -46,7 +65,7 @@ describe('Delete counter', () => {
 
     const confirmButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(confirmButton);
-    expect(closeModalCalls).toBe(3);
+    expect(submitModalCalls).toBe(1);
     expect(onDeleteCalls).toBe(1);
   });
 });

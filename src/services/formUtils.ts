@@ -4,8 +4,8 @@ import React from 'react';
 export interface IField {
   value: string;
   isValid: boolean;
-  invalidText: string;
-  helperText: string;
+  invalidText?: string;
+  helperText?: string;
   validated: 'success' | 'error' | 'default';
 }
 
@@ -46,9 +46,11 @@ class FormUtils {
   public validateRequiredField = (
     value: string,
     fieldName: string,
-    stateDispatch: React.Dispatch<React.SetStateAction<IField>>
+    stateDispatch: React.Dispatch<React.SetStateAction<IField>>,
+    validateCondition?: boolean,
+    invalidText?: string
   ): boolean => {
-    const isValid = value.trim().length > 0;
+    const isValid = validateCondition !== undefined ? validateCondition : value.trim().length > 0;
     if (isValid) {
       stateDispatch({
         value: value,
@@ -61,7 +63,7 @@ class FormUtils {
       stateDispatch({
         value: value,
         isValid: isValid,
-        invalidText: fieldName + ' is required',
+        invalidText: invalidText !== undefined ? invalidText : fieldName + ' is required',
         helperText: 'Validating...',
         validated: 'error'
       });
