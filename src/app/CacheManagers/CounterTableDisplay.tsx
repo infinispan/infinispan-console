@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Button,
   Bullseye,
   EmptyState,
   EmptyStateBody,
@@ -31,6 +32,10 @@ import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
 import { CounterType, CounterStorage } from '@services/infinispanRefData';
 import { AddDeltaCounter } from '@app/Counters/AddDeltaCounter';
 import { ResetCounter } from '@app/Counters/ResetCounter';
+import { CreateCounter } from '@app/Counters/CreateCounter';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
@@ -48,6 +53,8 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const [counterToEdit, setCounterToEdit] = useState('');
   const [deltaValue, setDeltaValue] = useState(0);
   const [counterToReset, setCounterToReset] = useState('');
+  const [isCreateCounter, setIsCreateCounter] = useState(false);
+  const { connectedUser } = useConnectedUser();
 
   const strongCountersActions = (row): IAction[] => [
     {
@@ -216,7 +223,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   };
 
   const displayConfig = (config: CounterConfig) => {
-    if (config.upperBound) {
+    if (config.type === CounterType.STRONG_COUNTER) {
       return (
         <Grid>
           <GridItem>
@@ -235,14 +242,30 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           </GridItem>
         </Grid>
       );
+    } else if (config.type === CounterType.WEAK_COUNTER) {
+      return (
+        <TextContent>
+          <Text component={TextVariants.small}>
+            {t('cache-managers.counters.concurrency-level')} {config.concurrencyLevel}
+          </Text>
+        </TextContent>
+      );
     }
+  };
 
+  const buildCreateCounterButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return <ToolbarItem />;
+    }
     return (
-      <TextContent>
-        <Text component={TextVariants.small}>
-          {t('cache-managers.counters.concurrency-level')} {config.concurrencyLevel}
-        </Text>
-      </TextContent>
+      <React.Fragment>
+        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
+        <ToolbarItem>
+          <Button onClick={() => setIsCreateCounter(!isCreateCounter)}>
+            {t('cache-managers.counters.modal-create-title')}
+          </Button>
+        </ToolbarItem>
+      </React.Fragment>
     );
   };
 
@@ -255,8 +278,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       <Toolbar id="counters-table-toolbar">
         <ToolbarContent>
           <ToolbarItem>{countersFilter()}</ToolbarItem>
-          {/*<ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>*/}
-          {/*<ToolbarItem><Button>{selectedCounterType === STRONG_COUNTER ? 'Create strong counter' : 'Create weak counter'}</Button></ToolbarItem>*/}
+          {buildCreateCounterButton()}
           <ToolbarItem variant={ToolbarItemVariant.pagination}>
             <Pagination
               itemCount={filteredCounters.length}
@@ -329,10 +351,15 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       <DeleteCounter
         name={counterToDelete}
         isModalOpen={counterToDelete != ''}
-        closeModal={() => {
+        submitModal={() => {
           setCounterToDelete('');
+          setSelectedFilters({ counterType: '', storageType: '' });
           reload();
         }}
+        closeModal={() => {
+          setCounterToDelete('');
+        }}
+        isDisabled={!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)}
       />
       <AddDeltaCounter
         name={counterToEdit}
@@ -361,6 +388,14 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         closeModal={() => {
           setCounterToReset('');
         }}
+      />
+      <CreateCounter
+        isModalOpen={isCreateCounter}
+        submitModal={() => {
+          setIsCreateCounter(false);
+          reload();
+        }}
+        closeModal={() => setIsCreateCounter(false)}
       />
     </React.Fragment>
   );

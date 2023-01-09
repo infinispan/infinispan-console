@@ -78,3 +78,18 @@ export function useResetCounter(name: string) {
     onResetCounter
   };
 }
+
+export function useCreateCounter(counterName: string, counterConfig) {
+  const { addAlert } = useApiAlert();
+
+  const onCreateCounter = () => {
+    ConsoleServices.counters()
+      .createCounter(counterName, counterConfig)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onCreateCounter
+  };
+}

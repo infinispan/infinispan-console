@@ -107,4 +107,16 @@ export class CountersService {
       errorMessage: `Unexpected error resetting counter ${name}.`
     });
   }
+
+  public createCounter(counterName: string, counterConfig: CounterConfig): Promise<ActionResponse> {
+    const customHeaders = new Headers();
+    customHeaders.append('Content-Type', 'json');
+    return this.utils.post({
+      url: this.endpoint + '/' + counterName,
+      successMessage: `Counter ${counterName} has been created`,
+      errorMessage: `Unexpected error creating counter ${counterName}`,
+      customHeaders: customHeaders,
+      body: JSON.stringify(counterConfig, null, 2)
+    });
+  }
 }
