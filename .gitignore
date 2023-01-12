@@ -11,8 +11,8 @@ node/
 .DS_Store
 cypress/screenshots
 cypress/videos
+cypress/downloads
 server/**
 reports/
 nohup.out
 batch
-server/server-unzipped/
