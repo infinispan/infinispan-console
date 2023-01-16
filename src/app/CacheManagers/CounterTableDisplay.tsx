@@ -50,17 +50,20 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const [counterToDelete, setCounterToDelete] = useState('');
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [counterToEdit, setCounterToEdit] = useState('');
-  const [deltaValue, setDeltaValue] = useState(0);
+  const [counterToEdit, setCounterToEdit] = useState();
+  const [counterToAddDelta, setCounterToAddDelta] = useState('');
+  const [deltaValue, setDeltaValue] = useState<number>(0);
   const [counterToReset, setCounterToReset] = useState('');
   const [isCreateCounter, setIsCreateCounter] = useState(false);
+  const [isDeltaValid, setIsDeltaValid] = useState(true);
   const { connectedUser } = useConnectedUser();
 
   const strongCountersActions = (row): IAction[] => [
     {
       title: t('cache-managers.counters.add-delta-action'),
       onClick: () => {
-        setCounterToEdit(row.name);
+        setCounterToAddDelta(row.name);
+        setCounterToEdit(row);
       }
     },
     {
@@ -119,6 +122,15 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       updateRows.length > 0 ? setRows(updateRows) : setRows([]);
     }
   }, [countersPagination, filteredCounters]);
+
+  useEffect(() => {
+    const validateDeltaValue = (value, counter): boolean => {
+      const newCurrentValue: number = parseInt(counter?.value) + parseInt(value);
+      if (newCurrentValue < counter?.config?.lowerBound || newCurrentValue > counter?.config?.upperBound) return false;
+      return true;
+    };
+    setIsDeltaValid(validateDeltaValue(deltaValue, counterToEdit));
+  }, [deltaValue]);
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
@@ -362,18 +374,19 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         isDisabled={!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)}
       />
       <AddDeltaCounter
-        name={counterToEdit}
+        name={counterToAddDelta}
         deltaValue={deltaValue}
         setDeltaValue={setDeltaValue}
-        isModalOpen={counterToEdit != ''}
+        isModalOpen={counterToAddDelta != ''}
+        isDeltaValid={isDeltaValid}
         submitModal={() => {
-          setCounterToEdit('');
+          setCounterToAddDelta('');
           setDeltaValue(0);
           setSelectedFilters({ counterType: '', storageType: '' });
           reload();
         }}
         closeModal={() => {
-          setCounterToEdit('');
+          setCounterToAddDelta('');
           setDeltaValue(0);
         }}
       />
