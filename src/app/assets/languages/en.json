@@ -131,7 +131,6 @@
       "modal-delete-modal": "Permanently delete counter?",
       "reset-action": "Reset",
       "modal-reset-title": "Reset counter",
-      "reset-text-input": "Restores the initial value of counter",
       "create-action": "Create",
       "modal-create-title": "Create counter",
       "modal-lower-bound": "Lower bound",

@@ -70,6 +70,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       title: t('cache-managers.counters.reset-action'),
       onClick: () => {
         setCounterToReset(row.name);
+        setCounterToEdit(row);
       }
     },
     {
@@ -393,6 +394,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       <ResetCounter
         name={counterToReset}
         isModalOpen={counterToReset != ''}
+        initialValue={counterToEdit?.config?.initialValue}
         submitModal={() => {
           setCounterToReset('');
           setSelectedFilters({ counterType: '', storageType: '' });
