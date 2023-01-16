@@ -125,7 +125,7 @@
       "delete-action": "Delete",
       "add-delta-action": "Add a delta",
       "modal-delta-title": "Set a value for the delta",
-      "delta-text-input": "Increment or decrement counters with arbitrary values. To subtract counter value use negative numbers.",
+      "modal-delta-helper-invalid": "Value must be respective to lower and upper bound",
       "modal-confirm-button": "Confirm",
       "modal-cancel-button": "Cancel",
       "modal-delete-modal": "Permanently delete counter?",
