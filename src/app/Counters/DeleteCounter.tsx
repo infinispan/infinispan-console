@@ -48,9 +48,7 @@ const DeleteCounter = (props: {
     >
       <TextContent>
         <Text>
-          The counter will be permanently deleted from the cluster <strong>'{props.name}'</strong>
-          <br />
-          You can always recreate the counter.
+          The counter and its state will be permanently deleted from the cluster <strong>'{props.name}'</strong>
         </Text>
       </TextContent>
     </Modal>
