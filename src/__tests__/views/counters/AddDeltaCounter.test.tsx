@@ -26,6 +26,7 @@ describe('Add a delta', () => {
       <AddDeltaCounter
         name={'count-1'}
         deltaValue={5}
+        isDeltaValid={true}
         setDeltaValue
         submitModal={() => {}}
         isModalOpen={false}
@@ -42,6 +43,7 @@ describe('Add a delta', () => {
       <AddDeltaCounter
         name={'count-1'}
         deltaValue={5}
+        isDeltaValid={true}
         setDeltaValue
         submitModal={() => onAddDeltaCalls++}
         isModalOpen={true}
