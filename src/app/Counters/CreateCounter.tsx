@@ -9,6 +9,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 
 const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const counterNameInitialState: IField = {
     value: '',
@@ -240,7 +241,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
             <PopoverHelp
               name="storage"
               label={t('cache-managers.counters.modal-storage')}
-              content={t('cache-managers.counters.modal-storage-tooltip')}
+              content={t('cache-managers.counters.modal-storage-tooltip',{ brandname: brandname })}
             />
           }
         >

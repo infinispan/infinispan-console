@@ -132,18 +132,18 @@
       "reset-action": "Reset",
       "modal-reset-title": "Reset counter",
       "create-action": "Create",
-      "modal-create-title": "Create counter",
+      "modal-create-title": "Create a counter",
       "modal-lower-bound": "Lower bound",
       "modal-upper-bound": "Upper bound",
       "modal-concurrency-level": "Concurrency level",
       "modal-counter-name": "Counter name",
-      "modal-storage": "Storage",
+      "modal-storage": "Counter storage",
       "modal-strong-counter": "Strong counter",
       "modal-weak-counter": "Weak counter",
-      "modal-initial-value-invalid": "Initial value must be between lowerbound and upperbound (inclusive)",
+      "modal-initial-value-invalid": "Initial value must be between lower bound and upper bound (inclusive)",
       "modal-lower-bound-invalid": "Lower bound must be lesser than upper bound",
-      "modal-storage-tooltip": "Storage tooltip",
-      "modal-counter-type-tooltip": "Counter type tooltip"
+      "modal-storage-tooltip": "{{brandname}} can save counter values in a persistent storage so the data is available when clusters restart. If you select a volatile storage, counter values are permanently deleted when clusters restart or stop",
+      "modal-counter-type-tooltip": "The value of a strong counter is stored in a single key for consistency. {{brandname}} recommends using strong counters when the counter's value is needed after each update or when a bounded counter is needed. The value of a weak counter is stored in multiple keys. The weak counter is suitable for use cases where the result of the update operation is not needed or the counter’s value is not required too often  "
     }
   },
   "caches": {
