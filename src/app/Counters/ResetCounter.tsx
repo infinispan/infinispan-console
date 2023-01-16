@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 const ResetCounter = (props: {
   name: string;
   isModalOpen: boolean;
+  initialValue;
   submitModal: () => void;
   closeModal: () => void;
 }) => {
@@ -44,7 +45,10 @@ const ResetCounter = (props: {
       ]}
     >
       <TextContent>
-        <Text>{t('cache-managers.counters.reset-text-input')}</Text>
+        <Text>
+          Restores the current value of <strong>{props.name}</strong> to its invitial value of{' '}
+          <strong>{props.initialValue}</strong>
+        </Text>
       </TextContent>
     </Modal>
   );
