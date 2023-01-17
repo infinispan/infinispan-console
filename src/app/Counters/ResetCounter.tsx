@@ -46,7 +46,7 @@ const ResetCounter = (props: {
     >
       <TextContent>
         <Text>
-          Restores the current value of <strong>{props.name}</strong> to its invitial value of{' '}
+          The current value of <strong>{props.name}</strong> will be restored to its initial  value of{' '}
           <strong>{props.initialValue}</strong>
         </Text>
       </TextContent>
