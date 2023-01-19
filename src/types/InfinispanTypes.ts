@@ -186,13 +186,13 @@ interface ConnectedUser {
 }
 
 interface Task {
-  parameters: [string];
-  task_context_name: string;
-  task_operation_name: string;
+  parameters?: [string];
+  task_context_name?: string;
+  task_operation_name?: string;
   name: string;
   type: string;
   execution_mode: string;
-  allowed_role: string;
+  allowed_role?: string;
 }
 
 interface Counter {

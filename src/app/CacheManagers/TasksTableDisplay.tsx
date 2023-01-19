@@ -8,13 +8,16 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Pagination,
-  Stack,
-  StackItem,
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
+  Toolbar,
+  ToolbarItem,
+  ToolbarContent,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
+import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
 import {
@@ -25,71 +28,66 @@ import {
   global_spacer_xs
 } from '@patternfly/react-tokens';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
+import { useFetchTask } from '@app/services/tasksHook';
+import { ExecuteTasks } from '@app/Tasks/ExecuteTasks';
 
 const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: boolean }) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { tasks, loading, error, reload } = useFetchTask();
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-
   const [tasksPagination, setTasksPagination] = useState({
     page: 1,
     perPage: 10
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
+  const [taskToExecute, setTaskToExecute] = useState<Task>();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const columns = [
-    { title: t('cache-managers.task-name') },
+  const columnNames = {
+    name: t('cache-managers.tasks.task-name'),
+    type: t('cache-managers.tasks.task-type'),
+    context: t('cache-managers.tasks.context-name'),
+    operation: t('cache-managers.tasks.operation-name'),
+    parameters: t('cache-managers.tasks.parameters'),
+    allowedRoles: t('cache-managers.tasks.allowed-role')
+  };
+
+  const rowActionItem = (row): IAction[] => [
     {
-      title: t('cache-managers.task-type')
-    },
-    {
-      title: t('cache-managers.context-name')
-    },
-    {
-      title: t('cache-managers.operation-name')
-    },
-    {
-      title: t('cache-managers.parameters')
-    },
-    {
-      title: t('cache-managers.allowed-role')
+      title: t('cache-managers.tasks.execute'),
+      onClick: () => {
+        setTaskToExecute(row);
+      }
     }
   ];
 
   useEffect(() => {
-    ConsoleServices.tasks()
-      .getTasks()
-      .then((maybeTasks) => {
-        if (maybeTasks.isRight()) {
-          setTasks(maybeTasks.value);
-          setFilteredTasks(maybeTasks.value);
-          props.setTasksCount(maybeTasks.value.length);
-          const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
-          updateRows(maybeTasks.value.slice(initSlice, initSlice + tasksPagination.perPage));
-        } else {
-          // TODO: deal loading, error, empty status
-        }
-      });
-  }, []);
+    if (tasks) {
+      setFilteredTasks(tasks);
+      props.setTasksCount(tasks.length);
+    }
+  }, [loading, tasks, error]);
+
+  useEffect(() => {
+    if (filteredTasks) {
+      const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
+      const updateRows = filteredTasks.slice(initSlice, initSlice + tasksPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+    }
+  }, [tasksPagination, filteredTasks]);
 
   const onSetPage = (_event, pageNumber) => {
     setTasksPagination({
-      page: pageNumber,
-      perPage: tasksPagination.perPage
+      ...tasksPagination,
+      page: pageNumber
     });
-    const initSlice = (pageNumber - 1) * tasksPagination.perPage;
-    updateRows(filteredTasks.slice(initSlice, initSlice + tasksPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setTasksPagination({
-      page: tasksPagination.page,
+      page: 1,
       perPage: perPage
     });
-    const initSlice = (tasksPagination.page - 1) * perPage;
-    updateRows(filteredTasks.slice(initSlice, initSlice + perPage));
   };
 
   const taskType = (type: string) => {
@@ -112,6 +110,9 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   };
 
   const taskParameters = (params: [string]) => {
+    if (params.length == 0) {
+      return <TextContent>{'-'}</TextContent>;
+    }
     return (
       <TextContent>
         {params.map((param, index) => (
@@ -125,7 +126,7 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
 
   const taskAllowedRoles = (allowedRole: string) => {
     if (allowedRole == null || allowedRole.trim().length == 0) {
-      return <TextContent>{t('cache-managers.allowed-role-null')}</TextContent>;
+      return <TextContent>{t('cache-managers.tasks.allowed-role-null')}</TextContent>;
     }
     return (
       <TextContent>
@@ -134,78 +135,85 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
     );
   };
 
-  const updateRows = (tasks: Task[]) => {
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-
-    if (tasks.length == 0) {
-      rows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              props: { colSpan: 8 },
-              title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.no-tasks-status')}
-                    </Title>
-                    <EmptyStateBody>{t('cache-managers.no-tasks-body')}</EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              )
-            }
-          ]
-        }
-      ];
-    } else {
-      rows = tasks.map((task) => {
-        return {
-          heightAuto: true,
-          cells: [
-            { title: task.name },
-            { title: taskType(task.type) },
-            { title: task.task_context_name },
-            { title: task.task_operation_name },
-            { title: taskParameters(task.parameters) },
-            { title: taskAllowedRoles(task.allowed_role) }
-          ]
-          //TODO {title: <TasksActionLinks name={task.name}/>}]
-        };
-      });
-    }
-    setRows(rows);
-  };
-
   if (!props.isVisible) {
     return <span />;
   }
 
   return (
-    <Stack>
-      <StackItem>
-        <Pagination
-          itemCount={filteredTasks.length}
-          perPage={tasksPagination.perPage}
-          page={tasksPagination.page}
-          onSetPage={onSetPage}
-          widgetId="pagination-tasks"
-          onPerPageSelect={onPerPageSelect}
-          isCompact
-        />
-        <Table
-          aria-label={t('cache-managers.tasks-table-label')}
-          cells={columns}
-          rows={rows}
-          className={'tasks-table'}
-          variant={TableVariant.compact}
-        >
-          <TableHeader />
-          <TableBody />
-        </Table>
-      </StackItem>
-    </Stack>
+    <React.Fragment>
+      <Toolbar id="counters-table-toolbar">
+        <ToolbarContent>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            <Pagination
+              itemCount={filteredTasks.length}
+              perPage={tasksPagination.perPage}
+              page={tasksPagination.page}
+              onSetPage={onSetPage}
+              widgetId="pagination-tasks"
+              onPerPageSelect={onPerPageSelect}
+              isCompact
+            />
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
+      <TableComposable
+        className={'tasks-table'}
+        aria-label={t('cache-managers.tasks.tasks-table-label')}
+        variant={'compact'}
+      >
+        <Thead>
+          <Tr>
+            <Th colSpan={1}>{columnNames.name}</Th>
+            <Th colSpan={1}>{columnNames.type}</Th>
+            <Th colSpan={1}>{columnNames.context}</Th>
+            <Th colSpan={1}>{columnNames.operation}</Th>
+            <Th colSpan={1}>{columnNames.parameters}</Th>
+            <Th colSpan={1}>{columnNames.allowedRoles}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {tasks.length == 0 ? (
+            <Tr>
+              <Td colSpan={6}>
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h2" size="lg">
+                      {t('cache-managers.tasks.no-tasks-status')}
+                    </Title>
+                    <EmptyStateBody>{t('cache-managers.tasks.no-tasks-body')}</EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              </Td>
+            </Tr>
+          ) : (
+            rows.map((row) => {
+              return (
+                <Tr key={row.name}>
+                  <Td dataLabel={columnNames.name}>{row.name}</Td>
+                  <Td dataLabel={columnNames.type}>{taskType(row.type)}</Td>
+                  <Td dataLabel={columnNames.context}>{row.task_context_name}</Td>
+                  <Td dataLabel={columnNames.operation}>{row.task_operation_name}</Td>
+                  <Td dataLabel={columnNames.parameters}>{taskParameters(row.parameters)}</Td>
+                  <Td dataLabel={columnNames.allowedRoles}>{taskAllowedRoles(row.allowed_role)}</Td>
+                  <Td isActionCell>
+                    <ActionsColumn items={rowActionItem(row)} />
+                  </Td>
+                </Tr>
+              );
+            })
+          )}
+        </Tbody>
+      </TableComposable>
+      <ExecuteTasks
+        task={taskToExecute}
+        isModalOpen={taskToExecute != undefined}
+        closeModal={() => {
+          setTaskToExecute(undefined);
+          reload();
+        }}
+      />
+    </React.Fragment>
   );
 };
 
