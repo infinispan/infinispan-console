@@ -39,11 +39,19 @@ export class TasksService {
 
   public executeTask(name, params): Promise<ActionResponse> {
     const parameterURL = this.createExecuteTaskURL(params);
-    console.log('parameterURL', parameterURL);
     return this.utils.post({
       url: this.endpoint + '/' + name + '?action=exec' + parameterURL,
       successMessage: `The script has been successfully executed`,
       errorMessage: `Unexpected error executing.`
+    });
+  }
+
+  public createTask(name: string, script): Promise<ActionResponse> {
+    return this.utils.post({
+      url: this.endpoint + '/' + name,
+      successMessage: `Task ${name} has been created`,
+      errorMessage: `Unexpected error creating task ${name}`,
+      body: script
     });
   }
 }

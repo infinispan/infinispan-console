@@ -137,7 +137,7 @@
     },
     "tasks": {
       "tasks-table-label": "Tasks",
-      "task-name": "Name",
+      "name": "Name",
       "task-type": "Type",
       "context-name": "Context name",
       "operation-name": "Operation name",
@@ -148,7 +148,12 @@
       "no-tasks-body": "Create tasks with the CLI or a remote client.",
       "execute": "Execute",
       "execution": "Execution",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "create-task": "Create task",
+      "task-name": "Task name",
+      "script": "Script",
+      "script-tooltip": "Script tooltip",
+      "confirm": "Confirm"
     }
   },
   "caches": {

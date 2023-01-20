@@ -32,7 +32,6 @@ const ExecuteTasks = (props: { task; isModalOpen: boolean; closeModal: () => voi
 
   return (
     <Modal
-      height={'1000px'}
       id={'execute-task-modal'}
       variant={ModalVariant.medium}
       isOpen={props.isModalOpen}

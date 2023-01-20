@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import {
   Badge,
+  Button,
   Bullseye,
   EmptyState,
   EmptyStateBody,
@@ -30,6 +30,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useFetchTask } from '@app/services/tasksHook';
 import { ExecuteTasks } from '@app/Tasks/ExecuteTasks';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { CreateTask } from '@app/Tasks/CreateTask';
 
 const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: boolean }) => {
   const { tasks, loading, error, reload } = useFetchTask();
@@ -40,11 +44,13 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   });
   const [rows, setRows] = useState<(string | any)[]>([]);
   const [taskToExecute, setTaskToExecute] = useState<Task>();
+  const [isCreateTask, setIsCreateTask] = useState(false);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const { connectedUser } = useConnectedUser();
 
   const columnNames = {
-    name: t('cache-managers.tasks.task-name'),
+    name: t('cache-managers.tasks.name'),
     type: t('cache-managers.tasks.task-type'),
     context: t('cache-managers.tasks.context-name'),
     operation: t('cache-managers.tasks.operation-name'),
@@ -135,14 +141,28 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
     );
   };
 
+  const buildCreateTaskButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return <ToolbarItem />;
+    }
+    return (
+      <React.Fragment>
+        <ToolbarItem>
+          <Button onClick={() => setIsCreateTask(!isCreateTask)}>Add task</Button>
+        </ToolbarItem>
+      </React.Fragment>
+    );
+  };
+
   if (!props.isVisible) {
     return <span />;
   }
 
   return (
     <React.Fragment>
-      <Toolbar id="counters-table-toolbar">
+      <Toolbar id="task-table-toolbar">
         <ToolbarContent>
+          {buildCreateTaskButton()}
           <ToolbarItem variant={ToolbarItemVariant.pagination}>
             <Pagination
               itemCount={filteredTasks.length}
@@ -212,6 +232,14 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
           setTaskToExecute(undefined);
           reload();
         }}
+      />
+      <CreateTask
+        isModalOpen={isCreateTask}
+        submitModal={() => {
+          reload();
+          setIsCreateTask(false);
+        }}
+        closeModal={() => setIsCreateTask(false)}
       />
     </React.Fragment>
   );
