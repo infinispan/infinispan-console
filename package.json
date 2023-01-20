@@ -52,7 +52,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "imagemin": "^8.0.1",
-    "jest": ":^27.5.1",
+    "jest": "^27.5.1",
     "license-reporter": "1.5.0",
     "mini-css-extract-plugin": "^1.6.2",
     "monaco-editor-webpack-plugin": "^2.1.0",
@@ -76,7 +76,7 @@
     "url-loader": "^4.1.1",
     "webpack": "^5.38.1",
     "webpack-bundle-analyzer": "^4.4.2",
-    "webpack-cli": "^4.7.2",
+    "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1",
     "webpack-merge": "^5.8.0"
   },
