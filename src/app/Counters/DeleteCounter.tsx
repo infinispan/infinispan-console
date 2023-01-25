@@ -5,7 +5,7 @@ import { useDeleteCounter } from '@app/services/countersHook';
 /**
  * Delete counter modal
  */
-const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: () => void }) => {
+const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: () => void; isDisabled: boolean }) => {
   const { onDelete } = useDeleteCounter(props.name);
 
   return (
@@ -28,6 +28,7 @@ const DeleteCounter = (props: { name: string; isModalOpen: boolean; closeModal: 
             onDelete();
             props.closeModal();
           }}
+          isDisabled={props.isDisabled}
         >
           Delete
         </Button>,
