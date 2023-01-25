@@ -27,6 +27,9 @@ import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 import { numberWithCommas } from '@utils/numberWithComma';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { counters, loading, error, reload } = useFetchCounters();
@@ -41,6 +44,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const [counterToDelete, setCounterToDelete] = useState('');
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const { connectedUser } = useConnectedUser();
 
   useEffect(() => {
     loadCounters();
@@ -292,6 +296,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           setCounterToDelete('');
           reload();
         }}
+        isDisabled={!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)}
       />
     </React.Fragment>
   );

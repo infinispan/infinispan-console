@@ -22,14 +22,16 @@ mockedCounterHook.useDeleteCounter.mockImplementation(() => {
 
 describe('Delete counter', () => {
   test('not render the dialog if the modal is closed', () => {
-    render(<DeleteCounter name={'count-1'} isModalOpen={false} closeModal={() => {}} />);
+    render(<DeleteCounter name={'count-1'} isModalOpen={false} closeModal={() => {}} isDisabled={false} />);
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
     expect(onDeleteCalls).toBe(0);
   });
 
   test('render the dialog and buttons work', () => {
-    render(<DeleteCounter name={'count-1'} isModalOpen={true} closeModal={() => closeModalCalls++} />);
+    render(
+      <DeleteCounter name={'count-1'} isModalOpen={true} closeModal={() => closeModalCalls++} isDisabled={false} />
+    );
 
     expect(mockedCounterHook.useDeleteCounter).toHaveBeenCalledWith('count-1');
 
