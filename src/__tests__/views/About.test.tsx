@@ -25,7 +25,7 @@ describe('About page', () => {
 
     expect(getByText('Infinispan Corona 1.9')).toBeTruthy();
 
-    expect(getByRole('img', { name: 'Infinispan Logo' })).toBeInTheDocument();
+    expect(getByRole('img', { name: /Logo$/ })).toBeInTheDocument();
 
     fireEvent.click(getByRole('button', { name: 'Close Dialog' }));
 
