@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress'
 
 export default defineConfig({
   retries: 3,
-  video: false,
+  video: true,
   screenshotOnRunFailure: true,
   reporter: 'junit',
   reporterOptions: {
@@ -19,6 +19,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config)
     },
+    specPattern: 'cypress/e2e/cache-create-wizard-template.cy.js',
     baseUrl: 'http://localhost:11222/console/',
   },
 })

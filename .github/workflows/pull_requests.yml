@@ -67,7 +67,7 @@ jobs:
         run: cd data; bash ./create-data.sh admin password
 
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v3
         with:
           config-file: cypress.config.ts
 
@@ -75,8 +75,8 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: screenshots
-          path: ${{ github.workspace }}/cypress/screenshots/**/**
+          name: videos
+          path: ${{ github.workspace }}/cypress/videos/**/**
 
       - name: Get thread dump on failure
         if: failure()

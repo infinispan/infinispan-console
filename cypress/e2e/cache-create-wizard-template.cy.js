@@ -51,7 +51,7 @@ describe('Cache Creation Wizard', () => {
     cy.contains('aSimpleCache');
   });
 
-  it('successfully creates without a template a XML config', () => {
+  it.only('successfully creates without a template a XML config', () => {
     //go to create cache page
     cy.get('[data-cy=createCacheButton]').click();
     cy.get('#cache-name').click();
@@ -65,14 +65,13 @@ describe('Cache Creation Wizard', () => {
       .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
       .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}")
       .type(
-        '<local-cache name="evictionCache">\
-    <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
-    <memory>\
-       <object strategy="REMOVE" size="5000"/>\
-    </memory>\
- </local-cache>',
+        '<local-cache name="local">\
+        <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
+        <memory storage="OFF_HEAP" max-size="200 MB" when-full="MANUAL" />\
+    </local-cache>',
         { parseSpecialCharSequences: false }
-      ).type("{del}{del}").type("{upArrow}{backspace}");
+      ).type("{del}").type("{shift}{end}").type("{del}{del}").type("{upArrow}{backspace}{del}").type("{end}");
+      cy.wait(5000);
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleXmlCache created with the provided configuration.');
     // Once the cache created, redirection to main page is done and the cache should be visible
