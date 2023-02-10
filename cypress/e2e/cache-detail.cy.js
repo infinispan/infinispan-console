@@ -50,7 +50,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#key-entry').click().type(2147483648); //Adding greater value than int32 max
     cy.get('#value-entry').click().type('test');
     cy.get('[data-cy=addButton]').click();
-    cy.contains('NumberFormatException');
+    cy.contains('Unexpected error');
     //Changing to valid number
     cy.get('#key-entry').click().clear().type(2147483647);
     cy.get('#valueContentType').click();
@@ -69,7 +69,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#key-entry').click().type(9223372036854775808); //Adding greater value than int64 max
     cy.get('#value-entry').click().type('test');
     cy.get('[data-cy=addButton]').click();
-    cy.contains('NumberFormatException');
+    cy.contains('Unexpected error');
     //Changing to valid number
     cy.get('#key-entry').click().clear().type('9223372036854775807');
     cy.get('#valueContentType').click();
