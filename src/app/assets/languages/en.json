@@ -681,7 +681,7 @@
     "average-hits-ratio": "Average hits ratio",
     "cache-manager-lifecycle": "Cache Manager lifecycle values",
     "cache-manager-lifecycle-tooltip": "Lifecycle values, in milliseconds, for the Cache Manager.",
-    "view-cluster-membership-link": "View all caches",
+    "view-cluster-membership-link": "Cluster membership",
     "cache-manager-start-time": "Time since start",
     "cache-manager-reset-time": "Time since reset",
     "cluster-distribution": "Cluster distribution",

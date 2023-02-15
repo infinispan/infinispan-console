@@ -8,6 +8,8 @@ else
   trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 fi
 
+#If running on the existing server please provide the Path with this property.
+EXISTING_SERVER_PATH="${EXISTING_SERVER_PATH}"
 #Base directory where the server should be downloaded
 BASE_DIR="server"
 #The version of the server is either set as an environment variable or is the latest dev version
@@ -42,16 +44,21 @@ function prepareServerDir()
     local dirName=${3}
 
     cd ${BASE_DIR}
-    if [ ! -f ${ZIP_NAME} ]; then
-
+    if [ -n "${EXISTING_SERVER_PATH}" ]; then
+      mkdir ${SERVER_UNZIP_DIR}
+      cp -r ${EXISTING_SERVER_PATH} $SERVER_UNZIP_DIR
+    else
+      if [ ! -f ${ZIP_NAME} ]; then
         if [ -n "$SERVER_DOWNLOAD_URL" ]; then
           wget "${SERVER_DOWNLOAD_URL}"
         else
           wget "$ZIP_ROOT/$SERVER_VERSION/$ZIP_NAME";
         fi
+      fi
+
+      unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
     fi
 
-    unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
     cd ..
 
     if [[ -z "${SERVER_TMP}" ]]; then
