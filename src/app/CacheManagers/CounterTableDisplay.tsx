@@ -60,6 +60,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
   const strongCountersActions = (row): IAction[] => [
     {
+      'data-cy': 'addDeltaAction',
       title: t('cache-managers.counters.add-delta-action'),
       onClick: () => {
         setCounterToAddDelta(row.name);
@@ -67,6 +68,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       }
     },
     {
+      'data-cy': 'resetCounter',
       title: t('cache-managers.counters.reset-action'),
       onClick: () => {
         setCounterToReset(row.name);
@@ -74,6 +76,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       }
     },
     {
+      'data-cy': 'deleteCounter',
       title: t('cache-managers.counters.delete-action'),
       onClick: () => {
         setCounterToDelete(row.name);
@@ -83,6 +86,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
   const weakCountersActions = (row): IAction[] => [
     {
+      'data-cy': 'deleteCounter',
       title: t('cache-managers.counters.delete-action'),
       onClick: () => {
         setCounterToDelete(row.name);
@@ -213,7 +217,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
     return (
       <ToolbarGroup variant="filter-group">
-        <ToolbarItem style={{ width: 250 }} data-cy="counterFilterSelect">
+        <ToolbarItem style={{ width: 250 }}>
           <Select
             variant={SelectVariant.checkbox}
             aria-label={t('cache-managers.cache-filter-label')}
@@ -225,7 +229,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
             maxHeight={200}
             placeholderText={t('cache-managers.cache-filter-label')}
             isGrouped={true}
-            data-cy="counterFilterSelectExpanded"
+            toggleId="counterFilterSelect"
             isCheckboxSelectionBadgeHidden={true}
           >
             {menuItems}

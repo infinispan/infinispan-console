@@ -33,15 +33,17 @@ describe('Cache Creation Wizard', () => {
     cy.get('#persistent').click();
     cy.get('[data-cy=wizardNextButton]').should('be.disabled');
     cy.get('#entitiesSelector').click();
-    cy.get('[id$="org.infinispan.Person"]').click();
+    cy.get('[id$="org.infinispan.Car"]').click();
 
     //Filling auth cache properties
     cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('auth');
     cy.get('#SECURED > button').click();
     cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('admin');
     cy.get('#admin > button').click();
-    cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('observer');
-    cy.get('#observer > button').click();
+    cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('application');
+    cy.get('#application > button').click();
+    cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('deployer');
+    cy.get('#deployer > button').click();
 
     //Filling persistant cache properties
     cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('pers');

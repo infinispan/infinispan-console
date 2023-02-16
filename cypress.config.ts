@@ -5,6 +5,7 @@ export default defineConfig({
   video: false,
   screenshotOnRunFailure: true,
   reporter: 'junit',
+  defaultCommandTimeout: 10000,
   reporterOptions: {
     mochaFile: 'reports/report-[hash].xml',
     toConsole: false,

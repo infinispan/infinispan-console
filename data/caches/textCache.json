@@ -13,6 +13,12 @@
       "acquire-timeout": 15000,
       "striping": false
     },
+    "security": {
+      "authorization": {
+        "enabled": true,
+        "roles": "monitor"
+      }
+    },
     "statistics": true
   }
 }

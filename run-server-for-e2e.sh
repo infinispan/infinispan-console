@@ -36,6 +36,11 @@ CLUSTER_SIZE_MAIN="$SERVER_HOME/bin/cli.sh -c localhost:11322 -f batch "
 USER_NAME="admin"
 PASSWORD="password"
 
+MONITOR_USER_NAME="monitor"
+OBSERVER_USER_NAME="observer"
+APPLICATION_USER_NAME="application"
+DEPLOYER_USER_NAME="deployer"
+
 #Function prepares the server directory, i.e. downloads, extracts, copies to working directory and makes changes to configuration;
 function prepareServerDir()
 {
@@ -94,6 +99,10 @@ function startServer()
     fi
 
     $SERVER_TMP/bin/cli.sh user create ${USER_NAME} -p ${PASSWORD} -s ${nodeName}
+    $SERVER_TMP/bin/cli.sh user create ${MONITOR_USER_NAME} -p ${PASSWORD} -s ${nodeName}
+    $SERVER_TMP/bin/cli.sh user create ${OBSERVER_USER_NAME} -p ${PASSWORD} -s ${nodeName}
+    $SERVER_TMP/bin/cli.sh user create ${APPLICATION_USER_NAME} -p ${PASSWORD} -s ${nodeName}
+    $SERVER_TMP/bin/cli.sh user create ${DEPLOYER_USER_NAME} -p ${PASSWORD} -s ${nodeName}
 
     #Installing nashorn engine before server startup
     ${SERVER_TMP}/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4 --server-root=infinispan-4-e2e

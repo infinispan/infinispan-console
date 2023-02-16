@@ -1,0 +1,22 @@
+package org.infinispan;
+
+/**
+* @Indexed
+*/
+message Car {
+
+  /**
+  * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+  */
+  optional string name = 1;
+
+  /**
+   * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+   */
+  optional string year = 2;
+
+  /**
+   * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
+   */
+  optional string number = 3;
+}
