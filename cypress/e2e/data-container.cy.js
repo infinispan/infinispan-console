@@ -1,5 +1,5 @@
 describe('Data Container Overview', () => {
-  const numberOfCaches = 19;
+  const numberOfCaches = 20;
 
   beforeEach(() => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
@@ -34,7 +34,7 @@ describe('Data Container Overview', () => {
     cy.contains(numberOfCaches + ' Caches');
     cy.contains('10 Counters');
     cy.contains('1 Tasks');
-    cy.contains('11 Schemas');
+    cy.contains('13 Schemas');
 
     cy.contains('1 - 10 of ' + numberOfCaches);
     cy.get('[data-cy=cachesTable] tr').should('have.length', 11); //11 including header row
@@ -175,13 +175,13 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelect]').click(); //Closing filter selectbox
 
     //Verifying that only distributed caches are shown
-    cy.contains('1 - 10 of 14');
+    cy.contains('1 - 10 of 15');
     cy.contains('java-serialized-cache');
     cy.contains('text-cache').should('not.exist');
     cy.get('[data-cy=cachesTable] tr').should('have.length', 11); //11 including header row
     //Navigating to the next page to see the rest of the caches
     cy.get('[data-action=next]').click();
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 5); //5 including header row
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 6); //6 including header row
     cy.contains('xml-cache');
     cy.contains('text-cache');
     cy.contains('java-serialized-cache').should('not.exist');
@@ -192,8 +192,8 @@ describe('Data Container Overview', () => {
     cy.contains('not-encoded');
     cy.contains('xml-cache');
     cy.contains('text-cache');
-    cy.contains('1 - 14 of 14');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 15); //15 including header row
+    cy.contains('1 - 15 of 15');
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 16); //16 including header row
 
     //Verifying that all entries are distributed caches
     cy.get('[data-cy^=type-]').each((badge) => {
@@ -259,7 +259,7 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelectExpanded]').should('exist');
     cy.get('[id$="Indexed"]').click(); //Filtering transactional caches & replicated ones
     cy.get('[data-cy=cacheFilterSelect]').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 6); //6 including header row - nothing is changed
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 7); //7 including header row - nothing is changed
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains(/Transactional|Indexed/);
     });
@@ -276,12 +276,13 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelectExpanded]').should('exist');
     cy.get('[id$="Authorization"]').click(); //Filtering secured caches
     cy.get('[data-cy=cacheFilterSelect]').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row - nothing is changed
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row - nothing is changed
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains(/Secured/);
     });
     cy.contains('indexed-cache');
     cy.contains('super-cache');
+    cy.contains('text-cache');
 
     //Clearing all filters and setting Persistence
     cy.get('[data-cy=clearAllButton]').click();
@@ -306,7 +307,6 @@ describe('Data Container Overview', () => {
     });
     cy.contains('super-cache');
     cy.contains('heap-test');
-    cy.contains('aSimpleXmlCache');
   });
 
   //Hide created cache and check the hidden filter

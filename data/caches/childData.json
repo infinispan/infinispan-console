@@ -1,0 +1,7 @@
+{
+  "_type": "org.infinispan.Child",
+  "name": "Baby",
+  "age": 1,
+  "city": "Miami"
+}
+

@@ -19,6 +19,8 @@ curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/scatte
 echo "= Create schema"
 
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/people.proto" "http://localhost:11222/rest/v2/schemas/people"
+curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/child.proto" "http://localhost:11222/rest/v2/schemas/child"
+curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/car.proto" "http://localhost:11222/rest/v2/schemas/car"
 
 #Creating some more schemas for testing pagination and navigation
 for i in {1..10}
@@ -34,6 +36,7 @@ curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@cache
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/javaCache.json" "http://localhost:11222/rest/v2/caches/java-cache"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/notEncoded.json" "http://localhost:11222/rest/v2/caches/not-encoded"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/indexedCache.json" "http://localhost:11222/rest/v2/caches/indexed-cache"
+curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/indexedCacheNonAuth.json" "http://localhost:11222/rest/v2/caches/indexed-cache-no-auth"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/octet-stream.json" "http://localhost:11222/rest/v2/caches/octet-stream-cache"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/javaSerializedCache.json" "http://localhost:11222/rest/v2/caches/java-serialized-cache"
 # curl -XPOST  -u $userPass -H "Content-Type: application/json" -d "@caches/invalidationCache.json" "http://localhost:11222/rest/v2/caches/invalidation-cache"
@@ -45,6 +48,7 @@ do
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/x-java-object;type=java.lang.String" -d "val-$i" http://localhost:11222/rest/v2/caches/indexed-cache/key-$i
 done
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/json" -d "@caches/peopleData.json" http://localhost:11222/rest/v2/caches/indexed-cache/elaia
+curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/json" -d "@caches/childData.json" http://localhost:11222/rest/v2/caches/indexed-cache-no-auth/elaia
 
 #Java data
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/x-java-object;type=java.lang.String" -d string http://localhost:11222/rest/v2/caches/java-cache/key

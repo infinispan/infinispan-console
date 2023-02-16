@@ -6,15 +6,15 @@ describe('Proto Schema CRUD', () => {
   it('successfully navigates through schemas', () => {
     cy.get('a[aria-label="nav-item-Schemas"]').click();
     cy.contains('people');
-    cy.contains('test-8.proto');
+    cy.contains('test-6.proto');
     cy.contains('test-10.proto');
-    cy.contains('test-9.proto').should('not.exist');
+    cy.contains('test-7.proto').should('not.exist');
     //Going to the next page
     cy.get('[data-cy=paginationArea]').should('exist');
     cy.get('[data-action=previous]').should('be.disabled');
     cy.get('[data-action=next]').click();
-    cy.contains('test-9.proto');
-    cy.contains('test-8.proto').should('not.exist');
+    cy.contains('test-7.proto');
+    cy.contains('test-6.proto').should('not.exist');
     cy.contains('test-10.proto').should('not.exist');
 
     //Going to the previous page
@@ -22,7 +22,7 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-action=next]').should('be.disabled');
     cy.get('[data-action=previous]').click();
     cy.contains('test-9.proto').should('not.exist');
-    cy.contains('test-8.proto');
+    cy.contains('test-6.proto');
     cy.contains('test-10.proto');
 
     //Changing the number of items on the page
@@ -33,8 +33,8 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-action=per-page-100] > div').should('not.exist');
     cy.get('[data-action=per-page-20]').click();
     cy.get('#primary-app-container').scrollTo('bottom');
-    cy.contains('test-9.proto');
     cy.contains('test-8.proto');
+    cy.contains('test-7.proto');
     cy.contains('test-10.proto');
     cy.get('[data-action=next]').should('be.disabled');
 
@@ -46,8 +46,8 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-action=per-page-50] > div').should('not.exist');
     cy.get('[data-action=per-page-100] > div').should('not.exist');
     cy.get('[data-action=per-page-10]').click();
-    cy.contains('test-9.proto').should('not.exist');
-    cy.contains('test-8.proto');
+    cy.contains('test-7.proto').should('not.exist');
+    cy.contains('test-6.proto');
     cy.contains('test-10.proto');
     cy.get('[data-action=next]').click();
     cy.contains('test-9.proto');
@@ -68,6 +68,7 @@ describe('Proto Schema CRUD', () => {
     cy.get('button[aria-label="expand-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('schemaValue');
     cy.contains('Edit');
+    cy.wait(5000);
     cy.get('button[aria-label="edit-button-schema-aTestSchema.proto"]').click({ force: true });
     cy.contains('Save');
     cy.get('[data-cy=schemaEditArea]', { timeout: 10000 }).contains('schemaValue');
