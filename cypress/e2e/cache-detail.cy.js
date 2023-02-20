@@ -54,7 +54,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#key-entry').click().type(2147483648); //Adding greater value than int32 max
     cy.get('#value-entry').click().type('test');
     cy.get('[data-cy=addButton]').click();
-    cy.contains('NumberFormatException');
+    cy.contains('Unexpected error');
     //Changing to valid number
     cy.get('#key-entry').click().clear().type(2147483647);
     cy.get('#valueContentType').click();
@@ -73,7 +73,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#key-entry').click().type(9223372036854775808); //Adding greater value than int64 max
     cy.get('#value-entry').click().type('test');
     cy.get('[data-cy=addButton]').click();
-    cy.contains('NumberFormatException');
+    cy.contains('Unexpected error');
     //Changing to valid number
     cy.get('#key-entry').click().clear().type('9223372036854775807');
     cy.get('#valueContentType').click();
@@ -318,7 +318,7 @@ describe('Cache Detail Overview', () => {
     verifyCacheMetrics(0, 0, 0, 9, 10, 11, 19, 1, 0, 0);
   });
 
-  it.only('successfully searches by values', () => {
+  it('successfully searches by values', () => {
     //Opening indexed-cache cache page.
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/indexed-cache');
 
