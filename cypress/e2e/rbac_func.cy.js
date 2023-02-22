@@ -90,7 +90,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.contains('19 Caches');
-    cy.contains('10 Counters');
+    cy.contains('12 Counters');
     if (isMonitor) {
       cy.contains('1 Tasks').should('not.exist');
       cy.contains('13 Schemas').should('not.exist');

@@ -206,12 +206,12 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const countersFilter = () => {
     const menuItems = [
       <SelectGroup label={t('cache-managers.counters.counter-type')} key="group1">
-        <SelectOption key={0} value={CounterType.STRONG_COUNTER} />
-        <SelectOption key={1} value={CounterType.WEAK_COUNTER} />
+        <SelectOption data-cy="strongCounter" key={0} value={CounterType.STRONG_COUNTER} />
+        <SelectOption data-cy="weakCounter" key={1} value={CounterType.WEAK_COUNTER} />
       </SelectGroup>,
       <SelectGroup label={t('cache-managers.counters.storage')} key="group2">
-        <SelectOption key={2} value={CounterStorage.PERSISTENT} />
-        <SelectOption key={3} value={CounterStorage.VOLATILE} />
+        <SelectOption data-cy="persistentCounter" key={2} value={CounterStorage.PERSISTENT} />
+        <SelectOption data-cy="volatileCounter" key={3} value={CounterStorage.VOLATILE} />
       </SelectGroup>
     ];
 
@@ -226,6 +226,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
             selections={[selectedFilters.counterType, selectedFilters.storageType]}
             isOpen={isOpenFilter}
             toggleIcon={<FilterIcon />}
+            toggleId="counterFilterSelect"
             maxHeight={200}
             placeholderText={t('cache-managers.cache-filter-label')}
             isGrouped={true}
@@ -278,7 +279,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
         <ToolbarItem>
-          <Button onClick={() => setIsCreateCounter(!isCreateCounter)}>
+          <Button onClick={() => setIsCreateCounter(!isCreateCounter)} data-cy='createCounterButton'>
             {t('cache-managers.counters.modal-create-title')}
           </Button>
         </ToolbarItem>

@@ -2,16 +2,19 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AddDeltaCounter } from '@app/Counters/AddDeltaCounter';
 import * as AddDeltaCounterHook from '@app/services/countersHook';
+import { renderWithRouter } from '../../../test-utils';
 
 jest.mock('@app/services/countersHook');
 const mockedCounterHook = AddDeltaCounterHook as jest.Mocked<typeof AddDeltaCounterHook>;
 
 let closeModalCalls;
 let onAddDeltaCalls;
+let submitModalCalls;
 
 beforeEach(() => {
   closeModalCalls = 0;
   onAddDeltaCalls = 0;
+  submitModalCalls = 0;
 });
 
 mockedCounterHook.useAddDeltaCounter.mockImplementation(() => {
@@ -22,30 +25,55 @@ mockedCounterHook.useAddDeltaCounter.mockImplementation(() => {
 
 describe('Add a delta', () => {
   test('not render the dialog if the modal is closed', () => {
-    render(
+    renderWithRouter(
       <AddDeltaCounter
         name={'count-1'}
         deltaValue={5}
         isDeltaValid={true}
         setDeltaValue
-        submitModal={() => {}}
+        submitModal={() => submitModalCalls++}
         isModalOpen={false}
-        closeModal={() => {}}
+        closeModal={() => closeModalCalls++}
       />
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
+    expect(submitModalCalls).toBe(0);
     expect(onAddDeltaCalls).toBe(0);
   });
 
+  test('render the dialog with invalid delta', () => {
+    renderWithRouter(
+      <AddDeltaCounter
+        name={'count-1'}
+        deltaValue={5}
+        isDeltaValid={false}
+        setDeltaValue
+        submitModal={() => submitModalCalls++}
+        isModalOpen={true}
+        closeModal={() => closeModalCalls++}
+      />
+    );
+    expect(screen.queryByRole('modal')).toBeDefined();
+    expect(screen.queryAllByRole('button')).toHaveLength(3);
+  
+    const submitButton = screen.getByRole('button', { name: 'Confirm' });
+    fireEvent.click(submitButton);
+    
+    expect(screen.getByText('cache-managers.counters.modal-delta-helper-invalid')).toBeTruthy();
+    expect(closeModalCalls).toBe(0);
+    expect(onAddDeltaCalls).toBe(0);
+    expect(submitModalCalls).toBe(0);
+  });
+
   test('render the dialog and buttons work', () => {
-    render(
+    renderWithRouter(
       <AddDeltaCounter
         name={'count-1'}
         deltaValue={5}
         isDeltaValid={true}
         setDeltaValue
-        submitModal={() => onAddDeltaCalls++}
+        submitModal={() => submitModalCalls++}
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
       />
@@ -64,7 +92,8 @@ describe('Add a delta', () => {
 
     const submitButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(submitButton);
-    expect(onAddDeltaCalls).toBe(2);
+    expect(onAddDeltaCalls).toBe(1);
+    expect(submitModalCalls).toBe(1);
 
     // Expect delta value to be 5
     expect(screen.getByDisplayValue(5));

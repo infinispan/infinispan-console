@@ -1,57 +1,57 @@
-import { DeleteCounter } from '@app/Counters/DeleteCounter';
+import { ResetCounter } from '@app/Counters/ResetCounter';
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import * as DeleteCounterHook from '@app/services/countersHook';
+import * as ResetCounterHook from '@app/services/countersHook';
 import { renderWithRouter } from '../../../test-utils';
 
 jest.mock('@app/services/countersHook');
-const mockedCounterHook = DeleteCounterHook as jest.Mocked<typeof DeleteCounterHook>;
+const mockedCounterHook = ResetCounterHook as jest.Mocked<typeof ResetCounterHook>;
 
 let closeModalCalls;
-let onDeleteCalls;
+let onResetCalls;
 let submitModalCalls;
 
 beforeEach(() => {
   closeModalCalls = 0;
-  onDeleteCalls = 0;
+  onResetCalls = 0;
   submitModalCalls = 0;
 });
 
-mockedCounterHook.useDeleteCounter.mockImplementation(() => {
+mockedCounterHook.useResetCounter.mockImplementation(() => {
   return {
-    onDelete: () => onDeleteCalls++
+    onResetCounter: () => onResetCalls++
   };
 });
 
-describe('Delete counter', () => {
+describe('Reset counter', () => {
   test('not render the dialog if the modal is closed', () => {
     renderWithRouter(
-      <DeleteCounter
+      <ResetCounter
         name={'count-1'}
         isModalOpen={false}
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
-        isDisabled={false}
+        initialValue="5"
       />
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
     expect(submitModalCalls).toBe(0);
-    expect(onDeleteCalls).toBe(0);
+    expect(onResetCalls).toBe(0);
   });
 
   test('render the dialog and buttons work', () => {
     renderWithRouter(
-      <DeleteCounter
+      <ResetCounter
         name={'count-1'}
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
-        isDisabled={false}
+        initialValue="5"
       />
     );
 
-    expect(mockedCounterHook.useDeleteCounter).toHaveBeenCalledWith('count-1');
+    expect(mockedCounterHook.useResetCounter).toHaveBeenCalledWith('count-1');
 
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
@@ -64,9 +64,9 @@ describe('Delete counter', () => {
     fireEvent.click(cancelButton);
     expect(closeModalCalls).toBe(2);
 
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', { name: 'Reset' });
     fireEvent.click(confirmButton);
     expect(submitModalCalls).toBe(1);
-    expect(onDeleteCalls).toBe(1);
+    expect(onResetCalls).toBe(1);
   });
 });

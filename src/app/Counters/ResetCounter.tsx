@@ -29,6 +29,7 @@ const ResetCounter = (props: {
       disableFocusTrap={true}
       actions={[
         <Button
+          data-cy="resetCounterButton"
           key={'Reset'}
           aria-label={'Reset'}
           variant={ButtonVariant.danger}
@@ -39,7 +40,7 @@ const ResetCounter = (props: {
         >
           {t('cache-managers.counters.reset-action')}
         </Button>,
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal}>
+        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal} data-cy="cancelCounterResetButton">
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
       ]}

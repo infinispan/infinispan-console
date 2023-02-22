@@ -32,7 +32,7 @@ describe('Data Container Overview', () => {
   //Testing pagination and navigation
   it('successfully navigates through the caches as well as changes number of viewed caches on the page', () => {
     cy.contains(numberOfCaches + ' Caches');
-    cy.contains('10 Counters');
+    cy.contains('12 Counters');
     cy.contains('1 Tasks');
     cy.contains('13 Schemas');
 
