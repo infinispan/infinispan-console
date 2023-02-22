@@ -193,7 +193,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
   return (
     <Modal
       variant={ModalVariant.small}
-      id={'reset-counter-modal'}
+      id={'create-counter-modal'}
       className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
       title={t('cache-managers.counters.modal-create-title')}

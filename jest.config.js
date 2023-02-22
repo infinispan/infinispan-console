@@ -21,6 +21,7 @@ module.exports = {
       '<rootDir>/__mocks__/fileMock.js',
     '@app/(.*)': '<rootDir>/src/app/$1',
     '@services/(.*)': '<rootDir>/src/services/$1',
+    '@utils/(.*)': '<rootDir>/src/app/utils/$1',
   },
 
   // A preset that is used as a base for Jest's configuration
