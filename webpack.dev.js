@@ -10,19 +10,22 @@ module.exports = merge(common('development'), {
   mode: "development",
   devtool: "eval-source-map",
   devServer: {
-    contentBase: "./dist",
     host: HOST,
     port: PORT,
     compress: true,
-    inline: true,
     historyApiFallback: {
       index:'/console/'
     },
     hot: true,
-    overlay: true,
     open: true,
-    openPage: 'console',
-    serveIndex: true
+    open: 'console',
+    static: {
+      serveIndex: true,
+      directory: "./dist"
+    },
+    client: {
+      overlay: true
+    }
   },
   module: {
     rules: [
