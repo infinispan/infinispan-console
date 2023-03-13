@@ -30,6 +30,40 @@ const ExecuteTasks = (props: { task; isModalOpen: boolean; closeModal: () => voi
     }));
   };
 
+  const formParameters = () => {
+    return (
+      <React.Fragment>
+        <TextContent>
+          <Text>
+            There are multiple parameters on the script <strong>{props.task?.name}</strong>. Enter value for the
+            parameters to run script
+          </Text>
+        </TextContent>
+        {props.task !== undefined && (
+          <Form style={{ paddingTop: '3%' }} isHorizontal onSubmit={(e) => e.preventDefault()}>
+            {props.task.parameters.map((p) => {
+              return (
+                <FormGroup key={p} isStack label={p}>
+                  <TextInput aria-label="input-parameter" type="text" onChange={(val) => onValueChange(p, val)} />
+                </FormGroup>
+              );
+            })}
+          </Form>
+        )}
+      </React.Fragment>
+    );
+  };
+
+  const formWithoutParameter = () => {
+    return (
+      <TextContent>
+        <Text>
+          Do you want to execute <strong>{props.task?.name}</strong>
+        </Text>
+      </TextContent>
+    );
+  };
+
   return (
     <Modal
       id={'execute-task-modal'}
@@ -56,23 +90,7 @@ const ExecuteTasks = (props: { task; isModalOpen: boolean; closeModal: () => voi
         </Button>
       ]}
     >
-      <TextContent>
-        <Text>
-          There are multiple parameters on the script <strong>{props.task?.name}</strong>. Select a parameter to run
-          script.
-        </Text>
-      </TextContent>
-      {props.task !== undefined && (
-        <Form style={{ paddingTop: '3%' }} isHorizontal onSubmit={(e) => e.preventDefault()}>
-          {props.task.parameters?.map((p) => {
-            return (
-              <FormGroup key={p} isStack label={p}>
-                <TextInput type="text" onChange={(val) => onValueChange(p, val)} />
-              </FormGroup>
-            );
-          })}
-        </Form>
-      )}
+      {props.task?.parameters.length !== 0 ? formParameters() : formWithoutParameter()}
     </Modal>
   );
 };

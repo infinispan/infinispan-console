@@ -15,20 +15,28 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
     validated: 'default'
   };
 
+  const scriptInitialState: IField = {
+    value: '',
+    isValid: false,
+    validated: 'default'
+  };
+
   const [name, setName] = useState<IField>(nameInitialState);
-  const [script, setScript] = useState<string>('');
-  const { onCreateTask } = useCreateTask(name.value, script);
+  const [script, setScript] = useState<IField>(scriptInitialState);
+  const { onCreateTask } = useCreateTask(name.value, script.value);
 
   const handleSubmit = () => {
-    const isValid = formUtils.validateRequiredField(
-      name.value.trim(),
-      t('cache-managers.counters.modal-counter-name'),
-      setName
-    );
+    let isValid = true;
+    isValid =
+      formUtils.validateRequiredField(name.value.trim(), t('cache-managers.tasks.task-name'), setName) && isValid;
+    isValid =
+      formUtils.validateRequiredField(script.value.trim(), t('cache-managers.tasks.script'), setScript) && isValid;
 
     if (isValid) {
-      props.submitModal();
       onCreateTask();
+      setName(nameInitialState);
+      setScript(scriptInitialState);
+      props.submitModal();
     }
   };
 
@@ -42,7 +50,13 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
       aria-label={t('cache-managers.tasks.create-task')}
       disableFocusTrap={true}
       actions={[
-        <Button key={'Confirm'} aria-label={'Confirm'} variant={ButtonVariant.primary} onClick={handleSubmit}>
+        <Button
+          key={'Confirm'}
+          data-cy="add-task-button"
+          aria-label={'Confirm'}
+          variant={ButtonVariant.primary}
+          onClick={handleSubmit}
+        >
           {t('cache-managers.tasks.confirm')}
         </Button>,
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal}>
@@ -63,6 +77,8 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
           label={t('cache-managers.tasks.task-name')}
         >
           <TextInput
+            id="task-name"
+            aria-label="task-name"
             type="text"
             validated={name.validated}
             value={name.value}
@@ -70,16 +86,25 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
           />
         </FormGroup>
         <FormGroup
-          label={t('cache-managers.tasks.script')}
+          validated={script.validated}
+          label={t('cache-managers.tasks.provide-script')}
           labelIcon={
             <PopoverHelp
               name="script"
-              label={t('cache-managers.tasks.script')}
+              label={t('cache-managers.tasks.provide-script')}
               content={t('cache-managers.tasks.script-tooltip')}
             />
           }
+          helperTextInvalid={script.invalidText}
+          isRequired
         >
-          <CodeEditor isLineNumbersVisible code={script} onChange={setScript} height="200px" />
+          <CodeEditor
+            id="script"
+            isLineNumbersVisible
+            code={script.value}
+            onChange={(value) => formUtils.validateRequiredField(value, t('cache-managers.tasks.script'), setScript)}
+            height="200px"
+          />
         </FormGroup>
       </Form>
     </Modal>

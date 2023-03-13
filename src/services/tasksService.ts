@@ -46,12 +46,25 @@ export class TasksService {
     });
   }
 
-  public createTask(name: string, script): Promise<ActionResponse> {
-    return this.utils.post({
+  public createOrUpdateTask(name: string, script: string, create: boolean): Promise<ActionResponse> {
+    if (create) {
+      return this.utils.post({
+        url: this.endpoint + '/' + name,
+        successMessage: `Task ${name} has been created`,
+        errorMessage: `Unexpected error creating task ${name}`,
+        body: script
+      });
+    }
+
+    return this.utils.put({
       url: this.endpoint + '/' + name,
-      successMessage: `Task ${name} has been created`,
-      errorMessage: `Unexpected error creating task ${name}`,
+      successMessage: `Task ${name} has been updated`,
+      errorMessage: `Unexpected error updating task ${name}`,
       body: script
     });
+  }
+
+  public fetchScript(name: string): Promise<Either<ActionResponse, string>> {
+    return this.utils.get(this.endpoint + '/' + name + '?action=script', (script) => script, undefined, true);
   }
 }

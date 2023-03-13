@@ -48,12 +48,13 @@ export function useExecuteTask(name: string, params) {
     onExecute
   };
 }
+
 export function useCreateTask(taskName: string, script) {
   const { addAlert } = useApiAlert();
 
   const onCreateTask = () => {
     ConsoleServices.tasks()
-      .createTask(taskName, script)
+      .createOrUpdateTask(taskName, script, true)
       .then((actionResponse) => {
         addAlert(actionResponse);
       });

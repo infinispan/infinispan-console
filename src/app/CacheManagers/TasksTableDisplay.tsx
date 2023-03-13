@@ -1,32 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Badge,
   Button,
   Bullseye,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  ButtonVariant,
+  DataList,
+  DataListCell,
+  DataListContent,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+  DataListToggle,
   Pagination,
-  Text,
-  TextContent,
-  TextVariants,
+  TextArea,
   Title,
   Toolbar,
   ToolbarItem,
   ToolbarContent,
-  ToolbarItemVariant
+  ToolbarGroup,
+  ToolbarItemVariant,
+  Stack,
+  StackItem,
+  Spinner
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
-import { SearchIcon } from '@patternfly/react-icons';
-import displayUtils from '@services/displayUtils';
-import {
-  chart_color_blue_500,
-  global_FontSize_sm,
-  global_spacer_md,
-  global_spacer_sm,
-  global_spacer_xs
-} from '@patternfly/react-tokens';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { global_FontSize_sm } from '@patternfly/react-tokens';
 import { useTranslation } from 'react-i18next';
 import { useFetchTask } from '@app/services/tasksHook';
 import { ExecuteTasks } from '@app/Tasks/ExecuteTasks';
@@ -34,58 +37,46 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { CreateTask } from '@app/Tasks/CreateTask';
+import { SearchIcon } from '@patternfly/react-icons';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: boolean }) => {
+  const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { tasks, loading, error, reload } = useFetchTask();
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [tasksPagination, setTasksPagination] = useState({
     page: 1,
     perPage: 10
   });
-  const [rows, setRows] = useState<(string | any)[]>([]);
   const [taskToExecute, setTaskToExecute] = useState<Task>();
   const [isCreateTask, setIsCreateTask] = useState(false);
-  const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { connectedUser } = useConnectedUser();
-
-  const columnNames = {
-    name: t('cache-managers.tasks.name'),
-    type: t('cache-managers.tasks.task-type'),
-    context: t('cache-managers.tasks.context-name'),
-    operation: t('cache-managers.tasks.operation-name'),
-    parameters: t('cache-managers.tasks.parameters'),
-    allowedRoles: t('cache-managers.tasks.allowed-role')
-  };
-
-  const rowActionItem = (row): IAction[] => [
-    {
-      title: t('cache-managers.tasks.execute'),
-      onClick: () => {
-        setTaskToExecute(row);
-      }
-    }
-  ];
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const [editTaskName, setEditTaskName] = useState<string>('');
+  const [editScript, setEditScript] = useState<string>('');
+  const [scriptContent, setScriptContent] = useState(new Map<string, string>());
 
   useEffect(() => {
     if (tasks) {
-      setFilteredTasks(tasks);
       props.setTasksCount(tasks.length);
+      const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
+      setFilteredTasks(tasks.slice(initSlice, initSlice + tasksPagination.perPage));
     }
   }, [loading, tasks, error]);
 
   useEffect(() => {
     if (filteredTasks) {
       const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
-      const updateRows = filteredTasks.slice(initSlice, initSlice + tasksPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setFilteredTasks(tasks.slice(initSlice, initSlice + tasksPagination.perPage));
     }
-  }, [tasksPagination, filteredTasks]);
+  }, [tasksPagination]);
 
   const onSetPage = (_event, pageNumber) => {
     setTasksPagination({
-      ...tasksPagination,
-      page: pageNumber
+      page: pageNumber,
+      perPage: tasksPagination.perPage
     });
   };
 
@@ -96,49 +87,37 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
     });
   };
 
-  const taskType = (type: string) => {
-    return (
-      <Badge
-        style={{
-          backgroundColor: displayUtils.taskTypeColor(type),
-          fontSize: global_FontSize_sm.value,
-          color: chart_color_blue_500.value,
-          fontWeight: 'lighter',
-          marginRight: global_spacer_md.value,
-          padding: global_spacer_xs.value,
-          paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value
-        }}
-      >
-        {type}
-      </Badge>
-    );
+  const loadScript = (taskName: string) => {
+    ConsoleServices.tasks()
+      .fetchScript(taskName)
+      .then((eitherResponse) => {
+        if (eitherResponse.isRight()) {
+          scriptContent.set(taskName, eitherResponse.value);
+        } else {
+          scriptContent.set(taskName, t('cache-managers.tasks.script-load-error'));
+          addAlert(eitherResponse.value);
+        }
+      });
   };
 
-  const taskParameters = (params: [string]) => {
-    if (params.length == 0) {
-      return <TextContent>{'-'}</TextContent>;
+  const handleEdit = (taskName: string) => {
+    if (editTaskName == '' || editTaskName != taskName) {
+      setEditTaskName(taskName);
+      setEditScript(scriptContent.get(taskName) as string);
+    } else {
+      setEditTaskName('');
+      if (!scriptContent.has(taskName) || scriptContent.get(taskName) == '') {
+        return;
+      }
+      scriptContent.set(taskName, editScript);
+      ConsoleServices.tasks()
+        .createOrUpdateTask(taskName, editScript, false)
+        .then((eitherCreate) => {
+          addAlert(eitherCreate);
+          loadScript(taskName);
+        })
+        .then(() => reload());
     }
-    return (
-      <TextContent>
-        {params.map((param, index) => (
-          <Text key={param + index} component={TextVariants.p}>
-            {' [' + param + ']'}
-          </Text>
-        ))}
-      </TextContent>
-    );
-  };
-
-  const taskAllowedRoles = (allowedRole: string) => {
-    if (allowedRole == null || allowedRole.trim().length == 0) {
-      return <TextContent>{t('cache-managers.tasks.allowed-role-null')}</TextContent>;
-    }
-    return (
-      <TextContent>
-        <Text component={TextVariants.p}>{allowedRole}</Text>
-      </TextContent>
-    );
   };
 
   const buildCreateTaskButton = () => {
@@ -148,9 +127,150 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
     return (
       <React.Fragment>
         <ToolbarItem>
-          <Button onClick={() => setIsCreateTask(!isCreateTask)}>Add task</Button>
+          <Button onClick={() => setIsCreateTask(!isCreateTask)} aria-label="create-task-button">
+            {t('cache-managers.tasks.create-task')}
+          </Button>
         </ToolbarItem>
       </React.Fragment>
+    );
+  };
+
+  const toggle = (taskName) => {
+    const index = expanded.indexOf(taskName);
+    const newExpanded =
+      index >= 0
+        ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)]
+        : [...expanded, taskName];
+    setExpanded(newExpanded);
+  };
+
+  const buildTaskToolbar = (taskName) => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return '';
+    }
+
+    return (
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarItem>
+            <Button
+              isDisabled={editTaskName == taskName.name && editScript.length == 0}
+              id={'edit-button' + taskName.name}
+              name={'edit-button' + taskName.name}
+              aria-label={'edit-button' + taskName.name}
+              variant={ButtonVariant.secondary}
+              onClick={() => handleEdit(taskName.name)}
+            >
+              {editTaskName == taskName.name
+                ? t('cache-managers.tasks.save-button')
+                : t('cache-managers.tasks.edit-button')}
+            </Button>
+          </ToolbarItem>
+          <ToolbarItem>
+            <Button
+              id={'execute-button-' + taskName.name}
+              name={'execute-button-' + taskName.name}
+              aria-label={'execute-button-' + taskName.name}
+              variant={ButtonVariant.link}
+              onClick={() => {
+                if (editTaskName == taskName.name) {
+                  setEditTaskName('');
+                } else {
+                  setTaskToExecute(taskName);
+                }
+              }}
+            >
+              {editTaskName == taskName.name
+                ? t('cache-managers.tasks.cancel-button')
+                : t('cache-managers.tasks.execute-button')}
+            </Button>
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
+    );
+  };
+
+  const buildTaskScriptContent = (name) => {
+    if (!scriptContent.get(name)) {
+      loadScript(name);
+      return <Spinner size={'sm'} />;
+    }
+    if (editTaskName != name) {
+      return (
+        <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
+          {scriptContent.get(name)}
+        </SyntaxHighlighter>
+      );
+    }
+    return (
+      <TextArea
+        id="task-edit-area"
+        data-cy="taskEditArea"
+        onChange={(v) => setEditScript(v)}
+        value={editScript}
+        validated={editScript.length > 0 ? 'default' : 'error'}
+        style={{ fontSize: global_FontSize_sm.value }}
+        rows={15}
+      />
+    );
+  };
+
+  const buildTasksList = () => {
+    if (filteredTasks.length == 0) {
+      return (
+        <Bullseye>
+          <EmptyState variant={EmptyStateVariant.small}>
+            <EmptyStateIcon icon={SearchIcon} />
+            <Title headingLevel="h2" size="lg">
+              {t('cache-managers.tasks.no-tasks-status')}
+            </Title>
+            <EmptyStateBody>{t('cache-managers.tasks.no-tasks-body')}</EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
+      );
+    }
+
+    return (
+      <DataList aria-label="data-list-tasks">
+        {filteredTasks.map((task) => {
+          return (
+            <DataListItem
+              id={'item-' + task.name}
+              key={'key-' + task.name}
+              aria-labelledby={task.name + '-list-item'}
+              isExpanded={expanded.includes(task.name)}
+            >
+              <DataListItemRow>
+                <DataListToggle
+                  onClick={() => toggle(task.name)}
+                  isExpanded={expanded.includes(task.name)}
+                  id={task.name}
+                  aria-label={'expand-task-' + task.name}
+                  aria-controls={'ex-' + task.name}
+                />
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell width={2} key={'tasks-name-' + task.name}>
+                      {task.name}
+                    </DataListCell>,
+                    <DataListCell width={2} key={'tasks-actions-' + task.name}>
+                      {expanded.includes(task.name) ? buildTaskToolbar(task) : ''}
+                    </DataListCell>
+                  ]}
+                />
+              </DataListItemRow>
+              <DataListContent
+                aria-label="Primary content details"
+                id={task.name}
+                isHidden={!expanded.includes(task.name)}
+                style={{ boxShadow: 'none' }}
+              >
+                {buildTaskScriptContent(task.name)}
+              </DataListContent>
+            </DataListItem>
+          );
+        })}
+      </DataList>
     );
   };
 
@@ -159,89 +279,45 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   }
 
   return (
-    <React.Fragment>
-      <Toolbar id="task-table-toolbar">
-        <ToolbarContent>
-          {buildCreateTaskButton()}
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>
-            <Pagination
-              itemCount={filteredTasks.length}
-              perPage={tasksPagination.perPage}
-              page={tasksPagination.page}
-              onSetPage={onSetPage}
-              widgetId="pagination-tasks"
-              onPerPageSelect={onPerPageSelect}
-              isCompact
-            />
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-      <TableComposable
-        className={'tasks-table'}
-        aria-label={t('cache-managers.tasks.tasks-table-label')}
-        variant={'compact'}
-      >
-        <Thead>
-          <Tr>
-            <Th colSpan={1}>{columnNames.name}</Th>
-            <Th colSpan={1}>{columnNames.type}</Th>
-            <Th colSpan={1}>{columnNames.context}</Th>
-            <Th colSpan={1}>{columnNames.operation}</Th>
-            <Th colSpan={1}>{columnNames.parameters}</Th>
-            <Th colSpan={1}>{columnNames.allowedRoles}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {tasks.length == 0 ? (
-            <Tr>
-              <Td colSpan={6}>
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.tasks.no-tasks-status')}
-                    </Title>
-                    <EmptyStateBody>{t('cache-managers.tasks.no-tasks-body')}</EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              </Td>
-            </Tr>
-          ) : (
-            rows.map((row) => {
-              return (
-                <Tr key={row.name}>
-                  <Td dataLabel={columnNames.name}>{row.name}</Td>
-                  <Td dataLabel={columnNames.type}>{taskType(row.type)}</Td>
-                  <Td dataLabel={columnNames.context}>{row.task_context_name}</Td>
-                  <Td dataLabel={columnNames.operation}>{row.task_operation_name}</Td>
-                  <Td dataLabel={columnNames.parameters}>{taskParameters(row.parameters)}</Td>
-                  <Td dataLabel={columnNames.allowedRoles}>{taskAllowedRoles(row.allowed_role)}</Td>
-                  <Td isActionCell>
-                    <ActionsColumn items={rowActionItem(row)} />
-                  </Td>
-                </Tr>
-              );
-            })
-          )}
-        </Tbody>
-      </TableComposable>
-      <ExecuteTasks
-        task={taskToExecute}
-        isModalOpen={taskToExecute != undefined}
-        closeModal={() => {
-          setTaskToExecute(undefined);
-          reload();
-        }}
-      />
-      <CreateTask
-        isModalOpen={isCreateTask}
-        submitModal={() => {
-          reload();
-          setIsCreateTask(false);
-        }}
-        closeModal={() => setIsCreateTask(false)}
-      />
-    </React.Fragment>
+    <Stack hasGutter>
+      <StackItem>
+        <Toolbar id="task-table-toolbar">
+          <ToolbarContent>
+            {buildCreateTaskButton()}
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>
+              <Pagination
+                itemCount={tasks.length}
+                perPage={tasksPagination.perPage}
+                page={tasksPagination.page}
+                onSetPage={onSetPage}
+                widgetId="pagination-tasks"
+                onPerPageSelect={onPerPageSelect}
+                isCompact
+              />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+      </StackItem>
+      <StackItem>{buildTasksList()}</StackItem>
+      <StackItem>
+        <ExecuteTasks
+          task={taskToExecute}
+          isModalOpen={taskToExecute != undefined}
+          closeModal={() => {
+            setTaskToExecute(undefined);
+            reload();
+          }}
+        />
+        <CreateTask
+          isModalOpen={isCreateTask}
+          submitModal={() => {
+            setIsCreateTask(false);
+            reload();
+          }}
+          closeModal={() => setIsCreateTask(false)}
+        />
+      </StackItem>
+    </Stack>
   );
 };
 
