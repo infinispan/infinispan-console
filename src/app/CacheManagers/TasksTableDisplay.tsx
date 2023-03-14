@@ -155,9 +155,9 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
           <ToolbarItem>
             <Button
               isDisabled={editTaskName == taskName.name && editScript.length == 0}
-              id={'edit-button' + taskName.name}
-              name={'edit-button' + taskName.name}
-              aria-label={'edit-button' + taskName.name}
+              id={'edit-button-' + taskName.name}
+              name={'edit-button-' + taskName.name}
+              aria-label={'edit-button-' + taskName.name}
               variant={ButtonVariant.secondary}
               onClick={() => handleEdit(taskName.name)}
             >

@@ -9,7 +9,8 @@ export enum ConsoleACL {
   BULK_READ = 'BULK_READ',
   BULK_WRITE = 'BULK_WRITE',
   CREATE = 'CREATE',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
+  EXEC = 'EXEC'
 }
 
 export enum ACL {
@@ -135,6 +136,9 @@ export class SecurityService {
         break;
       case ConsoleACL.CREATE:
         hasAcl = aclList.includes(ACL.CREATE);
+        break;
+      case ConsoleACL.EXEC:
+        hasAcl = aclList.includes(ACL.EXEC);
         break;
     }
     return hasAcl;
