@@ -437,7 +437,8 @@
     "actions": {
       "action-see-less": "See fewer cache details",
       "action-see-more": "See more cache details",
-      "action-manage-indexes": "Manage indexes"
+      "action-manage-indexes": "Manage indexes",
+      "refresh": "Refresh"
     },
     "entries": {
       "action-edit": "Edit",

@@ -47,6 +47,7 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useTranslation } from 'react-i18next';
 import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
+import { RedoIcon } from '@patternfly/react-icons';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -292,6 +293,20 @@ const DetailCache = (props: { cacheName: string }) => {
         </ToolbarGroup>
         <ToolbarGroup>
           <RebalancingCache />
+          <ToolbarItem>
+            <Button
+              type="button"
+              aria-label={t('caches.actions.refresh')}
+              variant="link"
+              onClick={() => {
+                loadCache(cacheName);
+              }}
+              icon={<RedoIcon />}
+              iconPosition="left"
+            >
+              {t('caches.actions.refresh')}
+            </Button>
+          </ToolbarItem>
           {buildBackupsManage()}
           {buildIndexManage()}
         </ToolbarGroup>
