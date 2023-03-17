@@ -8,6 +8,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 
 const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
 
   const nameInitialState: IField = {
     value: '',
@@ -92,7 +93,7 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
             <PopoverHelp
               name="script"
               label={t('cache-managers.tasks.provide-script')}
-              content={t('cache-managers.tasks.script-tooltip')}
+              content={t('cache-managers.tasks.script-tooltip',{ brandname: brandname })}
             />
           }
           helperTextInvalid={script.invalidText}
