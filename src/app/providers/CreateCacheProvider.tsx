@@ -6,6 +6,7 @@ import {
   EncodingType,
   EvictionStrategy,
   EvictionType,
+  IndexedStartupMode,
   IndexedStorage,
   IsolationLevel,
   Locking,
@@ -49,6 +50,7 @@ const IndexMergeInitialState: IndexMerge = {};
 
 const IndexedCacheInitialState: IndexedCache = {
   indexedStorage: IndexedStorage.persistent,
+  indexedStartupMode: IndexedStartupMode.auto,
   indexedEntities: [],
   valid: true
 };
