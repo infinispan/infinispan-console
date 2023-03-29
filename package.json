@@ -81,13 +81,13 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "@patternfly/react-charts": "^6.94.18",
+    "@patternfly/react-charts": "^6.94.19",
     "@patternfly/react-code-editor": "^4.82.113",
-    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-core": "^4.276.8",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-log-viewer": "^4.87.100",
     "@patternfly/react-styles": "^4.92.6",
-    "@patternfly/react-table": "^4.112.39",
+    "@patternfly/react-table": "^4.113.0",
     "@patternfly/react-tokens": "^4.94.6",
     "i18next": "^21.10.0",
     "i18next-browser-languagedetector": "^6.1.8",
