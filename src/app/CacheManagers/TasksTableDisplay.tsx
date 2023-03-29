@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Button,
   Bullseye,
   EmptyState,
@@ -15,7 +16,6 @@ import {
   DataListItemRow,
   DataListToggle,
   Pagination,
-  TextArea,
   Title,
   Toolbar,
   ToolbarItem,
@@ -26,10 +26,9 @@ import {
   StackItem,
   Spinner
 } from '@patternfly/react-core';
+import { CodeEditor } from '@patternfly/react-code-editor';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
-import { global_FontSize_sm } from '@patternfly/react-tokens';
 import { useTranslation } from 'react-i18next';
 import { useFetchTask } from '@app/services/tasksHook';
 import { ExecuteTasks } from '@app/Tasks/ExecuteTasks';
@@ -57,9 +56,10 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   const [editTaskName, setEditTaskName] = useState<string>('');
   const [editScript, setEditScript] = useState<string>('');
   const [scriptContent, setScriptContent] = useState(new Map<string, string>());
+  const [scriptError, setScriptError] = useState<string>('');
 
   useEffect(() => {
-    if (tasks) {
+    if (loading) {
       props.setTasksCount(tasks.length);
       const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
       setFilteredTasks(tasks.slice(initSlice, initSlice + tasksPagination.perPage));
@@ -95,7 +95,6 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
           scriptContent.set(taskName, eitherResponse.value);
         } else {
           scriptContent.set(taskName, t('cache-managers.tasks.script-load-error'));
-          addAlert(eitherResponse.value);
         }
       });
   };
@@ -105,16 +104,30 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
       setEditTaskName(taskName);
       setEditScript(scriptContent.get(taskName) as string);
     } else {
-      setEditTaskName('');
+      // save script
+
       if (!scriptContent.has(taskName) || scriptContent.get(taskName) == '') {
         return;
       }
-      scriptContent.set(taskName, editScript);
+
+      // Do not update if script not changed
+      if (scriptContent.get(taskName) == editScript) {
+        setEditTaskName('');
+        setEditScript('');
+        return;
+      }
+
       ConsoleServices.tasks()
         .createOrUpdateTask(taskName, editScript, false)
-        .then((eitherCreate) => {
-          addAlert(eitherCreate);
-          loadScript(taskName);
+        .then((actionResponse) => {
+          if (actionResponse.success) {
+            setScriptError('');
+            setEditTaskName('');
+            addAlert(actionResponse);
+            loadScript(taskName);
+          } else {
+            setScriptError(actionResponse.message);
+          }
         })
         .then(() => reload());
     }
@@ -144,6 +157,10 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
     setExpanded(newExpanded);
   };
 
+  const errorInScript = (taskName) => {
+    return scriptContent.get(taskName) === t('cache-managers.tasks.script-load-error');
+  };
+
   const buildTaskToolbar = (taskName) => {
     if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return '';
@@ -154,7 +171,7 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
         <ToolbarGroup>
           <ToolbarItem>
             <Button
-              isDisabled={editTaskName == taskName.name && editScript.length == 0}
+              isDisabled={(editTaskName === taskName.name && editScript.length === 0) || errorInScript(taskName.name)}
               id={'edit-button-' + taskName.name}
               name={'edit-button-' + taskName.name}
               aria-label={'edit-button-' + taskName.name}
@@ -168,6 +185,7 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
           </ToolbarItem>
           <ToolbarItem>
             <Button
+              isDisabled={errorInScript(taskName.name)}
               id={'execute-button-' + taskName.name}
               name={'execute-button-' + taskName.name}
               aria-label={'execute-button-' + taskName.name}
@@ -203,15 +221,19 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
       );
     }
     return (
-      <TextArea
-        id="task-edit-area"
-        data-cy="taskEditArea"
-        onChange={(v) => setEditScript(v)}
-        value={editScript}
-        validated={editScript.length > 0 ? 'default' : 'error'}
-        style={{ fontSize: global_FontSize_sm.value }}
-        rows={15}
-      />
+      <>
+        {scriptError.length > 0 && (
+          <Alert variant="danger" isInline title={scriptError} style={{ marginBottom: '1rem' }} />
+        )}
+        <CodeEditor
+          id="task-edit-area"
+          data-cy="taskEditArea"
+          isLineNumbersVisible
+          code={editScript}
+          onChange={(v) => setEditScript(v)}
+          height="200px"
+        />
+      </>
     );
   };
 

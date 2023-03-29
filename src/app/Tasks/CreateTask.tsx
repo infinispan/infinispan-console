@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { Button, ButtonVariant, Form, FormGroup, Modal, ModalVariant, TextInput } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  Form,
+  FormGroup,
+  Modal,
+  ModalVariant,
+  TextInput
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import formUtils, { IField } from '@services/formUtils';
-import { useCreateTask } from '@app/services/tasksHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { useApiAlert } from '@app/utils/useApiAlert';
+import { ConsoleServices } from '@services/ConsoleServices';
 
 const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const { addAlert } = useApiAlert();
 
   const nameInitialState: IField = {
     value: '',
@@ -24,7 +36,7 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
 
   const [name, setName] = useState<IField>(nameInitialState);
   const [script, setScript] = useState<IField>(scriptInitialState);
-  const { onCreateTask } = useCreateTask(name.value, script.value);
+  const [error, setError] = useState('');
 
   const handleSubmit = () => {
     let isValid = true;
@@ -34,11 +46,27 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
       formUtils.validateRequiredField(script.value.trim(), t('cache-managers.tasks.script'), setScript) && isValid;
 
     if (isValid) {
-      onCreateTask();
-      setName(nameInitialState);
-      setScript(scriptInitialState);
-      props.submitModal();
+      ConsoleServices.tasks()
+        .createOrUpdateTask(name.value, script.value, true)
+        .then((actionResponse) => {
+          if (actionResponse.success) {
+            setName(nameInitialState);
+            setScript(scriptInitialState);
+            setError('');
+            addAlert(actionResponse);
+            props.submitModal();
+          } else {
+            setError(actionResponse.message);
+          }
+        });
     }
+  };
+
+  const closeModal = () => {
+    props.closeModal();
+    setName(nameInitialState);
+    setScript(scriptInitialState);
+    setError('');
   };
 
   return (
@@ -47,7 +75,7 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
       variant={ModalVariant.medium}
       isOpen={props.isModalOpen}
       title={t('cache-managers.tasks.create-task')}
-      onClose={props.closeModal}
+      onClose={closeModal}
       aria-label={t('cache-managers.tasks.create-task')}
       disableFocusTrap={true}
       actions={[
@@ -60,7 +88,7 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
         >
           {t('cache-managers.tasks.confirm')}
         </Button>,
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal}>
+        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={closeModal}>
           {t('cache-managers.tasks.cancel')}
         </Button>
       ]}
@@ -70,6 +98,7 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
           e.preventDefault();
         }}
       >
+        {error !== '' && <Alert variant={AlertVariant.danger} title={error} />}
         <FormGroup
           validated={name.validated}
           isRequired
@@ -93,7 +122,7 @@ const CreateTask = (props: { isModalOpen: boolean; submitModal: () => void; clos
             <PopoverHelp
               name="script"
               label={t('cache-managers.tasks.provide-script')}
-              content={t('cache-managers.tasks.script-tooltip',{ brandname: brandname })}
+              content={t('cache-managers.tasks.script-tooltip', { brandname: brandname })}
             />
           }
           helperTextInvalid={script.invalidText}

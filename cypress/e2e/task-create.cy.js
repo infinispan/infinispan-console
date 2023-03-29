@@ -41,8 +41,8 @@ describe('Tasks', () => {
         cy.contains('testTask').click();
         cy.get('button[aria-label="expand-task-testTask"]').click({ force: true });
         cy.get('button[aria-label="edit-button-testTask"]').click();
-        cy.get('[data-cy=taskEditArea]').type('{selectall}', { timeout: 10000 });
-        cy.get('[data-cy="taskEditArea"]').click().type(updatedScript);
+        cy.get('.pf-c-code-editor').type('{selectall}', { timeout: 10000 });
+        cy.get('.pf-c-code-editor').click().type(updatedScript);
         cy.get('button[aria-label="edit-button-testTask"]').click();
         cy.contains('Task testTask has been updated');
         cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.

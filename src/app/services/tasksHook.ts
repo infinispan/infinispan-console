@@ -18,7 +18,7 @@ export function useFetchTask() {
             setError(either.value.message);
           }
         })
-        .then(() => setLoading(false));
+        .finally(() => setLoading(false));
     }
   }, [loading]);
 
@@ -46,20 +46,5 @@ export function useExecuteTask(name: string, params) {
   };
   return {
     onExecute
-  };
-}
-
-export function useCreateTask(taskName: string, script) {
-  const { addAlert } = useApiAlert();
-
-  const onCreateTask = () => {
-    ConsoleServices.tasks()
-      .createOrUpdateTask(taskName, script, true)
-      .then((actionResponse) => {
-        addAlert(actionResponse);
-      });
-  };
-  return {
-    onCreateTask
   };
 }

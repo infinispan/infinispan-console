@@ -58,7 +58,7 @@ const ExecuteTasks = (props: { task; isModalOpen: boolean; closeModal: () => voi
     return (
       <TextContent>
         <Text>
-          Do you want to execute <strong>{props.task?.name}</strong>
+          Do you want to execute <strong>{props.task?.name}</strong> ?
         </Text>
       </TextContent>
     );
