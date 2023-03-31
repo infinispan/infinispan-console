@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Button,
   Bullseye,
   Card,
   CardBody,
@@ -20,109 +21,56 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import { CubesIcon, SearchIcon } from '@patternfly/react-icons';
-import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { CubesIcon, SearchIcon, DownloadIcon } from '@patternfly/react-icons';
+import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { Health } from '@app/Common/Health';
-import { useApiAlert } from '@app/utils/useApiAlert';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
+import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/clusterHook';
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
-  const { addAlert } = useApiAlert();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [error, setError] = useState<undefined | string>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [cacheManager, setCacheManager] = useState<undefined | CacheManager>(undefined);
+  const { downloadServerReport, downloading } = useDownloadServerReport();
+
+  const { clusterMembers, cacheManager, loading, error, reload } = useFetchClusterMembers();
   const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
   const [clusterMembersPagination, setClusterMembersPagination] = useState({
     page: 1,
     perPage: 10
   });
-  const [rows, setRows] = useState<(string | any)[]>([]);
-  const columns = [
-    { title: 'Name' },
-    {
-      title: 'Physical address'
+
+  const columnNames = {
+    name: t('cluster-membership.node-name'),
+    physicalAdd: t('cluster-membership.physical-address')
+  };
+
+  useEffect(() => {
+    if (clusterMembers) {
+      const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
+      setFilteredClusterMembers(clusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
     }
-  ];
+  }, [loading, clusterMembers, error]);
 
   useEffect(() => {
-    ConsoleServices.dataContainer()
-      .getDefaultCacheManager()
-      .then((eitherDefaultCm) => {
-        setLoading(false);
-        if (eitherDefaultCm.isRight()) {
-          setCacheManager(eitherDefaultCm.value);
-          setFilteredClusterMembers(eitherDefaultCm.value.cluster_members);
-          updateRows(eitherDefaultCm.value.cluster_members);
-        } else {
-          setError(eitherDefaultCm.value.message);
-        }
-      });
-  }, []);
-
-  useEffect(() => {
-    const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
-    updateRows(filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
-  }, [error, cacheManager]);
+    if (filteredClusterMembers) {
+      const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
+      setFilteredClusterMembers(clusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
+    }
+  }, [clusterMembersPagination]);
 
   const onSetPage = (_event, pageNumber) => {
     setClusterMembersPagination({
-      page: pageNumber,
-      perPage: clusterMembersPagination.perPage
+      ...clusterMembersPagination,
+      page: pageNumber
     });
-    const initSlice = (pageNumber - 1) * clusterMembersPagination.perPage;
-    updateRows(filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setClusterMembersPagination({
-      page: clusterMembersPagination.page,
+      page: 1,
       perPage: perPage
     });
-    const initSlice = (clusterMembersPagination.page - 1) * perPage;
-    updateRows(filteredClusterMembers.slice(initSlice, initSlice + perPage));
-  };
-
-  const buildEmptyState = () => {
-    return (
-      <Bullseye>
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={SearchIcon} />
-          <Title headingLevel="h2" size="lg">
-            No cluster members
-          </Title>
-          <EmptyStateBody>Add nodes to create a cluster.</EmptyStateBody>
-        </EmptyState>
-      </Bullseye>
-    );
-  };
-
-  const updateRows = (clusterMembers: ClusterMember[]) => {
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-    if (clusterMembers.length == 0) {
-      rows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              props: { colSpan: 2 },
-              title: buildEmptyState()
-            }
-          ]
-        }
-      ];
-    } else {
-      rows = clusterMembers.map((member) => {
-        return {
-          heightAuto: true,
-          cells: [{ title: member.name }, { title: member.physical_address }]
-        };
-      });
-    }
-    setRows(rows);
   };
 
   const buildHeader = () => {
@@ -142,7 +90,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
         <Flex>
           <FlexItem>
             <TextContent>
-              <Text component={TextVariants.h1}>Cluster membership</Text>
+              <Text component={TextVariants.h1}>{t('cluster-membership.title')}</Text>
             </TextContent>
           </FlexItem>
         </Flex>
@@ -150,7 +98,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
           <FlexItem>
             <Health health={cacheManager.health} />
           </FlexItem>
-          <Divider isVertical></Divider>
+          <Divider orientation={{ default: 'vertical' }} />
           <FlexItem>
             <TextContent>
               <Text component={TextVariants.p}>{sizeLabel}</Text>
@@ -186,7 +134,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
           <EmptyStateIcon icon={CubesIcon} />
-          <EmptyStateBody>This cluster is empty</EmptyStateBody>
+          <EmptyStateBody>{t('cluster-membership.empty-cluster')}</EmptyStateBody>
         </EmptyState>
       );
     }
@@ -195,7 +143,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
       <Card>
         <CardBody>
           <Pagination
-            itemCount={filteredClusterMembers.length}
+            itemCount={clusterMembers.length}
             perPage={clusterMembersPagination.perPage}
             page={clusterMembersPagination.page}
             onSetPage={onSetPage}
@@ -203,10 +151,56 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
             onPerPageSelect={onPerPageSelect}
             isCompact
           />
-          <Table variant={TableVariant.compact} aria-label="Cluster status table" cells={columns} rows={rows}>
-            <TableHeader />
-            <TableBody />
-          </Table>
+          <TableComposable
+            className={'cluster-membership-table'}
+            aria-label={t('cluster-membership.title')}
+            variant={'compact'}
+          >
+            <Thead>
+              <Tr>
+                <Th colSpan={1}>{columnNames.name}</Th>
+                <Th colSpan={1}>{columnNames.physicalAdd}</Th>
+                <Th style={{ width: '28%' }} />
+              </Tr>
+            </Thead>
+            <Tbody>
+              {clusterMembers.length == 0 || filteredClusterMembers.length == 0 ? (
+                <Tr>
+                  <Td colSpan={6}>
+                    <Bullseye>
+                      <EmptyState variant={EmptyStateVariant.small}>
+                        <EmptyStateIcon icon={SearchIcon} />
+                        <Title headingLevel="h2" size="lg">
+                          {t('cluster-membership.no-cluster-title')}
+                        </Title>
+                        <EmptyStateBody>{t('cluster-membership.no-cluster-body')}</EmptyStateBody>
+                      </EmptyState>
+                    </Bullseye>
+                  </Td>
+                </Tr>
+              ) : (
+                filteredClusterMembers.map((row) => {
+                  return (
+                    <Tr key={row.name}>
+                      <Td dataLabel={columnNames.name}>{row.name}</Td>
+                      <Td dataLabel={columnNames.physicalAdd}>{row.physical_address}</Td>
+                      <Td dataLabel={columnNames.physicalAdd}>
+                        <Button
+                          variant="link"
+                          isInline
+                          isLoading={downloading}
+                          icon={!downloading ? <DownloadIcon /> : null}
+                          onClick={() => downloadServerReport(row.name)}
+                        >
+                          {downloading ? t('cluster-membership.downloading') : t('cluster-membership.download-report')}
+                        </Button>
+                      </Td>
+                    </Tr>
+                  );
+                })
+              )}
+            </Tbody>
+          </TableComposable>
         </CardBody>
       </Card>
     );

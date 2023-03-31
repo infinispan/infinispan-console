@@ -732,5 +732,15 @@
     "cluster-distribution-option-no-memory": "No memory",
     "global-stats-enable-msg": "Global statistics for all caches in the cluster",
     "global-stats-disable-msg": "You must enable global statistics in the Cache Manager configuration to display values."
+  },
+  "cluster-membership": {
+    "title": "Cluster membership",
+    "node-name": "Name",
+    "physical-address": "Physical address",
+    "download-report": "Download server report",
+    "downloading": "Downloading",
+    "empty-cluster": "This cluster is empty",
+    "no-cluster-title": "No cluster members",
+    "no-cluster-body": "Add nodes to create a cluster."
   }
 }
