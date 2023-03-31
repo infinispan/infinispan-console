@@ -21,4 +21,31 @@ export class ServerService {
   public async getVersion(): Promise<Either<ActionResponse, string>> {
     return this.utils.get(this.endpoint, (data) => data.version);
   }
+
+  /**
+   * Get server report for a given nodeName
+   */
+  public async downloadReport(nodeName: string): Promise<Either<ActionResponse, Blob>> {
+    return this.utils
+      .fetch(this.endpoint + '/report/' + encodeURIComponent(nodeName), 'GET')
+      .then((response) => {
+        if (response.ok) {
+          return response.blob();
+        } else {
+          return response.text().then((text) => {
+            throw text;
+          });
+        }
+      })
+      .then((data) => {
+        if (data instanceof Blob) {
+          return right(data) as Either<ActionResponse, Blob>;
+        }
+        return left(<ActionResponse>{
+          message: 'Unexpected error retreiving data',
+          success: false,
+          data: data
+        });
+      });
+  }
 }
