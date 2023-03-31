@@ -232,6 +232,30 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
+  const buildRefreshButton = () => {
+    return (
+      <React.Fragment>
+        <ToolbarItem>
+          <Flex>
+            <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
+            <Button
+              type="button"
+              aria-label={t('caches.actions.refresh')}
+              variant="link"
+              onClick={() => {
+                loadCache(cacheName);
+              }}
+              icon={<RedoIcon />}
+              iconPosition="left"
+            >
+              {t('caches.actions.refresh')}
+            </Button>
+          </Flex>
+        </ToolbarItem>
+      </React.Fragment>
+    );
+  };
+
   const buildShowMoreHeader = () => {
     if (!cache) {
       return '';
@@ -293,22 +317,9 @@ const DetailCache = (props: { cacheName: string }) => {
         </ToolbarGroup>
         <ToolbarGroup>
           <RebalancingCache />
-          <ToolbarItem>
-            <Button
-              type="button"
-              aria-label={t('caches.actions.refresh')}
-              variant="link"
-              onClick={() => {
-                loadCache(cacheName);
-              }}
-              icon={<RedoIcon />}
-              iconPosition="left"
-            >
-              {t('caches.actions.refresh')}
-            </Button>
-          </ToolbarItem>
           {buildBackupsManage()}
           {buildIndexManage()}
+          {buildRefreshButton()}
         </ToolbarGroup>
       </React.Fragment>
     );
