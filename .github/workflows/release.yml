@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "The ProtoStream branch to checkout when cutting the release."
+        description: "The Infinispan Console branch to checkout when cutting the release."
         required: true
         default: "main"
       version:
