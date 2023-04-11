@@ -418,7 +418,7 @@
       "table-label": "Create caches from custom templates.",
       "no-encoding-warning": "This cache either has no encoding configuration or uses an encoding that the console does not support. You must use Hot Rod clients to perform read and write operations on this cache.",
       "encoding-docs-message": "See \"Cache Encoding and Marshalling\" in the documentation.",
-      "pojo-encoding": "This cache uses \"{{encoding}}\" encoding. Data manipulation or displaying entries might not be fully supported from the Console."
+      "pojo-encoding": "This cache uses \"{{encoding}}\" encoding. {{brandname}} Console might not fully support data manipulation or displaying entries for caches that don't use ProtoStream encoding."
     },
     "tabs": {
       "entries": "Entries",

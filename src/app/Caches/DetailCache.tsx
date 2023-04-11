@@ -144,6 +144,29 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
+  const encodingMessage = () => {
+    if (loading || !cache || error) {
+      return '';
+    }
+
+    const encodingType = CacheConfigUtils.toEncoding(cache.configuration.config);
+    if (encodingType == EncodingType.Protobuf) {
+      return '';
+    }
+    return (
+      <Alert
+        isExpandable
+        title={t('caches.configuration.no-query-encoding', { encoding: encodingType.toString() })}
+        variant={AlertVariant.info}
+        actionLinks={
+          <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
+            {t('caches.configuration.encoding-docs-message')}
+          </AlertActionLink>
+        }
+      />
+    );
+  };
+
   const buildDetailContent = () => {
     if (error.length > 0) {
       return (
