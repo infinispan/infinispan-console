@@ -42,7 +42,7 @@ const CacheConfiguration = (props: { cacheName: string; editable: boolean; confi
           variant={AlertVariant.warning}
           actionLinks={
             <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
-              {t('caches.configuration.no-encoding-docs')}
+              {t('caches.configuration.encoding-docs-message')}
             </AlertActionLink>
           }
         />
