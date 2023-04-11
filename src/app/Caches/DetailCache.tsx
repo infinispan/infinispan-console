@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Alert,
+  AlertActionLink,
+  AlertVariant,
   Button,
   ButtonVariant,
   Card,
@@ -37,7 +40,7 @@ import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { global_danger_color_200 } from '@patternfly/react-tokens';
-import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
 import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
@@ -47,11 +50,13 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useTranslation } from 'react-i18next';
 import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
-import { RedoIcon } from '@patternfly/react-icons';
+import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import { EncodingType } from '@services/infinispanRefData';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { t } = useTranslation();
+  const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache, loadCache } = useCacheDetail();
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
@@ -62,6 +67,34 @@ const DetailCache = (props: { cacheName: string }) => {
     loadCache(cacheName);
   }, []);
 
+  const encodingMessageDisplay = () => {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+      return '';
+    }
+    const encoding = CacheConfigUtils.toEncoding(cache.configuration.config);
+
+    if (encoding == EncodingType.Java || encoding == EncodingType.JBoss) {
+      return (
+        <Card isCompact>
+          <CardBody>
+            <Alert
+              isPlain
+              isInline
+              title={t('caches.configuration.pojo-encoding', { encoding: encoding.toString() })}
+              variant={AlertVariant.info}
+              actionLinks={
+                <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
+                  {t('caches.configuration.encoding-docs-message')}
+                </AlertActionLink>
+              }
+            />
+          </CardBody>
+        </Card>
+      );
+    }
+    return '';
+  };
+
   const buildEntriesTabContent = (queryable: boolean) => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
       return '';
@@ -70,6 +103,7 @@ const DetailCache = (props: { cacheName: string }) => {
     if (!queryable) {
       return (
         <React.Fragment>
+          {encodingMessageDisplay()}
           <CacheEntries cacheName={cacheName} />
         </React.Fragment>
       );
@@ -89,6 +123,7 @@ const DetailCache = (props: { cacheName: string }) => {
           title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}
           data-cy="manageEntriesTab"
         >
+          {encodingMessageDisplay()}
           <CacheEntries cacheName={cacheName} />
         </Tab>
         <Tab
