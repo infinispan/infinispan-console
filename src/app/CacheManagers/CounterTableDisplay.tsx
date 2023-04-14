@@ -312,7 +312,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       </Toolbar>
       <TableComposable
         className={'strongCounters-table'}
-        aria-label={t('cache-managers.counters.counters-table-label')}
+        aria-label={'strong-counters-table-label'}
         variant={'compact'}
       >
         <Thead>
