@@ -198,7 +198,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
       isOpen={props.isModalOpen}
       title={t('cache-managers.counters.modal-create-title')}
       onClose={onCloseModal}
-      aria-label={t('cache-managers.counters.modal-create-title')}
+      aria-label={'counters-modal-create-title'}
       disableFocusTrap={true}
       actions={[
         <Button key={'Create'} aria-label={'Create'} variant={ButtonVariant.primary} onClick={handleSubmit}>

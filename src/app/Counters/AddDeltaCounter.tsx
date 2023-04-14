@@ -60,7 +60,7 @@ const AddDeltaCounter = (props: {
               value={props.deltaValue}
               type="number"
               onChange={(value) => props.setDeltaValue(value)}
-              aria-label={t('cache-managers.counters.delta-text-input')}
+              aria-label={'delta-text-input'}
               data-cy="counterDeltaNum"
             />
           </FormGroup>

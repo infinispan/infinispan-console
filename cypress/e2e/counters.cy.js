@@ -2,7 +2,7 @@ describe('Counters CRUD', () => {
     beforeEach(() => {
       cy.login(Cypress.env('username'), Cypress.env('password'));
     });
-  
+
     it('successfully creates weak & volatile counter', () => {
       cy.get('a[aria-label="nav-item-Counters"]').click();
       //Creating new weak counter
@@ -74,20 +74,20 @@ describe('Counters CRUD', () => {
         cy.get('a[aria-label="nav-item-Counters"]').click();
         cy.contains('strong-5');
         cy.contains('td', 'strong-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
             cy.get('[data-cy=addDeltaAction]').click();
         });
         cy.get("#add-delta-counter-modal").should('exist');
-        
+
         //Writing normal delta value
         cy.get("[data-cy=counterDeltaNum]").clear().type(1);
         cy.get("[data-cy=confirmAddDeltaButton]").click();
         cy.contains("Delta value for counter strong-5 has been set.")
         cy.get("#add-delta-counter-modal").should('not.exist');
         cy.contains('td', 'strong-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('[data-label="Current value"]').contains('4');
         });
       });
@@ -95,19 +95,19 @@ describe('Counters CRUD', () => {
       it ('successfully resets strong counter', () => {
         cy.get('a[aria-label="nav-item-Counters"]').click();
         cy.contains('td', 'strong-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('[data-label="Current value"]').contains('4');
         });
         cy.contains('td', 'strong-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
             cy.get('[data-cy=resetCounter]').click();
         });
-        
+
         cy.get("[data-cy=resetCounterButton]").click();
         cy.contains('td', 'strong-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('[data-label="Current value"]').contains('3');
         });
         cy.get("#reset-counter-modal").should('not.exist');
@@ -118,36 +118,36 @@ describe('Counters CRUD', () => {
         cy.get('a[aria-label="nav-item-Counters"]').click();
         cy.contains('weak-5');
         cy.contains('td', 'weak-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
             cy.get('[data-cy=resetCounter]').should('not.exist');
             cy.get('[data-cy=addDeltaAction]').should('not.exist');
             cy.get('[data-cy=deleteCounter]').click();
         });
-        
+
         cy.get("[data-cy=deleteCounterButton]").click();
 
         cy.get("#delete-counter-modal").should('not.exist');
         cy.contains("Counter weak-5 has been deleted.");
-        cy.get("[aria-label='cache-managers.counters.counters-table-label']").contains("td", "weak-5").should("not.exist");
+        cy.get("[aria-label='strong-counters-table-label']").contains("td", "weak-5").should("not.exist");
       });
 
       it ('successfully deletes strong counter', () => {
         cy.get('a[aria-label="nav-item-Counters"]').click();
         cy.contains('strong-5');
         cy.contains('td', 'strong-5').parent()
-        .within($tr => {                       
+        .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
             cy.get('[data-cy=deleteCounter]').click();
         });
-        
+
         cy.get("[data-cy=deleteCounterButton]").click();
 
         cy.get("#delete-counter-modal").should('not.exist');
         cy.contains("Counter strong-5 has been deleted.");
-        cy.get("[aria-label='cache-managers.counters.counters-table-label']").contains("td", "strong-5").should("not.exist");
+        cy.get("[aria-label='strong-counters-table-label']").contains("td", "strong-5").should("not.exist");
       });
 
       it ('successfully filters counters', () => {
