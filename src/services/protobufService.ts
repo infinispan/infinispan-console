@@ -20,7 +20,7 @@ export class ProtobufService {
   public async createOrUpdateSchema(schemaName: string, schema: string, create: boolean): Promise<ActionResponse> {
     if (create) {
       return this.utils.post({
-        url: this.endpoint + '/' + schemaName,
+        url: this.endpoint + '/' + encodeURIComponent(schemaName),
         successMessage: `Schema ${schemaName} created.`,
         errorMessage: `Unexpected error creating schema ${schemaName}`,
         body: schema
@@ -28,7 +28,7 @@ export class ProtobufService {
     }
 
     return this.utils.put({
-      url: this.endpoint + '/' + schemaName,
+      url: this.endpoint + '/' + encodeURIComponent(schemaName),
       successMessage: `Schema ${schemaName} updated.`,
       errorMessage: `Unexpected error updating schema ${schemaName}`,
       body: schema
@@ -40,7 +40,7 @@ export class ProtobufService {
    */
   public async delete(schemaName: string): Promise<ActionResponse> {
     return this.utils.delete({
-      url: this.endpoint + '/' + schemaName,
+      url: this.endpoint + '/' + encodeURIComponent(schemaName),
       successMessage: `Schema ${schemaName} has been deleted.`,
       errorMessage: `Unexpected error happened when deleting schema ${schemaName}.`
     });
@@ -50,7 +50,7 @@ export class ProtobufService {
    * Get schema
    */
   public async getSchema(schemaName: string): Promise<Either<ActionResponse, string>> {
-    return this.utils.get(this.endpoint + '/' + schemaName, (data) => data, undefined, true);
+    return this.utils.get(this.endpoint + '/' + encodeURIComponent(schemaName), (data) => data, undefined, true);
   }
 
   /**
