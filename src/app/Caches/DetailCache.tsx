@@ -56,6 +56,7 @@ import { EncodingType } from '@services/infinispanRefData';
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache, loadCache } = useCacheDetail();
@@ -80,7 +81,7 @@ const DetailCache = (props: { cacheName: string }) => {
             <Alert
               isPlain
               isInline
-              title={t('caches.configuration.pojo-encoding', { encoding: encoding.toString() })}
+              title={t('caches.configuration.pojo-encoding', { brandname: brandname, encoding: encoding.toString() })}
               variant={AlertVariant.info}
               actionLinks={
                 <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>

@@ -3,6 +3,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { ContentType } from '@services/infinispanRefData';
+import { isEncodingAvailable } from '@app/utils/encodingUtils';
 
 const initialContext = {
   error: '',
@@ -66,7 +67,7 @@ const CacheDetailProvider = ({ children }) => {
               })
               .finally(() => {
                 setLoading(false);
-                setLoadingEntries(true);
+                isEncodingAvailable(cache) && setLoadingEntries(true);
               });
           } else {
             setError(maybeCm.value.message);
@@ -133,7 +134,6 @@ const CacheDetailProvider = ({ children }) => {
     reloadEntries: useCallback(() => setLoadingEntries(true), []),
     getByKey: fetchEntry
   };
-
   return <CacheDetailContext.Provider value={contextValue}>{children}</CacheDetailContext.Provider>;
 };
 
