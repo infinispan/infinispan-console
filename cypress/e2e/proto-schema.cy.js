@@ -120,7 +120,14 @@ describe('Proto Schema CRUD', () => {
     cy.get('#schema-name').click().type('1234567890+-*/name!@#$with%^&*special()_+symbols{}|":isnot?><saved>');
     cy.get('#schema').click().type('1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
     cy.get('[data-cy="addSchemaButton"]').click();
-    cy.contains('Unexpected error');
-    cy.get('[data-cy="cancelAddSchemaButton"]').click();
+    cy.contains('1234567890+-');
+    cy.contains('*/name!@#$with%^&*special()_+symbols{}|":isnot?');
+    cy.contains('><saved>.proto')
+    //Deleting schema
+    cy.get('button[id^="1234567890+-"]').click({ force: true});
+    cy.get('button[id^="delete-button-schema-1234567890"]').click({ force: true });
+    cy.contains('Permanently delete schema?');
+    cy.get('button[aria-label="confirm-delete-schema-button"]').click();
+    cy.contains('has been deleted.');
   });
 });

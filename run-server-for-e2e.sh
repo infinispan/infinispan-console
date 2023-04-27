@@ -8,10 +8,13 @@ else
   trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 fi
 
+
+#If running on the existing server please provide the Path with this property.
+EXISTING_SERVER_PATH="${EXISTING_SERVER_PATH}"
 #Base directory where the server should be downloaded
 BASE_DIR="server"
 #The version of the server is either set as an environment variable or is the latest dev version
-SERVER_VERSION="${SERVER_VERSION:-"14.0.6.Final"}"
+SERVER_VERSION="${SERVER_VERSION:-"14.0.7.Final"}"
 #Root path from there the infinispan server should be downloaded
 ZIP_ROOT="http://downloads.jboss.org/infinispan"
 #If this environment variable is provided then it is used for downloading the server;
@@ -46,17 +49,21 @@ function prepareServerDir()
     local confPath=$2
     local dirName=${3}
 
-    cd ${BASE_DIR}
-    if [ ! -f ${ZIP_NAME} ]; then
-
+cd ${BASE_DIR}
+    if [ -n "${EXISTING_SERVER_PATH}" ]; then
+      mkdir ${SERVER_UNZIP_DIR}
+      cp -r ${EXISTING_SERVER_PATH} $SERVER_UNZIP_DIR
+    else
+      if [ ! -f ${ZIP_NAME} ]; then
         if [ -n "$SERVER_DOWNLOAD_URL" ]; then
           wget "${SERVER_DOWNLOAD_URL}"
         else
           wget "$ZIP_ROOT/$SERVER_VERSION/$ZIP_NAME";
         fi
-    fi
+      fi
 
-    unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
+      unzip -d $SERVER_UNZIP_DIR $ZIP_NAME
+    fi
     cd ..
 
     if [[ -z "${SERVER_TMP}" ]]; then
