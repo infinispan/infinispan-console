@@ -10,10 +10,17 @@ import {
   Select,
   SelectVariant,
   SelectOption,
-  Spinner
+  Spinner,
+  TextInput
 } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { IndexedStorage, CacheFeature, EncodingType, IndexedStartupMode } from '@services/infinispanRefData';
+import {
+  IndexedStorage,
+  CacheFeature,
+  EncodingType,
+  IndexedStartupMode,
+  IndexingMode
+} from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -29,6 +36,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
 
   const { protobufTypes, loading, error } = useFetchProtobufTypes();
 
+  const [indexingMode, setIndexingMode] = useState(configuration.feature.indexedCache.indexingMode);
+
   const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local-heap'>(
     configuration.feature.indexedCache.indexedStorage
   );
@@ -40,6 +49,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
 
   const [isOpenEntities, setIsOpenEntities] = useState(false);
   const [isOpenStartupMode, setIsOpenStartupMode] = useState(false);
+  const [indexedSharding, setIndexedSharding] = useState(configuration.feature.indexedCache.indexedSharding);
 
   useEffect(() => {
     indexedEntities.length > 0 ? setValidEntity('success') : setValidEntity('error');
@@ -50,15 +60,17 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         feature: {
           ...prevState.feature,
           indexedCache: {
+            indexingMode: indexingMode,
             indexedStorage: indexedStorage,
             indexedStartupMode: indexedStartupMode,
             indexedEntities: indexedEntities,
+            indexedSharding: indexedSharding,
             valid: indexingFeatureValidation()
           }
         }
       };
     });
-  }, [indexedStorage, indexedEntities, indexedStartupMode]);
+  }, [indexingMode, indexedStorage, indexedEntities, indexedStartupMode, indexedSharding]);
 
   const indexingFeatureValidation = (): boolean => {
     return indexedEntities.length > 0 && configuration.basic.encoding === EncodingType.Protobuf;
@@ -170,6 +182,33 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
       description="caches.create.configurations.feature.indexed-tooltip"
     >
       <FormGroup
+        label={t('caches.create.configurations.feature.indexing-mode')}
+        labelIcon={
+          <PopoverHelp
+            name={'indexing-mode'}
+            label={t('caches.create.configurations.feature.indexing-mode')}
+            content={t('caches.create.configurations.feature.indexing-mode-tooltip', { brandname: brandname })}
+          />
+        }
+        fieldId="indexing-mode"
+        isInline
+      >
+        <Radio
+          name="radio-indexing-mode"
+          id="auto"
+          onChange={() => setIndexingMode(IndexingMode.auto)}
+          isChecked={indexingMode === IndexingMode.auto}
+          label={t('caches.create.configurations.feature.indexing-mode-auto')}
+        />
+        <Radio
+          name="radio-indexing-mode"
+          id="manual"
+          onChange={() => setIndexingMode(IndexingMode.manual)}
+          isChecked={indexingMode === IndexingMode.manual}
+          label={t('caches.create.configurations.feature.indexing-mode-manual')}
+        />
+      </FormGroup>
+      <FormGroup
         label={t('caches.create.configurations.feature.index-storage')}
         labelIcon={
           <PopoverHelp
@@ -209,6 +248,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         isInline
       >
         <Select
+          toggleId="startupModeSelector"
           variant={SelectVariant.single}
           aria-label="startup-mode-select"
           onToggle={() => setIsOpenStartupMode(!isOpenStartupMode)}
@@ -236,6 +276,25 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           </Label>
         ))}
       </LabelGroup>
+      <FormGroup
+        label={t('caches.create.configurations.feature.index-sharding')}
+        labelIcon={
+          <PopoverHelp
+            name={'indexed-sharding'}
+            label={t('caches.create.configurations.feature.index-sharding')}
+            content={t('caches.create.configurations.feature.index-sharding-tooltip', { brandname: brandname })}
+          />
+        }
+        fieldId="indexed-sharding"
+        isInline
+      >
+        <TextInput
+          value={indexedSharding} data-cy="indexSharding"
+          type="number"
+          onChange={(value) => setIndexedSharding(parseInt(value))}
+          aria-label="indexed-sharding-input"
+        />
+      </FormGroup>
     </FeatureCard>
   );
 };

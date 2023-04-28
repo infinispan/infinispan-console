@@ -145,6 +145,11 @@ export enum EvictionType {
   count = 'count'
 }
 
+export enum IndexingMode {
+  auto = 'AUTO',
+  manual = 'MANUAL'
+}
+
 export enum IndexedStorage {
   persistent = 'filesystem',
   volatile = 'local-heap'

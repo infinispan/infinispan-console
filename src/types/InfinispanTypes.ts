@@ -329,6 +329,8 @@ interface IndexMerge {
   maxForcedSize?: number;
 }
 interface IndexedCache {
+  indexingMode?: 'AUTO' | 'MANUAL';
+  indexedSharding?: number;
   indexedStorage: 'filesystem' | 'local-heap';
   indexedStartupMode?: string;
   indexedEntities: string[];

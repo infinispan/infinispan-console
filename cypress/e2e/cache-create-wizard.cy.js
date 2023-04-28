@@ -31,6 +31,11 @@ describe('Cache Creation Wizard', () => {
     cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('ind');
     cy.get('#INDEXED > button').click();
     cy.get('#persistent').click();
+    cy.get('#auto').click();
+    cy.get('#volatile').click();
+    cy.get('#startupModeSelector').click();
+    cy.get('#reindex').click();
+    cy.get('[data-cy=indexSharding]').type(10);
     cy.get('[data-cy=wizardNextButton]').should('be.disabled');
     cy.get('#entitiesSelector').click();
     cy.get('[id$="org.infinispan.Car"]').click();
