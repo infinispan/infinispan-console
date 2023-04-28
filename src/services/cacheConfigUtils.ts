@@ -211,6 +211,7 @@ export class CacheConfigUtils {
     const featureIndexed = () => {
       cache[cacheType]['indexing'] = {
         enabled: true,
+        'indexing-mode': data.feature.indexedCache.indexingMode,
         storage: data.feature.indexedCache.indexedStorage,
         'startup-mode': data.feature.indexedCache.indexedStartupMode,
         'indexed-entities': data.feature.indexedCache.indexedEntities
@@ -246,6 +247,12 @@ export class CacheConfigUtils {
         'max-size': data.advanced.indexMerge.maxSize,
         'max-forced-size': data.advanced.indexMerge.maxForcedSize,
         'calibrate-by-deletes': data.advanced.indexMerge.calibrateByDeletes
+      };
+    };
+
+    const indexSharding = () => {
+      cache[cacheType]['indexing']['index-sharding'] = {
+        shards: data.feature.indexedCache.indexedSharding
       };
     };
 
@@ -336,6 +343,7 @@ export class CacheConfigUtils {
 
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
       featureIndexed();
+      data.feature.indexedCache.indexedSharding && indexSharding();
       data.advanced.indexReader && indexReader();
       if (
         data.advanced.indexWriter.commitInterval ||
