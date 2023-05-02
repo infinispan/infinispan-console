@@ -13,6 +13,7 @@ import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
+import { AccessManager } from '@app/AccessManagement/AccessManager';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
@@ -167,6 +168,15 @@ const routes: IAppRoute[] = [
     title: 'Cache',
     menu: false,
     admin: false
+  },
+  {
+    component: AccessManager,
+    exact: true,
+    label: 'Access Management',
+    path: '/access-management',
+    title: 'Access Management',
+    menu: true,
+    admin: true
   },
   {
     component: ConnectedClients,

@@ -12,11 +12,12 @@ const App = () => {
   const [init, setInit] = useState<
     'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN' | 'HTTP_LOGIN'
   >('PENDING');
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  let searchParams = new URL(window.location).searchParams;
+  const searchParams = new URL(window.location).searchParams;
   // local dev mode basic
-  let user = searchParams.get('user');
-  let password = searchParams.get('password');
+  const user = searchParams.get('user');
+  const password = searchParams.get('password');
 
   if (user != null && password != null) {
     ConsoleServices.init(user, password);

@@ -25,7 +25,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   useEffect(() => {
     if (loading) {
       ConsoleServices.security()
-        .getSecurityRoles()
+        .getSecurityRolesNames()
         .then((r) => {
           if (r.isRight()) {
             setAvailableRoles(r.value);

@@ -1,4 +1,4 @@
-import { Either, left, right } from './either';
+import { Either } from './either';
 import { FetchCaller } from '@services/fetchCaller';
 import { AuthenticationService } from '@services/authService';
 
@@ -36,12 +36,12 @@ export enum ACL {
  */
 export class SecurityService {
   endpoint: string;
-  utils: FetchCaller;
+  fetchCaller: FetchCaller;
   authenticationService: AuthenticationService;
 
-  constructor(endpoint: string, restUtils: FetchCaller, authenticationService: AuthenticationService) {
+  constructor(endpoint: string, fetchCaller: FetchCaller, authenticationService: AuthenticationService) {
     this.endpoint = endpoint;
-    this.utils = restUtils;
+    this.fetchCaller = fetchCaller;
     this.authenticationService = authenticationService;
   }
 
@@ -49,18 +49,18 @@ export class SecurityService {
    * Retrieve connected user acl
    */
   public async userAcl(): Promise<Either<ActionResponse, Acl>> {
-    return this.utils.get(this.endpoint + '/user/acl', (data) => {
+    return this.fetchCaller.get(this.endpoint + '/user/acl', (data) => {
       const subjects = data.subject;
       let username = 'Connected User';
-      for (let subject of subjects) {
+      for (const subject of subjects) {
         if (subject['type'] == 'NamePrincipal') {
           username = subject['name'];
         }
       }
 
-      let global = data.global as string[];
-      let cachesAcl = new Map();
-      for (let cacheName of Object.keys(data.caches)) {
+      const global = data.global as string[];
+      const cachesAcl = new Map();
+      for (const cacheName of Object.keys(data.caches)) {
         cachesAcl.set(cacheName, <CacheAcl>{
           name: cacheName,
           acl: data.caches[cacheName].map((aclStr) => aclStr as ACL)
@@ -156,7 +156,25 @@ export class SecurityService {
    * Retrieve security roles
    *
    */
-  public async getSecurityRoles(): Promise<Either<ActionResponse, string[]>> {
-    return this.utils.get(this.endpoint + '/roles', (text) => text);
+  public async getSecurityRolesNames(): Promise<Either<ActionResponse, string[]>> {
+    return this.fetchCaller.get(this.endpoint + '/roles', (data) => data);
+  }
+
+  /**
+   * Retrieve security roles
+   *
+   */
+  public async getSecurityRoles(): Promise<Either<ActionResponse, Role[]>> {
+    return this.fetchCaller.get(this.endpoint + '/roles-detail', (data) =>
+      Object.keys(data).map(
+        (roleName) =>
+          <Role>{
+            name: roleName,
+            description: data[roleName].description,
+            permissions: data[roleName].permissions,
+            implicit: data[roleName].implicit
+          }
+      )
+    );
   }
 }
