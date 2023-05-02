@@ -4,7 +4,8 @@
     "documentation-link": "https://infinispan.org/documentation/",
     "encoding-docs-link": "https://infinispan.org/docs/stable/titles/encoding/encoding.html",
     "persistence-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html#persistence",
-    "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html"
+    "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html",
+    "default-roles-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#default-user-roles_server-getting-started"
   },
   "layout": {
     "console-name": "Server Management Console",
@@ -835,5 +836,22 @@
     "local-address": "Local address",
     "null": "N/A",
     "more-info": "More info"
+  },
+  "access-management": {
+    "title": "Access management",
+    "description": "Access management allows you to control {{brandname}} Server administration.",
+    "tab-roles": "Roles",
+    "tab-access-control": "Access control",
+    "roles": {
+      "role-name": "Role name",
+      "role-name-tooltip": "Role name prefixed with a lock indicates that the role is predefined and cannot be edited.",
+      "permissions": "Permissions",
+      "role-description": "Description",
+      "search-placeholder": "Find by {{searchOption}}",
+      "no-roles-found": "No roles found",
+      "no-roles-body": "You can create a role to manage access to {{brandname}} Server administration.",
+      "no-filtered-roles-body": "No roles match your search criteria.",
+      "roles-hint-link": "Learn more in the {{brandname}} documentation"
+    }
   }
 }

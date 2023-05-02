@@ -96,8 +96,10 @@ describe('RBAC Functionality Tests', () => {
     cy.contains('Cluster Membership').should('exist');
     if (isSuperAdmin) {
       cy.contains('Connected Clients').should('exist');
+      cy.contains('Access Management').should('exist');
     } else {
       cy.contains('Connected Clients').should('not.exist');
+      cy.contains('Access Management').should('not.exist');
     }
   }
 
