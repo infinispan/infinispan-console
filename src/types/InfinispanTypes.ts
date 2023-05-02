@@ -483,3 +483,10 @@ interface ConnectedClients {
   'ssl-protocol'?: string;
   count?: number;
 }
+
+interface Role {
+  name: string;
+  description: string;
+  implicit: boolean;
+  permissions: string[];
+}

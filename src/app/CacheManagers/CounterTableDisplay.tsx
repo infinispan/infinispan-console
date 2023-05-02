@@ -269,6 +269,19 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     );
   };
 
+  const buildSeparator = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser) ||
+      filteredCounters.length !== 0) {
+      return;
+    }
+    return (
+      <ToolbarItem
+        variant={ToolbarItemVariant.separator}
+        style={{ marginInline: global_spacer_sm.value }}
+      ></ToolbarItem>
+    )
+  }
+
   const buildCreateCounterButton = () => {
     if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return;
@@ -375,17 +388,16 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         setSelectedCounterType('');
         setSelectedCounterStorage('');
       }}
-      style={{ marginBottom: '1rem' }}
     >
       <ToolbarContent>
-        <ToolbarToggleGroup data-cy="counterFilterSelect" toggleIcon={<FilterIcon />} breakpoint="xl">
+        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
           <ToolbarFilter
+            data-cy="counterFilterSelect"
             chips={selectedCounterType !== '' ? [selectedCounterType] : ([] as string[])}
             deleteChip={() => setSelectedCounterType('')}
             deleteChipGroup={() => setSelectedCounterType('')}
             categoryName={t('cache-managers.counters.counter-type')}
           >
-            <div />
           </ToolbarFilter>
           <ToolbarFilter
             chips={selectedCounterStorage !== '' ? [selectedCounterStorage] : ([] as string[])}
@@ -398,10 +410,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           </ToolbarFilter>
         </ToolbarToggleGroup>
         <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
-        <ToolbarItem
-          variant={ToolbarItemVariant.separator}
-          style={{ marginInline: global_spacer_sm.value }}
-        ></ToolbarItem>
+        {buildSeparator()}
         {buildCreateCounterButton()}
         {filteredCounters.length !== 0 && (
           <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('down')}</ToolbarItem>

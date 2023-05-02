@@ -47,3 +47,11 @@ body,
 .pf-v5-c-table__action {
   text-align: right;
 }
+
+.role-table-display{
+  margin-bottom: var(--pf-v5-global--spacer--md);
+}
+
+.role-icon{
+  margin-right: var(--pf-v5-global--spacer--xs);
+}

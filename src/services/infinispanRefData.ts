@@ -240,3 +240,9 @@ export enum CounterStorage {
   VOLATILE = 'Volatile',
   PERSISTENT = 'Persistent'
 }
+
+export enum RoleFilterOption {
+  name = 'Name',
+  cacheManagerPermissions = 'Cache Manager Permissions',
+  cachePermissions = 'Cache Permissions'
+}

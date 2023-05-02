@@ -14,6 +14,7 @@ import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
+import { AccessManager } from '@app/AccessManagement/AccessManager';
 
 let routeFocusTimer: number;
 
@@ -144,6 +145,15 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName',
     title: 'Cache',
     menu: false
+  },
+  {
+    component: AccessManager,
+    exact: true,
+    label: 'Access Management',
+    path: '/access-management',
+    title: 'Access Management',
+    // TODO: enable when Rest API is implemented
+    menu: true
   },
   {
     component: ConnectedClients,
