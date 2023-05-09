@@ -59,7 +59,7 @@ export enum CacheType {
 export enum EncodingType {
   Protobuf = 'application/x-protostream',
   Java = 'application/x-java-object',
-  JavaSerialized = 'application/x-java-serialized',
+  JavaSerialized = 'application/x-java-serialized-object',
   XML = 'application/xml; charset=UTF-8',
   JSON = 'application/json',
   Text = 'text/plain',
