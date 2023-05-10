@@ -167,7 +167,6 @@ export class CacheConfigUtils {
 
     const locking = () => {
       cache[cacheType].locking = {
-        isolation: data.advanced.transactionalAdvance?.isolationLevel,
         striping: data.advanced.striping,
         'concurrency-level': data.advanced.concurrencyLevel,
         'acquire-timeout': data.advanced.lockAcquisitionTimeout
@@ -330,13 +329,7 @@ export class CacheConfigUtils {
       cache[cacheType]['persistence']['availability-interval'] = data.feature.persistentCache.availabilityInterval;
     };
 
-    if (
-      data.advanced.concurrencyLevel ||
-      data.advanced.striping ||
-      data.advanced.transactionalAdvance?.isolationLevel ||
-      data.advanced.lockAcquisitionTimeout
-    )
-      locking();
+    if (data.advanced.concurrencyLevel || data.advanced.striping || data.advanced.lockAcquisitionTimeout) locking();
 
     data.basic.expiration === true && expiration();
     memoryConfiguration();
@@ -376,7 +369,11 @@ export class CacheConfigUtils {
 
     data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && featureSecured();
 
-    data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && featureTransactional();
+    if (data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
+      featureTransactional();
+      !cache[cacheType]['locking'] && (cache[cacheType]['locking'] = {});
+      cache[cacheType]['locking'].isolation = data.advanced.transactionalAdvance?.isolationLevel;
+    }
 
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.PERSISTENCE)) {
       featurePersistent();
