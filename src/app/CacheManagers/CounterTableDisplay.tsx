@@ -279,7 +279,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       <React.Fragment>
         <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
         <ToolbarItem>
-          <Button onClick={() => setIsCreateCounter(!isCreateCounter)} data-cy='createCounterButton'>
+          <Button onClick={() => setIsCreateCounter(!isCreateCounter)} data-cy="createCounterButton">
             {t('cache-managers.counters.modal-create-title')}
           </Button>
         </ToolbarItem>

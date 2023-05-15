@@ -61,7 +61,7 @@ const GlobalStats = () => {
               />
             </LevelItem>
             <LevelItem>
-              <Link to={{ pathname: '/' }}>
+              <Link to={{ pathname: '/', search: location.search }}>
                 <Button data-cy="viewCachesLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
                   {t('global-stats.view-caches-link')}
                 </Button>
@@ -232,7 +232,7 @@ const GlobalStats = () => {
               />
             </LevelItem>
             <LevelItem>
-              <Link to={{ pathname: '/cluster-membership' }}>
+              <Link to={{ pathname: '/cluster-membership', search: location.search }}>
                 <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
                   {t('global-stats.view-cluster-membership-link')}
                 </Button>

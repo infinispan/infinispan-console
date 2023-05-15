@@ -12,7 +12,17 @@ const App = () => {
   const [init, setInit] = useState<
     'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN' | 'HTTP_LOGIN'
   >('PENDING');
-  ConsoleServices.init();
+  // @ts-ignore
+  let searchParams = new URL(window.location).searchParams;
+  // local dev mode basic
+  let user = searchParams.get('user');
+  let password = searchParams.get('password');
+
+  if (user != null && password != null) {
+    ConsoleServices.init(user, password);
+  } else {
+    ConsoleServices.init();
+  }
 
   useEffect(() => {
     ConsoleServices.authentication()
@@ -46,7 +56,6 @@ const App = () => {
               });
           } else if (eitherAuth.value.ready) {
             if (eitherAuth.value.mode === 'HTTP') {
-              console.log('update init to http login');
               setInit('HTTP_LOGIN');
             } else {
               ConsoleServices.authentication().noSecurityMode();

@@ -33,10 +33,22 @@ const AddDeltaCounter = (props: {
       aria-label={t('cache-managers.counters.modal-delta-title')}
       disableFocusTrap={true}
       actions={[
-        <Button key={'Confirm'} aria-label={'Confirm'} variant={ButtonVariant.danger} onClick={handleSubmit} data-cy="confirmAddDeltaButton">
+        <Button
+          key={'Confirm'}
+          aria-label={'Confirm'}
+          variant={ButtonVariant.danger}
+          onClick={handleSubmit}
+          data-cy="confirmAddDeltaButton"
+        >
           {t('cache-managers.counters.modal-confirm-button')}
         </Button>,
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal} data-cy="cancelAddDeltaButton">
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={props.closeModal}
+          data-cy="cancelAddDeltaButton"
+        >
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
       ]}

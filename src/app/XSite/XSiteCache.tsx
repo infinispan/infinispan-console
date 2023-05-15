@@ -308,7 +308,7 @@ const XSiteCache = (props) => {
           heightAuto: true,
           cells: [
             { title: backup.name },
-            { title: buildStatus(backup.name, backup.status.status) },
+            { title: buildStatus(backup.name, backup.status) },
             { title: buildStateTransferStatus(backup.name) },
             { title: buildStateTransferButton(backup) }
           ]
@@ -334,7 +334,8 @@ const XSiteCache = (props) => {
             <Text key={'button-back'}>
               <Link
                 to={{
-                  pathname: '/cache/' + encodeURIComponent(cacheName)
+                  pathname: '/cache/' + encodeURIComponent(cacheName),
+                  search: location.search
                 }}
               >
                 <Button variant={ButtonVariant.secondary}>Back</Button>

@@ -56,10 +56,10 @@ describe('Add a delta', () => {
     );
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
-  
+
     const submitButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(submitButton);
-    
+
     expect(screen.getByText('cache-managers.counters.modal-delta-helper-invalid')).toBeTruthy();
     expect(closeModalCalls).toBe(0);
     expect(onAddDeltaCalls).toBe(0);

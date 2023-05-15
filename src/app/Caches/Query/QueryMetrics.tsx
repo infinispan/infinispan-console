@@ -113,7 +113,11 @@ const QueryMetrics = (props: { cacheName: string }) => {
 
     return (
       <LevelItem>
-        <Button data-cy='clearQueryMetricsButton' variant={ButtonVariant.danger} onClick={() => setClearMetricsModalOpen(true)}>
+        <Button
+          data-cy="clearQueryMetricsButton"
+          variant={ButtonVariant.danger}
+          onClick={() => setClearMetricsModalOpen(true)}
+        >
           {t('caches.query.button-clear-query-stats')}
         </Button>
         <ClearQueryMetrics

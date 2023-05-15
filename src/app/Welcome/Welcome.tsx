@@ -89,7 +89,7 @@ const Welcome = (props) => {
   };
 
   const notSecured = () => {
-    history.push('/');
+    history.push('/' + history.location.search);
   };
 
   const goToTheConsole = t('welcome-page.go-to-console');
@@ -112,7 +112,7 @@ const Welcome = (props) => {
               .then((r) => {
                 if (r.success) {
                   logUser();
-                  history.push('/');
+                  history.push('/' + history.location.search);
                 } else {
                   // Do nothing
                 }

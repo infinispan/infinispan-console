@@ -53,7 +53,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const logoProps = {
     target: '_self',
-    onClick: () => history.push('/')
+    onClick: () => history.push('/' + history.location.search)
   };
 
   const { t } = useTranslation();
@@ -87,7 +87,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const Logo = (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
       <FlexItem style={{ marginTop: global_spacer_sm.value }}>
-        <Link to={'/'}>
+        <Link to={{ pathname: '/', search: location.search }}>
           <Brand src={icon} alt={t('layout.console-name')} widths={{ default: '150px' }}>
             <source srcSet={icon} />
           </Brand>
@@ -179,7 +179,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
               <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
                 <NavLink
                   exact
-                  to={route.path}
+                  to={route.path + history.location.search}
                   activeClassName="pf-m-current"
                   isActive={(match, location) => {
                     if (match) {

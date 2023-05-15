@@ -64,11 +64,11 @@ export class ConsoleServices {
     return location.pathname == '/console/welcome' || location.pathname == '/console/welcome/';
   }
 
-  public static init() {
+  public static init(user?: string, password?: string) {
     if (!this.instance.initialized) {
       console.info('Init Console Services');
       this.instance.authenticationService = new AuthenticationService(ConsoleServices.endpoint());
-      this.instance.fetchCaller = new FetchCaller(this.instance.authenticationService);
+      this.instance.fetchCaller = new FetchCaller(this.instance.authenticationService, user, password);
       this.instance.protobufService = new ProtobufService(
         ConsoleServices.endpoint() + '/schemas',
         this.instance.fetchCaller
