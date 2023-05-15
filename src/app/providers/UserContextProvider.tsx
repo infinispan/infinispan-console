@@ -72,7 +72,7 @@ const UserContextProvider = ({ children }) => {
   const notSecuredModeOn = () => {
     setNotSecured(true);
     ConsoleServices.authentication().noSecurityMode();
-    history.push('/');
+    history.push('/' + history.location.search);
   };
 
   const contextValue = {

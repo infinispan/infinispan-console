@@ -89,7 +89,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('#cluster-manager-header').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
-    cy.contains('19 Caches');
+    cy.contains('18 Caches');
     cy.contains('12 Counters');
     if (isMonitor) {
       cy.contains('1 Tasks').should('not.exist');

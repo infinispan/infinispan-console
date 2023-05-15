@@ -434,7 +434,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       <Link
         data-cy={`detailLink-${cacheInfo.name}`}
         key={cacheInfo.name}
-        to={'/cache/' + encodeURIComponent(cacheInfo.name)}
+        to={{ pathname: '/cache/' + encodeURIComponent(cacheInfo.name), search: location.search }}
       >
         {cacheDetailAccess}
       </Link>
@@ -517,7 +517,8 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
         <ToolbarItem style={{ marginRight: global_spacer_sm.value }}>
           <Link
             to={{
-              pathname: '/container/caches/create'
+              pathname: '/container/caches/create',
+              search: location.search
             }}
           >
             <Button variant={ButtonVariant.primary} aria-label="create-cache-button" data-cy="createCacheButton">
@@ -534,6 +535,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       <Link
         to={{
           pathname: '/container/' + props.cmName + '/configurations/',
+          search: location.search,
           state: {
             cmName: props.cmName
           }

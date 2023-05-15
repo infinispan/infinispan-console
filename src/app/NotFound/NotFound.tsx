@@ -11,7 +11,7 @@ const NotFound = () => {
     const history = useHistory();
 
     function handleClick() {
-      history.push('/');
+      history.push(history?.location?.search ? '/' + history?.location?.search : '/');
     }
 
     return <Button onClick={handleClick}>{t('not-found-page.button')}</Button>;

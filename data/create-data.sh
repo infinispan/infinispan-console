@@ -14,7 +14,6 @@ curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/indexe
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/octet-stream-cache
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/java-serialized-cache
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/invalidation-cache
-curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/scattered-cache
 
 echo "= Create schema"
 
@@ -40,7 +39,6 @@ curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@cache
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/octet-stream.json" "http://localhost:11222/rest/v2/caches/octet-stream-cache"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/javaSerializedCache.json" "http://localhost:11222/rest/v2/caches/java-serialized-cache"
 # curl -XPOST  -u $userPass -H "Content-Type: application/json" -d "@caches/invalidationCache.json" "http://localhost:11222/rest/v2/caches/invalidation-cache"
-curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/scatteredCache.json" "http://localhost:11222/rest/v2/caches/scattered-cache"
 
 
 for i in {1..10}

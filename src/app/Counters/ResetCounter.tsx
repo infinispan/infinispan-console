@@ -40,14 +40,20 @@ const ResetCounter = (props: {
         >
           {t('cache-managers.counters.reset-action')}
         </Button>,
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal} data-cy="cancelCounterResetButton">
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={props.closeModal}
+          data-cy="cancelCounterResetButton"
+        >
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
       ]}
     >
       <TextContent>
         <Text>
-          The current value of <strong>{props.name}</strong> will be restored to its initial  value of{' '}
+          The current value of <strong>{props.name}</strong> will be restored to its initial value of{' '}
           <strong>{props.initialValue}</strong>
         </Text>
       </TextContent>

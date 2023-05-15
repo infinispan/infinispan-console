@@ -30,7 +30,7 @@ const DeleteCounter = (props: {
       disableFocusTrap={true}
       actions={[
         <Button
-        data-cy="deleteCounterButton"
+          data-cy="deleteCounterButton"
           key={t('cache-managers.counters.modal-confirm-button')}
           aria-label={'Confirm'}
           variant={ButtonVariant.danger}
@@ -42,7 +42,13 @@ const DeleteCounter = (props: {
         >
           {t('cache-managers.counters.delete-action')}
         </Button>,
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal} data-cy="cancelCounterDeleteButton">
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={props.closeModal}
+          data-cy="cancelCounterDeleteButton"
+        >
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
       ]}

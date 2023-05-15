@@ -241,7 +241,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
             <PopoverHelp
               name="storage"
               label={t('cache-managers.counters.modal-storage')}
-              content={t('cache-managers.counters.modal-storage-tooltip',{ brandname: brandname })}
+              content={t('cache-managers.counters.modal-storage-tooltip', { brandname: brandname })}
             />
           }
         >
