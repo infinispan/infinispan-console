@@ -9,6 +9,8 @@ import { Either, left, right } from '@services/either';
  */
 export class FetchCaller {
   private authenticationService: AuthenticationService;
+  private user: string | undefined;
+  private password: string | undefined;
 
   /**
    * Get REST API Calls
@@ -103,14 +105,18 @@ export class FetchCaller {
     return fetch(url, fetchOptions);
   }
 
-  constructor(authenticationService: AuthenticationService) {
+  constructor(authenticationService: AuthenticationService, user?: string, password?: string) {
     this.authenticationService = authenticationService;
+    this.user = user;
+    this.password = password;
   }
 
   private createAuthenticatedHeader = (): Headers => {
     let headers = new Headers();
     if (KeycloakService.Instance.isInitialized()) {
       headers.append('Authorization', 'Bearer ' + localStorage.getItem('react-token'));
+    } else if (this.user && this.password) {
+      headers.set('Authorization', 'Basic ' + btoa(this.user + ':' + this.password));
     }
     return headers;
   };

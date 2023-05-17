@@ -182,7 +182,8 @@ const DetailCache = (props: { cacheName: string }) => {
               <EmptyStatePrimary>
                 <Link
                   to={{
-                    pathname: '/'
+                    pathname: '/',
+                    search: location.search
                   }}
                 >
                   <Button variant={ButtonVariant.secondary}>Back</Button>
@@ -237,7 +238,8 @@ const DetailCache = (props: { cacheName: string }) => {
         <ToolbarItem>
           <Link
             to={{
-              pathname: encodeURIComponent(cacheName) + '/backups'
+              pathname: encodeURIComponent(cacheName) + '/backups',
+              search: location.search
             }}
           >
             <Button variant={ButtonVariant.link}>Manage</Button>
@@ -277,7 +279,8 @@ const DetailCache = (props: { cacheName: string }) => {
             <FlexItem>
               <Link
                 to={{
-                  pathname: encodeURIComponent(cacheName) + '/indexing'
+                  pathname: encodeURIComponent(cacheName) + '/indexing',
+                  search: location.search
                 }}
               >
                 <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>

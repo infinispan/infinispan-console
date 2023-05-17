@@ -9,7 +9,8 @@ const DataContainerBreadcrumb = (props: { currentPage: string; cacheName?: strin
         <BreadcrumbItem data-cy="cacheNameLink">
           <Link
             to={{
-              pathname: '/cache/' + encodeURIComponent(props.cacheName)
+              pathname: '/cache/' + encodeURIComponent(props.cacheName),
+              search: location.search
             }}
           >
             {props.cacheName}
@@ -25,7 +26,8 @@ const DataContainerBreadcrumb = (props: { currentPage: string; cacheName?: strin
       <BreadcrumbItem data-cy="dataContainerLink">
         <Link
           to={{
-            pathname: '/'
+            pathname: '/',
+            search: location.search
           }}
         >
           Data container

@@ -334,7 +334,8 @@ const XSiteCache = (props) => {
             <Text key={'button-back'}>
               <Link
                 to={{
-                  pathname: '/cache/' + encodeURIComponent(cacheName)
+                  pathname: '/cache/' + encodeURIComponent(cacheName),
+                  search: location.search
                 }}
               >
                 <Button variant={ButtonVariant.secondary}>Back</Button>

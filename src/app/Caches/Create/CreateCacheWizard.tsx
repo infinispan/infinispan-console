@@ -66,7 +66,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const history = useHistory();
 
   const closeWizard = () => {
-    history.push('/');
+    history.push('/' + history.location.search);
   };
 
   useEffect(() => {
@@ -366,7 +366,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
     createCacheCall
       .then((actionResponse) => {
         if (actionResponse.success) {
-          history.push('/');
+          history.push('/' + history.location.search);
         }
         return actionResponse;
       })
