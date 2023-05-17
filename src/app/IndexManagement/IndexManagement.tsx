@@ -160,7 +160,8 @@ const IndexManagement = (props) => {
                 <Text key={'button-back'}>
                   <Link
                     to={{
-                      pathname: '/cache/' + encodeURIComponent(cacheName)
+                      pathname: '/cache/' + encodeURIComponent(cacheName),
+                      search: location.search
                     }}
                   >
                     <Button data-cy="backButton"> {t('caches.index.button-back-to-cache-detail')}</Button>

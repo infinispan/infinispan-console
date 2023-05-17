@@ -434,7 +434,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       <Link
         data-cy={`detailLink-${cacheInfo.name}`}
         key={cacheInfo.name}
-        to={'/cache/' + encodeURIComponent(cacheInfo.name)}
+        to={{ pathname: '/cache/' + encodeURIComponent(cacheInfo.name), search: location.search }}
       >
         {cacheDetailAccess}
       </Link>
@@ -534,6 +534,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       <Link
         to={{
           pathname: '/container/' + props.cmName + '/configurations/',
+          search: location.search,
           state: {
             cmName: props.cmName
           }
