@@ -209,11 +209,11 @@ const DetailCache = (props: { cacheName: string }) => {
         <ToolbarItem>
           <Divider orientation={{ default: 'vertical' }} />
         </ToolbarItem>
-        <ToolbarItem>
+        <ToolbarItem data-cy="backupsBadge">
           <Label>Backups</Label>
         </ToolbarItem>
         <ToolbarItem>
-          <Link
+          <Link data-cy="manageBackupsLink"
             to={{
               pathname: encodeURIComponent(cacheName) + '/backups',
               search: location.search

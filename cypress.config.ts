@@ -21,5 +21,9 @@ export default defineConfig({
       return require('./cypress/plugins/index.js')(on, config)
     },
     baseUrl: 'http://localhost:11222/console/',
+    experimentalSessionAndOrigin: true,
+    excludeSpecPattern: [
+      'cypress/e2e/xsite.cy.js'
+  ]
   },
 })

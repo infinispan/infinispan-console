@@ -221,7 +221,7 @@ const XSiteCache = (props) => {
 
     if (stStatus == ST_SENDING) {
       return (
-        <Button
+        <Button data-cy={backup.name + "-cancelStateTransferButton"}
           variant={ButtonVariant.danger}
           onClick={() =>
             setStateTransferModal({
@@ -238,14 +238,14 @@ const XSiteCache = (props) => {
 
     if (stStatus == ST_SEND_OK || stStatus == ST_SEND_FAILED || stStatus == ST_SEND_CANCELED) {
       return (
-        <Button variant={ButtonVariant.tertiary} onClick={() => clearStateTransfer(backup.name)}>
+        <Button data-cy={backup.name + "-clearStateButton"} variant={ButtonVariant.tertiary} onClick={() => clearStateTransfer(backup.name)}>
           Clear state
         </Button>
       );
     }
 
     return (
-      <Button
+      <Button data-cy={backup.name + "-startTransfer"}
         variant={ButtonVariant.secondary}
         onClick={() =>
           setStateTransferModal({
@@ -306,9 +306,10 @@ const XSiteCache = (props) => {
       currentRows = backups.map((backup) => {
         return {
           heightAuto: true,
+          actionProps: { 'data-cy': `actions-${backup.name}` },
           cells: [
             { title: backup.name },
-            { title: buildStatus(backup.name, backup.status) },
+            { title: buildStatus(backup.name, backup.status.status) },
             { title: buildStateTransferStatus(backup.name) },
             { title: buildStateTransferButton(backup) }
           ]
@@ -338,7 +339,7 @@ const XSiteCache = (props) => {
                   search: location.search
                 }}
               >
-                <Button variant={ButtonVariant.secondary}>Back</Button>
+                <Button data-cy="backToCacheDetailsButton" variant={ButtonVariant.secondary}>Back</Button>
               </Link>
             </Text>
           </LevelItem>
@@ -347,7 +348,7 @@ const XSiteCache = (props) => {
       <PageSection>
         <Card>
           <CardBody>
-            <Table
+            <Table data-cy="backupsList"
               aria-label="XSite Table"
               cells={columns}
               rows={rows}
