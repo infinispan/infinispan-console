@@ -77,7 +77,8 @@
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.8.0",
+    "license-report": "^6.4.0"
   },
   "dependencies": {
     "@patternfly/react-charts": "^6.94.19",
