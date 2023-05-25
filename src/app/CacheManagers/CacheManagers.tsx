@@ -71,7 +71,7 @@ const CacheManagers = () => {
       { name: t('cache-managers.counters-tab'), count: countersCount, key: '1' }
     ];
 
-    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.EXEC, connectedUser)) {
       tabs.push({ name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2' });
     }
 
