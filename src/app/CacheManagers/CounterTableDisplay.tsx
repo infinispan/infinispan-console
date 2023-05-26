@@ -36,8 +36,11 @@ import { CreateCounter } from '@app/Counters/CreateCounter';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
+import { SetCounter } from '@app/Counters/SetCounter';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
   const { counters, loading, error, reload } = useFetchCounters();
   const [strongCounters, setStrongCounters] = useState<Counter[]>([]);
   const [weakCounters, setWeakCounters] = useState<Counter[]>([]);
@@ -48,17 +51,27 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   });
   const [filteredCounters, setFilteredCounters] = useState<Counter[]>([]);
   const [counterToDelete, setCounterToDelete] = useState('');
-  const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const [counterToEdit, setCounterToEdit] = useState();
   const [counterToAddDelta, setCounterToAddDelta] = useState('');
+  const [counterToSet, setCounterToSet] = useState('');
+
   const [deltaValue, setDeltaValue] = useState<number>(0);
+  const [counterSetValue, setCounterSetValue] = useState<number>(0);
   const [counterToReset, setCounterToReset] = useState('');
   const [isCreateCounter, setIsCreateCounter] = useState(false);
   const [isDeltaValid, setIsDeltaValid] = useState(true);
+  const [isNewCounterValueValid, setIsNewCounterValueValid] = useState(true);
   const { connectedUser } = useConnectedUser();
 
   const strongCountersActions = (row): IAction[] => [
+    {
+      'data-cy': 'setCounterAction',
+      title: t('cache-managers.counters.set-action'),
+      onClick: () => {
+        setCounterToSet(row.name);
+        setCounterToEdit(row);
+      }
+    },
     {
       'data-cy': 'addDeltaAction',
       title: t('cache-managers.counters.add-delta-action'),
@@ -136,6 +149,16 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     };
     setIsDeltaValid(validateDeltaValue(deltaValue, counterToEdit));
   }, [deltaValue]);
+
+  useEffect(() => {
+    const validateNewCounterValue = (value, counter): boolean => {
+      if (value < parseInt(counter?.config?.lowerBound) || value > parseInt(counter?.config?.upperBound)) {
+        return false;
+      }
+      return true;
+    };
+    setIsNewCounterValueValid(validateNewCounterValue(counterSetValue, counterToEdit));
+  }, [counterSetValue]);
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
@@ -230,7 +253,6 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
             maxHeight={200}
             placeholderText={t('cache-managers.cache-filter-label')}
             isGrouped={true}
-            toggleId="counterFilterSelect"
             isCheckboxSelectionBadgeHidden={true}
           >
             {menuItems}
@@ -416,6 +438,23 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
           reload();
         }}
         closeModal={() => setIsCreateCounter(false)}
+      />
+      <SetCounter
+        name={counterToSet}
+        value={counterSetValue}
+        setValue={setCounterSetValue}
+        isValid={isNewCounterValueValid}
+        submitModal={() => {
+          setCounterToSet('');
+          setCounterSetValue(0);
+          setSelectedFilters({ counterType: '', storageType: '' });
+          reload();
+        }}
+        isModalOpen={counterToSet != ''}
+        closeModal={() => {
+          setCounterToSet('');
+          setCounterSetValue(0);
+        }}
       />
     </React.Fragment>
   );

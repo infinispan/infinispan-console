@@ -18,7 +18,7 @@ export function useFetchCounters() {
             setError(either.value.message);
           }
         })
-        .then(() => setLoading(false));
+        .finally(() => setLoading(false));
     }
   }, [loading]);
 
@@ -91,5 +91,20 @@ export function useCreateCounter(counterName: string, counterConfig) {
   };
   return {
     onCreateCounter
+  };
+}
+
+export function useSetCounter(counterName: string, counterValue: number) {
+  const { addAlert } = useApiAlert();
+
+  const onSetCounter = () => {
+    ConsoleServices.counters()
+      .setCounter(counterName, counterValue)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onSetCounter
   };
 }
