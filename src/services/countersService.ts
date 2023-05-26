@@ -119,4 +119,17 @@ export class CountersService {
       body: JSON.stringify(counterConfig, null, 2)
     });
   }
+
+  /**
+   * Set counter value
+   * @param counterName, counter to be updated
+   * @param counterValue, value to be set
+   */
+  public setCounter(counterName: string, counterValue: number): Promise<ActionResponse> {
+    return this.utils.post({
+      url: this.endpoint + '/' + counterName + '?action=getAndSet&value=' + counterValue,
+      successMessage: `Counter ${counterName} has been set to value ${counterValue}`,
+      errorMessage: `Unexpected error setting counter ${counterName} to value ${counterValue}`
+    });
+  }
 }

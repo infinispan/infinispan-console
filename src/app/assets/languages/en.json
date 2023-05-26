@@ -142,7 +142,11 @@
       "modal-initial-value-invalid": "The initial value must be between the lower bound and the upper bound inclusively",
       "modal-lower-bound-invalid": "The lower bound must be less than the upper bound",
       "modal-storage-tooltip": "{{brandname}} can save counter values in a persistent storage so the data is available when clusters restart. If you select a volatile storage, counter values are permanently deleted when clusters restart or stop",
-      "modal-counter-type-tooltip": "The value of a strong counter is stored in a single key for consistency. {{brandname}} recommends using strong counters when the counter's value is needed after each update or when a bounded counter is needed. The value of a weak counter is stored in multiple keys. The weak counter is suitable for use cases where the result of the update operation is not needed or the counter’s value is not required too often  "
+      "modal-counter-type-tooltip": "The value of a strong counter is stored in a single key for consistency. {{brandname}} recommends using strong counters when the counter's value is needed after each update or when a bounded counter is needed. The value of a weak counter is stored in multiple keys. The weak counter is suitable for use cases where the result of the update operation is not needed or the counter’s value is not required too often  ",
+      "set-action": "Set value",
+      "modal-set-title": "Set counter value",
+      "modal-set-value": "Value",
+      "modal-set-helper-invalid": "Value must be respective to lower and upper bound"
     }
   },
   "caches": {

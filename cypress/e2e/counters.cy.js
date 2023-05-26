@@ -223,4 +223,57 @@ describe('Counters CRUD', () => {
         cy.contains("VOLATILE");
         cy.contains("1 - 10 of 12");
       });
+
+      it ('successfully sets value to strong counter', () => {
+        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.contains('strong-4');
+        cy.contains('td', 'strong-4').parent()
+        .within($tr => {
+            cy.get('td button').should('exist');
+            cy.get('td button').click();
+            cy.get('[data-cy=setCounterAction]').click();
+        });
+        cy.get("#set-counter-modal").should('exist');
+
+        //Writing normal value to set counter
+        cy.get("[data-cy=counterSetNum]").clear().type(4);
+        cy.get("[data-cy=confirmSetbutton]").click();
+        cy.contains("Counter strong-4 has been set to value 4")
+        cy.get("#set-counter-modal").should('not.exist');
+        cy.contains('td', 'strong-4').parent()
+        .within($tr => {
+            cy.get('[data-label="Current value"]').contains('4');
+        });
+      });
+
+      it('successully shows error while setting value to strong counter with value out of bounds', () => {
+        cy.get('a[aria-label="nav-item-Counters"]').click();
+        cy.contains('TestStrongPersistentCounter');
+        cy.contains('td', 'TestStrongPersistentCounter').parent()
+        .within($tr => {
+            cy.get('td button').should('exist');
+            cy.get('td button').click();
+            cy.get('[data-cy=setCounterAction]').click();
+        });
+        cy.get("#set-counter-modal").should('exist');
+
+        //Writing value out of upper bound to set counter
+        cy.get("[data-cy=counterSetNum]").clear().type(101);
+        cy.contains("Value must be respective to lower and upper bound");
+
+        //Writing normal value to set counter
+        cy.get("[data-cy=counterSetNum]").clear().type(3);
+        cy.contains("Value must be respective to lower and upper bound").should('not.exist');
+
+        //Writing value out of lower bound to set counter
+        cy.get("[data-cy=counterSetNum]").clear().type(-1);
+        cy.contains("Value must be respective to lower and upper bound");
+
+        cy.get("[data-cy=cancelSetButton]").click();
+        cy.get("#set-counter-modal").should('not.exist');
+        cy.contains('td', 'TestStrongPersistentCounter').parent()
+        .within($tr => {
+            cy.get('[data-label="Current value"]').contains('16');
+        });
+      })
   });
