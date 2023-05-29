@@ -441,7 +441,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     );
   };
 
-  const cacheTypes = ['Local', 'Replicated', 'Distributed', 'Invalidated', 'Scattered'];
+  const cacheTypes = ['Local', 'Replicated', 'Distributed', 'Invalidated'];
   const cacheFeatures = ['Bounded', 'Indexed', 'Persistence', 'Transactions', 'Authorization', 'Backups'];
 
   const cacheStatus = [t('cache-managers.ignored-status')];
@@ -570,7 +570,6 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               <SelectOption key={1} value={t('cache-managers.mode-repl')} />
               <SelectOption key={2} value={t('cache-managers.mode-dist')} />
               <SelectOption key={3} value={t('cache-managers.mode-invalid')} />
-              <SelectOption key={4} value={t('cache-managers.mode-scattered')} />
             </SelectGroup>
             <SelectGroup label={t('cache-managers.cache-filter-feature-label')} key="group2">
               <SelectOption key={5} value={t('cache-managers.cache-filter-feature-bounded')} />

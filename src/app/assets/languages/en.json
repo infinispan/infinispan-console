@@ -70,7 +70,6 @@
     "mode-repl": "Replicated",
     "mode-dist": "Distributed",
     "mode-invalid": "Invalidated",
-    "mode-scattered": "Scattered",
     "create-cache-button": "Create a cache",
     "config-templates-button": "Display cache templates",
     "cache-filter-label": "Filter",

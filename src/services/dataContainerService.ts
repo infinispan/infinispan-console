@@ -15,8 +15,7 @@ export class ContainerService {
     'org.infinispan.INVALIDATION_SYNC',
     'org.infinispan.LOCAL',
     'org.infinispan.REPL_ASYNC',
-    'org.infinispan.REPL_SYNC',
-    'org.infinispan.SCATTERED_SYNC'
+    'org.infinispan.REPL_SYNC'
   ];
 
   constructor(endpoint: string, fetchCaller: FetchCaller) {
