@@ -9,7 +9,6 @@ export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
 export const Invalidated = 'invalidation-cache';
 export const Local = 'local-cache';
-export const Scattered = 'scattered-cache';
 
 /**
  * Utility class to map cache configuration
@@ -80,8 +79,6 @@ export class CacheConfigUtils {
       cacheType = 'Local';
     } else if (config.hasOwnProperty(Invalidated) || config == Invalidated) {
       cacheType = 'Invalidated';
-    } else if (config.hasOwnProperty(Scattered) || config == Scattered) {
-      cacheType = 'Scattered';
     }
     return cacheType;
   }

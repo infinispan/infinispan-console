@@ -52,8 +52,7 @@ export enum CacheType {
   Distributed = 'Distributed',
   Replicated = 'Replicated',
   Local = 'Local',
-  Invalidated = 'Invalidated',
-  Scattered = 'Scattered'
+  Invalidated = 'Invalidated'
 }
 
 export enum EncodingType {

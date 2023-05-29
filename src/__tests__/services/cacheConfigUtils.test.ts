@@ -1,4 +1,4 @@
-import { CacheConfigUtils, Distributed, Invalidated, Local, Replicated, Scattered } from '@services/cacheConfigUtils';
+import { CacheConfigUtils, Distributed, Invalidated, Local, Replicated } from '@services/cacheConfigUtils';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 describe('Cache Config Utils tests', () => {
@@ -15,7 +15,6 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.mapCacheType(Replicated)).toBe('Replicated');
     expect(CacheConfigUtils.mapCacheType(Local)).toBe('Local');
     expect(CacheConfigUtils.mapCacheType(Invalidated)).toBe('Invalidated');
-    expect(CacheConfigUtils.mapCacheType(Scattered)).toBe('Scattered');
   });
 
   test('editable', () => {

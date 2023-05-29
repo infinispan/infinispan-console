@@ -283,9 +283,6 @@ class DisplayUtils {
       case CacheType.Invalidated:
         color = chart_color_gold_100.value;
         break;
-      case CacheType.Scattered:
-        color = global_palette_black_100.value;
-        break;
       default:
         color = chart_color_black_100.value;
     }
@@ -315,9 +312,6 @@ class DisplayUtils {
         break;
       case CacheType.Invalidated:
         color = chart_color_orange_500.value;
-        break;
-      case CacheType.Scattered:
-        color = chart_color_black_500.value;
         break;
       default:
         color = chart_color_black_500.value;
