@@ -11,15 +11,22 @@
     "about-name": "About"
   },
   "welcome-page": {
+    "welcome-title": "Welcome to {{brandname}} Server",
+    "current-version": "Current version",
+    "latest-version": "Latest version",
+    "already-latest-version": "Already up to date",
     "description1": "{{brandname}} is an in-memory data store that offers scalability, interoperability, and fault tolerance.",
     "description2": "Use high-performance caching capabilities and create distributed data grids designed for microservice architectures.",
-    "license": "Available under Apache License 2.0.",
+    "license": "Available under ",
+    "apache-license": "Apache License 2.0",
+    "blog": " Blog",
+    "blog-description": "The latest articles and news from Infinispan.",
     "connect": "Connect to {{brandname}} clusters with remote clients.",
-    "download": "Download clients",
+    "download": " Download clients",
     "servers": "Install and configure {{brandname}} clusters.",
-    "learn-more": "Get started",
+    "learn-more": " Get started",
     "develop": "Code applications for different use cases.",
-    "tutorials": "Run some quick tutorials",
+    "tutorials": " Run quick tutorials",
     "go-to-console": "Open the console"
   },
   "login-form": {
