@@ -259,15 +259,15 @@ describe('Counters CRUD', () => {
 
         //Writing value out of upper bound to set counter
         cy.get("[data-cy=counterSetNum]").clear().type(101);
-        cy.contains("Value must be respective to lower and upper bound");
+        cy.contains("The counter value must be between the lower bound and the upper bound inclusively");
 
         //Writing normal value to set counter
         cy.get("[data-cy=counterSetNum]").clear().type(3);
-        cy.contains("Value must be respective to lower and upper bound").should('not.exist');
+        cy.contains("The counter value must be between the lower bound and the upper bound inclusively").should('not.exist');
 
         //Writing value out of lower bound to set counter
         cy.get("[data-cy=counterSetNum]").clear().type(-1);
-        cy.contains("Value must be respective to lower and upper bound");
+        cy.contains("The counter value must be between the lower bound and the upper bound inclusively");
 
         cy.get("[data-cy=cancelSetButton]").click();
         cy.get("#set-counter-modal").should('not.exist');

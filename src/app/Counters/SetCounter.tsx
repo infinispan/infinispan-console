@@ -55,7 +55,7 @@ const SetCounter = (props: {
     >
       <TextContent>
         <Text>
-          Set counter <strong>{props.name}</strong> to arbitrary value.
+          Edit value for counter <strong>{props.name}</strong>.
         </Text>
         <Form
           onSubmit={(e) => {
