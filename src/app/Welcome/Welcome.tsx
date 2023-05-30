@@ -1,25 +1,27 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Alert,
+  Badge,
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
-  ListVariant,
-  LoginPage,
+  Flex,
+  FlexItem,
+  Gallery,
+  GalleryItem,
   Spinner,
   Stack,
   StackItem,
   Text,
-  TextContent,
-  TextVariants
+  TextVariants,
+  Title,
+  TitleSizes
 } from '@patternfly/react-core';
-
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
-import { CatalogIcon, GithubIcon, InfoIcon } from '@patternfly/react-icons';
-import { chart_color_blue_500 } from '@patternfly/react-tokens';
+import { CatalogIcon, GithubIcon, ExternalLinkAltIcon, DownloadIcon, UnknownIcon } from '@patternfly/react-icons';
+import { chart_color_blue_500, global_BackgroundColor_100 } from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
@@ -27,6 +29,11 @@ import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useHistory } from 'react-router';
 import { useConnectedUser } from '@app/services/userManagementHook';
+import { useFetchVersion, useFetchLatestVersion } from '@app/services/serverHook';
+import { hotRodClientsLink, aboutLink, tutorialsLink, blogLink, apacheLicenseLink } from '@app/utils/links';
+import { checkIfServerVersionIsGreaterOrEqual } from '@app/utils/serverVersionUtils';
+
+import './Welcome.css';
 
 const Welcome = (props) => {
   const authState = props.init;
@@ -34,53 +41,14 @@ const Welcome = (props) => {
   const history = useHistory();
   const [supportOpen, setSupportOpen] = useState(false);
   const { notSecuredModeOn, logUser } = useConnectedUser();
+  const { version } = useFetchVersion();
+  const { latestVersion } = useFetchLatestVersion();
 
   const brandname = t('brandname.brandname');
 
   const description1 = t('welcome-page.description1', { brandname: brandname });
   const description2 = t('welcome-page.description2', { brandname: brandname });
-  const license = t('welcome-page.license', { brandname: brandname });
-
-  const hotRodClientsLink = 'https://infinispan.org/hotrod-clients/';
-  const aboutLink = 'https://infinispan.org/get-started/';
-  const tutorialsLink = 'https://github.com/infinispan/infinispan-simple-tutorials';
-
-  const buildFooter = () => {
-    return (
-      <Stack>
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.h5}>{t('welcome-page.connect', { brandname: brandname })}</Text>
-          </TextContent>
-        </StackItem>
-        <StackItem>
-          <Button component="a" href={hotRodClientsLink} variant="link" target="_blank" icon={<CatalogIcon />}>
-            {t('welcome-page.download')}
-          </Button>
-        </StackItem>
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.h5}>{t('welcome-page.servers', { brandname: brandname })}</Text>
-          </TextContent>
-        </StackItem>
-        <StackItem>
-          <Button component="a" href={aboutLink} variant="link" target="_blank" icon={<InfoIcon />}>
-            {t('welcome-page.learn-more')}
-          </Button>
-        </StackItem>
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.h5}>{t('welcome-page.develop', { brandname: brandname })}</Text>
-          </TextContent>
-        </StackItem>
-        <StackItem>
-          <Button component="a" href={tutorialsLink} variant="link" target="_blank" icon={<GithubIcon />}>
-            {t('welcome-page.tutorials')}
-          </Button>
-        </StackItem>
-      </Stack>
-    );
-  };
+  const license = t('welcome-page.license');
 
   const login = () => {
     if (authState == 'LOGIN' && !KeycloakService.Instance.authenticated()) {
@@ -106,6 +74,7 @@ const Welcome = (props) => {
     if (authState == 'HTTP_LOGIN') {
       return (
         <Button
+          isLarge
           onClick={() => {
             ConsoleServices.authentication()
               .loginLink()
@@ -119,16 +88,17 @@ const Welcome = (props) => {
               });
           }}
           component={'button'}
-          style={{ backgroundColor: chart_color_blue_500.value }}
+          className={'button'}
+          style={{ backgroundColor: global_BackgroundColor_100.value }}
         >
-          {goToTheConsole}
+          <Text style={{ color: chart_color_blue_500.value }}>{goToTheConsole}</Text>
         </Button>
       );
     }
 
     if (authState == 'NOT_READY') {
       return (
-        <Button style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => setSupportOpen(true)}>
+        <Button isLarge style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => setSupportOpen(true)}>
           {goToTheConsole}
         </Button>
       );
@@ -136,39 +106,164 @@ const Welcome = (props) => {
 
     if (authState == 'READY') {
       return (
-        <Button style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => notSecuredModeOn()}>
+        <Button isLarge style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => notSecuredModeOn()}>
           {goToTheConsole}
         </Button>
       );
     }
 
     return (
-      <Button style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => login()}>
+      <Button isLarge style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => login()}>
         {goToTheConsole}
       </Button>
     );
   };
 
+  const DetailSection = (
+    <Stack className="detail-section">
+      <StackItem>
+        <img width={'200px'} height={'42px'} src={icon} alt={brandname + ' logo'} />
+      </StackItem>
+      <StackItem className={'font-title-bold'}>
+        <Title style={{ fontWeight: 'bold' }} size={TitleSizes['4xl']} headingLevel="h1">
+          {t('welcome-page.welcome-title', { brandname: brandname })}
+        </Title>
+      </StackItem>
+      {version !== '' && (
+        <StackItem className={'version-text'}>
+          <Flex>
+            <FlexItem>
+              <Text>{t('welcome-page.current-version')}</Text>
+            </FlexItem>
+            <FlexItem>
+              <Badge style={{ backgroundColor: 'white', color: chart_color_blue_500.value }}>{version}</Badge>
+            </FlexItem>
+          </Flex>
+        </StackItem>
+      )}
+      {latestVersion !== '' && (
+        <StackItem className={'version-text'}>
+          <Flex>
+            <FlexItem>
+              <Text>{t('welcome-page.latest-version')}</Text>
+            </FlexItem>
+            <FlexItem>
+              {checkIfServerVersionIsGreaterOrEqual(version, latestVersion) ? (
+                <Text component={TextVariants.p}>{t('welcome-page.already-latest-version')}</Text>
+              ) : (
+                <Button
+                  style={{ color: 'white' }}
+                  variant="link"
+                  isInline
+                  href="https://infinispan.org/download/"
+                  icon={<ExternalLinkAltIcon />}
+                  iconPosition="right"
+                >
+                  {latestVersion}
+                </Button>
+              )}
+            </FlexItem>
+          </Flex>
+        </StackItem>
+      )}
+      <StackItem className={'description'}>
+        <Text component={TextVariants.p}>{description1}</Text>
+        <Text component={TextVariants.p}>{description2}</Text>
+        <Text component={TextVariants.p}>
+          {license}{' '}
+          <a style={{ color: 'white', textDecoration: 'underline' }} href={apacheLicenseLink} target="blank">
+            {t('welcome-page.apache-license')}
+          </a>
+        </Text>
+      </StackItem>
+      <StackItem>{buildConsoleButton()}</StackItem>
+    </Stack>
+  );
+
+  const FooterCards = (
+    <Gallery className={'card-container'} hasGutter>
+      <GalleryItem>
+        <Card
+          onClick={() => {
+            window.open(blogLink, '_blank');
+          }}
+          isSelectableRaised
+          className={'card'}
+        >
+          <CardHeader className={'card-heading'}>
+            <Text>
+              <CatalogIcon />
+              {t('welcome-page.blog')}
+            </Text>
+          </CardHeader>
+          <CardBody className={'card-contents'}>{t('welcome-page.blog-description')}</CardBody>
+        </Card>
+      </GalleryItem>
+      <GalleryItem>
+        <Card
+          onClick={() => {
+            window.open(hotRodClientsLink, '_blank');
+          }}
+          isSelectableRaised
+          className={'card'}
+        >
+          <CardHeader className={'card-heading'}>
+            <Text>
+              <DownloadIcon />
+              {t('welcome-page.download')}
+            </Text>
+          </CardHeader>
+          <CardBody className={'card-contents'}>{t('welcome-page.connect', { brandname: brandname })}</CardBody>
+        </Card>
+      </GalleryItem>
+      <GalleryItem>
+        <Card
+          onClick={() => {
+            window.open(aboutLink, '_blank');
+          }}
+          isSelectableRaised
+          className={'card'}
+        >
+          <CardHeader className={'card-heading'}>
+            <Text>
+              <UnknownIcon />
+              {t('welcome-page.learn-more')}
+            </Text>
+          </CardHeader>
+          <CardBody className={'card-contents'}>{t('welcome-page.servers', { brandname: brandname })}</CardBody>
+        </Card>
+      </GalleryItem>
+      <GalleryItem>
+        <Card
+          onClick={() => {
+            window.open(tutorialsLink, '_blank');
+          }}
+          isSelectableRaised
+          className={'card'}
+        >
+          <CardHeader className={'card-heading'}>
+            <Text>
+              <GithubIcon />
+              {t('welcome-page.tutorials')}
+            </Text>
+          </CardHeader>
+          <CardBody className={'card-contents'}>{t('welcome-page.develop', { brandname: brandname })}</CardBody>
+        </Card>
+      </GalleryItem>
+    </Gallery>
+  );
+
   return (
-    <section>
+    <Stack className="welcome-container">
       <ConsoleBackground />
       <Support isModalOpen={supportOpen} closeModal={() => window.location.reload()} />
-      <LoginPage
-        footerListVariants={ListVariant.inline}
-        brandImgSrc={icon}
-        brandImgAlt={brandname + ' logo'}
-        backgroundImgAlt={brandname}
-        loginTitle={'Welcome to ' + brandname + ' Server'}
-        footerListItems={buildFooter()}
-      >
-        <Card>
-          <CardHeader>{description1}</CardHeader>
-          <CardBody>{description2}</CardBody>
-          <CardBody>{license}</CardBody>
-          <CardFooter>{buildConsoleButton()}</CardFooter>
-        </Card>
-      </LoginPage>
-    </section>
+      <StackItem isFilled className="upper-section">
+        {DetailSection}
+      </StackItem>
+      <StackItem className="lower-section">{FooterCards}</StackItem>
+      {console.log('version', version)}
+      {console.log('latestVersion', latestVersion)}
+    </Stack>
   );
 };
 

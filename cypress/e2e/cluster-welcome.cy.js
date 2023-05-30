@@ -5,9 +5,9 @@ describe('Welcome page', () => {
         'Accept-Encoding': 'gzip, deflate, br'
       }
     });
-    cy.get('h2')
-      .invoke('text')
-      .should('match', /Welcome to .* Server/);
+    cy.get('h1')
+    .invoke('text')
+    .should('match', /Welcome to .* Server/);
     cy.contains('Open the console');
   });
 
@@ -26,9 +26,9 @@ describe('Welcome page', () => {
     //Checks that user's dropbox exists on the page.
     cy.contains('admin').click();
     cy.contains('Logout').click();
-    cy.get('h2')
-      .invoke('text')
-      .should('match', /Welcome to .* Server/);
+    cy.get('h1')
+    .invoke('text')
+    .should('match', /Welcome to .* Server/);
     cy.contains('Open the console');
   });
 

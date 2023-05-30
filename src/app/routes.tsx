@@ -67,9 +67,9 @@ const routes: IAppRoute[] = [
   {
     component: Welcome,
     exact: true,
-    label: 'Welcome to the server',
+    label: 'Welcome to the Infinispan server',
     path: '/welcome',
-    title: 'Welcome to the server',
+    title: 'Welcome to the Infinispan server',
     menu: false
   },
   {

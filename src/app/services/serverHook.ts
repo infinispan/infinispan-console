@@ -4,7 +4,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 export function useFetchVersion() {
   const [version, setVersion] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (loading && version == '') {
@@ -25,6 +25,34 @@ export function useFetchVersion() {
     setLoading,
     loading,
     version,
+    error
+  };
+}
+
+export function useFetchLatestVersion() {
+  const [latestVersion, setLatestVersion] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading && latestVersion == '') {
+      ConsoleServices.server()
+        .getLatestVersion()
+        .then((eitherVersion) => {
+          if (eitherVersion.isRight()) {
+            setLatestVersion(eitherVersion.value);
+          } else {
+            setError('Unable to retrieve Infinispan Version');
+          }
+        })
+        .then(() => setLoading(false));
+    }
+  }, [loading]);
+
+  return {
+    setLoading,
+    loading,
+    latestVersion,
     error
   };
 }
