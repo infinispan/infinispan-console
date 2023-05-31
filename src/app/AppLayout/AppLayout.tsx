@@ -6,14 +6,19 @@ import {
   DropdownGroup,
   DropdownItem,
   DropdownToggle,
+  DropdownPosition,
   Flex,
   FlexItem,
   Nav,
   NavItem,
   NavList,
+  Masthead,
+  MastheadBrand,
+  MastheadContent,
+  MastheadMain,
+  MastheadToggle,
   Page,
-  PageHeader,
-  PageHeaderTools,
+  PageToggleButton,
   PageSidebar,
   SkipToContent,
   Spinner,
@@ -22,6 +27,7 @@ import {
   TextVariants,
   Toolbar,
   ToolbarContent,
+  ToolbarGroup,
   ToolbarItem,
   Tooltip
 } from '@patternfly/react-core';
@@ -39,7 +45,7 @@ import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { BarsIcon, ExternalLinkAltIcon, InfoCircleIcon, QuestionCircleIcon } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
 
 interface IAppLayout {
@@ -48,22 +54,16 @@ interface IAppLayout {
 }
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
-  const history = useHistory();
-  const { connectedUser, notSecured, logUser } = useConnectedUser();
-  const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
-  const logoProps = {
-    target: '_self',
-    onClick: () => history.push('/' + history.location.search)
-  };
-
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const [isNavOpen, setIsNavOpen] = useState(true);
+  const history = useHistory();
+  const { connectedUser } = useConnectedUser();
+
+  const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [isMobileView, setIsMobileView] = useState(true);
-  const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     history.listen((location, action) => {
@@ -71,18 +71,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       setIsWelcomePage(isWelcomePage);
     });
   }, []);
-
-  const onNavToggleMobile = () => {
-    setIsNavOpenMobile(!isNavOpenMobile);
-  };
-
-  const onNavToggle = () => {
-    setIsNavOpen(!isNavOpen);
-  };
-
-  const onPageResize = (props: { mobileView: boolean; windowSize: number }) => {
-    setIsMobileView(props.mobileView);
-  };
 
   const Logo = (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
@@ -121,13 +109,12 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   ];
 
   const userActions = () => {
-    let chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
+    const chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
     if (chromeAgent || (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated())) {
       return (
-        <PageHeaderTools>
+        <ToolbarItem>
           <Dropdown
-            isPlain
-            position="right"
+            isFullHeight
             onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
             isOpen={isDropdownOpen}
             toggle={
@@ -135,31 +122,74 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
             }
             dropdownItems={userDropdownItems}
           />
-        </PageHeaderTools>
+        </ToolbarItem>
       );
     }
     return (
-      <PageHeaderTools>
+      <ToolbarItem>
         {connectedUser.name}
-        <Tooltip position="left" content={<div>Close the browser or open an incognito window to log again.</div>}>
+        <Tooltip position="left" content={<Text>Close the browser or open an incognito window to log again.</Text>}>
           <span aria-label="Close the browser or open an incognito window to log again." tabIndex={0}>
             <InfoCircleIcon style={{ marginLeft: global_spacer_sm.value, marginTop: global_spacer_sm.value }} />
           </span>
         </Tooltip>
-      </PageHeaderTools>
+      </ToolbarItem>
     );
   };
 
+  const helpDropdownItems = [
+    <DropdownItem
+      onClick={() => window.open('https://infinispan.org/documentation/', '_blank')}
+      key="documentation"
+      icon={<ExternalLinkAltIcon />}
+    >
+      Documentation
+    </DropdownItem>,
+    <DropdownItem onClick={() => setIsAboutOpen(!isAboutOpen)} key="about" component="button">
+      About
+    </DropdownItem>
+  ];
+
+  const headerToolbar = (
+    <Toolbar id="toolbar" isFullHeight isStatic>
+      <ToolbarContent>
+        <ToolbarGroup
+          variant="icon-button-group"
+          alignment={{ default: 'alignRight' }}
+          spacer={{ default: 'spacerNone', md: 'spacerMd' }}
+        >
+          <ToolbarItem>
+            <Dropdown data-cy="aboutInfoQuestionMark" id="aboutInfoQuestionMark"
+              position={DropdownPosition.right}
+              isPlain
+              onSelect={() => setIsHelpOpen(!isHelpOpen)}
+              isOpen={isHelpOpen}
+              toggle={
+                <DropdownToggle toggleIndicator={null} onToggle={() => setIsHelpOpen(!isHelpOpen)}>
+                  <QuestionCircleIcon />
+                </DropdownToggle>
+              }
+              dropdownItems={helpDropdownItems}
+            />
+          </ToolbarItem>
+        </ToolbarGroup>
+        {!ConsoleServices.authentication().isNotSecured() && userActions()}
+      </ToolbarContent>
+    </Toolbar>
+  );
+
   const Header = (
-    <PageHeader
-      logo={Logo}
-      logoComponent={'div'}
-      logoProps={logoProps}
-      showNavToggle={true}
-      isNavOpen={isNavOpen}
-      headerTools={ConsoleServices.authentication().isNotSecured() ? null : userActions()}
-      onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
-    />
+    <Masthead>
+      <MastheadToggle>
+        <PageToggleButton variant="plain" aria-label="Global navigation">
+          <BarsIcon />
+        </PageToggleButton>
+      </MastheadToggle>
+      <MastheadMain>
+        <MastheadBrand>{Logo}</MastheadBrand>
+      </MastheadMain>
+      <MastheadContent>{headerToolbar}</MastheadContent>
+    </Masthead>
   );
 
   const PageSkipToContent = <SkipToContent href="#primary-app-container">Skip to Content</SkipToContent>;
@@ -202,16 +232,8 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
               </NavItem>
             )
         )}
-        <NavItem onClick={() => setIsAboutOpen(true)}>About</NavItem>
       </NavList>
     </Nav>
-  );
-
-  const Sidebar = (
-    <React.Fragment>
-      <PageSidebar theme="dark" nav={Navigation} isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen} />
-      <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)} />
-    </React.Fragment>
   );
 
   const displayPage = () => {
@@ -233,13 +255,14 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       <Page
         mainContainerId="primary-app-container"
         header={isWelcomePage ? null : Header}
-        onPageResize={onPageResize}
         skipToContent={PageSkipToContent}
-        sidebar={isWelcomePage ? null : Sidebar}
+        sidebar={isWelcomePage ? null : <PageSidebar theme="dark" nav={Navigation} />}
+        isManagedSidebar
       >
         <ActionResponseAlert />
         <BannerAlert />
         <ErrorBoundary>{children}</ErrorBoundary>
+        <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)} />
       </Page>
     );
   };

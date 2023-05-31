@@ -42,33 +42,12 @@ describe('Welcome page', () => {
     cy.contains('Data Container').should('not.be.visible');
     cy.contains('Global Statistics').should('not.be.visible');
     cy.contains('Cluster Membership').should('not.be.visible');
-    cy.contains('About').should('not.be.visible');
 
     cy.get('#nav-toggle').click();
     //Checks if navigation menu is visible
     cy.contains('Data Container').should('be.visible');
     cy.contains('Global Statistics').should('be.visible');
     cy.contains('Cluster Membership').should('be.visible');
-    cy.contains('About').should('be.visible');
-
-    //Clicks the About link and should go to About dialog
-    cy.contains('About').click();
-    cy.get('[role=dialog]').should('be.visible');
-    cy.contains('Version');
-    cy.get('body').then(($body) => {
-      if (!$body.text().includes('Red Hat Data Grid')) {
-        //Checks if links from About dialog work properly
-        cy.get('a[href*="github"').should('exist');
-        cy.get('a[href*="zulipchat"').should('exist');
-        cy.get('a[href*="stackoverflow"').should('exist');
-        cy.get('a[href*="twitter"').should('exist');
-        cy.get('a[href*="facebook"').should('exist');
-      } else {
-        cy.contains('Sponsored by Red Hat');
-      }
-    });
-    cy.get('[aria-label="Close Dialog"]').click();
-    cy.get('[role=dialog]').should('not.exist'); //Closes About dialog
 
     //Clicks the Cluster Membership link and should go to Cluster Membership page
     cy.contains('Cluster Membership').click();
@@ -88,4 +67,28 @@ describe('Welcome page', () => {
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
   });
+
+  it('successfully opens and views About page', () => {
+      cy.get('[data-cy=aboutInfoQuestionMark]').click();
+      cy.contains('Documentation');
+      
+      //Clicks the About link and should go to About dialog
+      cy.contains('About').click();
+      cy.get('[role=dialog]').should('be.visible');
+      cy.contains('Version');
+      cy.get('body').then(($body) => {
+        if (!$body.text().includes('Red Hat Data Grid')) {
+          //Checks if links from About dialog work properly
+          cy.get('a[href*="github"').should('exist');
+          cy.get('a[href*="zulipchat"').should('exist');
+          cy.get('a[href*="stackoverflow"').should('exist');
+          cy.get('a[href*="twitter"').should('exist');
+          cy.get('a[href*="facebook"').should('exist');
+        } else {
+          cy.contains('Sponsored by Red Hat');
+        }
+      });
+      cy.get('[aria-label="Close Dialog"]').click();
+      cy.get('[role=dialog]').should('not.exist'); //Closes About dialog
+    });
 });

@@ -8,6 +8,7 @@ import {
   FlexItem,
   Stack,
   StackItem,
+  Text,
   TextContent,
   TextList,
   TextListItem,
@@ -23,23 +24,24 @@ import {
   StackOverflowIcon,
   TwitterIcon
 } from '@patternfly/react-icons';
-import { global_spacer_3xl, global_spacer_lg } from '@patternfly/react-tokens';
+import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
-import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
-  const { loading, version, error, setLoading } = useFetchVersion();
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
+
+  const { version } = useFetchVersion();
+
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
   const infinispanStackOverflowLink = 'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
   const infinispanTwitterLink = 'https://twitter.com/infinispan/';
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
-
-  useEffect(() => {
-    if (props.isModalOpen) {
-      setLoading(true);
-    }
-  }, [props.isModalOpen]);
+  const description1 = t('welcome-page.description1', { brandname: brandname });
+  const description2 = t('welcome-page.description2', { brandname: brandname });
+  const license = t('welcome-page.license', { brandname: brandname });
 
   return (
     <AboutModal
@@ -53,6 +55,13 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
     >
       <Stack>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
+          <TextContent style={{ margin: '0.2rem 0' }}>
+            <Text>{description1}</Text>
+            <Text>{description2}</Text>
+            <Text>{license}</Text>
+          </TextContent>
+        </StackItem>
+        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
           <Divider />
         </StackItem>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
@@ -63,35 +72,65 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
             </TextList>
           </TextContent>
         </StackItem>
-        <StackItem>
+        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
           <Divider />
         </StackItem>
-        <StackItem style={{ paddingTop: global_spacer_3xl.value }}>
+        <StackItem>
           <Flex>
             <FlexItem>
-              <Button component={'a'} href={infinispanGithubLink} variant={ButtonVariant.link} target="_blank">
-                <GithubIcon size={'lg'} />
+              <Button
+                aria-label={'Github'}
+                component={'a'}
+                href={infinispanGithubLink}
+                variant={ButtonVariant.link}
+                target="_blank"
+              >
+                <GithubIcon size={'md'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanZulipLink} variant={ButtonVariant.link} target="_blank">
-                <OutlinedCommentsIcon size={'lg'} />
+              <Button
+                aria-label={'Zulip'}
+                component={'a'}
+                href={infinispanZulipLink}
+                variant={ButtonVariant.link}
+                target="_blank"
+              >
+                <OutlinedCommentsIcon size={'md'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanStackOverflowLink} variant={ButtonVariant.link} target="_blank">
-                <StackOverflowIcon size={'lg'} />
+              <Button
+                aria-label={'Stackoverflow'}
+                component={'a'}
+                href={infinispanStackOverflowLink}
+                variant={ButtonVariant.link}
+                target="_blank"
+              >
+                <StackOverflowIcon size={'md'} />
               </Button>
             </FlexItem>
 
             <FlexItem>
-              <Button component={'a'} href={infinispanTwitterLink} variant={ButtonVariant.link} target="_blank">
-                <TwitterIcon size={'lg'} />
+              <Button
+                aria-label={'Twitter'}
+                component={'a'}
+                href={infinispanTwitterLink}
+                variant={ButtonVariant.link}
+                target="_blank"
+              >
+                <TwitterIcon size={'md'} />
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button component={'a'} href={infinispanFacebookLink} variant={ButtonVariant.link} target="_blank">
-                <FacebookIcon size={'lg'} />
+              <Button
+                aria-label={'Facebook'}
+                component={'a'}
+                href={infinispanFacebookLink}
+                variant={ButtonVariant.link}
+                target="_blank"
+              >
+                <FacebookIcon size={'md'} />
               </Button>
             </FlexItem>
           </Flex>
