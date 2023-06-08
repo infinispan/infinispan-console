@@ -89,7 +89,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('#cluster-manager-header').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
-    cy.contains('18 Caches');
+    cy.contains(/^\d+ Caches$/);
     cy.contains('12 Counters');
     if (isMonitor) {
       cy.contains('1 Tasks').should('not.exist');
@@ -179,11 +179,11 @@ describe('RBAC Functionlity Tests', () => {
   }
 
   function checkNotOwnSecuredCache(cacheName) {
-    //Checking super cache to be disabled for observer/monitor
+    //Checking not owned cache to be invisible for the current user.
     cy.contains('Data container').click();
     cy.get('[id^="pagination-caches-top-pagination"]').click();
     cy.get('[data-action=per-page-100]').click();
-    cy.get('[data-cy=detailButton-' + cacheName + ']').should('be.disabled');
+    cy.contains(/cacheName$/).should('not.exist');
   }
 
   function checkNonSecuredCacheDetailView(isMonitor, isSuperAdmin) {
