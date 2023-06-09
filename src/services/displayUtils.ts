@@ -15,11 +15,13 @@ import {
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
-  global_warning_color_100
+  global_warning_color_100,
+  global_disabled_color_100
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
 import numeral from 'numeral';
 import { CacheType, ComponentHealth, ContentType } from '@services/infinispanRefData';
+import { CheckCircleIcon, ExclamationTriangleIcon, DegradedIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Utility class to manage display features
@@ -233,6 +235,33 @@ class DisplayUtils {
   }
 
   /**
+   * Used to define color for cache health label
+   * @param health
+   */
+  public healthLabelColor(health: ComponentHealth | undefined) {
+    if (!health) return;
+
+    let color;
+    switch (health) {
+      case ComponentHealth.HEALTHY:
+        color = 'green';
+        break;
+      case ComponentHealth.HEALTHY_REBALANCING:
+        color = 'orange';
+        break;
+      case ComponentHealth.DEGRADED:
+        color = 'grey';
+        break;
+      case ComponentHealth.FAILED:
+        color = 'red';
+        break;
+      default:
+        color = 'blue';
+    }
+    return color;
+  }
+
+  /**
    * Alert variant for the icon in the
    * @param health
    */
@@ -265,36 +294,36 @@ class DisplayUtils {
    *
    * @param cacheType
    */
-  public cacheTypeColor(cacheType: CacheType | undefined): string {
+  public cacheTypeColor(cacheType: CacheType | undefined) {
     let color;
     if (cacheType == undefined) {
-      return chart_color_black_100.value;
+      return 'grey';
     }
     switch (cacheType) {
       case CacheType.Distributed:
-        color = global_palette_blue_50.value;
+        color = 'blue';
         break;
       case CacheType.Replicated:
-        color = global_palette_purple_100.value;
+        color = 'purple';
         break;
       case CacheType.Local:
-        color = chart_color_cyan_100.value;
+        color = 'cyan';
         break;
       case CacheType.Invalidated:
-        color = chart_color_gold_100.value;
+        color = 'gold';
         break;
       default:
-        color = chart_color_black_100.value;
+        color = 'grey';
     }
     return color;
   }
 
   /**
-   * Cache type label color
+   * Cache type label text color
    *
    * @param cacheType
    */
-  public cacheTypeColorLabel(cacheType: CacheType): string {
+  public cacheTypeLabelTextColor(cacheType: CacheType): string {
     if (cacheType == undefined) {
       return chart_color_black_100.value;
     }
@@ -315,6 +344,35 @@ class DisplayUtils {
         break;
       default:
         color = chart_color_black_500.value;
+    }
+    return color;
+  }
+
+  /**
+   * Cache type label background color
+   *
+   * @param cacheType
+   */
+  public cacheTypeLabelBackgroundColor(cacheType: CacheType | undefined) {
+    let color;
+    if (cacheType == undefined) {
+      return chart_color_black_100.value;
+    }
+    switch (cacheType) {
+      case CacheType.Distributed:
+        color = global_palette_blue_50.value;
+        break;
+      case CacheType.Replicated:
+        color = global_palette_purple_100.value;
+        break;
+      case CacheType.Local:
+        color = chart_color_cyan_100.value;
+        break;
+      case CacheType.Invalidated:
+        color = chart_color_gold_100.value;
+        break;
+      default:
+        color = chart_color_black_100.value;
     }
     return color;
   }
@@ -383,7 +441,7 @@ class DisplayUtils {
     if (features.hasRemoteBackup) {
       featuresString = this.appendFeature(featuresString, 'Backups');
     }
-    return featuresString;
+    return featuresString.length > 0 ? featuresString : 'None';
   }
 
   public formatContentToDisplay(content: any, contentType?: ContentType): string {

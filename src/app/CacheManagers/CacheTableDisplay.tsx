@@ -1,270 +1,176 @@
 import React, { useEffect, useState } from 'react';
-import { cellWidth, Table, TableBody, TableHeader, TableVariant, textCenter } from '@patternfly/react-table';
 import {
+  Badge,
   Bullseye,
   Button,
   ButtonVariant,
-  Chip,
-  ChipGroup,
+  Card,
+  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateSecondaryActions,
   Label,
   LabelGroup,
+  Menu,
+  MenuContent,
+  MenuGroup,
+  MenuList,
+  MenuItem,
+  MenuToggle,
+  Popper,
   Pagination,
-  Select,
-  SelectGroup,
-  SelectOption,
-  SelectVariant,
+  SearchInput,
   Text,
   TextContent,
   TextVariants,
   Title,
   Toolbar,
   ToolbarContent,
-  ToolbarGroup,
+  ToolbarFilter,
+  ToolbarToggleGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
+  ButtonProps
 } from '@patternfly/react-core';
-import displayUtils from '@services/displayUtils';
+import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { useTranslation } from 'react-i18next';
+import { useCaches, useDataContainer } from '@app/services/dataContainerHooks';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
+import displayUtils from '@services/displayUtils';
+import { CacheType, CacheFeature, ComponentHealth, CacheFeatureFilter, CacheStatus } from '@services/infinispanRefData';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { useBanner } from '@app/utils/useApiAlert';
+
+import {
+  DatabaseIcon,
+  EyeSlashIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  DegradedIcon,
+  ExclamationCircleIcon
+} from '@patternfly/react-icons';
+import { global_spacer_sm, global_spacer_md, global_spacer_xl } from '@patternfly/react-tokens';
 import { Link } from 'react-router-dom';
-import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
+import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
-import { IExtraData, IRowData } from '@patternfly/react-table/src/components/Table';
-import { Health } from '@app/Common/Health';
-import { useBanner } from '@app/utils/useApiAlert';
-import { useCaches, useDataContainer } from '@app/services/dataContainerHooks';
-import { useTranslation } from 'react-i18next';
-import { useConnectedUser } from '@app/services/userManagementHook';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { ConsoleACL } from '@services/securityService';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-import { ComponentHealth } from '@services/infinispanRefData';
-
 interface CacheAction {
   cacheName: string;
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
 }
 
 const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: number) => void; isVisible: boolean }) => {
-  const { setBanner } = useBanner();
+  const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
-  const { cm } = useDataContainer();
+  const { setBanner } = useBanner();
   const { caches, errorCaches, loadingCaches } = useCaches();
+  const { cm } = useDataContainer();
+
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
+  const [selectedCacheFeature, setSelectedCacheFeature] = useState<string[]>([]);
+  const [selectedCacheType, setSelectedCacheType] = useState<string[]>([]);
+  const [selectedCacheStatus, setSelectedCacheStatus] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [rows, setRows] = useState<(string | any)[]>([]);
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const toggleRef = React.useRef<HTMLButtonElement>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const areSelectionsPresent =
+    selectedCacheFeature.length > 0 || selectedCacheType.length > 0 || selectedCacheStatus.length > 0;
+
+  const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+  const isCreator = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
     perPage: 10
   });
-  const [rows, setRows] = useState<any[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [chipsCacheFeature, setChipsCacheFeature] = useState<string[]>([]);
-  const [chipsCacheType, setChipsCacheType] = useState<string[]>([]);
-  const [chipsCacheStatus, setChipsCacheStatus] = useState<string[]>([]);
-  const [isFilterSelectExpanded, setIsFilterSelectExpanded] = useState<boolean>(false);
   const [cacheAction, setCacheAction] = useState<CacheAction>({
     cacheName: '',
     action: ''
   });
-  const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
-
-  // new caches or new filters
-  useEffect(() => {
-    if (loadingCaches) {
-      return;
-    }
-    const failedCaches = caches.reduce((failedCaches: string, cacheInfo: CacheInfo) => {
-      if (
-        (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
-        (cacheInfo.health as ComponentHealth) == ComponentHealth.DEGRADED
-      ) {
-        return failedCaches == '' ? cacheInfo.name : failedCaches + ', ' + cacheInfo.name;
-      } else {
-        return failedCaches;
-      }
-    }, '');
-
-    if (failedCaches.length > 0) {
-      setBanner('[' + failedCaches + ']' + ' caches health is FAILED or DEGRADED');
-    } else {
-      setBanner('');
-    }
-
-    props.setCachesCount(caches.length);
-    let newFilteredCaches: CacheInfo[] = caches;
-
-    if (selectedFilters.length == 0) {
-      // clear chips
-      setChipsCacheStatus([]);
-      setChipsCacheFeature([]);
-      setChipsCacheType([]);
-    } else {
-      // From the select, extract each category
-      let filterStatus = extract(selectedFilters, cacheStatus);
-      let filterFeatures = extract(selectedFilters, cacheFeatures);
-      let filterCacheType = extract(selectedFilters, cacheTypes);
-      // Update chips
-      setChipsCacheStatus(filterStatus);
-      setChipsCacheFeature(filterFeatures);
-      setChipsCacheType(filterCacheType);
-
-      // Filter caches by status
-      if (filterStatus.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) => isCacheStatus(cacheInfo, filterStatus));
-      }
-
-      // Filter caches by cache type
-      if (filterCacheType.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) => isCacheType(cacheInfo, filterCacheType));
-      }
-
-      // Filter caches by features
-      if (filterFeatures.length > 0) {
-        newFilteredCaches = newFilteredCaches.filter((cacheInfo) => hasFeatures(cacheInfo, filterFeatures));
-      }
-    }
-
-    // Set filtered caches
-    setFilteredCaches(newFilteredCaches);
-  }, [props.isVisible, loadingCaches, caches, selectedFilters]);
-
-  // new filtered caches upgrades rows if needed
-  useEffect(() => {
-    let paginationUpgrade = false;
-    // Upgrade Pagination in necessary
-    if (cachesPagination.page > 1) {
-      const completePagesNum = Math.floor(filteredCaches.length / cachesPagination.perPage);
-      const lastPageCount = filteredCaches.length % cachesPagination.perPage;
-      if (lastPageCount == 0 && cachesPagination.page > completePagesNum) {
-        paginationUpgrade = true;
-        setCachesPagination({
-          page: completePagesNum,
-          perPage: cachesPagination.perPage
-        });
-      }
-    }
-
-    if (!paginationUpgrade) {
-      updateRows();
-    }
-  }, [filteredCaches]);
-
-  // new pagination upgrades rows
-  useEffect(() => {
-    updateRows();
-  }, [cachesPagination]);
-
-  const columns = [
-    { title: t('cache-managers.cache-name'), transforms: [cellWidth(25), textCenter] },
-    {
-      title: t('cache-managers.cache-mode'),
-      transforms: [cellWidth(15), textCenter],
-      cellTransforms: [textCenter]
-    },
-    {
-      title: t('cache-managers.cache-health'),
-      transforms: [cellWidth(10)]
-    },
-    {
-      title: t('cache-managers.cache-features'),
-      transforms: [textCenter, cellWidth(30)],
-      cellTransforms: [textCenter]
-    },
-    {
-      // Will display 'ignored' if the cache is ignored
-      title: t('cache-managers.cache-status'),
-      transforms: [textCenter],
-      cellTransforms: [textCenter]
-    }
-  ];
-
-  const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
-    // @ts-ignore
-    let cacheName: string = rowData.cells[0].cacheName as string;
-
-    if (!cacheName) {
-      return [];
-    }
-
-    const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
-    const isCreator = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
-
-    // @ts-ignore
-    const ignoredCache = rowData.cells[0].isIgnored;
-    // @ts-ignore
-    const health = rowData.cells[0].health;
-
-    if ((!isAdmin && !isCreator) || (ignoredCache && !isAdmin)) {
-      return [];
-    }
-
-    if (ignoredCache) {
-      return [
-        {
-          'data-cy': 'showCacheAction',
-          title: t('cache-managers.undo-ignore'),
-          onClick: (event, rowId, rowData, extra) => openIgnoreCacheModal(cacheName, rowData.cells[0].isIgnored)
-        }
-      ];
-    }
-
-    let actions = [
-      {
-        'data-cy': 'deleteCacheAction',
-        title: t('cache-managers.delete'),
-        onClick: (event, rowId, rowData, extra) => {
-          setCacheAction({
-            cacheName: cacheName,
-            action: 'delete'
-          });
-        }
-      }
-    ];
-
-    if (isAdmin) {
-      actions.push({
-        'data-cy': 'ignoreCacheAction',
-        title: t('cache-managers.ignore'),
-        onClick: (event, rowId, rowData, extra) => openIgnoreCacheModal(cacheName, rowData.cells[0].isIgnored)
-      });
-    }
-
-    if (isAdmin && health === 'DEGRADED') {
-      actions.push({
-        'data-cy': 'openAvailableCacheAction',
-        title: t('cache-managers.available'),
-        onClick: (event, rowId, rowData, extra) => openAvailableCacheModal(cacheName)
-      });
-    }
-    return actions;
-  };
 
   const isCacheIgnored = (cacheInfo: CacheInfo): boolean => {
     return cacheInfo.status == 'IGNORED';
   };
 
-  const closeDeleteModal = (deleteDone: boolean) => {
-    if (deleteDone) {
-      setFilteredCaches(filteredCaches.filter((cacheInfo) => cacheInfo.name !== cacheAction.cacheName));
-    }
-    setCacheAction({ cacheName: '', action: '' });
+  const onFilter = (cache: CacheInfo) => {
+    const matchesTypeValue = selectedCacheType.includes(cache.type);
+    const matchesFeatureValue = selectedCacheFeature.some(
+      (feature) => cache.features[CacheFeatureFilter[feature]] == true
+    );
+    const matchesStatusValue = selectedCacheStatus.includes(CacheStatus[cache.status]);
+
+    return (
+      (selectedCacheType.length === 0 || matchesTypeValue) &&
+      (selectedCacheFeature.length === 0 || matchesFeatureValue) &&
+      (selectedCacheStatus.length === 0 || matchesStatusValue)
+    );
   };
 
-  const closeIgnoreModal = (ignoreDone: boolean) => {
-    if (ignoreDone) {
+  useEffect(() => {
+    if (caches) {
+      const failedCaches = caches.reduce((failedCaches: string, cacheInfo: CacheInfo) => {
+        if (
+          (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
+          (cacheInfo.health as ComponentHealth) == ComponentHealth.DEGRADED
+        ) {
+          return failedCaches == '' ? cacheInfo.name : failedCaches + ', ' + cacheInfo.name;
+        } else {
+          return failedCaches;
+        }
+      }, '');
+
+      if (failedCaches.length > 0) {
+        setBanner('[' + failedCaches + '] ' + t('cache-managers.cache-failed-status'));
+      } else {
+        setBanner('');
+      }
+
+      props.setCachesCount(caches.length);
+      setFilteredCaches(caches);
     }
-    setCacheAction({ cacheName: '', action: '' });
+  }, [caches, errorCaches, loadingCaches]);
+
+  useEffect(() => {
+    if (filteredCaches) {
+      const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
+      const updateRows = filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+    }
+  }, [cachesPagination, filteredCaches]);
+
+  useEffect(() => {
+    setFilteredCaches(caches.filter((cache) => onSearch(searchValue, cache.name)).filter(onFilter));
+  }, [searchValue, selectedCacheFeature, selectedCacheType, selectedCacheStatus]);
+
+  const columnNames = {
+    name: t('cache-managers.cache-name'),
+    mode: t('cache-managers.cache-mode'),
+    health: t('cache-managers.cache-health'),
+    features: t('cache-managers.cache-features'),
+    status: t('cache-managers.cache-status')
   };
 
-  const closeAvailableModal = (ignoreDone: boolean) => {
-    if (ignoreDone) {
-    }
-    setCacheAction({ cacheName: '', action: '' });
+  const onSetPage = (_event, pageNumber) => {
+    setCachesPagination({
+      ...cachesPagination,
+      page: pageNumber
+    });
+  };
+
+  const onPerPageSelect = (_event, perPage) => {
+    setCachesPagination({
+      page: 1,
+      perPage: perPage
+    });
   };
 
   const openIgnoreCacheModal = (cacheName: string, ignored: boolean) => {
@@ -281,81 +187,75 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     });
   };
 
-  const updateRows = () => {
-    const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
-    const currentPageCaches = filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage);
-
-    let currentRows: {
-      heightAuto: boolean;
-      cells: (string | any)[];
-      disableActions: boolean;
-    }[];
-
-    if (currentPageCaches.length == 0 || loadingCaches || errorCaches != '') {
-      currentRows = [
-        {
-          heightAuto: true,
-          disableActions: true,
-          cells: [
-            {
-              props: { colSpan: 5 },
-              title: (
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.no-caches-status')}
-                    </Title>
-                    <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              )
-            }
-          ]
-        }
-      ];
-    } else {
-      currentRows = currentPageCaches.map((cacheInfo) => {
-        return {
-          heightAuto: true,
-          disableActions: false,
-          actionProps: { 'data-cy': `actions-${cacheInfo.name}` },
-          cells: [
-            {
-              cacheName: cacheInfo.name,
-              health: cacheInfo.health,
-              isIgnored: isCacheIgnored(cacheInfo),
-              title: displayCacheName(cacheInfo)
-            },
-            {
-              title: <CacheTypeBadge cacheType={cacheInfo.type} small={true} cacheName={cacheInfo.name} />
-            },
-            {
-              title: (
-                <Health
-                  health={cacheInfo.health}
-                  displayIcon={ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED}
-                  cacheName={cacheInfo.name}
-                />
-              )
-            },
-            { title: displayCacheFeatures(cacheInfo) },
-            { title: displayBadges(cacheInfo) }
-          ]
-        };
-      });
-    }
-    setRows(currentRows);
+  const closeDeleteModal = (deleteDone: boolean) => {
+    if (deleteDone) setFilteredCaches(filteredCaches.filter((cacheInfo) => cacheInfo.name !== cacheAction.cacheName));
+    setCacheAction({ cacheName: '', action: '' });
   };
 
-  const displayCacheFeatures = (cacheInfo: CacheInfo) => {
-    return (
-      <TextContent>
-        <Text component={TextVariants.small} data-cy={`feature-${cacheInfo.name}`}>
-          {displayUtils.createFeaturesString(cacheInfo.features)}
-        </Text>
-      </TextContent>
-    );
+  const onChipDelete = (category: string, chip: string) => {
+    if (category === 'feature') {
+      setSelectedCacheFeature(selectedCacheFeature.filter((selection) => selection !== chip));
+    } else if (category === 'type') {
+      setSelectedCacheType(selectedCacheType.filter((selection) => selection !== chip));
+    } else {
+      setSelectedCacheStatus(selectedCacheStatus.filter((selection) => selection !== chip));
+    }
+  };
+
+  const onToggleClick = (ev: React.MouseEvent) => {
+    ev.stopPropagation(); // Stop handleClickOutside from handling
+    setTimeout(() => {
+      if (menuRef.current) {
+        const firstElement = menuRef.current.querySelector('li > button:not(:disabled)');
+        firstElement && (firstElement as HTMLElement).focus();
+      }
+    }, 0);
+    setIsFilterOpen(!isFilterOpen);
+  };
+
+  const onSelectFilter = (event: React.MouseEvent | undefined, itemId: string | number | undefined) => {
+    if (typeof itemId === 'undefined') {
+      return;
+    }
+
+    const itemStr = itemId.toString();
+    const category = Object.keys(CacheType).includes(itemStr)
+      ? 'Type'
+      : Object.keys(CacheFeatureFilter).includes(itemStr)
+      ? 'Feature'
+      : 'Status';
+
+    if (category === 'Type') {
+      setSelectedCacheType(
+        selectedCacheType.includes(itemStr)
+          ? selectedCacheType.filter((selection) => selection !== itemStr)
+          : [itemStr, ...selectedCacheType]
+      );
+    } else if (category === 'Feature') {
+      setSelectedCacheFeature(
+        selectedCacheFeature.includes(itemStr)
+          ? selectedCacheFeature.filter((selection) => selection !== itemStr)
+          : [itemStr, ...selectedCacheFeature]
+      );
+    } else {
+      setSelectedCacheStatus(
+        selectedCacheStatus.includes(itemStr)
+          ? selectedCacheStatus.filter((selection) => selection !== itemStr)
+          : [itemStr, ...selectedCacheStatus]
+      );
+    }
+  };
+
+  const rebalancingOffBadge = (cacheInfo: CacheInfo) => {
+    if (!cm.rebalancing_enabled) {
+      return '';
+    }
+
+    if (cacheInfo.rebalancing_enabled != undefined && cacheInfo.rebalancing_enabled) {
+      return '';
+    }
+
+    return <Label key={`ignore-${cacheInfo.name}`}>{t('cache-managers.rebalancing.disabled-status')}</Label>;
   };
 
   const ignoreCacheBadge = (cacheInfo: CacheInfo) => {
@@ -369,50 +269,18 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     );
   };
 
-  /**
-   * Display the badge only of rebalancing is enabled at cluster level
-   * and the cache has rebalancing disabled. Check cluster level since we
-   * don't want to display a badge for all the caches
-   *
-   * @param cacheInfo
-   */
-  const rebalancingOffBadge = (cacheInfo: CacheInfo) => {
-    if (!cm.rebalancing_enabled) {
-      return '';
-    }
-
-    if (cacheInfo.rebalancing_enabled != undefined && cacheInfo.rebalancing_enabled) {
-      return '';
-    }
-
-    return <Label key={`ignore-${cacheInfo.name}`}>{t('cache-managers.rebalancing.disabled-status')}</Label>;
-  };
-
-  const displayBadges = (cacheInfo: CacheInfo) => {
-    const badgeIgnore = ignoreCacheBadge(cacheInfo);
-    const badgeRebalancing = rebalancingOffBadge(cacheInfo);
-
-    if (badgeIgnore == '' && badgeRebalancing == '') {
-      return '';
-    }
-
-    return (
-      <LabelGroup>
-        {badgeIgnore}
-        {badgeRebalancing}
-      </LabelGroup>
-    );
-  };
-
   const displayCacheName = (cacheInfo: CacheInfo) => {
     let className = '';
     if (ComponentHealth[cacheInfo.health] == ComponentHealth.FAILED) {
       className = 'failed-link';
     }
 
-    const disableCacheDetail =
-      isCacheIgnored(cacheInfo) ||
-      !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.MONITOR, cacheInfo.name, connectedUser);
+    const disableCacheDetail = isCacheIgnored(cacheInfo);
+
+    const cacheNameHiddenIcon: ButtonProps = {
+      icon: <EyeSlashIcon />,
+      iconPosition: 'right'
+    };
 
     const cacheDetailAccess = (
       <Button
@@ -421,6 +289,8 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
         variant={ButtonVariant.link}
         isDisabled={disableCacheDetail}
         className={className}
+        {...(disableCacheDetail && cacheNameHiddenIcon)}
+        style={{ paddingLeft: 0 }}
       >
         {cacheInfo.name}
       </Button>
@@ -441,187 +311,340 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     );
   };
 
-  const cacheTypes = ['Local', 'Replicated', 'Distributed', 'Invalidated'];
-  const cacheFeatures = ['Bounded', 'Indexed', 'Persistence', 'Transactions', 'Authorization', 'Backups'];
-
-  const cacheStatus = [t('cache-managers.ignored-status')];
-
-  const extract = (actualSelection: string[], ref: string[]): string[] => {
-    return actualSelection.filter((s) => ref.includes(s));
-  };
-
-  const isCacheStatus = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
-    if (actualSelection.includes('Hidden') && isCacheIgnored(cacheInfo)) return true;
-    else return false;
-  };
-
-  const isCacheType = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
-    return actualSelection.includes(cacheInfo.type);
-  };
-
-  const hasFeatures = (cacheInfo: CacheInfo, actualSelection: string[]): boolean => {
-    if (actualSelection.includes('Transactions') && cacheInfo.features.transactional) {
-      return true;
-    }
-    if (actualSelection.includes('Bounded') && cacheInfo.features.bounded) {
-      return true;
-    }
-
-    if (actualSelection.includes('Indexed') && cacheInfo.features.indexed) {
-      return true;
-    }
-
-    if (actualSelection.includes('Persistence') && cacheInfo.features.persistent) {
-      return true;
-    }
-
-    if (actualSelection.includes('Authorization') && cacheInfo.features.secured) {
-      return true;
-    }
-    if (actualSelection.includes('Backups') && cacheInfo.features.hasRemoteBackup) {
-      return true;
-    }
-    return false;
-  };
-
-  const onDeleteChip = (chip) => {
-    let actualSelection = selectedFilters.filter((item) => item !== chip);
-    setSelectedFilters(actualSelection);
-  };
-
-  const onSelectFilter = (event, selection) => {
-    let actualSelection;
-
-    if (selectedFilters.includes(selection)) {
-      actualSelection = selectedFilters.filter((item) => item !== selection);
-    } else {
-      actualSelection = [...selectedFilters, selection];
-    }
-    setSelectedFilters(actualSelection);
-  };
-
-  const onDeleteAllFilters = () => {
-    setChipsCacheFeature([]);
-    setChipsCacheType([]);
-    setChipsCacheStatus([]);
-    setSelectedFilters([]);
-  };
-
-  const buildCreateCacheButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return <ToolbarItem />;
-    }
+  const displayCacheFeatures = (cacheInfo: CacheInfo) => {
     return (
-      <React.Fragment>
-        <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-        <ToolbarItem style={{ marginRight: global_spacer_sm.value }}>
-          <Link
-            to={{
-              pathname: '/container/caches/create',
-              search: location.search
-            }}
-          >
-            <Button variant={ButtonVariant.primary} aria-label="create-cache-button" data-cy="createCacheButton">
-              {t('cache-managers.create-cache-button')}
-            </Button>
-          </Link>
-        </ToolbarItem>
-      </React.Fragment>
+      <TextContent>
+        <Text component={TextVariants.small} data-cy={`feature-${cacheInfo.name}`}>
+          {displayUtils.createFeaturesString(cacheInfo.features)}
+        </Text>
+      </TextContent>
     );
   };
 
-  const buildViewConfigurationsButton = () => {
+  const displayCacheHealth = (cacheHealth) => {
+    const labelColor = displayUtils.healthLabelColor(cacheHealth);
+    const health = displayUtils.healthLabel(cacheHealth);
+
+    const healthIcon =
+      cacheHealth === ComponentHealth.HEALTHY ? (
+        <CheckCircleIcon />
+      ) : ComponentHealth.FAILED ? (
+        <ExclamationCircleIcon />
+      ) : ComponentHealth.DEGRADED ? (
+        <DegradedIcon />
+      ) : (
+        <ExclamationTriangleIcon />
+      );
+
+    return (
+      <Label icon={healthIcon} variant="outline" color={labelColor}>
+        {health}
+      </Label>
+    );
+  };
+
+  const displayCacheType = (cacheType) => {
+    const labelColor = displayUtils.cacheTypeColor(cacheType);
+    return <Label color={labelColor}>{cacheType}</Label>;
+  };
+
+  const displayCacheStatus = (cacheInfo: CacheInfo) => {
+    const badgeIgnore = ignoreCacheBadge(cacheInfo);
+    const badgeRebalancing = rebalancingOffBadge(cacheInfo);
+
+    if (badgeIgnore == '' && badgeRebalancing == '') {
+      return '';
+    }
+
+    return (
+      <LabelGroup>
+        {badgeIgnore}
+        {badgeRebalancing}
+      </LabelGroup>
+    );
+  };
+
+  const displayActions = (cache: CacheInfo): IAction[] => {
+    const cacheName: string = cache.name as string;
+
+    if (!cacheName) return [];
+
+    const ignoredCache = cache.status === 'IGNORED';
+    const health = cache.health;
+
+    if ((!isAdmin && !isCreator) || (ignoredCache && !isAdmin)) return [];
+
+    if (ignoredCache) {
+      return [
+        {
+          'aria-label': 'showCacheAction',
+          title: t('cache-managers.undo-ignore'),
+          onClick: () => openIgnoreCacheModal(cacheName, ignoredCache)
+        }
+      ];
+    }
+
+    // eslint-disable-next-line prefer-const
+    let actions: IAction[] = [];
+
+    if (isAdmin) {
+      actions.push({
+        'aria-label': 'ignoreCacheAction',
+        title: t('cache-managers.ignore'),
+        onClick: () => openIgnoreCacheModal(cacheName, ignoredCache)
+      });
+    }
+
+    if (isAdmin && health === 'DEGRADED') {
+      actions.push({
+        'aria-label': 'openAvailableCacheAction',
+        title: t('cache-managers.available'),
+        onClick: () => openAvailableCacheModal(cacheName)
+      });
+    }
+
+    actions.push({
+      'aria-label': 'deleteCacheAction',
+      title: t('cache-managers.delete'),
+      onClick: () => {
+        setCacheAction({
+          cacheName: cacheName,
+          action: 'delete'
+        });
+      }
+    });
+
+    return actions;
+  };
+
+  const createCacheButtonHelper = (isEmptyPage?: boolean) => {
+    const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
+    const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
     return (
       <Link
         to={{
-          pathname: '/container/' + props.cmName + '/configurations/',
-          search: location.search,
-          state: {
-            cmName: props.cmName
-          }
+          pathname: '/container/caches/create',
+          search: location.search
         }}
       >
-        <Button variant={'link'} aria-label="view-cache-configurations-button" data-cy="showTemplatesButton">
-          {t('cache-managers.config-templates-button')}
+        <Button
+          variant={ButtonVariant.primary}
+          aria-label="create-cache-button-helper"
+          data-cy="createCacheButton"
+          {...(isEmptyPage ? emptyPageButtonProp : normalPageButtonProps)}
+        >
+          {t('cache-managers.create-cache-button')}
         </Button>
       </Link>
     );
   };
 
-  const buildFilter = () => {
+  const buildCreateCacheButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return;
+    }
     return (
-      <ToolbarGroup variant="filter-group">
-        <ToolbarItem style={{ width: 250 }} data-cy="cacheFilterSelect">
-          <Select
-            variant={SelectVariant.checkbox}
-            aria-label={t('cache-managers.cache-filter-label')}
-            onToggle={setIsFilterSelectExpanded}
-            onSelect={onSelectFilter}
-            selections={selectedFilters}
-            isOpen={isFilterSelectExpanded}
-            toggleIcon={<FilterIcon />}
-            maxHeight={200}
-            placeholderText={t('cache-managers.cache-filter-label')}
-            isGrouped={true}
-            data-cy="cacheFilterSelectExpanded"
-          >
-            <SelectGroup label={t('cache-managers.cache-filter-type-label')} key="group1">
-              <SelectOption key={0} value={t('cache-managers.mode-local')} />
-              <SelectOption key={1} value={t('cache-managers.mode-repl')} />
-              <SelectOption key={2} value={t('cache-managers.mode-dist')} />
-              <SelectOption key={3} value={t('cache-managers.mode-invalid')} />
-            </SelectGroup>
-            <SelectGroup label={t('cache-managers.cache-filter-feature-label')} key="group2">
-              <SelectOption key={5} value={t('cache-managers.cache-filter-feature-bounded')} />
-              <SelectOption key={6} value={t('cache-managers.cache-filter-feature-indexed')} />
-              <SelectOption key={7} value={t('cache-managers.cache-filter-feature-persistent')} />
-              <SelectOption key={8} value={t('cache-managers.cache-filter-feature-trans')} />
-              <SelectOption key={9} value={t('cache-managers.cache-filter-feature-secure')} />
-              <SelectOption key={10} value={t('cache-managers.cache-filter-feature-xsite')} />
-              <SelectOption key={11} value={t('cache-managers.cache-filter-feature-ignored')} />
-            </SelectGroup>
-          </Select>
-        </ToolbarItem>
-      </ToolbarGroup>
+      <React.Fragment>
+        <ToolbarItem>{createCacheButtonHelper()}</ToolbarItem>
+      </React.Fragment>
     );
   };
 
-  const buildPagination = () => {
+  const cacheTemplateButton = (
+    <Link
+      to={{
+        pathname: '/container/' + props.cmName + '/configurations/',
+        search: location.search,
+        state: {
+          cmName: props.cmName
+        }
+      }}
+    >
+      <Button variant={'link'} aria-label="view-cache-configurations-button" data-cy="showTemplatesButton">
+        {t('cache-managers.config-templates-button')}
+      </Button>
+    </Link>
+  );
+
+  const emptyPage = (
+    <EmptyState variant={EmptyStateVariant.large}>
+      <EmptyStateIcon icon={DatabaseIcon} />
+      <Title headingLevel="h4" size="lg">
+        {t('cache-managers.no-caches-status')}
+      </Title>
+      <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
+      {createCacheButtonHelper(true)}
+      <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+        {cacheTemplateButton}
+      </EmptyStateSecondaryActions>
+    </EmptyState>
+  );
+
+  const toggleFilter = (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={onToggleClick}
+      isExpanded={isFilterOpen}
+      {...(areSelectionsPresent && {
+        badge: (
+          <Badge isRead>{selectedCacheFeature.length + selectedCacheType.length + selectedCacheStatus.length}</Badge>
+        )
+      })}
+      icon={<FilterIcon />}
+      style={
+        {
+          width: '200px'
+        } as React.CSSProperties
+      }
+    >
+      {t('cache-managers.cache-filter-label')}
+    </MenuToggle>
+  );
+
+  const filterMenu = (
+    <Menu ref={menuRef} id="filter-faceted-cache-menu" onSelect={onSelectFilter} selected={selectedCacheType}>
+      <MenuContent>
+        <MenuList>
+          <MenuGroup label={t('cache-managers.cache-filter-type-label')}>
+            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Local)} itemId="Local">
+              {t('cache-managers.mode-local')}
+            </MenuItem>
+            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Replicated)} itemId="Replicated">
+              {t('cache-managers.mode-repl')}
+            </MenuItem>
+            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Distributed)} itemId="Distributed">
+              {t('cache-managers.mode-dist')}
+            </MenuItem>
+            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Invalidated)} itemId="Invalidated">
+              {t('cache-managers.mode-invalid')}
+            </MenuItem>
+          </MenuGroup>
+          <MenuGroup label={t('cache-managers.cache-filter-feature-label')}>
+            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.BOUNDED)} itemId="Bounded">
+              {t('cache-managers.cache-filter-feature-bounded')}
+            </MenuItem>
+            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.INDEXED)} itemId="Indexed">
+              {t('cache-managers.cache-filter-feature-indexed')}
+            </MenuItem>
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheFeature.includes(CacheFeature.PERSISTENCE)}
+              itemId="Persistence"
+            >
+              {t('cache-managers.cache-filter-feature-persistent')}
+            </MenuItem>
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheFeature.includes(CacheFeature.TRANSACTIONAL)}
+              itemId="Transactional"
+            >
+              {t('cache-managers.cache-filter-feature-trans')}
+            </MenuItem>
+            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.SECURED)} itemId="Authorization">
+              {t('cache-managers.cache-filter-feature-secure')}
+            </MenuItem>
+            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.BACKUPS)} itemId="Backups">
+              {t('cache-managers.cache-filter-feature-xsite')}
+            </MenuItem>
+          </MenuGroup>
+          <MenuGroup label={t('cache-managers.cache-filter-status-label')}>
+            <MenuItem hasCheck isSelected={selectedCacheStatus.includes(CacheStatus.IGNORED)} itemId="Hidden">
+              {t('cache-managers.cache-filter-status-ignored')}
+            </MenuItem>
+          </MenuGroup>
+        </MenuList>
+      </MenuContent>
+    </Menu>
+  );
+
+  const selectFilter = (
+    <div ref={containerRef}>
+      <Popper
+        trigger={toggleFilter}
+        popper={filterMenu}
+        appendTo={containerRef.current || undefined}
+        isVisible={isFilterOpen}
+      />
+    </div>
+  );
+
+  const searchInput = (
+    <SearchInput
+      placeholder={t('cache-managers.cache-search')}
+      value={searchValue}
+      onChange={(_event, val) => setSearchValue(val)}
+      onClear={() => setSearchValue('')}
+    />
+  );
+
+  const toolbarPagination = (dropDirection) => {
     return (
       <Pagination
         data-cy="paginationArea"
         itemCount={filteredCaches.length}
         perPage={cachesPagination.perPage}
         page={cachesPagination.page}
-        onSetPage={(_event, pageNumber) =>
-          setCachesPagination({
-            page: pageNumber,
-            perPage: cachesPagination.perPage
-          })
-        }
+        onSetPage={onSetPage}
         widgetId="pagination-caches"
-        onPerPageSelect={(_event, perPage) =>
-          setCachesPagination({
-            page: 1,
-            perPage: perPage
-          })
-        }
+        onPerPageSelect={onPerPageSelect}
         isCompact
+        dropDirection={dropDirection}
       />
     );
   };
 
-  const displayClearAll = () => {
-    if (chipsCacheFeature.length == 0 && chipsCacheType.length == 0) {
-      return '';
-    }
-
-    return (
-      <Button variant={ButtonVariant.link} isInline onClick={onDeleteAllFilters} data-cy="clearAllButton">
-        {t('cache-managers.clear-all-button')}
-      </Button>
-    );
-  };
+  const toolbar = (
+    <Toolbar
+      id="cache-table-toolbar"
+      clearAllFilters={() => {
+        setSelectedCacheFeature([]);
+        setSelectedCacheType([]);
+        setSelectedCacheStatus([]);
+      }}
+      style={{ marginBottom: global_spacer_md.value }}
+    >
+      <ToolbarContent>
+        <ToolbarToggleGroup data-cy="cacheFilterSelect" toggleIcon={<FilterIcon />} breakpoint="xl">
+          <ToolbarFilter
+            chips={selectedCacheType}
+            deleteChip={(category, chip) => onChipDelete(category as string, chip as string)}
+            deleteChipGroup={() => setSelectedCacheType([])}
+            categoryName={t('cache-managers.cache-filter-type-label')}
+            showToolbarItem={false}
+            data-cy="cacheFilterSelectExpanded"
+          >
+            <div />
+          </ToolbarFilter>
+          <ToolbarFilter
+            chips={selectedCacheFeature}
+            deleteChip={(category, chip) => onChipDelete(category as string, chip as string)}
+            deleteChipGroup={() => setSelectedCacheFeature([])}
+            categoryName={t('cache-managers.cache-filter-feature-label')}
+            data-cy="cacheFilterSelectExpanded"
+          >
+            <div />
+          </ToolbarFilter>
+          <ToolbarFilter
+            chips={selectedCacheStatus}
+            deleteChip={(category, chip) => onChipDelete(category as string, chip as string)}
+            deleteChipGroup={() => setSelectedCacheStatus([])}
+            categoryName={t('cache-managers.cache-filter-status-label')}
+            data-cy="cacheFilterSelectExpanded"
+          >
+            {selectFilter}
+          </ToolbarFilter>
+        </ToolbarToggleGroup>
+        <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+        <ToolbarItem
+          variant={ToolbarItemVariant.separator}
+          style={{ marginInline: global_spacer_sm.value }}
+        ></ToolbarItem>
+        {buildCreateCacheButton()}
+        <ToolbarItem>{cacheTemplateButton}</ToolbarItem>
+        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+      </ToolbarContent>
+    </Toolbar>
+  );
 
   if (!props.isVisible) {
     return <span />;
@@ -629,69 +652,85 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
 
   return (
     <React.Fragment>
-      <Toolbar id="cache-table-toolbar">
-        <ToolbarContent>
-          <ToolbarItem variant={ToolbarItemVariant['search-filter']}>{buildFilter()}</ToolbarItem>
-          {buildCreateCacheButton()}
-          <ToolbarItem>{buildViewConfigurationsButton()}</ToolbarItem>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{buildPagination()}</ToolbarItem>
-        </ToolbarContent>
-        <ToolbarContent>
-          <ToolbarItem variant={ToolbarItemVariant['chip-group']}>
-            <ChipGroup key="chips-types" categoryName="Cache Type">
-              {chipsCacheType.map((chip) => (
-                <Chip key={'chip-' + chip} onClick={() => onDeleteChip(chip)}>
-                  {chip}
-                </Chip>
-              ))}
-            </ChipGroup>
-            <ChipGroup key="chips-features" categoryName="Features">
-              {chipsCacheFeature.map((chip) => (
-                <Chip key={'chip-' + chip} onClick={() => onDeleteChip(chip)}>
-                  {chip}
-                </Chip>
-              ))}
-            </ChipGroup>
-            <ChipGroup key="chip-status" categoryName="Status">
-              {chipsCacheStatus.map((chip) => (
-                <Chip key={'chip-' + chip} onClick={() => onDeleteChip(chip)}>
-                  {chip}
-                </Chip>
-              ))}
-            </ChipGroup>
-          </ToolbarItem>
-          <ToolbarItem>{displayClearAll()}</ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-      <Table
-        aria-label={t('cache-managers.cache-table-label')}
-        cells={columns}
-        rows={rows}
-        className={'caches-table'}
-        actionResolver={actionResolver}
-        variant={TableVariant.compact}
-        data-cy="cachesTable"
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
-      <DeleteCache
-        cacheName={cacheAction.cacheName}
-        isModalOpen={cacheAction.action == 'delete'}
-        closeModal={closeDeleteModal}
-      />
-      <IgnoreCache
-        cmName={props.cmName}
-        cacheName={cacheAction.cacheName}
-        isModalOpen={cacheAction.action == 'ignore' || cacheAction.action == 'undo'}
-        action={cacheAction.action}
-        closeModal={closeIgnoreModal}
-      />
-      <SetAvailableCache
-        cacheName={cacheAction.cacheName}
-        isModalOpen={cacheAction.action == 'available'}
-        closeModal={closeAvailableModal}
-      />
+      {caches.length == 0 ? (
+        emptyPage
+      ) : (
+        <Card>
+          <CardBody>
+            {toolbar}
+            <TableComposable
+              data-cy="cachesTable"
+              className={'cache-table'}
+              aria-label={'cache-table-label'}
+              variant="compact"
+            >
+              <Thead>
+                <Tr>
+                  <Th colSpan={1}>{columnNames.name}</Th>
+                  <Th colSpan={1}>{columnNames.mode}</Th>
+                  <Th colSpan={1}>{columnNames.health}</Th>
+                  <Th colSpan={1}>{columnNames.features}</Th>
+                  <Th colSpan={1}>{columnNames.status}</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {filteredCaches.length == 0 ? (
+                  <Tr>
+                    <Td colSpan={6}>
+                      <Bullseye>
+                        <EmptyState variant={EmptyStateVariant.small}>
+                          <EmptyStateIcon icon={SearchIcon} />
+                          <Title headingLevel="h2" size="lg">
+                            {t('cache-managers.no-filter-cache')}
+                          </Title>
+                          <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
+                        </EmptyState>
+                      </Bullseye>
+                    </Td>
+                  </Tr>
+                ) : (
+                  rows.map((row) => {
+                    return (
+                      <Tr key={row.name}>
+                        <Td dataLabel={columnNames.name}>{displayCacheName(row)}</Td>
+                        <Td dataLabel={columnNames.mode}>{displayCacheType(row.type)}</Td>
+                        <Td dataLabel={columnNames.health}>{displayCacheHealth(row.health)}</Td>
+                        <Td dataLabel={columnNames.features}>{displayCacheFeatures(row)}</Td>
+                        <Td dataLabel={columnNames.status}>{displayCacheStatus(row)}</Td>
+                        {(isAdmin || isCreator) && (
+                          <Td isActionCell>
+                            <ActionsColumn items={displayActions(row)} />
+                          </Td>
+                        )}
+                      </Tr>
+                    );
+                  })
+                )}
+              </Tbody>
+            </TableComposable>
+            <Toolbar id="role-table-toolbar" className={'role-table-display'}>
+              <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+            </Toolbar>
+            <DeleteCache
+              cacheName={cacheAction.cacheName}
+              isModalOpen={cacheAction.action == 'delete'}
+              closeModal={closeDeleteModal}
+            />
+            <IgnoreCache
+              cmName={props.cmName}
+              cacheName={cacheAction.cacheName}
+              isModalOpen={cacheAction.action == 'ignore' || cacheAction.action == 'undo'}
+              action={cacheAction.action}
+              closeModal={() => setCacheAction({ cacheName: '', action: '' })}
+            />
+            <SetAvailableCache
+              cacheName={cacheAction.cacheName}
+              isModalOpen={cacheAction.action == 'available'}
+              closeModal={() => setCacheAction({ cacheName: '', action: '' })}
+            />
+          </CardBody>
+        </Card>
+      )}
     </React.Fragment>
   );
 };

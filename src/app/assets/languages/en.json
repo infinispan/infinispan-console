@@ -71,24 +71,29 @@
     "delete": "Delete",
     "available": "Make available",
     "clear-all-button": "Clear all",
-    "no-caches-status": "No caches yet",
+    "cache-search": "Search by cache name",
+    "no-caches-status": "No caches",
     "no-caches-body": "Click \"Create a cache\" and provide configuration in XML, JSON, or YAML format or use a custom template. You can also create caches from the CLI and remote clients.",
+    "no-filter-cache": "No result found",
+    "no-filter-cache-body": "No cache matches the filter or search criteria. Clear all filters and try again",
+    "cache-failed-status": "caches health is Failed or Degraded",
     "mode-local": "Local",
     "mode-repl": "Replicated",
     "mode-dist": "Distributed",
     "mode-invalid": "Invalidated",
     "create-cache-button": "Create a cache",
-    "config-templates-button": "Display cache templates",
+    "config-templates-button": "View cache templates",
     "cache-filter-label": "Filter",
     "cache-filter-type-label": "Cache type",
     "cache-filter-feature-label": "Feature",
+    "cache-filter-status-label": "Status",
     "cache-filter-feature-bounded": "Bounded",
     "cache-filter-feature-indexed": "Indexed",
     "cache-filter-feature-persistent": "Persistence",
     "cache-filter-feature-trans": "Transactions",
     "cache-filter-feature-secure": "Authorization",
     "cache-filter-feature-xsite": "Backups",
-    "cache-filter-feature-ignored": "Hidden",
+    "cache-filter-status-ignored": "Hidden",
     "counters-table-label": "Counters",
     "tasks-table-label": "Tasks",
     "task-name": "Name",
@@ -163,6 +168,19 @@
       "getting-started": {
         "cache-setup-title": "Select a way to configure your cache"
       }
+    },
+    "delete": {
+      "title": "Permanently delete cache?",
+      "body": "and all of its data will be deleted.",
+      "cache-name": "Enter the cache name to delete it.",
+      "cache-name-invalid": "Cache names do not match.",
+      "cancel": "Cancel"
+    },
+    "ignore": {
+      "hide-title": "Hide cache?",
+      "show-title": "Show cache?",
+      "hide-body": "You can show the cache again if you need to access it later.",
+      "cancel": "Cancel"
     },
     "create": {
       "breadcrumb": "Create a cache",

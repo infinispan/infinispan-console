@@ -4,6 +4,8 @@ import {
   AlertVariant,
   Button,
   ButtonVariant,
+  Card,
+  CardBody,
   DataList,
   DataListCell,
   DataListContent,
@@ -285,46 +287,50 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   };
 
   return (
-    <Stack hasGutter>
-      <StackItem>
-        <Toolbar id="schemas-table-toolbar">
-          <ToolbarContent>
-            {buildCreateSchemaButton()}
-            <ToolbarItem variant={ToolbarItemVariant.pagination}>
-              <Pagination
-                data-cy="paginationArea"
-                itemCount={schemas.length}
-                perPage={schemasPagination.perPage}
-                page={schemasPagination.page}
-                onSetPage={(onSetPage, pageNumber) => {
-                  setSchemasPagination({
-                    page: pageNumber,
-                    perPage: schemasPagination.perPage
-                  });
-                }}
-                widgetId="pagination-schemas"
-                onPerPageSelect={(_event, perPage) =>
-                  setSchemasPagination({
-                    page: 1,
-                    perPage: perPage
-                  })
-                }
-                isCompact
-              />
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-      </StackItem>
-      <StackItem>{buildSchemaList()}</StackItem>
-      <StackItem>
-        <CreateProtoSchema isModalOpen={createSchemaFormOpen} closeModal={closeCreateSchemaModal} />
-        <DeleteSchema
-          schemaName={deleteSchemaName}
-          isModalOpen={deleteSchemaModalOpen}
-          closeModal={closeDeleteSchemaModal}
-        />
-      </StackItem>
-    </Stack>
+    <Card>
+      <CardBody>
+        <Stack hasGutter>
+          <StackItem>
+            <Toolbar id="schemas-table-toolbar">
+              <ToolbarContent>
+                {buildCreateSchemaButton()}
+                <ToolbarItem variant={ToolbarItemVariant.pagination}>
+                  <Pagination
+                    data-cy="paginationArea"
+                    itemCount={schemas.length}
+                    perPage={schemasPagination.perPage}
+                    page={schemasPagination.page}
+                    onSetPage={(onSetPage, pageNumber) => {
+                      setSchemasPagination({
+                        page: pageNumber,
+                        perPage: schemasPagination.perPage
+                      });
+                    }}
+                    widgetId="pagination-schemas"
+                    onPerPageSelect={(_event, perPage) =>
+                      setSchemasPagination({
+                        page: 1,
+                        perPage: perPage
+                      })
+                    }
+                    isCompact
+                  />
+                </ToolbarItem>
+              </ToolbarContent>
+            </Toolbar>
+          </StackItem>
+          <StackItem>{buildSchemaList()}</StackItem>
+          <StackItem>
+            <CreateProtoSchema isModalOpen={createSchemaFormOpen} closeModal={closeCreateSchemaModal} />
+            <DeleteSchema
+              schemaName={deleteSchemaName}
+              isModalOpen={deleteSchemaModalOpen}
+              closeModal={closeDeleteSchemaModal}
+            />
+          </StackItem>
+        </Stack>
+      </CardBody>
+    </Card>
   );
 };
 

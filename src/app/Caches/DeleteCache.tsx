@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput } from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
-import { ConsoleServices } from '@services/ConsoleServices';
+import { useDeleteCache } from '@app/services/cachesHook';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Delete cache modal
  */
 const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
-  const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+
   const { reloadCaches } = useCaches();
+  const { onDelete } = useDeleteCache(props.cacheName);
   const nameInputRef = React.useRef(null);
 
   useEffect(() => {
@@ -28,23 +30,19 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
   };
 
   const handleDeleteButton = () => {
-    let trim = cacheNameFormValue.trim();
+    const trim = cacheNameFormValue.trim();
     setCacheNameFormValue(trim);
     if (trim.length == 0) {
       setIsValidCacheNameValue('error');
       return;
     }
 
-    let validCacheName = trim === props.cacheName;
+    const validCacheName = trim === props.cacheName;
     setIsValidCacheNameValue(validCacheName ? 'success' : 'error');
     if (validCacheName) {
-      ConsoleServices.caches()
-        .deleteCache(props.cacheName)
-        .then((actionResponse) => {
-          clearDeleteCacheModal(actionResponse.success);
-          addAlert(actionResponse);
-          reloadCaches();
-        });
+      onDelete();
+      clearDeleteCacheModal(true);
+      reloadCaches();
     }
   };
 
@@ -54,7 +52,7 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title="Permanently delete cache?"
+      title={t('caches.delete.title')}
       onClose={() => clearDeleteCacheModal(false)}
       aria-label="Delete cache modal"
       disableFocusTrap={true}
@@ -62,7 +60,7 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
       description={
         <TextContent>
           <Text>
-            <strong>'{props.cacheName}'</strong> and all of its data will be deleted.
+            <strong>'{props.cacheName}' </strong> {t('caches.delete.body')}
           </Text>
         </TextContent>
       }
@@ -71,18 +69,19 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
           key="confirm"
           variant={ButtonVariant.danger}
           onClick={handleDeleteButton}
-          isDisabled={cacheNameFormValue == ''}
+          aria-label="Confirm"
           data-cy="deleteCacheButton"
         >
-          Delete
+          {t('cache-managers.delete')}
         </Button>,
         <Button
           key="cancel"
           variant="link"
+          aria-label="Cancel"
           onClick={() => clearDeleteCacheModal(false)}
           data-cy="cancelCacheDeleteButton"
         >
-          Cancel
+          {t('caches.delete.cancel')}
         </Button>
       ]}
     >
@@ -92,8 +91,8 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
         }}
       >
         <FormGroup
-          label="Enter the cache name to delete it."
-          helperTextInvalid="Cache names do not match."
+          label={t('caches.delete.cache-name')}
+          helperTextInvalid={t('caches.delete.cache-name-invalid')}
           fieldId="cache-to-delete"
           validated={isValidCacheNameValue}
         >

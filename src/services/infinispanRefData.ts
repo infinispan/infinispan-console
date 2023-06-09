@@ -121,6 +121,19 @@ export enum CacheFeature {
   BACKUPS = 'Backups'
 }
 
+export enum CacheFeatureFilter {
+  Bounded = 'bounded',
+  Indexed = 'indexed',
+  Authorization = 'secured',
+  Persistence = 'persistent',
+  Transactional = 'transactional',
+  Backups = 'hasRemoteBackup'
+}
+
+export enum CacheStatus {
+  IGNORED = 'Hidden'
+}
+
 export enum MaxSizeUnit {
   KB = 'KB',
   MB = 'MB',
