@@ -124,16 +124,14 @@ const CacheManagers = () => {
     }
 
     return (
-      <Card>
-        <CardBody>
-          {cm && <CacheTableDisplay cmName={cm.name} setCachesCount={setCachesCount} isVisible={showCaches} />}
-          {cm && <CounterTableDisplay setCountersCount={setCountersCount} isVisible={showCounters} />}
-          {cm && <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />}
-          {cm && (
-            <ProtobufSchemasDisplay setProtoSchemasCount={setProtoSchemasCount} isVisible={showSerializationContext} />
-          )}
-        </CardBody>
-      </Card>
+      <React.Fragment>
+        {cm && <CacheTableDisplay cmName={cm.name} setCachesCount={setCachesCount} isVisible={showCaches} />}
+        {cm && <CounterTableDisplay setCountersCount={setCountersCount} isVisible={showCounters} />}
+        {cm && <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />}
+        {cm && (
+          <ProtobufSchemasDisplay setProtoSchemasCount={setProtoSchemasCount} isVisible={showSerializationContext} />
+        )}
+      </React.Fragment>
     );
   };
 

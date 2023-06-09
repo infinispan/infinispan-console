@@ -111,7 +111,7 @@ describe('Data Container Overview', () => {
   //Testing the filters
   it('sucessfully filters caches by type and features', () => {
     cy.get('[data-cy=cacheFilterSelect]').should('exist');
-    cy.get('[data-cy=cacheFilterSelectExpanded]').should('not.exist');
+    cy.get('[data-cy=filter-faceted-cache-menu]').should('not.exist');
 
     //Filtering by Local caches
     cy.get('[data-cy=cacheFilterSelect]').click();
@@ -306,18 +306,18 @@ describe('Data Container Overview', () => {
   //Hide created cache and check the hidden filter
   it('successfully ignores the cache', () => {
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=ignoreCacheAction]').click();
+    cy.get('[aria-label=ignoreCacheAction]').click();
     cy.get('[data-cy=ignoreCacheModal]').should('exist');
     cy.get('#hideShowModal > .pf-m-plain').click(); //Closing modal with close button
     cy.get('[data-cy=ignoreCacheModal]').should('not.exist');
 
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=ignoreCacheAction]').click();
+    cy.get('[aria-label=ignoreCacheAction]').click();
     cy.get('[data-cy=ignoreCacheModal]').should('exist');
     cy.get('[data-cy=cancelAction]').click(); //Closing modal with Cancel button
     cy.get('[data-cy=ignoreCacheModal]').should('not.exist');
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=ignoreCacheAction]').click();
+    cy.get('[aria-label=ignoreCacheAction]').click();
     cy.get('[data-cy=hideCacheButton]').click(); //Hiding cache
 
     cy.contains('Cache aCache hidden.').should('exist');
@@ -335,18 +335,18 @@ describe('Data Container Overview', () => {
   //Show (undo ignored cache) created cache
   it('successfully undos the ignore the cache action', () => {
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=showCacheAction]').click();
+    cy.get('[aria-label=showCacheAction]').click();
     cy.get('[data-cy=undoCacheModal]').should('exist');
     cy.get('#hideShowModal > .pf-m-plain').click(); //Closing modal with close button
     cy.get('[data-cy=undoCacheModal]').should('not.exist');
 
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=showCacheAction]').click();
+    cy.get('[aria-label=showCacheAction]').click();
     cy.get('[data-cy=undoCacheModal]').should('exist');
     cy.get('[data-cy=cancelAction]').click(); //Closing modal with Cancel button
     cy.get('[data-cy=undoCacheModal]').should('not.exist');
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=showCacheAction]').click();
+    cy.get('[aria-label=showCacheAction]').click();
     cy.get('[data-cy=showCacheButton]').click(); //Hiding cache
 
     cy.contains('Cache aCache is now visible.').should('exist');
@@ -356,20 +356,20 @@ describe('Data Container Overview', () => {
   //Delete created cache
   it('successfully deletes a cache', () => {
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=deleteCacheAction]').click();
+    cy.get('[aria-label=deleteCacheAction]').click();
     cy.get('#deleteCacheModal').should('exist');
     cy.contains('Permanently delete cache?');
     cy.get('#deleteCacheModal > .pf-m-plain').click(); //Closing modal with close button
     cy.contains('Permanently delete cache?').should('not.exist');
 
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=deleteCacheAction]').click();
+    cy.get('[aria-label=deleteCacheAction]').click();
     cy.contains('Permanently delete cache?');
     cy.get('[data-cy=cancelCacheDeleteButton]').click(); //Closing modal with Cancel button
     cy.contains('Permanently delete cache?').should('not.exist');
 
     cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[data-cy=deleteCacheAction]').click();
+    cy.get('[aria-label=deleteCacheAction]').click();
     cy.get('#cache-to-delete').click();
     cy.get('#cache-to-delete').type('aCache');
     cy.get('[data-cy=deleteCacheButton]').click(); //Deleting cache aCache

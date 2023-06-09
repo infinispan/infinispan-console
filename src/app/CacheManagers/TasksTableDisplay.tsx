@@ -3,6 +3,8 @@ import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-t
 import {
   Badge,
   Bullseye,
+  Card,
+  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -183,29 +185,33 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   }
 
   return (
-    <Stack>
-      <StackItem>
-        <Pagination
-          itemCount={filteredTasks.length}
-          perPage={tasksPagination.perPage}
-          page={tasksPagination.page}
-          onSetPage={onSetPage}
-          widgetId="pagination-tasks"
-          onPerPageSelect={onPerPageSelect}
-          isCompact
-        />
-        <Table
-          aria-label={t('cache-managers.tasks-table-label')}
-          cells={columns}
-          rows={rows}
-          className={'tasks-table'}
-          variant={TableVariant.compact}
-        >
-          <TableHeader />
-          <TableBody />
-        </Table>
-      </StackItem>
-    </Stack>
+    <Card>
+      <CardBody>
+        <Stack>
+          <StackItem>
+            <Pagination
+              itemCount={filteredTasks.length}
+              perPage={tasksPagination.perPage}
+              page={tasksPagination.page}
+              onSetPage={onSetPage}
+              widgetId="pagination-tasks"
+              onPerPageSelect={onPerPageSelect}
+              isCompact
+            />
+            <Table
+              aria-label={t('cache-managers.tasks-table-label')}
+              cells={columns}
+              rows={rows}
+              className={'tasks-table'}
+              variant={TableVariant.compact}
+            >
+              <TableHeader />
+              <TableBody />
+            </Table>
+          </StackItem>
+        </Stack>
+      </CardBody>
+    </Card>
   );
 };
 

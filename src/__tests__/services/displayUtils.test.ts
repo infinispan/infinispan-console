@@ -58,10 +58,10 @@ describe('Display Utils tests', () => {
   });
 
   test('cache type color', () => {
-    expect(displayUtils.cacheTypeColor(CacheType.Distributed)).toBe(global_palette_blue_50.value);
-    expect(displayUtils.cacheTypeColor(CacheType.Replicated)).toBe(global_palette_purple_100.value);
-    expect(displayUtils.cacheTypeColor(CacheType.Invalidated)).toBe(chart_color_gold_100.value);
-    expect(displayUtils.cacheTypeColor(CacheType.Local)).toBe(chart_color_cyan_100.value);
+    expect(displayUtils.cacheTypeLabelBackgroundColor(CacheType.Distributed)).toBe(global_palette_blue_50.value);
+    expect(displayUtils.cacheTypeLabelBackgroundColor(CacheType.Replicated)).toBe(global_palette_purple_100.value);
+    expect(displayUtils.cacheTypeLabelBackgroundColor(CacheType.Invalidated)).toBe(chart_color_gold_100.value);
+    expect(displayUtils.cacheTypeLabelBackgroundColor(CacheType.Local)).toBe(chart_color_cyan_100.value);
   });
 
   test('health alert variant', () => {

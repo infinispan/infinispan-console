@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
 import { EyeIcon, EyeSlashIcon } from '@patternfly/react-icons';
+import { useIgnoreCache, useUndoIgnoreCache } from '@app/services/cachesHook';
 
 /**
  * Ignore cache modal
@@ -16,8 +15,9 @@ const IgnoreCache = (props: {
   closeModal: (boolean) => void;
   action: string;
 }) => {
-  const { addAlert } = useApiAlert();
   const { reloadCaches } = useCaches();
+  const { onIgnore } = useIgnoreCache(props.cmName, props.cacheName);
+  const { onUndoIgnore } = useUndoIgnoreCache(props.cmName, props.cacheName);
 
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -28,21 +28,13 @@ const IgnoreCache = (props: {
 
   const handleIgnoreButton = () => {
     if (props.action == 'ignore') {
-      ConsoleServices.caches()
-        .ignoreCache(props.cmName, props.cacheName)
-        .then((actionResponse) => {
-          clearIgnoreCacheModal(actionResponse.success);
-          addAlert(actionResponse);
-          reloadCaches();
-        });
+      onIgnore();
+      clearIgnoreCacheModal(true);
+      reloadCaches();
     } else {
-      ConsoleServices.caches()
-        .undoIgnoreCache(props.cmName, props.cacheName)
-        .then((actionResponse) => {
-          clearIgnoreCacheModal(actionResponse.success);
-          addAlert(actionResponse);
-          reloadCaches();
-        });
+      onUndoIgnore();
+      clearIgnoreCacheModal(true);
+      reloadCaches();
     }
   };
 
@@ -51,7 +43,7 @@ const IgnoreCache = (props: {
       return (
         <TextContent>
           <Text>
-            Shows the <strong>'{props.cacheName}'</strong>.
+            Shows the <strong>' {props.cacheName}'</strong>.
           </Text>
         </TextContent>
       );
@@ -61,7 +53,7 @@ const IgnoreCache = (props: {
         <Text>
           Hides the <strong>'{props.cacheName}'</strong> cache.
           <br />
-          You can show the cache again if you need to access it later.
+          {t('caches.ignore.hide-body')}
         </Text>
       </TextContent>
     );
@@ -75,19 +67,26 @@ const IgnoreCache = (props: {
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={props.action == 'ignore' ? 'Hide cache?' : 'Show cache?'}
+      title={props.action == 'ignore' ? t('caches.ignore.hide-title') : t('caches.ignore.show-title')}
       onClose={() => clearIgnoreCacheModal(false)}
       aria-label={props.action == 'ignore' ? 'Hide cache modal' : 'Show cache modal'}
       actions={[
         <Button
+          aria-label={props.action == 'ignore' ? 'Hide' : 'Show'}
           key={props.action == 'ignore' ? 'ignore-modal-button' : 'undo-ignore-modal'}
           onClick={handleIgnoreButton}
           data-cy={props.action == 'ignore' ? 'hideCacheButton' : 'showCacheButton'}
         >
           {props.action == 'ignore' ? 'Hide' : 'Show'}
         </Button>,
-        <Button key="cancel" variant="link" onClick={() => clearIgnoreCacheModal(false)} data-cy="cancelAction">
-          Cancel
+        <Button
+          aria-label="Cancel"
+          key="cancel"
+          variant="link"
+          onClick={() => clearIgnoreCacheModal(false)}
+          data-cy="cancelAction"
+        >
+          {t('caches.ignore.cancel')}
         </Button>
       ]}
     >

@@ -11,8 +11,8 @@ const CacheTypeBadge = (props: { cacheType: string; small: boolean; cacheName: s
     <Badge
       data-cy={`type-${props.cacheName}`}
       style={{
-        backgroundColor: displayUtils.cacheTypeColor(cacheTypeEnum),
-        color: displayUtils.cacheTypeColorLabel(cacheTypeEnum),
+        backgroundColor: displayUtils.cacheTypeLabelBackgroundColor(cacheTypeEnum),
+        color: displayUtils.cacheTypeLabelTextColor(cacheTypeEnum),
         fontSize: props.small ? global_FontSize_sm.value : global_FontSize_md.value,
         fontWeight: 'lighter',
         padding: global_spacer_xs.value,

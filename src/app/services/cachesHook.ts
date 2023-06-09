@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { useApiAlert } from '@app/utils/useApiAlert';
 
 export function useFetchCaches(cacheManager: string) {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
@@ -51,4 +52,64 @@ export function useCacheDetail() {
   const { cache, loading, error, loadCache, reload, cacheManager } = useContext(CacheDetailContext);
 
   return { cache, loading, error, loadCache, reload, cacheManager };
+}
+
+export function useDeleteCache(cacheName: string) {
+  const { addAlert } = useApiAlert();
+
+  const onDelete = () => {
+    ConsoleServices.caches()
+      .deleteCache(cacheName)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onDelete
+  };
+}
+
+export function useIgnoreCache(cmName: string, cacheName: string) {
+  const { addAlert } = useApiAlert();
+
+  const onIgnore = () => {
+    ConsoleServices.caches()
+      .ignoreCache(cmName, cacheName)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onIgnore
+  };
+}
+
+export function useUndoIgnoreCache(cmName: string, cacheName: string) {
+  const { addAlert } = useApiAlert();
+
+  const onUndoIgnore = () => {
+    ConsoleServices.caches()
+      .undoIgnoreCache(cmName, cacheName)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onUndoIgnore
+  };
+}
+
+export function useSetAvailableCache(cacheName: string) {
+  const { addAlert } = useApiAlert();
+
+  const onSetAvailable = () => {
+    ConsoleServices.caches()
+      .setAvailability(cacheName)
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      });
+  };
+  return {
+    onSetAvailable
+  };
 }

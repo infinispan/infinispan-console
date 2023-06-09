@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   Bullseye,
+  Card,
+  CardBody,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -314,149 +316,151 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   }
 
   return (
-    <React.Fragment>
-      <Toolbar id="counters-table-toolbar">
-        <ToolbarContent>
-          <ToolbarItem>{countersFilter()}</ToolbarItem>
-          {buildCreateCounterButton()}
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>
-            <Pagination
-              itemCount={filteredCounters.length}
-              perPage={countersPagination.perPage}
-              page={countersPagination.page}
-              onSetPage={onSetPage}
-              widgetId="pagination-counters"
-              onPerPageSelect={onPerPageSelect}
-              isCompact
-            />
-          </ToolbarItem>
-        </ToolbarContent>
-      </Toolbar>
-      <TableComposable
-        className={'strongCounters-table'}
-        aria-label={'strong-counters-table-label'}
-        variant={'compact'}
-      >
-        <Thead>
-          <Tr>
-            <Th colSpan={1}>{columnNames.name}</Th>
-            <Th colSpan={1}>{columnNames.currVal}</Th>
-            <Th colSpan={1}>{columnNames.initVal}</Th>
-            <Th colSpan={1}>{columnNames.storage}</Th>
-            <Th colSpan={2}>{columnNames.config}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {counters.length == 0 || filteredCounters.length == 0 ? (
+    <Card>
+      <CardBody>
+        <Toolbar id="counters-table-toolbar">
+          <ToolbarContent>
+            <ToolbarItem>{countersFilter()}</ToolbarItem>
+            {buildCreateCounterButton()}
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>
+              <Pagination
+                itemCount={filteredCounters.length}
+                perPage={countersPagination.perPage}
+                page={countersPagination.page}
+                onSetPage={onSetPage}
+                widgetId="pagination-counters"
+                onPerPageSelect={onPerPageSelect}
+                isCompact
+              />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+        <TableComposable
+          className={'strongCounters-table'}
+          aria-label={'strong-counters-table-label'}
+          variant={'compact'}
+        >
+          <Thead>
             <Tr>
-              <Td colSpan={6}>
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.counters.no-counters-status')}
-                    </Title>
-                    <EmptyStateBody>
-                      {counters.length == 0
-                        ? t('cache-managers.counters.no-counters-body')
-                        : t('cache-managers.counters.no-filtered-counter-body')}
-                    </EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              </Td>
+              <Th colSpan={1}>{columnNames.name}</Th>
+              <Th colSpan={1}>{columnNames.currVal}</Th>
+              <Th colSpan={1}>{columnNames.initVal}</Th>
+              <Th colSpan={1}>{columnNames.storage}</Th>
+              <Th colSpan={2}>{columnNames.config}</Th>
             </Tr>
-          ) : (
-            rows.map((row) => {
-              let rowActions: IAction[];
-              row.config.type === CounterType.STRONG_COUNTER
-                ? (rowActions = strongCountersActions(row))
-                : (rowActions = weakCountersActions(row));
+          </Thead>
+          <Tbody>
+            {counters.length == 0 || filteredCounters.length == 0 ? (
+              <Tr>
+                <Td colSpan={6}>
+                  <Bullseye>
+                    <EmptyState variant={EmptyStateVariant.small}>
+                      <EmptyStateIcon icon={SearchIcon} />
+                      <Title headingLevel="h2" size="lg">
+                        {t('cache-managers.counters.no-counters-status')}
+                      </Title>
+                      <EmptyStateBody>
+                        {counters.length == 0
+                          ? t('cache-managers.counters.no-counters-body')
+                          : t('cache-managers.counters.no-filtered-counter-body')}
+                      </EmptyStateBody>
+                    </EmptyState>
+                  </Bullseye>
+                </Td>
+              </Tr>
+            ) : (
+              rows.map((row) => {
+                let rowActions: IAction[];
+                row.config.type === CounterType.STRONG_COUNTER
+                  ? (rowActions = strongCountersActions(row))
+                  : (rowActions = weakCountersActions(row));
 
-              return (
-                <Tr key={row.name}>
-                  <Td dataLabel={columnNames.name}>{row.name}</Td>
-                  <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
-                  <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
-                  <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
-                  <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
-                  <Td isActionCell>
-                    <ActionsColumn items={rowActions} />
-                  </Td>
-                </Tr>
-              );
-            })
-          )}
-        </Tbody>
-      </TableComposable>
-      <DeleteCounter
-        name={counterToDelete}
-        isModalOpen={counterToDelete != ''}
-        submitModal={() => {
-          setCounterToDelete('');
-          setSelectedFilters({ counterType: '', storageType: '' });
-          reload();
-        }}
-        closeModal={() => {
-          setCounterToDelete('');
-        }}
-        isDisabled={!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)}
-      />
-      <AddDeltaCounter
-        name={counterToAddDelta}
-        deltaValue={deltaValue}
-        setDeltaValue={setDeltaValue}
-        isModalOpen={counterToAddDelta != ''}
-        isDeltaValid={isDeltaValid}
-        submitModal={() => {
-          setCounterToAddDelta('');
-          setDeltaValue(0);
-          setSelectedFilters({ counterType: '', storageType: '' });
-          reload();
-        }}
-        closeModal={() => {
-          setCounterToAddDelta('');
-          setDeltaValue(0);
-        }}
-      />
-      <ResetCounter
-        name={counterToReset}
-        isModalOpen={counterToReset != ''}
-        initialValue={counterToEdit?.config?.initialValue}
-        submitModal={() => {
-          setCounterToReset('');
-          setSelectedFilters({ counterType: '', storageType: '' });
-          reload();
-        }}
-        closeModal={() => {
-          setCounterToReset('');
-        }}
-      />
-      <CreateCounter
-        isModalOpen={isCreateCounter}
-        submitModal={() => {
-          setIsCreateCounter(false);
-          reload();
-        }}
-        closeModal={() => setIsCreateCounter(false)}
-      />
-      <SetCounter
-        name={counterToSet}
-        value={counterSetValue}
-        setValue={setCounterSetValue}
-        isValid={isNewCounterValueValid}
-        submitModal={() => {
-          setCounterToSet('');
-          setCounterSetValue(0);
-          setSelectedFilters({ counterType: '', storageType: '' });
-          reload();
-        }}
-        isModalOpen={counterToSet != ''}
-        closeModal={() => {
-          setCounterToSet('');
-          setCounterSetValue(0);
-        }}
-      />
-    </React.Fragment>
+                return (
+                  <Tr key={row.name}>
+                    <Td dataLabel={columnNames.name}>{row.name}</Td>
+                    <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                    <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                    <Td dataLabel={columnNames.storage}>{row.config.storage}</Td>
+                    <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+                    <Td isActionCell>
+                      <ActionsColumn items={rowActions} />
+                    </Td>
+                  </Tr>
+                );
+              })
+            )}
+          </Tbody>
+        </TableComposable>
+        <DeleteCounter
+          name={counterToDelete}
+          isModalOpen={counterToDelete != ''}
+          submitModal={() => {
+            setCounterToDelete('');
+            setSelectedFilters({ counterType: '', storageType: '' });
+            reload();
+          }}
+          closeModal={() => {
+            setCounterToDelete('');
+          }}
+          isDisabled={!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)}
+        />
+        <AddDeltaCounter
+          name={counterToAddDelta}
+          deltaValue={deltaValue}
+          setDeltaValue={setDeltaValue}
+          isModalOpen={counterToAddDelta != ''}
+          isDeltaValid={isDeltaValid}
+          submitModal={() => {
+            setCounterToAddDelta('');
+            setDeltaValue(0);
+            setSelectedFilters({ counterType: '', storageType: '' });
+            reload();
+          }}
+          closeModal={() => {
+            setCounterToAddDelta('');
+            setDeltaValue(0);
+          }}
+        />
+        <ResetCounter
+          name={counterToReset}
+          isModalOpen={counterToReset != ''}
+          initialValue={counterToEdit?.config?.initialValue}
+          submitModal={() => {
+            setCounterToReset('');
+            setSelectedFilters({ counterType: '', storageType: '' });
+            reload();
+          }}
+          closeModal={() => {
+            setCounterToReset('');
+          }}
+        />
+        <CreateCounter
+          isModalOpen={isCreateCounter}
+          submitModal={() => {
+            setIsCreateCounter(false);
+            reload();
+          }}
+          closeModal={() => setIsCreateCounter(false)}
+        />
+        <SetCounter
+          name={counterToSet}
+          value={counterSetValue}
+          setValue={setCounterSetValue}
+          isValid={isNewCounterValueValid}
+          submitModal={() => {
+            setCounterToSet('');
+            setCounterSetValue(0);
+            setSelectedFilters({ counterType: '', storageType: '' });
+            reload();
+          }}
+          isModalOpen={counterToSet != ''}
+          closeModal={() => {
+            setCounterToSet('');
+            setCounterSetValue(0);
+          }}
+        />
+      </CardBody>
+    </Card>
   );
 };
 
