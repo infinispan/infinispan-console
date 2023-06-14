@@ -104,7 +104,7 @@ const routes: IAppRoute[] = [
     label: 'Cache Setup',
     path: '/setup',
     title: 'Cache Setup',
-    menu: true,
+    menu: false,
     readonlyUser: true
   },
   {

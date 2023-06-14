@@ -87,6 +87,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
 
   const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
   const isCreator = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+  const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
 
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
@@ -418,31 +419,29 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   };
 
   const createCacheButtonHelper = (isEmptyPage?: boolean) => {
+    const pathName = canCreateCache ? '/container/caches/create' : '/setup';
     const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
     const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
     return (
       <Link
         to={{
-          pathname: '/container/caches/create',
+          pathname: pathName,
           search: location.search
         }}
       >
         <Button
           variant={ButtonVariant.primary}
           aria-label="create-cache-button-helper"
-          data-cy="createCacheButton"
+          data-cy={canCreateCache ? "createCacheButton" : "createCacheConfigButton"}
           {...(isEmptyPage ? emptyPageButtonProp : normalPageButtonProps)}
         >
-          {t('cache-managers.create-cache-button')}
+           {canCreateCache ? t('cache-managers.create-cache-button') : 'Create cache configuration'}
         </Button>
       </Link>
     );
   };
 
   const buildCreateCacheButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return;
-    }
     return (
       <React.Fragment>
         <ToolbarItem>{createCacheButtonHelper()}</ToolbarItem>

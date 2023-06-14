@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
-  ButtonVariant,
-  Select,
-  SelectOption,
-  SelectVariant,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
+  PageSection,
+  PageSectionVariants,
+  PageSectionTypes,
   Wizard,
   WizardContextConsumer,
   WizardFooter
 } from '@patternfly/react-core';
 import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import { useCreateCache } from '@app/services/createCacheHook';
+import { useStateCallback } from '@app/services/stateCallbackHook';
 import { useTranslation } from 'react-i18next';
-import { ConfigDownloadType } from '@services/infinispanRefData';
+import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import { validFeatures } from '@app/utils/featuresValidation';
 import CacheConfigEditor from '@app/Caches/Create/CacheConfigEditor';
 import AdvancedOptionsConfigurator from '@app/Caches/Create/AdvancedOptionsConfigurator';
-import { useStateCallback } from '@app/services/stateCallbackHook';
 import ReviewCacheConfig from '@app/Caches/Create/ReviewCacheConfig';
 import CreateCacheGettingStarted from '@app/Caches/Create/CreateCacheGettingStarted';
 import BasicCacheConfigConfigurator from '@app/Caches/Create/BasicCacheConfigConfigurator';
 import FeaturesSelector from '@app/Caches/Create/FeaturesSelector';
+import DownloadCacheModal from '@app/Caches/Create/DownloadCacheModal';
+import { ConsoleACL } from '@services/securityService';
+import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { DownloadIcon } from '@patternfly/react-icons';
-import { useCreateCache } from '@app/services/createCacheHook';
-import { validFeatures } from '@app/utils/featuresValidation';
 
 const CacheEditorInitialState: CacheEditorStep = {
   editorConfig: '',
@@ -42,6 +42,7 @@ const CacheEditorInitialState: CacheEditorStep = {
 const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean }) => {
   const { addAlert } = useApiAlert();
   const { configuration } = useCreateCache();
+  const { connectedUser } = useConnectedUser();
 
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -53,43 +54,16 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   });
 
   const [cacheEditor, setCacheEditor] = useState<CacheEditorStep>(CacheEditorInitialState);
-
   const [stepIdReached, setStepIdReached] = useState(1);
-
   const [reviewConfig, setReviewConfig] = useState<string>('');
-
-  // Download type
-  const [downloadType, setDownloadType] = useState(ConfigDownloadType.JSON);
-  const [downloadURL, setDownloadURL] = useState('data:text/json;charset=utf-8,' + encodeURIComponent(reviewConfig));
-  const [isOpenDownloadOption, setIsOpenDownloadOption] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
 
   const history = useHistory();
 
   const closeWizard = () => {
     history.push('/' + history.location.search);
   };
-
-  useEffect(() => {
-    if (downloadType === ConfigDownloadType.JSON) {
-      setDownloadURL('data:text/json;charset=utf-8,' + encodeURIComponent(reviewConfig));
-    } else if (downloadType === ConfigDownloadType.YAML) {
-      ConsoleServices.caches()
-        .convertConfigFormat(configuration.start.cacheName, reviewConfig, 'yaml')
-        .then((r) => {
-          if (r.success) {
-            setDownloadURL('data:text/yaml;charset=utf-8,' + encodeURIComponent(r.data ? r.data : ''));
-          }
-        });
-    } else if (downloadType === ConfigDownloadType.XML) {
-      ConsoleServices.caches()
-        .convertConfigFormat(configuration.start.cacheName, reviewConfig, 'xml')
-        .then((r) => {
-          if (r.success) {
-            setDownloadURL('data:text/xml;charset=utf-8,' + encodeURIComponent(r.data ? r.data : ''));
-          }
-        });
-    }
-  }, [downloadType, reviewConfig]);
 
   const getNextStep = (event, activeStep, callback) => {
     event.stopPropagation();
@@ -202,17 +176,6 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
     ...(stateObj.showCacheEditor ? [stepCodeEditor] : [])
   ];
 
-  const downloadOptions = () => {
-    return Object.keys(ConfigDownloadType).map((key) => (
-      <SelectOption id={key} key={key} value={ConfigDownloadType[key]} />
-    ));
-  };
-
-  const onSelectDownloadOption = (event, selection, isPlaceholder) => {
-    setDownloadType(selection);
-    setIsOpenDownloadOption(false);
-  };
-
   const isCreateButton = (activeStepId: number): boolean => {
     return activeStepId === 2 || activeStepId === 6;
   };
@@ -249,7 +212,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
 
     if (isCreateButton(activeStepId) && isButtonNextOrCreateDisabled(activeStepId)) {
       // The user is not allowed to create a cache, don't display the create button
-      return <ToolbarItem></ToolbarItem>;
+      return;
     }
 
     const buttonId = isCreateButton(activeStepId) ? 'create-cache' : 'next-step';
@@ -304,32 +267,14 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
       return '';
     }
 
+    const buttonVariant = canCreateCache ? 'secondary' : 'primary';
+
     return (
-      <React.Fragment>
-        <ToolbarItem variant="separator"></ToolbarItem>
-        <ToolbarItem>
-          <Select
-            direction="up"
-            variant={SelectVariant.single}
-            aria-label="Select config format"
-            onToggle={() => setIsOpenDownloadOption(!isOpenDownloadOption)}
-            onSelect={onSelectDownloadOption}
-            selections={downloadType}
-            isOpen={isOpenDownloadOption}
-            placeholderText="Select config format"
-            toggleId="downloadType"
-          >
-            {downloadOptions()}
-          </Select>
-        </ToolbarItem>
-        <ToolbarItem>
-          <a href={downloadURL} download={configuration.start.cacheName + `.` + downloadType.toLocaleLowerCase()}>
-            <Button data-cy="downloadButton" variant={ButtonVariant.tertiary} icon={<DownloadIcon />}>
-              {t('caches.create.download-button-label', { format: downloadType })}
-            </Button>
-          </a>
-        </ToolbarItem>
-      </React.Fragment>
+      <ToolbarItem>
+        <Button variant={buttonVariant} onClick={() => setIsDownloadModalOpen(true)} data-cy="downloadModal">
+          {t('caches.create.download-button-label')}
+        </Button>
+      </ToolbarItem>
     );
   };
 
@@ -342,9 +287,9 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
               <Toolbar id="create-cache-wizard-toolbar">
                 <ToolbarContent>
                   {nextOrCreateToolbarItem(activeStep, onNext)}
+                  {downloadToolbarItem(activeStep)}
                   {backToolbarItem(activeStep, onBack)}
                   {cancelToolbarItem(onClose)}
-                  {downloadToolbarItem(activeStep)}
                 </ToolbarContent>
               </Toolbar>
             </>
@@ -376,14 +321,22 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const title = 'Create Cache';
 
   return (
-    <Wizard
-      navAriaLabel={`${title} steps`}
-      mainAriaLabel={`${title} content`}
-      onClose={closeWizard}
-      onSave={onSave}
-      steps={steps}
-      footer={CustomFooter}
-    />
+    <PageSection type={PageSectionTypes.wizard} variant={PageSectionVariants.light}>
+      <Wizard
+        navAriaLabel={`${title} steps`}
+        mainAriaLabel={`${title} content`}
+        onClose={closeWizard}
+        onSave={onSave}
+        steps={steps}
+        footer={CustomFooter}
+      />
+      <DownloadCacheModal
+        cacheName={configuration.start.cacheName}
+        configuration={reviewConfig}
+        isModalOpen={isDownloadModalOpen}
+        closeModal={() => setIsDownloadModalOpen(false)}
+      />
+    </PageSection>
   );
 };
 
