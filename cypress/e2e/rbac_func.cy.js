@@ -105,6 +105,7 @@ describe('RBAC Functionlity Tests', () => {
       cy.get('[data-cy=createCacheButton]').should('exist');
     } else {
       cy.get('[data-cy=createCacheButton]').should('not.exist');
+      cy.get('[data-cy=createCacheConfigButton]').should('exist');
     }
     cy.get('[data-cy=showTemplatesButton]').should('exist');
     cy.get('[data-cy=cachesTable]').should('exist');

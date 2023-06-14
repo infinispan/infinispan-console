@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { formatXml } from '@app/utils/dataSerializerUtils';
 
 export function useFetchConfigurationYAML(cacheName: string) {
   const [configuration, setConfiguration] = useState('');
@@ -28,19 +29,6 @@ export function useFetchConfigurationXML(cacheName: string) {
   const [configuration, setConfiguration] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-
-  // Function to format XML configuration
-  const formatXml = (xml) => {
-    let formatted = '';
-    let indent = '';
-    const tab = '\t';
-    xml.split(/>\s*</).forEach(function (node) {
-      if (node.match(/^\/\w/)) indent = indent.substring(tab.length); // decrease indent by one 'tab'
-      formatted += indent + '<' + node + '>\r\n';
-      if (node.match(/^<?\w[^>]*[^/]$/)) indent += tab; // increase indent
-    });
-    return formatted.substring(1, formatted.length - 3);
-  };
 
   useEffect(() => {
     if (loading) {

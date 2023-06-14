@@ -165,6 +165,7 @@
     "setup": {
       "page-title": "Configure a cache in {{cmName}}",
       "page-title-with-backups": "Configure a cache in {{cmName}} on site {{localsite}}",
+      "page-title-description": "You can only generate a new cache config and generate it. Note that the new cache will not be stored by {{brandname}}",
       "getting-started": {
         "cache-setup-title": "Select a way to configure your cache"
       }
@@ -186,6 +187,7 @@
       "breadcrumb": "Create a cache",
       "page-title": "Create a cache in {{cmName}}",
       "page-title-with-backups": "Create a cache in {{cmName}} on site {{localsite}}",
+      "page-title-description": "Description or status",
       "cache-name": "Cache name",
       "cache-name-help": "Enter a unique name for your cache.",
       "cache-name-help-invalid": "You must specify a unique name for each cache.",
@@ -202,7 +204,7 @@
       "next-button-label": "Next",
       "back-button-label": "Back",
       "cancel-button-label": "Cancel",
-      "download-button-label": "Download {{format}}",
+      "download-button-label": "Download",
       "getting-started": {
         "nav-title": "Get started",
         "cache-name-title": "Provide a cache name",
@@ -468,7 +470,16 @@
         "nav-title": "Review configuration",
         "review-title": "Confirm your cache",
         "review-subtitle": "Check the configuration for your cache before you create it. You can go back or start over if you need to make changes.",
-        "review-cache-name": "Cache name:"
+        "review-cache-name": "Cache name:",
+        "json": "JSON",
+        "xml": "XML",
+        "yaml": "YAML",
+        "download-title": "Download configuration file",
+        "download-description": "Download the configuration file for your cache. You can use this file to create the cache using the CLI, REST API or Operator.",
+        "download-button":"Download",
+        "cancel-button": "Cancel",
+        "copy-tooltip": "Copy cache configuration to clipboard",
+        "copied-tooltip": "Copied"
       }
     },
     "configuration": {

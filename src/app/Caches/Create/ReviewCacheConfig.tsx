@@ -11,7 +11,7 @@ const ReviewCacheConfig = (props: { setReviewConfig: (string) => void }) => {
   const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(configuration));
 
   useEffect(() => {
-    let jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(configuration);
+    const jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(configuration);
     setConfig(jsonFormatConfig);
     props.setReviewConfig(jsonFormatConfig);
   }, []);
@@ -27,10 +27,11 @@ const ReviewCacheConfig = (props: { setReviewConfig: (string) => void }) => {
         <CodeEditor
           onChange={onChangeConfig}
           isLineNumbersVisible
-          isLanguageLabelVisible
           code={config}
-          language={Language.json}
           height="sizeToFit"
+          isCopyEnabled
+          copyButtonSuccessTooltipText={t('caches.create.review.copied-tooltip')}
+          copyButtonToolTipText={t('caches.create.review.copy-tooltip')}
         />
       </FormGroup>
     );

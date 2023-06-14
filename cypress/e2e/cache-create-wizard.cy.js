@@ -99,19 +99,20 @@ describe('Cache Creation Wizard', () => {
 
     //Verify before submitting and downloading file
     cy.contains('super-cache');
+    cy.get('[data-cy=downloadModal]').click();
     cy.get('[data-cy=downloadButton]').click();
     cy.wait(2000);
     var downloadedFile = cy.readFile('./cypress/downloads/super-cache.json');
     downloadedFile.should('exist');
     downloadedFile.its('distributed-cache.mode').should('eq', 'SYNC');
 
-    cy.get('#downloadType').click();
+    cy.get('[data-cy=downloadModal]').click();
     cy.get('#XML').click();
     cy.get('[data-cy=downloadButton]').click();
     downloadedFile = cy.readFile('./cypress/downloads/super-cache.xml');
     downloadedFile.should('exist');
-
-    cy.get('#downloadType').click();
+    
+    cy.get('[data-cy=downloadModal]').click();
     cy.get('#YAML').click();
     cy.get('[data-cy=downloadButton]').click();
     downloadedFile = cy.readFile('./cypress/downloads/super-cache.yaml');
