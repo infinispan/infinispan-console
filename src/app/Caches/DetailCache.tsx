@@ -8,6 +8,8 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  Chip,
+  ChipGroup,
   Divider,
   EmptyState,
   EmptyStateBody,
@@ -39,7 +41,7 @@ import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
+import { global_danger_color_200, global_spacer_md } from '@patternfly/react-tokens';
 import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
@@ -207,7 +209,7 @@ const DetailCache = (props: { cacheName: string }) => {
     return (
       <React.Fragment>
         <ToolbarItem>
-          <Divider orientation={{ default: 'vertical' }} />
+          <Divider style={{ margin: 0 }} orientation={{ default: 'vertical' }} />
         </ToolbarItem>
         <ToolbarItem>
           <Label>Backups</Label>
@@ -248,26 +250,24 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildIndexManage = () => {
     if (!cache?.features.indexed) return;
     return (
-      <React.Fragment>
-        <ToolbarItem>
-          <Flex>
-            <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
-            {buildDisplayReindexing()}
-            <FlexItem>
-              <Link
-                to={{
-                  pathname: encodeURIComponent(cacheName) + '/indexing',
-                  search: location.search
-                }}
-              >
-                <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
-                  {t('caches.actions.action-manage-indexes')}
-                </Button>
-              </Link>
-            </FlexItem>
-          </Flex>
-        </ToolbarItem>
-      </React.Fragment>
+      <ToolbarItem>
+        <Flex>
+          <Divider style={{ margin: 0 }} orientation={{ default: 'vertical' }} />
+          {buildDisplayReindexing()}
+          <FlexItem>
+            <Link
+              to={{
+                pathname: encodeURIComponent(cacheName) + '/indexing',
+                search: location.search
+              }}
+            >
+              <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
+                {t('caches.actions.action-manage-indexes')}
+              </Button>
+            </Link>
+          </FlexItem>
+        </Flex>
+      </ToolbarItem>
     );
   };
 
@@ -295,49 +295,41 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
+  const buildFeaturesChip = () => {
+    if (!cache?.features) return;
+    return (
+      <React.Fragment>
+        <ToolbarItem>
+          <Flex>
+            <Divider orientation={{ default: 'vertical' }} />
+
+            <ChipGroup categoryName="Features">
+              {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
+                <Chip isReadOnly key={feature}>
+                  {feature}
+                </Chip>
+              ))}
+            </ChipGroup>
+          </Flex>
+        </ToolbarItem>
+      </React.Fragment>
+    );
+  };
+
   const buildShowMoreHeader = () => {
     if (!cache) {
       return '';
     }
 
-    if (
-      cache.features.indexed ||
-      cache.features.hasRemoteBackup ||
-      cache.features.secured ||
-      cache.features.persistent ||
-      cache.features.transactional ||
-      cache.features.bounded
-    ) {
-      if (displayShowMore) {
-        return (
-          <ToolbarItem>
-            <Button
-              isSmall
-              icon={<AngleDownIcon />}
-              variant={ButtonVariant.link}
-              onClick={() => setDisplayShowMore(false)}
-            >
-              {t('caches.actions.action-see-less')}
-            </Button>
-          </ToolbarItem>
-        );
-      }
+    const icon = displayShowMore ? <AngleDownIcon /> : <AngleRightIcon />;
 
-      return (
-        <ToolbarItem>
-          <Button
-            isSmall
-            icon={<AngleRightIcon />}
-            variant={ButtonVariant.link}
-            onClick={() => setDisplayShowMore(true)}
-          >
-            {t('caches.actions.action-see-more')}
-          </Button>
-        </ToolbarItem>
-      );
-    }
-
-    return '';
+    return (
+      <ToolbarItem>
+        <Button isSmall icon={icon} variant={ButtonVariant.link} onClick={() => setDisplayShowMore(!displayShowMore)}>
+          {displayShowMore ? t('caches.actions.action-see-less') : t('caches.actions.action-see-more')}
+        </Button>
+      </ToolbarItem>
+    );
   };
 
   const buildShowMorePanel = () => {
@@ -346,21 +338,12 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <React.Fragment>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <TextContent>
-              <Text component={TextVariants.h4}>{displayUtils.createFeaturesString(cache.features)}</Text>
-            </TextContent>
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <RebalancingCache />
-          {buildBackupsManage()}
-          {buildIndexManage()}
-          {buildRefreshButton()}
-        </ToolbarGroup>
-      </React.Fragment>
+      <ToolbarGroup>
+        <RebalancingCache />
+        {buildFeaturesChip()}
+        {buildBackupsManage()}
+        {buildIndexManage()}
+      </ToolbarGroup>
     );
   };
 
@@ -452,11 +435,13 @@ const DetailCache = (props: { cacheName: string }) => {
                 <CacheTypeBadge cacheType={cache.type} small={false} cacheName={cache.name} />
               </ToolbarItem>
               {buildShowMoreHeader()}
+              {buildRefreshButton()}
             </ToolbarContent>
           </ToolbarGroup>
           {buildShowMorePanel()}
         </Toolbar>
         <Tabs
+          style={{ marginTop: global_spacer_md.value }}
           isBox={false}
           activeKey={activeTabKey1}
           isSecondary={true}

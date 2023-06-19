@@ -386,6 +386,30 @@ class DisplayUtils {
     return featuresString;
   }
 
+  public createFeaturesChipGroup(features: Features): string[] {
+    let featureChipGroup: string[] = [];
+
+    if (features.bounded) {
+      featureChipGroup = ['Bounded', ...featureChipGroup];
+    }
+    if (features.indexed) {
+      featureChipGroup = ['Indexed', ...featureChipGroup];
+    }
+    if (features.persistent) {
+      featureChipGroup = ['Persistent', ...featureChipGroup];
+    }
+    if (features.transactional) {
+      featureChipGroup = ['Transactional', ...featureChipGroup];
+    }
+    if (features.secured) {
+      featureChipGroup = ['Secured', ...featureChipGroup];
+    }
+    if (features.hasRemoteBackup) {
+      featureChipGroup = ['Backups', ...featureChipGroup];
+    }
+    return featureChipGroup;
+  }
+
   public formatContentToDisplay(content: any, contentType?: ContentType): string {
     if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
       // Try parse and stringify

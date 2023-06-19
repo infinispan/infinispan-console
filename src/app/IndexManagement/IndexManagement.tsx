@@ -5,6 +5,8 @@ import {
   AlertVariant,
   Button,
   ButtonVariant,
+  Card,
+  CardBody,
   Divider,
   DividerVariant,
   Grid,
@@ -66,7 +68,7 @@ const IndexManagement = (props) => {
       return <Spinner size={'md'} />;
     }
     return (
-      <Button data-cy="rebuildIndexButton" variant={ButtonVariant.secondary} onClick={() => setReindexModalOpen(true)}>
+      <Button data-cy="rebuildIndexButton" variant={ButtonVariant.primary} onClick={() => setReindexModalOpen(true)}>
         {t('caches.index.button-rebuild')}
       </Button>
     );
@@ -81,7 +83,8 @@ const IndexManagement = (props) => {
       <LevelItem>
         <Button
           data-cy="clearIndexButton"
-          variant={ButtonVariant.danger}
+          variant={ButtonVariant.secondary}
+          isDanger
           disabled={!stats?.reindexing}
           onClick={() => setPurgeModalOpen(true)}
         >
@@ -138,42 +141,39 @@ const IndexManagement = (props) => {
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb currentPage={t('caches.index.title')} cacheName={cacheName} />
-        <Level>
-          <LevelItem>
-            <TextContent style={{ marginTop: global_spacer_md.value }} key={'title-indexing'}>
-              <Text component={TextVariants.h1} key={'title-value-indexing'}>
-                {t('caches.index.indexing-status')}
-              </Text>
-            </TextContent>
-          </LevelItem>
-          {buildPurgeIndexButton()}
-        </Level>
-
-        <Divider component={DividerVariant.hr}></Divider>
-        {buildIndexPageContent()}
-        <Divider component={DividerVariant.hr} style={{ marginTop: global_spacer_md.value }}></Divider>
-        <Toolbar id="indexing-page-toolbar">
-          <ToolbarContent>
-            <ToolbarItem>{buildReindexAction()}</ToolbarItem>
-            <ToolbarItem>
-              <TextContent>
-                <Text key={'button-back'}>
+        <TextContent style={{ marginTop: global_spacer_md.value }} key={'title-indexing'}>
+          <Text component={TextVariants.h1} key={'title-value-indexing'}>
+            {t('caches.index.indexing-status')}
+          </Text>
+        </TextContent>
+      </PageSection>
+      <PageSection>
+        <Card>
+          <CardBody>
+            {buildIndexPageContent()}
+            <Toolbar id="indexing-page-toolbar">
+              <ToolbarContent style={{ paddingLeft: 0, paddingTop: global_spacer_md.value }}>
+                <ToolbarItem>{buildReindexAction()}</ToolbarItem>
+                <ToolbarItem>{buildPurgeIndexButton()}</ToolbarItem>
+                <ToolbarItem>
                   <Link
                     to={{
                       pathname: '/cache/' + encodeURIComponent(cacheName),
                       search: location.search
                     }}
                   >
-                    <Button data-cy="backButton"> {t('caches.index.button-back-to-cache-detail')}</Button>
+                    <Button variant={ButtonVariant.link} data-cy="backButton">
+                      {t('caches.index.button-back-to-cache-detail')}
+                    </Button>
                   </Link>
-                </Text>
-              </TextContent>
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-        <PurgeIndex cacheName={cacheName} isModalOpen={purgeModalOpen} closeModal={closePurgeModal} />
-        <Reindex cacheName={cacheName} isModalOpen={reindexModalOpen} closeModal={closeReindexModal} />
+                </ToolbarItem>
+              </ToolbarContent>
+            </Toolbar>
+          </CardBody>
+        </Card>
       </PageSection>
+      <PurgeIndex cacheName={cacheName} isModalOpen={purgeModalOpen} closeModal={closePurgeModal} />
+      <Reindex cacheName={cacheName} isModalOpen={reindexModalOpen} closeModal={closeReindexModal} />
     </React.Fragment>
   );
 };
