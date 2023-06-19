@@ -385,15 +385,15 @@ describe('Data Container Overview', () => {
 
     //Go to Config page again
     cy.get('[data-cy=showTemplatesButton]').click();
-    cy.get('[data-cy=e2e-test-templateConfig]').should('be.visible');
-    cy.get('#e2e-test-templateConfigExpanded').should('not.be.visible');
+    cy.get('[data-cy=e2e-test-templateConfig] > button').should('be.visible');
+    cy.get('[data-cy=e2e-test-templateConfigExpanded]').should('not.be.visible');
     //Clicking on the config name - config should appear
     cy.get('[data-cy=e2e-test-templateConfig] > button').click();
-    cy.get('#e2e-test-templateConfigExpanded').should('be.visible');
+    cy.get('[data-cy=e2e-test-templateConfigExpanded]').should('be.visible');
     cy.contains('distributed-cache-configuration');
     //Clicking on the config name - config should disappear
     cy.get('[data-cy=e2e-test-templateConfig] > button').click();
-    cy.get('#e2e-test-templateConfigExpanded').should('not.be.visible');
+    cy.get('[data-cy=e2e-test-templateConfigExpanded]').should('not.be.visible');
     cy.contains('distributed-cache-configuration').should('not.be.visible');
   });
 });

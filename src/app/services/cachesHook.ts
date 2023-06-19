@@ -113,3 +113,26 @@ export function useSetAvailableCache(cacheName: string) {
     onSetAvailable
   };
 }
+
+export function useFetchCacheTemplates(cmName) {
+  const [cacheTemplates, setCacheTemplates] = useState<CacheConfig[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (loading) {
+      ConsoleServices.dataContainer()
+        .getCacheConfigurationTemplates(cmName)
+        .then((eitherConfigs) => {
+          if (eitherConfigs.isRight()) {
+            setCacheTemplates(eitherConfigs.value);
+          } else {
+            setError(eitherConfigs.value.message);
+          }
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [loading]);
+
+  return { cacheTemplates, loading, error };
+}

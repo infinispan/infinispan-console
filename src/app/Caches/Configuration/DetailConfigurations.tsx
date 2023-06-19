@@ -1,62 +1,79 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Button,
+  Bullseye,
   Card,
   CardBody,
-  ExpandableSection,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  EmptyStateSecondaryActions,
   PageSection,
   PageSectionVariants,
   Pagination,
+  SearchInput,
+  Spinner,
   Text,
   TextContent,
   TextVariants,
+  Title,
   Toolbar,
-  ToolbarContent
+  ToolbarContent,
+  ToolbarItem
 } from '@patternfly/react-core';
-import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { TableComposable, Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
+import { SearchIcon, CubeIcon } from '@patternfly/react-icons';
+import { useFetchCacheTemplates } from '@app/services/cachesHook';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { onSearch } from '@app/utils/searchFilter';
+import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
 
 const DetailConfigurations: React.FunctionComponent<any> = (props) => {
-  const [cmName, setCmName] = useState(props.computedMatch.params.cmName);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [cacheConfigs, setCacheConfigs] = useState<CacheConfig[]>([]);
+  const { t } = useTranslation();
+  const cmName = props.computedMatch.params.cmName;
+  const { cacheTemplates, loading, error } = useFetchCacheTemplates(cmName);
+  const [filteredTemplates, setFilteredTemplates] = useState<CacheConfig[]>([]);
+  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [expandedTemplateNames, setExpandedRepoNames] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState('');
   const [pageConfigsPagination, setCacheConfigsPagination] = useState({
     page: 1,
     perPage: 10
   });
-  const [rows, setRows] = useState<(string | any)[]>([]);
-  const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
-  const columns = [
-    {
-      title: t('caches.configuration.title')
+
+  useEffect(() => {
+    setFilteredTemplates(cacheTemplates);
+  }, [cacheTemplates]);
+
+  useEffect(() => {
+    if (filteredTemplates) {
+      const initSlice = (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
+      const updateRows = filteredTemplates.slice(initSlice, initSlice + pageConfigsPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
     }
-  ];
+  }, [pageConfigsPagination, filteredTemplates]);
 
   useEffect(() => {
-    ConsoleServices.dataContainer()
-      .getCacheConfigurationTemplates(cmName)
-      .then((eitherConfigs) => {
-        setLoading(false);
-        if (eitherConfigs.isRight()) {
-          setCacheConfigs(eitherConfigs.value);
-        } else {
-          setError(eitherConfigs.value.message);
-        }
-      })
-      .then(() => setLoading(false));
-  }, [cmName]);
+    setFilteredTemplates(cacheTemplates.filter((cache) => onSearch(searchValue, cache.name)));
+  }, [searchValue]);
 
-  useEffect(() => {
-    const slice = (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
-    updateRows(cacheConfigs.slice(slice, slice + pageConfigsPagination.perPage));
-  }, [cacheConfigs, pageConfigsPagination]);
+  const columnNames = {
+    name: t('caches.configuration.title')
+  };
+
+  const isTemplateExpanded = (row) => expandedTemplateNames.includes(row.name);
+
+  const setTemplateExpanded = (template, isExpanding = true) =>
+    setExpandedRepoNames((prevExpanded) => {
+      const otherExpandedRepoNames = prevExpanded.filter((r) => r !== template.name);
+      return isExpanding ? [...otherExpandedRepoNames, template.name] : otherExpandedRepoNames;
+    });
 
   const onSetPage = (_event, pageNumber) => {
     setCacheConfigsPagination({
@@ -72,49 +89,152 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
     });
   };
 
-  const updateRows = (configs: CacheConfig[]) => {
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-    if (configs.length == 0 || loading) {
-      rows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              title: (
-                <TableEmptyState loading={loading} error={error} empty={t('caches.configuration.no-templates-body')} />
-              )
-            }
-          ]
-        }
-      ];
-    } else {
-      rows = configs.map((config) => {
-        return {
-          heightAuto: true,
-          cells: [
-            {
-              title: displayConfig(config.name, config.config)
-            }
-          ]
-        };
-      });
-    }
-    setRows(rows);
-  };
+  const emptyPage = (
+    <EmptyState variant={EmptyStateVariant.large}>
+      <EmptyStateIcon icon={CubeIcon} />
+      <Title headingLevel="h4" size="lg">
+        {t('caches.configuration.no-templates')}
+      </Title>
+      <EmptyStateBody>{t('caches.configuration.no-templates-body')}</EmptyStateBody>
+    </EmptyState>
+  );
 
-  const displayConfig = (name: string, config: string) => {
+  const searchInput = (
+    <SearchInput
+      placeholder="Filter by template name"
+      value={searchValue}
+      onChange={(_event, value) => setSearchValue(value)}
+      onClear={() => setSearchValue('')}
+    />
+  );
+
+  const toolbarPagination = (
+    <Pagination
+      data-cy="cacheTemplatePagination"
+      itemCount={filteredTemplates.length}
+      perPage={pageConfigsPagination.perPage}
+      page={pageConfigsPagination.page}
+      onSetPage={onSetPage}
+      widgetId="pagination-configs"
+      onPerPageSelect={onPerPageSelect}
+      isCompact
+    />
+  );
+
+  const toolbar = (
+    <Toolbar>
+      <ToolbarContent>
+        <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+        {filteredTemplates.length !== 0 && <ToolbarItem variant="pagination">{toolbarPagination}</ToolbarItem>}
+      </ToolbarContent>
+    </Toolbar>
+  );
+
+  const buildCacheTemplatePage = () => {
+    if (loading) {
+      return (
+        <Card>
+          <CardBody>
+            <Spinner size="xl" />
+          </CardBody>
+        </Card>
+      );
+    }
+
+    if (error) {
+      return (
+        <Card>
+          <CardBody>
+            <TableErrorState error={error} />
+          </CardBody>
+        </Card>
+      );
+    }
+
+    if (cacheTemplates.length === 0) {
+      return emptyPage;
+    }
+
     return (
-      <ExpandableSection
-        toggleTextExpanded={name}
-        toggleTextCollapsed={name}
-        key={name + '-config-value'}
-        contentId={name + 'ConfigExpanded'}
-        data-cy={name + 'Config'}
-      >
-        <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
-          {config}
-        </SyntaxHighlighter>
-      </ExpandableSection>
+      <Card>
+        <CardBody>
+          {toolbar}
+          <TableComposable
+            data-cy="cacheTemplatesTable"
+            className={'cache-templates-table'}
+            aria-label={'cache-templates-table-label'}
+            variant="compact"
+            style={{ marginTop: global_spacer_md.value }}
+          >
+            <Thead>
+              <Tr>
+                <Th colSpan={7}>{columnNames.name}</Th>
+              </Tr>
+            </Thead>
+            {filteredTemplates.length == 0 ? (
+              <Tbody>
+                <Tr>
+                  <Td colSpan={6}>
+                    <Bullseye>
+                      <EmptyState variant={EmptyStateVariant.small}>
+                        <EmptyStateIcon icon={SearchIcon} />
+                        <Title headingLevel="h2" size="lg">
+                          {t('caches.configuration.no-filtered-templates')}
+                        </Title>
+                        <EmptyStateBody>{t('caches.configuration.no-filtered-templates-body')}</EmptyStateBody>
+                        <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+                          <Button variant={'link'} onClick={() => setSearchValue('')}>
+                            {t('caches.configuration.clear-filter')}
+                          </Button>
+                        </EmptyStateSecondaryActions>
+                      </EmptyState>
+                    </Bullseye>
+                  </Td>
+                </Tr>
+              </Tbody>
+            ) : (
+              rows.map((row, rowIndex) => {
+                return (
+                  <Tbody key={row.name} isExpanded={isTemplateExpanded(row)}>
+                    <Tr>
+                      <Td
+                        data-cy={row.name + 'Config'}
+                        expand={
+                          row.config
+                            ? {
+                                rowIndex,
+                                isExpanded: isTemplateExpanded(row),
+                                onToggle: () => setTemplateExpanded(row, !isTemplateExpanded(row))
+                              }
+                            : undefined
+                        }
+                      />
+                      <Td dataLabel={columnNames.name}>{row.name}</Td>
+                    </Tr>
+                    {row.config ? (
+                      <Tr isExpanded={isTemplateExpanded(row)}>
+                        <Td />
+                        <Td noPadding colSpan={1}>
+                          <ExpandableRowContent data-cy={row.name + 'ConfigExpanded'}>
+                            <SyntaxHighlighter
+                              wrapLines={false}
+                              style={githubGist}
+                              useInlineStyles={true}
+                              showLineNumbers={true}
+                            >
+                              {row.config}
+                            </SyntaxHighlighter>
+                          </ExpandableRowContent>
+                        </Td>
+                      </Tr>
+                    ) : null}
+                  </Tbody>
+                );
+              })
+            )}
+          </TableComposable>
+        </CardBody>
+      </Card>
     );
   };
 
@@ -132,32 +252,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
           </ToolbarContent>
         </Toolbar>
       </PageSection>
-      <PageSection>
-        <Card>
-          <CardBody>
-            <Pagination
-              data-cy="cacheConfigPagination"
-              itemCount={cacheConfigs.length}
-              perPage={pageConfigsPagination.perPage}
-              page={pageConfigsPagination.page}
-              onSetPage={onSetPage}
-              widgetId="pagination-configs"
-              onPerPageSelect={onPerPageSelect}
-              isCompact
-            />
-            <Table
-              variant={TableVariant.compact}
-              aria-label={t('caches.configuration.table-label')}
-              cells={columns}
-              rows={rows}
-              className={'configs-table'}
-            >
-              <TableHeader />
-              <TableBody />
-            </Table>
-          </CardBody>
-        </Card>
-      </PageSection>
+      <PageSection>{buildCacheTemplatePage()}</PageSection>
     </React.Fragment>
   );
 };

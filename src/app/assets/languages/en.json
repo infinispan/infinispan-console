@@ -474,7 +474,11 @@
     "configuration": {
       "title": "Available cache templates",
       "page-title": "Cache templates",
+      "no-templates": "No cache templates" ,
       "no-templates-body": "Add cache templates to the server configuration.",
+      "no-filtered-templates": "No result found",
+      "no-filtered-templates-body": "No counters match your filter criteria. Clear all filters and try again",
+      "clear-filter": "Clear all filter criterias",
       "table-label": "Create caches from custom templates.",
       "no-encoding-warning": "This cache either has no encoding configuration or uses an encoding that the console does not support. You must use Hot Rod clients to perform read and write operations on this cache.",
       "encoding-docs-message": "See \"Cache Encoding and Marshalling\" in the documentation.",
