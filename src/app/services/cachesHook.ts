@@ -36,10 +36,11 @@ export function useFetchCaches(cacheManager: string) {
 }
 
 export function useCacheEntries() {
-  const { cacheEntries, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
+  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
     useContext(CacheDetailContext);
   return {
     cacheEntries,
+    totalEntriesCount,
     loadingEntries,
     errorEntries,
     infoEntries,

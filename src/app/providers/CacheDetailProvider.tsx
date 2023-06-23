@@ -14,6 +14,7 @@ const initialContext = {
   reload: () => {},
   getByKey: (keyToSearch: string, kct: ContentType) => {},
   cacheEntries: [] as CacheEntry[],
+  totalEntriesCount: 0,
   loadingEntries: false,
   errorEntries: '',
   infoEntries: '',
@@ -30,6 +31,7 @@ const CacheDetailProvider = ({ children }) => {
   const [error, setError] = useState(initialContext.error);
   const [loading, setLoading] = useState(initialContext.loading);
   const [cacheEntries, setCacheEntries] = useState(initialContext.cacheEntries);
+  const [totalEntriesCount, setTotalEntriesCount] = useState<number>(initialContext.totalEntriesCount);
   const [errorEntries, setErrorEntries] = useState(initialContext.errorEntries);
   const [infoEntries, setInfoEntries] = useState(initialContext.infoEntries);
   const [loadingEntries, setLoadingEntries] = useState(initialContext.loadingEntries);
@@ -99,6 +101,7 @@ const CacheDetailProvider = ({ children }) => {
             .then((eitherEntries) => {
               if (eitherEntries.isRight()) {
                 setCacheEntries(eitherEntries.value);
+                setTotalEntriesCount(eitherEntries.value.length);
                 setErrorEntries('');
                 setInfoEntries('');
               } else {
@@ -128,6 +131,7 @@ const CacheDetailProvider = ({ children }) => {
     cache: cache,
     cacheManager: cacheManager,
     cacheEntries: cacheEntries,
+    totalEntriesCount: totalEntriesCount,
     loadingEntries: loadingEntries,
     errorEntries: errorEntries,
     infoEntries: infoEntries,

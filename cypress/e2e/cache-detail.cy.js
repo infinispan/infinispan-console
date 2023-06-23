@@ -202,8 +202,9 @@ describe('Cache Detail Overview', () => {
   });
 
   it('successfully searches entries by key', () => {
+    cy.get('button[aria-label="Show Filters"]').click()
     cy.get('#textSearchByKey').click().type('stringKey');
-    cy.get('[data-cy=search-by-key]').click();
+    cy.get('button[aria-label="Search"]').click()
     cy.contains('true').should('not.exist');
     cy.contains('stringKey');
     cy.contains('1 - 1 of 1');
@@ -211,54 +212,58 @@ describe('Cache Detail Overview', () => {
     verifyCacheMetrics(10, 10, 10, 1, 10, 10, 11, 0, 0, 0);
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();
-
+    cy.get('button[aria-label="Show Filters"]').click()
     cy.get('#textSearchByKey').click().clear();
     cy.get('#keyType').click();
     cy.get('#bytes').click();
     cy.get('#textSearchByKey').click().type('00110010101001011001101110010101');
-    cy.get('[data-cy=search-by-key]').click();
+    cy.get('button[aria-label="Search"]').click()
     cy.contains('stringKey').should('not.exist');
     cy.contains('00110010101001011001101110010101');
     cy.contains('1 - 1 of 1');
     verifyCacheMetrics(10, 10, 10, 2, 10, 10, 12, 0, 0, 0);
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();
+    cy.get('button[aria-label="Show Filters"]').click()
 
     cy.get('#textSearchByKey').click().clear();
     cy.get('#keyType').click();
     cy.get('#sint32').click();
     cy.get('#textSearchByKey').click().type('2147483647');
-    cy.get('[data-cy=search-by-key]').click();
+    cy.get('button[aria-label="Search"]').click()
     cy.contains('stringKey').should('not.exist');
     cy.contains('2147483647');
     cy.contains('1 - 1 of 1');
     verifyCacheMetrics(10, 10, 10, 3, 10, 10, 13, 0, 0, 0);
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();
+    cy.get('button[aria-label="Show Filters"]').click()
 
     cy.get('#textSearchByKey').click().clear();
     cy.get('#keyType').click();
     cy.get('#int32').click();
     cy.get('#textSearchByKey').click().type('2147483647');
-    cy.get('[data-cy=search-by-key]').click();
+    cy.get('button[aria-label="Search"]').click()
     cy.contains('stringKey').should('not.exist');
     cy.contains('2147483647');
     cy.contains('1 - 1 of 1');
     verifyCacheMetrics(10, 10, 10, 4, 10, 10, 14, 0, 0, 0);
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();
+    cy.get('button[aria-label="Show Filters"]').click()
 
     cy.get('#textSearchByKey').click().clear();
     cy.get('#keyType').click();
     cy.get('#bool').click();
     cy.get('#textSearchByKey').click().type('true');
-    cy.get('[data-cy=search-by-key]').click();
+    cy.get('button[aria-label="Search"]').click()
     cy.contains('stringKey').should('not.exist');
     cy.contains('true');
     cy.contains('1 - 1 of 1');
     verifyCacheMetrics(10, 10, 10, 5, 10, 10, 15, 0, 0, 0);
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();
+    cy.get('button[aria-label="Show Filters"]').click()
 
     cy.get('#textSearchByKey').click().clear();
     cy.get('#keyType').click();
@@ -266,7 +271,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#textSearchByKey')
       .click()
       .type('{"_type": "org.infinispan.Person","name": "Elaia","age" : 12}', { parseSpecialCharSequences: false });
-    cy.get('[data-cy=search-by-key]').click();
+    cy.get('button[aria-label="Search"]').click()
     cy.contains('true').should('not.exist');
     cy.contains('Elaia');
     cy.contains('1 - 1 of 1');
@@ -276,7 +281,7 @@ describe('Cache Detail Overview', () => {
   it('successfully edits existing entry', () => {
     //Editing boolean entry
     cy.get('[data-cy=actions-true]').click();
-    cy.get('[data-cy=editEntryAction]').click();
+    cy.get('[aria-label=editEntryAction]').click();
     cy.get('#valueContentType').click();
     cy.get('#string').click();
     cy.get('#value-entry').click().type('changedValue');
@@ -289,7 +294,7 @@ describe('Cache Detail Overview', () => {
   it('successfully deletes existing entry', () => {
     //Deleting boolean entry
     cy.get('[data-cy=actions-true]').click();
-    cy.get('[data-cy=deleteEntryAction]').click();
+    cy.get('[aria-label=deleteEntryAction]').click();
 
     //Cancelling action
     cy.get('[data-cy=cancelDeleteEntry]').click();
@@ -297,7 +302,7 @@ describe('Cache Detail Overview', () => {
 
     //Deleting action
     cy.get('[data-cy=actions-true]').click();
-    cy.get('[data-cy=deleteEntryAction]').click();
+    cy.get('[aria-label=deleteEntryAction]').click();
     cy.get('[data-cy=deleteEntryButton]').click();
     cy.contains('Entry true deleted.');
     cy.contains('changedValue').should('not.exist');
@@ -370,40 +375,40 @@ describe('Cache Detail Overview', () => {
   });
 
   //@TODO uncomment when ISPN-14189 is fixed.
-  //  it('successfully manages indexes', () => {
-  //   //Opening indexed-cache cache page.
-  //   cy.login(Cypress.env("username"), Cypress.env("password"), '/cache/indexed-cache');
+   it('successfully manages indexes', () => {
+    //Opening indexed-cache cache page.
+    cy.login(Cypress.env("username"), Cypress.env("password"), '/cache/indexed-cache');
 
-  //   cy.get("[data-cy=manageIndexesLink]").click();
-  //   cy.contains("org.infinispan.Person");
-  //   cy.contains("3 k");
-  //   cy.get("[data-cy=backButton]").click();
-  //   cy.contains("Elaia");
+    cy.get("[data-cy=manageIndexesLink]").click();
+    cy.contains("org.infinispan.Person");
+    cy.contains("3 k");
+    cy.get("[data-cy=backButton]").click();
+    cy.contains("Elaia");
 
-  //   cy.get("[data-cy=manageIndexesLink]").click();
-  //   cy.get("[data-cy=clearIndexButton]").click();
-  //   cy.contains("Permanently clear index?");
-  //   cy.get("[data-cy=cancelButton]").click();
-  //   cy.contains("Permanently clear index?").should("not.exist");
+    cy.get("[data-cy=manageIndexesLink]").click();
+    cy.get("[data-cy=clearIndexButton]").click();
+    cy.contains("Permanently clear index?");
+    cy.get("[data-cy=cancelButton]").click();
+    cy.contains("Permanently clear index?").should("not.exist");
 
-  //   cy.get("[data-cy=clearIndexButton]").click();
-  //   cy.get("[data-cy=clearIndex]").click();
-  //   cy.contains("Index of cache indexed-cache cleared.");
-  //   cy.contains("0");
+    cy.get("[data-cy=clearIndexButton]").click();
+    cy.get("[data-cy=clearIndex]").click();
+    cy.contains("Index of cache indexed-cache cleared.");
+    cy.contains("0");
 
-  //   cy.get("[data-cy=rebuildIndexButton]").click();
-  //   cy.contains("Rebuild index?");
-  //   cy.get("[data-cy=cancelReindexButton]").click();
+    cy.get("[data-cy=rebuildIndexButton]").click();
+    cy.contains("Rebuild index?");
+    cy.get("[data-cy=cancelReindexButton]").click();
 
-  //   cy.get("[data-cy=rebuildIndexButton]").click();
-  //   cy.get("[data-cy=reindexButton]").click();
-  //   cy.contains("1").should("not.exist");
+    cy.get("[data-cy=rebuildIndexButton]").click();
+    cy.get("[data-cy=reindexButton]").click();
+    cy.contains("1").should("not.exist");
 
-  //   cy.get("[data-cy=backButton]").click();
-  //   cy.contains("Elaia");
-  //   cy.get("[data-cy=manageIndexesLink]").click();
-  //   cy.contains("3 k");
-  //  })
+    cy.get("[data-cy=backButton]").click();
+    cy.contains("Elaia");
+    cy.get("[data-cy=manageIndexesLink]").click();
+    cy.contains("3 k");
+   })
 
   it('successfully adds new entry with expiration and waits till entry is expired', () => {
     //Adding sint32 key/value
