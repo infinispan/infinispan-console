@@ -2,193 +2,121 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   ButtonVariant,
-  InputGroup,
+  Card,
+  CardBody,
+  Bullseye,
+  Divider,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  EmptyStateSecondaryActions,
   Pagination,
+  SearchInput,
   Select,
   SelectOption,
-  SelectOptionObject,
   SelectVariant,
-  Text,
-  TextContent,
-  TextInput,
+  Title,
   Toolbar,
   ToolbarContent,
+  ToolbarToggleGroup,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarFilter,
   Tooltip
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
-import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
-import { cellWidth, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
-import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
-import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
+import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { FilterIcon, SearchIcon, PlusCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
 import { useTranslation } from 'react-i18next';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useCacheDetail, useCacheEntries } from '@app/services/cachesHook';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
+import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
+import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 
 const CacheEntries = (props: { cacheName: string }) => {
-  const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] = useState<boolean>(false);
-
-  const { cacheEntries, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } = useCacheEntries();
+  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
+    useCacheEntries();
   const { cache } = useCacheDetail();
   const { connectedUser } = useConnectedUser();
+  const { t } = useTranslation();
+  const brandname = t('brandname.brandname');
+  const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] = useState<boolean>(false);
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
   const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [keyToEdit, setKeyToEdit] = useState<string>('');
   const [keyContentTypeToEdit, setKeyContentTypeToEdit] = useState<ContentType>(ContentType.StringContentType);
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
-  const [keyToSearch, setKeyToSearch] = useState<string>('');
-  const [rows, setRows] = useState<any[]>([]);
-  const [actions, setActions] = useState<any[]>([]);
-  const [entriesPagination, setEntriesPagination] = useState({
+  const [rows, setRows] = useState<CacheEntry[]>([]);
+  const [filteredEntries, setFilteredEntries] = useState<CacheEntry[]>([]);
+  const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
+  const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(ContentType.string);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [entriesPagination, setEntriesPagination] = useState<PaginationType>({
     page: 1,
     perPage: 10
   });
 
-  const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
+  useEffect(() => {
+    if (cacheEntries) setFilteredEntries(cacheEntries);
+  }, [loadingEntries, errorEntries, cacheEntries]);
 
   useEffect(() => {
-    updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
-  }, [loadingEntries, cacheEntries]);
+    if (filteredEntries) {
+      const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
+      const updateRows = filteredEntries.slice(initSlice, initSlice + entriesPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+    }
+  }, [entriesPagination, filteredEntries]);
 
   useEffect(() => {
-    if (keyToSearch == '') {
+    if (searchValue === '') {
       reloadEntries();
     }
-  }, [keyToSearch]);
+  }, [searchValue]);
 
-  useEffect(() => {
-    let paginationUpgrade = false;
-    // Upgrade Pagination in necessary
-    if (entriesPagination.page > 1) {
-      const completePagesNum = Math.floor(cacheEntries.length / entriesPagination.perPage);
-      const lastPageCount = cacheEntries.length % entriesPagination.perPage;
-      if (lastPageCount == 0 && entriesPagination.page > completePagesNum) {
-        paginationUpgrade = true;
-        setEntriesPagination({
-          page: completePagesNum,
-          perPage: entriesPagination.perPage
-        });
-      }
-    }
-
-    if (!paginationUpgrade) {
-      updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
-    }
-  }, [cacheEntries, errorEntries]);
-
-  useEffect(() => {
-    updateRows(cacheEntries, loadingEntries, errorEntries, infoEntries);
-  }, [entriesPagination]);
-
-  const entryActions = [
-    {
-      'data-cy': 'editEntryAction',
-      title: t('caches.entries.action-edit'),
-      onClick: (event, rowId, rowData, extra) =>
-        onClickEditEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType)
-    },
-    {
-      'data-cy': 'deleteEntryAction',
-      title: t('caches.entries.action-delete'),
-      onClick: (event, rowId, rowData, extra) =>
-        onClickDeleteEntryButton(rowData.cells[0].keyForAction, rowData.cells[0].keyContentType as ContentType)
-    }
-  ];
-
-  const columns = [
-    { title: t('caches.entries.column-key'), transforms: [cellWidth(30)] },
-    { title: t('caches.entries.column-value'), transforms: [cellWidth(40)] },
-    { title: t('caches.entries.column-lifespan'), transforms: [cellWidth(10)] },
-    { title: t('caches.entries.column-maxidle'), transforms: [cellWidth(10)] },
-    { title: t('caches.entries.column-expires'), transforms: [cellWidth(10)] }
-  ];
-
-  const displayEmptyMessage = (info: string) => {
-    if (keyToSearch.trim() != '') {
-      return (
-        <Text>
-          {t('caches.entries.get-entry-not-found')} <strong>{keyToSearch}</strong>
-        </Text>
-      );
-    }
-
-    return <Text>{info ? info : t('caches.entries.empty-cache')}</Text>;
+  const onSetPage = (_event, pageNumber) => {
+    setEntriesPagination({
+      ...entriesPagination,
+      page: pageNumber
+    });
   };
 
-  const updateRows = (entries: CacheEntry[], loading: boolean, error: string, info: string) => {
-    const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
-    const currentPageEntries = entries.slice(initSlice, initSlice + entriesPagination.perPage);
+  const onPerPageSelect = (_event, perPage) => {
+    setEntriesPagination({
+      page: 1,
+      perPage: perPage
+    });
+  };
 
-    let rows: { heightAuto: boolean; cells: (string | any)[] }[];
-
-    if (currentPageEntries.length == 0) {
-      rows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              props: { colSpan: 8 },
-              title: (
-                <TableEmptyState
-                  loading={loading}
-                  error={error}
-                  empty={<TextContent>{displayEmptyMessage(info)}</TextContent>}
-                />
-              )
-            }
-          ]
-        }
-      ];
-      setActions([]);
-    } else {
-      rows = currentPageEntries.map((entry) => {
-        return {
-          heightAuto: true,
-          actionProps: { 'data-cy': `actions-${entry.key}` },
-          cells: [
-            {
-              title: displayHighlighted(
-                entry.key,
-                cache.encoding.key as EncodingType,
-                entry.keyContentType as ContentType
-              ),
-              keyForAction: entry.key,
-              keyContentType: entry.keyContentType
-            },
-            {
-              title: displayHighlighted(
-                entry.value,
-                cache.encoding.value as EncodingType,
-                entry.valueContentType as ContentType
-              )
-            },
-            {
-              title: entry.timeToLive ? entry.timeToLive : t('caches.entries.lifespan-immortal')
-            },
-            {
-              title: entry.maxIdle ? entry.maxIdle : t('caches.entries.maxidle-immortal')
-            },
-            {
-              title: entry.expires ? entry.expires : t('caches.entries.never-expire')
-            }
-          ]
-        };
-      });
-      setActions(entryActions);
+  const displayActions = (row): IAction[] => [
+    {
+      'aria-label': 'editEntryAction',
+      title: t('caches.entries.action-edit'),
+      onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
+    },
+    {
+      'aria-label': 'deleteEntryAction',
+      title: t('caches.entries.action-delete'),
+      onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
     }
-    setRows(rows);
+  ];
+
+  const columnNames = {
+    key: t('caches.entries.column-key'),
+    value: t('caches.entries.column-value'),
+    lifespan: t('caches.entries.column-lifespan'),
+    maxIdle: t('caches.entries.column-maxidle'),
+    expires: t('caches.entries.column-expires')
   };
 
   const displayHighlighted = (value: string, encodingType: EncodingType, contentType?: ContentType) => {
@@ -252,76 +180,10 @@ const CacheEntries = (props: { cacheName: string }) => {
     searchEntryByKey();
   };
 
-  const onChangeKeySearch = (value) => {
-    if (value.length == 0) {
-      setRows([]);
-    }
-    setKeyToSearch(value.trim());
+  const onSelectFilter = (event, selection) => {
+    setSelectSearchOption(selection);
+    setIsOpenFilter(false);
   };
-
-  const searchEntryByKey = (kt?: ContentType) => {
-    if (keyToSearch.length == 0) {
-      return;
-    }
-    if (!kt) {
-      kt = keyType as ContentType;
-    }
-
-    getByKey(keyToSearch, kt);
-  };
-
-  const searchEntryOnKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      searchEntryByKey();
-    }
-  };
-  const keyContentTypeOptions = () => {
-    return CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).map((contentType) => (
-      <SelectOption id={contentType as string} key={contentType as string} value={contentType} />
-    ));
-  };
-
-  const [expandedKey, setExpandedKey] = useState(false);
-  const [keyType, setKeyType] = useState<string | SelectOptionObject | (string | SelectOptionObject)[]>(
-    CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType)[0]
-  );
-
-  const buildPagination = () => {
-    return (
-      <Pagination
-        itemCount={cacheEntries.length}
-        perPage={entriesPagination.perPage}
-        page={entriesPagination.page}
-        onSetPage={(_event, pageNumber) =>
-          setEntriesPagination({
-            page: pageNumber,
-            perPage: entriesPagination.perPage
-          })
-        }
-        widgetId="pagination-entries"
-        onPerPageSelect={(_event, perPage) =>
-          setEntriesPagination({
-            page: 1,
-            perPage: perPage
-          })
-        }
-        isCompact
-      />
-    );
-  };
-
-  const secondRowItems = (
-    <Toolbar>
-      <ToolbarContent>
-        <ToolbarItem variant={ToolbarItemVariant.pagination} alignment={{ default: 'alignRight' }}>
-          {buildPagination()}
-        </ToolbarItem>
-        <ToolbarItem>
-          <MoreInfoTooltip label={''} toolTip={'Shows up to 100 entries of the cache'} />
-        </ToolbarItem>
-      </ToolbarContent>
-    </Toolbar>
-  );
 
   const addEntryAction = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
@@ -336,7 +198,7 @@ const CacheEntries = (props: { cacheName: string }) => {
           variant={ButtonVariant.primary}
           onClick={onClickAddEntryButton}
         >
-          Add entry
+          {t('caches.entries.add-entry-button-label')}
         </Button>
       </ToolbarItem>
     );
@@ -356,69 +218,223 @@ const CacheEntries = (props: { cacheName: string }) => {
     );
   };
 
+  const emptyPage = (
+    <Card>
+      <CardBody>
+        <EmptyState variant={EmptyStateVariant.large}>
+          <EmptyStateIcon icon={PlusCircleIcon} />
+          <Title headingLevel="h4" size="lg">
+            {t('caches.entries.empty-cache')}
+          </Title>
+          <EmptyStateBody>{infoEntries ? infoEntries : t('caches.entries.empty-cache-body')}</EmptyStateBody>
+          <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+            {addEntryAction()}
+          </EmptyStateSecondaryActions>
+        </EmptyState>
+      </CardBody>
+    </Card>
+  );
+
+  const toolbarPagination = (dropDirection) => {
+    return (
+      <Pagination
+        data-cy="paginationArea"
+        itemCount={filteredEntries.length}
+        perPage={entriesPagination.perPage}
+        page={entriesPagination.page}
+        onSetPage={onSetPage}
+        widgetId="pagination-caches"
+        onPerPageSelect={onPerPageSelect}
+        isCompact
+        dropDirection={dropDirection}
+      />
+    );
+  };
+
+  const keyContentTypeOptions = () => {
+    return CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).map((contentType) => (
+      <SelectOption id={contentType as string} key={contentType as string} value={contentType} />
+    ));
+  };
+
+  const searchEntryByKey = () => {
+    if (searchValue.length == 0) {
+      return;
+    }
+
+    getByKey(searchValue, selectSearchOption);
+  };
+
+  const buildSearch = (
+    <ToolbarGroup variant="filter-group">
+      <ToolbarItem>
+        <Select
+          variant={SelectVariant.single}
+          aria-label={'search option'}
+          onToggle={() => setIsOpenFilter(!isOpenFilter)}
+          onSelect={onSelectFilter}
+          selections={selectSearchOption}
+          isOpen={isOpenFilter}
+          toggleIcon={<FilterIcon />}
+          maxHeight={'300px'}
+          toggleId="keyType"
+        >
+          {keyContentTypeOptions()}
+        </Select>
+      </ToolbarItem>
+      <ToolbarFilter categoryName={selectSearchOption}>
+        <SearchInput
+          name="textSearchByKey"
+          id="textSearchByKey"
+          placeholder={`Find by ${selectSearchOption}`}
+          value={searchValue}
+          onChange={(_event, val) => setSearchValue(val)}
+          onSearch={() => searchEntryByKey()}
+          onClear={() => setSearchValue('')}
+        />
+      </ToolbarFilter>
+    </ToolbarGroup>
+  );
+
+  const toolbar = (
+    <Toolbar
+      id="attribute-search-filter-toolbar"
+      clearAllFilters={() => {
+        setSearchValue('');
+      }}
+      style={{ paddingBottom: global_spacer_md.value }}
+    >
+      <ToolbarContent>
+        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
+          {buildSearch}
+        </ToolbarToggleGroup>
+        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetSm' }} />
+        {addEntryAction()}
+        {clearAllAction()}
+        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+        <ToolbarItem>
+          <Tooltip content={t('caches.entries.pagination-tooltip')}>
+            <Button variant="plain">
+              <HelpIcon />
+            </Button>
+          </Tooltip>
+        </ToolbarItem>
+      </ToolbarContent>
+    </Toolbar>
+  );
+
+  const displayTimeToLive = (entry) => {
+    return entry.timeToLive ? entry.timeToLive : t('caches.entries.lifespan-immortal');
+  };
+
+  const displayMaxIdle = (entry) => {
+    return entry.maxIdle ? entry.maxIdle : t('caches.entries.maxidle-immortal');
+  };
+
+  const displayExpires = (entry) => {
+    return entry.expires ? entry.expires : t('caches.entries.never-expire');
+  };
+
   return (
     <React.Fragment>
-      <Toolbar id="cache-entries-toolbar" style={{ paddingLeft: 0 }}>
-        <ToolbarContent>
-          <ToolbarGroup>
-            <ToolbarItem>
-              <Select
-                width={125}
-                maxHeight={200}
-                variant={SelectVariant.single}
-                aria-label="Select Key Content Type"
-                onToggle={(isExpanded) => setExpandedKey(isExpanded)}
-                onSelect={(event, selection) => {
-                  setKeyType(selection);
-                  setExpandedKey(false);
-                  searchEntryByKey(selection as ContentType);
-                }}
-                selections={keyType}
-                isOpen={expandedKey}
-                toggleId="keyType"
-              >
-                {keyContentTypeOptions()}
-              </Select>
-            </ToolbarItem>
-            <ToolbarItem>
-              <InputGroup>
-                <TextInput
-                  name="textSearchByKey"
-                  id="textSearchByKey"
-                  type="text"
-                  aria-label={t('caches.entries.get-entry-label')}
-                  placeholder={t('caches.entries.get-entry-text') + keyType}
-                  size={50}
-                  onChange={onChangeKeySearch}
-                  onKeyPress={searchEntryOnKeyPress}
-                />
-                <Button
-                  data-cy="search-by-key"
-                  variant="control"
-                  aria-label={t('caches.entries.get-entry-button-label')}
-                  onClick={() => searchEntryByKey()}
+      {totalEntriesCount == 0 ? (
+        emptyPage
+      ) : (
+        <React.Fragment>
+          {toolbar}
+
+          <TableComposable className={'entries-table'} aria-label={'entries-table-label'} variant={'compact'}>
+            <Thead>
+              <Tr>
+                <Th colSpan={1}>{columnNames.key}</Th>
+                <Th colSpan={1}>{columnNames.value}</Th>
+                <Th
+                  info={{
+                    popover: t('caches.entries.column-lifespan-tooltip', { brandname: brandname }),
+                    popoverProps: {
+                      headerContent: t('caches.entries.column-lifespan')
+                    }
+                  }}
+                  colSpan={1}
                 >
-                  <SearchIcon />
-                </Button>
-              </InputGroup>
-            </ToolbarItem>
-            {addEntryAction()}
-            {clearAllAction()}
-          </ToolbarGroup>
-        </ToolbarContent>
-      </Toolbar>
-      {secondRowItems}
-      <Table
-        variant={TableVariant.compact}
-        aria-label="Entries"
-        cells={columns}
-        rows={rows}
-        actions={actions}
-        className={'entries-table'}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
+                  {columnNames.lifespan}
+                </Th>
+                <Th
+                  info={{
+                    popover: t('caches.entries.column-maxidle-tooltip', { brandname: brandname }),
+                    popoverProps: {
+                      headerContent: t('caches.entries.column-maxidle')
+                    }
+                  }}
+                  colSpan={1}
+                >
+                  {columnNames.maxIdle}
+                </Th>
+                <Th colSpan={2}>{columnNames.expires}</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {filteredEntries.length == 0 ? (
+                <Tr>
+                  <Td colSpan={6}>
+                    <Bullseye>
+                      <EmptyState variant={EmptyStateVariant.small}>
+                        <EmptyStateIcon icon={SearchIcon} />
+                        <Title headingLevel="h2" size="lg">
+                          {t('caches.entries.no-filtered-entry')}
+                        </Title>
+                        <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody>
+                        <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+                          <Button
+                            data-cy="clearSearch"
+                            key="clear-search"
+                            variant={ButtonVariant.link}
+                            onClick={() => {
+                              setSearchValue('');
+                            }}
+                          >
+                            {t('caches.entries.no-filtered-entry-action')}
+                          </Button>
+                        </EmptyStateSecondaryActions>
+                      </EmptyState>
+                    </Bullseye>
+                  </Td>
+                </Tr>
+              ) : (
+                rows.map((row) => {
+                  return (
+                    <Tr key={row.key}>
+                      <Td dataLabel={columnNames.key}>
+                        {displayHighlighted(
+                          row.key,
+                          cache.encoding.key as EncodingType,
+                          row.keyContentType as ContentType
+                        )}
+                      </Td>
+                      <Td dataLabel={columnNames.value}>
+                        {displayHighlighted(
+                          row.value,
+                          cache.encoding.value as EncodingType,
+                          row.valueContentType as ContentType
+                        )}
+                      </Td>
+                      <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
+                      <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>
+                      <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>
+                      <Td isActionCell data-cy={`actions-${row.key}`}>
+                        <ActionsColumn items={displayActions(row)} />
+                      </Td>
+                    </Tr>
+                  );
+                })
+              )}
+            </Tbody>
+          </TableComposable>
+          <Toolbar>
+            <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+          </Toolbar>
+        </React.Fragment>
+      )}
       <CreateOrUpdateEntryForm
         cacheName={props.cacheName}
         cacheEncoding={cache.encoding}

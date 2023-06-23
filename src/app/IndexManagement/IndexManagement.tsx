@@ -68,9 +68,11 @@ const IndexManagement = (props) => {
       return <Spinner size={'md'} />;
     }
     return (
-      <Button data-cy="rebuildIndexButton" variant={ButtonVariant.primary} onClick={() => setReindexModalOpen(true)}>
-        {t('caches.index.button-rebuild')}
-      </Button>
+      <ToolbarItem>
+        <Button data-cy="rebuildIndexButton" variant={ButtonVariant.primary} onClick={() => setReindexModalOpen(true)}>
+          {t('caches.index.button-rebuild')}
+        </Button>
+      </ToolbarItem>
     );
   };
 
@@ -80,7 +82,7 @@ const IndexManagement = (props) => {
     }
 
     return (
-      <LevelItem>
+      <ToolbarItem>
         <Button
           data-cy="clearIndexButton"
           variant={ButtonVariant.secondary}
@@ -90,7 +92,7 @@ const IndexManagement = (props) => {
         >
           {t('caches.index.button-clear')}
         </Button>
-      </LevelItem>
+      </ToolbarItem>
     );
   };
 
@@ -153,8 +155,8 @@ const IndexManagement = (props) => {
             {buildIndexPageContent()}
             <Toolbar id="indexing-page-toolbar">
               <ToolbarContent style={{ paddingLeft: 0, paddingTop: global_spacer_md.value }}>
-                <ToolbarItem>{buildReindexAction()}</ToolbarItem>
-                <ToolbarItem>{buildPurgeIndexButton()}</ToolbarItem>
+                {buildReindexAction()}
+                {buildPurgeIndexButton()}
                 <ToolbarItem>
                   <Link
                     to={{

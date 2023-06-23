@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 interface Status {
   name: string;
   color: string;
@@ -453,4 +454,9 @@ interface ClusterDistribution {
   node_addresses: string[];
   memory_available: number;
   memory_used: number;
+}
+
+interface PaginationType {
+  page: number;
+  perPage: number;
 }
