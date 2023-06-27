@@ -113,11 +113,11 @@ describe('RBAC Functionlity Tests', () => {
       cy.get('[data-cy=actions-default]').should('exist');
       cy.get('[data-cy=actions-default]').click();
       if (isSuperAdmin) {
-        cy.get('[data-cy=ignoreCacheAction]').should('exist');
+        cy.get('[aria-label=ignoreCacheAction]').should('exist');
       } else {
-        cy.get('[data-cy=ignoreCacheAction]').should('not.exist');
+        cy.get('[aria-label=ignoreCacheAction]').should('not.exist');
       }
-      cy.get('[data-cy=deleteCacheAction]').should('exist');
+      cy.get('[aria-label=deleteCacheAction]').should('exist');
 
     } else {
       cy.get('[data-cy=actions-default]').should('not.exist');
@@ -126,7 +126,7 @@ describe('RBAC Functionlity Tests', () => {
   }
 
   function checkSecuredCacheDetailsView(isMonitor, isAdmin, isSuperAdmin, roleName, cacheName) {
-    cy.get('[id^="pagination-caches-top-pagination"]').click();
+    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
     cy.get('[data-action=per-page-100]').click();
     //Going to secured cache details page
     cy.get('[data-cy=detailButton-' + cacheName + ']').click();
@@ -181,7 +181,7 @@ describe('RBAC Functionlity Tests', () => {
   function checkNotOwnSecuredCache(cacheName) {
     //Checking not owned cache to be invisible for the current user.
     cy.contains('Data container').click();
-    cy.get('[id^="pagination-caches-top-pagination"]').click();
+    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
     cy.get('[data-action=per-page-100]').click();
     cy.contains(/cacheName$/).should('not.exist');
   }
@@ -293,7 +293,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.contains('strong-1');
     cy.get('#counterFilterSelect').should('exist');
     cy.contains('td', 'strong-1').parent()
-      .within($tr => {                       
+      .within($tr => {
         cy.get('td button').should('exist');
         cy.get('td button').click();
         cy.get('[data-cy=deleteCounter]').should('exist');
