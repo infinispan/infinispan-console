@@ -123,7 +123,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('#cluster-manager-header').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
-    cy.get('[data-action=next]').click();
+    cy.get('[data-action=next]').first().click();
     cy.contains('super-cache');
     cy.get('[data-cy=feature-super-cache]').contains('Bounded');
     cy.get('[data-cy=feature-super-cache]').contains('Indexed');
