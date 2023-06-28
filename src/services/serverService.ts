@@ -48,4 +48,11 @@ export class ServerService {
         });
       });
   }
+
+  /**
+   * Get connected clients
+   */
+  public async getConnectedClients(): Promise<Either<ActionResponse, ConnectedClients[]>> {
+    return this.utils.get(this.endpoint + '/connections', (data) => data);
+  }
 }
