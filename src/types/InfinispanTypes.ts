@@ -454,3 +454,16 @@ interface ClusterDistribution {
   memory_available: number;
   memory_used: number;
 }
+
+interface ConnectedClients {
+  id: number;
+  'server-node-name': string;
+  name?: string;
+  created: string;
+  principal: string;
+  'local-address': string;
+  'remote-address': string;
+  'protocol-version': string;
+  'client-library': string;
+  'client-version'?: string;
+}
