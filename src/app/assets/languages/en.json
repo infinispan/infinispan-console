@@ -749,5 +749,26 @@
     "empty-cluster": "This cluster is empty",
     "no-cluster-title": "No cluster members",
     "no-cluster-body": "Add nodes to create a cluster."
+  },
+  "connected-clients": {
+    "title": "Connected clients",
+    "connected-clients-description": "Connected clients description",
+    "no-connections": "No connected clients",
+    "no-connections-body": "No connected clients body",
+    "no-filtered-connections": "No filtered connected clients",
+    "no-filtered-connections-body": "No filtered connected clients body",
+    "node-name": "Server node",
+    "principal": "Principal",
+    "client-library": "Client library",
+    "client-address": "Client address",
+    "client-version": "Client version",
+    "id": "id",
+    "created": "Created",
+    "ssl-application-protocol": "ssl-application-protocol",
+    "ssl-cipher-suite": "ssl-cipher-suite",
+    "ssl-protocol": "ssl-protocol",
+    "local-address": "Local address",
+    "null": "N/A",
+    "more-info": "More info"
   }
 }

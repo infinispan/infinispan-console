@@ -460,3 +460,20 @@ interface PaginationType {
   page: number;
   perPage: number;
 }
+
+interface ConnectedClients {
+  id: number;
+  'server-node-name': string;
+  name?: string;
+  created: string;
+  principal: string;
+  'local-address': string;
+  'remote-address': string;
+  'protocol-version': string;
+  'client-library': string;
+  'client-version'?: string | null;
+  'ssl-application-protocol'?: string;
+  'ssl-cipher-suite'?: string;
+  'ssl-protocol'?: string;
+  count?: number;
+}
