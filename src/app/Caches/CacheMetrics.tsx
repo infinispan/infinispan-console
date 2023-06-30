@@ -26,7 +26,7 @@ import { DataDistributionChart } from './DataDistributionChart';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useTranslation } from 'react-i18next';
 import { StorageType } from '@services/infinispanRefData';
-import { DataAccessChart } from './DataAccessChart';
+import { DataAccess } from './DataAccess';
 import { useCacheDetail } from '@app/services/cachesHook';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
@@ -262,11 +262,11 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={7}>
+      <GridItem span={8}>
         <DataDistributionChart cacheName={props.cacheName} />
       </GridItem>
-      <GridItem span={5}>
-        <DataAccessChart stats={stats} />
+      <GridItem span={4}>
+        <DataAccess stats={stats} />
       </GridItem>
       <GridItem span={12}>{buildQueryStats()}</GridItem>
     </Grid>

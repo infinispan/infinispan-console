@@ -233,7 +233,7 @@ const GlobalStats = () => {
             </LevelItem>
             <LevelItem>
               <Link to={{ pathname: '/cluster-membership', search: location.search }}>
-                <Button variant={ButtonVariant.link} icon={<ArrowIcon />}>
+                <Button data-cy="viewClustersLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
                   {t('global-stats.view-cluster-membership-link')}
                 </Button>
               </Link>

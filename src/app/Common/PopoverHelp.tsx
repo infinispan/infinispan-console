@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Popover, TextContent, TextVariants, Text } from '@patternfly/react-core';
+import { Button, Flex, FlexItem, Popover, TextContent, TextVariants, Text, Icon } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 
 /**
@@ -8,15 +8,14 @@ import { HelpIcon } from '@patternfly/react-icons';
 const PopoverHelp = (props: { name: string; label: string; content: string | ReactNode; text?: string }) => {
   const popOver = (
     <Popover headerContent={props.label} bodyContent={props.content}>
-      <button
-        type="button"
+      <Button
+        variant="plain"
         aria-label={'more-info-' + props.name}
         onClick={(e) => e.preventDefault()}
         aria-describedby={'help' + props.name}
         className="pf-c-form__group-label-help"
-      >
-        <HelpIcon noVerticalAlign />
-      </button>
+        icon={<HelpIcon />}
+      />
     </Popover>
   );
 
@@ -24,7 +23,8 @@ const PopoverHelp = (props: { name: string; label: string; content: string | Rea
     return (
       <TextContent>
         <Text component={TextVariants.p}>
-          {props.text} {popOver}
+          {props.text + '   '}
+          {popOver}
         </Text>
       </TextContent>
     );
