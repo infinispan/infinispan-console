@@ -166,7 +166,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=backButton]').click();
     //Going to metrics page
     cy.get('[data-cy=cacheMetricsTab]').click();
-    cy.contains('Retrievals: ');
+    cy.get('[data-cy=data-distribution-chart]').should('exist');
     if (isSuperAdmin) {
       cy.get('[data-cy=clearQueryMetricsButton]').should('exist');
     } else {
@@ -259,7 +259,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=backButton]').click();
     //Going to metrics page
     cy.get('[data-cy=cacheMetricsTab]').click();
-    cy.contains('Retrievals: ');
+    cy.get('[data-cy=data-distribution-chart]').should('exist');
     if (isSuperAdmin) {
       cy.get('[data-cy=clearQueryMetricsButton]').should('exist');
     } else {

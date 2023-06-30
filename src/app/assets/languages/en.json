@@ -629,6 +629,7 @@
       "average-reads-tooltip": "Average time, in milliseconds, for read operations to complete.",
       "average-writes-tooltip": "Average time, in milliseconds, for write operations to complete.",
       "average-deletes-tooltip": "Average time, in milliseconds, for delete operations to complete.",
+      "data-total": "Total accesses",
       "data-access-hits": "Hits",
       "data-access-misses": "Misses",
       "data-access-stores": "Stores",
@@ -643,11 +644,11 @@
       "data-access-remove-hits-info": "Remove hits displays the number of successful requests to delete cache entries.",
       "data-access-remove-misses-info": "Remove misses displays the number of times that a client attempted to delete an entry that was not in the cache.",
       "data-access-evictions-info": "Evictions displays the number of entries that have been evicted from the cache. Eviction removes entries from the cache when it reaches a configured threshold.",
-      "approximate-entries": "Approximate number of entries",
+      "approximate-entries": "Approx. number of entries",
       "approximate-entries-tooltip": "Displays the approximate number of entries that are stored in the cache. May include replicas.",
-      "approximate-unique-entries": "Approximate unique number of entries",
+      "approximate-unique-entries": "Approx. unique number of entries",
       "approximate-unique-entries-tooltip": "Displays the approximate unique number of entries that are stored in the cache. Each entry is counted only once so the number does not include replicas.",
-      "approximate-entries-in-memory": "Approximate entries in memory",
+      "approximate-entries-in-memory": "Approx. entries in memory",
       "approximate-entries-in-memory-tooltip": "Displays the approximate number of entries in memory. May include replicas.",
       "min-nodes": "Minimum number of nodes",
       "min-nodes-tooltip": "Displays the number of nodes that must remain in the cluster to avoid data loss.",
@@ -664,7 +665,10 @@
       "data-distribution-option-memory-used": "Total memory used",
       "data-distribution-no-entry": "No entries",
       "data-distribution-no-memory": "No memory",
-      "data-distribution-table": "Data distribution table"
+      "data-distribution-table": "Data distribution table",
+      "data-distribution-no-filtered": "No result found",
+      "data-distribution-no-filtered-body": "No result found for searched value. Clear the filter and try again",
+      "data-distribution-search": "Search by node name"
     }
   },
   "schemas": {

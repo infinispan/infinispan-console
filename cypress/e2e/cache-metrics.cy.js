@@ -3,7 +3,7 @@ describe('Cache Metrics Overview', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/people');
     //Check for Labels
     cy.contains('Metrics (Enabled)').click();
-    cy.contains('Approximate number of entries');
+    cy.contains('Approx. number of entries');
     cy.contains('Minimum number of nodes');
 
     // Check for data greater than -1

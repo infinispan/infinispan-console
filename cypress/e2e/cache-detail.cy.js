@@ -479,15 +479,13 @@ describe('Cache Detail Overview', () => {
     .then(parseFloat)
     .should('be.gte', 0);
 
-    cy.contains('Hits: ' + hitsCount);
-    cy.contains('Misses: ' + missesCount);
-    cy.contains('Stores: ' + storesCount);
-    cy.contains('Retrievals: ' + retrievalsCount);
-    cy.contains('Remove hits: ' + removeHits);
-    cy.contains('Remove misses: ' + removeMisses);
-    cy.contains('Evictions: ' + evictions);
-
-    cy.get('[data-cy=data-access-chart]').should('exist');
+    cy.get('[data-cy=HitsVal]').should('have.text', hitsCount);
+    cy.get('[data-cy=MissesVal]').should('have.text', missesCount);
+    cy.get('[data-cy=StoresVal]').should('have.text', storesCount);
+    cy.get('[data-cy=RetrievalsVal]').should('have.text', retrievalsCount);
+    cy.get('[data-cy=RemovehitsVal]').should('have.text', removeHits);
+    cy.get('[data-cy=RemovemissesVal]').should('have.text', removeMisses);
+    cy.get('[data-cy=EvictionsVal]').should('have.text', evictions);
     cy.get('[data-cy=data-distribution-chart]').should('exist');
   }
 });

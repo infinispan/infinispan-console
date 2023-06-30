@@ -27,7 +27,7 @@ describe('Global stats', () => {
   //View Cluster Status href
   it('successfully loads Global stats', () => {
     //click View Cluster Status should navigate to cluster-membership page
-    cy.get('.pf-l-grid__item:nth-child(3) .pf-c-button').click();
+    cy.get('[data-cy="viewClustersLink"]').click();
 
     //Verify that page is properly loaded after click;
     cy.get('h1').should('contain', 'Cluster membership');

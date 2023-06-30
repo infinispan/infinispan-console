@@ -227,8 +227,7 @@ export enum ConfigDownloadType {
 }
 
 export enum DataDistributionStatsOption {
-  TotalEntries = 'Total number of entries',
-  MemoryEntries = 'Entries in memory',
+  Entries = 'Entries',
   MemoryUsed = 'Total memory used'
 }
 
