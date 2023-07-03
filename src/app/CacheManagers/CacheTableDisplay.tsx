@@ -506,6 +506,30 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     </MenuToggle>
   );
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isFilterOpen && !menuRef.current?.contains(event.target as Node)) {
+      setIsFilterOpen(false);
+    }
+  };
+
+  const handleKeys = (event: KeyboardEvent) => {
+    if (isFilterOpen && menuRef.current?.contains(event.target as Node)) {
+      if (event.key === 'Escape' || event.key === 'Tab') {
+        setIsFilterOpen(!isFilterOpen);
+        toggleRef.current?.focus();
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeys);
+    window.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeys);
+      window.removeEventListener('click', handleClickOutside);
+    };
+  }, [isFilterOpen, menuRef]);
+
   const filterMenu = (
     <Menu ref={menuRef} id="filter-faceted-cache-menu" onSelect={onSelectFilter} selected={selectedCacheType}>
       <MenuContent>

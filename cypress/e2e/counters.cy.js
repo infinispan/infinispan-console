@@ -77,7 +77,7 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
-            cy.get('[data-cy=addDeltaAction]').click();
+            cy.get('[aria-label=addDeltaAction]').click();
         });
         cy.get("#add-delta-counter-modal").should('exist');
 
@@ -102,7 +102,7 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
-            cy.get('[data-cy=resetCounter]').click();
+            cy.get('[aria-label=resetCounter]').click();
         });
 
         cy.get("[data-cy=resetCounterButton]").click();
@@ -121,16 +121,16 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
-            cy.get('[data-cy=resetCounter]').should('not.exist');
-            cy.get('[data-cy=addDeltaAction]').should('not.exist');
-            cy.get('[data-cy=deleteCounter]').click();
+            cy.get('[aria-label=resetCounter]').should('not.exist');
+            cy.get('[aria-label=addDeltaAction]').should('not.exist');
+            cy.get('[aria-label=deleteCounter]').click();
         });
 
         cy.get("[data-cy=deleteCounterButton]").click();
 
         cy.get("#delete-counter-modal").should('not.exist');
         cy.contains("Counter weak-5 has been deleted.");
-        cy.get("[aria-label='strong-counters-table-label']").contains("td", "weak-5").should("not.exist");
+        cy.get("[aria-label='counters-table-label']").contains("td", "weak-5").should("not.exist");
       });
 
       it ('successfully deletes strong counter', () => {
@@ -140,14 +140,14 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
-            cy.get('[data-cy=deleteCounter]').click();
+            cy.get('[aria-label=deleteCounter]').click();
         });
 
         cy.get("[data-cy=deleteCounterButton]").click();
 
         cy.get("#delete-counter-modal").should('not.exist');
         cy.contains("Counter strong-5 has been deleted.");
-        cy.get("[aria-label='strong-counters-table-label']").contains("td", "strong-5").should("not.exist");
+        cy.get("[aria-label='counters-table-label']").contains("td", "strong-5").should("not.exist");
       });
 
       it ('successfully filters counters', () => {
@@ -156,71 +156,85 @@ describe('Counters CRUD', () => {
         cy.contains('weak-4');
 
         //Selecting only strong counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='strongCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();  //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("weak-4").should("not.exist");
-        cy.contains("PERSISTENT");
-        cy.contains("VOLATILE");
+        cy.contains("Persistent");
+        cy.contains("Volatile");
         cy.contains("1 - 6 of 6");
 
         //Selecting only strong and perisitent counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='persistentCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();  //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("weak-4").should("not.exist");
-        cy.contains("PERSISTENT");
-        cy.contains("VOLATILE").should('not.exist');
+        cy.contains("Persistent");
+        cy.contains("Volatile").should('not.exist');
         cy.contains("1 - 5 of 5");
 
         //Selecting only strong and perisitent counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='volatileCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();  //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("weak-4").should("not.exist");
-        cy.contains("PERSISTENT").should('not.exist');
-        cy.contains("VOLATILE");
+        cy.contains("Persistent").should('not.exist');
+        cy.contains("Volatile");
         cy.contains("1 - 1 of 1");
 
         //Selecting only weak and volatile counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();      
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='weakCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();  //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("strong-4").should("not.exist");
         cy.contains("weak-4").should("not.exist");
-        cy.contains("PERSISTENT").should('not.exist');
-        cy.contains("VOLATILE");
+        cy.contains("Persistent").should('not.exist');
+        cy.contains("Volatile");
         cy.contains("TestWeakVolatileCounter");
         cy.contains("1 - 1 of 1");
 
         //Selecting only weak and persistent counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='persistentCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();  //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("strong-4").should("not.exist");
         cy.contains("weak-4");
-        cy.contains("PERSISTENT");
-        cy.contains("VOLATILE").should('not.exist');
+        cy.contains("Persistent");
+        cy.contains("Volatile").should('not.exist');
         cy.contains("1 - 5 of 5");
 
         //Selecting all weak counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='persistentCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click(); //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("strong-4").should("not.exist");
         cy.contains("weak-4");
-        cy.contains("PERSISTENT");
-        cy.contains("VOLATILE");
+        cy.contains("Persistent");
+        cy.contains("Volatile");
         cy.contains("1 - 6 of 6");
 
         //Selecting all counters
-        cy.get("#counterFilterSelect").click();
+        cy.get("[data-cy=counterFilterSelect]").click();
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();
         cy.get("[data-cy='weakCounter']").click();
-        cy.get("#counterFilterSelect").click(); //Closing the filter select
+        cy.get('[data-cy=counterFilterSelectExpanded] > div > button').click();  //Closing the filter select
+        cy.get("[data-cy=counterFilterSelect]").click();
         cy.contains("strong-4");
         cy.contains("weak-4");
-        cy.contains("PERSISTENT");
-        cy.contains("VOLATILE");
+        cy.contains("Persistent");
+        cy.contains("Volatile");
         cy.contains("1 - 10 of 12");
       });
 
@@ -231,7 +245,7 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
-            cy.get('[data-cy=setCounterAction]').click();
+            cy.get('[aria-label=setCounterAction]').click();
         });
         cy.get("#set-counter-modal").should('exist');
 
@@ -253,7 +267,7 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
-            cy.get('[data-cy=setCounterAction]').click();
+            cy.get('[aria-label=setCounterAction]').click();
         });
         cy.get("#set-counter-modal").should('exist');
 

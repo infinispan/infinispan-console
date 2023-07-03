@@ -191,8 +191,8 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
       ) && isValid;
 
     if (isValid) {
-      props.submitModal();
       onCreateCounter();
+      props.submitModal();
       onCloseModal();
     }
   };

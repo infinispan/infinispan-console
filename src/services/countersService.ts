@@ -19,9 +19,9 @@ export class CountersService {
   public getCounters(): Promise<Either<ActionResponse, Counter[]>> {
     return this.utils
       .fetch(this.endpoint, 'GET')
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((jsonList) => {
-        const counters: Promise<Counter>[] = jsonList.map((name) => this.getCounter(name));
+        const counters: Promise<Counter>[] = JSON.parse(jsonList).map((name) => this.getCounter(name));
         return Promise.all(counters);
       })
       .then((counters) => right(counters) as Either<ActionResponse, Counter[]>)
@@ -29,13 +29,13 @@ export class CountersService {
   }
 
   private getCounter(name: string): Promise<Counter> {
-    let counter: Promise<Counter> = this.utils
+    const counter: Promise<Counter> = this.utils
       .fetch(this.endpoint + '/' + name, 'GET')
       .then((response) => response.text())
       .then((value) => <Counter>{ name: name, value: value });
 
-    let counterConfig: Promise<CounterConfig> = this.getCounterConfig(name);
-    let promises = Promise.all([counter, counterConfig]);
+    const counterConfig: Promise<CounterConfig> = this.getCounterConfig(name);
+    const promises = Promise.all([counter, counterConfig]);
 
     // combine config into counter
     return promises.then((data) => {
