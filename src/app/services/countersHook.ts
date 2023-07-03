@@ -13,7 +13,20 @@ export function useFetchCounters() {
         .getCounters()
         .then((either) => {
           if (either.isRight()) {
-            setCounters(either.value);
+            if (either.value.length === 0) {
+              // FIXME: retry once again, until the server bug ISPN-15023 is fixed
+              ConsoleServices.counters()
+                .getCounters()
+                .then((either) => {
+                  if (either.isRight()) {
+                    setCounters(either.value);
+                  } else {
+                    setError(either.value.message);
+                  }
+                });
+            } else {
+              setCounters(either.value);
+            }
           } else {
             setError(either.value.message);
           }
