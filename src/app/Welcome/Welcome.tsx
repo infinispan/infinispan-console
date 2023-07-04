@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useHistory } from 'react-router';
 import { useConnectedUser } from '@app/services/userManagementHook';
-import { useFetchVersion, useFetchLatestVersion } from '@app/services/serverHook';
+import { useFetchVersion } from '@app/services/serverHook';
 import { hotRodClientsLink, aboutLink, tutorialsLink, blogLink, apacheLicenseLink } from '@app/utils/links';
 import { checkIfServerVersionIsGreaterOrEqual } from '@app/utils/serverVersionUtils';
 
@@ -42,7 +42,6 @@ const Welcome = (props) => {
   const [supportOpen, setSupportOpen] = useState(false);
   const { notSecuredModeOn, logUser } = useConnectedUser();
   const { version } = useFetchVersion();
-  const { latestVersion } = useFetchLatestVersion();
 
   const brandname = t('brandname.brandname');
 
@@ -137,31 +136,6 @@ const Welcome = (props) => {
             </FlexItem>
             <FlexItem>
               <Badge style={{ backgroundColor: 'white', color: chart_color_blue_500.value }}>{version}</Badge>
-            </FlexItem>
-          </Flex>
-        </StackItem>
-      )}
-      {latestVersion !== '' && (
-        <StackItem className={'version-text'}>
-          <Flex>
-            <FlexItem>
-              <Text>{t('welcome-page.latest-version')}</Text>
-            </FlexItem>
-            <FlexItem>
-              {checkIfServerVersionIsGreaterOrEqual(version, latestVersion) ? (
-                <Text component={TextVariants.p}>{t('welcome-page.already-latest-version')}</Text>
-              ) : (
-                <Button
-                  style={{ color: 'white' }}
-                  variant="link"
-                  isInline
-                  href="https://infinispan.org/download/"
-                  icon={<ExternalLinkAltIcon />}
-                  iconPosition="right"
-                >
-                  {latestVersion}
-                </Button>
-              )}
             </FlexItem>
           </Flex>
         </StackItem>
@@ -261,8 +235,6 @@ const Welcome = (props) => {
         {DetailSection}
       </StackItem>
       <StackItem className="lower-section">{FooterCards}</StackItem>
-      {console.log('version', version)}
-      {console.log('latestVersion', latestVersion)}
     </Stack>
   );
 };

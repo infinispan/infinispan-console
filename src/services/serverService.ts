@@ -21,11 +21,4 @@ export class ServerService {
   public async getVersion(): Promise<Either<ActionResponse, string>> {
     return this.utils.get(this.endpoint, (data) => data.version);
   }
-
-  /**
-   * Get latest server version
-   */
-  public async getLatestVersion(): Promise<Either<ActionResponse, string>> {
-    return this.utils.get('https://api.github.com/repos/infinispan/infinispan/releases/latest', (data) => data.name);
-  }
 }
