@@ -28,26 +28,3 @@ export function useFetchVersion() {
     error
   };
 }
-
-export function useFetchConnectedClients() {
-  const [connectedClients, setConnectedClients] = useState<ConnectedClients[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.server()
-        .getConnectedClients()
-        .then((either) => {
-          if (either.isRight()) {
-            setConnectedClients(either.value);
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return { connectedClients, error, loading };
-}

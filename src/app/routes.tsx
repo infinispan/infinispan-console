@@ -14,7 +14,6 @@ import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
-import { ConnectedClients } from './ConnectedClients/ConnectedClients';
 
 let routeFocusTimer: number;
 
@@ -146,14 +145,6 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName',
     title: 'Cache',
     menu: false
-  },
-  {
-    component: ConnectedClients,
-    exact: true,
-    label: 'Connected Clients',
-    path: '/connected-clients',
-    title: 'Connected Clients',
-    menu: true
   }
 ];
 
