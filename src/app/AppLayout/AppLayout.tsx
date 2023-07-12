@@ -186,7 +186,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
         </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand>{Logo}</MastheadBrand>
+        <MastheadBrand component={(props) => Logo}/>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
     </Masthead>
