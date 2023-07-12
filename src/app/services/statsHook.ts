@@ -38,10 +38,15 @@ export function useFetchGlobalStats() {
     }
   }, [loading]);
 
+  const reload = () => {
+    if (!loading) setLoading(true);
+  };
+
   return {
     loading,
     stats,
-    error
+    error,
+    reload
   };
 }
 

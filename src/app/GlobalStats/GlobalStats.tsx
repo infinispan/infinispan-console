@@ -5,6 +5,7 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -16,6 +17,8 @@ import {
   PageSection,
   PageSectionVariants,
   Spinner,
+  Stack,
+  StackItem,
   Text,
   TextContent,
   TextList,
@@ -25,8 +28,7 @@ import {
   TextVariants,
   Title
 } from '@patternfly/react-core';
-import { ArrowIcon, CubesIcon } from '@patternfly/react-icons';
-import { ChartDonut, ChartThemeColor } from '@patternfly/react-charts';
+import { ArrowIcon, CubesIcon, RedoIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
 import { TableErrorState } from '@app/Common/TableErrorState';
@@ -34,11 +36,12 @@ import { useFetchGlobalStats } from '@app/services/statsHook';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import ClusterDistributionChart from '@app/GlobalStats/ClusterDistributionChart';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 
 const GlobalStats = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const { stats, error, loading } = useFetchGlobalStats();
+  const { stats, error, loading, reload } = useFetchGlobalStats();
 
   const allOps = () => {
     return stats.hits + stats.misses + stats.remove_hits + stats.remove_misses + stats.stores + stats.evictions;
@@ -101,75 +104,73 @@ const GlobalStats = () => {
     );
   };
 
+  const displayAccessStats = (name: string, value: number, label: string, tooltip: string) => {
+    return (
+      <React.Fragment>
+        <TextListItem component={TextListItemVariants.dt} data-cy={label.replace(/\s/g, '') + 'Val'}>
+          {displayUtils.formatNumber(value)}
+        </TextListItem>
+        <TextListItem component={TextListItemVariants.dd}>
+          <PopoverHelp name={name} label={label} content={tooltip} text={label} />
+        </TextListItem>
+      </React.Fragment>
+    );
+  };
+
   const dataAccessCard = () => {
     return (
       <Card>
-        <CardTitle>
-          <PopoverHelp
-            name={'data-access-statistics'}
-            label={t('global-stats.data-access-stats')}
-            content={t('global-stats.data-access-stats-tooltip')}
-            text={t('global-stats.data-access-stats')}
-          />
-        </CardTitle>
+        <CardTitle>{t('global-stats.data-access-stats')}</CardTitle>
         <CardBody>
-          <div style={{ width: '100%', height: '480px' }}>
-            <ChartDonut
-              width={600}
-              height={400}
-              constrainToVisibleArea={true}
-              data={[
-                { x: t('global-stats.data-access-hits'), y: stats.hits },
-                { x: t('global-stats.data-access-misses'), y: stats.misses },
-                { x: t('global-stats.data-access-stores'), y: stats.stores },
-                {
-                  x: t('global-stats.data-access-remove-hits'),
-                  y: stats.remove_hits
-                },
-                {
-                  x: t('global-stats.data-access-remove-misses'),
-                  y: stats.remove_misses
-                },
-                {
-                  x: t('global-stats.data-access-evictions'),
-                  y: stats.evictions
-                }
-              ]}
-              labels={({ datum }) => `${datum.x}: ${displayUtils.formatNumber((datum.y * 100) / allOps())}%`}
-              legendData={[
-                {
-                  name: t('global-stats.data-access-hits') + ': ' + displayUtils.formatNumber(stats.hits)
-                },
-                {
-                  name: t('global-stats.data-access-misses') + ': ' + displayUtils.formatNumber(stats.misses)
-                },
-                {
-                  name: t('global-stats.data-access-stores') + ': ' + displayUtils.formatNumber(stats.stores)
-                },
-                {
-                  name: t('global-stats.data-access-remove-hits') + ': ' + displayUtils.formatNumber(stats.remove_hits)
-                },
-                {
-                  name:
-                    t('global-stats.data-access-remove-misses') + ': ' + displayUtils.formatNumber(stats.remove_misses)
-                },
-                {
-                  name: t('global-stats.data-access-evictions') + ': ' + displayUtils.formatNumber(stats.evictions)
-                }
-              ]}
-              legendOrientation="vertical"
-              legendPosition="bottom"
-              padding={{
-                bottom: 160,
-                left: 0,
-                right: 0, // Adjusted to accommodate legend
-                top: 0
-              }}
-              subTitle={t('global-stats.data-access-subtitle')}
-              title={displayUtils.formatBigNumber(allOps())}
-              themeColor={ChartThemeColor.multiOrdered}
-            />
-          </div>
+          <TextContent>
+            <TextList component={TextListVariants.dl}>
+              <TextListItem component={TextListItemVariants.dt}>{displayUtils.formatBigNumber(allOps())}</TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>
+                <Text component="h5">{t('caches.cache-metrics.data-total')}</Text>
+              </TextListItem>
+            </TextList>
+          </TextContent>
+          <Divider component="div" style={{ padding: '10px 0' }} />
+          <TextContent>
+            <TextList component={TextListVariants.dl}>
+              {displayAccessStats(
+                'hits',
+                stats.hits,
+                t('global-stats.data-access-hits'),
+                t('global-stats.data-access-hits-info')
+              )}
+              {displayAccessStats(
+                'misses',
+                stats.misses,
+                t('global-stats.data-access-misses'),
+                t('global-stats.data-access-misses-info')
+              )}
+              {displayAccessStats(
+                'stores',
+                stats.stores,
+                t('global-stats.data-access-stores'),
+                t('global-stats.data-access-stores-info')
+              )}
+              {displayAccessStats(
+                'remove_hits',
+                stats.remove_hits,
+                t('global-stats.data-access-remove-hits'),
+                t('global-stats.data-access-remove-hits-info')
+              )}
+              {displayAccessStats(
+                'remove_misses',
+                stats.remove_misses,
+                t('global-stats.data-access-remove-misses'),
+                t('global-stats.data-access-remove-misses-info')
+              )}
+              {displayAccessStats(
+                'evictions',
+                stats.evictions,
+                t('global-stats.data-access-evictions'),
+                t('global-stats.data-access-evictions-info')
+              )}
+            </TextList>
+          </TextContent>
         </CardBody>
       </Card>
     );
@@ -310,10 +311,10 @@ const GlobalStats = () => {
         <GridItem span={4} rowSpan={1}>
           {cacheManagerLifecycleCard()}
         </GridItem>
-        <GridItem span={7}>
+        <GridItem span={8}>
           <ClusterDistributionChart />
         </GridItem>
-        <GridItem span={5}>{dataAccessCard()}</GridItem>
+        <GridItem span={4}>{dataAccessCard()}</GridItem>
       </Grid>
     );
   };
@@ -326,13 +327,32 @@ const GlobalStats = () => {
     }
   };
 
+  const buildRefreshButton = (
+    <Button
+      style={{ paddingLeft: '0' }}
+      type="button"
+      aria-label={t('caches.actions.refresh')}
+      variant="link"
+      onClick={reload}
+      icon={<RedoIcon />}
+      iconPosition="left"
+    >
+      {t('caches.actions.refresh')}
+    </Button>
+  );
+
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <TextContent>
-          <Text component={TextVariants.h1}>{t('global-stats.title')}</Text>
-          <Text component={TextVariants.p}>{descriptionText()}</Text>
-        </TextContent>
+        <Stack>
+          <StackItem>
+            <TextContent>
+              <Text component={TextVariants.h1}>{t('global-stats.title')}</Text>
+              <Text component={TextVariants.p}>{descriptionText()}</Text>
+            </TextContent>
+          </StackItem>
+          <StackItem style={{ marginTop: global_spacer_sm.var }}>{buildRefreshButton}</StackItem>
+        </Stack>
       </PageSection>
       <PageSection>{buildStats()}</PageSection>
     </React.Fragment>
