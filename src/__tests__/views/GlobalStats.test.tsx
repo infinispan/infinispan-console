@@ -42,7 +42,8 @@ describe('Global stats page', () => {
       return {
         loading: false,
         stats: statsNotEnabledResponse,
-        error: ''
+        error: '',
+        reload: () => {}
       };
     });
 
@@ -57,7 +58,8 @@ describe('Global stats page', () => {
       return {
         loading: false,
         stats: statsEnabledResponse,
-        error: ''
+        error: '',
+        reload: () => {}
       };
     });
 

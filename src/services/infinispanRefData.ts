@@ -231,11 +231,6 @@ export enum DataDistributionStatsOption {
   MemoryUsed = 'Total memory used'
 }
 
-export enum ClusterDistributionStatsOption {
-  MemoryAvailable = 'Memory available',
-  MemoryUsed = 'Memory used'
-}
-
 export enum CounterType {
   STRONG_COUNTER = 'Strong',
   WEAK_COUNTER = 'Weak'
