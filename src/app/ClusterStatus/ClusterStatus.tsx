@@ -15,11 +15,15 @@ import {
   PageSection,
   PageSectionVariants,
   Pagination,
+  SearchInput,
   Spinner,
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, DownloadIcon } from '@patternfly/react-icons';
 import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
@@ -27,11 +31,13 @@ import { Health } from '@app/Common/Health';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/clusterHook';
+import { global_spacer_md } from '@patternfly/react-tokens';
+import { onSearch } from '@app/utils/searchFilter';
 
 const ClusterStatus: React.FunctionComponent<any> = (props) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const { downloadServerReport, downloading } = useDownloadServerReport();
+  const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
 
   const { clusterMembers, cacheManager, loading, error, reload } = useFetchClusterMembers();
   const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
@@ -39,6 +45,8 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
     page: 1,
     perPage: 10
   });
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [rows, setRows] = useState<(string | any)[]>([]);
 
   const columnNames = {
     name: t('cluster-membership.node-name'),
@@ -46,20 +54,25 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
   };
 
   useEffect(() => {
-    if (clusterMembers) {
-      const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
-      setFilteredClusterMembers(clusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
-    }
-  }, [loading, clusterMembers, error]);
+    if (clusterMembers) setFilteredClusterMembers(clusterMembers);
+  }, [clusterMembers, error, loading]);
 
   useEffect(() => {
     if (filteredClusterMembers) {
       const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
-      setFilteredClusterMembers(clusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage));
+      const updateRows = filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
     }
-  }, [clusterMembersPagination]);
+  }, [clusterMembersPagination, filteredClusterMembers]);
 
-  const onSetPage = (_event, pageNumber) => {
+  useEffect(() => {
+    if (clusterMembers) {
+      setFilteredClusterMembers(clusterMembers.filter((data) => onSearch(searchValue, data.name)));
+      onSetPage(1);
+    }
+  }, [searchValue, clusterMembers]);
+
+  const onSetPage = (pageNumber) => {
     setClusterMembersPagination({
       ...clusterMembersPagination,
       page: pageNumber
@@ -109,6 +122,31 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
     );
   };
 
+  const searchInput = (
+    <SearchInput
+      placeholder={t('cache-managers.cache-search')}
+      value={searchValue}
+      onChange={(_event, val) => setSearchValue(val)}
+      onClear={() => setSearchValue('')}
+    />
+  );
+
+  const toolbarPagination = (dropDirection) => {
+    return (
+      <Pagination
+        data-cy="paginationArea"
+        itemCount={filteredClusterMembers.length}
+        perPage={clusterMembersPagination.perPage}
+        page={clusterMembersPagination.page}
+        onSetPage={(_event, pageNumber) => onSetPage(pageNumber)}
+        widgetId="pagination-cluster-members"
+        onPerPageSelect={onPerPageSelect}
+        isCompact
+        dropDirection={dropDirection}
+      />
+    );
+  };
+
   const buildClusterStatus = () => {
     if (loading && !error) {
       return (
@@ -142,15 +180,12 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
     return (
       <Card>
         <CardBody>
-          <Pagination
-            itemCount={clusterMembers.length}
-            perPage={clusterMembersPagination.perPage}
-            page={clusterMembersPagination.page}
-            onSetPage={onSetPage}
-            widgetId="pagination-cluster-members"
-            onPerPageSelect={onPerPageSelect}
-            isCompact
-          />
+          <Toolbar id="cluster-table-toolbar" style={{ marginBottom: global_spacer_md.value }}>
+            <ToolbarContent>
+              <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+              <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+            </ToolbarContent>
+          </Toolbar>
           <TableComposable
             className={'cluster-membership-table'}
             aria-label={t('cluster-membership.title')}
@@ -164,7 +199,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
               </Tr>
             </Thead>
             <Tbody>
-              {clusterMembers.length == 0 || filteredClusterMembers.length == 0 ? (
+              {filteredClusterMembers.length == 0 ? (
                 <Tr>
                   <Td colSpan={6}>
                     <Bullseye>
@@ -179,7 +214,8 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
                   </Td>
                 </Tr>
               ) : (
-                filteredClusterMembers.map((row) => {
+                rows.map((row) => {
+                  const isDownloading = downloading && downloadNodeName === row.name;
                   return (
                     <Tr key={row.name}>
                       <Td dataLabel={columnNames.name}>{row.name}</Td>
@@ -188,11 +224,13 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
                         <Button
                           variant="link"
                           isInline
-                          isLoading={downloading}
-                          icon={!downloading ? <DownloadIcon /> : null}
+                          isLoading={isDownloading}
+                          icon={!isDownloading ? <DownloadIcon /> : null}
                           onClick={() => downloadServerReport(row.name)}
                         >
-                          {downloading ? t('cluster-membership.downloading') : t('cluster-membership.download-report')}
+                          {isDownloading
+                            ? t('cluster-membership.downloading')
+                            : t('cluster-membership.download-report')}
                         </Button>
                       </Td>
                     </Tr>
@@ -201,6 +239,9 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
               )}
             </Tbody>
           </TableComposable>
+          <Toolbar id="cluster-membership-table-toolbar" className={'cluster-membership-table-display'}>
+            <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+          </Toolbar>
         </CardBody>
       </Card>
     );
