@@ -13,7 +13,8 @@ beforeEach(() => {
 mockedClusterHook.useDownloadServerReport.mockImplementation(() => {
   return {
     downloadServerReport: () => onDownloadReport++,
-    downloading: true
+    downloading: true,
+    downloadNodeName: 'node1'
   };
 });
 

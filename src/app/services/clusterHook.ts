@@ -40,9 +40,11 @@ export function useFetchClusterMembers() {
 export function useDownloadServerReport() {
   const { addAlert } = useApiAlert();
   const [downloading, setDownloading] = useState(false);
+  const [downloadNodeName, setDownloadNodeName] = useState('');
 
   const downloadServerReport = (nodeName) => {
     setDownloading(true);
+    setDownloadNodeName(nodeName);
     ConsoleServices.server()
       .downloadReport(nodeName)
       .then((response) => {
@@ -62,6 +64,7 @@ export function useDownloadServerReport() {
   };
   return {
     downloadServerReport,
-    downloading
+    downloading,
+    downloadNodeName
   };
 }
