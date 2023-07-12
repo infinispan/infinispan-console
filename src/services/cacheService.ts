@@ -4,6 +4,7 @@ import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { ContentTypeHeaderMapper } from '@services/contentTypeHeaderMapper';
 import { CacheRequestResponseMapper } from '@services/cacheRequestResponseMapper';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
+import { formatXml } from '@utils/dataSerializerUtils';
 
 /**
  * Cache Service calls Infinispan endpoints related to Caches
@@ -30,7 +31,7 @@ export class CacheService {
         cacheStats = data.stats;
         cacheStats.enabled = data.statistics;
       }
-      let keyValueEncoding = {
+      const keyValueEncoding = {
         key: CacheConfigUtils.toEncoding(data['key_storage']),
         value: CacheConfigUtils.toEncoding(data['value_storage'])
       };
@@ -94,7 +95,7 @@ export class CacheService {
     config: string,
     configType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
-    let customHeaders = this.createCustomHeader('Content-Type', configType);
+    const customHeaders = this.createCustomHeader('Content-Type', configType);
 
     const urlCreateCache = this.endpoint + '/caches/' + encodeURIComponent(cacheName);
     return this.fetchCaller.post({
@@ -113,7 +114,7 @@ export class CacheService {
     } else if (configType == 'xml') {
       contentType = ContentType.XML;
     }
-    let customHeaders = new Headers();
+    const customHeaders = new Headers();
     customHeaders.append(header, ContentTypeHeaderMapper.fromContentType(contentType));
     return customHeaders;
   }
@@ -181,13 +182,13 @@ export class CacheService {
     flags: string[],
     create: boolean
   ): Promise<ActionResponse> {
-    let headers = new Headers();
-    let keyContentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
+    const headers = new Headers();
+    const keyContentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
       cacheEncoding.key as EncodingType,
       key,
       keyContentType
     );
-    let contentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
+    const contentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
       cacheEncoding.value as EncodingType,
       value,
       valueContentType
@@ -284,7 +285,7 @@ export class CacheService {
     key: string,
     keyContentType: ContentType
   ): Promise<Either<ActionResponse, CacheEntry[]>> {
-    let customHeaders = new Headers();
+    const customHeaders = new Headers();
 
     if ((encoding.value as EncodingType) == EncodingType.XML) {
       customHeaders.append('Accept', 'application/xml');
@@ -301,7 +302,11 @@ export class CacheService {
     let keyForURL;
     if (encoding.key == EncodingType.Protobuf || encoding.key == EncodingType.JSON) {
       keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(ContentType.JSON);
-      let keyProtobuffed = CacheRequestResponseMapper.formatContent(key, keyContentType, encoding.key as EncodingType);
+      const keyProtobuffed = CacheRequestResponseMapper.formatContent(
+        key,
+        keyContentType,
+        encoding.key as EncodingType
+      );
       if (keyProtobuffed.isLeft()) {
         // Return the error
         return Promise.resolve(left(keyProtobuffed.value));
@@ -368,12 +373,12 @@ export class CacheService {
     keyEncoding: EncodingType,
     keyContentType: ContentType
   ): Promise<ActionResponse> {
-    let headers = new Headers();
+    const headers = new Headers();
     let keyContentTypeHeader;
     let keyForURL;
     if (keyEncoding == EncodingType.Protobuf || keyEncoding == EncodingType.JSON) {
       keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(ContentType.JSON);
-      let keyProtobuffed = CacheRequestResponseMapper.formatContent(key, keyContentType, keyEncoding);
+      const keyProtobuffed = CacheRequestResponseMapper.formatContent(key, keyContentType, keyEncoding);
       if (keyProtobuffed.isLeft()) {
         // Return the error
         return Promise.resolve({
@@ -408,7 +413,7 @@ export class CacheService {
     cacheName: string,
     configType: 'xml' | 'json' | 'yaml'
   ): Promise<Either<ActionResponse, string>> {
-    let customHeaders = this.createCustomHeader('Accept', configType);
+    const customHeaders = this.createCustomHeader('Accept', configType);
 
     return this.fetchCaller.get(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=config',
@@ -484,7 +489,7 @@ export class CacheService {
     header2: string,
     configType2: 'xml' | 'json' | 'yaml'
   ) {
-    let customHeaders = new Headers();
+    const customHeaders = new Headers();
 
     let contentType1 = ContentType.YAML;
     if (configType1 == 'json') {
@@ -504,6 +509,44 @@ export class CacheService {
     return customHeaders;
   }
 
+  public async convertToAllFormat(
+    cacheName: string,
+    config: string
+  ): Promise<Either<ActionResponse, FormattedCacheConfig>> {
+    return Promise.all([
+      this.convertConfigFormat(cacheName, config, 'json'),
+      this.convertConfigFormat(cacheName, config, 'xml'),
+      this.convertConfigFormat(cacheName, config, 'yaml')
+    ]).then((reposes) => {
+      if (!reposes[0].success && !reposes[1].success && !reposes[2].success) {
+        return left(<ActionResponse>{
+          message: reposes[0].message,
+          success: false
+        }) as Either<ActionResponse, FormattedCacheConfig>;
+      }
+
+      let json: string | undefined = undefined;
+      let xml: string | undefined = undefined;
+      let yaml: string | undefined = undefined;
+      if (reposes[0].success) {
+        json = JSON.stringify(JSON.parse(reposes[0].data as string), null, 2);
+      }
+      if (reposes[1].success) {
+        xml = formatXml(reposes[1].data);
+      }
+
+      if (reposes[2].success) {
+        yaml = reposes[2].data as string;
+      }
+
+      return right(<FormattedCacheConfig>{
+        json: json,
+        xml: xml,
+        yaml: yaml
+      }) as Either<ActionResponse, FormattedCacheConfig>;
+    });
+  }
+
   /**
    * Convert cache configuration to XML or JSON or YAML
    */
@@ -512,7 +555,7 @@ export class CacheService {
     config: string,
     configType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
-    let customHeaders = this.createTwoCustomHeader('Accept', configType, 'Content-Type', 'json');
+    const customHeaders = this.createTwoCustomHeader('Accept', configType, 'Content-Type', 'json');
 
     const urlCreateCache = this.endpoint + '/caches?action=convert';
     return this.fetchCaller.post({

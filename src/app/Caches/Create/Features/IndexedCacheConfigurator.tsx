@@ -289,7 +289,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         isInline
       >
         <TextInput
-          value={indexedSharding} data-cy="indexSharding"
+          value={indexedSharding}
+          data-cy="indexSharding"
           type="number"
           onChange={(value) => setIndexedSharding(parseInt(value))}
           aria-label="indexed-sharding-input"

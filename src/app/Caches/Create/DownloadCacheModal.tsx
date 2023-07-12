@@ -1,25 +1,26 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   AlertVariant,
+  Button,
   ButtonVariant,
+  ClipboardCopyButton,
   CodeBlock,
   CodeBlockAction,
   CodeBlockCode,
-  ClipboardCopyButton,
-  Radio,
+  Form,
+  FormGroup,
   Modal,
   ModalVariant,
-  Button,
-  Form,
-  FormGroup
+  Radio,
+  Spinner,
+  TextContent,
+  Text
 } from '@patternfly/react-core';
 import { ConfigDownloadType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { DownloadIcon } from '@patternfly/react-icons';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { formatXml } from '@app/utils/dataSerializerUtils';
 
 const DownloadCacheModal = (props: {
   cacheName: string;
@@ -36,6 +37,7 @@ const DownloadCacheModal = (props: {
   const [yamlConfig, setYamlConfig] = useState('');
   const [xmlConfig, setXmlConfig] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const [downloadURL, setDownloadURL] = useState(
     'data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration)
   );
@@ -53,38 +55,17 @@ const DownloadCacheModal = (props: {
       // Convert the config to all formats
       // Also to check if the config is valid
       ConsoleServices.caches()
-        .convertConfigFormat(props.cacheName, props.configuration, 'json')
+        .convertToAllFormat(props.cacheName, props.configuration)
         .then((r) => {
-          if (r.success) {
-            setJsonConfig(JSON.stringify(JSON.parse(r.data), null, 2));
-            setError('');
+          if (r.isRight()) {
+            setYamlConfig(r.value.yaml);
+            setJsonConfig(r.value.json);
+            setXmlConfig(r.value.xml);
           } else {
-            setError(r.message);
+            setError(r.value.message);
           }
-        });
-
-      ConsoleServices.caches()
-        .convertConfigFormat(props.cacheName, props.configuration, 'yaml')
-        .then((r) => {
-          if (r.success) {
-            setYamlConfig(r.data);
-            setError('');
-          } else {
-            setError(r.message);
-          }
-        });
-
-      ConsoleServices.caches()
-        .convertConfigFormat(props.cacheName, props.configuration, 'xml')
-        .then((r) => {
-          if (r.success) {
-            setXmlConfig(formatXml(r.data));
-            setError('');
-          } else {
-            setError(r.message);
-          }
-        });
-
+        })
+        .finally(() => setLoading(false));
       setDownloadURL('data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration));
     }
   }, [props.configuration, props.isModalOpen]);
@@ -120,7 +101,7 @@ const DownloadCacheModal = (props: {
         variant="plain"
         onTooltipHidden={() => setCopied(false)}
       >
-        {copied ? 'Successfully copied to clipboard!' : 'Copy to clipboard'}
+        {copied ? t('caches.create.review.copied-tooltip') : t('caches.create.review.copy-tooltip')}
       </ClipboardCopyButton>
     </CodeBlockAction>
   );
@@ -154,7 +135,7 @@ const DownloadCacheModal = (props: {
           variant={ButtonVariant.tertiary}
           icon={<DownloadIcon />}
           onClick={props.closeModal}
-          isDisabled={error !== ''}
+          isDisabled={error !== '' || loading}
           href={downloadURL}
           download={props.cacheName + `.` + downloadLanguage.toLocaleLowerCase()}
         >
@@ -165,34 +146,43 @@ const DownloadCacheModal = (props: {
         </Button>
       ]}
     >
-      <Form isHorizontal id="download-modal-form">
-        <FormGroup hasNoPaddingTop isInline label="Code language" fieldId="code-language-radio-field">
-          <Radio
-            name="language-radio"
-            id="JSON"
-            onChange={() => {
-              setDownloadLanguage(ConfigDownloadType.JSON);
-            }}
-            isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.JSON}
-            label={t('caches.create.review.json')}
-          />
-          <Radio
-            name="language-radio"
-            id="XML"
-            onChange={() => setDownloadLanguage(ConfigDownloadType.XML)}
-            isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.XML}
-            label={t('caches.create.review.xml')}
-          />
-          <Radio
-            name="language-radio"
-            id="YAML"
-            onChange={() => setDownloadLanguage(ConfigDownloadType.YAML)}
-            isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.YAML}
-            label={t('caches.create.review.yaml')}
-          />
-        </FormGroup>
-        {codeBlock}
-      </Form>
+      {loading && (
+        <TextContent>
+          <Text>
+            {t('caches.create.review.formatting-loading')} <Spinner isInline isSVG aria-label="formattting..." />
+          </Text>
+        </TextContent>
+      )}
+      {!loading && (
+        <Form isHorizontal id="download-modal-form">
+          <FormGroup hasNoPaddingTop isInline label="Code language" fieldId="code-language-radio-field">
+            <Radio
+              name="language-radio"
+              id="JSON"
+              onChange={() => {
+                setDownloadLanguage(ConfigDownloadType.JSON);
+              }}
+              isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.JSON}
+              label={t('caches.create.review.json')}
+            />
+            <Radio
+              name="language-radio"
+              id="XML"
+              onChange={() => setDownloadLanguage(ConfigDownloadType.XML)}
+              isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.XML}
+              label={t('caches.create.review.xml')}
+            />
+            <Radio
+              name="language-radio"
+              id="YAML"
+              onChange={() => setDownloadLanguage(ConfigDownloadType.YAML)}
+              isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.YAML}
+              label={t('caches.create.review.yaml')}
+            />
+          </FormGroup>
+          {codeBlock}
+        </Form>
+      )}
     </Modal>
   );
 };

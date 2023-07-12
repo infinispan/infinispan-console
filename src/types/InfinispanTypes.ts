@@ -63,6 +63,12 @@ interface CacheConfig {
   config: string;
 }
 
+interface FormattedCacheConfig {
+  json: string;
+  xml: string;
+  yaml: string;
+}
+
 interface Features {
   transactional: boolean;
   persistent: boolean;

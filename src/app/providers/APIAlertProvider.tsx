@@ -20,7 +20,7 @@ const APIAlertProvider = ({ children }) => {
   };
 
   const addAlert = (actionResponse) => {
-    let time = new Date().getTime();
+    const time = new Date().getTime();
     setAlertMap(new Map(alertMap.set(time, actionResponse)));
     setTimeout(() => {
       removeAlert(time);
