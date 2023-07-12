@@ -346,7 +346,11 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
 
   const displayCacheType = (cacheType) => {
     const labelColor = displayUtils.cacheTypeColor(cacheType);
-    return <Label color={labelColor} data-cy={'type-' + cacheType}>{cacheType}</Label>;
+    return (
+      <Label color={labelColor} data-cy={'type-' + cacheType}>
+        {cacheType}
+      </Label>
+    );
   };
 
   const displayCacheStatus = (cacheInfo: CacheInfo) => {
@@ -432,10 +436,10 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
         <Button
           variant={ButtonVariant.primary}
           aria-label="create-cache-button-helper"
-          data-cy={canCreateCache ? "createCacheButton" : "createCacheConfigButton"}
+          data-cy={canCreateCache ? 'createCacheButton' : 'createCacheConfigButton'}
           {...(isEmptyPage ? emptyPageButtonProp : normalPageButtonProps)}
         >
-           {canCreateCache ? t('cache-managers.create-cache-button') : 'Create cache configuration'}
+          {canCreateCache ? t('cache-managers.create-cache-button') : 'Create cache configuration'}
         </Button>
       </Link>
     );
@@ -505,49 +509,96 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       <MenuContent>
         <MenuList>
           <MenuGroup label={t('cache-managers.cache-filter-type-label')}>
-            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Local)} itemId="Local" data-cy="localType">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheType.includes(CacheType.Local)}
+              itemId="Local"
+              data-cy="localType"
+            >
               {t('cache-managers.mode-local')}
             </MenuItem>
-            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Replicated)} itemId="Replicated" data-cy="replicatedType">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheType.includes(CacheType.Replicated)}
+              itemId="Replicated"
+              data-cy="replicatedType"
+            >
               {t('cache-managers.mode-repl')}
             </MenuItem>
-            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Distributed)} itemId="Distributed" data-cy="distributedType">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheType.includes(CacheType.Distributed)}
+              itemId="Distributed"
+              data-cy="distributedType"
+            >
               {t('cache-managers.mode-dist')}
             </MenuItem>
-            <MenuItem hasCheck isSelected={selectedCacheType.includes(CacheType.Invalidated)} itemId="Invalidated" data-cy="invalidatedType">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheType.includes(CacheType.Invalidated)}
+              itemId="Invalidated"
+              data-cy="invalidatedType"
+            >
               {t('cache-managers.mode-invalid')}
             </MenuItem>
           </MenuGroup>
           <MenuGroup label={t('cache-managers.cache-filter-feature-label')}>
-            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.BOUNDED)} itemId="Bounded" data-cy="boundedFeature">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheFeature.includes(CacheFeature.BOUNDED)}
+              itemId="Bounded"
+              data-cy="boundedFeature"
+            >
               {t('cache-managers.cache-filter-feature-bounded')}
             </MenuItem>
-            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.INDEXED)} itemId="Indexed" data-cy="indexedFeature">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheFeature.includes(CacheFeature.INDEXED)}
+              itemId="Indexed"
+              data-cy="indexedFeature"
+            >
               {t('cache-managers.cache-filter-feature-indexed')}
             </MenuItem>
             <MenuItem
               hasCheck
               isSelected={selectedCacheFeature.includes(CacheFeature.PERSISTENCE)}
-              itemId="Persistence" data-cy="persistenceFeature"
+              itemId="Persistence"
+              data-cy="persistenceFeature"
             >
               {t('cache-managers.cache-filter-feature-persistent')}
             </MenuItem>
             <MenuItem
               hasCheck
               isSelected={selectedCacheFeature.includes(CacheFeature.TRANSACTIONAL)}
-              itemId="Transactional" data-cy="transactionalFeature"
+              itemId="Transactional"
+              data-cy="transactionalFeature"
             >
               {t('cache-managers.cache-filter-feature-trans')}
             </MenuItem>
-            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.SECURED)} itemId="Authorization" data-cy="authorizationFeature">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheFeature.includes(CacheFeature.SECURED)}
+              itemId="Authorization"
+              data-cy="authorizationFeature"
+            >
               {t('cache-managers.cache-filter-feature-secure')}
             </MenuItem>
-            <MenuItem hasCheck isSelected={selectedCacheFeature.includes(CacheFeature.BACKUPS)} itemId="Backups" data-cy="backupsFeature">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheFeature.includes(CacheFeature.BACKUPS)}
+              itemId="Backups"
+              data-cy="backupsFeature"
+            >
               {t('cache-managers.cache-filter-feature-xsite')}
             </MenuItem>
           </MenuGroup>
           <MenuGroup label={t('cache-managers.cache-filter-status-label')}>
-            <MenuItem hasCheck isSelected={selectedCacheStatus.includes(CacheStatus.IGNORED)} itemId="Hidden" data-cy="hiddenStatus">
+            <MenuItem
+              hasCheck
+              isSelected={selectedCacheStatus.includes(CacheStatus.IGNORED)}
+              itemId="Hidden"
+              data-cy="hiddenStatus"
+            >
               {t('cache-managers.cache-filter-status-ignored')}
             </MenuItem>
           </MenuGroup>

@@ -106,6 +106,8 @@ const CreateCache = () => {
               <Alert
                 title={t('caches.setup.page-title-description', { brandname: brandname })}
                 variant={AlertVariant.info}
+                isPlain
+                isInline
               />
             )}
           </ToolbarContent>

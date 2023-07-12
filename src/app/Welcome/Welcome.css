@@ -1,95 +1,93 @@
 .welcome-container {
-    color: white;
+  color: white;
 }
 
 .upper-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-inline: 10vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-inline: 10vw;
 }
 
 .lower-section {
-    width: 100%;
-    height: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: #000000;
-    opacity: 0.6;
+  width: 100%;
+  height: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #000000;
+  opacity: 0.6;
 }
 
 @media screen and (min-width: 740px) {
-    .lower-section {
-        height: 50%;
-    }
+  .lower-section {
+    height: 50%;
+  }
 }
 
 @media screen and (min-width: 820px) {
-    .lower-section {
-        height: 40%;
-    }
+  .lower-section {
+    height: 40%;
+  }
 }
 
 @media screen and (min-width: 1450px) {
-    .lower-section {
-        height: 30%;
-    }
+  .lower-section {
+    height: 30%;
+  }
 }
 
 .detail-section {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .description {
-    color: white;
-    margin: 2rem 0;
+  color: white;
+  margin: 2rem 0;
 }
 
 .version-text {
-    font-weight: var(--pf-global--FontWeight--bold);
-    margin: 0 0 0.2rem;
+  font-weight: var(--pf-global--FontWeight--bold);
+  margin: 0 0 0.2rem;
 }
 
-
 .card-container {
-    margin-inline: 14vw;
+  margin-inline: 14vw;
 }
 
 @media screen and (min-width: 1650px) {
-    .card-container {
-        margin-inline: 18%;
-    }
+  .card-container {
+    margin-inline: 18%;
+  }
 }
 
 .card {
-    background-color: rgba(0, 0, 0, 1);
-    border: 1px solid white;
+  background-color: rgba(0, 0, 0, 1);
+  border: 1px solid white;
 }
 
-
 .card-heading {
-    justify-content: center;
-    font-weight: bolder;
+  justify-content: center;
+  font-weight: bolder;
 }
 
 .card-contents {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
 @media screen and (max-width: 740px) {
-    .card-heading {
-        padding-top: 2vw !important;
-    }
-    
-    .card-contents {
-        padding-bottom: 2vw ;
-    }
+  .card-heading {
+    padding-top: 2vw !important;
+  }
+
+  .card-contents {
+    padding-bottom: 2vw;
+  }
 }

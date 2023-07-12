@@ -165,7 +165,7 @@
     "setup": {
       "page-title": "Configure a cache in {{cmName}}",
       "page-title-with-backups": "Configure a cache in {{cmName}} on site {{localsite}}",
-      "page-title-description": "You can only generate a new cache config and generate it. Note that the new cache will not be stored by {{brandname}}",
+      "page-title-description": "You can generate a cache config. Note that the new cache will not be stored by {{brandname}}",
       "getting-started": {
         "cache-setup-title": "Select a way to configure your cache"
       }
@@ -476,10 +476,11 @@
         "yaml": "YAML",
         "download-title": "Download configuration file",
         "download-description": "Download the configuration file for your cache. You can use this file to create the cache using the CLI, REST API or Operator.",
-        "download-button":"Download",
+        "download-button": "Download",
         "cancel-button": "Cancel",
         "copy-tooltip": "Copy cache configuration to clipboard",
-        "copied-tooltip": "Copied"
+        "copied-tooltip": "Copied",
+        "formatting-loading": "Validating and formatting the configuration to xml, yaml and json."
       }
     },
     "configuration": {
