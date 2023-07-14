@@ -2,107 +2,205 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   AlertVariant,
+  Bullseye,
   Button,
   ButtonVariant,
   Card,
   CardBody,
-  DataList,
-  DataListCell,
-  DataListContent,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-  DataListToggle,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  EmptyStateSecondaryActions,
   Pagination,
   Spinner,
-  Stack,
-  StackItem,
-  TextArea,
+  SearchInput,
+  Title,
   Toolbar,
   ToolbarContent,
-  ToolbarGroup,
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
+import {
+  TableComposable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  ExpandableRowContent,
+  ActionsColumn,
+  IAction
+} from '@patternfly/react-table';
+import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
+import { global_spacer_md, global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { global_FontSize_sm } from '@patternfly/react-tokens';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { CreateProtoSchema } from '@app/ProtoSchema/CreateProtoSchema';
 import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
+import { EditSchema } from './EditSchema';
 import { useFetchProtobufSchemas } from '@app/services/protobufHooks';
+import { onSearch } from '@app/utils/searchFilter';
+import './ProtobufSchemasDisplay.css';
 
-/**
- * Protobuf Schemas display
- */
 const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void; isVisible: boolean }) => {
-  const protobufService = ConsoleServices.protobuf();
-  const { connectedUser } = useConnectedUser();
-  const { schemas, loading, setLoading, error } = useFetchProtobufSchemas();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
-  const [schemasContent, setSchemasContent] = useState(new Map<string, string>());
+  const protobufService = ConsoleServices.protobuf();
+  const { connectedUser } = useConnectedUser();
+  const { schemas, loading, reload, error } = useFetchProtobufSchemas();
   const [filteredSchemas, setFilteredSchemas] = useState<ProtoSchema[]>([]);
+  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [schemasContent, setSchemasContent] = useState(new Map<string, string>());
   const [createSchemaFormOpen, setCreateSchemaFormOpen] = useState<boolean>(false);
-  const [deleteSchemaModalOpen, setDeleteSchemaModalOpen] = useState<boolean>(false);
   const [deleteSchemaName, setDeleteSchemaName] = useState<string>('');
   const [editSchemaName, setEditSchemaName] = useState<string>('');
-  const [editSchemaContent, setEditSchemaContent] = useState<string>('');
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [expandedSchemaNames, setExpandedSchemaNames] = useState<string[]>([]);
+  const [loadingSchema, setLoadingSchema] = useState(false);
   const [schemasPagination, setSchemasPagination] = useState({
     page: 1,
     perPage: 10
   });
-  const [expanded, setExpanded] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (loading) {
-      props.setProtoSchemasCount(schemas.length);
-      const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
-      setFilteredSchemas(schemas.slice(initSlice, initSlice + schemasPagination.perPage));
-    }
-  }, [loading, schemas]);
+  const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
 
-  useEffect(() => {
-    const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
-    setFilteredSchemas(schemas.slice(initSlice, initSlice + schemasPagination.perPage));
-  }, [schemasPagination]);
-
-  const loadSchema = (schemaName: string) => {
-    protobufService.getSchema(schemaName).then((eitherResponse) => {
-      if (eitherResponse.isRight()) {
-        schemasContent.set(schemaName, eitherResponse.value);
-      } else {
-        schemasContent.set(schemaName, 'An error occurred. Try closing the tab and opening it again.');
-        addAlert(eitherResponse.value);
+  const displayActions = (row): IAction[] => [
+    {
+      'aria-label': 'editSchemaAction',
+      title: t('schemas.edit-button'),
+      onClick: () => {
+        setLoadingSchema(true);
+        loadSchema(row.name);
+        setEditSchemaName(row.name);
       }
+    },
+    {
+      'aria-label': 'deleteSchemaAction',
+      title: t('schemas.delete-button'),
+      onClick: () => {
+        setDeleteSchemaName(row.name);
+      }
+    }
+  ];
+
+  const onSetPage = (_event, pageNumber) => {
+    setSchemasPagination({
+      ...schemasPagination,
+      page: pageNumber
     });
   };
 
-  const toggle = (schemaName) => {
-    const index = expanded.indexOf(schemaName);
-    const newExpanded =
-      index >= 0
-        ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)]
-        : [...expanded, schemaName];
-    setExpanded(newExpanded);
+  const onPerPageSelect = (_event, perPage) => {
+    setSchemasPagination({
+      page: 1,
+      perPage: perPage
+    });
+  };
+
+  const columnNames = {
+    name: t('schemas.name'),
+    status: t('schemas.status')
+  };
+
+  useEffect(() => {
+    if (schemas) {
+      props.setProtoSchemasCount(schemas.length);
+      setFilteredSchemas(schemas);
+      setExpandedSchemaNames([]);
+      schemasContent.clear();
+    }
+  }, [schemas, loading, error]);
+
+  useEffect(() => {
+    if (filteredSchemas) {
+      const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
+      const updateRows = filteredSchemas.slice(initSlice, initSlice + schemasPagination.perPage);
+      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+    }
+  }, [schemasPagination, filteredSchemas]);
+
+  useEffect(() => {
+    setFilteredSchemas(schemas.filter((schema) => onSearch(searchValue, schema.name)));
+  }, [searchValue]);
+
+  const loadSchema = (schemaName: string) => {
+    if (loadingSchema) {
+      protobufService
+        .getSchema(schemaName)
+        .then((eitherResponse) => {
+          if (eitherResponse.isRight()) {
+            setSchemasContent((map) => new Map(map.set(schemaName, eitherResponse.value)));
+          } else {
+            setSchemasContent(
+              (map) => new Map(map.set(schemaName, 'An error occurred. Try closing the tab and opening it again.'))
+            );
+            addAlert(eitherResponse.value);
+          }
+        })
+        .finally(() => setLoadingSchema(false));
+    }
+  };
+
+  const setSchemaExpanded = (schema, isExpanding = true) =>
+    setExpandedSchemaNames((prevExpanded) => {
+      const otherExpandedSchemaNames = prevExpanded.filter((r) => r !== schema.name);
+      return isExpanding ? [...otherExpandedSchemaNames, schema.name] : otherExpandedSchemaNames;
+    });
+
+  const closeEditSchemaModal = () => {
+    setEditSchemaName('');
   };
 
   const closeDeleteSchemaModal = () => {
-    setDeleteSchemaModalOpen(false);
     setDeleteSchemaName('');
-    setLoading(true);
+    reload();
   };
 
-  if (!props.isVisible) {
-    return <span />;
-  }
+  const submitEditSchemaModal = () => {
+    setEditSchemaName('');
+    reload();
+    setLoadingSchema(true);
+    loadSchema(editSchemaName);
+  };
+
+  const closeCreateSchemaModal = (createDone: boolean) => {
+    if (createDone) {
+      reload();
+    }
+    setCreateSchemaFormOpen(false);
+  };
+
+  const createSchemaButtonHelper = (isEmptyPage?: boolean) => {
+    const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
+    const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
+    return (
+      <Button
+        variant={ButtonVariant.primary}
+        aria-label="create-schema-button"
+        data-cy="createSchemaButton"
+        {...(isEmptyPage ? emptyPageButtonProp : normalPageButtonProps)}
+        onClick={() => {
+          setCreateSchemaFormOpen(true);
+        }}
+      >
+        {t('schemas.create-button')}
+      </Button>
+    );
+  };
+
+  const buildCreateSchemaButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return '';
+    }
+    return <ToolbarItem>{createSchemaButtonHelper()}</ToolbarItem>;
+  };
 
   const displayProtoError = (error: ProtoError | undefined) => {
     if (error) {
@@ -119,218 +217,165 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   const buildSchemaContent = (name) => {
     if (!schemasContent.get(name)) {
       loadSchema(name);
-      return <Spinner size={'sm'} />;
+      return (
+        <ExpandableRowContent>
+          <Spinner size={'sm'} />
+        </ExpandableRowContent>
+      );
     }
 
-    if (editSchemaName != name) {
-      return (
+    return (
+      <ExpandableRowContent>
         <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
           {schemasContent.get(name)}
         </SyntaxHighlighter>
-      );
-    }
+      </ExpandableRowContent>
+    );
+  };
+
+  const emptyPage = (
+    <EmptyState variant={EmptyStateVariant.large}>
+      <EmptyStateIcon icon={DatabaseIcon} />
+      <Title headingLevel="h4" size="lg">
+        {t('schemas.no-schema-status')}
+      </Title>
+      <EmptyStateBody>{t('schemas.no-schema-body')}</EmptyStateBody>
+      {createSchemaButtonHelper(true)}
+    </EmptyState>
+  );
+
+  const searchInput = (
+    <SearchInput
+      placeholder={t('schemas.schema-search')}
+      value={searchValue}
+      onChange={(_event, val) => setSearchValue(val)}
+      onClear={() => setSearchValue('')}
+    />
+  );
+
+  const toolbarPagination = (dropDirection) => {
     return (
-      <TextArea
-        id="schema-edit-area"
-        data-cy="schemaEditArea"
-        onChange={(v) => setEditSchemaContent(v)}
-        value={editSchemaContent}
-        validated={editSchemaContent.length > 0 ? 'default' : 'error'}
-        style={{ fontSize: global_FontSize_sm.value }}
-        rows={15}
+      <Pagination
+        data-cy="paginationArea"
+        itemCount={filteredSchemas.length}
+        perPage={schemasPagination.perPage}
+        page={schemasPagination.page}
+        onSetPage={onSetPage}
+        widgetId="pagination-schemas"
+        onPerPageSelect={onPerPageSelect}
+        isCompact
+        dropDirection={dropDirection}
       />
     );
   };
 
-  const buildSchemaToolbar = (schemaName) => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return '';
-    }
-
-    return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <Button
-              isDisabled={editSchemaName == schemaName && editSchemaContent.length == 0}
-              id={'edit-button-schema-' + schemaName}
-              name={'edit-button-schema-' + schemaName}
-              aria-label={'edit-button-schema-' + schemaName}
-              variant={ButtonVariant.secondary}
-              onClick={() => handleEdit(schemaName)}
-            >
-              {editSchemaName == schemaName ? t('schemas.save-button') : t('schemas.edit-button')}
-            </Button>
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button
-              id={'delete-button-schema-' + schemaName}
-              name={'delete-button-schema-' + schemaName}
-              aria-label={'delete-button-schema-' + schemaName}
-              variant={ButtonVariant.link}
-              onClick={() => {
-                if (editSchemaName == schemaName) {
-                  setEditSchemaName('');
-                } else {
-                  setDeleteSchemaName(schemaName);
-                  setDeleteSchemaModalOpen(true);
-                }
-              }}
-            >
-              {editSchemaName == schemaName ? t('schemas.cancel-button') : t('schemas.delete-button')}
-            </Button>
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-    );
-  };
-
-  const handleEdit = (schemaName: string) => {
-    if (editSchemaName == '' || editSchemaName != schemaName) {
-      setEditSchemaName(schemaName);
-      setEditSchemaContent(schemasContent.get(schemaName) as string);
-    } else {
-      setEditSchemaName('');
-      if (!schemasContent.has(schemaName) || schemasContent.get(schemaName) == '') {
-        return;
-      }
-      schemasContent.set(schemaName, editSchemaContent);
-      protobufService
-        .createOrUpdateSchema(schemaName, editSchemaContent, false)
-        .then((eitherCreate) => {
-          addAlert(eitherCreate);
-          loadSchema(schemaName);
-        })
-        .then(() => setLoading(true));
-    }
-  };
-
-  const buildSchemaList = () => {
-    if (filteredSchemas.length == 0) {
-      return <TableEmptyState loading={loading} error={error} empty={t('schemas.empty')} />;
-    }
-
-    return (
-      <DataList aria-label="data-list-proto-schemas">
-        {filteredSchemas.map((protoSchema) => {
-          return (
-            <DataListItem
-              id={'item-' + protoSchema.name}
-              key={'key-' + protoSchema.name}
-              aria-labelledby={protoSchema.name + '-list-item'}
-              isExpanded={expanded.includes(protoSchema.name)}
-            >
-              <DataListItemRow>
-                <DataListToggle
-                  onClick={() => toggle(protoSchema.name)}
-                  isExpanded={expanded.includes(protoSchema.name)}
-                  id={protoSchema.name}
-                  aria-label={'expand-schema-' + protoSchema.name}
-                  aria-controls={'ex-' + protoSchema.name}
-                />
-                <DataListItemCells
-                  dataListCells={[
-                    <DataListCell width={2} key={'schema-name' + protoSchema.name}>
-                      {protoSchema.name}
-                    </DataListCell>,
-                    <DataListCell width={4} key={'schema-validation' + protoSchema.name}>
-                      {displayProtoError(protoSchema.error)}
-                    </DataListCell>,
-                    <DataListCell width={2}>
-                      {expanded.includes(protoSchema.name) ? buildSchemaToolbar(protoSchema.name) : ''}
-                    </DataListCell>
-                  ]}
-                />
-              </DataListItemRow>
-              <DataListContent
-                aria-label="Primary content details"
-                id={protoSchema.name}
-                isHidden={!expanded.includes(protoSchema.name)}
-                style={{ boxShadow: 'none' }}
-              >
-                {editSchemaName == protoSchema.name && (
-                  <Alert
-                    style={{ marginBottom: global_spacer_md.value }}
-                    variant="warning"
-                    title={t('schemas.edit-alert', {
-                      schemaname: protoSchema.name
-                    })}
-                  />
-                )}
-                {buildSchemaContent(protoSchema.name)}
-              </DataListContent>
-            </DataListItem>
-          );
-        })}
-      </DataList>
-    );
-  };
-
-  const buildCreateSchemaButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return '';
-    }
-    return (
-      <ToolbarItem>
-        <Button aria-label="create-schema-button" variant={'primary'} onClick={() => setCreateSchemaFormOpen(true)}>
-          {t('schemas.create-button')}
-        </Button>
-      </ToolbarItem>
-    );
-  };
-
-  const closeCreateSchemaModal = (createDone: boolean) => {
-    if (createDone) {
-      setLoading(true);
-    }
-    setCreateSchemaFormOpen(false);
-  };
+  if (!props.isVisible) {
+    return <span />;
+  }
 
   return (
-    <Card>
-      <CardBody>
-        <Stack hasGutter>
-          <StackItem>
-            <Toolbar id="schemas-table-toolbar">
+    <React.Fragment>
+      {schemas.length == 0 ? (
+        emptyPage
+      ) : (
+        <Card>
+          <CardBody>
+            <Toolbar id="schema-table-toolbar" style={{ marginBottom: global_spacer_md.value }}>
               <ToolbarContent>
+                <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+                <ToolbarItem
+                  variant={ToolbarItemVariant.separator}
+                  style={{ marginInline: global_spacer_sm.value }}
+                ></ToolbarItem>
                 {buildCreateSchemaButton()}
-                <ToolbarItem variant={ToolbarItemVariant.pagination}>
-                  <Pagination
-                    data-cy="paginationArea"
-                    itemCount={schemas.length}
-                    perPage={schemasPagination.perPage}
-                    page={schemasPagination.page}
-                    onSetPage={(onSetPage, pageNumber) => {
-                      setSchemasPagination({
-                        page: pageNumber,
-                        perPage: schemasPagination.perPage
-                      });
-                    }}
-                    widgetId="pagination-schemas"
-                    onPerPageSelect={(_event, perPage) =>
-                      setSchemasPagination({
-                        page: 1,
-                        perPage: perPage
-                      })
-                    }
-                    isCompact
-                  />
-                </ToolbarItem>
+                <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
               </ToolbarContent>
             </Toolbar>
-          </StackItem>
-          <StackItem>{buildSchemaList()}</StackItem>
-          <StackItem>
-            <CreateProtoSchema isModalOpen={createSchemaFormOpen} closeModal={closeCreateSchemaModal} />
-            <DeleteSchema
-              schemaName={deleteSchemaName}
-              isModalOpen={deleteSchemaModalOpen}
-              closeModal={closeDeleteSchemaModal}
-            />
-          </StackItem>
-        </Stack>
-      </CardBody>
-    </Card>
+            <TableComposable
+              data-cy="schemaTable"
+              className={'schema-table'}
+              aria-label={'schema-table-label'}
+              variant="compact"
+              style={{ marginTop: global_spacer_md.value }}
+            >
+              <Thead>
+                <Tr>
+                  <Th />
+                  <Th width={30}>{columnNames.name}</Th>
+                  <Th width={60}>{columnNames.status}</Th>
+                </Tr>
+              </Thead>
+              {filteredSchemas.length == 0 ? (
+                <Tbody>
+                  <Tr>
+                    <Td colSpan={6}>
+                      <Bullseye>
+                        <EmptyState variant={EmptyStateVariant.small}>
+                          <EmptyStateIcon icon={SearchIcon} />
+                          <Title headingLevel="h2" size="lg">
+                            {t('schemas.no-filter-schema')}
+                          </Title>
+                          <EmptyStateBody>{t('schemas.no-filter-schema-body')}</EmptyStateBody>
+                          <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+                            <Button variant={'link'} onClick={() => setSearchValue('')}>
+                              {t('schemas.create-button')}
+                            </Button>
+                          </EmptyStateSecondaryActions>
+                        </EmptyState>
+                      </Bullseye>
+                    </Td>
+                  </Tr>
+                </Tbody>
+              ) : (
+                rows.map((row, rowIndex) => {
+                  return (
+                    <Tbody key={row.name} isExpanded={isSchemaExpanded(row)}>
+                      <Tr>
+                        <Td
+                          data-cy={row.name + 'Config'}
+                          expand={{
+                            rowIndex,
+                            isExpanded: isSchemaExpanded(row),
+                            onToggle: () => {
+                              setLoadingSchema(true);
+                              setSchemaExpanded(row, !isSchemaExpanded(row));
+                            }
+                          }}
+                        />
+                        <Td dataLabel={columnNames.name}>{row.name}</Td>
+                        <Td dataLabel={columnNames.status}>{displayProtoError(row.error)}</Td>
+                        <Td isActionCell data-cy={'actions-' + row.name}>
+                          <ActionsColumn items={displayActions(row)} />
+                        </Td>
+                      </Tr>
+                      <Tr isExpanded={isSchemaExpanded(row)}>
+                        <Td />
+                        <Td className="app-prefix--m-scroll-content" colSpan={3}>
+                          {isSchemaExpanded(row) && buildSchemaContent(row.name)}
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  );
+                })
+              )}
+            </TableComposable>
+            <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+          </CardBody>
+        </Card>
+      )}
+      <CreateProtoSchema isModalOpen={createSchemaFormOpen} closeModal={closeCreateSchemaModal} />
+      <EditSchema
+        schemaName={editSchemaName}
+        isModalOpen={editSchemaName !== ''}
+        submitModal={submitEditSchemaModal}
+        closeModal={closeEditSchemaModal}
+      />
+      <DeleteSchema
+        schemaName={deleteSchemaName}
+        isModalOpen={deleteSchemaName !== ''}
+        closeModal={closeDeleteSchemaModal}
+      />
+    </React.Fragment>
   );
 };
 
