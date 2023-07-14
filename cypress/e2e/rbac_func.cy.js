@@ -274,16 +274,18 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('a[aria-label="nav-item-Schemas"]').click();
     cy.contains('people');
     cy.contains('test-6.proto');
-    cy.get('button[aria-label="expand-schema-people.proto"]').click({ force: true });
+    cy.get('[data-cy="people.protoConfig"]').click();
     cy.contains('message Person');
     if (isAdmin) {
       cy.get('button[aria-label="create-schema-button"]').should('exist');
-      cy.get('button[aria-label="edit-button-schema-people.proto"]').should('exist');
-      cy.get('button[aria-label="delete-button-schema-people.proto"]').should('exist');
+      cy.get('[data-cy="actions-people.proto"]>div>button').click();
+      cy.get('[aria-label="editSchemaAction"]').should('exist');
+      cy.get('[aria-label="deleteSchemaAction"]').should('exist');
     } else {
       cy.get('button[aria-label="create-schema-button"]').should('not.exist');
-      cy.get('button[aria-label="edit-button-schema-people.proto"]').should('not.exist');
-      cy.get('button[aria-label="delete-button-schema-people.proto"]').should('not.exist');
+      cy.get('[data-cy="actions-people.proto"]>div>button').click();
+      cy.get('[aria-label="editSchemaAction"]').should('exist');
+      cy.get('[aria-label="deleteSchemaAction"]').should('exist');
     }
   }
 

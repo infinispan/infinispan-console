@@ -1,21 +1,16 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
-import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
-import { ConsoleServices } from '@services/ConsoleServices';
+import { useDeleteProtobufSchema } from '@app/services/protobufHooks';
 
 const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const { addAlert } = useApiAlert();
+  const { onDeleteSchema } = useDeleteProtobufSchema(props.schemaName);
 
   const onClickDeleteButton = () => {
-    ConsoleServices.protobuf()
-      .delete(props.schemaName)
-      .then((actionResponse) => {
-        addAlert(actionResponse);
-        props.closeModal();
-      });
+    onDeleteSchema();
+    props.closeModal();
   };
 
   return (
@@ -24,7 +19,7 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
       className="pf-m-redhat-font"
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={'Permanently delete schema?'}
+      title={t('schemas.delete.heading')}
       onClose={props.closeModal}
       aria-label="Delete schema modal"
       actions={[
@@ -41,6 +36,7 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
         <Button
           id="cancel-delete-schema-button"
           name="cancel-delete-schema-button"
+          aria-label="cancel-delete-schema-button"
           key="cancel"
           variant="link"
           onClick={props.closeModal}
@@ -50,7 +46,9 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
       ]}
     >
       <TextContent>
-        <Text>{t('schemas.delete.modal-description-1', { brandname: brandname, schemaname: props.schemaName })}</Text>
+        <Text>
+          <strong>{props.schemaName}</strong> {t('schemas.delete.modal-description-1', { brandname: brandname })}
+        </Text>
         <Text>{t('schemas.delete.modal-description-2')}</Text>
       </TextContent>
     </Modal>

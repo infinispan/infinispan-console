@@ -707,7 +707,15 @@
     "cancel-button": "Cancel",
     "save-button": "Save",
     "edit-button": "Edit",
+    "schema-search": "Search by schema name",
     "empty": "No schemas yet",
+    "no-schema-status": "No schema",
+    "no-schema-body": "Click \"Create a Protobuf schema\" and provide schema.",
+    "no-filter-schema": "No schema found",
+    "no-filter-schema-body": "No schema match your search criteria. Clear search and try again",
+    "clear-search": "Clear search",
+    "name": "Name",
+    "status": "Status",
     "create": {
       "modal-title": "Add Protobuf schema",
       "name": "Name",
@@ -715,10 +723,15 @@
       "schema-tooltip": "Protobuf schema describe entries in your caches so you can query them."
     },
     "delete": {
-      "modal-description-1": "{{schemaname}} will be permanently deleted in {{brandname}} Server. Caches using this schema will be affected.",
+      "heading": "Delete schema?",
+      "modal-description-1": " will be permanently deleted in {{brandname}} Server. Caches using this schema will be affected.",
       "modal-description-2": "You can always recreate the schema."
     },
-    "edit-alert": "You are about to change the schema of {{schemaname}}. Caches using this schema will be affected."
+    "edit": {
+      "heading": "Edit schema",
+      "modal-description-1": "You are about to change the schema of ",
+      "modal-description-2": " which will impact caches."
+    }
   },
   "global-stats": {
     "title": "Global statistics",

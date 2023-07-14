@@ -17,27 +17,27 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 
+const schemaNameInitialState: IField = {
+  value: '',
+  isValid: true,
+  invalidText: 'Schema name is required',
+  helperText: 'The schema name must not exist',
+  validated: 'default'
+};
+
+const schemaInitialState: IField = {
+  value: '',
+  isValid: true,
+  invalidText: 'Schema is required',
+  helperText: 'Protobuf schema',
+  validated: 'default'
+};
+
 const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { t } = useTranslation();
   const { addAlert } = useApiAlert();
   const [error, setError] = useState<string | undefined>(undefined);
-
-  const schemaNameInitialState: IField = {
-    value: '',
-    isValid: true,
-    invalidText: 'Schema name is required',
-    helperText: 'The schema name must not exist',
-    validated: 'default'
-  };
   const [schemaName, setSchemaName] = useState<IField>(schemaNameInitialState);
-
-  const schemaInitialState: IField = {
-    value: '',
-    isValid: true,
-    invalidText: 'Schema is required',
-    helperText: 'Protobuf schema',
-    validated: 'default'
-  };
   const [schema, setSchema] = useState<IField>(schemaInitialState);
 
   const clearCreateProtoSchema = (createDone: boolean) => {
@@ -84,6 +84,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
             value={schemaName.value}
             id="schema-name"
             name="schema-name"
+            aria-label="schema-name"
             aria-describedby="schema-name-helper"
             onChange={(v) =>
               setSchemaName((prevState) => {
