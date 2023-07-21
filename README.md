@@ -94,6 +94,21 @@ Then `mvn clean install -De2e=true`
 
 Generated with [Favicon generator](https://www.favicon-generator.org/)
 
+## Translation
+
+We are using Weblate for translating the Infinispan Console into different languages. Weblate is a web-based translation platform that streamlines the translation process and allows collaboration among contributors.
+
+You can access the translation project for Infinispan Console on Weblate [here](https://hosted.weblate.org/projects/infinispan/infinispan-console/). If you're interested in contributing translations or improving existing ones, feel free to join the Weblate project and start translating.
+
+### How to Contribute Translations
+
+1. Visit the [Weblate project](https://hosted.weblate.org/projects/infinispan/infinispan-console/) for Infinispan Console.
+2. Sign up or log in to your Weblate account.
+3. Choose the language you want to work on from the available languages or add a new language for translation.
+4. Start translating the strings directly on the Weblate interface.
+5. Once you're satisfied with the translations, submit them, and they will be reviewed and integrated into the Infinispan Console.
+
+Thank you for your contributions in making the Infinispan Console accessible to a broader audience!
 
 ## Code Quality Tools
 * For accessibility compliance, we use [react-axe](https://github.com/dequelabs/react-axe)
