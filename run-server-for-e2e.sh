@@ -98,11 +98,11 @@ function startServer()
         portStr="-p ${port}"
     fi
 
-    $SERVER_TMP/bin/cli.sh user create ${USER_NAME} -p ${PASSWORD} -s ${nodeName}
-    $SERVER_TMP/bin/cli.sh user create ${MONITOR_USER_NAME} -p ${PASSWORD} -s ${nodeName}
-    $SERVER_TMP/bin/cli.sh user create ${OBSERVER_USER_NAME} -p ${PASSWORD} -s ${nodeName}
-    $SERVER_TMP/bin/cli.sh user create ${APPLICATION_USER_NAME} -p ${PASSWORD} -s ${nodeName}
-    $SERVER_TMP/bin/cli.sh user create ${DEPLOYER_USER_NAME} -p ${PASSWORD} -s ${nodeName}
+    $SERVER_TMP/bin/cli.sh user create ${USER_NAME} -p ${PASSWORD} -s ${nodeName} -g admin
+    $SERVER_TMP/bin/cli.sh user create ${MONITOR_USER_NAME} -p ${PASSWORD} -s ${nodeName} -g monitor
+    $SERVER_TMP/bin/cli.sh user create ${OBSERVER_USER_NAME} -p ${PASSWORD} -s ${nodeName} -g observer
+    $SERVER_TMP/bin/cli.sh user create ${APPLICATION_USER_NAME} -p ${PASSWORD} -s ${nodeName} -g application
+    $SERVER_TMP/bin/cli.sh user create ${DEPLOYER_USER_NAME} -p ${PASSWORD} -s ${nodeName} -g deployer
 
     #Installing nashorn engine before server startup
     ${SERVER_TMP}/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4 --server-root=infinispan-4-e2e
