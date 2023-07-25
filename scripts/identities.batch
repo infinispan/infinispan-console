@@ -1,5 +1,5 @@
-user create "admin" -p "password"
-user create "observer" -p "password"
-user create "monitor" -p "password"
-user create "deployer" -p "password"
-user create "application" -p "password"
+user create "admin" -p "password" -g admin
+user create "observer" -p "password" -g observer
+user create "monitor" -p "password" -g monitor
+user create "deployer" -p "password" -g deployer
+user create "application" -p "password" -g application
