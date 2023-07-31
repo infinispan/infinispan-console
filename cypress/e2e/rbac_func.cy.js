@@ -22,7 +22,7 @@ describe('RBAC Functionlity Tests', () => {
     //Running query on secured page
     cy.get('[data-cy=queriesTab]').click();
     cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age>2');
-    cy.get('[data-cy=searchButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
 
@@ -235,7 +235,7 @@ describe('RBAC Functionlity Tests', () => {
     //Running query
     cy.get('[data-cy=queriesTab]').click();
     cy.get('#textSearchByQuery').click().type('from org.infinispan.Child where age<2');
-    cy.get('[data-cy=searchButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
     if (!isMonitor) {
       //@TODO remove when the bug is fixed
       cy.contains('1 - 1 of 1');
@@ -348,7 +348,7 @@ describe('RBAC Functionlity Tests', () => {
     //Running query
     cy.get('[data-cy=queriesTab]').click();
     cy.get('#textSearchByQuery').click().type('from org.infinispan.Car where year>2010');
-    cy.get('[data-cy=searchButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Ford');
     //Reseting cache state for next test
