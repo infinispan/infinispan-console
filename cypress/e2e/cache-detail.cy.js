@@ -332,7 +332,7 @@ describe('Cache Detail Overview', () => {
     cy.get('[data-cy=cacheEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
     cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age>2');
-    cy.get('[data-cy=searchButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
 
@@ -344,7 +344,7 @@ describe('Cache Detail Overview', () => {
     cy.get('[data-cy=queriesTab]').click();
 
     cy.get('#textSearchByQuery').click().clear().type("from org.infinispan.Person where name = 'Elaia'");
-    cy.get('[data-cy=searchButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
 
@@ -356,7 +356,7 @@ describe('Cache Detail Overview', () => {
     cy.get('[data-cy=queriesTab]').click();
 
     cy.get('#textSearchByQuery').click().clear().type('from org.infinispan.Person where age=2');
-    cy.get('[data-cy=searchButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
     cy.contains('Values not found.');
     //Verify metrics
     verifyCacheMetrics(11, 11, 11, 2, 11, 11, 13, 0, 0, 0);
@@ -374,7 +374,6 @@ describe('Cache Detail Overview', () => {
     cy.contains('key-9');
   });
 
-  //@TODO uncomment when ISPN-14189 is fixed.
    it('successfully manages indexes', () => {
     //Opening indexed-cache cache page.
     cy.login(Cypress.env("username"), Cypress.env("password"), '/cache/indexed-cache');

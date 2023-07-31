@@ -595,6 +595,12 @@
       "add-entry-form-value-type-select-label": "Select Value Content Type"
     },
     "query": {
+      "no-query-body": "Enter query above to search",
+      "no-search-value": "Values not found.",
+      "query-error": "Query error",
+      "ickle-query": "Ickle query",
+      "ickle-query-tooltip": "{{brandname}} provides an Ickle query language that lets you create relational and full-text queries.",
+      "view-all-query-stats": "View all query statistics",
       "query-metrics-title": "Query metrics",
       "query-metrics-tooltip": "Average time, in nanoseconds, for queries on this cache.",
       "button-clear-query-stats": "Clear all stats",
