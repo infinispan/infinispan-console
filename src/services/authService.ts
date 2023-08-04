@@ -83,7 +83,7 @@ export class AuthenticationService {
         throw response;
       })
       .then((json) => {
-        let jsonLength = Object.keys(json).length;
+        const jsonLength = Object.keys(json).length;
         if (jsonLength <= 1 || (jsonLength == 2 && json.mode === 'HTTP' && json.ready === 'true')) {
           return right(<AuthInfo>{
             mode: 'auth_disabled',
@@ -133,13 +133,13 @@ export class AuthenticationService {
 
   // hack to force cleanup of credentials in the browser
   public logOutLink(): Promise<void> {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.set(
       'Authorization',
       'Digest username="logout", realm="default", nonce="AAAAUAAAbk7PxogAe0ZbfFS+9jfxOQkSOmsTXWEq/9EmvXSaEWlJp4PGMnU=", uri="/rest/v2/server", algorithm=MD5, response="8af9ceca5a428b0c765c409375964842", opaque="00000000000000000000000000000000", qop=auth, nc=0000005a, cnonce="1b28b45b19a14807"'
     );
 
-    let fetchOptions: RequestInit = {
+    const fetchOptions: RequestInit = {
       headers: headers,
       credentials: 'include'
     };

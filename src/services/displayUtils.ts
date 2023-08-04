@@ -8,20 +8,17 @@ import {
   chart_color_orange_500,
   chart_color_purple_500,
   chart_global_label_Fill,
-  global_default_color_100,
+  global_Color_100,
   global_danger_color_100,
   global_info_color_100,
-  global_palette_black_100,
   global_palette_blue_50,
   global_palette_purple_100,
   global_success_color_100,
-  global_warning_color_100,
-  global_disabled_color_100
+  global_warning_color_100
 } from '@patternfly/react-tokens';
 import { AlertVariant } from '@patternfly/react-core';
 import numeral from 'numeral';
 import { CacheType, ComponentHealth, ContentType } from '@services/infinispanRefData';
-import { CheckCircleIcon, ExclamationTriangleIcon, DegradedIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Utility class to manage display features
@@ -81,7 +78,7 @@ export const INSTANTIATED_STATUS = {
 
 export const ST_IDLE = {
   name: 'Inactive',
-  color: global_default_color_100.value,
+  color: global_Color_100.value,
   icon: AlertVariant.success
 };
 export const ST_SENDING = {
@@ -267,7 +264,7 @@ class DisplayUtils {
    */
   public healthAlertVariant(health: ComponentHealth | undefined): AlertVariant {
     if (health == undefined) {
-      return AlertVariant.default;
+      return AlertVariant.custom;
     }
 
     let variant;
@@ -284,7 +281,7 @@ class DisplayUtils {
         variant = AlertVariant.danger;
         break;
       default:
-        variant = AlertVariant.default;
+        variant = AlertVariant.custom;
     }
     return variant;
   }

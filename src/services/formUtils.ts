@@ -1,4 +1,4 @@
-import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
+import { SelectOptionObject } from '@patternfly/react-core/deprecated';
 import React from 'react';
 
 export interface IField {

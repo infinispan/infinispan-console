@@ -23,23 +23,23 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarFilter,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant,
-  ToolbarGroup
+  ToolbarGroup,
+  EmptyStateHeader
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, InfoCircleIcon } from '@patternfly/react-icons';
-import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useFetchConnectedClients } from '@app/services/serverHook';
 import { formatAge } from '@app/utils/formatAge';
 import { onSearch } from '@app/utils/searchFilter';
 
-const ConnectedClients: React.FunctionComponent<any> = () => {
+const ConnectedClients = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { connectedClients, error, loading } = useFetchConnectedClients();
@@ -93,11 +93,12 @@ const ConnectedClients: React.FunctionComponent<any> = () => {
   };
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel="h4" size="lg">
-        {t('connected-clients.no-connections')}
-      </Title>
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText={<>{t('connected-clients.no-connections')}</>}
+        icon={<EmptyStateIcon icon={CubesIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>{t('connected-clients.no-connections-body')}</EmptyStateBody>
     </EmptyState>
   );
@@ -283,11 +284,7 @@ const ConnectedClients: React.FunctionComponent<any> = () => {
                   <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
                 </ToolbarContent>
               </Toolbar>
-              <TableComposable
-                className={'connections-table'}
-                aria-label={'connections-table-label'}
-                variant={'compact'}
-              >
+              <Table className={'connections-table'} aria-label={'connections-table-label'} variant={'compact'}>
                 <Thead>
                   <Tr>
                     <Th style={{ width: '15%' }} colSpan={1}>
@@ -311,11 +308,12 @@ const ConnectedClients: React.FunctionComponent<any> = () => {
                     <Tr>
                       <Td colSpan={4}>
                         <Bullseye>
-                          <EmptyState variant={EmptyStateVariant.small}>
-                            <EmptyStateIcon icon={SearchIcon} />
-                            <Title headingLevel="h2" size="lg">
-                              {t('connected-clients.no-filtered-connections')}
-                            </Title>
+                          <EmptyState variant={EmptyStateVariant.sm}>
+                            <EmptyStateHeader
+                              titleText={<>{t('connected-clients.no-filtered-connections')}</>}
+                              icon={<EmptyStateIcon icon={SearchIcon} />}
+                              headingLevel="h2"
+                            />
                             <EmptyStateBody>{t('connected-clients.no-filtered-connections-body')}</EmptyStateBody>
                           </EmptyState>
                         </Bullseye>
@@ -336,7 +334,7 @@ const ConnectedClients: React.FunctionComponent<any> = () => {
                     })
                   )}
                 </Tbody>
-              </TableComposable>
+              </Table>
               <Toolbar id="connections-table-toolbar" className={'connections-table-display'}>
                 <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
               </Toolbar>

@@ -1,17 +1,4 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  FormSection,
-  HelperText,
-  HelperTextItem,
-  Panel,
-  PanelHeader,
-  PanelMainBody,
-  Text,
-  TextContent,
-  TextVariants
-} from '@patternfly/react-core';
+import { FormSection, HelperText, HelperTextItem } from '@patternfly/react-core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

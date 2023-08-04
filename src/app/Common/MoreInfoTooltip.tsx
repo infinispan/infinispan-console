@@ -6,7 +6,7 @@ import {
   global_FontSize_md,
   global_FontSize_sm,
   global_spacer_xs,
-  global_FontWeight_bold
+  
 } from '@patternfly/react-tokens';
 
 /**

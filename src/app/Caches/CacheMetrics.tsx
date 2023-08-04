@@ -17,7 +17,7 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  Title
+  EmptyStateHeader
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { CubesIcon } from '@patternfly/react-icons';
@@ -49,7 +49,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     }
 
     setStats(cache.stats);
-    let loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
+    const loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
     setDisplayQueryStats(loadQueryStats);
   }, [cache, error]);
 
@@ -243,11 +243,12 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
 
   if (!stats.enabled) {
     return (
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h5" size="lg">
-          {t('caches.cache-metrics.metrics-title')}
-        </Title>
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateHeader
+          titleText={<>{t('caches.cache-metrics.metrics-title')}</>}
+          icon={<EmptyStateIcon icon={CubesIcon} />}
+          headingLevel="h5"
+        />
         <EmptyStateBody>
           <TextContent>
             <Text component={TextVariants.p}>{t('caches.cache-metrics.metrics-disabled')}</Text>

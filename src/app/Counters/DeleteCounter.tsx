@@ -55,7 +55,7 @@ const DeleteCounter = (props: {
     >
       <TextContent>
         <Text>
-          The counter and its state will be permanently deleted from the cluster <strong>'{props.name}'</strong>
+          The counter and its state will be permanently deleted from the cluster <strong>{`'${props.name}'`}</strong>
         </Text>
       </TextContent>
     </Modal>

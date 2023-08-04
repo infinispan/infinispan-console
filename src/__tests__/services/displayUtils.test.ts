@@ -65,7 +65,7 @@ describe('Display Utils tests', () => {
   });
 
   test('health alert variant', () => {
-    expect(displayUtils.healthAlertVariant(undefined)).toBe(AlertVariant.default);
+    expect(displayUtils.healthAlertVariant(undefined)).toBe(AlertVariant.custom);
     expect(displayUtils.healthAlertVariant(ComponentHealth.DEGRADED)).toBe(AlertVariant.danger);
     expect(displayUtils.healthAlertVariant(ComponentHealth.HEALTHY_REBALANCING)).toBe(AlertVariant.warning);
     expect(displayUtils.healthAlertVariant(ComponentHealth.HEALTHY)).toBe(AlertVariant.success);

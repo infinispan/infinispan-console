@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Form,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Modal,
+  Text,
+  TextContent,
+  TextInput
+} from '@patternfly/react-core';
 import { useCaches } from '@app/services/dataContainerHooks';
 import { useDeleteCache } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Delete cache modal
@@ -60,7 +73,7 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
       description={
         <TextContent>
           <Text>
-            <strong>'{props.cacheName}' </strong> {t('caches.delete.body')}
+            <strong>&quot;{props.cacheName}&quot; </strong> {t('caches.delete.body')}
           </Text>
         </TextContent>
       }
@@ -90,21 +103,25 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
           e.preventDefault();
         }}
       >
-        <FormGroup
-          label={t('caches.delete.cache-name')}
-          helperTextInvalid={t('caches.delete.cache-name-invalid')}
-          fieldId="cache-to-delete"
-          validated={isValidCacheNameValue}
-        >
+        <FormGroup label={t('caches.delete.cache-name')} fieldId="cache-to-delete">
           <TextInput
             isRequired
             validated={isValidCacheNameValue}
             value={cacheNameFormValue}
             id="cache-to-delete"
             aria-describedby="cache-to-delete-helper"
-            onChange={setCacheNameFormValue}
+            onChange={(_event, val) => setCacheNameFormValue(val)}
             ref={nameInputRef}
           />
+          {isValidCacheNameValue === 'error' && (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant={isValidCacheNameValue} icon={<ExclamationCircleIcon />}>
+                  {t('caches.delete.cache-name-invalid')}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
       </Form>
     </Modal>

@@ -20,13 +20,13 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
-  ToolbarItem
+  ToolbarItem,
+  EmptyStateHeader
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, DownloadIcon } from '@patternfly/react-icons';
-import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { Health } from '@app/Common/Health';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,7 @@ import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/c
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { onSearch } from '@app/utils/searchFilter';
 
-const ClusterStatus: React.FunctionComponent<any> = (props) => {
+const ClusterStatus = (props) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
@@ -46,7 +46,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
     perPage: 10
   });
   const [searchValue, setSearchValue] = useState<string>('');
-  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [rows, setRows] = useState<ClusterMember[]>([]);
 
   const columnNames = {
     name: t('cluster-membership.node-name'),
@@ -171,7 +171,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
     if (!cacheManager) {
       return (
         <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={CubesIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={CubesIcon} />} />
           <EmptyStateBody>{t('cluster-membership.empty-cluster')}</EmptyStateBody>
         </EmptyState>
       );
@@ -186,11 +186,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
               <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
             </ToolbarContent>
           </Toolbar>
-          <TableComposable
-            className={'cluster-membership-table'}
-            aria-label={t('cluster-membership.title')}
-            variant={'compact'}
-          >
+          <Table className={'cluster-membership-table'} aria-label={t('cluster-membership.title')} variant={'compact'}>
             <Thead>
               <Tr>
                 <Th colSpan={1}>{columnNames.name}</Th>
@@ -203,11 +199,12 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
                 <Tr>
                   <Td colSpan={6}>
                     <Bullseye>
-                      <EmptyState variant={EmptyStateVariant.small}>
-                        <EmptyStateIcon icon={SearchIcon} />
-                        <Title headingLevel="h2" size="lg">
-                          {t('cluster-membership.no-cluster-title')}
-                        </Title>
+                      <EmptyState variant={EmptyStateVariant.sm}>
+                        <EmptyStateHeader
+                          titleText={<>{t('cluster-membership.no-cluster-title')}</>}
+                          icon={<EmptyStateIcon icon={SearchIcon} />}
+                          headingLevel="h2"
+                        />
                         <EmptyStateBody>{t('cluster-membership.no-cluster-body')}</EmptyStateBody>
                       </EmptyState>
                     </Bullseye>
@@ -238,7 +235,7 @@ const ClusterStatus: React.FunctionComponent<any> = (props) => {
                 })
               )}
             </Tbody>
-          </TableComposable>
+          </Table>
           <Toolbar id="cluster-membership-table-toolbar" className={'cluster-membership-table-display'}>
             <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
           </Toolbar>

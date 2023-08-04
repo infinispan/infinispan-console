@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  Form,
-  FormAlert,
-  FormGroup,
-  FormSection,
-  Select,
-  SelectOption,
-  SelectVariant
+	Alert,
+	Form,
+	FormAlert,
+	FormGroup,
+	FormSection
 } from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 import { CacheFeature, CacheMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';

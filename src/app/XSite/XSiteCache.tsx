@@ -24,7 +24,8 @@ import { Link } from 'react-router-dom';
 import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { cellWidth, IRow, Table, TableBody, TableHeader, TableVariant, textCenter } from '@patternfly/react-table';
+import { cellWidth, IRow, TableVariant, textCenter } from '@patternfly/react-table';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table/deprecated';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { StateTransfer } from '@app/XSite/StateTransfer';
 import { Status } from '@app/Common/Status';
@@ -76,7 +77,7 @@ const XSiteCache = (props) => {
           if (eitherResponse.isRight()) {
             setBackups(eitherResponse.value);
             eitherResponse.value.map((xsite) => {
-              let latestBackups = new Map();
+              const latestBackups = new Map();
               crossSiteReplicationService.backupsForSite(cacheName, xsite.name).then((eitherResponse) => {
                 if (eitherResponse.isRight()) {
                   latestBackups.set(xsite.name, eitherResponse.value);
@@ -96,7 +97,7 @@ const XSiteCache = (props) => {
           crossSiteReplicationService
             .stateTransferStatus(cacheName)
             .then((eitherResponse) => {
-              let latestStStatus = new Map();
+              const latestStStatus = new Map();
               if (eitherResponse.isRight()) {
                 eitherResponse.value.map((stStatus) => latestStStatus.set(stStatus.site, stStatus.status));
                 setStateTransferStatus(latestStStatus);
@@ -204,7 +205,7 @@ const XSiteCache = (props) => {
   };
 
   const buildStateTransferStatus = (site: string) => {
-    let stStatus = stateTransferStatus.get(site);
+    const stStatus = stateTransferStatus.get(site);
     if (!stStatus || stStatus == ST_IDLE) {
       return '';
     }

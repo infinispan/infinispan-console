@@ -9,7 +9,6 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  EmptyStateSecondaryActions,
   PageSection,
   PageSectionVariants,
   Pagination,
@@ -18,12 +17,14 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
-  ToolbarItem
+  ToolbarItem,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -90,11 +91,12 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   };
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={CubeIcon} />
-      <Title headingLevel="h4" size="lg">
-        {t('caches.configuration.no-templates')}
-      </Title>
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText={<>{t('caches.configuration.no-templates')}</>}
+        icon={<EmptyStateIcon icon={CubeIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>{t('caches.configuration.no-templates-body')}</EmptyStateBody>
     </EmptyState>
   );
@@ -159,7 +161,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
       <Card>
         <CardBody>
           {toolbar}
-          <TableComposable
+          <Table
             data-cy="cacheTemplatesTable"
             className={'cache-templates-table'}
             aria-label={'cache-templates-table-label'}
@@ -176,17 +178,20 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
                 <Tr>
                   <Td colSpan={6}>
                     <Bullseye>
-                      <EmptyState variant={EmptyStateVariant.small}>
-                        <EmptyStateIcon icon={SearchIcon} />
-                        <Title headingLevel="h2" size="lg">
-                          {t('caches.configuration.no-filtered-templates')}
-                        </Title>
+                      <EmptyState variant={EmptyStateVariant.sm}>
+                        <EmptyStateHeader
+                          titleText={<>{t('caches.configuration.no-filtered-templates')}</>}
+                          icon={<EmptyStateIcon icon={SearchIcon} />}
+                          headingLevel="h2"
+                        />
                         <EmptyStateBody>{t('caches.configuration.no-filtered-templates-body')}</EmptyStateBody>
-                        <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
-                          <Button variant={'link'} onClick={() => setSearchValue('')}>
-                            {t('caches.configuration.clear-filter')}
-                          </Button>
-                        </EmptyStateSecondaryActions>
+                        <EmptyStateFooter>
+                          <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
+                            <Button variant={'link'} onClick={() => setSearchValue('')}>
+                              {t('caches.configuration.clear-filter')}
+                            </Button>
+                          </EmptyStateActions>
+                        </EmptyStateFooter>
                       </EmptyState>
                     </Bullseye>
                   </Td>
@@ -232,7 +237,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
                 );
               })
             )}
-          </TableComposable>
+          </Table>
         </CardBody>
       </Card>
     );

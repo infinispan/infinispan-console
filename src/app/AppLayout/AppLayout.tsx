@@ -2,11 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import {
   Brand,
-  Dropdown,
-  DropdownGroup,
-  DropdownItem,
-  DropdownToggle,
-  DropdownPosition,
   Flex,
   FlexItem,
   Nav,
@@ -29,8 +24,16 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  Tooltip
+  Tooltip,
+  PageSidebarBody
 } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
+  DropdownToggle,
+  DropdownPosition
+} from '@patternfly/react-core/deprecated';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import { Link, NavLink, Redirect } from 'react-router-dom';
 import { routes } from '@app/routes';
@@ -155,11 +158,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
       <ToolbarContent>
         <ToolbarGroup
           variant="icon-button-group"
-          alignment={{ default: 'alignRight' }}
+          align={{ default: 'alignRight' }}
           spacer={{ default: 'spacerNone', md: 'spacerMd' }}
         >
           <ToolbarItem>
-            <Dropdown data-cy="aboutInfoQuestionMark" id="aboutInfoQuestionMark"
+            <Dropdown
+              data-cy="aboutInfoQuestionMark"
+              id="aboutInfoQuestionMark"
               position={DropdownPosition.right}
               isPlain
               onSelect={() => setIsHelpOpen(!isHelpOpen)}
@@ -186,7 +191,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
         </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand component={(props) => Logo}/>
+        <MastheadBrand component={(props) => Logo} />
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
     </Masthead>
@@ -256,7 +261,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
         mainContainerId="primary-app-container"
         header={isWelcomePage ? null : Header}
         skipToContent={PageSkipToContent}
-        sidebar={isWelcomePage ? null : <PageSidebar theme="dark" nav={Navigation} />}
+        sidebar={
+          isWelcomePage ? null : (
+            <PageSidebar theme="dark">
+              <PageSidebarBody>{Navigation}</PageSidebarBody>
+            </PageSidebar>
+          )
+        }
         isManagedSidebar
       >
         <ActionResponseAlert />

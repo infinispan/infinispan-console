@@ -13,9 +13,8 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
-  ToolbarContent
+  ToolbarContent, EmptyStateHeader
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
@@ -73,10 +72,7 @@ const CreateCache = () => {
       <PageSection variant={PageSectionVariants.light}>
         <Bullseye>
           <EmptyState>
-            <EmptyStateIcon variant="container" component={Spinner} />
-            <Title size="lg" headingLevel="h4">
-              Loading
-            </Title>
+            <EmptyStateHeader titleText="Loading" icon={<EmptyStateIcon  icon={Spinner} />} headingLevel="h4" />
           </EmptyState>
         </Bullseye>
       </PageSection>

@@ -149,7 +149,7 @@ const DownloadCacheModal = (props: {
       {loading && (
         <TextContent>
           <Text>
-            {t('caches.create.review.formatting-loading')} <Spinner isInline isSVG aria-label="formattting..." />
+            {t('caches.create.review.formatting-loading')} <Spinner isInline  aria-label="formattting..." />
           </Text>
         </TextContent>
       )}

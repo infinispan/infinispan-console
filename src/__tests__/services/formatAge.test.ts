@@ -36,7 +36,6 @@ describe('formatAge', () => {
 
     // Mock the input date to be 10 minutes ahead of the current date
     const inputTimestamp = currentTimestamp + 10 * 60 * 1000;
-    console.log('inputTimestamp', inputTimestamp);
     const expectedOutput = '';
 
     expect(formatAge(new Date(inputTimestamp).toISOString())).toEqual(expectedOutput);

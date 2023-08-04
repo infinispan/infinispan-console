@@ -86,7 +86,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
             name="schema-name"
             aria-label="schema-name"
             aria-describedby="schema-name-helper"
-            onChange={(v) =>
+            onChange={(_event, v) =>
               setSchemaName((prevState) => {
                 return { ...prevState, value: v.trim() };
               })
@@ -113,7 +113,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
             aria-describedby="schema-content-helper"
             height={400}
             resizeOrientation={TextAreResizeOrientation.vertical}
-            onChange={(v) =>
+            onChange={(_event, v) =>
               setSchema((prevState) => {
                 return { ...prevState, value: v };
               })

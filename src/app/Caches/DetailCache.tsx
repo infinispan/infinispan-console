@@ -14,7 +14,6 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStatePrimary,
   EmptyStateVariant,
   Flex,
   FlexItem,
@@ -29,11 +28,13 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { CacheMetrics } from '@app/Caches/CacheMetrics';
@@ -152,22 +153,25 @@ const DetailCache = (props: { cacheName: string }) => {
       return (
         <Card>
           <CardBody>
-            <EmptyState variant={EmptyStateVariant.small}>
-              <EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />
-              <Title headingLevel="h2" size="lg">
-                {`An error occurred while retrieving cache ${cacheName}`}
-              </Title>
+            <EmptyState variant={EmptyStateVariant.sm}>
+              <EmptyStateHeader
+                titleText={<>{`An error occurred while retrieving cache ${cacheName}`}</>}
+                icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />}
+                headingLevel="h2"
+              />
               <EmptyStateBody>{error}</EmptyStateBody>
-              <EmptyStatePrimary>
-                <Link
-                  to={{
-                    pathname: '/',
-                    search: location.search
-                  }}
-                >
-                  <Button variant={ButtonVariant.secondary}>Back</Button>
-                </Link>
-              </EmptyStatePrimary>
+              <EmptyStateFooter>
+                <EmptyStateActions>
+                  <Link
+                    to={{
+                      pathname: '/',
+                      search: location.search
+                    }}
+                  >
+                    <Button variant={ButtonVariant.secondary}>Back</Button>
+                  </Link>
+                </EmptyStateActions>
+              </EmptyStateFooter>
             </EmptyState>
           </CardBody>
         </Card>
@@ -325,7 +329,7 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <Button isSmall icon={icon} variant={ButtonVariant.link} onClick={() => setDisplayShowMore(!displayShowMore)}>
+        <Button size="sm" icon={icon} variant={ButtonVariant.link} onClick={() => setDisplayShowMore(!displayShowMore)}>
           {displayShowMore ? t('caches.actions.action-see-less') : t('caches.actions.action-see-more')}
         </Button>
       </ToolbarItem>
@@ -349,7 +353,7 @@ const DetailCache = (props: { cacheName: string }) => {
 
   const displayCacheEntries = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) || !cache?.editable) {
-      return '';
+      return;
     }
 
     return (
@@ -376,7 +380,7 @@ const DetailCache = (props: { cacheName: string }) => {
 
   const displayCacheStats = () => {
     if (!cache.stats) {
-      return '';
+      return;
     }
 
     return (

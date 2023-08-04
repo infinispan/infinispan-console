@@ -39,7 +39,7 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
       description={
         <TextContent>
           <Text>
-            <strong>'{props.cacheName}'</strong> {t('caches.availability.modal-available-description')}
+            <strong>{`'${props.cacheName}'`}</strong> {t('caches.availability.modal-available-description')}
           </Text>
         </TextContent>
       }

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Button, Flex, FlexItem, Popover, TextContent, TextVariants, Text, Icon } from '@patternfly/react-core';
+import { Button, Popover, TextContent, TextVariants, Text,  } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 
 /**

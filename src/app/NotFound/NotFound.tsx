@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, PageSection, Title } from '@patternfly/react-core';
+import {
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  PageSection,
+  EmptyStateHeader,
+  EmptyStateFooter
+} from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -20,12 +28,15 @@ const NotFound = () => {
   return (
     <PageSection>
       <EmptyState variant="full">
-        <EmptyStateIcon icon={ExclamationTriangleIcon} />
-        <Title headingLevel="h1" size="lg">
-          {t('not-found-page.title')}
-        </Title>
+        <EmptyStateHeader
+          titleText={<>{t('not-found-page.title')}</>}
+          icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />}
+          headingLevel="h1"
+        />
         <EmptyStateBody>{t('not-found-page.description')}</EmptyStateBody>
-        <GoHomeBtn />
+        <EmptyStateFooter>
+          <GoHomeBtn />
+        </EmptyStateFooter>
       </EmptyState>
     </PageSection>
   );

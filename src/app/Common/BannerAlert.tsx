@@ -9,6 +9,6 @@ const BannerAlert = () => {
     return <span data-testid={'NoBanner'} />;
   }
 
-  return <Banner variant="danger">{banner}</Banner>;
+  return <Banner variant="red">{banner}</Banner>;
 };
 export { BannerAlert };

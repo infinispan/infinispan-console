@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FormGroup,
-  HelperText,
-  HelperTextItem,
-  Radio,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Spinner,
-  Switch,
-  TextInput
-} from '@patternfly/react-core';
+import { FormGroup, HelperText, HelperTextItem, Radio, Spinner, Switch, TextInput } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteStrategy, CacheFeature } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -121,7 +111,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
     setIsOpenSites(false);
   };
 
-  const onSelectRemoteSite = (event, selection, isPlaceholder) => {
+  const onSelectRemoteSite = (event, selection) => {
     setRemoteSite(selection);
     setIsOpenRemoteSite(false);
   };
@@ -224,12 +214,11 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
               content={t('caches.create.configurations.feature.remote-cache-tooltip', { brandname: brandname })}
             />
           }
-          validated={validateBackupsForField(remoteCache)}
         >
           <TextInput
             validated={validateBackupsForField(remoteCache)}
             value={remoteCache}
-            onChange={(val) => {
+            onChange={(_event, val) => {
               const trimmedVal = val.trim();
               setRemoteCache(trimmedVal);
               validateBackupsForField(trimmedVal);
@@ -240,7 +229,6 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
         <FormGroup
           fieldId="remote-site"
           isInline
-          validated={validateBackupsForField(remoteSite)}
           isRequired
           labelIcon={
             <PopoverHelp

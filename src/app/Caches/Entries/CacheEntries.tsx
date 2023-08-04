@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
-  ButtonVariant,
-  Card,
-  CardBody,
-  Bullseye,
-  Divider,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
-  EmptyStateSecondaryActions,
-  Pagination,
-  SearchInput,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Title,
-  Toolbar,
-  ToolbarContent,
-  ToolbarToggleGroup,
-  ToolbarGroup,
-  ToolbarItem,
-  ToolbarFilter,
-  Tooltip
+	Button,
+	ButtonVariant,
+	Card,
+	CardBody,
+	Bullseye,
+	Divider,
+	EmptyState,
+	EmptyStateBody,
+	EmptyStateIcon,
+	EmptyStateVariant,
+	Pagination,
+	SearchInput,
+	Toolbar,
+	ToolbarContent,
+	ToolbarToggleGroup,
+	ToolbarGroup,
+	ToolbarItem,
+	ToolbarFilter,
+	Tooltip, EmptyStateActions, EmptyStateHeader, EmptyStateFooter
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
+import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { FilterIcon, SearchIcon, PlusCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -221,16 +221,13 @@ const CacheEntries = (props: { cacheName: string }) => {
   const emptyPage = (
     <Card>
       <CardBody>
-        <EmptyState variant={EmptyStateVariant.large}>
-          <EmptyStateIcon icon={PlusCircleIcon} />
-          <Title headingLevel="h4" size="lg">
-            {t('caches.entries.empty-cache')}
-          </Title>
-          <EmptyStateBody>{infoEntries ? infoEntries : t('caches.entries.empty-cache-body')}</EmptyStateBody>
-          <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+        <EmptyState variant={EmptyStateVariant.lg}>
+          <EmptyStateHeader titleText={<>{t('caches.entries.empty-cache')}</>} icon={<EmptyStateIcon icon={PlusCircleIcon} />} headingLevel="h4" />
+          <EmptyStateBody>{infoEntries ? infoEntries : t('caches.entries.empty-cache-body')}</EmptyStateBody><EmptyStateFooter>
+          <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
             {addEntryAction()}
-          </EmptyStateSecondaryActions>
-        </EmptyState>
+          </EmptyStateActions>
+        </EmptyStateFooter></EmptyState>
       </CardBody>
     </Card>
   );
@@ -343,7 +340,7 @@ const CacheEntries = (props: { cacheName: string }) => {
         <React.Fragment>
           {toolbar}
 
-          <TableComposable className={'entries-table'} aria-label={'entries-table-label'} variant={'compact'}>
+          <Table className={'entries-table'} aria-label={'entries-table-label'} variant={'compact'}>
             <Thead>
               <Tr>
                 <Th colSpan={1}>{columnNames.key}</Th>
@@ -378,13 +375,10 @@ const CacheEntries = (props: { cacheName: string }) => {
                 <Tr>
                   <Td colSpan={6}>
                     <Bullseye>
-                      <EmptyState variant={EmptyStateVariant.small}>
-                        <EmptyStateIcon icon={SearchIcon} />
-                        <Title headingLevel="h2" size="lg">
-                          {t('caches.entries.no-filtered-entry')}
-                        </Title>
-                        <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody>
-                        <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
+                      <EmptyState variant={EmptyStateVariant.sm}>
+                        <EmptyStateHeader titleText={<>{t('caches.entries.no-filtered-entry')}</>} icon={<EmptyStateIcon icon={SearchIcon} />} headingLevel="h2" />
+                        <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody><EmptyStateFooter>
+                        <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
                           <Button
                             data-cy="clearSearch"
                             key="clear-search"
@@ -395,8 +389,8 @@ const CacheEntries = (props: { cacheName: string }) => {
                           >
                             {t('caches.entries.no-filtered-entry-action')}
                           </Button>
-                        </EmptyStateSecondaryActions>
-                      </EmptyState>
+                        </EmptyStateActions>
+                      </EmptyStateFooter></EmptyState>
                     </Bullseye>
                   </Td>
                 </Tr>
@@ -429,7 +423,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                 })
               )}
             </Tbody>
-          </TableComposable>
+          </Table>
           <Toolbar>
             <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
           </Toolbar>

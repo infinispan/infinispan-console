@@ -8,21 +8,19 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
   Level,
   LevelItem,
   Pagination,
   SearchInput,
-  Select,
-  SelectOption,
-  SelectVariant,
   Spinner,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
+import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { Chart, ChartBar, ChartGroup, ChartVoronoiContainer, ChartThemeColor } from '@patternfly/react-charts';
 import { SearchIcon } from '@patternfly/react-icons';
 import { TableErrorState } from '@app/Common/TableErrorState';
@@ -136,11 +134,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <TableComposable
-        aria-label={t('caches.cache-metrics.data-distribution-table')}
-        variant={TableVariant.compact}
-        borders
-      >
+      <Table aria-label={t('caches.cache-metrics.data-distribution-table')} variant={TableVariant.compact} borders>
         <Thead>
           <Tr>
             <Th>{columnNames.nodeName}</Th>
@@ -154,11 +148,12 @@ const DataDistributionChart = (props: { cacheName: string }) => {
             <Tr>
               <Td colSpan={6}>
                 <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('caches.cache-metrics.data-distribution-no-filtered')}
-                    </Title>
+                  <EmptyState variant={EmptyStateVariant.sm}>
+                    <EmptyStateHeader
+                      titleText={<>{t('caches.cache-metrics.data-distribution-no-filtered')}</>}
+                      icon={<EmptyStateIcon icon={SearchIcon} />}
+                      headingLevel="h2"
+                    />
                     <EmptyStateBody>{t('caches.cache-metrics.data-distribution-no-filtered-body')}</EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
@@ -175,7 +170,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
             ))
           )}
         </Tbody>
-      </TableComposable>
+      </Table>
     </React.Fragment>
   );
 

@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
-import { Form, FormGroup, FormSection, Radio, TextInput } from '@patternfly/react-core';
+import {
+  Form,
+  FormGroup,
+  FormSection,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Radio,
+  TextInput
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useCreateCache } from '@app/services/createCacheHook';
 
 const CreateCacheGettingStarted = (props: { create: boolean }) => {
-  let { configuration, setConfiguration } = useCreateCache();
+  const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const [cacheName, setCacheName] = useState(configuration.start.cacheName);
   const [validName, setValidName] = useState<'success' | 'error' | 'default'>(
@@ -17,7 +26,7 @@ const CreateCacheGettingStarted = (props: { create: boolean }) => {
   const id = props.create ? 'create' : 'setup';
 
   const handleChangeName = (name) => {
-    let trimmedName = name.trim();
+    const trimmedName = name.trim();
 
     // Check if name is not null or empty
     if (trimmedName.length > 0) {
@@ -63,15 +72,7 @@ const CreateCacheGettingStarted = (props: { create: boolean }) => {
   const formCacheName = () => {
     return (
       <FormSection title={t('caches.create.getting-started.cache-name-title')} titleElement="h2">
-        <FormGroup
-          label={t('caches.create.getting-started.cache-name-label')}
-          isRequired
-          fieldId="cache-name"
-          validated={validName}
-          helperTextInvalid={t('caches.create.getting-started.cache-name-label-invalid')}
-          helperText={t('caches.create.getting-started.cache-name-label-help')}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-        >
+        <FormGroup label={t('caches.create.getting-started.cache-name-label')} isRequired fieldId="cache-name">
           <TextInput
             isRequired
             type="text"
@@ -79,9 +80,18 @@ const CreateCacheGettingStarted = (props: { create: boolean }) => {
             name="cache-name"
             aria-describedby="cache-name-helper"
             value={cacheName}
-            onChange={handleChangeName}
+            onChange={(_event, name) => handleChangeName(name)}
             validated={validName}
           />
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={validName} {...(validName === 'error' && { icon: <ExclamationCircleIcon /> })}>
+                {validName === 'error'
+                  ? t('caches.create.getting-started.cache-name-label-invalid')
+                  : t('caches.create.getting-started.cache-name-label-help')}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
         </FormGroup>
       </FormSection>
     );

@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import * as StatsHook from '@app/services/statsHook';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { renderWithRouter } from '../../test-utils';
-// import ClusterDistributionChart from "@app/GlobalStats/ClusterDistributionChart";
 
 jest.mock('@app/services/statsHook');
 jest.mock('@app/GlobalStats/ClusterDistributionChart', () => 'ClusterDistributionChart');

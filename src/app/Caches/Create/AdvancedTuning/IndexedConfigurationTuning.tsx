@@ -124,7 +124,7 @@ const IndexedConfigurationTuning = () => {
             placeholder="0"
             value={refreshInterval}
             type="number"
-            onChange={(val) => {
+            onChange={(_event, val) => {
               isNaN(parseInt(val)) ? setRefreshInterval(undefined!) : setRefreshInterval(parseInt(val));
             }}
             aria-label="refresh-interval"
@@ -181,7 +181,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="1000"
               value={commitInterval}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setCommitInterval(undefined!) : setCommitInterval(parseInt(val));
               }}
               aria-label="commit-interval"
@@ -203,7 +203,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="32"
               value={ramBufferSize}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setRamBufferSize(undefined!) : setRamBufferSize(parseInt(val));
               }}
               aria-label="ram-buffer-size"
@@ -225,7 +225,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="32"
               value={maxBufferedEntries}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setMaxBufferedEntries(undefined!) : setMaxBufferedEntries(parseInt(val));
               }}
               aria-label="max-buffered-entries"
@@ -247,7 +247,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="1"
               value={threadPoolSize}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setThreadPoolSize(undefined!) : setThreadPoolSize(parseInt(val));
               }}
               aria-label="thread-pool-size"
@@ -269,7 +269,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="1"
               value={queueCount}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setQueueCount(undefined!) : setQueueCount(parseInt(val));
               }}
               aria-label="queue-count"
@@ -291,7 +291,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="1000"
               value={queueSize}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setQueueSize(undefined!) : setQueueSize(parseInt(val));
               }}
               aria-label="queue-size"
@@ -348,7 +348,7 @@ const IndexedConfigurationTuning = () => {
               data-cy="factor"
               value={factor}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setFactor(undefined!) : setFactor(parseInt(val));
               }}
               aria-label="factor"
@@ -369,7 +369,7 @@ const IndexedConfigurationTuning = () => {
               data-cy="maxEntries"
               value={maxEntries}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setMaxEntries(undefined!) : setMaxEntries(parseInt(val));
               }}
               aria-label="max-entries"
@@ -390,7 +390,7 @@ const IndexedConfigurationTuning = () => {
               data-cy="minSize"
               value={minSize}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setMinSize(undefined!) : setMinSize(parseInt(val));
               }}
               aria-label="min-size"
@@ -411,7 +411,7 @@ const IndexedConfigurationTuning = () => {
               data-cy="maxSize"
               value={maxSize}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setMaxSize(undefined!) : setMaxSize(parseInt(val));
               }}
               aria-label="max-size"
@@ -432,7 +432,7 @@ const IndexedConfigurationTuning = () => {
               data-cy="maxForcedSize"
               value={maxForcedSize}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setMaxForcedSize(undefined!) : setMaxForcedSize(parseInt(val));
               }}
               aria-label="max-forced-size"

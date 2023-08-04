@@ -5,27 +5,24 @@ import {
   Card,
   CardBody,
   EmptyState,
+  EmptyStateHeader,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
-  Select,
-  SelectOption,
-  SelectVariant,
-  SelectGroup,
   Pagination,
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemVariant,
   ToolbarGroup
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { Select, SelectOption, SelectVariant, SelectGroup } from '@patternfly/react-core/deprecated';
+import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
@@ -335,11 +332,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <TableComposable
-          className={'strongCounters-table'}
-          aria-label={'strong-counters-table-label'}
-          variant={'compact'}
-        >
+        <Table className={'strongCounters-table'} aria-label={'strong-counters-table-label'} variant={'compact'}>
           <Thead>
             <Tr>
               <Th colSpan={1}>{columnNames.name}</Th>
@@ -354,11 +347,12 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
               <Tr>
                 <Td colSpan={6}>
                   <Bullseye>
-                    <EmptyState variant={EmptyStateVariant.small}>
-                      <EmptyStateIcon icon={SearchIcon} />
-                      <Title headingLevel="h2" size="lg">
-                        {t('cache-managers.counters.no-counters-status')}
-                      </Title>
+                    <EmptyState variant={EmptyStateVariant.sm}>
+                      <EmptyStateHeader
+                        titleText={<>{t('cache-managers.counters.no-counters-status')}</>}
+                        icon={<EmptyStateIcon icon={SearchIcon} />}
+                        headingLevel="h2"
+                      />
                       <EmptyStateBody>
                         {counters.length == 0
                           ? t('cache-managers.counters.no-counters-body')
@@ -390,7 +384,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
               })
             )}
           </Tbody>
-        </TableComposable>
+        </Table>
         <DeleteCounter
           name={counterToDelete}
           isModalOpen={counterToDelete != ''}
