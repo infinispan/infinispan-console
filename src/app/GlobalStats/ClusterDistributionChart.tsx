@@ -11,7 +11,7 @@ import {
   ToolbarItemVariant,
   Pagination
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td, TableVariant } from '@patternfly/react-table';
+import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, TableVariant } from '@patternfly/react-table';
 import {
   Chart,
   ChartAxis,
@@ -113,7 +113,7 @@ const ClusterDistributionChart = () => {
           <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <TableComposable aria-label="Cluster Distribution Table" variant={TableVariant.compact} borders>
+      <Table aria-label="Cluster Distribution Table" variant={TableVariant.compact} borders>
         <Thead>
           <Tr>
             <Th>{columnNames.nodeName}</Th>
@@ -130,7 +130,7 @@ const ClusterDistributionChart = () => {
             </Tr>
           ))}
         </Tbody>
-      </TableComposable>
+      </Table>
     </React.Fragment>
   );
 

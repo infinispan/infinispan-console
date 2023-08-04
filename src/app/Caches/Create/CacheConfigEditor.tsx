@@ -7,13 +7,14 @@ import {
   ExpandableSection,
   Form,
   FormGroup,
-  Select,
-  SelectOption,
-  SelectVariant,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   Text,
   TextContent,
   TextVariants
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { CubeIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +59,7 @@ const CacheConfigEditor = (props: {
         .getCacheConfigurationTemplates(cmName)
         .then((eitherTemplates) => {
           if (eitherTemplates.isRight()) {
-            let options: TemplateOptionSelect[] = [];
+            const options: TemplateOptionSelect[] = [];
             eitherTemplates.value.forEach((template) => {
               options.push({ value: template.name });
             });
@@ -116,8 +117,6 @@ const CacheConfigEditor = (props: {
       <FormGroup
         label={t('caches.create.edit-config.cache-config')}
         fieldId="cache-config"
-        validated={validConfig}
-        helperTextInvalid={t('caches.create.edit-config.cache-config-invalid')}
         isRequired={configs.length == 0}
       >
         <CodeEditor
@@ -152,22 +151,15 @@ const CacheConfigEditor = (props: {
 
     return (
       <React.Fragment>
-        <FormGroup
-          fieldId="cache-config-name"
-          label={t('caches.create.templates')}
-          helperText={t('caches.create.templates-help')}
-          validated={validConfig}
-          helperTextInvalid={t('caches.create.template-help-invalid')}
-        >
+        <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
           <Select
             id="template-selector"
             data-testid="template-selector"
             toggleIcon={<CubeIcon />}
             variant={SelectVariant.typeahead}
             aria-label={t('caches.create.templates')}
-            onToggle={onToggleTemplateName}
+            onToggle={(_event, isExpanded) => onToggleTemplateName(isExpanded)}
             onSelect={onSelectTemplate}
-            // @ts-ignore
             selections={selectedConfig}
             isOpen={configExpanded}
             isDisabled={selectedConfigDisabled}
@@ -181,6 +173,11 @@ const CacheConfigEditor = (props: {
               <SelectOption id={'template-' + index} key={index} value={option.value} />
             ))}
           </Select>
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={validConfig}>{t('caches.create.templates-help')}</HelperTextItem>
+            </HelperText>
+          </FormHelperText>
         </FormGroup>
         <ExpandableSection
           data-cy="provideConfigArea"

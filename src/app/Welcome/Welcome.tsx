@@ -20,7 +20,7 @@ import {
   TitleSizes
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
-import { CatalogIcon, GithubIcon, ExternalLinkAltIcon, DownloadIcon, UnknownIcon } from '@patternfly/react-icons';
+import { CatalogIcon, GithubIcon, DownloadIcon, UnknownIcon } from '@patternfly/react-icons';
 import { chart_color_blue_500, global_BackgroundColor_100 } from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
 import { Support } from '@app/Support/Support';
@@ -73,7 +73,7 @@ const Welcome = (props) => {
     if (authState == 'HTTP_LOGIN') {
       return (
         <Button
-          isLarge
+          size="lg"
           onClick={() => {
             ConsoleServices.authentication()
               .loginLink()
@@ -97,7 +97,7 @@ const Welcome = (props) => {
 
     if (authState == 'NOT_READY') {
       return (
-        <Button isLarge style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => setSupportOpen(true)}>
+        <Button size="lg" style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => setSupportOpen(true)}>
           {goToTheConsole}
         </Button>
       );
@@ -105,14 +105,14 @@ const Welcome = (props) => {
 
     if (authState == 'READY') {
       return (
-        <Button isLarge style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => notSecuredModeOn()}>
+        <Button size="lg" style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => notSecuredModeOn()}>
           {goToTheConsole}
         </Button>
       );
     }
 
     return (
-      <Button isLarge style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => login()}>
+      <Button size="lg" style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => login()}>
         {goToTheConsole}
       </Button>
     );
@@ -161,7 +161,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(blogLink, '_blank');
           }}
-          isSelectableRaised
+          isSelectable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>
@@ -178,7 +178,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(hotRodClientsLink, '_blank');
           }}
-          isSelectableRaised
+          isSelectable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>
@@ -195,7 +195,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(aboutLink, '_blank');
           }}
-          isSelectableRaised
+          isSelectable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>
@@ -212,7 +212,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(tutorialsLink, '_blank');
           }}
-          isSelectableRaised
+          isSelectable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>

@@ -21,6 +21,7 @@ const ConsoleBackground = () => {
     </filter>
   );
 
-  return <BackgroundImage src={images} filter={defaultFilter} />;
+  //Todo: add image src to all sizes
+  return <BackgroundImage src={lg} />;
 };
 export { ConsoleBackground };

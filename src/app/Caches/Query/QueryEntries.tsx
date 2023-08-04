@@ -11,11 +11,11 @@ import {
   EmptyStateBody,
   Pagination,
   Popover,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  SearchInput
+  SearchInput,
+  EmptyStateHeader
 } from '@patternfly/react-core';
 import { SearchIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import displayUtils from '../../../services/displayUtils';
@@ -23,17 +23,13 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { TableComposable, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { global_danger_color_200, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 
-const QueryEntries: React.FunctionComponent<any> = (props: {
-  cacheName: string;
-  indexed: boolean;
-  changeTab: () => void;
-}) => {
+const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: () => void }) => {
   const [query, setQuery] = useState<string>('');
-  const [rows, setRows] = useState<any[] | undefined>([]);
-  const [filteredRows, setFilteredRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<string[] | undefined>([]);
+  const [filteredRows, setFilteredRows] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [isResultEmpty, setIsResultEmpty] = useState(false);
   const { t } = useTranslation();
@@ -186,18 +182,19 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
   );
 
   const emptyQuery = (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={SearchIcon} />
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader icon={<EmptyStateIcon icon={SearchIcon} />} />
       <EmptyStateBody>{t('caches.query.no-query-body')}</EmptyStateBody>
     </EmptyState>
   );
 
   const errorQuery = (
     <EmptyState>
-      <EmptyStateIcon color={global_danger_color_200.value} variant="icon" icon={ExclamationCircleIcon} />
-      <Title headingLevel="h2" size="lg">
-        {t('caches.query.query-error')}
-      </Title>
+      <EmptyStateHeader
+        titleText={<>{t('caches.query.query-error')}</>}
+        icon={<EmptyStateIcon color={global_danger_color_200.value} icon={ExclamationCircleIcon} />}
+        headingLevel="h2"
+      />
       <EmptyStateBody>{error}</EmptyStateBody>
     </EmptyState>
   );
@@ -216,12 +213,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
           emptyQuery
         ) : (
           <React.Fragment>
-            <TableComposable
-              data-cy="queryTable"
-              className={'query-table'}
-              aria-label={'query-table-label'}
-              variant="compact"
-            >
+            <Table data-cy="queryTable" className={'query-table'} aria-label={'query-table-label'} variant="compact">
               <Thead>
                 <Tr>
                   <Th>{columnNames.value}</Th>
@@ -244,7 +236,7 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
                   })
                 )}
               </Tbody>
-            </TableComposable>
+            </Table>
             <Toolbar id="query-table-toolbar" className={'query-table-display'}>
               <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
             </Toolbar>

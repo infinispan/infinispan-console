@@ -121,7 +121,7 @@ const TransactionalConfigurationTuning = () => {
               placeholder="30000"
               value={stopTimeout}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setStopTimeout(undefined!) : setStopTimeout(parseInt(val));
               }}
               aria-label="stop-timeout"
@@ -147,7 +147,7 @@ const TransactionalConfigurationTuning = () => {
               placeholder="60000"
               value={completeTimeout}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setCompleteTimeout(undefined!) : setCompleteTimeout(parseInt(val));
               }}
               aria-label="complete-timeout"
@@ -173,7 +173,7 @@ const TransactionalConfigurationTuning = () => {
               placeholder="30000"
               value={reaperInterval}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setReaperInterval(undefined!) : setReaperInterval(parseInt(val));
               }}
               aria-label="reaper-interval"

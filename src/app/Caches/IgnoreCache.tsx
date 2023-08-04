@@ -43,7 +43,7 @@ const IgnoreCache = (props: {
       return (
         <TextContent>
           <Text>
-            Shows the <strong>' {props.cacheName}'</strong>.
+            Shows the <strong>{`' ${props.cacheName} '`}</strong>.
           </Text>
         </TextContent>
       );
@@ -51,7 +51,7 @@ const IgnoreCache = (props: {
     return (
       <TextContent>
         <Text>
-          Hides the <strong>'{props.cacheName}'</strong> cache.
+          Hides the <strong>{`'${props.cacheName}'`}</strong> cache.
           <br />
           {t('caches.ignore.hide-body')}
         </Text>

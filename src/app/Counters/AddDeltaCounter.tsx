@@ -1,7 +1,20 @@
 import React from 'react';
-import { Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Form,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Modal,
+  Text,
+  TextContent,
+  TextInput
+} from '@patternfly/react-core';
 import { useAddDeltaCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const AddDeltaCounter = (props: {
   name: string;
@@ -20,6 +33,10 @@ const AddDeltaCounter = (props: {
       onAddDelta();
       props.submitModal();
     }
+  };
+
+  const validateForm = (): 'default' | 'error' => {
+    return props.isDeltaValid ? 'default' : 'error';
   };
 
   return (
@@ -63,18 +80,24 @@ const AddDeltaCounter = (props: {
             e.preventDefault();
           }}
         >
-          <FormGroup
-            validated={props.isDeltaValid ? 'default' : 'error'}
-            helperTextInvalid={t('cache-managers.counters.modal-delta-helper-invalid')}
-          >
+          <FormGroup>
             <TextInput
-              validated={props.isDeltaValid ? 'default' : 'error'}
+              validated={validateForm()}
               value={props.deltaValue}
               type="number"
-              onChange={(value) => props.setDeltaValue(value)}
+              onChange={(_event, value) => props.setDeltaValue(value)}
               aria-label={'delta-text-input'}
               data-cy="counterDeltaNum"
             />
+            {validateForm() && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {t('cache-managers.counters.modal-delta-helper-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         </Form>
       </TextContent>

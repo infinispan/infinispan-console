@@ -1,18 +1,17 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import React, { useEffect, useState } from 'react';
 import {
   FormGroup,
   Grid,
   GridItem,
   Radio,
-  Select,
-  SelectOption,
-  SelectVariant,
   Switch,
   Text,
   TextContent,
   TextInput,
   TextVariants
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteFailurePolicy, BackupSiteStateTransferMode, BackupSiteStrategy } from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -85,7 +84,7 @@ const BackupSiteConfigurator = (props: {
     mode
   ]);
 
-  const onSelectFailurePolicy = (event, selection, isPlaceholder) => {
+  const onSelectFailurePolicy = (event, selection) => {
     setFailurePolicy(selection);
     setIsOpenFailurePolicy(false);
   };
@@ -117,8 +116,8 @@ const BackupSiteConfigurator = (props: {
             type="number"
             id="timeout"
             value={afterFailures}
-            onChange={(e) => {
-              isNaN(parseInt(e)) ? setAfterFailures(undefined!) : setAfterFailures(parseInt(e));
+            onChange={(e, val) => {
+              isNaN(parseInt(val)) ? setAfterFailures(undefined!) : setAfterFailures(parseInt(val));
             }}
           />
         </FormGroup>
@@ -138,8 +137,8 @@ const BackupSiteConfigurator = (props: {
             type="number"
             id="minwait"
             value={minWait}
-            onChange={(e) => {
-              isNaN(parseInt(e)) ? setMinWait(undefined!) : setMinWait(parseInt(e));
+            onChange={(e, val) => {
+              isNaN(parseInt(val)) ? setMinWait(undefined!) : setMinWait(parseInt(val));
             }}
           />
         </FormGroup>
@@ -204,8 +203,8 @@ const BackupSiteConfigurator = (props: {
               type="number"
               id="chuncksize"
               value={chunckSize}
-              onChange={(e) => {
-                isNaN(parseInt(e)) ? setChunckSize(undefined!) : setChunckSize(parseInt(e));
+              onChange={(e, val) => {
+                isNaN(parseInt(val)) ? setChunckSize(undefined!) : setChunckSize(parseInt(val));
               }}
             />
           </FormGroup>
@@ -227,8 +226,8 @@ const BackupSiteConfigurator = (props: {
               type="number"
               id="timeout"
               value={timeoutStateTransfer}
-              onChange={(e) => {
-                isNaN(parseInt(e)) ? setTimeoutStateTransfer(undefined!) : setTimeoutStateTransfer(parseInt(e));
+              onChange={(e, val) => {
+                isNaN(parseInt(val)) ? setTimeoutStateTransfer(undefined!) : setTimeoutStateTransfer(parseInt(val));
               }}
             />
           </FormGroup>
@@ -250,8 +249,8 @@ const BackupSiteConfigurator = (props: {
               type="number"
               id="maxretries"
               value={maxRetries}
-              onChange={(e) => {
-                isNaN(parseInt(e)) ? setMaxRetries(undefined!) : setMaxRetries(parseInt(e));
+              onChange={(e, val) => {
+                isNaN(parseInt(val)) ? setMaxRetries(undefined!) : setMaxRetries(parseInt(val));
               }}
             />
           </FormGroup>
@@ -273,8 +272,8 @@ const BackupSiteConfigurator = (props: {
               type="number"
               id="waittime"
               value={waitTime}
-              onChange={(e) => {
-                isNaN(parseInt(e)) ? setWaitTime(undefined!) : setWaitTime(parseInt(e));
+              onChange={(e, val) => {
+                isNaN(parseInt(val)) ? setWaitTime(undefined!) : setWaitTime(parseInt(val));
               }}
             />
           </FormGroup>
@@ -359,8 +358,8 @@ const BackupSiteConfigurator = (props: {
           type="number"
           id="timeout"
           value={timeout}
-          onChange={(e) => {
-            isNaN(parseInt(e)) ? setTimeout(undefined!) : setTimeout(parseInt(e));
+          onChange={(e, val) => {
+            isNaN(parseInt(val)) ? setTimeout(undefined!) : setTimeout(parseInt(val));
           }}
         />
       </FormGroup>
@@ -379,8 +378,8 @@ const BackupSiteConfigurator = (props: {
           type="text"
           id="failurePolicyClass"
           value={failurePolicyClass}
-          onChange={(e) => {
-            e === '' ? setFailurePolicyClass(undefined!) : setFailurePolicyClass(e);
+          onChange={(e, val) => {
+            val === '' ? setFailurePolicyClass(undefined!) : setFailurePolicyClass(val);
           }}
         />
       </FormGroup>

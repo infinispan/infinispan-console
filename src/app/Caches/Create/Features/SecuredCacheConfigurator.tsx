@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, AlertVariant, FormGroup, Select, SelectOption, SelectVariant } from '@patternfly/react-core';
+import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { CacheFeature } from '@services/infinispanRefData';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -51,6 +53,10 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
     });
   }, [roles]);
 
+  const validateForm = (): 'success' | 'default' | 'error' => {
+    return roles.length == 0 ? 'error' : 'success';
+  };
+
   const securedFeatureValidation = (): boolean => {
     if (!props.isEnabled) {
       return false;
@@ -68,11 +74,6 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
     else setRoles([...roles, selection]);
   };
 
-  const deleteRole = (roleToDelete: string) => {
-    const newRoles = roles.filter((role) => !Object.is(role, roleToDelete));
-    setRoles(newRoles);
-  };
-
   if (!props.isEnabled) {
     return <FeatureAlert feature={CacheFeature.SECURED} />;
   }
@@ -82,13 +83,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
       title="caches.create.configurations.feature.secured"
       description="caches.create.configurations.feature.secured-description"
     >
-      <FormGroup
-        fieldId="select-roles"
-        isRequired
-        label={'Roles'}
-        helperTextInvalid={t('caches.create.configurations.feature.select-roles-helper')}
-        validated={roles.length == 0 ? 'error' : 'success'}
-      >
+      <FormGroup fieldId="select-roles" isRequired label={'Roles'}>
         <Select
           toggleId="roleSelector"
           chipGroupProps={{ numChips: 4, expandedText: 'Hide', collapsedText: 'Show ${remaining}' }}
@@ -98,11 +93,20 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
           onSelect={onSelectRoles}
           selections={roles}
           isOpen={isOpenRoles}
-          validated={roles.length == 0 ? 'error' : 'success'}
+          validated={validateForm()}
           placeholderText={t('caches.create.configurations.feature.select-roles')}
         >
           {rolesOptions()}
         </Select>
+        {validateForm() === 'error' && (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                {t('caches.create.configurations.feature.select-roles-helper')}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     </FeatureCard>
   );

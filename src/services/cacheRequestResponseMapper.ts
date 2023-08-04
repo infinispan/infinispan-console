@@ -40,12 +40,12 @@ export class CacheRequestResponseMapper {
       }
     } else if (encoding == EncodingType.Protobuf && contentType != ContentType.customType) {
       const protobufType = contentType;
-      let contentToPut: any = content;
+      let contentToPut: unknown = content;
       if (protobufType == ContentType.bool) {
         contentToPut = content == 'true';
       }
 
-      let entry = { _type: protobufType, _value: contentToPut };
+      const entry = { _type: protobufType, _value: contentToPut };
       return right(JSON.stringify(entry));
     }
 
@@ -142,7 +142,7 @@ export class CacheRequestResponseMapper {
       return dataValue.toString();
     }
 
-    let stringify = JSON.stringify(data);
+    const stringify = JSON.stringify(data);
     if (stringify.startsWith('{') || stringify.startsWith('[')) {
       return stringify;
     }

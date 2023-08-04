@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ExpandableSection,
   FormFieldGroupExpandable,
   FormFieldGroupHeader,
   FormGroup,
@@ -67,7 +66,7 @@ const BackupsConfigurationTuning = () => {
           <TextInput
             placeholder="DEFAULT"
             value={mergePolicy}
-            onChange={(val) => {
+            onChange={(_event, val) => {
               val === '' ? setMergePolicy(undefined!) : setMergePolicy(val);
             }}
             aria-label="merge-policy-input"
@@ -89,7 +88,7 @@ const BackupsConfigurationTuning = () => {
             placeholder="30000"
             type="number"
             value={maxCleanupDelay}
-            onChange={(val) => {
+            onChange={(_event, val) => {
               isNaN(parseInt(val)) ? setMaxCleanupDelay(undefined!) : setMaxCleanupDelay(parseInt(val));
             }}
             aria-label="max-cleanup-delay-input"
@@ -111,7 +110,7 @@ const BackupsConfigurationTuning = () => {
             placeholder="512000"
             type="number"
             value={tombstoneMapSize}
-            onChange={(val) => {
+            onChange={(_event, val) => {
               isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val));
             }}
             aria-label="tombstone-map-size-input"

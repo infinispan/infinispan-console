@@ -29,7 +29,7 @@ const RebalancingCacheManager = () => {
   ) {
     return (
       <React.Fragment>
-        <Divider isVertical />
+        <Divider orientation={{ default: 'vertical' }} />
         <FlexItem>
           <Switch
             data-cy="rebalancingSwitch"

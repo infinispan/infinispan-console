@@ -25,8 +25,8 @@ import {
   TextListItem,
   TextListItemVariants,
   TextListVariants,
-  TextVariants,
-  Title
+  TextVariants, EmptyStateHeader,
+  
 } from '@patternfly/react-core';
 import { ArrowIcon, CubesIcon, RedoIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
@@ -289,10 +289,7 @@ const GlobalStats = () => {
         <Card>
           <CardBody>
             <EmptyState variant={EmptyStateVariant.full}>
-              <EmptyStateIcon icon={CubesIcon} />
-              <Title headingLevel="h5" size="lg">
-                {t('global-stats.global-stats-disabled')}
-              </Title>
+              <EmptyStateHeader titleText={<>{t('global-stats.global-stats-disabled')}</>} icon={<EmptyStateIcon icon={CubesIcon} />} headingLevel="h5" />
               <EmptyStateBody>{t('global-stats.global-stats-disabled-help')}</EmptyStateBody>
             </EmptyState>
           </CardBody>

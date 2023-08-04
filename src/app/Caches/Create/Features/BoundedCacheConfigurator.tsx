@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
   FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   Grid,
   GridItem,
   InputGroup,
   Radio,
-  Select,
-  SelectOption,
-  SelectVariant,
-  TextInput
+  TextInput,
+  InputGroupItem
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { EvictionStrategy, EvictionType, MaxSizeUnit } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const BoundedCacheConfigurator = () => {
   const { t } = useTranslation();
@@ -60,12 +63,12 @@ const BoundedCacheConfigurator = () => {
     });
   }, [evictionType, maxSize, maxCount, evictionStrategy, maxSizeUnit]);
 
-  const onSelectEvictionStrategy = (event, selection, isPlaceholder) => {
+  const onSelectEvictionStrategy = (event, selection) => {
     setEvictionStrategy(selection);
     setIsOpenEvictionStrategy(false);
   };
 
-  const onSelectMaxCountUnit = (event, selection, isPlaceholder) => {
+  const onSelectMaxCountUnit = (event, selection) => {
     setMaxSizeUnit(selection);
     setIsOpenMaxSizeUnit(false);
   };
@@ -134,33 +137,44 @@ const BoundedCacheConfigurator = () => {
             isRequired
             fieldId="max-size"
             type="number"
-            validated={validateBoundedValue('size')}
-            helperTextInvalid={t('caches.create.configurations.feature.max-size-helper-invalid')}
           >
             <InputGroup>
-              <TextInput
-                data-cy="memorySizeInput"
-                validated={validateBoundedValue('size')}
-                min={0}
-                value={maxSize}
-                type="number"
-                onChange={(v) => setMaxSize(v)}
-                aria-label="max-size-number-input"
-              />
-              <Select
-                variant={SelectVariant.single}
-                aria-label="max-size-unit-input"
-                onToggle={() => setIsOpenMaxSizeUnit(!isOpenMaxSizeUnit)}
-                onSelect={onSelectMaxCountUnit}
-                selections={maxSizeUnit}
-                isOpen={isOpenMaxSizeUnit}
-                aria-labelledby="toggle-id-max-size-unit"
-                width={'20%'}
-                toggleId="memorySizeUnit"
-              >
-                {unitOptions()}
-              </Select>
+              <InputGroupItem isFill>
+                <TextInput
+                  data-cy="memorySizeInput"
+                  validated={validateBoundedValue('size')}
+                  min={0}
+                  value={maxSize}
+                  type="number"
+                  onChange={(_event, v) => setMaxSize(v)}
+                  aria-label="max-size-number-input"
+                />
+              </InputGroupItem>
+              <InputGroupItem>
+                <Select
+                  variant={SelectVariant.single}
+                  aria-label="max-size-unit-input"
+                  onToggle={() => setIsOpenMaxSizeUnit(!isOpenMaxSizeUnit)}
+                  onSelect={onSelectMaxCountUnit}
+                  selections={maxSizeUnit}
+                  isOpen={isOpenMaxSizeUnit}
+                  aria-labelledby="toggle-id-max-size-unit"
+                  width={'20%'}
+                  toggleId="memorySizeUnit"
+                >
+                  {unitOptions()}
+                </Select>
+              </InputGroupItem>
             </InputGroup>
+            {validateBoundedValue('size') === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={validateBoundedValue('size')} icon={<ExclamationCircleIcon />}>
+                    {t('caches.create.configurations.feature.max-size-helper-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         )}
         {evictionType === 'count' && (
@@ -168,8 +182,6 @@ const BoundedCacheConfigurator = () => {
             isRequired
             fieldId="max-count"
             type="number"
-            validated={validateBoundedValue('count')}
-            helperTextInvalid={t('caches.create.configurations.feature.max-count-helper-invalid')}
             label={t('caches.create.configurations.feature.max-count')}
             labelIcon={
               <PopoverHelp
@@ -185,9 +197,18 @@ const BoundedCacheConfigurator = () => {
               min={0}
               value={maxCount}
               type="number"
-              onChange={(v) => setMaxCount(v)}
+              onChange={(_event, v) => setMaxCount(v)}
               aria-label="max-count-input"
             />
+            {validateBoundedValue('count') === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={validateBoundedValue('count')} icon={<ExclamationCircleIcon />}>
+                    {t('caches.create.configurations.feature.max-count-helper-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         )}
         <FormGroup

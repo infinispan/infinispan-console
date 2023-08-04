@@ -10,7 +10,6 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  EmptyStateSecondaryActions,
   Label,
   LabelGroup,
   Menu,
@@ -25,16 +24,18 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarFilter,
   ToolbarToggleGroup,
   ToolbarItem,
   ToolbarItemVariant,
-  ButtonProps
+  ButtonProps,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter
 } from '@patternfly/react-core';
-import { TableComposable, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { useCaches, useDataContainer } from '@app/services/dataContainerHooks';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
@@ -470,16 +471,17 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   );
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={DatabaseIcon} />
-      <Title headingLevel="h4" size="lg">
-        {t('cache-managers.no-caches-status')}
-      </Title>
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText={t('cache-managers.no-caches-status')}
+        icon={<EmptyStateIcon icon={DatabaseIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
-      {createCacheButtonHelper(true)}
-      <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
-        {cacheTemplateButton}
-      </EmptyStateSecondaryActions>
+      <EmptyStateFooter>
+        {createCacheButtonHelper(true)}
+        <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>{cacheTemplateButton}</EmptyStateActions>
+      </EmptyStateFooter>
     </EmptyState>
   );
 
@@ -510,7 +512,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
         <MenuList>
           <MenuGroup label={t('cache-managers.cache-filter-type-label')}>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheType.includes(CacheType.Local)}
               itemId="Local"
               data-cy="localType"
@@ -518,7 +520,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.mode-local')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheType.includes(CacheType.Replicated)}
               itemId="Replicated"
               data-cy="replicatedType"
@@ -526,7 +528,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.mode-repl')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheType.includes(CacheType.Distributed)}
               itemId="Distributed"
               data-cy="distributedType"
@@ -534,7 +536,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.mode-dist')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheType.includes(CacheType.Invalidated)}
               itemId="Invalidated"
               data-cy="invalidatedType"
@@ -544,7 +546,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
           </MenuGroup>
           <MenuGroup label={t('cache-managers.cache-filter-feature-label')}>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheFeature.includes(CacheFeature.BOUNDED)}
               itemId="Bounded"
               data-cy="boundedFeature"
@@ -552,7 +554,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.cache-filter-feature-bounded')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheFeature.includes(CacheFeature.INDEXED)}
               itemId="Indexed"
               data-cy="indexedFeature"
@@ -560,7 +562,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.cache-filter-feature-indexed')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheFeature.includes(CacheFeature.PERSISTENCE)}
               itemId="Persistence"
               data-cy="persistenceFeature"
@@ -568,7 +570,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.cache-filter-feature-persistent')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheFeature.includes(CacheFeature.TRANSACTIONAL)}
               itemId="Transactional"
               data-cy="transactionalFeature"
@@ -576,7 +578,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.cache-filter-feature-trans')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheFeature.includes(CacheFeature.SECURED)}
               itemId="Authorization"
               data-cy="authorizationFeature"
@@ -584,7 +586,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               {t('cache-managers.cache-filter-feature-secure')}
             </MenuItem>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheFeature.includes(CacheFeature.BACKUPS)}
               itemId="Backups"
               data-cy="backupsFeature"
@@ -594,7 +596,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
           </MenuGroup>
           <MenuGroup label={t('cache-managers.cache-filter-status-label')}>
             <MenuItem
-              hasCheck
+              hasCheckbox
               isSelected={selectedCacheStatus.includes(CacheStatus.IGNORED)}
               itemId="Hidden"
               data-cy="hiddenStatus"
@@ -706,12 +708,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
         <Card>
           <CardBody>
             {toolbar}
-            <TableComposable
-              data-cy="cachesTable"
-              className={'cache-table'}
-              aria-label={'cache-table-label'}
-              variant="compact"
-            >
+            <Table data-cy="cachesTable" className={'cache-table'} aria-label={'cache-table-label'} variant="compact">
               <Thead>
                 <Tr>
                   <Th colSpan={1}>{columnNames.name}</Th>
@@ -726,11 +723,12 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
                   <Tr>
                     <Td colSpan={6}>
                       <Bullseye>
-                        <EmptyState variant={EmptyStateVariant.small}>
-                          <EmptyStateIcon icon={SearchIcon} />
-                          <Title headingLevel="h2" size="lg">
-                            {t('cache-managers.no-filter-cache')}
-                          </Title>
+                        <EmptyState variant={EmptyStateVariant.sm}>
+                          <EmptyStateHeader
+                            titleText={<>{t('cache-managers.no-filter-cache')}</>}
+                            icon={<EmptyStateIcon icon={SearchIcon} />}
+                            headingLevel="h2"
+                          />
                           <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
                         </EmptyState>
                       </Bullseye>
@@ -755,7 +753,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
                   })
                 )}
               </Tbody>
-            </TableComposable>
+            </Table>
             <Toolbar id="role-table-toolbar" className={'role-table-display'}>
               <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
             </Toolbar>

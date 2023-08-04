@@ -6,11 +6,9 @@ import {
   ToolbarItem,
   PageSection,
   PageSectionVariants,
-  PageSectionTypes,
-  Wizard,
-  WizardContextConsumer,
-  WizardFooter
+  PageSectionTypes
 } from '@patternfly/react-core';
+import { Wizard, WizardContextConsumer, WizardFooter } from '@patternfly/react-core/deprecated';
 import { useHistory } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCreateCache } from '@app/services/createCacheHook';

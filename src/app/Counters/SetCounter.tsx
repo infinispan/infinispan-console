@@ -1,7 +1,20 @@
 import React from 'react';
-import { Button, ButtonVariant, Form, FormGroup, Modal, Text, TextContent, TextInput } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Form,
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Modal,
+  Text,
+  TextContent,
+  TextInput
+} from '@patternfly/react-core';
 import { useSetCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const SetCounter = (props: {
   name: string;
@@ -20,6 +33,10 @@ const SetCounter = (props: {
       onSetCounter();
       props.submitModal();
     }
+  };
+
+  const validateForm = (): 'default' | 'error' => {
+    return props.isValid ? 'default' : 'error';
   };
 
   return (
@@ -62,18 +79,24 @@ const SetCounter = (props: {
             e.preventDefault();
           }}
         >
-          <FormGroup
-            validated={props.isValid ? 'default' : 'error'}
-            helperTextInvalid={t('cache-managers.counters.modal-set-helper-invalid')}
-          >
+          <FormGroup>
             <TextInput
-              validated={props.isValid ? 'default' : 'error'}
+              validated={validateForm()}
               value={props.value}
               type="number"
-              onChange={(value) => props.setValue(value)}
+              onChange={(_event, value) => props.setValue(value)}
               aria-label={'set-text-input'}
               data-cy="counterSetNum"
             />
+            {validateForm() === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {t('cache-managers.counters.modal-set-helper-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
         </Form>
       </TextContent>

@@ -5,7 +5,7 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   Spinner,
-  Title
+  EmptyStateHeader
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 } from '@patternfly/react-tokens';
@@ -13,6 +13,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 const TableEmptyState = (props: { loading: boolean; error: string; empty: string | React.ReactNode }) => {
+  const { t } = useTranslation();
+
   if (props.loading) {
     return (
       <Bullseye>
@@ -21,17 +23,17 @@ const TableEmptyState = (props: { loading: boolean; error: string; empty: string
     );
   }
 
-  const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
   if (props.error != '') {
     return (
       <Bullseye>
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_100.value} />
-          <Title headingLevel="h2" size="lg">
-            There was an error retrieving the data
-          </Title>
+        <EmptyState variant={EmptyStateVariant.sm}>
+          <EmptyStateHeader
+            titleText="There was an error retrieving the data"
+            icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_100.value} />}
+            headingLevel="h2"
+          />
           <EmptyStateBody>{props.error}</EmptyStateBody>
         </EmptyState>
       </Bullseye>
@@ -40,11 +42,12 @@ const TableEmptyState = (props: { loading: boolean; error: string; empty: string
 
   return (
     <Bullseye data-cy="noCacheConfigsFound">
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={SearchIcon} />
-        <Title headingLevel="h2" size="lg">
-          {props.empty}
-        </Title>
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateHeader
+          titleText={<>{props.empty}</>}
+          icon={<EmptyStateIcon icon={SearchIcon} />}
+          headingLevel="h2"
+        />
       </EmptyState>
     </Bullseye>
   );

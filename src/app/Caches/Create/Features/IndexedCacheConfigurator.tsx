@@ -4,15 +4,16 @@ import {
   Card,
   CardBody,
   FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   Label,
   LabelGroup,
   Radio,
-  Select,
-  SelectVariant,
-  SelectOption,
   Spinner,
   TextInput
 } from '@patternfly/react-core';
+import { Select, SelectVariant, SelectOption } from '@patternfly/react-core/deprecated';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import {
   IndexedStorage,
@@ -28,6 +29,7 @@ import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -87,7 +89,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const entitiesOptions = () => {
-    return protobufTypes.map((schema, id) => <SelectOption id={id} key={id} value={schema} />);
+    return protobufTypes.map((schema, id) => <SelectOption id={id.toString()} key={id} value={schema} />);
   };
 
   const startupModeOptions = () => {
@@ -134,10 +136,9 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           />
         }
         fieldId="indexed-entities"
-        validated={validEntity}
-        helperTextInvalid={t('caches.create.configurations.feature.index-storage-entity-helper')}
       >
         <Select
+          validated={validEntity}
           placeholderText={'Select an entity'}
           variant={SelectVariant.checkbox}
           aria-label="entities-select"
@@ -152,6 +153,15 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         >
           {entitiesOptions()}
         </Select>
+        {validEntity === 'error' && (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={validEntity} icon={<ExclamationCircleIcon />}>
+                {t('caches.create.configurations.feature.index-storage-entity-helper')}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     );
   };
@@ -292,7 +302,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           value={indexedSharding}
           data-cy="indexSharding"
           type="number"
-          onChange={(value) => setIndexedSharding(parseInt(value))}
+          onChange={(_event, value) => setIndexedSharding(parseInt(value))}
           aria-label="indexed-sharding-input"
         />
       </FormGroup>

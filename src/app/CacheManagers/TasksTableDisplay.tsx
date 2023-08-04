@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import {
+	TableVariant
+} from '@patternfly/react-table';
+import {
+	Table,
+	TableBody,
+	TableHeader
+} from '@patternfly/react-table/deprecated';
 import {
   Badge,
   Bullseye,
@@ -14,8 +21,8 @@ import {
   StackItem,
   Text,
   TextContent,
-  TextVariants,
-  Title
+  TextVariants, EmptyStateHeader,
+  
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
@@ -148,11 +155,8 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
               props: { colSpan: 8 },
               title: (
                 <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.small}>
-                    <EmptyStateIcon icon={SearchIcon} />
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.no-tasks-status')}
-                    </Title>
+                  <EmptyState variant={EmptyStateVariant.sm}>
+                    <EmptyStateHeader titleText={<>{t('cache-managers.no-tasks-status')}</>} icon={<EmptyStateIcon icon={SearchIcon} />} headingLevel="h2" />
                     <EmptyStateBody>{t('cache-managers.no-tasks-body')}</EmptyStateBody>
                   </EmptyState>
                 </Bullseye>

@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   FlexItem,
+  Icon,
   Stack,
   StackItem,
   Text,
@@ -85,7 +86,9 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 variant={ButtonVariant.link}
                 target="_blank"
               >
-                <GithubIcon size={'md'} />
+                <Icon size="md">
+                  <GithubIcon />
+                </Icon>
               </Button>
             </FlexItem>
             <FlexItem>
@@ -96,7 +99,9 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 variant={ButtonVariant.link}
                 target="_blank"
               >
-                <OutlinedCommentsIcon size={'md'} />
+                <Icon size="md">
+                  <OutlinedCommentsIcon />
+                </Icon>
               </Button>
             </FlexItem>
             <FlexItem>
@@ -107,7 +112,9 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 variant={ButtonVariant.link}
                 target="_blank"
               >
-                <StackOverflowIcon size={'md'} />
+                <Icon size="md">
+                  <StackOverflowIcon />
+                </Icon>
               </Button>
             </FlexItem>
 
@@ -119,7 +126,9 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 variant={ButtonVariant.link}
                 target="_blank"
               >
-                <TwitterIcon size={'md'} />
+                <Icon size="md">
+                  <TwitterIcon />
+                </Icon>
               </Button>
             </FlexItem>
             <FlexItem>
@@ -130,7 +139,9 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 variant={ButtonVariant.link}
                 target="_blank"
               >
-                <FacebookIcon size={'md'} />
+                <Icon size="md">
+                  <FacebookIcon />
+                </Icon>
               </Button>
             </FlexItem>
           </Flex>

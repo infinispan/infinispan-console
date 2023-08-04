@@ -3,25 +3,25 @@ import {
   Form,
   FormGroup,
   FormSection,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   Grid,
   GridItem,
   InputGroup,
   NumberInput,
   Radio,
-  Select,
-  SelectOption,
-  SelectVariant,
   Switch,
-  Text,
-  TextContent,
   TextInput,
-  TextVariants
+  InputGroupItem
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { CacheMode, CacheType, EncodingType, TimeUnits, CacheFeature } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { validateIndexedFeature, validateTransactionalFeature } from '@app/utils/featuresValidation';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const BasicCacheConfigConfigurator = () => {
   const { t } = useTranslation();
@@ -309,13 +309,19 @@ const BasicCacheConfigConfigurator = () => {
     return Object.keys(TimeUnits).map((key) => <SelectOption key={key} value={TimeUnits[key]} />);
   };
 
+  const validateLifeSpan = (): 'default' | 'error' => {
+    return lifeSpanNumber >= -1 ? 'default' : 'error';
+  };
+
+  const validateMaxIdle = (): 'default' | 'error' => {
+    return maxIdleNumber >= -1 ? 'default' : 'error';
+  };
+
   const formExpirationSettings = () => {
     return (
       <Grid md={6} hasGutter>
         <FormGroup
           fieldId="form-life-span"
-          validated={lifeSpanNumber >= -1 ? 'default' : 'error'}
-          helperTextInvalid={t('caches.create.configurations.basic.lifespan-helper-invalid')}
           label={t('caches.create.configurations.basic.lifespan')}
           labelIcon={
             <PopoverHelp
@@ -326,38 +332,46 @@ const BasicCacheConfigConfigurator = () => {
           }
         >
           <InputGroup>
-            <Grid>
-              <GridItem span={8}>
-                <TextInput
-                  min={-1}
-                  validated={lifeSpanNumber >= -1 ? 'default' : 'error'}
-                  value={lifeSpanNumber}
-                  type="number"
-                  onChange={(value) => setLifeSpanNumber(parseInt(value))}
-                  aria-label="life-span-input"
-                />
-              </GridItem>
-              <GridItem span={4}>
-                <Select
-                  variant={SelectVariant.single}
-                  aria-label="max-size-unit-input"
-                  onToggle={() => setIsOpenLifeSpanUnit(!isOpenLifeSpanUnit)}
-                  onSelect={onSelectLifeSpanUnit}
-                  selections={lifeSpanUnit}
-                  isOpen={isOpenLifeSpanUnit}
-                  aria-labelledby="toggle-id-max-size-unit"
-                >
-                  {unitOptions()}
-                </Select>
-              </GridItem>
-            </Grid>
+            <InputGroupItem>
+              <Grid>
+                <GridItem span={8}>
+                  <TextInput
+                    min={-1}
+                    validated={validateLifeSpan()}
+                    value={lifeSpanNumber}
+                    type="number"
+                    onChange={(_event, value) => setLifeSpanNumber(parseInt(value))}
+                    aria-label="life-span-input"
+                  />
+                </GridItem>
+                <GridItem span={4}>
+                  <Select
+                    variant={SelectVariant.single}
+                    aria-label="max-size-unit-input"
+                    onToggle={() => setIsOpenLifeSpanUnit(!isOpenLifeSpanUnit)}
+                    onSelect={onSelectLifeSpanUnit}
+                    selections={lifeSpanUnit}
+                    isOpen={isOpenLifeSpanUnit}
+                    aria-labelledby="toggle-id-max-size-unit"
+                  >
+                    {unitOptions()}
+                  </Select>
+                </GridItem>
+              </Grid>
+            </InputGroupItem>
           </InputGroup>
+          {validateLifeSpan() === 'error' && (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  {t('caches.create.configurations.basic.lifespan-helper-invalid')}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
-
         <FormGroup
           fieldId="form-max-idle"
-          validated={maxIdleNumber >= -1 ? 'default' : 'error'}
-          helperTextInvalid={t('caches.create.configurations.basic.max-idle-helper-invalid')}
           label={t('caches.create.configurations.basic.max-idle')}
           labelIcon={
             <PopoverHelp
@@ -368,32 +382,43 @@ const BasicCacheConfigConfigurator = () => {
           }
         >
           <InputGroup>
-            <Grid>
-              <GridItem span={8}>
-                <TextInput
-                  min={-1}
-                  value={maxIdleNumber}
-                  validated={maxIdleNumber >= -1 ? 'default' : 'error'}
-                  type="number"
-                  onChange={(value) => setMaxIdleNumber(parseInt(value))}
-                  aria-label="life-span-input"
-                />
-              </GridItem>
-              <GridItem span={4}>
-                <Select
-                  variant={SelectVariant.single}
-                  aria-label="max-size-unit-input"
-                  onToggle={() => setIsOpenMaxIdleUnit(!isOpenMaxIdleUnit)}
-                  onSelect={onSelectMaxIdleUnit}
-                  selections={maxIdleUnit}
-                  isOpen={isOpenMaxIdleUnit}
-                  aria-labelledby="toggle-id-max-size-unit"
-                >
-                  {unitOptions()}
-                </Select>
-              </GridItem>
-            </Grid>
+            <InputGroupItem>
+              <Grid>
+                <GridItem span={8}>
+                  <TextInput
+                    min={-1}
+                    validated={validateMaxIdle()}
+                    value={maxIdleNumber}
+                    type="number"
+                    onChange={(_event, value) => setMaxIdleNumber(parseInt(value))}
+                    aria-label="life-span-input"
+                  />
+                </GridItem>
+                <GridItem span={4}>
+                  <Select
+                    variant={SelectVariant.single}
+                    aria-label="max-size-unit-input"
+                    onToggle={() => setIsOpenMaxIdleUnit(!isOpenMaxIdleUnit)}
+                    onSelect={onSelectMaxIdleUnit}
+                    selections={maxIdleUnit}
+                    isOpen={isOpenMaxIdleUnit}
+                    aria-labelledby="toggle-id-max-size-unit"
+                  >
+                    {unitOptions()}
+                  </Select>
+                </GridItem>
+              </Grid>
+            </InputGroupItem>
           </InputGroup>
+          {validateMaxIdle() === 'error' && (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  {t('caches.create.configurations.basic.max-idle-helper-invalid')}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
       </Grid>
     );

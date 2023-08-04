@@ -10,15 +10,13 @@ import {
   Hint,
   HintBody,
   HintFooter,
-  Select,
-  SelectOption,
-  SelectVariant,
   Switch,
   Text,
   TextContent,
   TextInput,
   TextVariants
 } from '@patternfly/react-core';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { PersistentCacheStorage, PersistentStorageConfig } from '@services/infinispanRefData';
@@ -75,7 +73,7 @@ const PersistentCacheConfigurator = () => {
 
   const onSelectStorage = (event, selection) => {
     setStorage(selection);
-    let initConfig = PersistentStorageConfig.get(PersistentCacheStorage[selection as PersistentCacheStorage]);
+    const initConfig = PersistentStorageConfig.get(PersistentCacheStorage[selection as PersistentCacheStorage]);
     setConfig(initConfig ? initConfig : '');
     setIsOpenStorages(false);
     setValid(true);
@@ -205,7 +203,7 @@ const PersistentCacheConfigurator = () => {
               placeholder="10"
               value={connectionAttempts}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setConnectionAttempts(undefined!) : setConnectionAttempts(parseInt(val));
               }}
               aria-label="connection-attempts"
@@ -232,7 +230,7 @@ const PersistentCacheConfigurator = () => {
               placeholder="50"
               value={connectionInterval}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setConnectionInterval(undefined!) : setConnectionInterval(parseInt(val));
               }}
               aria-label="connection-interval"
@@ -259,7 +257,7 @@ const PersistentCacheConfigurator = () => {
               placeholder="1000"
               value={availabilityInterval}
               type="number"
-              onChange={(val) => {
+              onChange={(_event, val) => {
                 isNaN(parseInt(val)) ? setAvailabilityInterval(undefined!) : setAvailabilityInterval(parseInt(val));
               }}
               aria-label="availability-interval"
@@ -270,7 +268,6 @@ const PersistentCacheConfigurator = () => {
       <FormGroup
         fieldId="storages"
         isRequired
-        validated={storage.toString() !== '' ? 'success' : 'error'}
         label={t('caches.create.configurations.feature.storages')}
         labelIcon={
           <PopoverHelp

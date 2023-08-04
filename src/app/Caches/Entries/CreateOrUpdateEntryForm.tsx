@@ -6,15 +6,15 @@ import {
   ExpandableSection,
   Form,
   FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
   Modal,
-  Select,
-  SelectOption,
-  SelectVariant,
   Spinner,
   TextArea,
   TextInput
 } from '@patternfly/react-core';
-import { SelectOptionObject } from '@patternfly/react-core/src/components/Select/SelectOption';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
@@ -26,6 +26,7 @@ import { ContentType, EncodingType, InfinispanFlags } from '@services/infinispan
 import { ProtobufDataUtils } from '@services/protobufDataUtils';
 import { AddCircleOIcon, PencilAltIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -223,7 +224,7 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const onSelectFlags = (event, selection) => {
-    let prevSelectedFlags: SelectOptionObject[] = flags.selected as SelectOptionObject[];
+    let prevSelectedFlags = flags.selected;
 
     if (prevSelectedFlags.includes(selection)) {
       prevSelectedFlags = prevSelectedFlags.filter((item) => item !== selection);
@@ -300,8 +301,8 @@ const CreateOrUpdateEntryForm = (props: {
       formUtils.validateNotRequiredNumericField(timeToLiveField.value.trim(), 'Time to live', setTimeToLiveField) &&
       isValid;
 
-    let selectedKeyContentType = keyContentType.selected as ContentType;
-    let selectedValueContentType = valueContentType.selected as ContentType;
+    const selectedKeyContentType = keyContentType.selected as ContentType;
+    const selectedValueContentType = valueContentType.selected as ContentType;
 
     if (isValid) {
       ConsoleServices.caches()
@@ -360,7 +361,6 @@ const CreateOrUpdateEntryForm = (props: {
         label={t('caches.entries.add-entry-form-key-type-label')}
         labelIcon={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
         fieldId="key-content-type-helper"
-        helperText={keyContentType.helperText}
         placeholder={t('caches.entries.add-entry-form-key-type')}
         disabled={isEdition}
         isRequired
@@ -370,7 +370,7 @@ const CreateOrUpdateEntryForm = (props: {
           placeholderText={t('caches.entries.add-entry-form-key-type-select')}
           variant={SelectVariant.typeahead}
           aria-label={t('caches.entries.add-entry-form-key-type-select-label')}
-          onToggle={(isExpanded) => setExpanded(isExpanded, setKeyContentType)}
+          onToggle={(_event, isExpanded) => setExpanded(isExpanded, setKeyContentType)}
           onSelect={(event, selection) => setSelection(selection, false, setKeyContentType)}
           onClear={() => setKeyContentType(keyContentTypeInitialState)}
           selections={keyContentType.selected}
@@ -380,6 +380,11 @@ const CreateOrUpdateEntryForm = (props: {
         >
           {contentTypeOptions(props.cacheEncoding.key as EncodingType)}
         </Select>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>{keyContentType.helperText}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };
@@ -415,10 +420,7 @@ const CreateOrUpdateEntryForm = (props: {
         label={t('caches.entries.add-entry-form-key')}
         labelIcon={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
         isRequired
-        helperText={key.helperText}
-        helperTextInvalid={key.invalidText}
         fieldId="key-entry"
-        validated={key.validated}
         disabled={isEdition}
       >
         <TextArea
@@ -427,10 +429,20 @@ const CreateOrUpdateEntryForm = (props: {
           value={key.value}
           id="key-entry"
           aria-describedby="key-entry-helper"
-          onChange={onChangeKey}
+          onChange={(_event, key) => onChangeKey(key)}
           onBlur={onBlurKey}
           disabled={isEdition}
         />
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              variant={key.validated}
+              {...(key.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+            >
+              {key.validated === 'error' ? key.invalidText : key.helperText}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };
@@ -458,10 +470,7 @@ const CreateOrUpdateEntryForm = (props: {
         label={t('caches.entries.add-entry-form-value')}
         labelIcon={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
         isRequired
-        helperText={value.helperText}
-        helperTextInvalid={value.invalidText}
         fieldId="value-entry"
-        validated={value.validated}
       >
         <TextArea
           isRequired
@@ -469,9 +478,19 @@ const CreateOrUpdateEntryForm = (props: {
           value={value.value}
           id="value-entry"
           aria-describedby="value-entry-helper"
-          onChange={onChangeValue}
+          onChange={(_event, value) => onChangeValue(value)}
           onBlur={onBlurValue}
         />
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              variant={value.validated}
+              {...(value.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+            >
+              {value.validated === 'error' ? value.invalidText : value.helperText}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };
@@ -494,18 +513,25 @@ const CreateOrUpdateEntryForm = (props: {
           />
         }
         type="number"
-        helperText={timeToLiveField.helperText}
-        helperTextInvalid={timeToLiveField.invalidText}
         fieldId="timeToLive"
-        validated={timeToLiveField.validated}
       >
         <TextInput
           validated={timeToLiveField.validated}
           value={timeToLiveField.value}
           id="timeToLive"
           aria-describedby="timeToLive-helper"
-          onChange={onChangeTimeToLive}
+          onChange={(_event, timeToLive) => onChangeTimeToLive(timeToLive)}
         />
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              variant={timeToLiveField.validated}
+              {...(timeToLiveField.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+            >
+              {timeToLiveField.validated === 'error' ? timeToLiveField.invalidText : timeToLiveField.helperText}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };
@@ -529,18 +555,25 @@ const CreateOrUpdateEntryForm = (props: {
           />
         }
         type="number"
-        helperText={maxIdleField.helperText}
-        helperTextInvalid={maxIdleField.invalidText}
         fieldId="maxIdle"
-        validated={maxIdleField.validated}
       >
         <TextInput
           validated={maxIdleField.validated}
           value={maxIdleField.value}
           id="maxIdle"
           aria-describedby="maxIdle-helper"
-          onChange={onChangeMaxIdle}
+          onChange={(_event, maxIdle) => onChangeMaxIdle(maxIdle)}
         />
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem
+              variant={maxIdleField.validated}
+              {...(maxIdleField.validated === 'error' && { icon: <ExclamationCircleIcon /> })}
+            >
+              {maxIdleField.validated === 'error' ? maxIdleField.invalidText : maxIdleField.helperText}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };
@@ -557,9 +590,7 @@ const CreateOrUpdateEntryForm = (props: {
       <FormGroup
         label={t('caches.entries.add-entry-form-value-type-label')}
         labelIcon={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
-        helperTextInvalid={t('caches.entries.add-entry-form-value-type-invalid')}
         fieldId="value-content-type-helper"
-        helperText={valueContentType.helperText}
         isRequired
       >
         <Select
@@ -567,7 +598,7 @@ const CreateOrUpdateEntryForm = (props: {
           placeholderText={t('caches.entries.add-entry-form-value-type-select')}
           variant={SelectVariant.typeahead}
           aria-label={t('caches.entries.add-entry-form-value-type-select-label')}
-          onToggle={(isExpanded) => setExpanded(isExpanded, setValueContentType)}
+          onToggle={(_event, isExpanded) => setExpanded(isExpanded, setValueContentType)}
           onSelect={(event, selection) => setSelection(selection, false, setValueContentType)}
           onClear={() => setValueContentType(contentTypeInitialState)}
           selections={valueContentType.selected}
@@ -576,6 +607,11 @@ const CreateOrUpdateEntryForm = (props: {
         >
           {contentTypeOptions(props.cacheEncoding.value as EncodingType)}
         </Select>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>{valueContentType.helperText}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };
@@ -589,16 +625,11 @@ const CreateOrUpdateEntryForm = (props: {
       />
     );
     return (
-      <FormGroup
-        label={t('caches.entries.add-entry-form-flags')}
-        labelIcon={helper}
-        fieldId="flags-helper"
-        helperText={t('caches.entries.add-entry-form-flags-help')}
-      >
+      <FormGroup label={t('caches.entries.add-entry-form-flags')} labelIcon={helper} fieldId="flags-helper">
         <Select
           variant={SelectVariant.typeaheadMulti}
           aria-label={t('caches.entries.add-entry-form-flags-label')}
-          onToggle={(isExpanded) => setExpanded(isExpanded, setFlags)}
+          onToggle={(_event, isExpanded) => setExpanded(isExpanded, setFlags)}
           onSelect={onSelectFlags}
           onClear={() => setFlags(flagsInitialState)}
           selections={flags.selected}
@@ -609,6 +640,11 @@ const CreateOrUpdateEntryForm = (props: {
         >
           {flagsOptions()}
         </Select>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>{t('caches.entries.add-entry-form-flags-help')}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     );
   };

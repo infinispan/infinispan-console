@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FormGroup, Radio } from '@patternfly/react-core';
+import { FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+   Radio } from '@patternfly/react-core';
 import { CacheFeature, Locking, TransactionalMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -47,9 +51,14 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
       <FormGroup
         fieldId="form-transaction-mode"
         label={t('caches.create.configurations.feature.transactional-mode')}
-        isHelperTextBeforeField
-        helperText={t('caches.create.configurations.feature.transactional-mode-tooltip', { brandname: brandname })}
       >
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem >
+              {t('caches.create.configurations.feature.transactional-mode-tooltip', { brandname: brandname })}
+            </HelperTextItem>
+          </HelperText>
+          </FormHelperText>
         <Radio
           name="radio-transactional-mode"
           id="non_xa"
@@ -96,9 +105,14 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
       <FormGroup
         fieldId="locking"
         label={t('caches.create.configurations.feature.locking-mode')}
-        isHelperTextBeforeField
-        helperText={t('caches.create.configurations.feature.locking-mode-tooltip', { brandname: brandname })}
-      >
+              >
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem >
+              {t('caches.create.configurations.feature.locking-mode-tooltip', { brandname: brandname })}
+            </HelperTextItem>
+          </HelperText>
+          </FormHelperText>
         <Radio
           name="radio-locking"
           id="optimistic"

@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Form,
-  FormGroup,
-  FormSection,
-  Grid,
-  GridItem,
-  HelperText,
-  HelperTextItem,
-  Select,
-  SelectOption,
-  SelectVariant,
-  Switch,
-  TextInput
+	Form,
+	FormGroup,
+	FormSection,
+	Grid,
+	GridItem,
+	HelperText,
+	HelperTextItem,
+	Switch,
+	TextInput
 } from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 
 import { CacheFeature, StorageType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
@@ -124,7 +126,7 @@ const AdvancedOptionsConfigurator = () => {
               placeholder="32"
               value={concurrencyLevel}
               type="number"
-              onChange={handleConcurrencyLevel}
+              onChange={(_event, value) => handleConcurrencyLevel(value)}
               aria-label="concurrency-level-input"
               data-cy="concurencyLevel"
             />
@@ -145,7 +147,7 @@ const AdvancedOptionsConfigurator = () => {
               placeholder="10"
               value={lockAcquisitionTimeout}
               type="number"
-              onChange={handleLockAcquisitionTimeout}
+              onChange={(_event, value) => handleLockAcquisitionTimeout(value)}
               aria-label="lock-acquisition-timeout-input"
               data-cy="lockTimeout"
             />

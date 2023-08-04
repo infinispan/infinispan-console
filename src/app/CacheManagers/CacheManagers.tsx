@@ -82,7 +82,7 @@ const CacheManagers = () => {
     return (
       <Nav
         data-cy="navigationTabs"
-        onSelect={handleTabClick}
+        onSelect={(_event, nav) => handleTabClick(nav)}
         variant={'tertiary'}
         style={{ marginTop: global_spacer_md.value }}
       >
@@ -142,7 +142,7 @@ const CacheManagers = () => {
 
     return (
       <React.Fragment>
-        <Divider isVertical />
+        <Divider orientation={{ default: 'vertical' }} />
         <FlexItem>{'Site: ' + siteName}</FlexItem>
       </React.Fragment>
     );

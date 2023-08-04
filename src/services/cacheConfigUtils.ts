@@ -32,7 +32,7 @@ export class CacheConfigUtils {
     } catch (ex) {}
 
     try {
-      let oDOM = new DOMParser().parseFromString(trimmedConf, 'text/xml');
+      const oDOM = new DOMParser().parseFromString(trimmedConf, 'text/xml');
       if (oDOM.getElementsByTagName('parsererror').length == 0) {
         return right('xml');
       }
@@ -98,7 +98,7 @@ export class CacheConfigUtils {
    * @param encodingType
    */
   public static getContentTypeOptions(encodingType: EncodingType): ContentType[] {
-    let contentTypes: ContentType[] = [];
+    const contentTypes: ContentType[] = [];
 
     if (
       encodingType == EncodingType.Java ||
