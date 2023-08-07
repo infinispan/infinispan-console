@@ -37,7 +37,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.get('[data-cy=provideConfigArea] > button').click();
 
-    cy.get('.pf-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
+    cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
       .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
       .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
       .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}").type('"distributed-cache": {{}"mode": "ASYNC", "statistics": true }{del}');
@@ -60,7 +60,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.get('[data-cy=provideConfigArea] > button').click();
 
-    cy.get('.pf-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
+    cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
       .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
       .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
       .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}")

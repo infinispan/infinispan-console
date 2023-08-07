@@ -25,7 +25,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().type('stringValue');
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('stringKey');
     cy.contains('stringValue');
 
@@ -42,7 +42,7 @@ describe('Cache Detail Overview', () => {
       .type('{"_type": "org.infinispan.Person","name": "Elaia","age" : 12}', { parseSpecialCharSequences: false });
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('org.infinispan.Person');
 
     //Adding int32 key/value
@@ -60,7 +60,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().clear().type(-2147483647);
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('2147483647');
     cy.contains('-2147483647');
 
@@ -78,7 +78,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#int64').click();
     cy.get('#value-entry').click().clear().type('-9223372036854775807');
     cy.get('[data-cy=addButton]').click();
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     //cy.contains('9223372036854775807'); @TODO Uncomment when ISPN-14062 is fixed.
     //cy.contains('-9223372036854775807');
 
@@ -93,7 +93,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().type(1.7976931348623157e308);
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('1.7976931348623157e+308');
     cy.contains('1.7976931348623157e+308');
 
@@ -108,7 +108,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().type(3.402823466e-38);
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     //cy.contains('3.402823466e+38'); @TODO Uncomment when ISPN-14062 is fixed.
     //cy.contains('3.402823466e-38');
 
@@ -123,7 +123,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().type('ahoj');
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('true');
     cy.contains('false');
 
@@ -138,7 +138,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().type('10110010101001011001101110010101');
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('00110010101001011001101110010101');
     cy.contains('00110010101001011001101110010101');
 
@@ -180,7 +180,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().clear().type(-2147483647);
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('2147483647');
     cy.contains('-2147483647');
 
@@ -194,7 +194,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#value-entry').click().clear().type('-9223372036854775807');
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache people.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     //cy.contains('9223372036854775807'); //@TODO Uncomment when ISPN-14062 is fixed.
     //cy.contains('-9223372036854775807');
 

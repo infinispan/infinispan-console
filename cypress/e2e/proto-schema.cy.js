@@ -26,11 +26,11 @@ describe('Proto Schema CRUD', () => {
     cy.contains('test-10.proto');
 
     //Changing the number of items on the page
-    cy.get('[id^="pagination-schemas-top-toggle"]').first().click();
-    cy.get('[data-action=per-page-10] > div').should('exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] > div').should('not.exist');
-    cy.get('[data-action=per-page-50] > div').should('not.exist');
-    cy.get('[data-action=per-page-100] > div').should('not.exist');
+    cy.get('[id^="pagination-schemas-top-toggle"]').click();
+    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('exist'); //Verifying the selected option
+    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('not.exist');
+    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
+    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
     cy.get('[data-action=per-page-20]').click();
     cy.get('#primary-app-container').scrollTo('bottom');
     cy.contains('test-8.proto');
@@ -40,11 +40,11 @@ describe('Proto Schema CRUD', () => {
 
     //Changing the number of items on the page back to 10
     cy.get('#primary-app-container').scrollTo('bottom');
-    cy.get('[id^="pagination-schemas-top-toggle"]').first().click();
-    cy.get('[data-action=per-page-10] > div').should('not.exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] > div').should('exist');
-    cy.get('[data-action=per-page-50] > div').should('not.exist');
-    cy.get('[data-action=per-page-100] > div').should('not.exist');
+    cy.get('[id^="pagination-schemas-top-toggle"]').click();
+    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('not.exist'); //Verifying the selected option
+    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('exist');
+    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
+    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
     cy.get('[data-action=per-page-10]').click();
     cy.contains('test-7.proto').should('not.exist');
     cy.contains('test-6.proto');
@@ -62,7 +62,7 @@ describe('Proto Schema CRUD', () => {
     cy.get('#schema').click().type('schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Schema aTestSchema created.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('aTestSchema.proto');
 
     //Updating existing schema
@@ -76,7 +76,7 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-cy=schemaEditArea]').type('schemaNewValue');
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
     cy.contains('Schema aTestSchema.proto updated.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('schemaNewValue');
 
     //Updating existing schema with correct value
@@ -91,9 +91,7 @@ describe('Proto Schema CRUD', () => {
     );
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
     cy.contains('Schema aTestSchema.proto updated.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
-    cy.get('[data-cy="aTestSchema.protoConfig"]').click();
-    cy.wait(1000)
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('schemaNewValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema aTestSchema.proto has errors').should('not.exist');
@@ -104,7 +102,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Delete schema?');
     cy.get('button[aria-label="confirm-delete-schema-button"]').click();
     cy.contains('Schema aTestSchema.proto has been deleted.');
-    cy.get('.pf-c-alert__action > .pf-c-button').click(); //Closing alert popup.
+    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('people.proto');
     cy.get('button[aria-label="create-schema-button"]').scrollIntoView();
     cy.contains('aTestSchema.proto').should('not.exist');
