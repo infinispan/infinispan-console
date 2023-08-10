@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import {
-	Button,
-	ButtonVariant,
-	Card,
-	CardBody,
-	Bullseye,
-	Divider,
-	EmptyState,
-	EmptyStateBody,
-	EmptyStateIcon,
-	EmptyStateVariant,
-	Pagination,
-	SearchInput,
-	Toolbar,
-	ToolbarContent,
-	ToolbarToggleGroup,
-	ToolbarGroup,
-	ToolbarItem,
-	ToolbarFilter,
-	Tooltip, EmptyStateActions, EmptyStateHeader, EmptyStateFooter
+  Button,
+  ButtonVariant,
+  Card,
+  CardBody,
+  Bullseye,
+  Divider,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Pagination,
+  SearchInput,
+  Toolbar,
+  ToolbarContent,
+  ToolbarToggleGroup,
+  ToolbarGroup,
+  ToolbarItem,
+  ToolbarFilter,
+  Tooltip,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter
 } from '@patternfly/react-core';
-import {
-	Select,
-	SelectOption,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { FilterIcon, SearchIcon, PlusCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
@@ -222,12 +221,16 @@ const CacheEntries = (props: { cacheName: string }) => {
     <Card>
       <CardBody>
         <EmptyState variant={EmptyStateVariant.lg}>
-          <EmptyStateHeader titleText={<>{t('caches.entries.empty-cache')}</>} icon={<EmptyStateIcon icon={PlusCircleIcon} />} headingLevel="h4" />
-          <EmptyStateBody>{infoEntries ? infoEntries : t('caches.entries.empty-cache-body')}</EmptyStateBody><EmptyStateFooter>
-          <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
-            {addEntryAction()}
-          </EmptyStateActions>
-        </EmptyStateFooter></EmptyState>
+          <EmptyStateHeader
+            titleText={<>{t('caches.entries.empty-cache')}</>}
+            icon={<EmptyStateIcon icon={PlusCircleIcon} />}
+            headingLevel="h4"
+          />
+          <EmptyStateBody>{infoEntries ? infoEntries : t('caches.entries.empty-cache-body')}</EmptyStateBody>
+          <EmptyStateFooter>
+            <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>{addEntryAction()}</EmptyStateActions>
+          </EmptyStateFooter>
+        </EmptyState>
       </CardBody>
     </Card>
   );
@@ -376,21 +379,27 @@ const CacheEntries = (props: { cacheName: string }) => {
                   <Td colSpan={6}>
                     <Bullseye>
                       <EmptyState variant={EmptyStateVariant.sm}>
-                        <EmptyStateHeader titleText={<>{t('caches.entries.no-filtered-entry')}</>} icon={<EmptyStateIcon icon={SearchIcon} />} headingLevel="h2" />
-                        <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody><EmptyStateFooter>
-                        <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
-                          <Button
-                            data-cy="clearSearch"
-                            key="clear-search"
-                            variant={ButtonVariant.link}
-                            onClick={() => {
-                              setSearchValue('');
-                            }}
-                          >
-                            {t('caches.entries.no-filtered-entry-action')}
-                          </Button>
-                        </EmptyStateActions>
-                      </EmptyStateFooter></EmptyState>
+                        <EmptyStateHeader
+                          titleText={<>{t('caches.entries.no-filtered-entry')}</>}
+                          icon={<EmptyStateIcon icon={SearchIcon} />}
+                          headingLevel="h2"
+                        />
+                        <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody>
+                        <EmptyStateFooter>
+                          <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
+                            <Button
+                              data-cy="clearSearch"
+                              key="clear-search"
+                              variant={ButtonVariant.link}
+                              onClick={() => {
+                                setSearchValue('');
+                              }}
+                            >
+                              {t('caches.entries.no-filtered-entry-action')}
+                            </Button>
+                          </EmptyStateActions>
+                        </EmptyStateFooter>
+                      </EmptyState>
                     </Bullseye>
                   </Td>
                 </Tr>

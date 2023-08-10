@@ -11,27 +11,18 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  EmptyStateSecondaryActions,
   Pagination,
   Spinner,
   SearchInput,
-  Title,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter
 } from '@patternfly/react-core';
-import {
-  TableComposable,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  ExpandableRowContent,
-  ActionsColumn,
-  IAction
-} from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td, ExpandableRowContent, ActionsColumn, IAction } from '@patternfly/react-table';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -205,13 +196,13 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   const displayProtoError = (error: ProtoError | undefined) => {
     if (error) {
       return (
-        <Alert isInline variant={AlertVariant.danger} title={error.message} className="alert-message">
+        <Alert isPlain isInline variant={AlertVariant.danger} title={error.message} className="alert-message">
           <p>{error.cause}</p>
         </Alert>
       );
     }
 
-    return <Alert isInline variant={AlertVariant.success} title={''} className="alert-message" />;
+    return <Alert isPlain isInline variant={AlertVariant.success} title={''} className="alert-message" />;
   };
 
   const buildSchemaContent = (name) => {
@@ -234,13 +225,14 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   };
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={DatabaseIcon} />
-      <Title headingLevel="h4" size="lg">
-        {t('schemas.no-schema-status')}
-      </Title>
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText={<>{t('schemas.no-schema-status')}</>}
+        icon={<EmptyStateIcon icon={DatabaseIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>{t('schemas.no-schema-body')}</EmptyStateBody>
-      {createSchemaButtonHelper(true)}
+      <EmptyStateFooter>{createSchemaButtonHelper(true)}</EmptyStateFooter>
     </EmptyState>
   );
 
@@ -291,7 +283,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
                 <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
               </ToolbarContent>
             </Toolbar>
-            <TableComposable
+            <Table
               data-cy="schemaTable"
               className={'schema-table'}
               aria-label={'schema-table-label'}
@@ -310,17 +302,20 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
                   <Tr>
                     <Td colSpan={6}>
                       <Bullseye>
-                        <EmptyState variant={EmptyStateVariant.small}>
-                          <EmptyStateIcon icon={SearchIcon} />
-                          <Title headingLevel="h2" size="lg">
-                            {t('schemas.no-filter-schema')}
-                          </Title>
+                        <EmptyState variant={EmptyStateVariant.sm}>
+                          <EmptyStateHeader
+                            titleText={<>{t('schemas.no-filter-schema')}</>}
+                            icon={<EmptyStateIcon icon={SearchIcon} />}
+                            headingLevel="h2"
+                          />
                           <EmptyStateBody>{t('schemas.no-filter-schema-body')}</EmptyStateBody>
-                          <EmptyStateSecondaryActions style={{ marginTop: global_spacer_sm.value }}>
-                            <Button variant={'link'} onClick={() => setSearchValue('')}>
-                              {t('schemas.create-button')}
-                            </Button>
-                          </EmptyStateSecondaryActions>
+                          <EmptyStateFooter>
+                            <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>
+                              <Button variant={'link'} onClick={() => setSearchValue('')}>
+                                {t('schemas.create-button')}
+                              </Button>
+                            </EmptyStateActions>
+                          </EmptyStateFooter>
                         </EmptyState>
                       </Bullseye>
                     </Td>
@@ -358,7 +353,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
                   );
                 })
               )}
-            </TableComposable>
+            </Table>
             <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
           </CardBody>
         </Card>

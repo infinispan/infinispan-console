@@ -22,7 +22,8 @@ import {
   ToolbarGroup
 } from '@patternfly/react-core';
 import { Select, SelectOption, SelectVariant, SelectGroup } from '@patternfly/react-core/deprecated';
-import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { Table } from '@patternfly/react-table/deprecated';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';

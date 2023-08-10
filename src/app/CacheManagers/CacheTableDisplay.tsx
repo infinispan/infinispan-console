@@ -54,7 +54,7 @@ import {
   DegradedIcon,
   ExclamationCircleIcon
 } from '@patternfly/react-icons';
-import { global_spacer_sm, global_spacer_md, global_spacer_xl } from '@patternfly/react-tokens';
+import { global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
 import { Link } from 'react-router-dom';
 import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
@@ -653,7 +653,6 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
         setSelectedCacheType([]);
         setSelectedCacheStatus([]);
       }}
-      style={{ marginBottom: global_spacer_md.value }}
     >
       <ToolbarContent>
         <ToolbarToggleGroup data-cy="cacheFilterSelect" toggleIcon={<FilterIcon />} breakpoint="xl">

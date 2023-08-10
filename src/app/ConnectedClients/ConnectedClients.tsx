@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Button,
   Bullseye,
   Card,
   CardBody,
@@ -12,7 +13,6 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Icon,
   SearchInput,
   PageSection,
   PageSectionVariants,
@@ -32,7 +32,8 @@ import {
   EmptyStateHeader
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, InfoCircleIcon } from '@patternfly/react-icons';
-import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Table } from '@patternfly/react-table/deprecated';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useFetchConnectedClients } from '@app/services/serverHook';
@@ -237,11 +238,12 @@ const ConnectedClients = () => {
 
     return (
       <Popover position="left" headerContent={'More info'} headerComponent="h3" bodyContent={description}>
-        <button onClick={(e) => e.preventDefault()} type="button" className="pf-c-form__group-label-help">
-          <Icon status="info">
-            <InfoCircleIcon />
-          </Icon>
-        </button>
+        <Button
+          variant="plain"
+          onClick={(e) => e.preventDefault()}
+          className="pf-c-form__group-label-help"
+          icon={<InfoCircleIcon />}
+        />
       </Popover>
     );
   };

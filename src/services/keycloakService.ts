@@ -18,7 +18,7 @@ export class KeycloakService {
       console.error('Unable to init Keycloak with undefined configOptions');
       return new Promise((resolve, reject) => reject('Unable to init Keycloak with undefined configOptions'));
     } else {
-      KeycloakService.keycloakAuth = Keycloak(configOptions);
+      KeycloakService.keycloakAuth = new Keycloak(configOptions);
 
       return new Promise((resolve, reject) => {
         KeycloakService.keycloakAuth

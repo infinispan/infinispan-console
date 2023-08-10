@@ -84,7 +84,7 @@ const EditSchema = (props: {
         data-cy="schemaEditArea"
         aria-label={'edit-schema-content'}
         value={editSchemaContent}
-        onChange={setEditSchemaContent}
+        onChange={(_event, val) => setEditSchemaContent(val)}
         isRequired
         validated={formValidate}
         style={{ fontSize: global_FontSize_sm.value }}

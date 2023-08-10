@@ -278,12 +278,12 @@ describe('RBAC Functionlity Tests', () => {
     cy.contains('message Person');
     if (isAdmin) {
       cy.get('button[aria-label="create-schema-button"]').should('exist');
-      cy.get('[data-cy="actions-people.proto"]>div>button').click();
+      cy.get('[data-cy="actions-people.proto"]>button').click();
       cy.get('[aria-label="editSchemaAction"]').should('exist');
       cy.get('[aria-label="deleteSchemaAction"]').should('exist');
     } else {
       cy.get('button[aria-label="create-schema-button"]').should('not.exist');
-      cy.get('[data-cy="actions-people.proto"]>div>button').click();
+      cy.get('[data-cy="actions-people.proto"]>button').click();
       cy.get('[aria-label="editSchemaAction"]').should('exist');
       cy.get('[aria-label="deleteSchemaAction"]').should('exist');
     }

@@ -69,6 +69,7 @@ describe('Welcome page', () => {
   });
 
   it('successfully opens and views About page', () => {
+      cy.login(Cypress.env('username'), Cypress.env('password'));
       cy.get('[data-cy=aboutInfoQuestionMark]').click();
       cy.contains('Documentation');
       

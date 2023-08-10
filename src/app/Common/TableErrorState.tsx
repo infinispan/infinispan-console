@@ -1,4 +1,11 @@
-import { Bullseye, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, EmptyStateHeader,  } from '@patternfly/react-core';
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  EmptyStateHeader
+} from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_200 } from '@patternfly/react-tokens';
 import * as React from 'react';
@@ -19,7 +26,11 @@ const TableErrorState = (props: { error: string; detail?: string }) => {
   return (
     <Bullseye>
       <EmptyState variant={EmptyStateVariant.full}>
-        <EmptyStateHeader titleText={<>{props.error}</>} icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />} headingLevel="h2" />
+        <EmptyStateHeader
+          titleText={<>{props.error}</>}
+          icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />}
+          headingLevel="h2"
+        />
         <EmptyStateBody>{displayErrorBody()}</EmptyStateBody>
       </EmptyState>
     </Bullseye>

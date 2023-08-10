@@ -22,7 +22,7 @@ import {
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
 import { CatalogIcon, GithubIcon, DownloadIcon, UnknownIcon } from '@patternfly/react-icons';
 import { chart_color_blue_500, global_BackgroundColor_100 } from '@patternfly/react-tokens';
-import { ConsoleBackground } from '@app/Common/ConsoleBackgroud';
+import { ConsoleBackground } from '@app/Common/ConsoleBackground/ConsoleBackground';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
@@ -31,8 +31,6 @@ import { useHistory } from 'react-router';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useFetchVersion } from '@app/services/serverHook';
 import { hotRodClientsLink, aboutLink, tutorialsLink, blogLink, apacheLicenseLink } from '@app/utils/links';
-import { checkIfServerVersionIsGreaterOrEqual } from '@app/utils/serverVersionUtils';
-
 import './Welcome.css';
 
 const Welcome = (props) => {
@@ -161,7 +159,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(blogLink, '_blank');
           }}
-          isSelectable
+          isClickable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>
@@ -178,7 +176,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(hotRodClientsLink, '_blank');
           }}
-          isSelectable
+          isClickable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>
@@ -195,7 +193,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(aboutLink, '_blank');
           }}
-          isSelectable
+          isClickable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>
@@ -212,7 +210,7 @@ const Welcome = (props) => {
           onClick={() => {
             window.open(tutorialsLink, '_blank');
           }}
-          isSelectable
+          isClickable
           className={'card'}
         >
           <CardHeader className={'card-heading'}>

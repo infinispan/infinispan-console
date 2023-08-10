@@ -23,7 +23,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
+import { Table } from '@patternfly/react-table/deprecated';
 import { global_danger_color_200, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 
 const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: () => void }) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { App } from '@app/index';
 import './i18n';
 
@@ -10,11 +10,11 @@ if (process.env.NODE_ENV !== 'production') {
   // axe(React, ReactDOM, 1000);
 }
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+root.render(
   <React.Fragment>
     <React.Suspense fallback={'loading'}>
       <App />
     </React.Suspense>
-  </React.Fragment>,
-  document.getElementById('root') as HTMLElement
+  </React.Fragment>
 );
