@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-   Radio } from '@patternfly/react-core';
+import { FormGroup, FormHelperText, HelperText, HelperTextItem, Radio } from '@patternfly/react-core';
 import { CacheFeature, Locking, TransactionalMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -48,17 +44,14 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
       title="caches.create.configurations.feature.transactional"
       description="caches.create.configurations.feature.transactional-description"
     >
-      <FormGroup
-        fieldId="form-transaction-mode"
-        label={t('caches.create.configurations.feature.transactional-mode')}
-      >
+      <FormGroup fieldId="form-transaction-mode" label={t('caches.create.configurations.feature.transactional-mode')}>
         <FormHelperText>
           <HelperText>
-            <HelperTextItem >
+            <HelperTextItem>
               {t('caches.create.configurations.feature.transactional-mode-tooltip', { brandname: brandname })}
             </HelperTextItem>
           </HelperText>
-          </FormHelperText>
+        </FormHelperText>
         <Radio
           name="radio-transactional-mode"
           id="non_xa"
@@ -102,17 +95,14 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           }
         />
       </FormGroup>
-      <FormGroup
-        fieldId="locking"
-        label={t('caches.create.configurations.feature.locking-mode')}
-              >
+      <FormGroup fieldId="locking" label={t('caches.create.configurations.feature.locking-mode')}>
         <FormHelperText>
           <HelperText>
-            <HelperTextItem >
+            <HelperTextItem>
               {t('caches.create.configurations.feature.locking-mode-tooltip', { brandname: brandname })}
             </HelperTextItem>
           </HelperText>
-          </FormHelperText>
+        </FormHelperText>
         <Radio
           name="radio-locking"
           id="optimistic"

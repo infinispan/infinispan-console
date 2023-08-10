@@ -42,7 +42,7 @@ import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { global_danger_color_200, global_spacer_md } from '@patternfly/react-tokens';
+import { global_danger_color_200 } from '@patternfly/react-tokens';
 import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
@@ -445,7 +445,6 @@ const DetailCache = (props: { cacheName: string }) => {
           {buildShowMorePanel()}
         </Toolbar>
         <Tabs
-          style={{ marginTop: global_spacer_md.value }}
           isBox={false}
           activeKey={activeTabKey1}
           isSecondary={true}

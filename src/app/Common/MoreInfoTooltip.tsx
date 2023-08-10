@@ -5,8 +5,7 @@ import {
   chart_global_Fill_Color_white,
   global_FontSize_md,
   global_FontSize_sm,
-  global_spacer_xs,
-  
+  global_spacer_xs
 } from '@patternfly/react-tokens';
 
 /**

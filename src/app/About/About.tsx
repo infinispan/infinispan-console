@@ -16,8 +16,7 @@ import {
   TextListItemVariants,
   TextListVariants
 } from '@patternfly/react-core';
-import backImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
-import icon from '!!url-loader!@app/assets/images/brand.svg';
+import icon from '!!url-loader!@app/assets/favicons/apple-touch-icon.png';
 import {
   FacebookIcon,
   GithubIcon,
@@ -50,9 +49,8 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       onClose={props.closeModal}
       trademark="Sponsored by Red Hat"
       brandImageSrc={icon}
-      brandImageAlt="Infinispan Logo"
-      backgroundImageSrc={backImage}
-      disableFocusTrap={true}
+      brandImageAlt={brandname + ' Logo'}
+      productName={brandname}
     >
       <Stack>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>

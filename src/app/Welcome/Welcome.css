@@ -73,6 +73,7 @@
 .card-heading {
   justify-content: center;
   font-weight: bolder;
+  text-align: center;
 }
 
 .card-contents {

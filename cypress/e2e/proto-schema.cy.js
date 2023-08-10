@@ -26,7 +26,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('test-10.proto');
 
     //Changing the number of items on the page
-    cy.get('[id^="pagination-schemas-top-toggle"]').click();
+    cy.get('[id^="pagination-schemas-top-toggle"]').first().click();
     cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('exist'); //Verifying the selected option
     cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('not.exist');
     cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
@@ -40,7 +40,7 @@ describe('Proto Schema CRUD', () => {
 
     //Changing the number of items on the page back to 10
     cy.get('#primary-app-container').scrollTo('bottom');
-    cy.get('[id^="pagination-schemas-top-toggle"]').click();
+    cy.get('[id^="pagination-schemas-top-toggle"]').first().click();
     cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('not.exist'); //Verifying the selected option
     cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('exist');
     cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
@@ -67,7 +67,7 @@ describe('Proto Schema CRUD', () => {
 
     //Updating existing schema
     cy.contains('Schema aTestSchema.proto has errors');
-    cy.get('[data-cy="actions-aTestSchema.proto"]>div>button').click();
+    cy.get('[data-cy="actions-aTestSchema.proto"]>button').click();
     cy.get('[aria-label="editSchemaAction"]').click();
     cy.contains('schemaValue');
     cy.contains('Save');
@@ -81,7 +81,7 @@ describe('Proto Schema CRUD', () => {
 
     //Updating existing schema with correct value
     cy.contains('Schema aTestSchema.proto has errors');
-    cy.get('[data-cy="actions-aTestSchema.proto"]>div>button').click();
+    cy.get('[data-cy="actions-aTestSchema.proto"]>button').click();
     cy.get('[aria-label="editSchemaAction"]').click();
     cy.get('[data-cy=schemaEditArea]').contains('schemaNewValue');
     cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
@@ -92,12 +92,14 @@ describe('Proto Schema CRUD', () => {
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
     cy.contains('Schema aTestSchema.proto updated.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[data-cy="aTestSchema.protoConfig"]').click();
+    cy.wait(1000)
     cy.contains('schemaNewValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema aTestSchema.proto has errors').should('not.exist');
 
     //Deleting schema
-    cy.get('[data-cy="actions-aTestSchema.proto"]>div>button').click();
+    cy.get('[data-cy="actions-aTestSchema.proto"]>button').click();
     cy.get('[aria-label="deleteSchemaAction"]').click();
     cy.contains('Delete schema?');
     cy.get('button[aria-label="confirm-delete-schema-button"]').click();
@@ -128,7 +130,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('*/name!@#$with%^&*special()_+symbols{}|":isnot?');
     cy.contains('><saved>.proto')
     //Deleting schema
-    cy.get('[data-cy^="actions-1234567890+-"]>div>button').click();
+    cy.get('[data-cy^="actions-1234567890+-"]>button').click();
     cy.get('[aria-label="deleteSchemaAction"]').click();
     cy.contains('Delete schema?');
     cy.get('button[aria-label="confirm-delete-schema-button"]').click();

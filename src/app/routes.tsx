@@ -4,7 +4,6 @@ import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 import { CacheManagerPage } from '@app/CacheManagers/CacheMangerPage';
 import { NotFound } from '@app/NotFound/NotFound';
-import { LastLocationProvider, useLastLocation } from 'react-router-last-location';
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
@@ -22,15 +21,14 @@ let routeFocusTimer: number;
 // after a view has loaded so that subsequent press of tab key
 // sends focus directly to relevant content
 const useA11yRouteChange = (isAsync: boolean) => {
-  const lastNavigation = useLastLocation();
   useEffect(() => {
-    if (!isAsync && lastNavigation !== null) {
+    if (!isAsync !== null) {
       routeFocusTimer = accessibleRouteChangeHandler();
     }
     return () => {
       window.clearTimeout(routeFocusTimer);
     };
-  }, [isAsync, lastNavigation]);
+  }, [isAsync]);
 };
 
 const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, ...rest }: IAppRoute) => {
@@ -159,22 +157,20 @@ const routes: IAppRoute[] = [
 
 const AppRoutes = (props: { init: string }) => {
   return (
-    <LastLocationProvider>
-      <Switch>
-        {routes.map(({ path, exact, component, title, isAsync }, idx) => (
-          <RouteWithTitleUpdates
-            path={path}
-            exact={exact}
-            component={component}
-            key={idx}
-            title={title}
-            isAsync={isAsync}
-            init={props.init}
-          />
-        ))}
-        <PageNotFound title="404 Page Not Found" />
-      </Switch>
-    </LastLocationProvider>
+    <Switch>
+      {routes.map(({ path, exact, component, title, isAsync }, idx) => (
+        <RouteWithTitleUpdates
+          path={path}
+          exact={exact}
+          component={component}
+          key={idx}
+          title={title}
+          isAsync={isAsync}
+          init={props.init}
+        />
+      ))}
+      <PageNotFound title="404 Page Not Found" />
+    </Switch>
   );
 };
 

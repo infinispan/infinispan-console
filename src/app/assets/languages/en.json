@@ -486,7 +486,7 @@
     "configuration": {
       "title": "Available cache templates",
       "page-title": "Cache templates",
-      "no-templates": "No cache templates" ,
+      "no-templates": "No cache templates",
       "no-templates-body": "Add cache templates to the server configuration.",
       "no-filtered-templates": "No result found",
       "no-filtered-templates-body": "No counters match your filter criteria. Clear all filters and try again",

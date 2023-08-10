@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import {
-	Form,
-	FormGroup,
-	FormSection,
-	Grid,
-	GridItem,
-	HelperText,
-	HelperTextItem,
-	Switch,
-	TextInput
+  Form,
+  FormGroup,
+  FormSection,
+  Grid,
+  GridItem,
+  HelperText,
+  HelperTextItem,
+  Switch,
+  TextInput
 } from '@patternfly/react-core';
-import {
-	Select,
-	SelectOption,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
-
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { CacheFeature, StorageType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import TransactionalConfigurationTuning from '@app/Caches/Create/AdvancedTuning/TransactionalConfigurationTuning';
