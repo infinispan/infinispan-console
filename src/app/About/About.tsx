@@ -16,7 +16,7 @@ import {
   TextListItemVariants,
   TextListVariants
 } from '@patternfly/react-core';
-import icon from '!!url-loader!@app/assets/favicons/apple-touch-icon.png';
+import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
 import {
   FacebookIcon,
   GithubIcon,
@@ -27,6 +27,7 @@ import {
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
 import { useTranslation } from 'react-i18next';
+import './About.css';
 
 const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
@@ -42,6 +43,7 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const description1 = t('welcome-page.description1', { brandname: brandname });
   const description2 = t('welcome-page.description2', { brandname: brandname });
   const license = t('welcome-page.license', { brandname: brandname });
+  const apacheLicense = t('welcome-page.apache-license');
 
   return (
     <AboutModal
@@ -51,13 +53,17 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       brandImageSrc={icon}
       brandImageAlt={brandname + ' Logo'}
       productName={brandname}
+      className="about-bg"
     >
       <Stack>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
           <TextContent style={{ margin: '0.2rem 0' }}>
             <Text>{description1}</Text>
             <Text>{description2}</Text>
-            <Text>{license}</Text>
+            <Text>
+              {license}
+              {apacheLicense}
+            </Text>
           </TextContent>
         </StackItem>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>

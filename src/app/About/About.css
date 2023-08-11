@@ -1,0 +1,5 @@
+.about-bg {
+    background-image: url('!!url-loader!@app/assets/images/infinispanbg_1200.png');
+    background-position: right;
+    background-size: 23vw 100%;
+}
