@@ -134,12 +134,7 @@ const DetailCache = (props: { cacheName: string }) => {
           eventKey={13}
           data-cy="queriesTab"
           title={
-            <TabTitleText>
-              <MoreInfoTooltip
-                label={t('caches.tabs.query-values')}
-                toolTip={'Use the Ickle query language to search values.'}
-              />
-            </TabTitleText>
+            <TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>
           }
         >
           <QueryEntries cacheName={cacheName} indexed={cache?.features.indexed} changeTab={() => setActiveTabKey1(2)} />

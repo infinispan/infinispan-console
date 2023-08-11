@@ -90,24 +90,23 @@ const CreateCache = () => {
         <Toolbar id={`${id}-cache-header`}>
           <ToolbarContent style={{ paddingLeft: 0 }}>
             <TextContent>
-              <Text component={TextVariants.h1} style={{ marginBottom: '1rem' }}>
-                {!isBackupAvailable
+              <Text component={TextVariants.h1}>
+                {localSite == ''
                   ? t(`caches.${id}.page-title`, { cmName: title })
                   : t(`caches.${id}.page-title-with-backups`, { cmName: title, localsite: localSite })}
               </Text>
-              {canCreateCache && <Text component={TextVariants.p}>{t(`caches.${id}.page-title-description`)}</Text>}
             </TextContent>
           </ToolbarContent>
-          <ToolbarContent style={{ paddingLeft: 0 }}>
-            {!canCreateCache && (
+          {!canCreateCache && (
+            <ToolbarContent style={{ paddingLeft: 0}}>
               <Alert
                 title={t('caches.setup.page-title-description', { brandname: brandname })}
                 variant={AlertVariant.info}
                 isPlain
                 isInline
               />
-            )}
-          </ToolbarContent>
+            </ToolbarContent>
+          )}
         </Toolbar>
       </PageSection>
       {!cacheManager && displayLoading()}
