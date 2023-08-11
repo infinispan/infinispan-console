@@ -98,7 +98,7 @@ const CreateCache = () => {
             </TextContent>
           </ToolbarContent>
           {!canCreateCache && (
-            <ToolbarContent style={{ paddingLeft: 0}}>
+            <ToolbarContent style={{ paddingLeft: 0 }}>
               <Alert
                 title={t('caches.setup.page-title-description', { brandname: brandname })}
                 variant={AlertVariant.info}

@@ -17,6 +17,7 @@ import {
   TextListVariants
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
+import backgroundImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
 import {
   FacebookIcon,
   GithubIcon,
@@ -53,7 +54,7 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       brandImageSrc={icon}
       brandImageAlt={brandname + ' Logo'}
       productName={brandname}
-      className="about-bg"
+      backgroundImageSrc={backgroundImage}
     >
       <Stack>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>

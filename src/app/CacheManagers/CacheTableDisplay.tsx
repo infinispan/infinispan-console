@@ -35,7 +35,7 @@ import {
   EmptyStateHeader,
   EmptyStateFooter
 } from '@patternfly/react-core';
-import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { useCaches, useDataContainer } from '@app/services/dataContainerHooks';
 import { FilterIcon, SearchIcon } from '@patternfly/react-icons';

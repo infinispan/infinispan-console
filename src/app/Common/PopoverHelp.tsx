@@ -1,6 +1,6 @@
-import React, {ReactNode} from 'react';
-import {Button, Flex, FlexItem, Popover, Text, TextContent} from '@patternfly/react-core';
-import {HelpIcon} from '@patternfly/react-icons';
+import React, { ReactNode } from 'react';
+import { Button, Flex, FlexItem, Popover, Text, TextContent } from '@patternfly/react-core';
+import { HelpIcon } from '@patternfly/react-icons';
 
 /**
  * This component is used to add pop over helps to forms
@@ -27,9 +27,7 @@ const PopoverHelp = (props: { name: string; label: string; content: string | Rea
             <Text>{props.text}</Text>
           </TextContent>
         </FlexItem>
-        <FlexItem>
-          {popOver}
-        </FlexItem>
+        <FlexItem>{popOver}</FlexItem>
       </Flex>
     );
   }

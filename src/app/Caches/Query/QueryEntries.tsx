@@ -170,7 +170,7 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
               aria-label={'more-info-ickle'}
               onClick={(e) => e.preventDefault()}
               aria-describedby={'helpickle'}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
               icon={<HelpIcon />}
             />
           </Popover>

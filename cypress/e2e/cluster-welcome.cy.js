@@ -58,8 +58,8 @@ describe('Welcome page', () => {
     //Clicks the Global statistics link and should go to Global statistics page
     cy.contains('Global Statistics').click();
     cy.contains('Global statistics').should('be.visible');
-    cy.contains('Cluster-wide statistics ');
-    cy.contains('Cache Manager lifecycle values ');
+    cy.contains('Cluster-wide statistics');
+    cy.contains('Cache Manager lifecycle values');
 
     //Clicks the Data Container link and should go to Data Container page
     cy.contains('Data Container').click();

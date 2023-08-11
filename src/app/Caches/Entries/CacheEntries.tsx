@@ -24,7 +24,7 @@ import {
   EmptyStateFooter
 } from '@patternfly/react-core';
 import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
-import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { FilterIcon, SearchIcon, PlusCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
