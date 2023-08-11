@@ -11,7 +11,7 @@ import {
   ToolbarItemVariant,
   Pagination
 } from '@patternfly/react-core';
-import { Table /* data-codemods */, Thead, Tr, Th, Tbody, Td, TableVariant } from '@patternfly/react-table';
+import { Table, Thead, Tr, Th, Tbody, Td, TableVariant } from '@patternfly/react-table';
 import {
   Chart,
   ChartAxis,

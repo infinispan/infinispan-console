@@ -99,7 +99,7 @@
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>install cypress@^12.17.3 --verbose</arguments>
+                  <arguments>install cypress@^12.17.4 --verbose</arguments>
                 </configuration>
               </execution>
               <execution>
@@ -146,7 +146,7 @@
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>install cypress@^12.17.3 --verbose</arguments>
+                  <arguments>install cypress@^12.17.4 --verbose</arguments>
                 </configuration>
               </execution>
               <execution>

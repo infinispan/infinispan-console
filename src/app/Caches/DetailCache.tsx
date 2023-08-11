@@ -130,13 +130,7 @@ const DetailCache = (props: { cacheName: string }) => {
           {encodingMessageDisplay()}
           <CacheEntries cacheName={cacheName} />
         </Tab>
-        <Tab
-          eventKey={13}
-          data-cy="queriesTab"
-          title={
-            <TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>
-          }
-        >
+        <Tab eventKey={13} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
           <QueryEntries cacheName={cacheName} indexed={cache?.features.indexed} changeTab={() => setActiveTabKey1(2)} />
         </Tab>
       </Tabs>

@@ -1,4 +1,4 @@
-.background-img {
-  background-position: center;
-  background-size: cover;
+.pf-v5-c-background-image {
+  --pf-v5-c-background-image--BackgroundPosition: center;
+  --pf-v5-c-background-image--BackgroundSize: cover;
 }
