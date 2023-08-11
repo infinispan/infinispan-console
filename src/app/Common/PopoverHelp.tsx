@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import { Button, Popover, TextContent, TextVariants, Text } from '@patternfly/react-core';
-import { HelpIcon } from '@patternfly/react-icons';
+import React, {ReactNode} from 'react';
+import {Button, Flex, FlexItem, Popover, Text, TextContent} from '@patternfly/react-core';
+import {HelpIcon} from '@patternfly/react-icons';
 
 /**
  * This component is used to add pop over helps to forms
@@ -13,7 +13,7 @@ const PopoverHelp = (props: { name: string; label: string; content: string | Rea
         aria-label={'more-info-' + props.name}
         onClick={(e) => e.preventDefault()}
         aria-describedby={'help' + props.name}
-        className="pf-c-form__group-label-help"
+        className="pf-v5-c-form__group-label-help"
         icon={<HelpIcon />}
       />
     </Popover>
@@ -21,12 +21,16 @@ const PopoverHelp = (props: { name: string; label: string; content: string | Rea
 
   if (props.text) {
     return (
-      <TextContent>
-        <Text component={TextVariants.p}>
-          {props.text + '   '}
+      <Flex>
+        <FlexItem>
+          <TextContent>
+            <Text>{props.text}</Text>
+          </TextContent>
+        </FlexItem>
+        <FlexItem>
           {popOver}
-        </Text>
-      </TextContent>
+        </FlexItem>
+      </Flex>
     );
   }
 
