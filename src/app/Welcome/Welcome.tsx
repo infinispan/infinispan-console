@@ -7,6 +7,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CardTitle,
   Flex,
   FlexItem,
   Gallery,
@@ -160,9 +161,16 @@ const Welcome = (props) => {
             window.open(blogLink, '_blank');
           }}
           isClickable
-          className={'card'}
+          className="card"
         >
-          <CardHeader className={'card-heading'}>
+          <CardHeader
+            className={'card-heading'}
+            selectableActions={{
+              onClickAction: () => console.log(`blog clicked`),
+              selectableActionId: 'blog',
+              name: 'clickable-card'
+            }}
+          >
             <Text>
               <CatalogIcon />
               {t('welcome-page.blog')}
@@ -179,7 +187,14 @@ const Welcome = (props) => {
           isClickable
           className={'card'}
         >
-          <CardHeader className={'card-heading'}>
+          <CardHeader
+            selectableActions={{
+              onClickAction: () => console.log(`connect clicked`),
+              selectableActionId: 'connect',
+              name: 'clickable-card'
+            }}
+            className={'card-heading'}
+          >
             <Text>
               <DownloadIcon />
               {t('welcome-page.download')}
@@ -196,7 +211,14 @@ const Welcome = (props) => {
           isClickable
           className={'card'}
         >
-          <CardHeader className={'card-heading'}>
+          <CardHeader
+            selectableActions={{
+              onClickAction: () => console.log(`servers clicked`),
+              selectableActionId: 'servers',
+              name: 'clickable-card'
+            }}
+            className={'card-heading'}
+          >
             <Text>
               <UnknownIcon />
               {t('welcome-page.learn-more')}
@@ -213,7 +235,14 @@ const Welcome = (props) => {
           isClickable
           className={'card'}
         >
-          <CardHeader className={'card-heading'}>
+          <CardHeader
+            selectableActions={{
+              onClickAction: () => console.log(`develop clicked`),
+              selectableActionId: 'develop',
+              name: 'clickable-card'
+            }}
+            className={'card-heading'}
+          >
             <Text>
               <GithubIcon />
               {t('welcome-page.tutorials')}
