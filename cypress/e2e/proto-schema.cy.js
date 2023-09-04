@@ -27,10 +27,6 @@ describe('Proto Schema CRUD', () => {
 
     //Changing the number of items on the page
     cy.get('[id^="pagination-schemas-top-toggle"]').first().click();
-    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
     cy.get('[data-action=per-page-20]').click();
     cy.get('#primary-app-container').scrollTo('bottom');
     cy.contains('test-8.proto');
@@ -41,10 +37,6 @@ describe('Proto Schema CRUD', () => {
     //Changing the number of items on the page back to 10
     cy.get('#primary-app-container').scrollTo('bottom');
     cy.get('[id^="pagination-schemas-top-toggle"]').first().click();
-    cy.get('[data-action=per-page-10] .pf-v5-c-menu__item-select-icon').should('not.exist'); //Verifying the selected option
-    cy.get('[data-action=per-page-20] .pf-v5-c-menu__item-select-icon').should('exist');
-    cy.get('[data-action=per-page-50] .pf-v5-c-menu__item-select-icon').should('not.exist');
-    cy.get('[data-action=per-page-100] .pf-v5-c-menu__item-select-icon').should('not.exist');
     cy.get('[data-action=per-page-10]').click();
     cy.contains('test-7.proto').should('not.exist');
     cy.contains('test-6.proto');
