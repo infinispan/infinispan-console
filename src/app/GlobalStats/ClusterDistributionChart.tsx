@@ -79,8 +79,8 @@ const ClusterDistributionChart = () => {
 
   const columnNames = {
     nodeName: t('global-stats.cluster-distribution-node-name'),
-    memoryAvailable: t('global-stats.cluster-distribution-option-memory-used'),
-    memoryUsed: t('global-stats.cluster-distribution-option-memory-available')
+    memoryAvailable: t('global-stats.cluster-distribution-option-memory-available'),
+    memoryUsed: t('global-stats.cluster-distribution-option-memory-used')
   };
 
   const searchInput = (
