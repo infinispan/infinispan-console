@@ -4,85 +4,77 @@
 [![License](https://img.shields.io/github/license/infinispan/infinispan-console?style=for-the-badge&logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
 
 
-This is the front end application for the web console of the new Infinispan Server 13.x
+Welcome to the Infinispan Console, the front-end application for the web console of the new Infinispan Server 15.x. This web application is built using [Patternfly 5](https://www.patternfly.org/get-started/develop) and [React 18](https://react.dev/learn).
 
-This application is built using [Patternfly 4 and React](https://www.patternfly.org/v4/get-started/developers)
+## Getting Started
+Before you start using the Infinispan Console, please ensure you have a standalone Infinispan server running locally. The Infinispan server exposes the [REST API](https://infinispan.org/docs/dev/titles/rest/rest.html) that is utilized by this console.
 
-## Before you start
-This project needs a standalone infinispan server running locally.
-The Infinispan server exposes the [REST API](https://infinispan.org/docs/dev/titles/rest/rest.html)
-that is used in this console.
+In production environments, this console is bundled as a dependency using Maven. This dependency is then added to the Infinispan server bundle, making the console accessible from the server in production.
 
-In production, this console is built as a dependency using maven. This dependency is added to the infinispan
-server bundle, so the console is served from the server in production.
+### Run with Docker
 
-### Use Docker
-
-To run the latest release version
+To run the latest release version using Docker, you can use the following commands:
 
 ```bash
  docker run -it --rm -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server
 ```
-
-Or use the ```identities.batch``` running from the scripts folder
+Alternatively, you can use the ```identities.batch``` script running from the ```scripts``` folder:
 
 ```bash
 docker run -v $(pwd):/user-config -e IDENTITIES_BATCH="/user-config/identities.batch" -p 11222:11222 infinispan/server
 ```
 
 ### Direct download
-You can always download the server from the [Infinispan website](https://infinispan.org/download/)
+You can also download the Infinispan server directly from the [Infinispan website](https://infinispan.org/download/)
 
 ## Quick-start
+To quickly get started with the Infinispan Console, follow these steps:
 ```bash
 git clone https://github.com/infinispan/infinispan-console # clone the project
 cd infinispan-console # navigate into the project directory
 npm install # install infinispan-console dependencies
 npm run start:dev # start the development server
 ```
+
 ## Development Scripts
 
-Install development/build dependencies
-`npm install`
+Here are some useful development scripts for working with the Infinispan Console:
+
+- Install development/build dependencies: `npm install`
+- Start the development server: `npm run start:dev`
+- Run a production build (outputs to "dist" directory): `npm run build`
+- Run the test suite: `npm run test`
+- Run the linter: `npm run lint`
+- Run the code formatter: `npm run format`
+- Launch a tool to inspect the bundle size: `npm run bundle-profile:analyze`
 
 By default, Console in development mode looking for the Infinispan Server REST URL at the `http:\\localhost:11222\v2\rest`
 
 It's possible to replace host and port URL connection with `INFINISPAN_SERVER_URL` environment variable which will be added to the REST endpoint
 
-Start the development server
-`npm run start:dev`
+## Build the Maven dependency
 
-Run a production build (outputs to "dist" dir)
-`npm run build`
+This console is built and released as a Maven dependency used in the infinispan server.
+```bash
+mvn clean install
+```
 
-Run the test suite
-`npm run test`
-
-Run the linter
-`npm run lint`
-
-Run the code formatter
-`npm run format`
-
-Launch a tool to inspect the bundle size
-`npm run bundle-profile:analyze`
-
-## Build de maven dependency
-
-This console is built and released as a maven dependency used in the infinispan server.
-
-`mvn clean install`
-
-#### Skip Unit tests
+## Skip Unit tests
 Unit test run by default. To skip them use 'skipTests' property.
+```bash
+mvn clean install -DskipTests
+```
 
-`mvn clean install -DskipTests`
-
-#### Run Cypress IT Tests
+## Run Cypress IT Tests
 Integration tests don't run by default locally. They always run in CI.
-To run integration tests locally:
-You need to run first `./run-server-for-e2e.sh` that will download and run the infinispan server.
-Then `mvn clean install -De2e=true`
+
+To run Cypress integration tests locally, follow these steps:
+
+1. Run the Infinispan server using `./run-server-for-e2e.sh`, which will download and run the server.
+2. Run the following command with the `-De2e=true` flag:
+```bash
+mvn clean install -De2e=true
+```
 
 ## Configurations
 * [TypeScript Config](./tsconfig.json)
