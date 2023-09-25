@@ -290,7 +290,7 @@
             <phase>generate-resources</phase>
             <configuration>
               <npmVersion>9.8.1</npmVersion>
-              <nodeVersion>18.18.0</nodeVersion>
+              <nodeVersion>18.18.0v</nodeVersion>
             </configuration>
           </execution>
           <execution>
