@@ -103,7 +103,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const sitesOptions = () => {
-    return availableSites.map((role) => <SelectOption key={role} value={role} />);
+    return availableSites.map((role) => <SelectOption id={role} key={role} value={role} />);
   };
 
   const clearSelection = () => {
@@ -144,6 +144,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           validated={sites.length == 0 ? 'error' : 'success'}
           placeholderText={t('caches.create.configurations.feature.select-sites')}
           noResultsFoundText={t('caches.create.configurations.feature.select-sites-not-found')}
+          toggleId="backup-selector"
         >
           {sitesOptions()}
         </Select>
@@ -224,6 +225,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
               validateBackupsForField(trimmedVal);
             }}
             aria-label="remote-cache-input"
+            data-cy="remote-cache-input"
           />
         </FormGroup>
         <FormGroup
@@ -248,6 +250,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
             isOpen={isOpenRemoteSite}
             aria-labelledby="toggle-id-remote-site"
             placeholderText="Select remote site"
+            toggleId='remote-site-selector'
           >
             {sitesOptions()}
           </Select>
