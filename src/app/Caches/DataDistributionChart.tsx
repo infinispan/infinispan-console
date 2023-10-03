@@ -42,10 +42,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   const [displayMemoryUsed, setDisplayMemoryUsed] = useState<boolean>(false);
 
   useEffect(() => {
-    // To display memory_used
-    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName];
-    const cacheMode = Object.keys(loadMemory)[0];
-    loadMemory[cacheMode].memory && loadMemory[cacheMode].memory['max-size']
+    cache.memory && cache.memory.max_size.length > 0
       ? setDisplayMemoryUsed(true)
       : setDisplayMemoryUsed(false);
   }, [cache, dataDistribution]);
