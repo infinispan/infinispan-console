@@ -153,8 +153,8 @@ const QueryEntries: React.FunctionComponent<any> = (props: {
 
     return (
       <ToolbarItem>
-        <Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()}>
-          View all query statistics
+        <Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()} data-cy="viewQueryMetricsButton">
+          {t("caches.query.query-metrics-button")}
         </Button>
       </ToolbarItem>
     );

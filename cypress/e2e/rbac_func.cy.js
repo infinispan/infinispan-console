@@ -90,7 +90,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.contains(/^\d+ Caches$/);
-    
+
     cy.contains('10 Counters');
     if (isMonitor) {
       cy.contains('1 Tasks').should('not.exist');
@@ -153,10 +153,15 @@ describe('RBAC Functionlity Tests', () => {
       cy.get('[data-cy=queriesTab]').should('exist');
     }
 
-    //Checking cache configuration page
-    cy.get('[data-cy=cacheConfigurationTab]').click();
-    cy.contains('authorization');
-    cy.contains(roleName);
+    if (isSuperAdmin) {
+      //Checking cache configuration page
+      cy.get('[data-cy=cacheConfigurationTab]').click();
+      cy.contains('authorization');
+      cy.contains(roleName);
+    } else {
+      cy.get('[data-cy=cacheConfigurationTab]').should('not.exist');
+    }
+
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');
@@ -247,9 +252,15 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=clearAllButton]').click();
     cy.get('[data-cy=deleteButton]').click();
     cy.wait(1500); //Waiting till the whole page is loaded
-    //Checking cache configuration page
-    cy.get('[data-cy=cacheConfigurationTab]').click();
-    cy.contains('authorization').should('not.exist');
+
+    if (isSuperAdmin) {
+      //Checking cache configuration page
+      cy.get('[data-cy=cacheConfigurationTab]').click();
+      cy.contains('authorization').should('not.exist');
+    } else {
+      cy.get('[data-cy=cacheConfigurationTab]').should('not.exist');
+    }
+
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');

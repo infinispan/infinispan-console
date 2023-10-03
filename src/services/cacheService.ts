@@ -30,22 +30,38 @@ export class CacheService {
         cacheStats = data.stats;
         cacheStats.enabled = data.statistics;
       }
-      let keyValueEncoding = {
+      const keyValueEncoding = {
         key: CacheConfigUtils.toEncoding(data['key_storage']),
         value: CacheConfigUtils.toEncoding(data['value_storage'])
       };
+      const config = data['configuration'] ? <CacheConfig>{
+        name: cacheName,
+        config: JSON.stringify(data.configuration[cacheName], null, 2)
+      } : undefined;
+
+      let cacheMemory: undefined | CacheMemory = undefined;
+      if (data['storage_type']) {
+        cacheMemory = <CacheMemory>{
+          storage_type: data['storage_type'],
+          max_size: data['max_size'],
+          max_size_bytes: data['max_size_bytes']
+        };
+      }
+
+      const cacheType = CacheConfigUtils.mapCacheType(data['mode']);
+      const async = CacheConfigUtils.isAsync(data['mode']);
       return <DetailedInfinispanCache>{
         name: cacheName,
         started: true,
-        type: CacheConfigUtils.mapCacheType(data.configuration[cacheName]),
+        type: cacheType,
         encoding: keyValueEncoding,
         size: data['size'],
         rehash_in_progress: data['rehash_in_progress'],
         indexing_in_progress: data['indexing_in_progress'],
         rebalancing_enabled: data['rebalancing_enabled'],
-        editable:
+        editable: data.indexed || (
           CacheConfigUtils.isEditable(keyValueEncoding.key as EncodingType) &&
-          CacheConfigUtils.isEditable(keyValueEncoding.value as EncodingType),
+          CacheConfigUtils.isEditable(keyValueEncoding.value as EncodingType)),
         queryable: data.queryable,
         features: <Features>{
           bounded: data.bounded,
@@ -55,11 +71,10 @@ export class CacheService {
           secured: data.secured,
           hasRemoteBackup: data['has_remote_backup']
         },
-        configuration: <CacheConfig>{
-          name: cacheName,
-          config: JSON.stringify(data.configuration, null, 2)
-        },
-        stats: cacheStats
+        configuration: config,
+        stats: cacheStats,
+        memory: cacheMemory,
+        async: async,
       };
     });
   }

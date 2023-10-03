@@ -28,35 +28,36 @@ import { useTranslation } from 'react-i18next';
 import { StorageType } from '@services/infinispanRefData';
 import { DataAccessChart } from './DataAccessChart';
 import { useCacheDetail } from '@app/services/cachesHook';
+import { ConsoleACL } from '@services/securityService';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
+  const { connectedUser } = useConnectedUser();
   const { cache, error, loading } = useCacheDetail();
   const [stats, setStats] = useState<CacheStats | undefined>(cache.stats);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
   const [memory, setMemory] = useState<string | undefined>(undefined);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const [displayDataDistribution, setDisplayDataDistribution] = useState<boolean>(false);
 
   useEffect(() => {
-    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName];
-    const cacheMode = Object.keys(loadMemory)[0];
-    if (loadMemory[cacheMode].memory) {
-      if (loadMemory[cacheMode].memory.storage === 'HEAP' && loadMemory[cacheMode].memory['max-size'])
-        setMemory(loadMemory[cacheMode].memory.storage);
-      else if (loadMemory[cacheMode].memory.storage === 'OFF_HEAP') setMemory(loadMemory[cacheMode].memory.storage);
-    } else {
-      setMemory('HEAP');
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      // Data distribution is for admin only
+      setDisplayDataDistribution(true);
+      const loadMemory = cache.memory;
+      if (loadMemory) {
+        setMemory(loadMemory.storage_type == 'OFF_HEAP' ? StorageType.OFF_HEAP : StorageType.HEAP);
+      } else {
+        setMemory(StorageType.HEAP);
+      }
     }
 
     setStats(cache.stats);
-    let loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
+    const loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
     setDisplayQueryStats(loadQueryStats);
   }, [cache, error]);
-
-  useEffect(() => {
-    if (props.display) {
-    }
-  }, []);
 
   const buildOperationsPerformanceCard = () => {
     if (!stats) {
@@ -192,7 +193,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       content = (
         <React.Fragment>
           <TextListItem aria-label="view-cache-metrics-heap" component={TextListItemVariants.dt}>
-            {displayUtils.formatNumber(stats.data_memory_used)}
+           {displayUtils.formatNumber(stats.data_memory_used)}
           </TextListItem>
           <TextListItem component={TextListItemVariants.dd}>
             <PopoverHelp
@@ -262,13 +263,15 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={7}>
-        <DataDistributionChart cacheName={props.cacheName} />
-      </GridItem>
+      {displayDataDistribution &&
+        <GridItem span={7}>
+          <DataDistributionChart cacheName={props.cacheName} />
+        </GridItem>
+      }
       <GridItem span={5}>
         <DataAccessChart stats={stats} />
       </GridItem>
-      <GridItem span={12}>{buildQueryStats()}</GridItem>
+      <GridItem span={displayDataDistribution ? 12 : 7}>{buildQueryStats()}</GridItem>
     </Grid>
   );
 };

@@ -110,7 +110,7 @@ interface CacheEncoding {
 
 interface DetailedInfinispanCache {
   name: string;
-  configuration: CacheConfig;
+  configuration?: CacheConfig;
   encoding: CacheEncoding;
   type: string;
   started: boolean;
@@ -121,8 +121,10 @@ interface DetailedInfinispanCache {
   editable: boolean;
   queryable: boolean;
   features: Features;
+  async: boolean;
   backupSites?: [XSite];
   stats?: CacheStats;
+  memory?: CacheMemory;
 }
 
 interface CacheStats {
@@ -151,6 +153,12 @@ interface CacheStats {
   average_remove_time: number;
   average_remove_time_nanos: number;
   required_minimum_number_of_nodes: number;
+}
+
+interface CacheMemory {
+  storage_type: string;
+  max_size: string;
+  max_size_bytes: number;
 }
 
 interface StateTransferStatus {

@@ -105,9 +105,9 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       setChipsCacheType([]);
     } else {
       // From the select, extract each category
-      let filterStatus = extract(selectedFilters, cacheStatus);
-      let filterFeatures = extract(selectedFilters, cacheFeatures);
-      let filterCacheType = extract(selectedFilters, cacheTypes);
+      const filterStatus = extract(selectedFilters, cacheStatus);
+      const filterFeatures = extract(selectedFilters, cacheFeatures);
+      const filterCacheType = extract(selectedFilters, cacheTypes);
       // Update chips
       setChipsCacheStatus(filterStatus);
       setChipsCacheFeature(filterFeatures);
@@ -185,7 +185,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
 
   const actionResolver = (rowData: IRowData, extraData: IExtraData) => {
     // @ts-ignore
-    let cacheName: string = rowData.cells[0].cacheName as string;
+    const cacheName: string = rowData.cells[0].cacheName as string;
 
     if (!cacheName) {
       return [];
@@ -213,7 +213,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       ];
     }
 
-    let actions = [
+    const actions = [
       {
         'data-cy': 'deleteCacheAction',
         title: t('cache-managers.delete'),
@@ -256,14 +256,10 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   };
 
   const closeIgnoreModal = (ignoreDone: boolean) => {
-    if (ignoreDone) {
-    }
     setCacheAction({ cacheName: '', action: '' });
   };
 
   const closeAvailableModal = (ignoreDone: boolean) => {
-    if (ignoreDone) {
-    }
     setCacheAction({ cacheName: '', action: '' });
   };
 
@@ -485,7 +481,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   };
 
   const onDeleteChip = (chip) => {
-    let actualSelection = selectedFilters.filter((item) => item !== chip);
+    const actualSelection = selectedFilters.filter((item) => item !== chip);
     setSelectedFilters(actualSelection);
   };
 
@@ -569,7 +565,6 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               <SelectOption key={1} value={t('cache-managers.mode-repl')} />
               <SelectOption key={2} value={t('cache-managers.mode-dist')} />
               <SelectOption key={3} value={t('cache-managers.mode-invalid')} />
-              <SelectOption key={4} value={t('cache-managers.mode-scattered')} />
             </SelectGroup>
             <SelectGroup label={t('cache-managers.cache-filter-feature-label')} key="group2">
               <SelectOption key={5} value={t('cache-managers.cache-filter-feature-bounded')} />

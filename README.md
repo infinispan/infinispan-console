@@ -80,9 +80,13 @@ Unit test run by default. To skip them use 'skipTests' property.
 
 #### Run Cypress IT Tests
 Integration tests don't run by default locally. They always run in CI.
-To run integration tests locally:
-You need to run first `./run-server-for-e2e.sh` that will download and run the infinispan server.
-Then `mvn clean install -De2e=true`
+To run integration tests locally, you need Docker:
+
+```shell
+npm run build # build the console
+./run-server-for-e2e-container.sh # will run the latest image of Infinispan for this branch version and the built console
+npm run cy:e2e # will run cypress locally
+```
 
 ## Configurations
 * [TypeScript Config](./tsconfig.json)

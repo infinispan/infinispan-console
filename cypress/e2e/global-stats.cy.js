@@ -12,8 +12,7 @@ describe('Global stats', () => {
     cy.contains('Cluster distribution');
   });
 
-  //View all caches href
-  it('successfully loads Global stats', () => {
+  it('successfully views all caches href', () => {
     //click View all caches should navigate to console page
     cy.get('[data-cy="viewCachesLink"]').click();
     //Verify that page is properly loaded after click;
@@ -24,8 +23,7 @@ describe('Global stats', () => {
     cy.contains('java-serialized-cache');
   });
 
-  //View Cluster Status href
-  it('successfully loads Global stats', () => {
+  it('successfully views cluster status ref', () => {
     //click View Cluster Status should navigate to cluster-membership page
     cy.get('.pf-l-grid__item:nth-child(3) .pf-c-button').click();
 

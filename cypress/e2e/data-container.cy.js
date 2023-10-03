@@ -152,14 +152,11 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelect]').click();
     cy.get('[data-cy=cacheFilterSelectExpanded]').should('exist');
     cy.get('[id$="Invalidated"]').click(); //Filtering invalidated caches
-    cy.get('[id$="Scattered"]').click(); //Filtering scattered caches
     cy.get('[data-cy=cacheFilterSelect]').click(); //Closing filter selectbox
 
-    //Verifying that only replicated,invalidated and scattered caches are shown
     cy.contains('jboss-cache');
     cy.contains('invalidationCache');
-    cy.contains('scattered-cache');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row
 
     //Clears all filters
     cy.get('[data-cy=clearAllButton]').click();
