@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Brand,
@@ -50,6 +50,7 @@ import { useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import { BarsIcon, ExternalLinkAltIcon, InfoCircleIcon, QuestionCircleIcon } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
+import { Switch } from '@patternfly/react-core';
 
 interface IAppLayout {
   init: string;
@@ -67,6 +68,16 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+
+  const [isChecked, setIsChecked] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDarkTheme) {
+      document.documentElement.classList.add('pf-v5-theme-dark');
+      setIsChecked(true);
+    }
+  }, []);
 
   useEffect(() => {
     history.listen((location, action) => {
@@ -153,6 +164,10 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     </DropdownItem>
   ];
 
+  const changeTheme = ()=>{
+    document.documentElement.classList.toggle('pf-v5-theme-dark');
+    setIsChecked((prev)=>!prev);
+  }
   const headerToolbar = (
     <Toolbar id="toolbar" isFullHeight isStatic>
       <ToolbarContent>
@@ -161,6 +176,14 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
           align={{ default: 'alignRight' }}
           spacer={{ default: 'spacerNone', md: 'spacerMd' }}
         >
+          <Switch
+            id="simple-switch"
+            isChecked={isChecked}
+            onChange={changeTheme}
+            ouiaId="BasicSwitch"
+            label=""
+          />
+
           <ToolbarItem>
             <Dropdown
               data-cy="aboutInfoQuestionMark"
