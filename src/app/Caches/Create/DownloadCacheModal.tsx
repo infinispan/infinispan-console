@@ -27,6 +27,7 @@ const DownloadCacheModal = (props: {
   configuration: string;
   isModalOpen: boolean;
   closeModal: () => void;
+  contentType: 'json' | 'yaml' | 'xml';
 }) => {
   const { t } = useTranslation();
 
@@ -55,12 +56,13 @@ const DownloadCacheModal = (props: {
       // Convert the config to all formats
       // Also to check if the config is valid
       ConsoleServices.caches()
-        .convertToAllFormat(props.cacheName, props.configuration)
+        .convertToAllFormat(props.cacheName, props.configuration, props.contentType)
         .then((r) => {
           if (r.isRight()) {
             setYamlConfig(r.value.yaml);
             setJsonConfig(r.value.json);
             setXmlConfig(r.value.xml);
+            setError('');
           } else {
             setError(r.value.message);
           }

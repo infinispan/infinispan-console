@@ -30,7 +30,10 @@ import {
   ToolbarToggleGroup,
   ToolbarFilter,
   ToolbarItem,
-  ToolbarItemVariant, EmptyStateHeader, EmptyStateActions, EmptyStateFooter
+  ToolbarItemVariant,
+  EmptyStateHeader,
+  EmptyStateActions,
+  EmptyStateFooter
 } from '@patternfly/react-core';
 import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
@@ -418,9 +421,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         headingLevel="h4"
       />
       <EmptyStateBody>{t('cache-managers.counters.no-counters-body')}</EmptyStateBody>
-      <EmptyStateFooter>
-        {createCounterButtonHelper(true)}
-      </EmptyStateFooter>
+      <EmptyStateFooter>{createCounterButtonHelper(true)}</EmptyStateFooter>
     </EmptyState>
   );
 
