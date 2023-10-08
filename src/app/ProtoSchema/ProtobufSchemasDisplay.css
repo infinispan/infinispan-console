@@ -5,6 +5,6 @@
   --pf-v5-c-table--cell--WhiteSpace: nowrap;
 }
 
-.pf-v5-c-file-upload{
-  --pf-v5-c-file-upload__file-details__c-form-control--MinHeight : 300px
+.pf-v5-c-file-upload {
+  --pf-v5-c-file-upload__file-details__c-form-control--MinHeight: 300px;
 }
