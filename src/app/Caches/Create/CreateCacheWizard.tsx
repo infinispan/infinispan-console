@@ -56,6 +56,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const [reviewConfig, setReviewConfig] = useState<string>('');
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+  const [contentType, setContentType] = useState<'json' | 'yaml' | 'xml'>('json');
 
   const history = useHistory();
 
@@ -164,7 +165,9 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const stepReview = {
     id: 6,
     name: t('caches.create.review.nav-title'),
-    component: <ReviewCacheConfig setReviewConfig={setReviewConfig} />,
+    component: (
+      <ReviewCacheConfig setReviewConfig={setReviewConfig} setContentType={setContentType} contentType={contentType} />
+    ),
     canJumpTo: validFeatures(configuration)
   };
 
@@ -303,7 +306,8 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
         ? CacheConfigUtils.createCacheWithEditorStep(cacheEditor, configuration.start.cacheName)
         : CacheConfigUtils.createCacheWithWizardStep(
             reviewConfig === '' ? CacheConfigUtils.createCacheConfigFromData(configuration) : reviewConfig,
-            configuration.start.cacheName
+            configuration.start.cacheName,
+            contentType
           );
 
     createCacheCall
@@ -333,6 +337,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
         configuration={reviewConfig}
         isModalOpen={isDownloadModalOpen}
         closeModal={() => setIsDownloadModalOpen(false)}
+        contentType={contentType}
       />
     </PageSection>
   );

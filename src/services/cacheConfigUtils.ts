@@ -439,7 +439,7 @@ export class CacheConfigUtils {
     return createCacheCall;
   }
 
-  public static createCacheWithWizardStep(config: string, cacheName: string): Promise<ActionResponse> {
+  public static createCacheWithWizardStep(config: string, cacheName: string, contentType: 'json' | 'xml' | 'yaml'): Promise<ActionResponse> {
     const name = cacheName.trim();
     // Validate Name
     const isValidName: 'success' | 'error' = name.length > 0 ? 'success' : 'error';
@@ -458,7 +458,7 @@ export class CacheConfigUtils {
     const createCacheCall: Promise<ActionResponse> = ConsoleServices.caches().createCacheWithConfiguration(
       cacheName,
       config,
-      'json'
+      contentType
     );
 
     return createCacheCall;
