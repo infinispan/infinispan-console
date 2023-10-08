@@ -530,12 +530,13 @@ export class CacheService {
 
   public async convertToAllFormat(
     cacheName: string,
-    config: string
+    config: string,
+    contentType: 'xml' | 'json' | 'yaml'
   ): Promise<Either<ActionResponse, FormattedCacheConfig>> {
     return Promise.all([
-      this.convertConfigFormat(cacheName, config, 'json'),
-      this.convertConfigFormat(cacheName, config, 'xml'),
-      this.convertConfigFormat(cacheName, config, 'yaml')
+      this.convertConfigFormat(cacheName, config, 'json', contentType),
+      this.convertConfigFormat(cacheName, config, 'xml', contentType),
+      this.convertConfigFormat(cacheName, config, 'yaml', contentType)
     ]).then((reposes) => {
       if (!reposes[0].success && !reposes[1].success && !reposes[2].success) {
         return left(<ActionResponse>{
@@ -572,9 +573,10 @@ export class CacheService {
   public async convertConfigFormat(
     cacheName: string,
     config: string,
-    configType: 'xml' | 'json' | 'yaml'
+    configType: 'xml' | 'json' | 'yaml',
+    contentType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
-    const customHeaders = this.createTwoCustomHeader('Accept', configType, 'Content-Type', 'json');
+    const customHeaders = this.createTwoCustomHeader('Accept', configType, 'Content-Type', contentType);
 
     const urlCreateCache = this.endpoint + '/caches?action=convert';
     return this.fetchCaller.post({

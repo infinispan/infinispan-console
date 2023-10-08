@@ -56,14 +56,14 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
   const handleSchemaContentChange = (_event, v) => {
     setSchema((prevState) => {
       return { ...prevState, value: v };
-    })
-  }
+    });
+  };
 
   const fileUploadDropZoneProps = {
-    accept: { 'application/x-protobuf': ['.proto','.pb'] },
-    onDropRejected: ()=> setError('Invalid File Type! Please upload a protbuf file.'),
-    onDropAccepted: ()=> setError('')
-  }
+    accept: { 'application/x-protobuf': ['.proto', '.pb'] },
+    onDropRejected: () => setError('Invalid File Type! Please upload a protbuf file.'),
+    onDropAccepted: () => setError('')
+  };
 
   const clearCreateProtoSchema = (createDone: boolean) => {
     setSchemaName(schemaNameInitialState);
@@ -134,14 +134,14 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
           <FileUpload
             id="schema"
             type="text"
-            name='schema'
+            name="schema"
             aria-describedby="schema-content-helper"
             value={schema.value}
             filename={filename}
             filenamePlaceholder="Drag and drop Protobuf Schema file or upload one"
             onFileInputChange={handleFileInputChange}
             onDataChange={handleSchemaContentChange}
-            onTextChange={handleSchemaContentChange} 
+            onTextChange={handleSchemaContentChange}
             dropzoneProps={fileUploadDropZoneProps}
             onClearClick={handleClear}
             allowEditingUploadedText={true}

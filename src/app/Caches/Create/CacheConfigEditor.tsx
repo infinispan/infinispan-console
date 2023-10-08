@@ -9,6 +9,7 @@ import {
   Form,
   FormGroup,
   FormHelperText,
+  FormSection,
   HelperText,
   HelperTextItem,
   Spinner,
@@ -124,7 +125,6 @@ const CacheConfigEditor = (props: {
           code={editorConfig}
           onChange={handleChangeConfig}
           id="cache-config"
-          language={Language.json}
           height="200px"
           isDarkTheme={theme === 'dark'}
         />
@@ -157,44 +157,39 @@ const CacheConfigEditor = (props: {
 
     return (
       <Form>
-        <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
-          <SelectSingleTypehead
-            id="templates"
-            onSelect={onSelectTemplate}
-            selected={selectedConfig}
-            isDisabled={selectedConfigDisabled}
-            placeholder={t('caches.create.templates-placeholder')}
-            onClear={clearSelection}
-            options={templates()}
-            style={{ width: '400px' }}
-          />
-          <FormHelperText>
-            <HelperText>
-              <HelperTextItem variant={validConfig}>{t('caches.create.templates-help')}</HelperTextItem>
-            </HelperText>
-          </FormHelperText>
-        </FormGroup>
-        <ExpandableSection
-          data-cy="provideConfigArea"
-          toggleText={t('caches.create.configuration-provide')}
-          isExpanded={editorExpanded}
-          onToggle={onToggleConfigPanel}
-          role={'display-editor'}
-        >
-          {displayCacheConfigEditor()}
-        </ExpandableSection>
+        <FormSection title={t('caches.create.edit-config.page-title')} titleElement="h2">
+          <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
+            <SelectSingleTypehead
+              id="templates"
+              onSelect={onSelectTemplate}
+              selected={selectedConfig}
+              isDisabled={selectedConfigDisabled}
+              placeholder={t('caches.create.templates-placeholder')}
+              onClear={clearSelection}
+              options={templates()}
+              style={{ width: '400px' }}
+            />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant={validConfig}>{t('caches.create.templates-help')}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          </FormGroup>
+          <ExpandableSection
+            data-cy="provideConfigArea"
+            toggleText={t('caches.create.configuration-provide')}
+            isExpanded={editorExpanded}
+            onToggle={onToggleConfigPanel}
+            role={'display-editor'}
+          >
+            {displayCacheConfigEditor()}
+          </ExpandableSection>
+        </FormSection>
       </Form>
     );
   };
 
-  return (
-    <React.Fragment>
-      <TextContent>
-        <Text component={TextVariants.h2}>{t('caches.create.edit-config.page-title')}</Text>
-      </TextContent>
-      {handleTemplates()}
-    </React.Fragment>
-  );
+  return <React.Fragment>{handleTemplates()}</React.Fragment>;
 };
 
 export default CacheConfigEditor;
