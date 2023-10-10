@@ -33,7 +33,8 @@ import {
   ButtonProps,
   EmptyStateActions,
   EmptyStateHeader,
-  EmptyStateFooter
+  EmptyStateFooter,
+  Spinner
 } from '@patternfly/react-core';
 import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
@@ -60,6 +61,7 @@ import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
+import { nil } from 'ajv';
 interface CacheAction {
   cacheName: string;
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
@@ -76,9 +78,9 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   const [selectedCacheFeature, setSelectedCacheFeature] = useState<string[]>([]);
   const [selectedCacheType, setSelectedCacheType] = useState<string[]>([]);
   const [selectedCacheStatus, setSelectedCacheStatus] = useState<string[]>([]);
-  const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [rows, setRows] = useState<CacheInfo[] | null>(null);
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const toggleRef = React.useRef<HTMLButtonElement>(null);
@@ -148,6 +150,12 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       updateRows.length > 0 ? setRows(updateRows) : setRows([]);
     }
   }, [cachesPagination, filteredCaches]);
+
+  useEffect(() => {
+    if (loadingCaches) {
+      setRows(null);
+    }
+  }, [loadingCaches]);
 
   useEffect(() => {
     setFilteredCaches(caches.filter((cache) => onSearch(searchValue, cache.name)).filter(onFilter));
@@ -424,7 +432,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   };
 
   const createCacheButtonHelper = (isEmptyPage?: boolean) => {
-    const pathName = canCreateCache ? '/container/caches/create' : '/setup';
+    const pathName = canCreateCache ? '/container/caches/create' : '/caches/setup';
     const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
     const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
     return (
@@ -723,6 +731,34 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     return <span />;
   }
 
+  const displayEmptyState = () => {
+    if (loadingCaches) {
+      return (
+        <Bullseye>
+          <EmptyState variant={EmptyStateVariant.sm}>
+            <EmptyStateHeader
+              titleText={<>{t('cache-managers.loading-caches')}</>}
+              icon={<EmptyStateIcon icon={Spinner} />}
+              headingLevel="h4"
+            />
+          </EmptyState>
+        </Bullseye>
+      );
+    }
+
+    return (
+      <Bullseye>
+        <EmptyState variant={EmptyStateVariant.sm}>
+          <EmptyStateHeader
+            titleText={<>{t('cache-managers.no-filter-cache')}</>}
+            icon={<EmptyStateIcon icon={SearchIcon} />}
+            headingLevel="h2"
+          />
+          <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
+        </EmptyState>
+      </Bullseye>
+    );
+  };
   return (
     <React.Fragment>
       {caches.length == 0 ? (
@@ -742,20 +778,9 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredCaches.length == 0 ? (
+                {filteredCaches.length == 0 || rows == null || loadingCaches ? (
                   <Tr>
-                    <Td colSpan={6}>
-                      <Bullseye>
-                        <EmptyState variant={EmptyStateVariant.sm}>
-                          <EmptyStateHeader
-                            titleText={<>{t('cache-managers.no-filter-cache')}</>}
-                            icon={<EmptyStateIcon icon={SearchIcon} />}
-                            headingLevel="h2"
-                          />
-                          <EmptyStateBody>{t('cache-managers.no-caches-body')}</EmptyStateBody>
-                        </EmptyState>
-                      </Bullseye>
-                    </Td>
+                    <Td colSpan={6}>{displayEmptyState()}</Td>
                   </Tr>
                 ) : (
                   rows.map((row) => {

@@ -1,14 +1,19 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { CacheFeature, ContentType, EncodingType, PersistentCacheStorage } from '@services/infinispanRefData';
+import { CacheFeature, ContentType, EncodingType } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
-import { camelCase, kebabCase } from '@app/utils/convertStringCase';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
 export const Invalidated = 'invalidation-cache';
 export const Local = 'local-cache';
+export const LOCAL = 'LOCAL';
+export const REPL_SYNC = 'REPL_SYNC';
+export const REPL_ASYNC = 'REPL_ASYNC';
+export const INVALIDATION_SYNC = 'INVALIDATION_SYNC';
+export const INVALIDATION_ASYNC = 'INVALIDATION_ASYNC';
+export const DIST_SYNC = 'DIST_SYNC';
+export const DIST_ASYNC = 'DIST_ASYNC';
 
 /**
  * Utility class to map cache configuration
@@ -29,14 +34,14 @@ export class CacheConfigUtils {
     try {
       JSON.parse(trimmedConf);
       return right('json');
-    } catch (ex) {}
+    } catch (ex) { /* empty */ }
 
     try {
       const oDOM = new DOMParser().parseFromString(trimmedConf, 'text/xml');
       if (oDOM.getElementsByTagName('parsererror').length == 0) {
         return right('xml');
       }
-    } catch (ex) {}
+    } catch (ex) { /* empty */ }
 
     return right('yaml');
   }
@@ -60,27 +65,66 @@ export class CacheConfigUtils {
       return EncodingType.JSON;
     } else if (encodingConf.includes('octet')) {
       return EncodingType.Octet;
+    } else if (encodingConf.includes('unknown')) {
+      return EncodingType.Unknown;
     }
 
     return EncodingType.Empty;
   }
 
   /**
+   * Map cache name from cache mode
+   * @param mode or cache type name
+   */
+  public static mapCacheTypeFromCacheMode(mode: string): string {
+    if (mode.includes('DIST')) {
+      return 'Distributed';
+    }
+
+    if (mode.includes('REPL')) {
+      return 'Replicated';
+    }
+
+    if (mode.includes('LOCAL')) {
+      return 'Local';
+    }
+
+    if (mode.includes('INVALIDATION')) {
+      return 'Invalidated';
+    }
+
+    return 'Unknown';
+  }
+
+  /**
    * Map cache name from json configuration or from the label in the conf
    * @param config or cache type name
    */
-  public static mapCacheType(config: JSON | string): string {
-    let cacheType: string = 'Unknown';
-    if (config.hasOwnProperty(Distributed) || config == Distributed) {
+  public static mapCacheType(type: string | undefined): string {
+    let cacheType = 'Unknown';
+    if (!type) {
+      return cacheType;
+    }
+
+    if (type.includes('DIST') || type == Distributed) {
       cacheType = 'Distributed';
-    } else if (config.hasOwnProperty(Replicated) || config == Replicated) {
+    } else if (type.includes('REPL') || type == Replicated) {
       cacheType = 'Replicated';
-    } else if (config.hasOwnProperty(Local) || config == Local) {
+    } else if (type.includes('LOCAL') || type == Local) {
       cacheType = 'Local';
-    } else if (config.hasOwnProperty(Invalidated) || config == Invalidated) {
+    } else if (type.includes('INVALIDATION') || type == Invalidated) {
       cacheType = 'Invalidated';
     }
     return cacheType;
+  }
+
+  /**
+   * Retruns true if the cache transfer of data is ASYNC
+   *
+   * @param type
+   */
+  public static isAsync(type: string): boolean {
+    return type.includes('ASYNC');
   }
 
   /**
@@ -89,7 +133,12 @@ export class CacheConfigUtils {
    * @param encoding
    */
   public static isEditable(encoding: EncodingType): boolean {
-    return encoding != EncodingType.Empty && encoding != EncodingType.JavaSerialized && encoding != EncodingType.Octet;
+    return (
+      encoding != EncodingType.Empty &&
+      encoding != EncodingType.Unknown &&
+      encoding != EncodingType.JavaSerialized &&
+      encoding != EncodingType.Octet
+    );
   }
 
   /**

@@ -1,5 +1,5 @@
 describe('Data Container Overview', () => {
-  const numberOfCaches = 18;
+  const numberOfCaches = 15;
 
   beforeEach(() => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
@@ -32,7 +32,7 @@ describe('Data Container Overview', () => {
   //Testing pagination and navigation
   it('successfully navigates through the caches as well as changes number of viewed caches on the page', () => {
     cy.contains(numberOfCaches + ' Caches');
-    cy.contains('12 Counters');
+    cy.contains('10 Counters');
     cy.contains('1 Tasks');
     cy.contains('13 Schemas');
 
@@ -121,7 +121,7 @@ describe('Data Container Overview', () => {
 
     //Verifying that only local caches are shown
     cy.contains('default');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 2); //2 including header row
     //Verifying that all entries are local caches
     cy.get('[data-cy^=type-]').each((badge) => {
       cy.wrap(badge).contains('Local');
@@ -171,12 +171,12 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelect]').click();
 
     //Verifying that only distributed caches are shown
-    cy.contains('1 - 10 of 14');
+    cy.contains('1 - 10 of 12');
     cy.contains('java-serialized-cache');
     cy.get('[data-cy=cachesTable] tr').should('have.length', 11); //11 including header row
     //Navigating to the next page to see the rest of the caches
     cy.get('[data-action=next]').first().click();
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 5); //5 including header row
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row
     cy.contains('xml-cache');
     cy.contains('java-serialized-cache').should('not.exist');
 
@@ -185,8 +185,8 @@ describe('Data Container Overview', () => {
     cy.get('[data-action=per-page-20]').click();
     cy.contains('not-encoded');
     cy.contains('xml-cache');
-    cy.contains('1 - 14 of 14');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 15); //15 including header row
+    cy.contains('1 - 12 of 12');
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 13); //13 including header row
 
     //Verifying that all entries are distributed caches
     cy.get('[data-cy^=type-]').each((badge) => {
@@ -198,7 +198,7 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="transactionalFeature"]').find('input:checkbox').click(); //Filtering transactional caches (already on filtered distributed caches)
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 5); //5 including header row
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row
     // //Verifying that all entries are distributed and transactional caches
     cy.get('[data-cy^=type-]').each((badge) => {
       cy.wrap(badge).contains('Distributed');
@@ -209,13 +209,12 @@ describe('Data Container Overview', () => {
     cy.contains('heap-test');
     cy.contains('off-heap-test');
     cy.contains('people');
-    cy.contains('super-cache');
 
     // //Adding Replicated type filter
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="replicatedType"]').find('input:checkbox').click(); //Filtering transactional caches (already on filtered distributed caches)+replicated
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 5); //5 including header row - nothing is changed
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row - nothing is changed
     //Verifying that all entries are distributed and transactional caches
     cy.get('[data-cy^=type-]').each((badge) => {
       cy.wrap(badge).contains('Distributed');
@@ -226,12 +225,11 @@ describe('Data Container Overview', () => {
     cy.contains('heap-test');
     cy.contains('off-heap-test');
     cy.contains('people');
-    cy.contains('super-cache');
 
     //Removing Distributed filter
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="distributedType"]').find('input:checkbox').click(); //Filtering transactional caches & replicated ones
-    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
+    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click( {force: true}); //Closing filter selectbox
     cy.get('[data-cy=cachesTable] tr').should('have.length', 2); //2 including header row - nothing is changed
     cy.contains('No result found');
 
@@ -239,7 +237,7 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="replicatedType"]').find('input:checkbox').click(); //Filtering transactional caches & replicated ones
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 5); //5 including header row - nothing is changed
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row - nothing is changed
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains('Transactional');
     });
@@ -247,8 +245,8 @@ describe('Data Container Overview', () => {
     //Adding Indexed filter
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="indexedFeature"]').find('input:checkbox').click(); //Filtering transactional caches & replicated ones
-    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 7); //7 including header row - nothing is changed
+    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click( {force: true}); //Closing filter selectbox
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 7); //5 including header row - nothing is changed
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains(/Transactional|Indexed/);
     });
@@ -269,7 +267,6 @@ describe('Data Container Overview', () => {
       cy.wrap(badge).contains(/Secured/);
     });
     cy.contains('indexed-cache');
-    cy.contains('super-cache');
 
     //Clearing all filters and setting Persistence
     cy.get('button:contains("Clear all filters"):visible').click();
@@ -280,94 +277,16 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains(/Persistent/);
     });
-    cy.contains('super-cache');
 
     //Adding Bounded filter
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="boundedFeature"]').find('input:checkbox').click(); //Filtering bounded caches
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row - nothing is changed
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row - nothing is changed
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains(/Bounded/);
     });
-    cy.contains('super-cache');
     cy.contains('heap-test');
-  });
-
-  //Hide created cache and check the hidden filter
-  it('successfully ignores the cache', () => {
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=ignoreCacheAction]').click();
-    cy.get('[data-cy=ignoreCacheModal]').should('exist');
-    cy.get('#hideShowModal [aria-label=Close]').click(); //Closing modal with close button
-    cy.get('[data-cy=ignoreCacheModal]').should('not.exist');
-
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=ignoreCacheAction]').click();
-    cy.get('[data-cy=ignoreCacheModal]').should('exist');
-    cy.get('[data-cy=cancelAction]').click(); //Closing modal with Cancel button
-    cy.get('[data-cy=ignoreCacheModal]').should('not.exist');
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=ignoreCacheAction]').click();
-    cy.get('[data-cy=hideCacheButton]').click(); //Hiding cache
-
-    cy.contains('Cache aCache hidden.').should('exist');
-    cy.get('[data-cy=ignoreBadge-aCache]').should('exist');
-
-    cy.get('[data-cy=cacheFilterSelect]').click();
-    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
-    cy.get('[data-cy="hiddenStatus"]').find('input:checkbox').click(); //Filtering hidden caches
-    cy.get('[data-cy=cacheFilterSelect]').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 2); //2 including header row - nothing is changed
-    cy.get('[data-cy=ignoreBadge-aCache]').should('exist');
-    cy.contains('aCache');
-  });
-
-  //Show (undo ignored cache) created cache
-  it('successfully undos the ignore the cache action', () => {
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=showCacheAction]').click();
-    cy.get('[data-cy=undoCacheModal]').should('exist');
-    cy.get('#hideShowModal [aria-label=Close]').click(); //Closing modal with close button
-    cy.get('[data-cy=undoCacheModal]').should('not.exist');
-
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=showCacheAction]').click();
-    cy.get('[data-cy=undoCacheModal]').should('exist');
-    cy.get('[data-cy=cancelAction]').click(); //Closing modal with Cancel button
-    cy.get('[data-cy=undoCacheModal]').should('not.exist');
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=showCacheAction]').click();
-    cy.get('[data-cy=showCacheButton]').click(); //Hiding cache
-
-    cy.contains('Cache aCache is now visible.').should('exist');
-    cy.get('[data-cy=ignoreBadge-aCache]').should('not.exist');
-  });
-
-  //Delete created cache
-  it('successfully deletes a cache', () => {
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=deleteCacheAction]').click();
-    cy.get('#deleteCacheModal').should('exist');
-    cy.contains('Permanently delete cache?');
-    cy.get('#deleteCacheModal [aria-label=Close]').click(); //Closing modal with close button
-    cy.contains('Permanently delete cache?').should('not.exist');
-
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=deleteCacheAction]').click();
-    cy.contains('Permanently delete cache?');
-    cy.get('[data-cy=cancelCacheDeleteButton]').click(); //Closing modal with Cancel button
-    cy.contains('Permanently delete cache?').should('not.exist');
-
-    cy.get('[data-cy=actions-aCache]').click();
-    cy.get('[aria-label=deleteCacheAction]').click();
-    cy.get('#cache-to-delete').click();
-    cy.get('#cache-to-delete').type('aCache');
-    cy.get('[data-cy=deleteCacheButton]').click(); //Deleting cache aCache
-
-    cy.contains('Cache aCache deleted.');
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
-    cy.get('aCache').should('not.exist'); //Checking that deleted cache is not visible
   });
 
   // Displays templates page

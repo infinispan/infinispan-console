@@ -32,6 +32,24 @@
     <invalidation-cache name="invalidationCache" mode="SYNC" statistics="true">
       <encoding media-type="application/x-protostream"/>
     </invalidation-cache>
+    <distributed-cache name="a-rbac-test-cache" statistics="true">
+      <encoding media-type="application/x-protostream"/>
+      <security>
+        <authorization enabled="true" roles="admin application deployer"/>
+      </security>
+      <indexing enabled="true" startup-mode="reindex">
+        <indexed-entities>
+          <indexed-entity>org.infinispan.Car</indexed-entity>
+        </indexed-entities>
+      </indexing>
+      <persistence passivation="false">
+        <file-store>
+          <data path="data"/>
+          <index path="index"/>
+        </file-store>
+      </persistence>
+      <memory storage="HEAP" max-size="1.5GB"/>
+    </distributed-cache>
   </cache-container>
 
   <server xmlns="urn:infinispan:server:15.0">

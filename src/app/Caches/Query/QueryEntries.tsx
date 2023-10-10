@@ -115,15 +115,20 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
     if (!props.indexed) return '';
 
     return (
-      <ToolbarItem>
-        <Button
-          style={{ marginLeft: global_spacer_md.value }}
-          variant={ButtonVariant.secondary}
-          onClick={() => props.changeTab()}
-        >
-          {t('caches.query.view-all-query-stats')}
-        </Button>
-      </ToolbarItem>
+      <React.Fragment>
+        <ToolbarItem variant={'separator'} style={{ marginInline: global_spacer_sm.value }} />
+        <ToolbarItem>
+          <Button
+            style={{ marginLeft: global_spacer_md.value }}
+            variant={ButtonVariant.secondary}
+            onClick={() => props.changeTab()}
+            data-cy="viewQueryMetricsButton"
+          >
+            {t('caches.query.view-all-query-stats')}
+          </Button>
+        </ToolbarItem>
+      </React.Fragment>
+
     );
   };
 
@@ -175,7 +180,6 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
             />
           </Popover>
         </ToolbarItem>
-        <ToolbarItem variant={'separator'} style={{ marginInline: global_spacer_sm.value }} />
         {buildViewAllQueryStats()}
         <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
       </ToolbarContent>

@@ -70,10 +70,10 @@ Integration tests don't run by default locally. They always run in CI.
 
 To run Cypress integration tests locally, follow these steps:
 
-1. Run the Infinispan server using `./run-server-for-e2e.sh`, which will download and run the server.
-2. Run the following command with the `-De2e=true` flag:
-```bash
-mvn clean install -De2e=true
+```shell
+npm run build # build the console
+./run-server-for-e2e-container.sh # will run the latest image of Infinispan for this branch version and the built console
+npm run cy:run # will run cypress locally
 ```
 
 ## Configurations

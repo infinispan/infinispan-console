@@ -89,9 +89,10 @@ const DeleteEntry = (props: {
     >
       <TextContent>
         <Text>
-          {t('caches.entries.modal-delete-body-line-one')} <strong>`&quot;`{props.entryKey}`&quot;`</strong>{' '}
+          {t('caches.entries.modal-delete-body-line-one')} <strong>&quot;{props.entryKey}&quot;</strong>{' '}
           {t('caches.entries.modal-delete-body-line-two')} <strong>{props.cacheName}</strong>.
-          <br />
+        </Text>
+        <Text>
           {t('caches.entries.modal-delete-body-line-three')}
         </Text>
       </TextContent>

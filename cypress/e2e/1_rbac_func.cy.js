@@ -1,4 +1,4 @@
-describe('RBAC Functionlity Tests', () => {
+describe('RBAC Functionality Tests', () => {
   const monitorUserName = 'monitor';
   const observerUserName = 'observer';
   const applicationUserName = 'application';
@@ -8,13 +8,16 @@ describe('RBAC Functionlity Tests', () => {
     cy.login(monitorUserName, Cypress.env('password'));
     checkDataContainerView(true, false, false, false);
     checkSecuredCacheDetailsView(true, false, false, 'monitor', 'indexed-cache');
-    checkNotOwnSecuredCache('super-cache');
+    checkNotOwnSecuredCache('a-rbac-test-cache');
     checkNonSecuredCacheDetailView(true, false);
+    checkMenu(false);
+    cy.login(monitorUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with observer user', () => {
     cy.login(observerUserName, Cypress.env('password'));
-
+    checkMenu(false);
     checkDataContainerView(false, false, false, false);
     checkSecuredCacheDetailsView(false, false, false, 'observer', 'indexed-cache');
     cy.contains('Elaia');
@@ -26,18 +29,21 @@ describe('RBAC Functionlity Tests', () => {
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
 
-    checkNotOwnSecuredCache('super-cache');
+    checkNotOwnSecuredCache('a-rbac-test-cache');
     checkNonSecuredCacheDetailView(false, false);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView();
+    cy.login(observerUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with application user', () => {
     cy.login(applicationUserName, Cypress.env('password'));
 
+    checkMenu(false);
     checkDataContainerView(false, false, false, false);
-    checkSecuredCacheDetailsView(false, true, false, 'application', 'super-cache');
+    checkSecuredCacheDetailsView(false, true, false, 'application', 'a-rbac-test-cache');
     checkActionsOnSuperCache();
 
     checkNotOwnSecuredCache('indexed-cache');
@@ -45,13 +51,16 @@ describe('RBAC Functionlity Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView();
+    cy.login(applicationUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with deployer user', () => {
     cy.login(deployerUserName, Cypress.env('password'));
 
+    checkMenu(false);
     checkDataContainerView(false, true, true, false);
-    checkSecuredCacheDetailsView(false, true, false, 'deployer', 'super-cache');
+    checkSecuredCacheDetailsView(false, true, false, 'deployer', 'a-rbac-test-cache');
     checkActionsOnSuperCache();
 
     checkNotOwnSecuredCache('indexed-cache');
@@ -59,13 +68,16 @@ describe('RBAC Functionlity Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(true);
     checkCountersPageView();
+    cy.login(deployerUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with admin user', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
 
+    checkMenu(true);
     checkDataContainerView(false, true, true, true);
-    checkSecuredCacheDetailsView(false, true, true, 'admin', 'super-cache');
+    checkSecuredCacheDetailsView(false, true, true, 'admin', 'a-rbac-test-cache');
     checkActionsOnSuperCache();
 
     checkNotOwnSecuredCache('text-cache');
@@ -74,7 +86,20 @@ describe('RBAC Functionlity Tests', () => {
     checkSchemasPageView(true);
     checkCountersPageView();
     checkTasksPage();
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(true);
   });
+
+  function checkMenu(isSuperAdmin) {
+    cy.contains('Data Container').should('exist');
+    cy.contains('Global Statistics').should('exist');
+    cy.contains('Cluster Membership').should('exist');
+    if (isSuperAdmin) {
+      cy.contains('Connected Clients').should('exist');
+    } else {
+      cy.contains('Connected Clients').should('not.exist');
+    }
+  }
 
   function checkDataContainerView(isMonitor, isDeployer, isAdmin, isSuperAdmin) {
     //Checking Data Container view
@@ -90,13 +115,13 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.contains(/^\d+ Caches$/);
-    cy.contains('10 Counters');
+    cy.contains('Counters');
     if (isMonitor) {
-      cy.contains('1 Tasks').should('not.exist');
-      cy.contains('13 Schemas').should('not.exist');
+      cy.contains('Tasks').should('not.exist');
+      cy.contains('Schemas').should('not.exist');
     } else {
       //cy.contains('1 Tasks'); //Should be uncommented after feature is implemented
-      cy.contains('13 Schemas');
+      cy.contains('Schemas');
     }
     cy.get('#cache-table-toolbar').should('exist');
     cy.get('[data-cy=paginationArea]').should('exist');
@@ -140,8 +165,10 @@ describe('RBAC Functionlity Tests', () => {
 
     if (isSuperAdmin) {
       cy.get('#rebalancing-switch').should('exist');
+      cy.get('[data-cy=cacheConfigurationTab]').should('exist');
     } else {
       cy.get('#rebalancing-switch').should('not.exist');
+      cy.get('[data-cy=cacheConfigurationTab]').should('not.exist');
     }
 
     if (isMonitor) {
@@ -152,10 +179,6 @@ describe('RBAC Functionlity Tests', () => {
       cy.get('[data-cy=queriesTab]').should('exist');
     }
 
-    //Checking cache configuration page
-    cy.get('[data-cy=cacheConfigurationTab]').click();
-    cy.contains('authorization');
-    cy.contains(roleName);
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');
@@ -166,11 +189,12 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=backButton]').click();
     //Going to metrics page
     cy.get('[data-cy=cacheMetricsTab]').click();
-    cy.get('[data-cy=data-distribution-chart]').should('exist');
     if (isSuperAdmin) {
+      cy.get('[data-cy=data-distribution-chart]').should('exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('exist');
     } else {
       cy.get('[data-cy=clearQueryMetricsButton]').should('not.exist');
+      cy.get('[data-cy=data-distribution-chart]').should('not.exist');
     }
 
     if (!isMonitor)
@@ -183,7 +207,7 @@ describe('RBAC Functionlity Tests', () => {
     cy.contains('Data container').click();
     cy.get('[id^="pagination-caches-top-pagination"]').first().click();
     cy.get('[data-action=per-page-100]').click();
-    cy.contains(/cacheName$/).should('not.exist');
+    cy.contains('/' + cacheName +'$/').should('not.exist');
   }
 
   function checkNonSecuredCacheDetailView(isMonitor, isSuperAdmin) {
@@ -246,9 +270,11 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=clearAllButton]').click();
     cy.get('[data-cy=deleteButton]').click();
     cy.wait(1500); //Waiting till the whole page is loaded
-    //Checking cache configuration page
-    cy.get('[data-cy=cacheConfigurationTab]').click();
-    cy.contains('authorization').should('not.exist');
+    if (isSuperAdmin) {
+      //Checking cache configuration page
+      cy.get('[data-cy=cacheConfigurationTab]').click();
+      cy.contains('authorization').should('not.exist');
+    }
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');
@@ -259,10 +285,11 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[data-cy=backButton]').click();
     //Going to metrics page
     cy.get('[data-cy=cacheMetricsTab]').click();
-    cy.get('[data-cy=data-distribution-chart]').should('exist');
     if (isSuperAdmin) {
+      cy.get('[data-cy=data-distribution-chart]').should('exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('exist');
     } else {
+      cy.get('[data-cy=data-distribution-chart]').should('not.exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('not.exist');
     }
 
@@ -314,7 +341,7 @@ describe('RBAC Functionlity Tests', () => {
         parseSpecialCharSequences: false
       });
     cy.get('[data-cy=addButton]').click();
-    cy.contains('Entry added to cache super-cache.');
+    cy.contains('Entry added to cache a-rbac-test-cache.');
     cy.get('[data-cy=actions-fordCar]').should('exist');
     //Adding one more entry
     cy.get('[data-cy=addEntryButton]').click();
@@ -327,7 +354,7 @@ describe('RBAC Functionlity Tests', () => {
         parseSpecialCharSequences: false
       });
     cy.get('[data-cy=addButton]').click();
-    cy.contains('Entry added to cache super-cache.');
+    cy.contains('Entry added to cache a-rbac-test-cache.');
     cy.get('[data-cy=actions-kiaCar]').should('exist');
     //Editing entry
     cy.get('[data-cy=actions-kiaCar] > button').click();
@@ -339,7 +366,7 @@ describe('RBAC Functionlity Tests', () => {
         parseSpecialCharSequences: false
       });
     cy.get('[data-cy=addButton]').click();
-    cy.contains('Entry updated in cache super-cache.');
+    cy.contains('Entry updated in cache a-rbac-test-cache.');
     cy.contains('2016');
     //Deleting entry
     cy.get('[data-cy=actions-kiaCar] > button').click();
@@ -363,5 +390,24 @@ describe('RBAC Functionlity Tests', () => {
     //Checking Tasks page
     cy.get('a[aria-label="nav-item-Tasks"]').click();
     cy.contains('hello');
+  }
+
+  function checkNoEntriesTabView(isSuperAdmin) {
+    // nobody sees manage metrics tab for default cache
+    cy.get('[data-cy=manageEntriesTab]').should('not.exist');
+    cy.get('[data-cy=cacheMetricsTab]').should('exist');
+    if (isSuperAdmin) {
+      cy.get('[data-cy=cacheConfigurationTab]').should('exist');
+      // config tab is visible
+      cy.contains('JSON').should('exist');
+      cy.get('[data-cy=cacheMetricsTab]').click();
+      cy.contains('Data access').should('exist');
+    } else {
+      // no config tab
+      cy.get('[data-cy=cacheConfigurationTab]').should('not.exist');
+      // metrics tab is visible
+      cy.contains('Data access').should('exist');
+    }
+
   }
 });

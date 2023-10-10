@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
 import {
-  Alert,
-  AlertVariant,
   Button,
   ButtonVariant,
   Card,
@@ -21,7 +19,11 @@ import {
   TextVariants,
   Toolbar,
   ToolbarItem,
-  ToolbarContent
+  ToolbarContent,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  EmptyStateBody
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { global_spacer_md } from '@patternfly/react-tokens';
@@ -35,6 +37,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useSearchStats } from '@app/services/statsHook';
+import { DatabaseIcon } from '@patternfly/react-icons';
 
 const IndexManagement = (props) => {
   const { t } = useTranslation();
@@ -101,7 +104,7 @@ const IndexManagement = (props) => {
       return <TableErrorState error={error} />;
     }
 
-    if (stats) {
+    if (stats && stats.index.length > 0) {
       return (
         <Grid hasGutter>
           {stats.index.map((indexData, num) => (
@@ -132,7 +135,12 @@ const IndexManagement = (props) => {
       );
     }
 
-    return <Alert variant={AlertVariant.info} title={t('caches.index.empty')} />;
+    return (
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateIcon icon={DatabaseIcon} />
+        <EmptyStateBody>{t('caches.index.empty')}</EmptyStateBody>
+      </EmptyState>
+    );
   };
 
   return (

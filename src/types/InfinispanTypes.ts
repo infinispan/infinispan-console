@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 interface Status {
   name: string;
   color: string;
@@ -117,7 +118,7 @@ interface CacheEncoding {
 
 interface DetailedInfinispanCache {
   name: string;
-  configuration: CacheConfig;
+  configuration?: CacheConfig;
   encoding: CacheEncoding;
   type: string;
   started: boolean;
@@ -130,6 +131,15 @@ interface DetailedInfinispanCache {
   features: Features;
   backupSites?: [XSite];
   stats?: CacheStats;
+  mode: string;
+  memory?: CacheMemory;
+  async: boolean;
+}
+
+interface CacheMemory {
+  storage_type: string;
+  max_size: string;
+  max_size_bytes: number;
 }
 
 interface CacheStats {

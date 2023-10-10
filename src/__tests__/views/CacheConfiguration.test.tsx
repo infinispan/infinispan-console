@@ -49,7 +49,6 @@ describe('Configuration Page', () => {
         configuration: yamlConfig
       };
     });
-
     renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
     expect(screen.getByText('JSON')).toBeInTheDocument();
     expect(screen.getByText('XML')).toBeInTheDocument();

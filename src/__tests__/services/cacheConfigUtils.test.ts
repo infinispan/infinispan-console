@@ -1,20 +1,43 @@
-import { CacheConfigUtils, Distributed, Invalidated, Local, Replicated } from '@services/cacheConfigUtils';
+import {
+  CacheConfigUtils,
+  DIST_ASYNC,
+  DIST_SYNC,
+  Distributed,
+  Invalidated,
+  INVALIDATION_ASYNC,
+  INVALIDATION_SYNC,
+  LOCAL,
+  Local,
+  REPL_ASYNC,
+  REPL_SYNC,
+  Replicated
+} from '@services/cacheConfigUtils';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 describe('Cache Config Utils tests', () => {
   test('cache topology', () => {
-    let distributed = '{\n' + '  "distributed-cache": {\n' + '  }\n' + '}';
-
-    expect(CacheConfigUtils.mapCacheType(JSON.parse(distributed))).toBe('Distributed');
-
-    let replicated = '{\n' + '  "replicated-cache": {\n' + '  }\n' + '}';
-
-    expect(CacheConfigUtils.mapCacheType(JSON.parse(replicated))).toBe('Replicated');
+    expect(CacheConfigUtils.mapCacheType(DIST_SYNC)).toBe('Distributed');
+    expect(CacheConfigUtils.mapCacheType(DIST_ASYNC)).toBe('Distributed');
+    expect(CacheConfigUtils.mapCacheType(REPL_SYNC)).toBe('Replicated');
+    expect(CacheConfigUtils.mapCacheType(REPL_ASYNC)).toBe('Replicated');
+    expect(CacheConfigUtils.mapCacheType(LOCAL)).toBe('Local');
+    expect(CacheConfigUtils.mapCacheType(INVALIDATION_ASYNC)).toBe('Invalidated');
+    expect(CacheConfigUtils.mapCacheType(INVALIDATION_SYNC)).toBe('Invalidated');
 
     expect(CacheConfigUtils.mapCacheType(Distributed)).toBe('Distributed');
     expect(CacheConfigUtils.mapCacheType(Replicated)).toBe('Replicated');
-    expect(CacheConfigUtils.mapCacheType(Local)).toBe('Local');
     expect(CacheConfigUtils.mapCacheType(Invalidated)).toBe('Invalidated');
+    expect(CacheConfigUtils.mapCacheType(Local)).toBe('Local');
+  });
+
+  test('cache sync or async', () => {
+    expect(CacheConfigUtils.isAsync(DIST_SYNC)).toBe(false);
+    expect(CacheConfigUtils.isAsync(DIST_ASYNC)).toBe(true);
+    expect(CacheConfigUtils.isAsync(REPL_SYNC)).toBe(false);
+    expect(CacheConfigUtils.isAsync(REPL_ASYNC)).toBe(true);
+    expect(CacheConfigUtils.isAsync(LOCAL)).toBe(false);
+    expect(CacheConfigUtils.isAsync(INVALIDATION_ASYNC)).toBe(true);
+    expect(CacheConfigUtils.isAsync(INVALIDATION_SYNC)).toBe(false);
   });
 
   test('editable', () => {

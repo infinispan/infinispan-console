@@ -16,9 +16,10 @@ import {
   Text,
   TextContent,
   TextVariants,
-  EmptyStateHeader
+  EmptyStateHeader,
+  EmptyStateFooter
 } from '@patternfly/react-core';
-import { SearchIcon } from '@patternfly/react-icons';
+import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
 import displayUtils from '@services/displayUtils';
 import {
   chart_color_blue_500,
@@ -137,6 +138,17 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
     );
   };
 
+  const emptyPage = (
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText={t('cache-managers.tasks.no-tasks-status')}
+        icon={<EmptyStateIcon icon={DatabaseIcon} />}
+        headingLevel="h4"
+      />
+      <EmptyStateBody>{t('cache-managers.tasks.no-tasks-body')}</EmptyStateBody>
+    </EmptyState>
+  );
+
   const updateRows = (tasks: Task[]) => {
     let rows: { heightAuto: boolean; cells: (string | any)[] }[];
 
@@ -149,14 +161,16 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
               props: { colSpan: 8 },
               title: (
                 <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.sm}>
-                    <EmptyStateHeader
-                      titleText={<>{t('cache-managers.no-tasks-status')}</>}
-                      icon={<EmptyStateIcon icon={SearchIcon} />}
-                      headingLevel="h2"
-                    />
-                    <EmptyStateBody>{t('cache-managers.no-tasks-body')}</EmptyStateBody>
-                  </EmptyState>
+                  {
+                    <EmptyState variant={EmptyStateVariant.sm}>
+                      <EmptyStateHeader
+                        titleText={<>{t('cache-managers.tasks.no-filtered-task')}</>}
+                        icon={<EmptyStateIcon icon={SearchIcon} />}
+                        headingLevel="h2"
+                      />
+                      <EmptyStateBody>{t('cache-managers.tasks.no-filtered-task-body')}</EmptyStateBody>
+                    </EmptyState>
+                  }
                 </Bullseye>
               )
             }
@@ -184,6 +198,9 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
 
   if (!props.isVisible) {
     return <span />;
+  }
+  if (tasks.length == 0) {
+    return emptyPage;
   }
 
   return (

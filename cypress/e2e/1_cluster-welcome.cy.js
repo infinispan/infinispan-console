@@ -17,7 +17,7 @@ describe('Welcome page', () => {
     cy.contains('Default'); // cluster name
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
-    cy.contains('18 Caches');
+    cy.contains('15 Caches');
     cy.contains('10 Counters');
     cy.contains('1 Tasks');
     cy.contains('13 Schemas');
@@ -72,7 +72,7 @@ describe('Welcome page', () => {
       cy.login(Cypress.env('username'), Cypress.env('password'));
       cy.get('[data-cy=aboutInfoQuestionMark]').click();
       cy.contains('Documentation');
-      
+
       //Clicks the About link and should go to About dialog
       cy.contains('About').click();
       cy.get('[role=dialog]').should('be.visible');
