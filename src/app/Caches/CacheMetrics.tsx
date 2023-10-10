@@ -5,6 +5,7 @@ import {
   CardTitle,
   EmptyState,
   EmptyStateBody,
+  EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
@@ -16,8 +17,7 @@ import {
   TextListItem,
   TextListItemVariants,
   TextListVariants,
-  TextVariants,
-  EmptyStateHeader
+  TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { CubesIcon } from '@patternfly/react-icons';
@@ -28,35 +28,37 @@ import { useTranslation } from 'react-i18next';
 import { StorageType } from '@services/infinispanRefData';
 import { DataAccess } from './DataAccess';
 import { useCacheDetail } from '@app/services/cachesHook';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleACL } from '@services/securityService';
+import { CacheLifecycle } from '@app/Caches/CacheLifecycle';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
+  const { connectedUser } = useConnectedUser();
   const { cache, error, loading } = useCacheDetail();
   const [stats, setStats] = useState<CacheStats | undefined>(cache.stats);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
+  const [displayDataDistribution, setDisplayDataDistribution] = useState<boolean>(false);
   const [memory, setMemory] = useState<string | undefined>(undefined);
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
   useEffect(() => {
-    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName];
-    const cacheMode = Object.keys(loadMemory)[0];
-    if (loadMemory[cacheMode].memory) {
-      if (loadMemory[cacheMode].memory.storage === 'HEAP' && loadMemory[cacheMode].memory['max-size'])
-        setMemory(loadMemory[cacheMode].memory.storage);
-      else if (loadMemory[cacheMode].memory.storage === 'OFF_HEAP') setMemory(loadMemory[cacheMode].memory.storage);
-    } else {
-      setMemory('HEAP');
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      // Data distribution is for admin only
+      setDisplayDataDistribution(true);
+      const loadMemory = cache.memory;
+      if (loadMemory) {
+        setMemory(loadMemory.storage_type == 'OFF_HEAP' ? StorageType.OFF_HEAP : StorageType.HEAP);
+      } else {
+        setMemory(StorageType.HEAP);
+      }
     }
 
     setStats(cache.stats);
     const loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
     setDisplayQueryStats(loadQueryStats);
   }, [cache, error]);
-
-  useEffect(() => {
-    if (props.display) {
-    }
-  }, []);
 
   const buildOperationsPerformanceCard = () => {
     if (!stats) {
@@ -114,6 +116,13 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       return;
     }
     return <QueryMetrics cacheName={props.cacheName} />;
+  };
+
+  const buildDataDistribution = () => {
+    if (!displayDataDistribution) {
+      return;
+    }
+    return <DataDistributionChart cacheName={props.cacheName} />;
   };
 
   const buildEntriesCard = () => {
@@ -263,13 +272,12 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildEntriesCard()}</GridItem>
       <GridItem span={4}>{buildMemoryCard()}</GridItem>
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
-      <GridItem span={8}>
-        <DataDistributionChart cacheName={props.cacheName} />
-      </GridItem>
+      {displayDataDistribution && <GridItem span={8}> {buildDataDistribution()}</GridItem>}
       <GridItem span={4}>
+        <CacheLifecycle stats={stats} />
         <DataAccess stats={stats} />
       </GridItem>
-      <GridItem span={12}>{buildQueryStats()}</GridItem>
+      <GridItem span={displayDataDistribution ? 12 : 8}>{buildQueryStats()}</GridItem>
     </Grid>
   );
 };

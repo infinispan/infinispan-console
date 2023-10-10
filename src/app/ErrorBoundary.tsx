@@ -17,7 +17,7 @@ interface ErrorBoundaryProps {
   error: string;
 }
 
-class ErrorBoundary extends React.Component<{}, ErrorBoundaryProps> {
+class ErrorBoundary extends React.Component<NonNullable<unknown>, ErrorBoundaryProps> {
   constructor(props) {
     super(props);
     this.state = { hasError: false, error: '' };
@@ -59,6 +59,8 @@ class ErrorBoundary extends React.Component<{}, ErrorBoundaryProps> {
     }
 
     // If there is no error just render the children component.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return this.props.children;
   }
 }

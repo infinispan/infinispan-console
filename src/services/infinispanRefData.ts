@@ -64,7 +64,8 @@ export enum EncodingType {
   Text = 'text/plain',
   JBoss = 'application/x-jboss-marshalling',
   Octet = 'application/octet-stream',
-  Empty = 'Empty'
+  Empty = 'Empty',
+  Unknown = 'Unknown'
 }
 
 export enum InfinispanFlags {

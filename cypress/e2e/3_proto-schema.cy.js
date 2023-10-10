@@ -50,16 +50,17 @@ describe('Proto Schema CRUD', () => {
 
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
-    cy.get('#schema-name').click().type('aTestSchema');
+    const schemaName = 'aTestSchema' + Math.random();
+    cy.get('#schema-name').click().type(schemaName);
     cy.get('#schema').click().type('schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
-    cy.contains('Schema aTestSchema created.');
+    cy.contains('Schema ' + schemaName + ' created.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
-    cy.contains('aTestSchema.proto');
+    cy.contains(schemaName + '.proto');
 
     //Updating existing schema
-    cy.contains('Schema aTestSchema.proto has errors');
-    cy.get('[data-cy="actions-aTestSchema.proto"]>button').click();
+    cy.contains('Schema ' + schemaName + '.proto has errors');
+    cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
     cy.get('[aria-label="editSchemaAction"]').click();
     cy.contains('schemaValue');
     cy.contains('Save');
@@ -67,13 +68,13 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
     cy.get('[data-cy=schemaEditArea]').type('schemaNewValue');
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
-    cy.contains('Schema aTestSchema.proto updated.');
+    cy.contains('Schema ' + schemaName + '.proto updated.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('schemaNewValue');
 
     //Updating existing schema with correct value
-    cy.contains('Schema aTestSchema.proto has errors');
-    cy.get('[data-cy="actions-aTestSchema.proto"]>button').click();
+    cy.contains('Schema ' + schemaName + '.proto has errors');
+    cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
     cy.get('[aria-label="editSchemaAction"]').click();
     cy.get('[data-cy=schemaEditArea]').contains('schemaNewValue');
     cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
@@ -82,24 +83,24 @@ describe('Proto Schema CRUD', () => {
       { parseSpecialCharSequences: false }
     );
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
-    cy.contains('Schema aTestSchema.proto updated.');
+    cy.contains('Schema ' + schemaName +'.proto updated.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
-    cy.get('[data-cy="aTestSchema.protoConfig"]').click();
+    cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
     cy.wait(1000)
     cy.contains('schemaNewValue').should('not.exist');
     cy.contains('ExampleProto');
-    cy.contains('Schema aTestSchema.proto has errors').should('not.exist');
+    cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
 
     //Deleting schema
-    cy.get('[data-cy="actions-aTestSchema.proto"]>button').click();
+    cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
     cy.get('[aria-label="deleteSchemaAction"]').click();
     cy.contains('Delete schema?');
     cy.get('button[aria-label="confirm-delete-schema-button"]').click();
-    cy.contains('Schema aTestSchema.proto has been deleted.');
+    cy.contains('Schema ' + schemaName + '.proto has been deleted.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains('people.proto');
     cy.get('button[aria-label="create-schema-button"]').scrollIntoView();
-    cy.contains('aTestSchema.proto').should('not.exist');
+    cy.contains(schemaName + '.proto').should('not.exist');
   });
 
   it('gives error if duplicate name is used while creating new schema', () => {

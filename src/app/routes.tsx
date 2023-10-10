@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 import { CacheManagerPage } from '@app/CacheManagers/CacheMangerPage';
-import { NotFound } from '@app/NotFound/NotFound';
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
@@ -14,6 +13,11 @@ import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
+import { useConnectedUser } from '@app/services/userManagementHook';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
+import { NotFound } from '@app/NotFound/NotFound';
 
 let routeFocusTimer: number;
 
@@ -31,15 +35,23 @@ const useA11yRouteChange = (isAsync: boolean) => {
   }, [isAsync]);
 };
 
-const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, ...rest }: IAppRoute) => {
+const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, admin, ...rest }: IAppRoute) => {
   useA11yRouteChange(isAsync);
   useDocumentTitle(title);
-
+  const { connectedUser } = useConnectedUser();
   function routeWithTitle(routeProps: RouteComponentProps) {
+    if (admin && !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return <PageNotAuthorized title={'Not authorized'} />;
+    }
     return <Component {...rest} {...routeProps} />;
   }
 
   return <Route render={routeWithTitle} />;
+};
+
+const PageNotAuthorized = ({ title }: { title: string }) => {
+  useDocumentTitle(title);
+  return <Route component={NotAuthorized} />;
 };
 
 const PageNotFound = ({ title }: { title: string }) => {
@@ -55,6 +67,7 @@ export interface IAppRoute {
   exact?: boolean;
   path: string;
   title: string;
+  admin: boolean;
   isAsync?: boolean;
   menu?: boolean;
   subRoutes?: string[];
@@ -69,7 +82,8 @@ const routes: IAppRoute[] = [
     label: 'Welcome to the Infinispan server',
     path: '/welcome',
     title: 'Welcome to the Infinispan server',
-    menu: false
+    menu: false,
+    admin: false
   },
   {
     component: CacheManagerPage,
@@ -78,7 +92,8 @@ const routes: IAppRoute[] = [
     path: '/',
     title: 'Data Container',
     menu: true,
-    subRoutes: ['container', 'cache']
+    subRoutes: ['container', 'cache'],
+    admin: false
   },
   {
     component: GlobalStats,
@@ -86,7 +101,8 @@ const routes: IAppRoute[] = [
     label: 'Global Statistics',
     path: '/global-stats',
     title: 'Global Statistics',
-    menu: true
+    menu: true,
+    admin: false
   },
   {
     component: ClusterStatus,
@@ -94,16 +110,18 @@ const routes: IAppRoute[] = [
     label: 'Cluster Membership',
     path: '/cluster-membership',
     title: 'Cluster Membership',
-    menu: true
+    menu: true,
+    admin: false
   },
   {
     component: CreateCache,
     exact: true,
     label: 'Cache Setup',
-    path: '/setup',
+    path: '/caches/setup',
     title: 'Cache Setup',
     menu: false,
-    readonlyUser: true
+    readonlyUser: true,
+    admin: false
   },
   {
     component: CreateCache,
@@ -111,7 +129,8 @@ const routes: IAppRoute[] = [
     label: 'Create cache',
     path: '/container/caches/create',
     title: 'Create cache',
-    menu: false
+    menu: false,
+    admin: true
   },
   {
     component: DetailConfigurations,
@@ -119,7 +138,8 @@ const routes: IAppRoute[] = [
     label: 'Cache Manager Configurations',
     path: '/container/:cmName/configurations',
     title: 'Configurations',
-    menu: false
+    menu: false,
+    admin: false
   },
   {
     component: IndexManagement,
@@ -127,7 +147,8 @@ const routes: IAppRoute[] = [
     label: 'Index management',
     path: '/cache/:cacheName/indexing',
     title: 'Index management',
-    menu: false
+    menu: false,
+    admin: false
   },
   {
     component: XSiteCache,
@@ -135,7 +156,8 @@ const routes: IAppRoute[] = [
     label: 'XSite Replication Cache',
     path: '/cache/:cacheName/backups',
     title: 'XSite management caches',
-    menu: false
+    menu: false,
+    admin: false
   },
   {
     component: DetailCachePage,
@@ -143,7 +165,8 @@ const routes: IAppRoute[] = [
     label: 'Cache',
     path: '/cache/:cacheName',
     title: 'Cache',
-    menu: false
+    menu: false,
+    admin: false
   },
   {
     component: ConnectedClients,
@@ -151,14 +174,15 @@ const routes: IAppRoute[] = [
     label: 'Connected Clients',
     path: '/connected-clients',
     title: 'Connected Clients',
-    menu: true
+    menu: true,
+    admin: true
   }
 ];
 
 const AppRoutes = (props: { init: string }) => {
   return (
     <Switch>
-      {routes.map(({ path, exact, component, title, isAsync }, idx) => (
+      {routes.map(({ path, exact, component, title, admin, isAsync }, idx) => (
         <RouteWithTitleUpdates
           path={path}
           exact={exact}
@@ -167,8 +191,10 @@ const AppRoutes = (props: { init: string }) => {
           title={title}
           isAsync={isAsync}
           init={props.init}
+          admin={admin}
         />
       ))}
+      ;
       <PageNotFound title="404 Page Not Found" />
     </Switch>
   );

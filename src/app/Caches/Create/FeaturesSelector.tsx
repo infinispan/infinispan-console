@@ -14,10 +14,11 @@ import { useCreateCache } from '@app/services/createCacheHook';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { validFeatures } from '@app/utils/featuresValidation';
 import { useFetchProtobufTypes } from '@app/services/protobufHook';
+import { ConsoleACL } from '@services/securityService';
 
 const FeaturesSelector = () => {
   const { t } = useTranslation();
-  const { notSecured } = useConnectedUser();
+  const { notSecured, connectedUser } = useConnectedUser();
   const { protobufTypes } = useFetchProtobufTypes();
   const { configuration, setConfiguration, addFeature, removeFeature } = useCreateCache();
 
@@ -84,6 +85,10 @@ const FeaturesSelector = () => {
     );
   };
 
+  const isSecuredCacheCreationEnabled = () => {
+    return !notSecured && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+  };
+
   return (
     <Form
       isWidthLimited
@@ -116,7 +121,7 @@ const FeaturesSelector = () => {
         <IndexedCacheConfigurator isEnabled={protobufTypes.length > 0} />
       )}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && (
-        <SecuredCacheConfigurator isEnabled={!notSecured} />
+        <SecuredCacheConfigurator isEnabled={isSecuredCacheCreationEnabled()} />
       )}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS) && (
         <BackupsCacheConfigurator isEnabled={isBackups} />

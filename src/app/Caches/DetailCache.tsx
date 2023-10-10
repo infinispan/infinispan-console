@@ -12,7 +12,10 @@ import {
   ChipGroup,
   Divider,
   EmptyState,
+  EmptyStateActions,
   EmptyStateBody,
+  EmptyStateFooter,
+  EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
   Flex,
@@ -31,10 +34,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem,
-  EmptyStateActions,
-  EmptyStateHeader,
-  EmptyStateFooter
+  ToolbarItem
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { CacheMetrics } from '@app/Caches/CacheMetrics';
@@ -42,11 +42,10 @@ import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { global_danger_color_200 } from '@patternfly/react-tokens';
-import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon, RedoIcon } from '@patternfly/react-icons';
+import { global_BackgroundColor_100, global_danger_color_200, global_info_color_200 } from '@patternfly/react-tokens';
+import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon, InfoIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
-import { MoreInfoTooltip } from '@app/Common/MoreInfoTooltip';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
@@ -63,7 +62,7 @@ const DetailCache = (props: { cacheName: string }) => {
   const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache, loadCache } = useCacheDetail();
-  const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
+  const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
@@ -71,20 +70,43 @@ const DetailCache = (props: { cacheName: string }) => {
     loadCache(cacheName);
   }, []);
 
+  useEffect(() => {
+    if (activeTabKey1 != '' || !cache) {
+      return;
+    }
+
+    if (cache.editable && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+      setActiveTabKey1(0);
+    } else if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      setActiveTabKey1(1);
+    } else {
+      setActiveTabKey1(2);
+    }
+  }, [cache])
+
   const encodingMessageDisplay = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
       return '';
     }
-    const encoding = CacheConfigUtils.toEncoding(cache.configuration.config);
-
-    if (encoding == EncodingType.Java || encoding == EncodingType.JBoss) {
+    const encodingKey = CacheConfigUtils.toEncoding(cache.encoding.key);
+    const encodingValue = CacheConfigUtils.toEncoding(cache.encoding.value);
+    if (
+      encodingKey == EncodingType.Java ||
+      encodingKey == EncodingType.JBoss ||
+      encodingValue == EncodingType.Java ||
+      encodingValue == EncodingType.JBoss
+    ) {
       return (
         <Card isCompact>
           <CardBody>
             <Alert
               isPlain
               isInline
-              title={t('caches.configuration.pojo-encoding', { brandname: brandname, encoding: encoding.toString() })}
+              title={t('caches.configuration.pojo-encoding', {
+                brandname: brandname,
+                encodingKey: encodingKey,
+                encodingValue: encodingValue
+              })}
               variant={AlertVariant.info}
               actionLinks={
                 <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
@@ -119,7 +141,7 @@ const DetailCache = (props: { cacheName: string }) => {
         activeKey={activeTabKey2}
         aria-label="Entries tab"
         component={TabsComponent.nav}
-        style={{ backgroundColor: 'white' }}
+        style={{ backgroundColor: global_BackgroundColor_100.value }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
         <Tab
@@ -130,11 +152,15 @@ const DetailCache = (props: { cacheName: string }) => {
           {encodingMessageDisplay()}
           <CacheEntries cacheName={cacheName} />
         </Tab>
-        <Tab eventKey={13} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
+        <Tab eventKey={11} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
           <QueryEntries cacheName={cacheName} indexed={cache?.features.indexed} changeTab={() => setActiveTabKey1(2)} />
         </Tab>
       </Tabs>
     );
+  };
+
+  const entriesTabEnabled = (): boolean => {
+    return cache.editable && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
   };
 
   const buildDetailContent = () => {
@@ -157,7 +183,7 @@ const DetailCache = (props: { cacheName: string }) => {
                       search: location.search
                     }}
                   >
-                    <Button variant={ButtonVariant.secondary}>Back</Button>
+                    <Button variant={ButtonVariant.secondary}>{t('caches.actions.back')}</Button>
                   </Link>
                 </EmptyStateActions>
               </EmptyStateFooter>
@@ -177,19 +203,42 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
-    if (
-      activeTabKey1 == 0 &&
-      cache.editable &&
-      ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)
-    ) {
-      return <React.Fragment>{buildEntriesTabContent(cache.queryable)}</React.Fragment>;
-    } else if (activeTabKey1 == 2) {
-      return <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />;
-    } else {
+    if (activeTabKey1 == 0) {
+      return buildEntriesTabContent(cache.queryable);
+    }
+
+    if (activeTabKey1 == 1) {
       return (
+        cache.configuration &&
         <CacheConfiguration cacheName={cache.name} editable={cache.editable} config={cache.configuration.config} />
       );
     }
+    return (
+      <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />
+    );
+
+    return (
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateHeader
+          titleText={<>{`Empty ${cacheName}`}</>}
+          icon={<EmptyStateIcon icon={InfoIcon} color={global_info_color_200.value} />}
+          headingLevel="h2"
+        />
+        <EmptyStateBody>{error}</EmptyStateBody>
+        <EmptyStateFooter>
+          <EmptyStateActions>
+            <Link
+              to={{
+                pathname: '/',
+                search: location.search
+              }}
+            >
+              <Button variant={ButtonVariant.secondary}>{t('caches.actions.back')}</Button>
+            </Link>
+          </EmptyStateActions>
+        </EmptyStateFooter>
+      </EmptyState>
+    );
   };
 
   const buildBackupsManage = () => {
@@ -291,21 +340,19 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildFeaturesChip = () => {
     if (!cache?.features) return;
     return (
-      <React.Fragment>
-        <ToolbarItem>
-          <Flex>
-            <Divider orientation={{ default: 'vertical' }} />
+      <ToolbarItem>
+        <Flex>
+          <Divider orientation={{ default: 'vertical' }} />
 
-            <ChipGroup categoryName="Features">
-              {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
-                <Chip isReadOnly key={feature}>
-                  {feature}
-                </Chip>
-              ))}
-            </ChipGroup>
-          </Flex>
-        </ToolbarItem>
-      </React.Fragment>
+          <ChipGroup categoryName="Features">
+            {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
+              <Chip isReadOnly key={feature}>
+                {feature}
+              </Chip>
+            ))}
+          </ChipGroup>
+        </Flex>
+      </ToolbarItem>
     );
   };
 
@@ -341,7 +388,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const displayCacheEntries = () => {
-    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) || !cache?.editable) {
+    if (!entriesTabEnabled()) {
       return;
     }
 
@@ -359,12 +406,14 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const displayConfiguration = () => {
-    let eventKey = 1;
-    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) || !cache.editable) {
-      eventKey = 0;
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      // Only ADMIN can read the full configuration for security reasons
+      return;
     }
 
-    return <Tab data-cy="cacheConfigurationTab" eventKey={eventKey} title={t('caches.tabs.configuration')} />;
+    return (
+      <Tab data-cy="cacheConfigurationTab" eventKey={1} title={t('caches.tabs.configuration')} />
+    );
   };
 
   const displayCacheStats = () => {
@@ -440,9 +489,6 @@ const DetailCache = (props: { cacheName: string }) => {
           component={TabsComponent.nav}
           onSelect={(event, tabIndex) => {
             setActiveTabKey1(tabIndex);
-            if (tabIndex == 0 || tabIndex == 2) {
-              loadCache(cacheName);
-            }
           }}
         >
           {displayCacheEntries()}

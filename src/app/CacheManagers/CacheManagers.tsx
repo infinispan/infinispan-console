@@ -47,7 +47,7 @@ const CacheManagers = () => {
   const brandname = t('brandname.brandname');
 
   const handleTabClick = (nav) => {
-    let tabIndex = nav.itemId;
+    const tabIndex = nav.itemId;
     setActiveTabKey(tabIndex);
     setShowCaches(tabIndex == '0');
     setShowCounters(tabIndex == '1');
@@ -66,12 +66,12 @@ const CacheManagers = () => {
       return '';
     }
 
-    let tabs: ContainerTab[] = [
+    const tabs: ContainerTab[] = [
       { name: t('cache-managers.caches-tab'), count: cachesCount, key: '0' },
       { name: t('cache-managers.counters-tab'), count: countersCount, key: '1' }
     ];
 
-    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       tabs.push({ name: t('cache-managers.tasks-tab'), count: tasksCount, key: '2' });
     }
 
@@ -127,7 +127,9 @@ const CacheManagers = () => {
       <React.Fragment>
         {cm && <CacheTableDisplay cmName={cm.name} setCachesCount={setCachesCount} isVisible={showCaches} />}
         {cm && <CounterTableDisplay setCountersCount={setCountersCount} isVisible={showCounters} />}
-        {cm && <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />}
+        {cm && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser) && (
+          <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />
+        )}
         {cm && (
           <ProtobufSchemasDisplay setProtoSchemasCount={setProtoSchemasCount} isVisible={showSerializationContext} />
         )}

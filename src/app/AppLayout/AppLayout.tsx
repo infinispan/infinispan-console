@@ -36,7 +36,7 @@ import {
 } from '@patternfly/react-core/deprecated';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import { Link, NavLink, Redirect } from 'react-router-dom';
-import { routes } from '@app/routes';
+import { IAppRoute, routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { useHistory } from 'react-router';
@@ -131,8 +131,8 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     return (
       <ToolbarItem>
         {connectedUser.name}
-        <Tooltip position="left" content={<Text>Close the browser or open an incognito window to log again.</Text>}>
-          <span aria-label="Close the browser or open an incognito window to log again." tabIndex={0}>
+        <Tooltip position="left" content={<Text>{t('layout.close-browser-message')}</Text>}>
+          <span aria-label={t('layout.close-browser-message')} tabIndex={0}>
             <InfoCircleIcon style={{ marginLeft: global_spacer_sm.value, marginTop: global_spacer_sm.value }} />
           </span>
         </Tooltip>
@@ -142,14 +142,14 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
 
   const helpDropdownItems = [
     <DropdownItem
-      onClick={() => window.open('https://infinispan.org/documentation/', '_blank')}
+      onClick={() => window.open(t('brandname.documentation-link'), '_blank')}
       key="documentation"
       icon={<ExternalLinkAltIcon />}
     >
-      Documentation
+      {t('layout.documentation-name')}
     </DropdownItem>,
     <DropdownItem onClick={() => setIsAboutOpen(!isAboutOpen)} key="about" component="button">
-      About
+      {t('layout.about-name')}
     </DropdownItem>
   ];
 
@@ -204,13 +204,20 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   // The menu for non admin users
   const filteredRoutes = routes.filter((route) => !route.readonlyUser || (!create && route.readonlyUser));
 
+  const displayNavMenu = (route: IAppRoute): boolean => {
+    return (
+      route.menu == true &&
+      route.label !== undefined &&
+      (!route.admin || (route.admin && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)))
+    );
+  };
+
   const Navigation = (
     <Nav id="nav-primary-simple" theme="dark">
       <NavList id="nav-list-simple">
         {filteredRoutes.map(
           (route, idx) =>
-            route.menu &&
-            route.label && (
+            displayNavMenu(route) && (
               <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
                 <NavLink
                   exact

@@ -167,7 +167,6 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
             className={'cache-templates-table'}
             aria-label={'cache-templates-table-label'}
             variant="compact"
-            style={{ marginTop: global_spacer_md.value }}
           >
             <Thead>
               <Tr>

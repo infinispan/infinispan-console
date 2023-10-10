@@ -70,11 +70,9 @@ const DataDistributionChart = (props: { cacheName: string }) => {
 
   useEffect(() => {
     // To display memory_used
-    const loadMemory = JSON.parse(cache.configuration.config)[props.cacheName];
-    const cacheMode = Object.keys(loadMemory)[0];
-    loadMemory[cacheMode].memory && loadMemory[cacheMode].memory['max-size']
-      ? setDisplayMemoryUsed(true)
-      : setDisplayMemoryUsed(false);
+    if (cache.memory && cache.memory.max_size.length > 0) {
+      setDisplayMemoryUsed(true);
+    }
   }, [cache, dataDistribution]);
 
   const onSelectStatsOptions = (event, selection, isPlaceholder) => {
@@ -212,7 +210,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   });
 
   const distributionChart = (
-    <div style={{ height: '470px', width: '100%', maxWidth: '700px', margin: 'auto' }}>
+    <div style={{ height: '458px', width: '100%', maxWidth: '700px', margin: 'auto' }}>
       <Chart
         ariaDesc={t('caches.cache-metrics.data-distribution')}
         ariaTitle={t('caches.cache-metrics.data-distribution')}

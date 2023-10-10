@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import displayUtils from '@services/displayUtils';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 
 const DataAccess = (props: { stats: CacheStats }) => {
   const { t } = useTranslation();
@@ -52,7 +53,10 @@ const DataAccess = (props: { stats: CacheStats }) => {
             </TextListItem>
           </TextList>
         </TextContent>
-        <Divider component="div" style={{ padding: '10px 0' }} />
+        <Divider
+          component="div"
+          style={{ paddingTop: global_spacer_sm.value, paddingBottom: global_spacer_sm.value }}
+        />
         <TextContent>
           <TextList component={TextListVariants.dl}>
             {displayStats(
@@ -62,37 +66,37 @@ const DataAccess = (props: { stats: CacheStats }) => {
               t('caches.cache-metrics.data-access-hits-info')
             )}
             {displayStats(
-              'hits',
+              'misses',
               props.stats.misses,
               t('caches.cache-metrics.data-access-misses'),
               t('caches.cache-metrics.data-access-misses-info')
             )}
             {displayStats(
-              'hits',
+              'stores',
               props.stats.stores,
               t('caches.cache-metrics.data-access-stores'),
               t('caches.cache-metrics.data-access-stores-info')
             )}
             {displayStats(
-              'hits',
+              'retrievals',
               props.stats.retrievals,
               t('caches.cache-metrics.data-access-retrievals'),
               t('caches.cache-metrics.data-access-retrievals-info')
             )}
             {displayStats(
-              'hits',
+              'remove_hits',
               props.stats.remove_hits,
               t('caches.cache-metrics.data-access-remove-hits'),
               t('caches.cache-metrics.data-access-remove-hits-info')
             )}
             {displayStats(
-              'hits',
+              'remove_misses',
               props.stats.remove_misses,
               t('caches.cache-metrics.data-access-remove-misses'),
               t('caches.cache-metrics.data-access-remove-misses-info')
             )}
             {displayStats(
-              'hits',
+              'evictions',
               props.stats.evictions,
               t('caches.cache-metrics.data-access-evictions'),
               t('caches.cache-metrics.data-access-evictions-info')
