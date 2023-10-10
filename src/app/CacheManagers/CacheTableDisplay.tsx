@@ -16,7 +16,7 @@ import {
   Select,
   SelectGroup,
   SelectOption,
-  SelectVariant,
+  SelectVariant, Spinner,
   Text,
   TextContent,
   TextVariants,
@@ -287,7 +287,26 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       disableActions: boolean;
     }[];
 
-    if (currentPageCaches.length == 0 || loadingCaches || errorCaches != '') {
+    if (loadingCaches) {
+      currentRows = [
+        {
+          heightAuto: true,
+          disableActions: true,
+          cells: [
+            {
+              props: { colSpan: 5 },
+              title: (
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.small}>
+                    <EmptyStateBody><Spinner size={"lg"}/></EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              )
+            }
+          ]
+        }
+      ];
+    } else if (currentPageCaches.length == 0 || errorCaches != '') {
       currentRows = [
         {
           heightAuto: true,

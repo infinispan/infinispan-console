@@ -60,13 +60,27 @@ const DetailCache = (props: { cacheName: string }) => {
   const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache, loadCache } = useCacheDetail();
-  const [activeTabKey1, setActiveTabKey1] = useState<number | string>(0);
+  const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
   useEffect(() => {
     loadCache(cacheName);
   }, []);
+
+  useEffect(() => {
+    if (activeTabKey1 != '' || !cache) {
+      return;
+    }
+
+    if (cache.editable && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+      setActiveTabKey1(0);
+    } else if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      setActiveTabKey1(1);
+    } else {
+      setActiveTabKey1(2);
+    }
+  }, [cache])
 
   const encodingMessageDisplay = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
@@ -184,34 +198,19 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
-    const displayEntries: boolean = cache.editable &&
-      ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
-
-    const displayConf: boolean = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
-
-    if (
-      activeTabKey1 == 0 && displayEntries) {
+    if (activeTabKey1 == 0) {
       return <React.Fragment>{buildEntriesTabContent(cache.queryable)}</React.Fragment>;
     }
 
-    if (displayConf && (activeTabKey1 == 1 || (!displayEntries && activeTabKey1 == 0))) {
+    if (activeTabKey1 == 1) {
       return (
         cache.configuration && <CacheConfiguration cacheName={cache.name} editable={cache.editable} config={cache.configuration.config} />
       );
     }
-    let metricsKey = 2;
-    if (!displayConf) {
-      metricsKey --;
-    }
-    if (!displayEntries) {
-      metricsKey--;
-    }
-    if (activeTabKey1 == metricsKey) {
-      return (
-        <CacheMetrics cacheName={cacheName} display={activeTabKey1 == metricsKey} />
-      );
-    }
-    return '';
+
+    return (
+      <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />
+    );
   };
 
   const buildBackupsManage = () => {
@@ -404,33 +403,17 @@ const DetailCache = (props: { cacheName: string }) => {
       return ;
     }
 
-    let eventKey = 1;
-    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) || !cache.editable) {
-      eventKey--;
-    }
-
-    return <Tab data-cy="cacheConfigurationTab" eventKey={eventKey} title={t('caches.tabs.configuration')} />;
+    return (
+      <Tab data-cy="cacheConfigurationTab" eventKey={1} title={t('caches.tabs.configuration')} />
+    );
   };
 
   const displayCacheStats = () => {
-    if (!cache.stats) {
-      return '';
-    }
-
-    let eventKey = 2;
-    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser) || !cache.editable) {
-      eventKey--;
-    }
-
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      eventKey--;
-    }
-
     return (
       <Tab
         data-cy="cacheMetricsTab"
-        eventKey={eventKey}
-        title={cache.stats?.enabled ? t('caches.tabs.metrics-enabled') : t('caches.tabs.metrics-disabled')}
+        eventKey={2}
+        title={cache?.stats?.enabled ? t('caches.tabs.metrics-enabled') : t('caches.tabs.metrics-disabled')}
       />
     );
   };

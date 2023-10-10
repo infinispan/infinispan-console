@@ -10,6 +10,8 @@ describe('RBAC Functionlity Tests', () => {
     checkSecuredCacheDetailsView(true, false, false, 'monitor', 'indexed-cache');
     checkNotOwnSecuredCache('super-cache');
     checkNonSecuredCacheDetailView(true, false);
+    cy.login(monitorUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with observer user', () => {
@@ -31,6 +33,8 @@ describe('RBAC Functionlity Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView();
+    cy.login(observerUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with application user', () => {
@@ -45,6 +49,8 @@ describe('RBAC Functionlity Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView();
+    cy.login(applicationUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with deployer user', () => {
@@ -59,6 +65,8 @@ describe('RBAC Functionlity Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(true);
     checkCountersPageView();
+    cy.login(deployerUserName, Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(false);
   });
 
   it('successfully logins and performs actions with admin user', () => {
@@ -74,6 +82,8 @@ describe('RBAC Functionlity Tests', () => {
     checkSchemasPageView(true);
     checkCountersPageView();
     checkTasksPage();
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    checkNoEntriesTabView(true);
   });
 
   function checkDataContainerView(isMonitor, isDeployer, isAdmin, isSuperAdmin) {
@@ -190,6 +200,25 @@ describe('RBAC Functionlity Tests', () => {
     cy.get('[id^="pagination-caches-top-pagination"]').click();
     cy.get('[data-action=per-page-100]').click();
     cy.contains(/cacheName$/).should('not.exist');
+  }
+
+  function checkNoEntriesTabView(isSuperAdmin) {
+    // nobody sees manage metrics tab for default cache
+    cy.get('[data-cy=manageEntriesTab]').should('not.exist');
+    cy.get('[data-cy=cacheMetricsTab]').should('exist');
+    if (isSuperAdmin) {
+      cy.get('[data-cy=cacheConfigurationTab]').should('exist');
+      // config tab is visible
+      cy.contains('JSON').should('exist');
+      cy.get('[data-cy=cacheMetricsTab]').click();
+      cy.contains('Data access').should('exist');
+    } else {
+      // no config tab
+      cy.get('[data-cy=cacheConfigurationTab]').should('not.exist');
+      // metrics tab is visible
+      cy.contains('Data access').should('exist');
+    }
+
   }
 
   function checkNonSecuredCacheDetailView(isMonitor, isSuperAdmin) {

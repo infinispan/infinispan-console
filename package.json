@@ -1,6 +1,6 @@
 {
   "name": "infinispan-console",
-  "version": "14.0.7",
+  "version": "14.0.13",
   "description": "The console for Infinispan/Red Hat Data Grid",
   "main": "index.js",
   "repository": "https://github.com/infinispan/infinispan-console.git",
