@@ -11,7 +11,7 @@
 
   <groupId>org.infinispan</groupId>
   <artifactId>infinispan-console</artifactId>
-  <version>14.0.13-SNAPSHOT</version>
+  <version>14.0.13.Final</version>
   <packaging>jar</packaging>
   <name>Infinispan Console</name>
   <description>The new Web Management Console for Infinispan</description>
