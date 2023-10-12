@@ -313,7 +313,13 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
         }
         return actionResponse;
       })
-      .then((actionResponse) => addAlert(actionResponse));
+      .then((actionResponse) => {
+        const data: ActionResponse = {
+          ...actionResponse,
+          message: cacheEditor.editorExpanded && !actionResponse.success ? "Invalid cache configuration. Please check the cache's configuration." : actionResponse?.message,
+        }
+        return addAlert(data);
+      });
   };
 
   const title = 'Create Cache';
