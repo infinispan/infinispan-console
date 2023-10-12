@@ -71,6 +71,7 @@ const BackupsConfigurationTuning = () => {
               val === '' ? setMergePolicy(undefined!) : setMergePolicy(val);
             }}
             aria-label="merge-policy-input"
+            data-cy="merge-policy-input"
           />
         </FormGroup>
 
@@ -93,6 +94,7 @@ const BackupsConfigurationTuning = () => {
               isNaN(parseInt(val)) ? setMaxCleanupDelay(undefined!) : setMaxCleanupDelay(parseInt(val));
             }}
             aria-label="max-cleanup-delay-input"
+            data-cy="max-cleanup-delay-input"
           />
         </FormGroup>
 
@@ -115,6 +117,7 @@ const BackupsConfigurationTuning = () => {
               isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val));
             }}
             aria-label="tombstone-map-size-input"
+            data-cy="tombstone-map-size-input"
           />
         </FormGroup>
       </Grid>
@@ -132,7 +135,7 @@ const BackupsConfigurationTuning = () => {
       {configuration.feature.backupsCache &&
         configuration.feature.backupsCache.sites.map((site, index) => {
           return (
-            <FormFieldGroupExpandable
+            <FormFieldGroupExpandable id={site.siteName + '-expand-button'}
               key={site.siteName + '-expand'}
               header={<FormFieldGroupHeader titleText={{ text: site.siteName, id: site.siteName + '-titleText-id' }} />}
             >
