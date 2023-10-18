@@ -177,4 +177,36 @@ export class SecurityService {
       )
     );
   }
+
+  /**
+   * Created a new role
+   * @param roleName
+   * @param roleDescription
+   * @param permissions
+   */
+  public async createRole(roleName: string, roleDescription: string, permissions: string[]) {
+    const customHeaders = new Headers();
+    customHeaders.append('Content-Type', 'json');
+    return this.fetchCaller.post({
+      url: this.endpoint + '/permissions/' + roleName + '?' + permissions.map((p) => 'permission=' + p).join('&'),
+      successMessage: `Role ${roleName} has been created`,
+      errorMessage: `Unexpected error creating role ${roleName}`,
+      customHeaders: customHeaders,
+      body: roleDescription
+    });
+  }
+
+  /**
+   * Removes a role
+   * @param roleName
+   * @param messageOk
+   * @param messageError
+   */
+  public async deleteRole(roleName: string, messageOk: string, messageError: string) {
+    return this.fetchCaller.delete({
+      url: this.endpoint + '/permissions/' + roleName,
+      successMessage: messageOk,
+      errorMessage: messageError
+    });
+  }
 }

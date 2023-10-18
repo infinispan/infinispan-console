@@ -82,7 +82,7 @@ const DetailCache = (props: { cacheName: string }) => {
     } else {
       setActiveTabKey1(2);
     }
-  }, [cache])
+  }, [cache]);
 
   const encodingMessageDisplay = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
@@ -209,13 +209,12 @@ const DetailCache = (props: { cacheName: string }) => {
 
     if (activeTabKey1 == 1) {
       return (
-        cache.configuration &&
-        <CacheConfiguration cacheName={cache.name} editable={cache.editable} config={cache.configuration.config} />
+        cache.configuration && (
+          <CacheConfiguration cacheName={cache.name} editable={cache.editable} config={cache.configuration.config} />
+        )
       );
     }
-    return (
-      <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />
-    );
+    return <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />;
 
     return (
       <EmptyState variant={EmptyStateVariant.sm}>
@@ -411,9 +410,7 @@ const DetailCache = (props: { cacheName: string }) => {
       return;
     }
 
-    return (
-      <Tab data-cy="cacheConfigurationTab" eventKey={1} title={t('caches.tabs.configuration')} />
-    );
+    return <Tab data-cy="cacheConfigurationTab" eventKey={1} title={t('caches.tabs.configuration')} />;
   };
 
   const displayCacheStats = () => {

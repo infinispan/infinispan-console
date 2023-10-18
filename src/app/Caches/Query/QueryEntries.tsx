@@ -128,7 +128,6 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
           </Button>
         </ToolbarItem>
       </React.Fragment>
-
     );
   };
 
