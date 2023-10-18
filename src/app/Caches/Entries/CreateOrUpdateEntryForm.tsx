@@ -224,7 +224,7 @@ const CreateOrUpdateEntryForm = (props: {
   };
 
   const onSelectFlags = (event, selection) => {
-    let prevSelectedFlags = flags.selected;
+    let prevSelectedFlags = flags.selected as string[];
 
     if (prevSelectedFlags.includes(selection)) {
       prevSelectedFlags = prevSelectedFlags.filter((item) => item !== selection);

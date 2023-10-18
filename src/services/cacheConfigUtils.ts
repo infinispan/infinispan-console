@@ -34,14 +34,18 @@ export class CacheConfigUtils {
     try {
       JSON.parse(trimmedConf);
       return right('json');
-    } catch (ex) { /* empty */ }
+    } catch (ex) {
+      /* empty */
+    }
 
     try {
       const oDOM = new DOMParser().parseFromString(trimmedConf, 'text/xml');
       if (oDOM.getElementsByTagName('parsererror').length == 0) {
         return right('xml');
       }
-    } catch (ex) { /* empty */ }
+    } catch (ex) {
+      /* empty */
+    }
 
     return right('yaml');
   }

@@ -273,8 +273,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   };
 
   const buildSeparator = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser) ||
-      filteredCounters.length !== 0) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser) || filteredCounters.length !== 0) {
       return;
     }
     return (
@@ -282,8 +281,8 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
         variant={ToolbarItemVariant.separator}
         style={{ marginInline: global_spacer_sm.value }}
       ></ToolbarItem>
-    )
-  }
+    );
+  };
 
   const buildCreateCounterButton = () => {
     if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
@@ -401,6 +400,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
             deleteChipGroup={() => setSelectedCounterType('')}
             categoryName={t('cache-managers.counters.counter-type')}
           >
+            <span />
           </ToolbarFilter>
           <ToolbarFilter
             chips={selectedCounterStorage !== '' ? [selectedCounterStorage] : ([] as string[])}

@@ -33,9 +33,7 @@ const AccessManager = () => {
     setShowAccessControl(tabIndex == '1');
   };
   const buildTabs = () => {
-    const tabs: AccessTab[] = [
-      { name: t('access-management.tab-roles'), key: '0' },
-    ];
+    const tabs: AccessTab[] = [{ name: t('access-management.tab-roles'), key: '0' }];
 
     return (
       <Nav data-cy="navigationTabs" onSelect={handleTabClick} variant={'tertiary'}>

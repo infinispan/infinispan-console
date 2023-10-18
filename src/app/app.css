@@ -48,10 +48,10 @@ body,
   text-align: right;
 }
 
-.role-table-display{
+.role-table-display {
   margin-bottom: var(--pf-v5-global--spacer--md);
 }
 
-.role-icon{
+.role-icon {
   margin-right: var(--pf-v5-global--spacer--xs);
 }
