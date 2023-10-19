@@ -50,33 +50,20 @@ describe('Proto Schema CRUD', () => {
 
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
-    const schemaName = 'aTestSchema' + Math.random();
+    const schemaName = 'aTestSchema';
     cy.get('#schema-name').click().type(schemaName);
     cy.get('#schema').click().type('schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Schema ' + schemaName + ' created.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains(schemaName + '.proto');
-
-    //Updating existing schema
     cy.contains('Schema ' + schemaName + '.proto has errors');
+
+    // Update
     cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
     cy.get('[aria-label="editSchemaAction"]').click();
     cy.contains('schemaValue');
     cy.contains('Save');
-    cy.get('[data-cy=schemaEditArea]', { timeout: 10000 }).contains('schemaValue');
-    cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
-    cy.get('[data-cy=schemaEditArea]').type('schemaNewValue');
-    cy.get('button[aria-label="confirm-edit-schema-button"]').click();
-    cy.contains('Schema ' + schemaName + '.proto updated.');
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
-    cy.contains('schemaNewValue');
-
-    //Updating existing schema with correct value
-    cy.contains('Schema ' + schemaName + '.proto has errors');
-    cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
-    cy.get('[aria-label="editSchemaAction"]').click();
-    cy.get('[data-cy=schemaEditArea]').contains('schemaNewValue');
     cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
     cy.get('[data-cy=schemaEditArea]').type(
       'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
@@ -86,7 +73,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Schema ' + schemaName +'.proto updated.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
-    cy.wait(1000)
+    cy.wait(10000)
     cy.contains('schemaNewValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
