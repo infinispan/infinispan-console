@@ -65,7 +65,30 @@ const CacheEntries = (props: { cacheName: string }) => {
   });
 
   useEffect(() => {
-    if (cacheEntries) setFilteredEntries(cacheEntries);
+    if (cache.encoding.key == EncodingType.Protobuf) {
+      setSelectSearchOption(ContentType.string);
+      setKeyContentTypeToEdit(ContentType.string);
+    } else if (cache.encoding.key == EncodingType.Java ||
+               cache.encoding.key == EncodingType.JBoss ||
+               cache.encoding.key == EncodingType.JavaSerialized) {
+      setSelectSearchOption(ContentType.StringContentType);
+      setKeyContentTypeToEdit(ContentType.StringContentType);
+    } else if (cache.encoding.key == EncodingType.XML){
+      setSelectSearchOption(ContentType.XML);
+      setKeyContentTypeToEdit(ContentType.XML);
+    } else if (cache.encoding.key == EncodingType.JSON) {
+      setSelectSearchOption(ContentType.JSON);
+      setSelectSearchOption(ContentType.JSON);
+    } else if (cache.encoding.key == EncodingType.Text) {
+      setSelectSearchOption(ContentType.StringContentType);
+      setSelectSearchOption(ContentType.StringContentType);
+    }
+  }, [cache]);
+
+  useEffect(() => {
+    if (cacheEntries) {
+      setFilteredEntries(cacheEntries);
+    }
   }, [loadingEntries, errorEntries, cacheEntries]);
 
   useEffect(() => {
