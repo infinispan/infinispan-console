@@ -431,7 +431,7 @@ const CreateOrUpdateEntryForm = (props: {
           aria-describedby="key-entry-helper"
           onChange={(_event, key) => onChangeKey(key)}
           onBlur={onBlurKey}
-          disabled={isEdition}
+          isDisabled={isEdition}
         />
         <FormHelperText>
           <HelperText>
