@@ -245,7 +245,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
           onClick={(event) => getPreviousStep(event, activeStep, onBack)}
           data-cy="wizardBackButton"
         >
-          {t('caches.create.back-button-label')}
+          {t('common.actions.back')}
         </Button>
       </ToolbarItem>
     );

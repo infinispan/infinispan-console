@@ -189,7 +189,7 @@ const DetailCache = (props: { cacheName: string }) => {
                       search: location.search
                     }}
                   >
-                    <Button variant={ButtonVariant.secondary}>{t('caches.actions.back')}</Button>
+                    <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
                   </Link>
                 </EmptyStateActions>
               </EmptyStateFooter>

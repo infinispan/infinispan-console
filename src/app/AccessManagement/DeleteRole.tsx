@@ -28,7 +28,7 @@ const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: ()
             onDeleteRole();
           }}
         >
-          {t('access-management.roles.delete-action')}
+          {t('common.actions.delete')}
         </Button>,
         <Button
           key={'Cancel'}
@@ -37,7 +37,7 @@ const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: ()
           onClick={props.closeModal}
           data-cy="cancelRoleDeleteButton"
         >
-          {t('access-management.roles.modal-cancel-button')}
+          {t('common.actions.cancel')}
         </Button>
       ]}
     >

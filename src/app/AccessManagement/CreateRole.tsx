@@ -16,27 +16,27 @@ import { useTranslation } from 'react-i18next';
 import formUtils, { IField } from '@services/formUtils';
 import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useCreateRole, useFetchAvailableRoles } from '@app/services/rolesHook';
+import { PERMISSIONS_MAP } from '@services/infinispanRefData';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
   const { roles } = useFetchAvailableRoles();
-  const initialSelectOptions: SelectOptionProps[] = [
-    { value: 'ALL', children: 'ALL', description: t('access-management.roles.permission-all') },
-    { value: 'ADMIN', children: 'ADMIN', description: t('access-management.roles.permission-admin') },
-    { value: 'ALL_READ', children: 'ALL_READ', description: t('access-management.roles.permission-all-read') },
-    { value: 'READ', children: 'READ', description: t('access-management.roles.permission-read') },
-    { value: 'BULK_READ', children: 'BULK_READ', description: t('access-management.roles.permission-bulk-read') },
-    { value: 'ALL_WRITE', children: 'ALL_WRITE', description: t('access-management.roles.permission-all-write') },
-    { value: 'WRITE', children: 'WRITE', description: t('access-management.roles.permission-write') },
-    { value: 'BULK_WRITE', children: 'BULK_WRITE', description: t('access-management.roles.permission-bulk-write') },
-    { value: 'MONITOR', children: 'MONITOR', description: t('access-management.roles.permission-monitor') },
-    { value: 'CREATE', children: 'CREATE', description: t('access-management.roles.permission-create') },
-    { value: 'EXEC', children: 'EXEC', description: t('access-management.roles.permission-exec') },
-    { value: 'LISTEN', children: 'LISTEN', description: t('access-management.roles.permission-listen') },
-    { value: 'LIFECYCLE', children: 'LIFECYCLE', description: t('access-management.roles.permission-lifecycle') },
-    { value: 'NONE', children: 'NONE', description: t('access-management.roles.permission-none') }
-  ];
+  const initPermissions = () => {
+    const array: SelectOptionProps[] = [];
+    PERMISSIONS_MAP.forEach((value, key, map) => {
+      const desc = t(value);
+      array.push({
+        id: key,
+        value: key,
+        children: key,
+        description: desc
+      });
+    });
+    return array;
+  };
+  const initialSelectOptions: SelectOptionProps[] = initPermissions();
+
   const roleNameInitialState: IField = {
     value: '',
     isValid: false,
@@ -131,10 +131,10 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
       disableFocusTrap={true}
       actions={[
         <Button key={'Create'} aria-label={'Create'} variant={ButtonVariant.primary} onClick={handleSubmit}>
-          {t('access-management.roles.modal-save-action')}
+          {t('common.actions.save')}
         </Button>,
         <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
-          {t('access-management.roles.modal-cancel-button')}
+          {t('common.actions.cancel')}
         </Button>
       ]}
     >

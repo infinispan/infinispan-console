@@ -22,19 +22,44 @@ describe('Global stats', () => {
 
   });
 
-  it('successfully creates and removes a role', () => {
+  it('successfully creates, updates and removes a role', () => {
     // create
     cy.get('button[data-cy="createRoleButton"]').click();
     cy.get("[aria-label=role-name-input]").type("aRole");
     cy.get("[aria-label=role-description-input]").type("aRole description");
-    cy.get("[data-cy=menu-toogle-permissions").click();
-    cy.get("#option-typeahead-ALL").click();
-    cy.get("[data-cy=menu-toogle-permissions").click();
+    cy.get("[data-cy=menu-toogle-permissions]").click();
+    cy.get("[data-cy=option-typeahead-ALL]").click();
+    cy.get("[data-cy=menu-toogle-permissions]").click();
     cy.get("[aria-label=Create]").click();
     cy.contains('Role aRole has been created');
     cy.contains('aRole description');
 
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management/role/aRole');
+    cy.get('[aria-label=role-name-input')
+      .should('have.value', 'aRole')
+      .should('be.disabled');
+    cy.get('[aria-label=role-description-input]')
+      .should('have.value', 'aRole description')
+      .type(' with update');
+    cy.get('[aria-label=Save').click();
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management/role/aRole');
+    cy.get('[aria-label=role-description-input]')
+      .should('have.value', 'aRole description with update');
+
+    cy.get('[aria-label=nav-item-Permissions').click();
+    cy.contains('ALL');
+    cy.get('[data-cy=addPermissionButton').click();
+    cy.get('[data-cy=menu-toogle-permissions]').click();
+    cy.get("[data-cy=option-typeahead-READ]").click();
+    cy.get('[data-cy=menu-toogle-permissions]').click();
+    cy.get('[aria-label=Save').click();
+    cy.get("[aria-label=READ-menu]").click();
+    cy.get("[aria-label=removePermission-READ]").click();
+    cy.get("[aria-label=Remove]").click();
+    cy.contains('Role aRole has been updated');
+
     // remove
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
     cy.get("[aria-label=aRole-menu]").click();
     cy.get("[aria-label=deleteRole]").click();
     cy.get("[aria-label=Delete]").click();
