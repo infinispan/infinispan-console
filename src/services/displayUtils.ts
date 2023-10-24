@@ -470,7 +470,9 @@ class DisplayUtils {
       // Try parse and stringify
       try {
         return JSON.stringify(JSON.parse(content), null, 2);
-      } catch (err) {}
+      } catch (err) {
+        /* empty */
+      }
     }
 
     return content as string;

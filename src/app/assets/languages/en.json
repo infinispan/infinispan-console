@@ -13,8 +13,12 @@
       "actions": "Actions",
       "refresh": "Refresh",
       "back": "Back",
-      "cancel": "Cancel"
-    }
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete",
+      "remove": "Remove"
+    },
+    "loading-error-message": "There was an error retrieving data. Check your connection and try again."
   },
   "layout": {
     "console-name": "Server Management Console",
@@ -230,7 +234,6 @@
       "templates-placeholder": "Select a cache template",
       "create-button-label": "Create",
       "next-button-label": "Next",
-      "back-button-label": "Back",
       "cancel-button-label": "Cancel",
       "download-button-label": "Download",
       "getting-started": {
@@ -545,6 +548,7 @@
     "actions": {
       "action-manage-indexes": "Manage indexes",
       "action-manage-backups": "Manage backups",
+      "refresh": "Refresh",
       "back": "Back"
     },
     "entries": {
@@ -885,8 +889,8 @@
       "no-filtered-roles-body": "No roles match your search criteria.",
       "roles-hint-link": "Learn more in the {{brandname}} documentation",
       "loading-roles": "Loading roles",
+      "loading-roles-error": "Unexpected error loading roles",
       "create-button": "Create role",
-      "delete-action": "Delete",
       "no-roles-status": "No roles",
       "permission-all": "All the permissions",
       "permission-admin": "Allows performing \"administrative\" operations",
@@ -904,8 +908,6 @@
       "permission-none": "No permissions",
       "modal-create-title": "Create role",
       "modal-create-description": "Create a new role.",
-      "modal-save-action": "Save",
-      "modal-cancel-button": "Cancel",
       "modal-role-name": "Name",
       "modal-role-description": "Description",
       "modal-permissions": "Permissions",
@@ -918,6 +920,29 @@
       "modal-delete-description-2": "You can always recreate the role.",
       "delete-success": "Role {{name}} has been deleted",
       "delete-error": "Unexpected error deleting the role {{name}}"
+    },
+    "role": {
+      "breadcrumb": "Detail of role {{roleName}}",
+      "actions": "Actions",
+      "tab-general": "General settings",
+      "tab-permissions": "Permissions",
+      "tab-caches": "Accessible caches",
+      "loading": "Loading role {{roleName}}",
+      "error": "An error occurred while retrieving the role {{roleName}}",
+      "implicit-warning": "The general settings for predefined roles are not editable.",
+      "permission-name": "Permission name",
+      "permission-description": "Description",
+      "add-permission-button": "Add permission",
+      "permissions-search-placeholder": "Filter by name",
+      "no-permissions-found": "No permission found",
+      "no-filtered-permissions-body": "No permission match your search criteria.",
+      "permissions-implicit-warning": "The permissions for predefined roles are not editable.",
+      "update-success": "Role {{name}} has been updated",
+      "update-error": "Unexpected error updating the role {{name}}",
+      "modal-add-permission-title": "Add permissions",
+      "modal-remove-permission-title": "Remove permission {{name}}",
+      "modal-remove-permission-description-1": "Are you sure you want to remove this permission from role {{roleName}}? After removing, the role's access will be changed.",
+      "modal-remove-permission-description-2": "You can always add the role permission again."
     }
   }
 }

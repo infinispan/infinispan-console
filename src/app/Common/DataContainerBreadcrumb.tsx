@@ -1,8 +1,15 @@
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
-const DataContainerBreadcrumb = (props: { currentPage: string; cacheName?: string }) => {
+const DataContainerBreadcrumb = (props: {
+  currentPage: string;
+  parentPage?: string;
+  cacheName?: string;
+  label?: string;
+}) => {
+  const { t } = useTranslation();
   const addCacheName = () => {
     if (props.cacheName) {
       return (
@@ -20,17 +27,17 @@ const DataContainerBreadcrumb = (props: { currentPage: string; cacheName?: strin
     }
     return;
   };
-
+  const label = props.label ? props.label : 'cache-managers.title';
   return (
     <Breadcrumb>
-      <BreadcrumbItem data-cy="dataContainerLink">
+      <BreadcrumbItem data-cy={props.parentPage ? props.parentPage + 'Link' : 'dataContainerLink'}>
         <Link
           to={{
-            pathname: '/',
+            pathname: props.parentPage ? props.parentPage : '/',
             search: location.search
           }}
         >
-          Data container
+          {t(label)}
         </Link>
       </BreadcrumbItem>
       {addCacheName()}

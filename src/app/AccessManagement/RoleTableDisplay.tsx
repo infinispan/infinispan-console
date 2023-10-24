@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Bullseye,
   Button,
@@ -14,13 +15,13 @@ import {
   Icon,
   Pagination,
   SearchInput,
-  Spinner,
   Title,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
+  Spinner
 } from '@patternfly/react-core';
 import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +30,8 @@ import { useFetchAvailableRoles } from '@app/services/rolesHook';
 import { CreateRole } from '@app/AccessManagement/CreateRole';
 import { global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { TableLoadingState } from '@app/Common/TableLoadingState';
 
 const RoleTableDisplay = () => {
   const { t } = useTranslation();
@@ -89,7 +92,7 @@ const RoleTableDisplay = () => {
 
   const pagination = (
     <Pagination
-      itemCount={roles.length}
+      itemCount={filteredRoles.length}
       perPage={rolesPagination.perPage}
       page={rolesPagination.page}
       onSetPage={onSetPage}
@@ -102,7 +105,7 @@ const RoleTableDisplay = () => {
   const rowActions = (row): IAction[] => [
     {
       'aria-label': 'deleteRole',
-      title: t('access-management.roles.delete-action'),
+      title: t('common.actions.delete'),
       onClick: () => {
         setRoleToDelete(row.name);
       }
@@ -120,7 +123,13 @@ const RoleTableDisplay = () => {
                   <LockIcon className="role-icon" />
                 </Icon>
               )}
-              {row.name}
+              <Link
+                data-cy={`detailLink-${row.name}`}
+                key={row.name}
+                to={{ pathname: '/access-management/role/' + encodeURIComponent(row.name), search: location.search }}
+              >
+                {row.name}
+              </Link>
             </Td>
             <Td dataLabel={columnNames.permissions} width={30}>
               {
@@ -155,7 +164,7 @@ const RoleTableDisplay = () => {
               </Title>
               <EmptyStateBody>
                 {roles.length == 0
-                  ? t('access-management.roles.no-roles-body')
+                  ? t('access-management.roles.no-roles-body', { brandname: brandname })
                   : t('access-management.roles.no-filtered-roles-body')}
               </EmptyStateBody>
             </EmptyState>
@@ -164,6 +173,7 @@ const RoleTableDisplay = () => {
       </Tr>
     );
   };
+
   const createRoleButtonHelper = (isEmptyPage?: boolean) => {
     const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
     const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
@@ -180,34 +190,6 @@ const RoleTableDisplay = () => {
     );
   };
 
-  if (loading) {
-    return (
-      <Bullseye>
-        <EmptyState variant={EmptyStateVariant.sm}>
-          <EmptyStateHeader
-            titleText={<>{t('access-management.roles.loading-roles')}</>}
-            icon={<EmptyStateIcon icon={Spinner} />}
-            headingLevel="h4"
-          />
-        </EmptyState>
-      </Bullseye>
-    );
-  }
-
-  if (error) {
-    return (
-      <Bullseye>
-        <EmptyState variant={EmptyStateVariant.sm}>
-          <EmptyStateHeader
-            titleText={<>{t('access-management.roles.loading-roles-error')}</>}
-            icon={<EmptyStateIcon icon={Spinner} />}
-            headingLevel="h4"
-          />
-        </EmptyState>
-      </Bullseye>
-    );
-  }
-
   const displayContent = () => {
     if (roles.length === 0) {
       return (
@@ -222,6 +204,15 @@ const RoleTableDisplay = () => {
         </EmptyState>
       );
     }
+
+    if (loading) {
+      return <TableLoadingState message={t('access-management.roles.loading-roles')} />;
+    }
+
+    if (error) {
+      return <TableErrorState error={t('access-management.roles.loading-roles-error')} />;
+    }
+
     return (
       <React.Fragment>
         <Toolbar id="role-table-toolbar" className={'role-table-display'}>

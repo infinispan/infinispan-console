@@ -19,6 +19,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
 import { NotFound } from '@app/NotFound/NotFound';
+import { RoleDetail } from '@app/AccessManagement/RoleDetail';
 
 let routeFocusTimer: number;
 
@@ -176,7 +177,8 @@ const routes: IAppRoute[] = [
     path: '/access-management',
     title: 'Access Management',
     menu: true,
-    admin: true
+    admin: true,
+    subRoutes: ['role']
   },
   {
     component: ConnectedClients,
@@ -185,6 +187,15 @@ const routes: IAppRoute[] = [
     path: '/connected-clients',
     title: 'Connected Clients',
     menu: true,
+    admin: true
+  },
+  {
+    component: RoleDetail,
+    exact: true,
+    label: 'Role detail',
+    path: '/access-management/role/:roleName',
+    title: 'Role detail',
+    menu: false,
     admin: true
   }
 ];

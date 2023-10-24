@@ -247,3 +247,24 @@ export enum RoleFilterOption {
   cacheManagerPermissions = 'Cache Manager Permissions',
   cachePermissions = 'Cache Permissions'
 }
+
+export enum Permission {
+  ALL = 'all'
+}
+
+export const PERMISSIONS_MAP = new Map<string, string>([
+  ['ALL', 'access-management.roles.permission-all'],
+  ['ADMIN', 'access-management.roles.permission-admin'],
+  ['ALL_READ', 'access-management.roles.permission-all-read'],
+  ['READ', 'access-management.roles.permission-read'],
+  ['BULK_READ', 'access-management.roles.permission-bulk-read'],
+  ['ALL_WRITE', 'access-management.roles.permission-all-write'],
+  ['WRITE', 'access-management.roles.permission-write'],
+  ['BULK_WRITE', 'access-management.roles.permission-bulk-write'],
+  ['MONITOR', 'access-management.roles.permission-monitor'],
+  ['CREATE', 'access-management.roles.permission-create'],
+  ['EXEC', 'access-management.roles.permission-exec'],
+  ['LISTEN', 'access-management.roles.permission-listen'],
+  ['LIFECYCLE', 'access-management.roles.permission-lifecycle'],
+  ['NONE', 'access-management.roles.permission-none']
+]);

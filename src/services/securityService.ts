@@ -179,6 +179,23 @@ export class SecurityService {
   }
 
   /**
+   * Retrieve security roles
+   *
+   */
+  public async describeRole(roleName: string): Promise<Either<ActionResponse, Role>> {
+    return this.fetchCaller.get(
+      this.endpoint + '/permissions/' + roleName,
+      (data) =>
+        <Role>{
+          name: roleName,
+          description: data.description,
+          permissions: data.permissions,
+          implicit: data.implicit
+        }
+    );
+  }
+
+  /**
    * Created a new role
    * @param roleName
    * @param roleDescription
@@ -207,6 +224,30 @@ export class SecurityService {
       url: this.endpoint + '/permissions/' + roleName,
       successMessage: messageOk,
       errorMessage: messageError
+    });
+  }
+
+  /**
+   * updates an existing role
+   *
+   * @param roleName
+   * @param roleDescription
+   * @param permissions
+   * @param messageOk
+   * @param messageError
+   */
+  public async updateRole(
+    roleName: string,
+    roleDescription: string,
+    permissions: string[],
+    messageOk: string,
+    messageError: string
+  ) {
+    return this.fetchCaller.put({
+      url: this.endpoint + '/permissions/' + roleName + '?' + permissions.map((p) => 'permission=' + p).join('&'),
+      successMessage: messageOk,
+      errorMessage: messageError,
+      body: roleDescription
     });
   }
 

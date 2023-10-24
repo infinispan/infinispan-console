@@ -24,6 +24,7 @@ const SelectMultiWithChips = (props: {
   selection: string[];
   create?: boolean;
   closeOnSelect?: boolean;
+  readonly?: string[];
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
@@ -192,6 +193,8 @@ const SelectMultiWithChips = (props: {
                   ev.stopPropagation();
                   onSelect(selection);
                 }}
+                isReadOnly={props.readonly && props.readonly.includes(selection)}
+                disabled={props.readonly && props.readonly.includes(selection)}
               >
                 {selection}
               </Chip>
@@ -243,6 +246,7 @@ const SelectMultiWithChips = (props: {
             data-cy={`option-typeahead-${option.id !== undefined ? option.id : option.value}`}
             {...option}
             ref={null}
+            description={option.description}
           />
         ))}
       </SelectList>

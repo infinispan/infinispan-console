@@ -68,6 +68,59 @@ export function useFetchAvailableRoles() {
   };
 }
 
+export function useUpdateRole(roleName: string, roleDescription: string, permissions: string[], call: () => void) {
+  const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+
+  const onUpdateRole = () => {
+    ConsoleServices.security()
+      .updateRole(
+        roleName,
+        roleDescription,
+        permissions,
+        t('access-management.role.update-success', { name: roleName }),
+        t('access-management.role.update-error', { name: roleName })
+      )
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      })
+      .finally(() => call());
+  };
+  return {
+    onUpdateRole
+  };
+}
+
+export function useRemovePermission(roleName: string, permission: string, permissions: string[], call: () => void) {
+  const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+
+  const onRemovePermission = () => {
+    const perms: string[] = [];
+    permissions.forEach((perm) => {
+      if (perm !== permission) {
+        perms.push(perm);
+      }
+    });
+
+    ConsoleServices.security()
+      .updateRole(
+        roleName,
+        '',
+        perms,
+        t('access-management.role.update-success', { name: roleName }),
+        t('access-management.role.update-error', { name: roleName })
+      )
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      })
+      .finally(() => call());
+  };
+  return {
+    onRemovePermission
+  };
+}
+
 export function useCreateRole(roleName: string, roleDescription: string, permissions: string[], call: () => void) {
   const { addAlert } = useApiAlert();
 
@@ -101,6 +154,34 @@ export function useDeleteRole(roleName: string, call: () => void) {
   };
   return {
     onDeleteRole
+  };
+}
+
+export function useDescribeRole(roleName: string) {
+  const [role, setRole] = useState<Role>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (loading) {
+      ConsoleServices.security()
+        .describeRole(roleName)
+        .then((either) => {
+          if (either.isRight()) {
+            setRole(either.value);
+          } else {
+            setError(either.value.message);
+          }
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [loading]);
+
+  return {
+    role,
+    loading,
+    error,
+    setLoading
   };
 }
 
