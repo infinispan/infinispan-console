@@ -22,7 +22,7 @@ const ThemeProvider = ({children})=>{
             document.documentElement.classList.remove('pf-v5-theme-dark');
         }
 
-        if(localStorage){
+        if (localStorage) {
             localStorage.setItem('theme',theme);
         }
     },[theme])
@@ -33,7 +33,7 @@ const ThemeProvider = ({children})=>{
     const themeState = {
         theme,
         toggleTheme,
-        syntaxHighLighterTheme 
+        syntaxHighLighterTheme
     }
     return <ThemeContext.Provider value={themeState} >{children}</ThemeContext.Provider>
 }
