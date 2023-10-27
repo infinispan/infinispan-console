@@ -7,8 +7,6 @@ import {
   ButtonVariant,
   Card,
   CardBody,
-  Level,
-  LevelItem,
   PageSection,
   PageSectionVariants,
   Switch,
@@ -21,7 +19,7 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import { global_spacer_md, global_spacer_xs } from '@patternfly/react-tokens';
+import { global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { cellWidth, IRow, TableVariant, textCenter } from '@patternfly/react-table';
@@ -115,19 +113,19 @@ const XSiteCache = (props) => {
   }, [backups, backupsStatus, stateTransferStatus, loading, error]);
 
   const columns = [
-    { title: 'Site', transforms: [cellWidth(30)] },
+    { title: t('caches.backups.column-site'), transforms: [cellWidth(30)] },
     {
-      title: 'Status',
+      title: t('caches.backups.column-status'),
       transforms: [cellWidth(30), textCenter],
       cellTransforms: [textCenter]
     },
     {
-      title: 'Transfer status / Result',
+      title: t('caches.backups.column-transfer'),
       transforms: [cellWidth(40), textCenter],
       cellTransforms: [textCenter]
     },
     {
-      title: 'Action',
+      title: t('caches.backups.column-action'),
       transforms: [cellWidth(20), textCenter],
       cellTransforms: [textCenter]
     }
@@ -174,18 +172,18 @@ const XSiteCache = (props) => {
                     marginTop: global_spacer_xs.value
                   }}
                 />
-                Mixed
+                {t('caches.backups.mixed')}
               </Badge>
             </ToolbarItem>
             <ToolbarItem>
               <Button variant={ButtonVariant.link} onClick={() => bringOnlineTakeOffLine(site, 'offline')}>
-                Bring all online
+                {t('caches.backups.bring-all-online')}
               </Button>
             </ToolbarItem>
             <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
             <ToolbarItem>
               <Button variant={ButtonVariant.link} onClick={() => bringOnlineTakeOffLine(site, 'online')}>
-                Take all offline
+                {t('caches.backups.take-all-offline')}
               </Button>
             </ToolbarItem>
           </ToolbarContent>
@@ -196,8 +194,8 @@ const XSiteCache = (props) => {
     return (
       <Switch
         id={site + '-switch'}
-        label="Take offline"
-        labelOff="Bring online"
+        label={t('caches.backups.take-offline-action')}
+        labelOff={t('caches.backups.bring-online-action')}
         isChecked={status == 'online'}
         onChange={() => bringOnlineTakeOffLine(site, status)}
       />
@@ -232,7 +230,7 @@ const XSiteCache = (props) => {
             })
           }
         >
-          Cancel
+          {t('common.actions.cancel')}
         </Button>
       );
     }
@@ -240,7 +238,7 @@ const XSiteCache = (props) => {
     if (stStatus == ST_SEND_OK || stStatus == ST_SEND_FAILED || stStatus == ST_SEND_CANCELED) {
       return (
         <Button variant={ButtonVariant.tertiary} onClick={() => clearStateTransfer(backup.name)}>
-          Clear state
+          {t('caches.backups.clear-state-action')}
         </Button>
       );
     }
@@ -322,28 +320,32 @@ const XSiteCache = (props) => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <DataContainerBreadcrumb currentPage="Backup management" cacheName={cacheName} />
-        <Level>
-          <LevelItem>
-            <TextContent style={{ marginTop: global_spacer_md.value }} key={'title-backups'}>
-              <Text component={TextVariants.h1} key={'title-value-backups'}>
-                Backups management
+        <DataContainerBreadcrumb currentPage={t('caches.backups.title')} cacheName={cacheName} />
+        <Toolbar key={'title-backups'}>
+          <ToolbarContent>
+            <ToolbarItem>
+              <TextContent key={'title-backups'}>
+                <Text component={TextVariants.h1} key={'title-value-backups'}>
+                  {t('caches.backups.title')}
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Text key={'button-back'}>
+                <Link
+                  to={{
+                    pathname: '/cache/' + encodeURIComponent(cacheName),
+                    search: location.search
+                  }}
+                >
+                  <Button variant={ButtonVariant.secondary} data-cy="backButton">
+                    {t('common.actions.back')}
+                  </Button>
+                </Link>
               </Text>
-            </TextContent>
-          </LevelItem>
-          <LevelItem>
-            <Text key={'button-back'}>
-              <Link
-                to={{
-                  pathname: '/cache/' + encodeURIComponent(cacheName),
-                  search: location.search
-                }}
-              >
-                <Button variant={ButtonVariant.secondary}>Back</Button>
-              </Link>
-            </Text>
-          </LevelItem>
-        </Level>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
       </PageSection>
       <PageSection>
         <Card>

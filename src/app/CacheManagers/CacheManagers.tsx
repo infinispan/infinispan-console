@@ -14,7 +14,11 @@ import {
   Spinner,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
@@ -169,22 +173,23 @@ const CacheManagers = () => {
     title = displayUtils.capitalize(cm.name);
     return (
       <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
-        <Flex id="cluster-manager-header" direction={{ default: 'column' }}>
-          <Flex>
-            <FlexItem>
-              <TextContent>
-                <Text component={TextVariants.h1}>{title}</Text>
-              </TextContent>
-            </FlexItem>
-          </Flex>
-          <Flex>
-            <FlexItem>
+        <Toolbar id="cluster-manager-header">
+          <ToolbarContent>
+            <ToolbarItem>
+              <Title headingLevel={'h1'}>{title}</Title>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+        <Toolbar id="cluster-manager-sub-header">
+          <ToolbarContent>
+            <ToolbarItem>
               <Status status={cm.cache_manager_status} />
-            </FlexItem>
-            {buildSiteDisplay(cm.local_site)}
-            <RebalancingCacheManager />
-          </Flex>
-        </Flex>
+            </ToolbarItem>
+            <ToolbarItem>
+              <RebalancingCacheManager />
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
         {buildTabs()}
       </PageSection>
     );

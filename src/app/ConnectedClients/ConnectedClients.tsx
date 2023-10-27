@@ -29,7 +29,8 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
   ToolbarGroup,
-  EmptyStateHeader
+  EmptyStateHeader,
+  Title
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
@@ -350,10 +351,16 @@ const ConnectedClients = () => {
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <TextContent>
-          <Text component={TextVariants.h1}>{t('connected-clients.title')}</Text>
-          <Text component={TextVariants.p}>{t('connected-clients.connected-clients-description')}</Text>
-        </TextContent>
+        <Toolbar id="connected-clients-header">
+          <ToolbarContent>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h1}>{t('connected-clients.title')}</Text>
+                <Text component={TextVariants.p}>{t('connected-clients.connected-clients-description')}</Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
       </PageSection>
       <PageSection>{buildConnectedClients()}</PageSection>
     </React.Fragment>

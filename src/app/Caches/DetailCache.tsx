@@ -248,10 +248,8 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <React.Fragment>
-        <ToolbarItem>
-          <Divider style={{ margin: 0 }} orientation={{ default: 'vertical' }} />
-        </ToolbarItem>
+      <>
+        <ToolbarItem variant="separator" />
         <ToolbarItem>
           <Label>Backups</Label>
         </ToolbarItem>
@@ -265,7 +263,7 @@ const DetailCache = (props: { cacheName: string }) => {
             <Button variant={ButtonVariant.link}>Manage</Button>
           </Link>
         </ToolbarItem>
-      </React.Fragment>
+      </>
     );
   };
 
@@ -275,74 +273,68 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <React.Fragment>
-        <FlexItem spacer={{ default: 'spacerXs' }}>
-          <Spinner size={'md'} />
-        </FlexItem>
-        <FlexItem>
-          <TextContent>
-            <Text component={TextVariants.small}>{`Rebuilding the index for ${cacheName}`}</Text>
-          </TextContent>
-        </FlexItem>
-      </React.Fragment>
+      <ToolbarItem>
+        <TextContent>
+          <Text component={TextVariants.small}>
+            <Spinner size={'md'} isInline /> {`Rebuilding the index for ${cacheName}`}
+          </Text>
+        </TextContent>
+      </ToolbarItem>
     );
   };
 
   const buildIndexManage = () => {
     if (!cache?.features.indexed) return;
     return (
-      <ToolbarItem>
-        <Flex>
-          <Divider style={{ margin: 0 }} orientation={{ default: 'vertical' }} />
-          {buildDisplayReindexing()}
-          <FlexItem>
-            <Link
-              to={{
-                pathname: encodeURIComponent(cacheName) + '/indexing',
-                search: location.search
-              }}
-            >
-              <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
-                {t('caches.actions.action-manage-indexes')}
-              </Button>
-            </Link>
-          </FlexItem>
-        </Flex>
-      </ToolbarItem>
+      <>
+        <Divider
+          orientation={{
+            default: 'vertical'
+          }}
+          inset={{ default: 'insetMd' }}
+        />
+        {buildDisplayReindexing()}
+        <ToolbarItem>
+          <Link
+            to={{
+              pathname: encodeURIComponent(cacheName) + '/indexing',
+              search: location.search
+            }}
+          >
+            <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
+              {t('caches.actions.action-manage-indexes')}
+            </Button>
+          </Link>
+        </ToolbarItem>
+      </>
     );
   };
 
   const buildRefreshButton = () => {
     return (
-      <React.Fragment>
-        <ToolbarItem>
-          <Flex>
-            <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
-            <Button
-              type="button"
-              aria-label={t('caches.actions.refresh')}
-              variant="link"
-              onClick={() => {
-                loadCache(cacheName);
-              }}
-              icon={<RedoIcon />}
-              iconPosition="left"
-            >
-              {t('caches.actions.refresh')}
-            </Button>
-          </Flex>
-        </ToolbarItem>
-      </React.Fragment>
+      <ToolbarItem>
+        <Button
+          type="button"
+          aria-label={'refresh'}
+          variant="link"
+          onClick={() => {
+            loadCache(cacheName);
+          }}
+          icon={<RedoIcon />}
+          iconPosition="left"
+        >
+          {t('common.actions.refresh')}
+        </Button>
+      </ToolbarItem>
     );
   };
 
   const buildFeaturesChip = () => {
     if (!cache?.features) return;
     return (
-      <ToolbarItem>
-        <Flex>
-          <Divider orientation={{ default: 'vertical' }} />
-
+      <>
+        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
+        <ToolbarItem>
           <ChipGroup categoryName="Features">
             {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
               <Chip isReadOnly key={feature}>
@@ -350,8 +342,8 @@ const DetailCache = (props: { cacheName: string }) => {
               </Chip>
             ))}
           </ChipGroup>
-        </Flex>
-      </ToolbarItem>
+        </ToolbarItem>
+      </>
     );
   };
 
@@ -377,12 +369,16 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <ToolbarGroup>
-        <RebalancingCache />
-        {buildFeaturesChip()}
-        {buildBackupsManage()}
-        {buildIndexManage()}
-      </ToolbarGroup>
+      <Toolbar id="cache-header-actions">
+        <ToolbarContent>
+          <ToolbarGroup variant={'button-group'}>
+            <RebalancingCache />
+            {buildFeaturesChip()}
+            {buildBackupsManage()}
+            {buildIndexManage()}
+          </ToolbarGroup>
+        </ToolbarContent>
+      </Toolbar>
     );
   };
 
@@ -432,7 +428,7 @@ const DetailCache = (props: { cacheName: string }) => {
       return (
         <Toolbar id="cache-detail-header">
           <ToolbarGroup>
-            <ToolbarContent style={{ paddingLeft: 0 }}>
+            <ToolbarContent>
               <ToolbarItem>
                 <TextContent>
                   <Text component={TextVariants.h1}>{t('caches.info.loading', { cacheName: cacheName })}</Text>
@@ -448,7 +444,7 @@ const DetailCache = (props: { cacheName: string }) => {
       return (
         <Toolbar id="cache-detail-header">
           <ToolbarGroup>
-            <ToolbarContent style={{ paddingLeft: 0 }}>
+            <ToolbarContent>
               <ToolbarItem>
                 <TextContent>
                   <Text component={TextVariants.h1}>{t('caches.info.error', { cacheName: cacheName })}</Text>
@@ -463,8 +459,8 @@ const DetailCache = (props: { cacheName: string }) => {
     return (
       <React.Fragment>
         <Toolbar id="cache-detail-header">
-          <ToolbarGroup>
-            <ToolbarContent style={{ paddingLeft: 0 }}>
+          <ToolbarContent>
+            <ToolbarGroup>
               <ToolbarItem>
                 <TextContent>
                   <Text component={TextVariants.h1}>{cache.name}</Text>
@@ -474,11 +470,11 @@ const DetailCache = (props: { cacheName: string }) => {
                 <CacheTypeBadge cacheType={cache.type} small={false} cacheName={cache.name} />
               </ToolbarItem>
               {buildShowMoreHeader()}
-              {buildRefreshButton()}
-            </ToolbarContent>
-          </ToolbarGroup>
-          {buildShowMorePanel()}
+            </ToolbarGroup>
+            <ToolbarGroup align={{ default: 'alignRight' }}>{buildRefreshButton()}</ToolbarGroup>
+          </ToolbarContent>
         </Toolbar>
+        {buildShowMorePanel()}
         <Tabs
           isBox={false}
           activeKey={activeTabKey1}

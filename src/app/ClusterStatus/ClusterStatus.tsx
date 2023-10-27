@@ -23,7 +23,9 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  EmptyStateHeader
+  EmptyStateHeader,
+  ToolbarGroup,
+  Title
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, DownloadIcon } from '@patternfly/react-icons';
 import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
@@ -91,7 +93,7 @@ const ClusterStatus = (props) => {
     if (!cacheManager) {
       return (
         <TextContent>
-          <Text component={TextVariants.h1}>Cluster</Text>
+          <Text component={TextVariants.h1}>-</Text>
         </TextContent>
       );
     }
@@ -100,26 +102,28 @@ const ClusterStatus = (props) => {
     const sizeLabel = cacheManager.cluster_size + member + 'in use';
 
     return (
-      <Flex id="cluster-status-header" direction={{ default: 'column' }}>
-        <Flex>
-          <FlexItem>
-            <TextContent>
-              <Text component={TextVariants.h1}>{t('cluster-membership.title')}</Text>
-            </TextContent>
-          </FlexItem>
-        </Flex>
-        <Flex>
-          <FlexItem>
-            <Health health={cacheManager.health} />
-          </FlexItem>
-          <Divider orientation={{ default: 'vertical' }} />
-          <FlexItem>
-            <TextContent>
-              <Text component={TextVariants.p}>{sizeLabel}</Text>
-            </TextContent>
-          </FlexItem>
-        </Flex>
-      </Flex>
+      <React.Fragment>
+        <Toolbar id="cluster-status-header">
+          <ToolbarContent>
+            <ToolbarItem>
+              <Title headingLevel={'h1'}>{t('cluster-membership.title')}</Title>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+        <Toolbar id="cluster-status-info">
+          <ToolbarContent>
+            <ToolbarItem>
+              <Health health={cacheManager.health} />
+            </ToolbarItem>
+            <ToolbarItem variant="separator" />
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.p}>{sizeLabel}</Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+      </React.Fragment>
     );
   };
 

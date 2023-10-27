@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Label, Spinner, Switch, ToolbarItem } from '@patternfly/react-core';
+import { Label, Spinner, Switch, TextContent, ToolbarItem, Text } from '@patternfly/react-core';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -17,7 +17,7 @@ const RebalancingCache = () => {
 
   // If rebalancing is not activated at cluster level, don't display anything
   if (!cacheManager.rebalancing_enabled || cache.rebalancing_enabled == undefined) {
-    return <ToolbarItem />;
+    return <></>;
   }
 
   if (loading || !cache) {
@@ -34,7 +34,11 @@ const RebalancingCache = () => {
   if (cache?.rehash_in_progress) {
     return (
       <ToolbarItem>
-        <Spinner size={'md'} /> {t('caches.rebalancing.rebalancing')}
+        <TextContent>
+          <Text>
+            <Spinner size={'md'} isInline /> {t('caches.rebalancing.rebalancing')}
+          </Text>
+        </TextContent>
       </ToolbarItem>
     );
   }

@@ -26,7 +26,11 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  EmptyStateHeader
+  EmptyStateHeader,
+  ToolbarGroup,
+  ToolbarContent,
+  Toolbar,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { ArrowIcon, CubesIcon, RedoIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
@@ -332,28 +336,34 @@ const GlobalStats = () => {
     <Button
       style={{ paddingLeft: '0' }}
       type="button"
-      aria-label={t('caches.actions.refresh')}
+      aria-label={'refresh'}
       variant="link"
       onClick={reload}
       icon={<RedoIcon />}
       iconPosition="left"
     >
-      {t('caches.actions.refresh')}
+      {t('common.actions.refresh')}
     </Button>
   );
 
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
-        <Stack>
-          <StackItem>
-            <TextContent>
-              <Text component={TextVariants.h1}>{t('global-stats.title')}</Text>
-              <Text component={TextVariants.p}>{descriptionText()}</Text>
-            </TextContent>
-          </StackItem>
-          <StackItem style={{ marginTop: global_spacer_sm.var }}>{buildRefreshButton}</StackItem>
-        </Stack>
+        <Toolbar id="global-stats-header">
+          <ToolbarContent>
+            <ToolbarGroup>
+              <ToolbarItem>
+                <TextContent>
+                  <Text component={TextVariants.h1}>{t('global-stats.title')}</Text>
+                  <Text component={TextVariants.p}>{descriptionText()}</Text>
+                </TextContent>
+              </ToolbarItem>
+            </ToolbarGroup>
+            <ToolbarGroup align={{ default: 'alignRight' }}>
+              <ToolbarItem>{buildRefreshButton}</ToolbarItem>
+            </ToolbarGroup>
+          </ToolbarContent>
+        </Toolbar>
       </PageSection>
       <PageSection>{buildStats()}</PageSection>
     </React.Fragment>

@@ -68,12 +68,14 @@ const CacheEntries = (props: { cacheName: string }) => {
     if (cache.encoding.key == EncodingType.Protobuf) {
       setSelectSearchOption(ContentType.string);
       setKeyContentTypeToEdit(ContentType.string);
-    } else if (cache.encoding.key == EncodingType.Java ||
-               cache.encoding.key == EncodingType.JBoss ||
-               cache.encoding.key == EncodingType.JavaSerialized) {
+    } else if (
+      cache.encoding.key == EncodingType.Java ||
+      cache.encoding.key == EncodingType.JBoss ||
+      cache.encoding.key == EncodingType.JavaSerialized
+    ) {
       setSelectSearchOption(ContentType.StringContentType);
       setKeyContentTypeToEdit(ContentType.StringContentType);
-    } else if (cache.encoding.key == EncodingType.XML){
+    } else if (cache.encoding.key == EncodingType.XML) {
       setSelectSearchOption(ContentType.XML);
       setKeyContentTypeToEdit(ContentType.XML);
     } else if (cache.encoding.key == EncodingType.JSON) {

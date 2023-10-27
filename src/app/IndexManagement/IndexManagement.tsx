@@ -147,11 +147,17 @@ const IndexManagement = (props) => {
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
         <DataContainerBreadcrumb currentPage={t('caches.index.title')} cacheName={cacheName} />
-        <TextContent style={{ marginTop: global_spacer_md.value }} key={'title-indexing'}>
-          <Text component={TextVariants.h1} key={'title-value-indexing'}>
-            {t('caches.index.indexing-status')}
-          </Text>
-        </TextContent>
+        <Toolbar key={'title-indexing'}>
+          <ToolbarContent>
+            <ToolbarItem>
+              <TextContent>
+                <Text component={TextVariants.h1} key={'title-value-indexing'}>
+                  {t('caches.index.indexing-status')}
+                </Text>
+              </TextContent>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
       </PageSection>
       <PageSection>
         <Card>
@@ -169,7 +175,7 @@ const IndexManagement = (props) => {
                     }}
                   >
                     <Button variant={ButtonVariant.link} data-cy="backButton">
-                      {t('caches.index.button-back-to-cache-detail')}
+                      {t('common.actions.back')}
                     </Button>
                   </Link>
                 </ToolbarItem>

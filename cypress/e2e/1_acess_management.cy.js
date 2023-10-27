@@ -9,6 +9,19 @@ describe('Global stats', () => {
     cy.contains('Superuser');
   });
 
+  it('successfully flushes the ACL cache', () => {
+    cy.get('[data-cy=aclActions]').click();
+    cy.get('[data-cy="flushCacheAction"]').click();
+    cy.get('[aria-label="Cancel"]').click();
+    cy.contains('flushed').should('not.exist');
+
+    cy.get('[data-cy=aclActions]').click();
+    cy.get('[data-cy="flushCacheAction"]').click();
+    cy.get('[aria-label="Flush"]').click();
+    cy.contains('Access control list cache successfully flushed across the cluster');
+
+  });
+
   it('successfully creates and removes a role', () => {
     // create
     cy.get('button[data-cy="createRoleButton"]').click();
@@ -27,6 +40,5 @@ describe('Global stats', () => {
     cy.contains('Role aRole has been deleted');
     cy.contains('aRole description').should('not.exist');
   });
-
 
 });
