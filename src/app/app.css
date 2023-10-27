@@ -55,3 +55,7 @@ body,
 .role-icon {
   margin-right: var(--pf-v5-global--spacer--xs);
 }
+
+.darkThemeSwitch .pf-v5-c-switch__input:not(:checked) ~ .pf-v5-c-switch__label {
+  color: var(--pf-v5-global--Color--light-100);
+}

@@ -41,7 +41,7 @@ import { IAppRoute, routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { useHistory } from 'react-router';
-import { global_spacer_sm } from '@patternfly/react-tokens';
+import { global_Color_light_100, global_spacer_sm } from '@patternfly/react-tokens';
 import { About } from '@app/About/About';
 import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
@@ -165,11 +165,12 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
           spacer={{ default: 'spacerNone', md: 'spacerMd' }}
         >
           <Switch
-            id="simple-switch"
+            id="darkThemeSwitch"
             isChecked={theme === 'dark'}
             onChange={toggleTheme}
-            ouiaId="BasicSwitch"
-            label=""
+            ouiaId="DarkThemeOuiaId"
+            label={t('layout.dark-theme')}
+            className="darkThemeSwitch"
           />
           <ToolbarItem>
             <Dropdown
