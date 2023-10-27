@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   Alert,
   AlertActionLink,
@@ -18,12 +18,12 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useFetchConfigurationYAML, useFetchConfigurationXML } from '@app/services/configHook';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const CacheConfiguration = (props: { cacheName: string; editable: boolean; config: string }) => {
   const { t } = useTranslation();
   const encodingDocs = t('brandname.encoding-docs-link');
-
+  const {syntaxHighLighterTheme} = useContext(ThemeContext)
   const yamlConfig = useFetchConfigurationYAML(props.cacheName);
   const xmlConfig = useFetchConfigurationXML(props.cacheName);
 
@@ -68,7 +68,7 @@ const CacheConfiguration = (props: { cacheName: string; editable: boolean; confi
           <ClipboardCopy isReadOnly isCode variant={ClipboardCopyVariant.inline}>
             {config}
           </ClipboardCopy>
-          <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
+          <SyntaxHighlighter wrapLines={false} style={syntaxHighLighterTheme} useInlineStyles={true} showLineNumbers={true}>
             {config}
           </SyntaxHighlighter>
         </CardBody>
@@ -78,7 +78,7 @@ const CacheConfiguration = (props: { cacheName: string; editable: boolean; confi
 
   return (
     <React.Fragment>
-      <Tabs defaultActiveKey={0} style={{ backgroundColor: 'white' }}>
+      <Tabs defaultActiveKey={0}>
         <Tab eventKey={0} title={<TabTitleText>JSON</TabTitleText>} tabContentId="tab1" tabContentRef={contentRef1} />
         <Tab eventKey={1} title={<TabTitleText>XML</TabTitleText>} tabContentId="tab2" tabContentRef={contentRef2} />
         <Tab eventKey={2} title={<TabTitleText>YAML</TabTitleText>} tabContentId="tab3" tabContentRef={contentRef3} />

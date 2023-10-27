@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Alert,
@@ -20,6 +20,7 @@ import { CubeIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const CacheConfigEditor = (props: {
   cmName: string;
@@ -27,6 +28,7 @@ const CacheConfigEditor = (props: {
   cacheEditorModifier: (CacheEditorStep) => void;
   setReviewConfig: (string) => void;
 }) => {
+  const {theme} = useContext(ThemeContext);
   const sampleConfig =
     '{\n' +
     '  "distributed-cache": {\n' +
@@ -127,6 +129,7 @@ const CacheConfigEditor = (props: {
           id="cache-config"
           language={Language.json}
           height="200px"
+          isDarkTheme={theme === 'dark'}
         />
         <Alert
           isInline

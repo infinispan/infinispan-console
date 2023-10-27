@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   Button,
@@ -25,8 +25,10 @@ import { useCreateCache } from '@app/services/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { global_spacer_md } from '@patternfly/react-tokens';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const PersistentCacheConfigurator = () => {
+  const {theme} = useContext(ThemeContext);
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -155,6 +157,7 @@ const PersistentCacheConfigurator = () => {
             onChange={changeAndValidate}
             language={Language.json}
             height={'sizeToFit'}
+            isDarkTheme={theme === 'dark'}
           />
           {displayValidationError()}
         </FormGroup>

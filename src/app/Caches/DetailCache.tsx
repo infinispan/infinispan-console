@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   AlertActionLink,
@@ -54,10 +54,12 @@ import { useTranslation } from 'react-i18next';
 import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { EncodingType } from '@services/infinispanRefData';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { t } = useTranslation();
+  const {theme} = useContext(ThemeContext);
   const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
@@ -134,6 +136,7 @@ const DetailCache = (props: { cacheName: string }) => {
         </React.Fragment>
       );
     }
+
     return (
       <Tabs
         unmountOnExit
@@ -141,7 +144,7 @@ const DetailCache = (props: { cacheName: string }) => {
         activeKey={activeTabKey2}
         aria-label="Entries tab"
         component={TabsComponent.nav}
-        style={{ backgroundColor: global_BackgroundColor_100.value }}
+        style={theme === 'dark'? {} : { backgroundColor: global_BackgroundColor_100.value }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
         <Tab

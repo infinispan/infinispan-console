@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import {
   Bullseye,
   Button,
@@ -20,12 +20,12 @@ import {
 import { SearchIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { Table } from '@patternfly/react-table/deprecated';
 import { global_danger_color_200, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: () => void }) => {
   const [query, setQuery] = useState<string>('');
@@ -40,6 +40,9 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
     perPage: 10,
     total: 0
   });
+
+  const {syntaxHighLighterTheme} = useContext(ThemeContext)
+
 
   const columnNames = {
     value: 'Value'
@@ -57,7 +60,7 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
     return (
       <SyntaxHighlighter
         lineProps={{ style: { wordBreak: 'break-all' } }}
-        style={githubGist}
+        style={syntaxHighLighterTheme}
         useInlineStyles={true}
         wrapLongLines={true}
       >

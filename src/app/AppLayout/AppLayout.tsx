@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import {
   Brand,
@@ -25,7 +25,8 @@ import {
   ToolbarGroup,
   ToolbarItem,
   Tooltip,
-  PageSidebarBody
+  PageSidebarBody,
+  Switch
 } from '@patternfly/react-core';
 import {
   Dropdown,
@@ -50,6 +51,7 @@ import { useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import { BarsIcon, ExternalLinkAltIcon, InfoCircleIcon, QuestionCircleIcon } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 interface IAppLayout {
   init: string;
@@ -59,6 +61,7 @@ interface IAppLayout {
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const {theme,toggleTheme} = useContext(ThemeContext);
 
   const history = useHistory();
   const { connectedUser } = useConnectedUser();
@@ -161,6 +164,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
           align={{ default: 'alignRight' }}
           spacer={{ default: 'spacerNone', md: 'spacerMd' }}
         >
+          <Switch
+            id="simple-switch"
+            isChecked={theme === 'dark'}
+            onChange={toggleTheme}
+            ouiaId="BasicSwitch"
+            label=""
+          />
           <ToolbarItem>
             <Dropdown
               data-cy="aboutInfoQuestionMark"

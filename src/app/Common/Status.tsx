@@ -20,7 +20,7 @@ const Status = (props: { status?: Status }) => {
       </FlexItem>
       <FlexItem>
         <TextContent>
-          <Text component={TextVariants.p} style={{ color: chart_global_label_Fill.value }}>
+          <Text component={TextVariants.p}>
             {status.name}
           </Text>
         </TextContent>
