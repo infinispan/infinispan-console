@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, FlexItem, Spinner, Switch } from '@patternfly/react-core';
+import { Divider, Flex, FlexItem, Spinner, Switch } from '@patternfly/react-core';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
@@ -28,38 +28,40 @@ const RebalancingCacheManager = () => {
     cm.rebalancing_enabled != undefined
   ) {
     return (
-      <React.Fragment>
-        <Divider orientation={{ default: 'vertical' }} />
-        <FlexItem>
-          <Switch
-            data-cy="rebalancingSwitch"
-            label={t('cache-managers.rebalancing.enabled')}
-            labelOff={t('cache-managers.rebalancing.disabled')}
-            isChecked={cm.rebalancing_enabled}
-            onChange={() => setConfirmationModalOpened(true)}
-          />
-          <RebalancingConfirmationModal
-            type={'cache-managers'}
-            isModalOpen={confirmationModalOpened}
-            confirmAction={() =>
-              ConsoleServices.dataContainer()
-                .rebalancing(cm.name, !cm.rebalancing_enabled)
-                .then((r) => {
-                  addAlert(r);
-                  reload();
-                })
-                .finally(() => setConfirmationModalOpened(false))
-            }
-            closeModal={() => setConfirmationModalOpened(false)}
-            enabled={cm.rebalancing_enabled}
-          />
-        </FlexItem>
-      </React.Fragment>
+      <>
+        <Flex>
+          <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetSm' }} />
+          <FlexItem>
+            <Switch
+              data-cy="rebalancingSwitch"
+              label={t('cache-managers.rebalancing.enabled')}
+              labelOff={t('cache-managers.rebalancing.disabled')}
+              isChecked={cm.rebalancing_enabled}
+              onChange={() => setConfirmationModalOpened(true)}
+            />
+            <RebalancingConfirmationModal
+              type={'cache-managers'}
+              isModalOpen={confirmationModalOpened}
+              confirmAction={() =>
+                ConsoleServices.dataContainer()
+                  .rebalancing(cm.name, !cm.rebalancing_enabled)
+                  .then((r) => {
+                    addAlert(r);
+                    reload();
+                  })
+                  .finally(() => setConfirmationModalOpened(false))
+              }
+              closeModal={() => setConfirmationModalOpened(false)}
+              enabled={cm.rebalancing_enabled}
+            />
+          </FlexItem>
+        </Flex>
+      </>
     );
   }
 
   // Return nothing if the connected user is not ADMIN
-  return <FlexItem></FlexItem>;
+  return <></>;
 };
 
 export { RebalancingCacheManager };

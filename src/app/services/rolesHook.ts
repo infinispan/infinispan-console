@@ -77,3 +77,22 @@ export function useDeleteRole(roleName: string, call: () => void) {
     onDeleteRole
   };
 }
+
+export function useFlushCache(call: () => void) {
+  const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+  const onFlushCache = () => {
+    ConsoleServices.security()
+      .flushCache(
+        t('access-management.flush-cache-success'),
+        t('access-management.flush-cache-error')
+      )
+      .then((actionResponse) => {
+        addAlert(actionResponse);
+      })
+      .finally(() => call());
+  };
+  return {
+    onFlushCache
+  };
+}

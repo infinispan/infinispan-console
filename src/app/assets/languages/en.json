@@ -7,6 +7,14 @@
     "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html",
     "default-roles-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#default-user-roles_server-getting-started"
   },
+  "common": {
+    "actions": {
+      "actions": "Actions",
+      "refresh": "Refresh",
+      "back": "Back",
+      "cancel": "Cancel"
+    }
+  },
   "layout": {
     "console-name": "Server Management Console",
     "skip-to-content": "Skip to Content",
@@ -534,7 +542,6 @@
       "action-see-less": "See fewer cache details",
       "action-see-more": "See more cache details",
       "action-manage-indexes": "Manage indexes",
-      "refresh": "Refresh",
       "back": "Back"
     },
     "entries": {
@@ -642,8 +649,20 @@
       "size": "Index size in bytes",
       "indexing-status": "Indexing",
       "button-clear": "Clear index",
-      "button-rebuild": "Rebuild index",
-      "button-back-to-cache-detail": "Back"
+      "button-rebuild": "Rebuild index"
+    },
+    "backups": {
+      "title": "Backups management",
+      "clear-state-action": "Clear state",
+      "take-offline-action": "Take offline",
+      "bring-online-action": "Bring online",
+      "take-all-offline": "Take all offline",
+      "bring-all-online": "Bring all online",
+      "mixed": "Mixed",
+      "column-site": "Site",
+      "column-status": "Status",
+      "column-transfer": "Transfer status / Result",
+      "column-action": "Action"
     },
     "rebalancing": {
       "rebalancing": "Rebalancing",
@@ -842,6 +861,11 @@
     "description": "Access management allows you to control {{brandname}} Server administration.",
     "tab-roles": "Roles",
     "tab-access-control": "Access control",
+    "flush-cache-action": "Flush cache",
+    "flush-cache-success": "Access control list cache successfully flushed across the cluster",
+    "flush-cache-error": "Unexpected error flushing the access-control cache across the cluster",
+    "modal-flush-cache-title": "Flushing the ACL cache",
+    "modal-flush-cache-description": "Flush the access-control list cache across the cluster.",
     "roles": {
       "role-name": "Role name",
       "role-name-tooltip": "Role name prefixed with a lock indicates that the role is predefined and cannot be edited.",

@@ -209,4 +209,17 @@ export class SecurityService {
       errorMessage: messageError
     });
   }
+
+  /**
+   * Flush security cache
+   * @param messageOk
+   * @param messageError
+   */
+  public async flushCache(messageOk: string, messageError: string) {
+    return this.fetchCaller.post({
+      url: this.endpoint + '/cache?action=flush',
+      successMessage: messageOk,
+      errorMessage: messageError
+    });
+  }
 }

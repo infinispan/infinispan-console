@@ -3,6 +3,11 @@ import { useState } from 'react';
 import {
   Card,
   CardBody,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
   Nav,
   NavItem,
   NavList,
@@ -10,10 +15,15 @@ import {
   PageSectionVariants,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
+  Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { RoleTableDisplay } from '@app/AccessManagement/RoleTableDisplay';
+import { FlushRoleCacheModal } from '@app/AccessManagement/FlushRoleCacheModal';
 
 const AccessManager = () => {
   const { t } = useTranslation();
@@ -21,12 +31,23 @@ const AccessManager = () => {
   const [activeTabKey, setActiveTabKey] = useState('0');
   const [showRoles, setShowRoles] = useState(true);
   const [showAccessControl, setShowAccessControl] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isFlushCache, setIsFlushCache] = useState(false);
+
+  const onToggleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+    setIsOpen(false);
+  };
 
   interface AccessTab {
     key: string;
     name: string;
   }
-  const handleTabClick = (nav) => {
+
+  const handleTabClick = (ev, nav) => {
     const tabIndex = nav.itemId;
     setActiveTabKey(tabIndex);
     setShowRoles(tabIndex == '0');
@@ -62,17 +83,61 @@ const AccessManager = () => {
     </Card>
   );
 
+  const displayActions = (
+    <ToolbarGroup align={{ default: 'alignRight' }}>
+      <ToolbarItem>
+        <Dropdown
+          isOpen={isOpen}
+          onSelect={onSelect}
+          onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle ref={toggleRef} data-cy="aclActions" onClick={onToggleClick} isExpanded={isOpen}>
+              {t('common.actions.actions')}
+            </MenuToggle>
+          )}
+          ouiaId="accessManagementDropdown"
+          shouldFocusToggleOnSelect
+        >
+          <DropdownList>
+            <DropdownItem value={0}
+                          key="flushCacheAction"
+                          data-cy="flushCacheAction"
+                          onClick={() => setIsFlushCache(true)}>
+              {t('access-management.flush-cache-action')}
+            </DropdownItem>
+          </DropdownList>
+        </Dropdown>
+      </ToolbarItem>
+    </ToolbarGroup>
+  );
+
   return (
-    <>
+    <React.Fragment>
       <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
-        <TextContent style={{ marginBottom: '1rem' }}>
-          <Text component={TextVariants.h1}>{t('access-management.title')}</Text>
-          <Text component={TextVariants.p}>{t('access-management.description', { brandname: brandname })}</Text>
-        </TextContent>
+        <Toolbar id="access-management-toolbar">
+          <ToolbarContent>
+            <ToolbarGroup>
+              <ToolbarItem>
+                <TextContent>
+                  <Text component={TextVariants.h1}>{t('access-management.title')}</Text>
+                  <Text component={TextVariants.p}>{t('access-management.description', { brandname: brandname })}</Text>
+                </TextContent>
+              </ToolbarItem>
+            </ToolbarGroup>
+            {displayActions}
+          </ToolbarContent>
+        </Toolbar>
         {buildTabs()}
       </PageSection>
-      <PageSection variant={PageSectionVariants.default}>{buildSelectedContent}</PageSection>
-    </>
+      <PageSection variant={PageSectionVariants.default}>
+        {buildSelectedContent}
+        <FlushRoleCacheModal isModalOpen={isFlushCache}
+                             closeModal={() => setIsFlushCache(false)}
+                             submitModal={() => {
+                               setIsFlushCache(false);
+                             }}/>
+      </PageSection>
+    </React.Fragment>
   );
 };
 
