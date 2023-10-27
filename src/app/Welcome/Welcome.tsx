@@ -87,7 +87,6 @@ const Welcome = (props) => {
           }}
           component={'button'}
           className={'button'}
-          style={{ backgroundColor: global_BackgroundColor_100.value }}
         >
           <Text style={{ color: chart_color_blue_500.value }}>{goToTheConsole}</Text>
         </Button>

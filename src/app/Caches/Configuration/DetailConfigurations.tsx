@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   Button,
   Bullseye,
@@ -28,13 +28,13 @@ import { Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/reac
 import { Table } from '@patternfly/react-table/deprecated';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslation } from 'react-i18next';
 import { SearchIcon, CubeIcon } from '@patternfly/react-icons';
 import { useFetchCacheTemplates } from '@app/services/cachesHook';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { onSearch } from '@app/utils/searchFilter';
 import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const DetailConfigurations: React.FunctionComponent<any> = (props) => {
   const { t } = useTranslation();
@@ -48,6 +48,8 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
     page: 1,
     perPage: 10
   });
+
+  const {syntaxHighLighterTheme} = useContext(ThemeContext)
 
   useEffect(() => {
     setFilteredTemplates(cacheTemplates);
@@ -223,7 +225,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
                           <ExpandableRowContent data-cy={row.name + 'ConfigExpanded'}>
                             <SyntaxHighlighter
                               wrapLines={false}
-                              style={githubGist}
+                              style={syntaxHighLighterTheme}
                               useInlineStyles={true}
                               showLineNumbers={true}
                             >

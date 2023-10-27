@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -26,7 +26,6 @@ import { Table, Thead, Tr, Th, Tbody, Td, ExpandableRowContent, ActionsColumn, I
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -38,6 +37,7 @@ import { EditSchema } from './EditSchema';
 import { useFetchProtobufSchemas } from '@app/services/protobufHooks';
 import { onSearch } from '@app/utils/searchFilter';
 import './ProtobufSchemasDisplay.css';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
@@ -59,6 +59,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
     page: 1,
     perPage: 10
   });
+  const {syntaxHighLighterTheme} = useContext(ThemeContext)
 
   const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
 
@@ -217,7 +218,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
 
     return (
       <ExpandableRowContent>
-        <SyntaxHighlighter wrapLines={false} style={githubGist} useInlineStyles={true} showLineNumbers={true}>
+        <SyntaxHighlighter wrapLines={false} style={syntaxHighLighterTheme} useInlineStyles={true} showLineNumbers={true}>
           {schemasContent.get(name)}
         </SyntaxHighlighter>
       </ExpandableRowContent>

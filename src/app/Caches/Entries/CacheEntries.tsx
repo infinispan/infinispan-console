@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Bullseye,
   Button,
@@ -28,7 +28,6 @@ import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patter
 import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import displayUtils from '@services/displayUtils';
 import { useTranslation } from 'react-i18next';
 import { useCacheDetail, useCacheEntries } from '@app/services/cachesHook';
@@ -40,6 +39,7 @@ import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
 import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const CacheEntries = (props: { cacheName: string }) => {
   const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
@@ -63,6 +63,8 @@ const CacheEntries = (props: { cacheName: string }) => {
     page: 1,
     perPage: 10
   });
+
+  const {syntaxHighLighterTheme} = useContext(ThemeContext)
 
   useEffect(() => {
     if (cache.encoding.key == EncodingType.Protobuf) {
@@ -145,7 +147,7 @@ const CacheEntries = (props: { cacheName: string }) => {
       <SyntaxHighlighter
         language="json"
         lineProps={{ style: { wordBreak: 'break-all' } }}
-        style={githubGist}
+        style={syntaxHighLighterTheme}
         useInlineStyles={true}
         wrapLongLines={true}
       >

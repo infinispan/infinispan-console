@@ -7,6 +7,7 @@ import '@app/app.css';
 import { KeycloakService } from '@services/keycloakService';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { UserContextProvider } from '@app/providers/UserContextProvider';
+import { ThemeProvider } from './providers/ThemeProvider';
 
 const App = () => {
   const [init, setInit] = useState<
@@ -74,11 +75,13 @@ const App = () => {
   const load = () => {
     return (
       <Router basename="/console">
-        <UserContextProvider>
-          <AppLayout init={init}>
-            <AppRoutes init={init} />
-          </AppLayout>
-        </UserContextProvider>
+        <ThemeProvider>
+          <UserContextProvider>
+            <AppLayout init={init}>
+              <AppRoutes init={init} />
+            </AppLayout>
+          </UserContextProvider>
+        </ThemeProvider>
       </Router>
     );
   };

@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Flex, Form, FormGroup, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useCreateCache } from '@app/services/createCacheHook';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const ReviewCacheConfig = (props: { setReviewConfig: (string) => void }) => {
   const { configuration } = useCreateCache();
   const { t } = useTranslation();
   const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(configuration));
+  const {theme} = useContext(ThemeContext);
 
   useEffect(() => {
     const jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(configuration);
@@ -30,6 +32,7 @@ const ReviewCacheConfig = (props: { setReviewConfig: (string) => void }) => {
           code={config}
           height="sizeToFit"
           isCopyEnabled
+          isDarkTheme={theme === 'dark'}
           copyButtonSuccessTooltipText={t('caches.create.review.copied-tooltip')}
           copyButtonToolTipText={t('caches.create.review.copy-tooltip')}
         />
