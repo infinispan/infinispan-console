@@ -26,15 +26,11 @@ import {
   ToolbarItem,
   Tooltip,
   PageSidebarBody,
-  Switch
+  Switch,
+  MenuToggleElement,
+  MenuToggle
 } from '@patternfly/react-core';
-import {
-  Dropdown,
-  DropdownGroup,
-  DropdownItem,
-  DropdownToggle,
-  DropdownPosition
-} from '@patternfly/react-core/deprecated';
+import { Dropdown, DropdownGroup, DropdownItem } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
 import { Link, NavLink, Redirect } from 'react-router-dom';
 import { IAppRoute, routes } from '@app/routes';
@@ -61,7 +57,7 @@ interface IAppLayout {
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const {theme,toggleTheme} = useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   const history = useHistory();
   const { connectedUser } = useConnectedUser();
@@ -95,40 +91,46 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     </Flex>
   );
 
-  const userDropdownItems = [
-    <DropdownGroup key="user-action-group">
-      <DropdownItem
-        key="user-action-group-1 logout"
-        onClick={() => {
-          if (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()) {
-            KeycloakService.Instance.logout(ConsoleServices.landing());
-          } else {
-            ConsoleServices.authentication().logOutLink();
-            history.push('/welcome');
-            window.location.reload();
-          }
-        }}
-      >
-        Logout
-      </DropdownItem>
-    </DropdownGroup>
-  ];
-
   const userActions = () => {
     const chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
     if (chromeAgent || (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated())) {
       return (
-        <ToolbarItem>
-          <Dropdown
-            isFullHeight
-            onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
-            isOpen={isDropdownOpen}
-            toggle={
-              <DropdownToggle onToggle={() => setIsDropdownOpen(!isDropdownOpen)}>{connectedUser.name}</DropdownToggle>
-            }
-            dropdownItems={userDropdownItems}
-          />
-        </ToolbarItem>
+        <ToolbarGroup>
+          <ToolbarItem>
+            <Dropdown
+              onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
+              isOpen={isDropdownOpen}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  ref={toggleRef}
+                  isFullHeight
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  isExpanded={isDropdownOpen}
+                >
+                  {connectedUser.name}
+                </MenuToggle>
+              )}
+              shouldFocusToggleOnSelect
+            >
+              <DropdownGroup key="user-action-group">
+                <DropdownItem
+                  key="user-action-group-1 logout"
+                  onClick={() => {
+                    if (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()) {
+                      KeycloakService.Instance.logout(ConsoleServices.landing());
+                    } else {
+                      ConsoleServices.authentication().logOutLink();
+                      history.push('/welcome');
+                      window.location.reload();
+                    }
+                  }}
+                >
+                  {t('layout.logout')}
+                </DropdownItem>
+              </DropdownGroup>
+            </Dropdown>
+          </ToolbarItem>
+        </ToolbarGroup>
       );
     }
     return (
@@ -143,19 +145,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     );
   };
 
-  const helpDropdownItems = [
-    <DropdownItem
-      onClick={() => window.open(t('brandname.documentation-link'), '_blank')}
-      key="documentation"
-      icon={<ExternalLinkAltIcon />}
-    >
-      {t('layout.documentation-name')}
-    </DropdownItem>,
-    <DropdownItem onClick={() => setIsAboutOpen(!isAboutOpen)} key="about" component="button">
-      {t('layout.about-name')}
-    </DropdownItem>
-  ];
-
   const headerToolbar = (
     <Toolbar id="toolbar" isFullHeight isStatic>
       <ToolbarContent>
@@ -164,29 +153,46 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
           align={{ default: 'alignRight' }}
           spacer={{ default: 'spacerNone', md: 'spacerMd' }}
         >
-          <Switch
-            id="darkThemeSwitch"
-            isChecked={theme === 'dark'}
-            onChange={toggleTheme}
-            ouiaId="DarkThemeOuiaId"
-            label={t('layout.dark-theme')}
-            className="darkThemeSwitch"
-          />
+          <ToolbarItem>
+            <Switch
+              id="darkThemeSwitch"
+              isChecked={theme === 'dark'}
+              onChange={toggleTheme}
+              ouiaId="DarkThemeOuiaId"
+              label={t('layout.dark-theme')}
+              className="darkThemeSwitch"
+            />
+          </ToolbarItem>
           <ToolbarItem>
             <Dropdown
-              data-cy="aboutInfoQuestionMark"
               id="aboutInfoQuestionMark"
-              position={DropdownPosition.right}
-              isPlain
               onSelect={() => setIsHelpOpen(!isHelpOpen)}
               isOpen={isHelpOpen}
-              toggle={
-                <DropdownToggle toggleIndicator={null} onToggle={() => setIsHelpOpen(!isHelpOpen)}>
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  data-cy="aboutInfoQuestionMark"
+                  variant={'plain'}
+                  ref={toggleRef}
+                  isFullHeight
+                  onClick={() => setIsHelpOpen(!isHelpOpen)}
+                  isExpanded={isHelpOpen}
+                >
                   <QuestionCircleIcon />
-                </DropdownToggle>
-              }
-              dropdownItems={helpDropdownItems}
-            />
+                </MenuToggle>
+              )}
+            >
+              <DropdownItem
+                onClick={() => window.open(t('brandname.documentation-link'), '_blank')}
+                key="documentation"
+                icon={<ExternalLinkAltIcon />}
+              >
+                {t('layout.documentation-name')}
+              </DropdownItem>
+              ,
+              <DropdownItem onClick={() => setIsAboutOpen(!isAboutOpen)} key="about" component="button">
+                {t('layout.about-name')}
+              </DropdownItem>
+            </Dropdown>
           </ToolbarItem>
         </ToolbarGroup>
         {!ConsoleServices.authentication().isNotSecured() && userActions()}

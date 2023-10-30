@@ -22,7 +22,8 @@
     "about-name": "About",
     "documentation-name": "Documentation",
     "close-browser-message": "Close the browser or open an incognito window to log again.",
-    "dark-theme": "Dark theme"
+    "dark-theme": "Dark theme",
+    "logout": "Logout"
   },
   "welcome-page": {
     "welcome-title": "Welcome to {{brandname}} Server",

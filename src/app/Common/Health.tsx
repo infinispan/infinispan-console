@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import { Flex, FlexItem, Text, TextContent } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import displayUtils from '@services/displayUtils';
@@ -9,14 +9,12 @@ import { chart_global_label_Fill, global_Color_light_100 } from '@patternfly/rea
 const Health = (props: { health: string; displayIcon?: boolean; cacheName?: string }) => {
   const health = ComponentHealth[props.health];
   const displayIcon = props.displayIcon == undefined ? true : props.displayIcon;
-  const {theme} = useContext(ThemeContext); 
-  
-  const getHealthLabelColor = ()=>{
+  const { theme } = useContext(ThemeContext);
+
+  const getHealthLabelColor = () => {
     const color = displayUtils.healthColor(health, false);
-    return (theme === 'dark' && color === chart_global_label_Fill.value) 
-          ? global_Color_light_100.value 
-          : color;
-  }
+    return theme === 'dark' && color === chart_global_label_Fill.value ? global_Color_light_100.value : color;
+  };
   return (
     <Flex>
       {displayIcon && (

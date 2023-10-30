@@ -29,20 +29,13 @@ const FlushRoleCacheModal = (props: { isModalOpen: boolean; submitModal: () => v
         >
           {t('access-management.flush-cache-action')}
         </Button>,
-        <Button
-          key={'Cancel'}
-          aria-label={'Cancel'}
-          variant={ButtonVariant.link}
-          onClick={props.closeModal}
-        >
+        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={props.closeModal}>
           {t('common.actions.cancel')}
         </Button>
       ]}
     >
       <TextContent>
-        <Text>
-          {t('access-management.modal-flush-cache-description')}
-        </Text>
+        <Text>{t('access-management.modal-flush-cache-description')}</Text>
       </TextContent>
     </Modal>
   );

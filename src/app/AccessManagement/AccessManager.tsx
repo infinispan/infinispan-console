@@ -99,10 +99,12 @@ const AccessManager = () => {
           shouldFocusToggleOnSelect
         >
           <DropdownList>
-            <DropdownItem value={0}
-                          key="flushCacheAction"
-                          data-cy="flushCacheAction"
-                          onClick={() => setIsFlushCache(true)}>
+            <DropdownItem
+              value={0}
+              key="flushCacheAction"
+              data-cy="flushCacheAction"
+              onClick={() => setIsFlushCache(true)}
+            >
               {t('access-management.flush-cache-action')}
             </DropdownItem>
           </DropdownList>
@@ -131,11 +133,13 @@ const AccessManager = () => {
       </PageSection>
       <PageSection variant={PageSectionVariants.default}>
         {buildSelectedContent}
-        <FlushRoleCacheModal isModalOpen={isFlushCache}
-                             closeModal={() => setIsFlushCache(false)}
-                             submitModal={() => {
-                               setIsFlushCache(false);
-                             }}/>
+        <FlushRoleCacheModal
+          isModalOpen={isFlushCache}
+          closeModal={() => setIsFlushCache(false)}
+          submitModal={() => {
+            setIsFlushCache(false);
+          }}
+        />
       </PageSection>
     </React.Fragment>
   );

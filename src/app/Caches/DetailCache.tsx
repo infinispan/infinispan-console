@@ -7,7 +7,8 @@ import {
   Button,
   ButtonVariant,
   Card,
-  CardBody, Divider,
+  CardBody,
+  Divider,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
@@ -62,7 +63,7 @@ import { ThemeContext } from '@app/providers/ThemeProvider';
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { t } = useTranslation();
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
@@ -146,7 +147,7 @@ const DetailCache = (props: { cacheName: string }) => {
         activeKey={activeTabKey2}
         aria-label="Entries tab"
         component={TabsComponent.nav}
-        style={theme === 'dark'? {} : { backgroundColor: global_BackgroundColor_100.value }}
+        style={theme === 'dark' ? {} : { backgroundColor: global_BackgroundColor_100.value }}
         onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
       >
         <Tab
@@ -252,19 +253,17 @@ const DetailCache = (props: { cacheName: string }) => {
       return;
     }
     return (
-        <ToolbarItem>
-          <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }}/>
-          <Link
-            to={{
-              pathname: encodeURIComponent(cacheName) + '/backups',
-              search: location.search
-            }}
-          >
-            <Button variant={ButtonVariant.link}>
-              {t('caches.actions.action-manage-backups')}
-            </Button>
-          </Link>
-        </ToolbarItem>
+      <ToolbarItem>
+        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
+        <Link
+          to={{
+            pathname: encodeURIComponent(cacheName) + '/backups',
+            search: location.search
+          }}
+        >
+          <Button variant={ButtonVariant.link}>{t('caches.actions.action-manage-backups')}</Button>
+        </Link>
+      </ToolbarItem>
     );
   };
 
@@ -275,8 +274,8 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <Spinner size={"md"} isInline />
-        <Alert variant="warning" isInline isPlain title={t('caches.rebuilding-index')}/>
+        <Spinner size={'md'} isInline />
+        <Alert variant="warning" isInline isPlain title={t('caches.rebuilding-index')} />
       </ToolbarItem>
     );
   };
@@ -284,19 +283,19 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildIndexManage = () => {
     if (!cache?.features.indexed) return;
     return (
-        <ToolbarItem>
-          <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }}/>
-          <Link
-            to={{
-              pathname: encodeURIComponent(cacheName) + '/indexing',
-              search: location.search
-            }}
-          >
-            <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
-              {t('caches.actions.action-manage-indexes')}
-            </Button>
-          </Link>
-        </ToolbarItem>
+      <ToolbarItem>
+        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
+        <Link
+          to={{
+            pathname: encodeURIComponent(cacheName) + '/indexing',
+            search: location.search
+          }}
+        >
+          <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
+            {t('caches.actions.action-manage-indexes')}
+          </Button>
+        </Link>
+      </ToolbarItem>
     );
   };
 
@@ -322,15 +321,15 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildFeaturesChip = () => {
     if (!cache?.features) return;
     return (
-        <ToolbarItem>
-          <LabelGroup categoryName={t('caches.info.features')} numLabels={8}>
-            {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
-              <Label isCompact icon={<InfoCircleIcon />} key={feature}>
-                {feature}
-              </Label>
-            ))}
-          </LabelGroup>
-        </ToolbarItem>
+      <ToolbarItem>
+        <LabelGroup categoryName={t('caches.info.features')} numLabels={8}>
+          {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
+            <Label isCompact icon={<InfoCircleIcon />} key={feature}>
+              {feature}
+            </Label>
+          ))}
+        </LabelGroup>
+      </ToolbarItem>
     );
   };
 
@@ -342,9 +341,7 @@ const DetailCache = (props: { cacheName: string }) => {
             <RebalancingCache />
             {buildDisplayReindexing()}
           </ToolbarGroup>
-          <ToolbarGroup variant={'filter-group'}>
-            {buildFeaturesChip()}
-          </ToolbarGroup>
+          <ToolbarGroup variant={'filter-group'}>{buildFeaturesChip()}</ToolbarGroup>
           <ToolbarGroup variant={'button-group'}>
             {buildBackupsManage()}
             {buildIndexManage()}

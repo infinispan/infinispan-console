@@ -28,7 +28,7 @@ const CacheConfigEditor = (props: {
   cacheEditorModifier: (CacheEditorStep) => void;
   setReviewConfig: (string) => void;
 }) => {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const sampleConfig =
     '{\n' +
     '  "distributed-cache": {\n' +

@@ -28,7 +28,7 @@ import { global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 
 const PersistentCacheConfigurator = () => {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');

@@ -49,7 +49,7 @@ const DetailConfigurations: React.FunctionComponent<any> = (props) => {
     perPage: 10
   });
 
-  const {syntaxHighLighterTheme} = useContext(ThemeContext)
+  const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     setFilteredTemplates(cacheTemplates);

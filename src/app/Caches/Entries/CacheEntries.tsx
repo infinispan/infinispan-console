@@ -64,7 +64,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     perPage: 10
   });
 
-  const {syntaxHighLighterTheme} = useContext(ThemeContext)
+  const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     if (cache.encoding.key == EncodingType.Protobuf) {
