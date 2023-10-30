@@ -7,10 +7,7 @@ import {
   Button,
   ButtonVariant,
   Card,
-  CardBody,
-  Chip,
-  ChipGroup,
-  Divider,
+  CardBody, Divider,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
@@ -18,9 +15,8 @@ import {
   EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
-  Flex,
-  FlexItem,
   Label,
+  LabelGroup,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -43,7 +39,14 @@ import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { global_BackgroundColor_100, global_danger_color_200, global_info_color_200 } from '@patternfly/react-tokens';
-import { AngleDownIcon, AngleRightIcon, ExclamationCircleIcon, InfoIcon, RedoIcon } from '@patternfly/react-icons';
+import {
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon,
+  InfoCircleIcon,
+  InfoIcon,
+  RedoIcon,
+  ArrowRightIcon
+} from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
 import { useCacheDetail } from '@app/services/cachesHook';
@@ -66,7 +69,6 @@ const DetailCache = (props: { cacheName: string }) => {
   const { loading, error, cache, loadCache } = useCacheDetail();
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
-  const [displayShowMore, setDisplayShowMore] = useState<boolean>(true);
 
   useEffect(() => {
     loadCache(cacheName);
@@ -249,24 +251,20 @@ const DetailCache = (props: { cacheName: string }) => {
     if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       return;
     }
-
     return (
-      <>
-        <ToolbarItem variant="separator" />
         <ToolbarItem>
-          <Label>Backups</Label>
-        </ToolbarItem>
-        <ToolbarItem>
+          <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }}/>
           <Link
             to={{
               pathname: encodeURIComponent(cacheName) + '/backups',
               search: location.search
             }}
           >
-            <Button variant={ButtonVariant.link}>Manage</Button>
+            <Button variant={ButtonVariant.link}>
+              {t('caches.actions.action-manage-backups')}
+            </Button>
           </Link>
         </ToolbarItem>
-      </>
     );
   };
 
@@ -277,11 +275,8 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <ToolbarItem>
-        <TextContent>
-          <Text component={TextVariants.small}>
-            <Spinner size={'md'} isInline /> {`Rebuilding the index for ${cacheName}`}
-          </Text>
-        </TextContent>
+        <Spinner size={"md"} isInline />
+        <Alert variant="warning" isInline isPlain title={t('caches.rebuilding-index')}/>
       </ToolbarItem>
     );
   };
@@ -289,15 +284,8 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildIndexManage = () => {
     if (!cache?.features.indexed) return;
     return (
-      <>
-        <Divider
-          orientation={{
-            default: 'vertical'
-          }}
-          inset={{ default: 'insetMd' }}
-        />
-        {buildDisplayReindexing()}
         <ToolbarItem>
+          <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }}/>
           <Link
             to={{
               pathname: encodeURIComponent(cacheName) + '/indexing',
@@ -309,7 +297,6 @@ const DetailCache = (props: { cacheName: string }) => {
             </Button>
           </Link>
         </ToolbarItem>
-      </>
     );
   };
 
@@ -335,48 +322,30 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildFeaturesChip = () => {
     if (!cache?.features) return;
     return (
-      <>
-        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
         <ToolbarItem>
-          <ChipGroup categoryName="Features">
+          <LabelGroup categoryName={t('caches.info.features')} numLabels={8}>
             {displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
-              <Chip isReadOnly key={feature}>
+              <Label isCompact icon={<InfoCircleIcon />} key={feature}>
                 {feature}
-              </Chip>
+              </Label>
             ))}
-          </ChipGroup>
+          </LabelGroup>
         </ToolbarItem>
-      </>
-    );
-  };
-
-  const buildShowMoreHeader = () => {
-    if (!cache) {
-      return '';
-    }
-
-    const icon = displayShowMore ? <AngleDownIcon /> : <AngleRightIcon />;
-
-    return (
-      <ToolbarItem>
-        <Button size="sm" icon={icon} variant={ButtonVariant.link} onClick={() => setDisplayShowMore(!displayShowMore)}>
-          {displayShowMore ? t('caches.actions.action-see-less') : t('caches.actions.action-see-more')}
-        </Button>
-      </ToolbarItem>
     );
   };
 
   const buildShowMorePanel = () => {
-    if (!displayShowMore || !cache) {
-      return '';
-    }
-
     return (
       <Toolbar id="cache-header-actions">
         <ToolbarContent>
-          <ToolbarGroup variant={'button-group'}>
+          <ToolbarGroup>
             <RebalancingCache />
+            {buildDisplayReindexing()}
+          </ToolbarGroup>
+          <ToolbarGroup variant={'filter-group'}>
             {buildFeaturesChip()}
+          </ToolbarGroup>
+          <ToolbarGroup variant={'button-group'}>
             {buildBackupsManage()}
             {buildIndexManage()}
           </ToolbarGroup>
@@ -470,9 +439,8 @@ const DetailCache = (props: { cacheName: string }) => {
                 </TextContent>
               </ToolbarItem>
               <ToolbarItem>
-                <CacheTypeBadge cacheType={cache.type} small={false} cacheName={cache.name} />
+                <CacheTypeBadge cacheType={cache.type} small={true} cacheName={cache.name} />
               </ToolbarItem>
-              {buildShowMoreHeader()}
             </ToolbarGroup>
             <ToolbarGroup align={{ default: 'alignRight' }}>{buildRefreshButton()}</ToolbarGroup>
           </ToolbarContent>

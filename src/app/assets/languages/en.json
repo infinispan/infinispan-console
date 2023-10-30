@@ -5,7 +5,8 @@
     "encoding-docs-link": "https://infinispan.org/docs/stable/titles/encoding/encoding.html",
     "persistence-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html#persistence",
     "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html",
-    "default-roles-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#default-user-roles_server-getting-started"
+    "default-roles-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#default-user-roles_server-getting-started",
+    "ickle-query-docs-link": "https://infinispan.org/docs/stable/titles/query/query.html#ickle-query-syntax_ickle-query-language"
   },
   "common": {
     "actions": {
@@ -537,12 +538,12 @@
     "info": {
       "breadcrumb": "Detail of cache {{cacheName}}",
       "loading": "Loading cache {{cacheName}} ...",
-      "error": "An error occurred while loading {{cacheName}}"
+      "error": "An error occurred while loading {{cacheName}}",
+      "features": "Features"
     },
     "actions": {
-      "action-see-less": "See fewer cache details",
-      "action-see-more": "See more cache details",
       "action-manage-indexes": "Manage indexes",
+      "action-manage-backups": "Manage backups",
       "back": "Back"
     },
     "entries": {
@@ -627,6 +628,7 @@
       "no-search-value": "Values not found.",
       "query-error": "Query error",
       "ickle-query": "Ickle query",
+      "ickle-query-docs": "Ickle query syntax",
       "ickle-query-tooltip": "{{brandname}} provides an Ickle query language that lets you create relational and full-text queries.",
       "view-all-query-stats": "View all query statistics",
       "query-metrics-title": "Query metrics",
@@ -665,6 +667,7 @@
       "column-transfer": "Transfer status / Result",
       "column-action": "Action"
     },
+    "rebuilding-index": "Rebuilding index",
     "rebalancing": {
       "rebalancing": "Rebalancing",
       "rebalanced": "Rebalanced",
