@@ -500,3 +500,8 @@ interface Role {
   implicit: boolean;
   permissions: string[];
 }
+
+interface Principal {
+  name: string;
+  roles: string[];
+}

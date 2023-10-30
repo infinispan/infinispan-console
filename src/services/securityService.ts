@@ -263,4 +263,20 @@ export class SecurityService {
       errorMessage: messageError
     });
   }
+
+  /**
+   * Retrieve security principals
+   *
+   */
+  public async getSecurityPrincipals(): Promise<Either<ActionResponse, Principal[]>> {
+    return this.fetchCaller.get(this.endpoint + '/principals?action=detailed', (data) =>
+      Object.keys(data).map(
+        (principalName) =>
+          <Principal>{
+            name: principalName,
+            roles: data[principalName]
+          }
+      )
+    );
+  }
 }

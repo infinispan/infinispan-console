@@ -71,7 +71,6 @@ const Welcome = (props) => {
     if (authState == 'HTTP_LOGIN') {
       return (
         <Button
-          size="lg"
           onClick={() => {
             ConsoleServices.authentication()
               .loginLink()
@@ -85,17 +84,16 @@ const Welcome = (props) => {
                 }
               });
           }}
-          component={'button'}
-          className={'button'}
+          variant={'control'}
         >
-          <Text style={{ color: chart_color_blue_500.value }}>{goToTheConsole}</Text>
+          <Text>{goToTheConsole}</Text>
         </Button>
       );
     }
 
     if (authState == 'NOT_READY') {
       return (
-        <Button size="lg" style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => setSupportOpen(true)}>
+        <Button size="lg" onClick={() => setSupportOpen(true)} variant={'control'}>
           {goToTheConsole}
         </Button>
       );
@@ -103,14 +101,14 @@ const Welcome = (props) => {
 
     if (authState == 'READY') {
       return (
-        <Button size="lg" style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => notSecuredModeOn()}>
+        <Button size="lg" onClick={() => notSecuredModeOn()} variant={'control'}>
           {goToTheConsole}
         </Button>
       );
     }
 
     return (
-      <Button size="lg" style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => login()}>
+      <Button size="lg" onClick={() => login()} variant={'control'}>
         {goToTheConsole}
       </Button>
     );

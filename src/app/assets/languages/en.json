@@ -6,7 +6,8 @@
     "persistence-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html#persistence",
     "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html",
     "default-roles-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#default-user-roles_server-getting-started",
-    "ickle-query-docs-link": "https://infinispan.org/docs/stable/titles/query/query.html#ickle-query-syntax_ickle-query-language"
+    "ickle-query-docs-link": "https://infinispan.org/docs/stable/titles/query/query.html#ickle-query-syntax_ickle-query-language",
+    "principals-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#configuring-role-mappers_rbac-remote"
   },
   "common": {
     "actions": {
@@ -951,6 +952,20 @@
       "modal-remove-permission-title": "Remove permission {{name}}",
       "modal-remove-permission-description-1": "Are you sure you want to remove this permission from role {{roleName}}? After removing, the role's access will be changed.",
       "modal-remove-permission-description-2": "You can always add the role permission again."
+    },
+    "principals": {
+      "principal-name": "Principal mapper name",
+      "principal-name-tooltip": "To enable authorization, the principals must be mapped to role names, which are then expanded into a set of permissions.",
+      "roles": "Roles",
+      "search-placeholder": "Find by name",
+      "no-principals-found": "No principals found",
+      "no-principals-body": "You can grant access to a principal mapper.",
+      "no-filtered-principals-body": "No principals match your search criteria.",
+      "principals-hint-link": "Learn more in the {{brandname}} documentation",
+      "loading-principals": "Loading principals",
+      "loading-principals-error": "Unexpected error loading principals",
+      "grant-access": "Grant access",
+      "no-principals-status": "No principals"
     }
   }
 }
