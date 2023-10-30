@@ -19,9 +19,11 @@ import { useTranslation } from 'react-i18next';
 import { useFetchConfigurationYAML, useFetchConfigurationXML } from '@app/services/configHook';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { global_BackgroundColor_100 } from '@patternfly/react-tokens';
 
 const CacheConfiguration = (props: { cacheName: string; editable: boolean; config: string }) => {
   const { t } = useTranslation();
+  const {theme} = useContext(ThemeContext);
   const encodingDocs = t('brandname.encoding-docs-link');
   const {syntaxHighLighterTheme} = useContext(ThemeContext)
   const yamlConfig = useFetchConfigurationYAML(props.cacheName);
@@ -78,7 +80,7 @@ const CacheConfiguration = (props: { cacheName: string; editable: boolean; confi
 
   return (
     <React.Fragment>
-      <Tabs defaultActiveKey={0}>
+      <Tabs defaultActiveKey={0} style={theme === 'dark'? {} : { backgroundColor: global_BackgroundColor_100.value }}>
         <Tab eventKey={0} title={<TabTitleText>JSON</TabTitleText>} tabContentId="tab1" tabContentRef={contentRef1} />
         <Tab eventKey={1} title={<TabTitleText>XML</TabTitleText>} tabContentId="tab2" tabContentRef={contentRef2} />
         <Tab eventKey={2} title={<TabTitleText>YAML</TabTitleText>} tabContentId="tab3" tabContentRef={contentRef3} />

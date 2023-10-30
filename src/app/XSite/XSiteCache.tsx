@@ -338,7 +338,7 @@ const XSiteCache = (props) => {
                     search: location.search
                   }}
                 >
-                  <Button variant={ButtonVariant.secondary} data-cy="backButton">
+                  <Button variant={ButtonVariant.link} data-cy="backButton">
                     {t('common.actions.back')}
                   </Button>
                 </Link>

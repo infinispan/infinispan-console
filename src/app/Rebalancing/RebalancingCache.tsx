@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Label, Spinner, Switch, TextContent, ToolbarItem, Text } from '@patternfly/react-core';
+import { Alert, Label, Spinner, Switch, ToolbarItem } from '@patternfly/react-core';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -7,6 +7,7 @@ import { ConsoleACL } from '@services/securityService';
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { RebalancingConfirmationModal } from '@app/Rebalancing/RebalancingConfirmationModal';
+import { global_spacer_xs } from '@patternfly/react-tokens';
 
 const RebalancingCache = () => {
   const { addAlert } = useApiAlert();
@@ -34,11 +35,8 @@ const RebalancingCache = () => {
   if (cache?.rehash_in_progress) {
     return (
       <ToolbarItem>
-        <TextContent>
-          <Text>
-            <Spinner size={'md'} isInline /> {t('caches.rebalancing.rebalancing')}
-          </Text>
-        </TextContent>
+        <Spinner size={"md"} isInline />
+        <Alert variant="warning" isInline isPlain title={t('caches.rebalancing.rebalancing')}/>
       </ToolbarItem>
     );
   }
@@ -48,7 +46,7 @@ const RebalancingCache = () => {
    */
   if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
     return (
-      <ToolbarItem>
+      <ToolbarItem style={{paddingTop: global_spacer_xs.value}}>
         <Switch
           id="rebalancing-switch"
           label={t('caches.rebalancing.enabled')}
@@ -75,17 +73,9 @@ const RebalancingCache = () => {
     );
   }
 
-  if (cache.rebalancing_enabled) {
-    return (
-      <ToolbarItem>
-        <Label>{t('caches.rebalancing.rebalanced')}</Label>
-      </ToolbarItem>
-    );
-  }
-
   return (
     <ToolbarItem>
-      <Label>{t('caches.rebalancing.disabled')}</Label>
+      <Label>{cache.rebalancing_enabled? t('caches.rebalancing.rebalanced') : t('caches.rebalancing.disabled')}</Label>
     </ToolbarItem>
   );
 };

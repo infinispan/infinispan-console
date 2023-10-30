@@ -17,7 +17,7 @@ import {
   SearchInput,
   EmptyStateHeader
 } from '@patternfly/react-core';
-import { SearchIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
+import { SearchIcon, ExclamationCircleIcon, HelpIcon, ExternalLinkSquareAltIcon } from '@patternfly/react-icons';
 import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
@@ -171,6 +171,11 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
           <Popover
             headerContent={t('caches.query.ickle-query')}
             bodyContent={t('caches.query.ickle-query-tooltip', { brandname: brandname })}
+            footerContent={<Button variant={'link'}
+                                   style={{paddingLeft: 0}}
+                                   iconPosition={'start'}
+                                   icon={<ExternalLinkSquareAltIcon/>}
+                                   onClick={() => window.open(t('brandname.ickle-query-docs-link'), '_blank')}>{t('caches.query.ickle-query-docs')}</Button>}
           >
             <Button
               variant="plain"
