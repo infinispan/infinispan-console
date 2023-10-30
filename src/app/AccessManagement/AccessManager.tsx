@@ -24,6 +24,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { RoleTableDisplay } from '@app/AccessManagement/RoleTableDisplay';
 import { FlushRoleCacheModal } from '@app/AccessManagement/FlushRoleCacheModal';
+import { PrincipalTableDisplay } from '@app/AccessManagement/PrincipalTableDisplay';
 
 const AccessManager = () => {
   const { t } = useTranslation();
@@ -54,7 +55,10 @@ const AccessManager = () => {
     setShowAccessControl(tabIndex == '1');
   };
   const buildTabs = () => {
-    const tabs: AccessTab[] = [{ name: t('access-management.tab-roles'), key: '0' }];
+    const tabs: AccessTab[] = [
+      { name: t('access-management.tab-roles'), key: '0' },
+      { name: t('access-management.tab-access-control'), key: '1' },
+    ];
 
     return (
       <Nav data-cy="navigationTabs" onSelect={handleTabClick} variant={'tertiary'}>
@@ -78,7 +82,7 @@ const AccessManager = () => {
     <Card>
       <CardBody>
         {showRoles && <RoleTableDisplay />}
-        {showAccessControl && <div>Access Control</div>}
+        {showAccessControl && <PrincipalTableDisplay />}
       </CardBody>
     </Card>
   );
