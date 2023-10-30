@@ -83,10 +83,7 @@ export function useFlushCache(call: () => void) {
   const { t } = useTranslation();
   const onFlushCache = () => {
     ConsoleServices.security()
-      .flushCache(
-        t('access-management.flush-cache-success'),
-        t('access-management.flush-cache-error')
-      )
+      .flushCache(t('access-management.flush-cache-success'), t('access-management.flush-cache-error'))
       .then((actionResponse) => {
         addAlert(actionResponse);
       })

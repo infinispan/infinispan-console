@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Bullseye,
   Button,
@@ -41,8 +41,7 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
     total: 0
   });
 
-  const {syntaxHighLighterTheme} = useContext(ThemeContext)
-
+  const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   const columnNames = {
     value: 'Value'
@@ -171,11 +170,17 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
           <Popover
             headerContent={t('caches.query.ickle-query')}
             bodyContent={t('caches.query.ickle-query-tooltip', { brandname: brandname })}
-            footerContent={<Button variant={'link'}
-                                   style={{paddingLeft: 0}}
-                                   iconPosition={'start'}
-                                   icon={<ExternalLinkSquareAltIcon/>}
-                                   onClick={() => window.open(t('brandname.ickle-query-docs-link'), '_blank')}>{t('caches.query.ickle-query-docs')}</Button>}
+            footerContent={
+              <Button
+                variant={'link'}
+                style={{ paddingLeft: 0 }}
+                iconPosition={'start'}
+                icon={<ExternalLinkSquareAltIcon />}
+                onClick={() => window.open(t('brandname.ickle-query-docs-link'), '_blank')}
+              >
+                {t('caches.query.ickle-query-docs')}
+              </Button>
+            }
           >
             <Button
               variant="plain"

@@ -59,7 +59,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
     page: 1,
     perPage: 10
   });
-  const {syntaxHighLighterTheme} = useContext(ThemeContext)
+  const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
 
@@ -218,7 +218,12 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
 
     return (
       <ExpandableRowContent>
-        <SyntaxHighlighter wrapLines={false} style={syntaxHighLighterTheme} useInlineStyles={true} showLineNumbers={true}>
+        <SyntaxHighlighter
+          wrapLines={false}
+          style={syntaxHighLighterTheme}
+          useInlineStyles={true}
+          showLineNumbers={true}
+        >
           {schemasContent.get(name)}
         </SyntaxHighlighter>
       </ExpandableRowContent>

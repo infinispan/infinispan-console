@@ -35,8 +35,8 @@ const RebalancingCache = () => {
   if (cache?.rehash_in_progress) {
     return (
       <ToolbarItem>
-        <Spinner size={"md"} isInline />
-        <Alert variant="warning" isInline isPlain title={t('caches.rebalancing.rebalancing')}/>
+        <Spinner size={'md'} isInline />
+        <Alert variant="warning" isInline isPlain title={t('caches.rebalancing.rebalancing')} />
       </ToolbarItem>
     );
   }
@@ -46,7 +46,7 @@ const RebalancingCache = () => {
    */
   if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
     return (
-      <ToolbarItem style={{paddingTop: global_spacer_xs.value}}>
+      <ToolbarItem style={{ paddingTop: global_spacer_xs.value }}>
         <Switch
           id="rebalancing-switch"
           label={t('caches.rebalancing.enabled')}
@@ -75,7 +75,7 @@ const RebalancingCache = () => {
 
   return (
     <ToolbarItem>
-      <Label>{cache.rebalancing_enabled? t('caches.rebalancing.rebalanced') : t('caches.rebalancing.disabled')}</Label>
+      <Label>{cache.rebalancing_enabled ? t('caches.rebalancing.rebalanced') : t('caches.rebalancing.disabled')}</Label>
     </ToolbarItem>
   );
 };

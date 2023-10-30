@@ -20,9 +20,7 @@ const Status = (props: { status?: Status }) => {
       </FlexItem>
       <FlexItem>
         <TextContent>
-          <Text component={TextVariants.p}>
-            {status.name}
-          </Text>
+          <Text component={TextVariants.p}>{status.name}</Text>
         </TextContent>
       </FlexItem>
     </Flex>

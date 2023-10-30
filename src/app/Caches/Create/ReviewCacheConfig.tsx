@@ -10,7 +10,7 @@ const ReviewCacheConfig = (props: { setReviewConfig: (string) => void }) => {
   const { configuration } = useCreateCache();
   const { t } = useTranslation();
   const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(configuration));
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
     const jsonFormatConfig = CacheConfigUtils.createCacheConfigFromData(configuration);
