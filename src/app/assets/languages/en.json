@@ -660,13 +660,16 @@
       "clear-state-action": "Clear state",
       "take-offline-action": "Take offline",
       "bring-online-action": "Bring online",
+      "start-transfer-action": "Start transfer",
       "take-all-offline": "Take all offline",
       "bring-all-online": "Bring all online",
       "mixed": "Mixed",
       "column-site": "Site",
       "column-status": "Status",
       "column-transfer": "Transfer status / Result",
-      "column-action": "Action"
+      "column-action": "Action",
+      "no-backups": "No backups",
+      "no-backups-body": "No backups found for this cluster"
     },
     "rebuilding-index": "Rebuilding index",
     "rebalancing": {
@@ -846,7 +849,7 @@
     "no-connections": "No connected clients",
     "no-connections-body": "No connected clients body",
     "no-filtered-connections": "No filtered connected clients",
-    "no-filtered-connections-body": "No filtered connected clients body",
+    "no-filtered-connections-body": "No connected clients match your filter criteria.",
     "node-name": "Server node",
     "principal": "Principal",
     "client-library": "Client library",

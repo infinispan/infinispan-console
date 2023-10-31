@@ -28,8 +28,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, DownloadIcon } from '@patternfly/react-icons';
-import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
-import { Table } from '@patternfly/react-table/deprecated';
+import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { Health } from '@app/Common/Health';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';

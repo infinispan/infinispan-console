@@ -24,8 +24,7 @@ import {
   EmptyStateHeader,
   EmptyStateFooter
 } from '@patternfly/react-core';
-import { Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/react-table';
-import { Table } from '@patternfly/react-table/deprecated';
+import { Table, Thead, Tr, Th, Tbody, Td, ExpandableRowContent } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
@@ -36,12 +35,12 @@ import { onSearch } from '@app/utils/searchFilter';
 import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 
-const DetailConfigurations: React.FunctionComponent<any> = (props) => {
+const DetailConfigurations = (props) => {
   const { t } = useTranslation();
   const cmName = props.computedMatch.params.cmName;
   const { cacheTemplates, loading, error } = useFetchCacheTemplates(cmName);
   const [filteredTemplates, setFilteredTemplates] = useState<CacheConfig[]>([]);
-  const [rows, setRows] = useState<(string | any)[]>([]);
+  const [rows, setRows] = useState<CacheConfig[]>([]);
   const [expandedTemplateNames, setExpandedRepoNames] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [pageConfigsPagination, setCacheConfigsPagination] = useState({

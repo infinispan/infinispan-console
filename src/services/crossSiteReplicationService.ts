@@ -22,7 +22,7 @@ export class CrossSiteReplicationService {
    */
   public async backupsForCache(cacheName: string): Promise<Either<ActionResponse, XSite[]>> {
     return this.utils.get(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/x-site/backups', (data) =>
-      Object.keys(data).map((siteName) => <XSite>{ name: siteName, status: data[siteName] })
+      Object.keys(data).map((siteName) => <XSite>{ name: siteName, status: data[siteName].status })
     );
   }
 
@@ -30,6 +30,7 @@ export class CrossSiteReplicationService {
    * Gets the status for a cache and site
    *
    * @param cacheName
+   * @param siteName
    */
   public async backupsForSite(cacheName: string, siteName: string): Promise<Either<ActionResponse, SiteNode[]>> {
     return this.utils.get(

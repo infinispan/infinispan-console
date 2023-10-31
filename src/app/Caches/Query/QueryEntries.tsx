@@ -22,8 +22,7 @@ import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
-import { Table } from '@patternfly/react-table/deprecated';
+import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
 import { global_danger_color_200, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 

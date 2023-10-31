@@ -158,7 +158,7 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName/backups',
     title: 'XSite management caches',
     menu: false,
-    admin: false
+    admin: true
   },
   {
     component: DetailCachePage,
