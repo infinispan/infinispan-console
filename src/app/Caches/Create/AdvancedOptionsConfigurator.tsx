@@ -82,9 +82,9 @@ const AdvancedOptionsConfigurator = () => {
           selected={storage}
           isOpen={isOpenStorage}
           aria-labelledby="toggle-id-storage"
-          id="storageSelector"
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
+              id="storageSelector"
               ref={toggleRef}
               onClick={() => setIsOpenStorage(!isOpenStorage)}
               isExpanded={isOpenStorage}
