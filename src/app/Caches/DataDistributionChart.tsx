@@ -17,9 +17,11 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
+  MenuToggleElement,
+  Select,
+  SelectOption, MenuToggle, SelectList
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { Chart, ChartBar, ChartGroup, ChartVoronoiContainer, ChartThemeColor } from '@patternfly/react-charts';
 import { SearchIcon } from '@patternfly/react-icons';
@@ -73,13 +75,6 @@ const DataDistributionChart = (props: { cacheName: string }) => {
       setDisplayMemoryUsed(true);
     }
   }, [cache, dataDistribution]);
-
-  const onSelectStatsOptions = (event, selection, isPlaceholder) => {
-    if (selection === DataDistributionStatsOption.Entries) setStatsOption(DataDistributionStatsOption.Entries);
-    else if (selection === DataDistributionStatsOption.MemoryUsed)
-      setStatsOption(DataDistributionStatsOption.MemoryUsed);
-    setIsOpenStatsOptions(false);
-  };
 
   const onPerPageSelect = (event, selection) => {
     setTablePagination({
@@ -284,23 +279,53 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     return dataDistribution && dataDistribution.length <= MAX_NUMBER_FOR_CHART ? distributionChart : distributionTable;
   };
 
+  const onToggleClick = () => {
+    setIsOpenStatsOptions(!isOpenStatsOptions);
+  };
+
+  const onSelectStatsOptions = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+    setStatsOption(value as DataDistributionStatsOption);
+    setIsOpenStatsOptions(false);
+  };
+
+  const statsOptionsToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      id="storageSelector"
+      ref={toggleRef}
+      onClick={onToggleClick}
+      isExpanded={isOpenStatsOptions}
+      style={
+        {
+          width: '200px'
+        } as React.CSSProperties
+      }
+    >
+      {statsOption}
+    </MenuToggle>
+  );
+
   const buildStatsOption = () => {
     return (
       <LevelItem>
         <Select
-          variant={SelectVariant.single}
+          id="storage-select"
           aria-label="storage-select"
-          onToggle={() => setIsOpenStatsOptions(!isOpenStatsOptions)}
-          onSelect={onSelectStatsOptions}
-          selections={statsOption}
           isOpen={isOpenStatsOptions}
+          selected={statsOption}
+          onSelect={onSelectStatsOptions}
+          onOpenChange={(isOpen) => setIsOpenStatsOptions(isOpen)}
+          toggle={statsOptionsToggle}
           aria-labelledby="toggle-id-storage"
-          toggleId="storageSelector"
-          width={'100%'}
-          position="right"
+          shouldFocusToggleOnSelect
         >
-          <SelectOption key={0} value={DataDistributionStatsOption.Entries} />
-          <SelectOption hidden={!displayMemoryUsed} key={1} value={DataDistributionStatsOption.MemoryUsed} />
+          <SelectList>
+            <SelectOption key={0} value={DataDistributionStatsOption.Entries}>
+              {DataDistributionStatsOption.Entries}
+            </SelectOption>
+            <SelectOption hidden={!displayMemoryUsed} key={1} value={DataDistributionStatsOption.MemoryUsed}>
+              {DataDistributionStatsOption.MemoryUsed}
+            </SelectOption>
+          </SelectList>
         </Select>
       </LevelItem>
     );
