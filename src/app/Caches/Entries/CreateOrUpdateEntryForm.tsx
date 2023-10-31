@@ -9,7 +9,7 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Modal,
+  Modal, SelectOptionProps,
   Spinner,
   TextArea,
   TextInput
@@ -22,11 +22,12 @@ import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { ContentType, EncodingType, InfinispanFlags } from '@services/infinispanRefData';
+import { CacheFeature, ContentType, EncodingType, InfinispanFlags } from '@services/infinispanRefData';
 import { ProtobufDataUtils } from '@services/protobufDataUtils';
 import { AddCircleOIcon, PencilAltIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -213,8 +214,10 @@ const CreateOrUpdateEntryForm = (props: {
     ));
   };
 
-  const flagsOptions = () => {
-    return Object.keys(InfinispanFlags).map((key) => <SelectOption id={key} key={key} value={InfinispanFlags[key]} />);
+  const flagsOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(InfinispanFlags).forEach((key) => selectOptions.push({value: InfinispanFlags[key], children: InfinispanFlags[key]}));
+    return selectOptions;
   };
 
   const setExpanded = (expanded: boolean, stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>) => {
@@ -223,7 +226,7 @@ const CreateOrUpdateEntryForm = (props: {
     });
   };
 
-  const onSelectFlags = (event, selection) => {
+  const onSelectFlags = (selection) => {
     let prevSelectedFlags = flags.selected as string[];
 
     if (prevSelectedFlags.includes(selection)) {
@@ -626,20 +629,13 @@ const CreateOrUpdateEntryForm = (props: {
     );
     return (
       <FormGroup label={t('caches.entries.add-entry-form-flags')} labelIcon={helper} fieldId="flags-helper">
-        <Select
-          variant={SelectVariant.typeaheadMulti}
-          aria-label={t('caches.entries.add-entry-form-flags-label')}
-          onToggle={(_event, isExpanded) => setExpanded(isExpanded, setFlags)}
-          onSelect={onSelectFlags}
-          onClear={() => setFlags(flagsInitialState)}
-          selections={flags.selected}
-          isOpen={flags.expanded}
-          placeholderText={t('caches.entries.add-entry-form-flags-label')}
-          maxHeight={150}
-          toggleId="ispnFlags"
-        >
-          {flagsOptions()}
-        </Select>
+        <SelectMultiWithChips id="ispnFlags"
+                              placeholder={t('caches.entries.add-entry-form-flags-label')}
+                              options={flagsOptions()}
+                              onSelect={onSelectFlags}
+                              onClear={() => setFlags(flagsInitialState)}
+                              selection={flags.selected as string[]}
+        />
         <FormHelperText>
           <HelperText>
             <HelperTextItem>{t('caches.entries.add-entry-form-flags-help')}</HelperTextItem>

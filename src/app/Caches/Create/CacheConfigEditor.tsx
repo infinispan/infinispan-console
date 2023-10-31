@@ -9,7 +9,7 @@ import {
   FormGroup,
   FormHelperText,
   HelperText,
-  HelperTextItem,
+  HelperTextItem, SelectOptionProps,
   Text,
   TextContent,
   TextVariants
@@ -156,8 +156,6 @@ const CacheConfigEditor = (props: {
       <React.Fragment>
         <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
           <Select
-            id="template-selector"
-            data-testid="template-selector"
             toggleIcon={<CubeIcon />}
             variant={SelectVariant.typeahead}
             aria-label={t('caches.create.templates')}

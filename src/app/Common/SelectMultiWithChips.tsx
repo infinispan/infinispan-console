@@ -136,7 +136,12 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
   };
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle variant="typeahead" onClick={onToggleClick} innerRef={toggleRef} isExpanded={isOpen} isFullWidth>
+    <MenuToggle variant="typeahead"
+                data-cy={props.id}
+                onClick={onToggleClick}
+                innerRef={toggleRef}
+                isExpanded={isOpen}
+                isFullWidth>
       <TextInputGroup isPlain>
         <TextInputGroupMain
           value={inputValue}
@@ -194,6 +199,7 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
       onSelect={(ev, selection) => onSelect(selection as string)}
       onOpenChange={() => setIsOpen(false)}
       toggle={toggle}
+      isScrollable
     >
       <SelectList isAriaMultiselectable id={props.id + 'select-multi-typeahead-listbox' }>
         {selectOptions.map((option, index) => (

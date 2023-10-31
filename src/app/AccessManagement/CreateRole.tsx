@@ -1,31 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonVariant,
-  Chip,
-  ChipGroup,
   Form,
   FormGroup,
   FormHelperText,
   HelperText,
   HelperTextItem,
-  MenuToggle,
-  MenuToggleElement,
   Modal,
   ModalVariant,
-  Select,
-  SelectList,
-  SelectOption,
   SelectOptionProps,
-  TextInput,
-  TextInputGroup,
-  TextInputGroupMain,
-  TextInputGroupUtilities
+  TextInput
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import formUtils, { IField } from '@services/formUtils';
-import { AddCircleOIcon, ExclamationCircleIcon, TimesIcon } from '@patternfly/react-icons';
+import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useCreateRole, useFetchAvailableRoles } from '@app/services/rolesHook';
+import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
@@ -69,12 +60,6 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
   const [roleDescription, setRoleDescription] = useState<IField>(roleDescriptionInitialState);
   const [rolePermissionsField, setRolePermissionsField] = useState<IField>(rolePermissionsInitialState);
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
-  const [focusedItemIndex, setFocusedItemIndex] = React.useState<number | null>(null);
-  const [isOpenPermissions, setIsOpenPermissions] = useState(false);
-  const [inputValue, setInputValue] = React.useState<string>('');
-  const [selectOptions, setSelectOptions] = React.useState<SelectOptionProps[]>(initialSelectOptions);
-  const [activeItem, setActiveItem] = React.useState<string | null>(null);
-  const textInputRef = React.useRef<HTMLInputElement>();
   const { onCreateRole } = useCreateRole(roleName.value, roleDescription.value, selectedPermissions, props.submitModal);
 
   const handleSubmit = () => {
@@ -122,41 +107,6 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
     setSelectedPermissions([]);
   };
 
-  const handlePermissionsToggle = () => {
-    setIsOpenPermissions(!isOpenPermissions);
-  };
-
-  useEffect(() => {
-    let newSelectOptions: SelectOptionProps[] = initialSelectOptions;
-
-    // Filter menu items based on the text input value when one exists
-    if (inputValue) {
-      newSelectOptions = initialSelectOptions.filter((menuItem) =>
-        String(menuItem.children).toLowerCase().includes(inputValue.toLowerCase())
-      );
-
-      // When no options are found after filtering, display 'No results found'
-      if (!newSelectOptions.length) {
-        newSelectOptions = [
-          { isDisabled: false, children: `No results found for "${inputValue}"`, value: 'no results' }
-        ];
-      }
-
-      // Open the menu when the input value changes and the new value is not empty
-      if (!isOpenPermissions) {
-        setIsOpenPermissions(true);
-      }
-    }
-
-    setSelectOptions(newSelectOptions);
-    setFocusedItemIndex(null);
-    setActiveItem(null);
-  }, [inputValue]);
-
-  const onTextInputChange = (_event: React.FormEvent<HTMLInputElement>, value: string) => {
-    setInputValue(value);
-  };
-
   const onSelectPermission = (value: string) => {
     if (value && value !== 'no results') {
       setSelectedPermissions(
@@ -165,69 +115,7 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
           : [...selectedPermissions, value]
       );
     }
-
-    textInputRef.current?.focus();
   };
-
-  const onToggleClick = () => {
-    setIsOpenPermissions(!isOpenPermissions);
-  };
-
-  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle
-      variant="typeahead"
-      onClick={onToggleClick}
-      innerRef={toggleRef}
-      isExpanded={isOpenPermissions}
-      isFullWidth
-      data-cy="dropdown-button-permissions"
-    >
-      <TextInputGroup isPlain>
-        <TextInputGroupMain
-          value={inputValue}
-          onClick={onToggleClick}
-          onChange={onTextInputChange}
-          id="multi-typeahead-permissions-input"
-          autoComplete="off"
-          innerRef={textInputRef}
-          placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
-          {...(activeItem && { 'aria-activedescendant': activeItem })}
-          role="combobox"
-          isExpanded={isOpenPermissions}
-          aria-controls="select-multi-typeahead-permissions"
-        >
-          <ChipGroup aria-label="Current permissions">
-            {selectedPermissions.map((selection, index) => (
-              <Chip
-                key={index}
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  onSelectPermission(selection);
-                }}
-              >
-                {selection}
-              </Chip>
-            ))}
-          </ChipGroup>
-        </TextInputGroupMain>
-        <TextInputGroupUtilities>
-          {selectedPermissions.length > 0 && (
-            <Button
-              variant="plain"
-              onClick={() => {
-                setInputValue('');
-                setSelectedPermissions([]);
-                textInputRef?.current?.focus();
-              }}
-              aria-label="Clear input value"
-            >
-              <TimesIcon aria-hidden />
-            </Button>
-          )}
-        </TextInputGroupUtilities>
-      </TextInputGroup>
-    </MenuToggle>
-  );
 
   return (
     <Modal
@@ -301,33 +189,13 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
           )}
         </FormGroup>
         <FormGroup fieldId="permissions" isRequired isInline label={t('access-management.roles.modal-permissions')}>
-          <Select
-            isScrollable
-            isOpen={isOpenPermissions}
-            selected={selectedPermissions}
-            onSelect={(ev, selection) => onSelectPermission(selection as string)}
-            onOpenChange={() => setIsOpenPermissions(false)}
-            onClick={handlePermissionsToggle}
-            aria-labelledby="role-permissions"
-            aria-label="role-permissions-select"
-            toggle={toggle}
-          >
-            <SelectList isAriaMultiselectable id="select-multi-typeahead-listbox">
-              {initialSelectOptions.map((option, index) => (
-                <SelectOption
-                  key={option.value || option.children}
-                  isFocused={focusedItemIndex === index}
-                  className={option.className}
-                  id={`select-multi-typeahead-${option.value.replace(' ', '-')}`}
-                  {...option}
-                  hasCheckbox
-                  isSelected={selectedPermissions.includes(option.value)}
-                  description={option.description}
-                  ref={null}
-                />
-              ))}
-            </SelectList>
-          </Select>
+          <SelectMultiWithChips id="dropdown-button-permissions"
+                                placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
+                                options={initialSelectOptions}
+                                selection={selectedPermissions}
+                                onSelect={onSelectPermission}
+                                onClear={() => setSelectedPermissions([])}
+          />
           {rolePermissionsField.validated === 'error' && (
             <FormHelperText>
               <HelperText>
