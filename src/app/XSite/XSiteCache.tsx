@@ -7,8 +7,15 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  CardFooter,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateIcon,
+  EmptyStateVariant,
   PageSection,
   PageSectionVariants,
+  Spinner,
   Switch,
   Text,
   TextContent,
@@ -22,17 +29,15 @@ import { Link } from 'react-router-dom';
 import { global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { cellWidth, IRow, TableVariant, textCenter } from '@patternfly/react-table';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table/deprecated';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
+import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { StateTransfer } from '@app/XSite/StateTransfer';
 import { Status } from '@app/Common/Status';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { DatabaseIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ST_IDLE, ST_SEND_CANCELED, ST_SEND_FAILED, ST_SEND_OK, ST_SENDING } from '@services/displayUtils';
+import { TableErrorState } from '@app/Common/TableErrorState';
 
 interface StateTransferModalState {
   site: string;
@@ -48,7 +53,6 @@ const XSiteCache = (props) => {
   const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
   const { connectedUser } = useConnectedUser();
   const [backups, setBackups] = useState<XSite[]>([]);
-  const [rows, setRows] = useState<IRow[]>([]);
   const [stateTransferStatus, setStateTransferStatus] = useState(new Map<string, Status>());
   const [backupsStatus, setBackupsStatus] = useState(new Map());
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,14 +65,6 @@ const XSiteCache = (props) => {
 
   useEffect(() => {
     if (loading) {
-      // Load Sites
-      // First check ADMIN
-      if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-        setLoading(false);
-        setError('Connected user lacks ADMIN permission.');
-        return;
-      }
-      // Second get backups
       crossSiteReplicationService
         .backupsForCache(cacheName)
         .then((eitherResponse) => {
@@ -103,31 +99,24 @@ const XSiteCache = (props) => {
                 addAlert(eitherResponse.value);
               }
             })
-            .then(() => setLoading(false));
+            .finally(() => setLoading(false));
         });
     }
   }, [loading]);
 
-  useEffect(() => {
-    buildRows();
-  }, [backups, backupsStatus, stateTransferStatus, loading, error]);
-
   const columns = [
-    { title: t('caches.backups.column-site'), transforms: [cellWidth(30)] },
+    { key: 'site', title: t('caches.backups.column-site') },
     {
-      title: t('caches.backups.column-status'),
-      transforms: [cellWidth(30), textCenter],
-      cellTransforms: [textCenter]
+      key: 'status',
+      title: t('caches.backups.column-status')
     },
     {
-      title: t('caches.backups.column-transfer'),
-      transforms: [cellWidth(40), textCenter],
-      cellTransforms: [textCenter]
+      key: 'transfer',
+      title: t('caches.backups.column-transfer')
     },
     {
-      title: t('caches.backups.column-action'),
-      transforms: [cellWidth(20), textCenter],
-      cellTransforms: [textCenter]
+      key: 'action',
+      title: t('caches.backups.column-action')
     }
   ];
 
@@ -160,7 +149,7 @@ const XSiteCache = (props) => {
   };
 
   const buildStatus = (site: string, status: string) => {
-    if (site == 'mixed') {
+    if (status == 'mixed') {
       return (
         <Toolbar key={'mixed-toolbar-' + site}>
           <ToolbarContent>
@@ -207,11 +196,7 @@ const XSiteCache = (props) => {
     if (!stStatus || stStatus == ST_IDLE) {
       return '';
     }
-    return (
-      <Bullseye>
-        <Status status={stateTransferStatus.get(site)} />
-      </Bullseye>
-    );
+    return <Status status={stateTransferStatus.get(site)} />;
   };
 
   const buildStateTransferButton = (backup: XSite) => {
@@ -254,7 +239,7 @@ const XSiteCache = (props) => {
           })
         }
       >
-        Start transfer
+        {t('caches.backups.start-transfer-action')}
       </Button>
     );
   };
@@ -282,41 +267,68 @@ const XSiteCache = (props) => {
     setStateTransferModal({ site: '', open: false, action: '' });
   };
 
-  const onCollapse = (event, rowKey, isOpen) => {
-    rows[rowKey].isOpen = isOpen;
-  };
-
   const buildRows = () => {
-    let currentRows;
-
-    if (loading || error) {
-      currentRows = [
-        {
-          heightAuto: true,
-          cells: [
-            {
-              props: { colSpan: 4 },
-              title: <TableEmptyState loading={loading} error={error} empty={'Sites not found'} />
-            }
-          ]
-        }
-      ];
-    } else {
-      currentRows = backups.map((backup) => {
-        return {
-          heightAuto: true,
-          cells: [
-            { title: backup.name },
-            { title: buildStatus(backup.name, backup.status) },
-            { title: buildStateTransferStatus(backup.name) },
-            { title: buildStateTransferButton(backup) }
-          ]
-        };
-      });
+    if (backups.length == 0) {
+      return (
+        <Tbody>
+          <Tr>
+            <Td colSpan={4}>
+              <Bullseye>
+                <EmptyState variant={EmptyStateVariant.sm}>
+                  <EmptyStateHeader
+                    titleText={<>{t('caches.backups.no-backups')}</>}
+                    icon={<EmptyStateIcon icon={DatabaseIcon} />}
+                    headingLevel="h2"
+                  />
+                  <EmptyStateBody>{t('caches.backups.no-backups-body')}</EmptyStateBody>
+                </EmptyState>
+              </Bullseye>
+            </Td>
+          </Tr>
+        </Tbody>
+      );
     }
-    setRows(currentRows);
+
+    return (
+      <Tbody>
+        {backups.map((backup) => {
+          return (
+            <Tr key={backup.name}>
+              <Td dataLabel={columns[0].title}>{backup.name}</Td>
+              <Td dataLabel={columns[1].title}>{buildStatus(backup.name, backup.status)}</Td>
+              <Td dataLabel={columns[2].title}>{buildStateTransferStatus(backup.name)}</Td>
+              <Td dataLabel={columns[3].title}>{buildStateTransferButton(backup)}</Td>
+            </Tr>
+          );
+        })}
+      </Tbody>
+    );
   };
 
+  const buildBody = () => {
+    if (loading) {
+      return <Spinner size="lg" />;
+    }
+
+    if (error) {
+      return <TableErrorState error={error} />;
+    }
+
+    return (
+      <Table aria-label="XSite Table" variant={TableVariant.compact}>
+        <Thead>
+          <Tr>
+            {columns.map((column) => (
+              <Th key={column.key} style={{ width: '15%' }}>
+                {column.title}
+              </Th>
+            ))}
+          </Tr>
+        </Thead>
+        {buildRows()}
+      </Table>
+    );
+  };
   return (
     <React.Fragment>
       <PageSection variant={PageSectionVariants.light}>
@@ -330,37 +342,26 @@ const XSiteCache = (props) => {
                 </Text>
               </TextContent>
             </ToolbarItem>
-            <ToolbarItem>
-              <Text key={'button-back'}>
-                <Link
-                  to={{
-                    pathname: '/cache/' + encodeURIComponent(cacheName),
-                    search: location.search
-                  }}
-                >
-                  <Button variant={ButtonVariant.link} data-cy="backButton">
-                    {t('common.actions.back')}
-                  </Button>
-                </Link>
-              </Text>
-            </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
       </PageSection>
       <PageSection>
         <Card>
-          <CardBody>
-            <Table
-              aria-label="XSite Table"
-              cells={columns}
-              rows={rows}
-              variant={TableVariant.compact}
-              onCollapse={onCollapse}
-            >
-              <TableHeader />
-              <TableBody />
-            </Table>
-          </CardBody>
+          <CardBody>{buildBody()}</CardBody>
+          <CardFooter>
+            <Text key={'button-back'}>
+              <Link
+                to={{
+                  pathname: '/cache/' + encodeURIComponent(cacheName),
+                  search: location.search
+                }}
+              >
+                <Button variant={ButtonVariant.secondary} data-cy="backButton">
+                  {t('common.actions.back')}
+                </Button>
+              </Link>
+            </Text>
+          </CardFooter>
         </Card>
       </PageSection>
       <StateTransfer

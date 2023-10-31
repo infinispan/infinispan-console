@@ -20,8 +20,7 @@ import {
   ToolbarItemVariant
 } from '@patternfly/react-core';
 import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
-import { TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { Table } from '@patternfly/react-table/deprecated';
+import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { Chart, ChartBar, ChartGroup, ChartVoronoiContainer, ChartThemeColor } from '@patternfly/react-charts';
 import { SearchIcon } from '@patternfly/react-icons';
 import { TableErrorState } from '@app/Common/TableErrorState';
