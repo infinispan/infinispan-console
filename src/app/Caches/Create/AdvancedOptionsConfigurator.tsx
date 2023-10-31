@@ -7,11 +7,14 @@ import {
   GridItem,
   HelperText,
   HelperTextItem,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectOption,
   Switch,
   TextInput
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
-import { CacheFeature, StorageType } from '@services/infinispanRefData';
+import { StorageType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import TransactionalConfigurationTuning from '@app/Caches/Create/AdvancedTuning/TransactionalConfigurationTuning';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -56,16 +59,6 @@ const AdvancedOptionsConfigurator = () => {
     setLockAcquisitionTimeout(value);
   };
 
-  const onSelectStorage = (event, selection, isPlaceholder) => {
-    setStorage(selection);
-    setIsOpenStorage(false);
-  };
-
-  // Options for Storage
-  const storageOptions = () => {
-    return Object.keys(StorageType).map((key) => <SelectOption id={key} key={key} value={StorageType[key]} />);
-  };
-
   const formMemory = () => {
     return (
       <FormGroup
@@ -81,18 +74,33 @@ const AdvancedOptionsConfigurator = () => {
         }
       >
         <Select
-          variant={SelectVariant.single}
           aria-label="storage-select"
-          onToggle={() => setIsOpenStorage(!isOpenStorage)}
-          onSelect={onSelectStorage}
-          selections={storage}
+          onSelect={(_event, value) => {
+            setStorage(value as StorageType);
+            setIsOpenStorage(false);
+          }}
+          selected={storage}
           isOpen={isOpenStorage}
           aria-labelledby="toggle-id-storage"
-          placeholderText={StorageType.HEAP}
-          toggleId="storageSelector"
-          width={200}
+          id="storageSelector"
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              onClick={() => setIsOpenStorage(!isOpenStorage)}
+              isExpanded={isOpenStorage}
+              style={
+                {
+                  width: '200px'
+                } as React.CSSProperties
+              }
+            >
+              {!storage ? StorageType.HEAP : storage}
+            </MenuToggle>
+          )}
         >
-          {storageOptions()}
+          {Object.keys(StorageType).map((key) =>
+            <SelectOption id={key} key={key} value={StorageType[key]}>{StorageType[key]}</SelectOption>)
+          }
         </Select>
       </FormGroup>
     );
