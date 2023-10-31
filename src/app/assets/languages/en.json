@@ -303,7 +303,6 @@
           "cache-feature-list": "Add {{brandname}} capabilities",
           "cache-feature-list-tooltip": "Add capabilities to your cache.",
           "cache-feature-list-placeholder": "Select capabilities",
-          "cache-feature-list-typeahead": "Select capabilities",
           "bounded": "Bounded",
           "bounded-tooltip": "To restrict the size of the cache, configure {{brandname}} to evict entries. You can set an eviction threshold based on the maximum amount of memory or based on the total number of entries that a cache can hold.",
           "radio-max-size": "Maximum amount of memory",
