@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Form, FormAlert, FormGroup, FormSection } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
+import { Alert, Form, FormAlert, FormGroup, FormSection, SelectOptionProps } from '@patternfly/react-core';
 import { CacheFeature, CacheMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -15,6 +14,7 @@ import { useConnectedUser } from '@app/services/userManagementHook';
 import { validFeatures } from '@app/utils/featuresValidation';
 import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { ConsoleACL } from '@services/securityService';
+import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const FeaturesSelector = () => {
   const { t } = useTranslation();
@@ -26,7 +26,6 @@ const FeaturesSelector = () => {
 
   const [loadingBackups, setLoadingBackups] = useState(true);
   const [isBackups, setIsBackups] = useState(false);
-  const [isOpenCacheFeature, setIsOpenCacheFeature] = useState(false);
 
   useEffect(() => {
     if (loadingBackups) {
@@ -42,13 +41,12 @@ const FeaturesSelector = () => {
     }
   }, [loadingBackups]);
 
-  const onSelectFeature = (event, selection) => {
+  const onSelectFeature = (selection) => {
     if (configuration.feature.cacheFeatureSelected.includes(selection)) {
       removeFeature(selection);
     } else {
       addFeature(selection);
     }
-    setIsOpenCacheFeature(false);
   };
 
   const onClearFeatureSelection = () => {
@@ -61,11 +59,6 @@ const FeaturesSelector = () => {
         }
       };
     });
-    setIsOpenCacheFeature(false);
-  };
-
-  const cacheFeatureOptions = () => {
-    return Object.keys(CacheFeature).map((key) => <SelectOption id={key} key={key} value={CacheFeature[key]} />);
   };
 
   const displayAlert = () => {
@@ -89,6 +82,12 @@ const FeaturesSelector = () => {
     return !notSecured && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
   };
 
+  const featuresOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(CacheFeature).forEach((key) => selectOptions.push({value: CacheFeature[key], children: CacheFeature[key]}));
+    return selectOptions;
+  }
+
   return (
     <Form
       isWidthLimited
@@ -98,21 +97,13 @@ const FeaturesSelector = () => {
     >
       <FormSection title={t('caches.create.configurations.feature.cache-feature-list', { brandname: brandname })}>
         <FormGroup fieldId="cache-feature">
-          <Select
-            variant={SelectVariant.typeaheadMulti}
-            typeAheadAriaLabel={t('caches.create.configurations.feature.cache-feature-list-typeahead')}
-            onToggle={() => setIsOpenCacheFeature(!isOpenCacheFeature)}
-            onSelect={onSelectFeature}
-            onClear={onClearFeatureSelection}
-            selections={configuration.feature.cacheFeatureSelected}
-            isOpen={isOpenCacheFeature}
-            aria-labelledby="cache-feature"
-            placeholderText={t('caches.create.configurations.feature.cache-feature-list-placeholder')}
-            toggleId="featuresSelect"
-            chipGroupProps={{ numChips: 6 }}
-          >
-            {cacheFeatureOptions()}
-          </Select>
+          <SelectMultiWithChips id="featuresSelect"
+                                placeholder={t('caches.create.configurations.feature.cache-feature-list-placeholder')}
+                                options={featuresOptions()}
+                                onSelect={onSelectFeature}
+                                onClear={onClearFeatureSelection}
+                                selection={configuration.feature.cacheFeatureSelected}
+          />
         </FormGroup>
       </FormSection>
       {displayAlert()}
