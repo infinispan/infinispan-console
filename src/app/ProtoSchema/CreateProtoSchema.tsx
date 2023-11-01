@@ -3,6 +3,7 @@ import {
   Alert,
   AlertVariant,
   Button,
+  FileUpload,
   Form,
   FormGroup,
   Modal,
@@ -39,6 +40,30 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
   const [error, setError] = useState<string | undefined>(undefined);
   const [schemaName, setSchemaName] = useState<IField>(schemaNameInitialState);
   const [schema, setSchema] = useState<IField>(schemaInitialState);
+
+  const [filename, setFilename] = React.useState('');
+
+  const handleFileInputChange = (_, file: File) => {
+    setFilename(file.name);
+  };
+
+  const handleClear = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setFilename('');
+    setError(undefined);
+    setSchema(schemaInitialState);
+  };
+
+  const handleSchemaContentChange = (_event, v) => {
+    setSchema((prevState) => {
+      return { ...prevState, value: v };
+    })
+  }
+
+  const fileUploadDropZoneProps = {
+    accept: { 'application/x-protobuf': ['.proto','.pb'] },
+    onDropRejected: ()=> setError('Invalid File Type! Please upload a protbuf file.'),
+    onDropAccepted: ()=> setError('')
+  }
 
   const clearCreateProtoSchema = (createDone: boolean) => {
     setSchemaName(schemaNameInitialState);
@@ -106,20 +131,22 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
           isRequired
           fieldId="schema-content"
         >
-          <TextArea
-            value={schema.value}
+          <FileUpload
             id="schema"
-            name="schema"
+            type="text"
+            name='schema'
             aria-describedby="schema-content-helper"
-            height={400}
-            resizeOrientation={TextAreResizeOrientation.vertical}
-            onChange={(_event, v) =>
-              setSchema((prevState) => {
-                return { ...prevState, value: v };
-              })
-            }
+            value={schema.value}
+            filename={filename}
+            filenamePlaceholder="Drag and drop Protobuf Schema file or upload one"
+            onFileInputChange={handleFileInputChange}
+            onDataChange={handleSchemaContentChange}
+            onTextChange={handleSchemaContentChange} 
+            dropzoneProps={fileUploadDropZoneProps}
+            onClearClick={handleClear}
+            allowEditingUploadedText={true}
+            browseButtonText="Upload"
             validated={schema.validated}
-            rows={15}
           />
         </FormGroup>
       </Form>
