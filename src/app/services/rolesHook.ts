@@ -3,6 +3,32 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 
+export function useFetchAvailableRolesNames() {
+  const [availableRoleNames, setAvailableRoleNames] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    if (loading) {
+      ConsoleServices.security()
+        .getSecurityRolesNames()
+        .then((either) => {
+          if (either.isRight()) {
+            setAvailableRoleNames(either.value);
+          } else {
+            setError(either.value.message);
+          }
+        })
+        .then(() => setLoading(false));
+    }
+  }, [loading]);
+
+  return {
+    availableRoleNames,
+    loading,
+    error
+  };
+}
+
 export function useFetchAvailableRoles() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);

@@ -2,22 +2,23 @@ import React, { useEffect, useState } from 'react';
 import {
   FormGroup,
   FormHelperText,
-  HelperText,
-  HelperTextItem,
   Grid,
   GridItem,
+  HelperText,
+  HelperTextItem,
   InputGroup,
+  InputGroupItem,
   Radio,
-  TextInput,
-  InputGroupItem
+  SelectOptionProps,
+  TextInput
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { EvictionStrategy, EvictionType, MaxSizeUnit } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const BoundedCacheConfigurator = () => {
   const { t } = useTranslation();
@@ -29,9 +30,6 @@ const BoundedCacheConfigurator = () => {
   const [maxSize, setMaxSize] = useState<string>(configuration.feature.boundedCache.maxSize.toString());
   const [maxCount, setMaxCount] = useState<string>(configuration.feature.boundedCache.maxCount.toString());
   const [evictionStrategy, setEvictionStrategy] = useState<string>(configuration.feature.boundedCache.evictionStrategy);
-
-  const [isOpenEvictionStrategy, setIsOpenEvictionStrategy] = useState(false);
-  const [isOpenMaxSizeUnit, setIsOpenMaxSizeUnit] = useState(false);
 
   // Helper states for the maxSize input
   const [maxSizeUnit, setMaxSizeUnit] = useState<MaxSizeUnit>(MaxSizeUnit.MB);
@@ -63,26 +61,22 @@ const BoundedCacheConfigurator = () => {
     });
   }, [evictionType, maxSize, maxCount, evictionStrategy, maxSizeUnit]);
 
-  const onSelectEvictionStrategy = (event, selection) => {
-    setEvictionStrategy(selection);
-    setIsOpenEvictionStrategy(false);
-  };
-
-  const onSelectMaxCountUnit = (event, selection) => {
-    setMaxSizeUnit(selection);
-    setIsOpenMaxSizeUnit(false);
-  };
-
   // Options for Eviction Strategy
   const evictionStrategyOptions = () => {
-    return Object.keys(EvictionStrategy).map((key) => (
-      <SelectOption id={key} key={key} value={EvictionStrategy[key]} />
-    ));
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(EvictionStrategy).forEach((key) => {
+      selectOptions.push({key, value: EvictionStrategy[key], children: EvictionStrategy[key]});
+    });
+    return selectOptions;
   };
 
   // Options for Max Size Unit
   const unitOptions = () => {
-    return Object.keys(MaxSizeUnit).map((key) => <SelectOption id={key} key={key} value={MaxSizeUnit[key]} />);
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(MaxSizeUnit).forEach((key) => {
+      selectOptions.push({key, value: MaxSizeUnit[key], children: MaxSizeUnit[key]});
+    });
+    return selectOptions;
   };
 
   const validateBoundedValue = (testedEvictionType: 'count' | 'size'): 'success' | 'default' | 'error' => {
@@ -151,19 +145,12 @@ const BoundedCacheConfigurator = () => {
                 />
               </InputGroupItem>
               <InputGroupItem>
-                <Select
-                  variant={SelectVariant.single}
-                  aria-label="max-size-unit-input"
-                  onToggle={() => setIsOpenMaxSizeUnit(!isOpenMaxSizeUnit)}
-                  onSelect={onSelectMaxCountUnit}
-                  selections={maxSizeUnit}
-                  isOpen={isOpenMaxSizeUnit}
-                  aria-labelledby="toggle-id-max-size-unit"
-                  width={'20%'}
-                  toggleId="memorySizeUnit"
-                >
-                  {unitOptions()}
-                </Select>
+                <SelectSingle id={'memorySizeUnit'}
+                              placeholder={''}
+                              selected={maxSizeUnit}
+                              options={unitOptions()}
+                              onSelect={value =>  setMaxSizeUnit(value)}
+                />
               </InputGroupItem>
             </InputGroup>
             {validateBoundedValue('size') === 'error' && (
@@ -223,18 +210,12 @@ const BoundedCacheConfigurator = () => {
             />
           }
         >
-          <Select
-            variant={SelectVariant.single}
-            aria-label="eviction-strategy-select"
-            onToggle={() => setIsOpenEvictionStrategy(!isOpenEvictionStrategy)}
-            onSelect={onSelectEvictionStrategy}
-            selections={evictionStrategy}
-            isOpen={isOpenEvictionStrategy}
-            aria-labelledby="toggle-id-eviction-strategy"
-            toggleId="evictionStrategy"
-          >
-            {evictionStrategyOptions()}
-          </Select>
+          <SelectSingle id={'evictionStrategy'}
+                        placeholder={''}
+                        selected={evictionStrategy}
+                        options={evictionStrategyOptions()}
+                        onSelect={value =>  setEvictionStrategy(value)}
+          />
         </FormGroup>
       </Grid>
     </FeatureCard>

@@ -9,12 +9,12 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Modal, SelectOptionProps,
+  Modal,
+  SelectOptionProps,
   Spinner,
   TextArea,
   TextInput
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import formUtils, { IField, ISelectField } from '@services/formUtils';
@@ -22,12 +22,12 @@ import { useCacheDetail } from '@app/services/cachesHook';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { CacheFeature, ContentType, EncodingType, InfinispanFlags } from '@services/infinispanRefData';
+import { ContentType, EncodingType, InfinispanFlags } from '@services/infinispanRefData';
 import { ProtobufDataUtils } from '@services/protobufDataUtils';
-import { AddCircleOIcon, PencilAltIcon } from '@patternfly/react-icons';
+import { AddCircleOIcon, ExclamationCircleIcon, PencilAltIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -98,6 +98,22 @@ const CreateOrUpdateEntryForm = (props: {
   const [timeToLiveField, setTimeToLiveField] = useState<IField>(timeToLiveInitialState);
   const [flags, setFlags] = useState<ISelectField>(flagsInitialState);
   const [isEdition, setIsEdition] = useState<boolean>(props.keyToEdit != '');
+
+  const keyContentTypeOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.key as EncodingType).forEach((contentType) => {
+      selectOptions.push({id: contentType.toLowerCase().replace(' ', '_'), value: contentType, children: contentType});
+    });
+    return selectOptions;
+  }
+
+  const valueContentTypeOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType).forEach((contentType) => {
+      selectOptions.push({id: contentType.toLowerCase().replace(' ', '_'), value: contentType, children: contentType});
+    });
+    return selectOptions;
+  }
 
   useEffect(() => {
     if (!props.isModalOpen) {
@@ -206,12 +222,6 @@ const CreateOrUpdateEntryForm = (props: {
         }
         return false;
       });
-  };
-
-  const contentTypeOptions = (encodingType: EncodingType) => {
-    return CacheConfigUtils.getContentTypeOptions(encodingType).map((contentType) => (
-      <SelectOption id={contentType as string} key={contentType as string} value={contentType} />
-    ));
   };
 
   const flagsOptions = () : SelectOptionProps[] => {
@@ -368,21 +378,14 @@ const CreateOrUpdateEntryForm = (props: {
         disabled={isEdition}
         isRequired
       >
-        <Select
-          maxHeight={200}
-          placeholderText={t('caches.entries.add-entry-form-key-type-select')}
-          variant={SelectVariant.typeahead}
-          aria-label={t('caches.entries.add-entry-form-key-type-select-label')}
-          onToggle={(_event, isExpanded) => setExpanded(isExpanded, setKeyContentType)}
-          onSelect={(event, selection) => setSelection(selection, false, setKeyContentType)}
-          onClear={() => setKeyContentType(keyContentTypeInitialState)}
-          selections={keyContentType.selected}
-          isOpen={keyContentType.expanded}
-          isDisabled={isEdition}
-          toggleId="keyContentType"
-        >
-          {contentTypeOptions(props.cacheEncoding.key as EncodingType)}
-        </Select>
+        <SelectSingle id={'keyContentType'}
+                      placeholder={''}
+                      selected={keyContentType.selected as string}
+                      options={keyContentTypeOptions()}
+                      isDisabled={isEdition}
+                      isFullWidth={true}
+                      onSelect={value =>  setSelection(value, false, setKeyContentType)}
+        />
         <FormHelperText>
           <HelperText>
             <HelperTextItem>{keyContentType.helperText}</HelperTextItem>
@@ -596,20 +599,14 @@ const CreateOrUpdateEntryForm = (props: {
         fieldId="value-content-type-helper"
         isRequired
       >
-        <Select
-          maxHeight={200}
-          placeholderText={t('caches.entries.add-entry-form-value-type-select')}
-          variant={SelectVariant.typeahead}
-          aria-label={t('caches.entries.add-entry-form-value-type-select-label')}
-          onToggle={(_event, isExpanded) => setExpanded(isExpanded, setValueContentType)}
-          onSelect={(event, selection) => setSelection(selection, false, setValueContentType)}
-          onClear={() => setValueContentType(contentTypeInitialState)}
-          selections={valueContentType.selected}
-          isOpen={valueContentType.expanded}
-          toggleId="valueContentType"
-        >
-          {contentTypeOptions(props.cacheEncoding.value as EncodingType)}
-        </Select>
+        <SelectSingle id={'valueContentType'}
+                      placeholder={''}
+                      selected={valueContentType.selected as string}
+                      options={valueContentTypeOptions()}
+                      isFullWidth={true}
+                      onSelect={value =>  setSelection(value, false, setValueContentType)}
+        />
+
         <FormHelperText>
           <HelperText>
             <HelperTextItem>{valueContentType.helperText}</HelperTextItem>

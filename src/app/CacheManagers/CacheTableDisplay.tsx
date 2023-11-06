@@ -61,7 +61,6 @@ import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
-import { nil } from 'ajv';
 interface CacheAction {
   cacheName: string;
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
@@ -91,6 +90,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
   const isCreator = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+  const [rowsLoading, setRowsLoading] = useState<boolean>(true);
 
   const [cachesPagination, setCachesPagination] = useState({
     page: 1,
@@ -120,7 +120,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   };
 
   useEffect(() => {
-    if (caches) {
+    if (!loadingCaches) {
       const failedCaches = caches.reduce((failedCaches: string, cacheInfo: CacheInfo) => {
         if (
           (cacheInfo.health as ComponentHealth) == ComponentHealth.FAILED ||
@@ -152,10 +152,10 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   }, [cachesPagination, filteredCaches]);
 
   useEffect(() => {
-    if (loadingCaches) {
-      setRows(null);
+    if (rows !=null) {
+      setRowsLoading(false);
     }
-  }, [loadingCaches]);
+  }, [rows]);
 
   useEffect(() => {
     setFilteredCaches(caches.filter((cache) => onSearch(searchValue, cache.name)).filter(onFilter));
@@ -732,7 +732,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   }
 
   const displayEmptyState = () => {
-    if (loadingCaches) {
+    if (rowsLoading) {
       return (
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.sm}>
@@ -759,9 +759,10 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
       </Bullseye>
     );
   };
+
   return (
     <React.Fragment>
-      {caches.length == 0 ? (
+      {!loadingCaches && !rowsLoading && caches.length == 0 ? (
         emptyPage
       ) : (
         <Card>
@@ -778,7 +779,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredCaches.length == 0 || rows == null || loadingCaches ? (
+                {rowsLoading || rows == null  ? (
                   <Tr>
                     <Td colSpan={6}>{displayEmptyState()}</Td>
                   </Tr>

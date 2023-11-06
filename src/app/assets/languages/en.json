@@ -336,6 +336,7 @@
           "index-sharding-tooltip": "Divide the index data into multiple smaller indexes called shards. Enabling sharding distributes data across multiple shards, optimizing system resources and enhancing search capabilities.",
           "secured": "Security authorization",
           "secured-description": "To protect data, restrict user access to the cache. When a user does not have one of the roles selected from the menu below, {{brandname}} denies cache operations.",
+          "roles-loading": "Loading available roles...",
           "select-roles": "Select roles",
           "select-roles-helper": "You must select at least one role.",
           "backups": "Backups for {{local_site_name}}",

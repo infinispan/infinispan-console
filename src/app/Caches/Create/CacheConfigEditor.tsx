@@ -9,18 +9,18 @@ import {
   FormGroup,
   FormHelperText,
   HelperText,
-  HelperTextItem, SelectOptionProps,
+  HelperTextItem,
+  SelectOptionProps,
   Text,
   TextContent,
   TextVariants
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
-import { CubeIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { SelectSingleTypehead } from '@app/Common/SelectSingleTypehead';
 
 const CacheConfigEditor = (props: {
   cmName: string;
@@ -90,19 +90,13 @@ const CacheConfigEditor = (props: {
     setValidConfig('success');
   };
 
-  const onToggleTemplateName = (isExpanded) => {
-    setConfigExpanded(isExpanded);
-  };
-
-  const onSelectTemplate = (event, selection, isPlaceholder) => {
+  const onSelectTemplate = (selection) => {
     setSelectedConfig(selection);
-    setConfigExpanded(false);
     setValidConfig('success');
   };
 
   const clearSelection = () => {
     setSelectedConfig('');
-    setConfigExpanded(false);
     setValidConfig('default');
   };
 
@@ -145,7 +139,13 @@ const CacheConfigEditor = (props: {
     );
   };
 
-  const titleId = 'plain-typeahead-select-id';
+  const templates = () => {
+    const selectOptions: SelectOptionProps[] = [];
+    configs.forEach((option, index) =>
+      selectOptions.push({id: 'template-' + index, value: option.value, children: option.value})
+    );
+    return selectOptions;
+  }
 
   const handleTemplates = () => {
     if (configs.length == 0) {
@@ -155,25 +155,14 @@ const CacheConfigEditor = (props: {
     return (
       <React.Fragment>
         <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
-          <Select
-            toggleIcon={<CubeIcon />}
-            variant={SelectVariant.typeahead}
-            aria-label={t('caches.create.templates')}
-            onToggle={(_event, isExpanded) => onToggleTemplateName(isExpanded)}
+          <SelectSingleTypehead
             onSelect={onSelectTemplate}
-            selections={selectedConfig}
-            isOpen={configExpanded}
+            selected={selectedConfig}
             isDisabled={selectedConfigDisabled}
-            aria-labelledby={titleId}
-            placeholderText={t('caches.create.templates-placeholder')}
+            placeholder={t('caches.create.templates-placeholder')}
             onClear={clearSelection}
-            validated={validConfig}
-            toggleId="template-selector"
-          >
-            {configs.map((option, index) => (
-              <SelectOption id={'template-' + index} key={index} value={option.value} />
-            ))}
-          </Select>
+            options={templates()}
+          />
           <FormHelperText>
             <HelperText>
               <HelperTextItem variant={validConfig}>{t('caches.create.templates-help')}</HelperTextItem>

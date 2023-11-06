@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import React, { useEffect, useState } from 'react';
 import {
   FormGroup,
   Grid,
   GridItem,
   Radio,
+  SelectOptionProps,
   Switch,
   Text,
   TextContent,
   TextInput,
   TextVariants
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
+import { SelectSingle } from '@app/Common/SelectSingle';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteFailurePolicy, BackupSiteStateTransferMode, BackupSiteStrategy } from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -83,11 +83,6 @@ const BackupSiteConfigurator = (props: {
     waitTime,
     mode
   ]);
-
-  const onSelectFailurePolicy = (event, selection) => {
-    setFailurePolicy(selection);
-    setIsOpenFailurePolicy(false);
-  };
 
   const formTakeOffline = () => {
     return (
@@ -284,9 +279,11 @@ const BackupSiteConfigurator = (props: {
 
   // Options for Failure Policy
   const failurePolicyOptions = () => {
-    return Object.keys(BackupSiteFailurePolicy).map((key) => (
-      <SelectOption key={key} value={BackupSiteFailurePolicy[key]} />
-    ));
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(BackupSiteFailurePolicy).forEach((policy) =>
+      selectOptions.push({value: policy, children: policy})
+    );
+    return selectOptions;
   };
 
   const displayTwoPhaseCommit = () => {
@@ -328,19 +325,12 @@ const BackupSiteConfigurator = (props: {
           />
         }
       >
-        <Select
-          id="failurePolicy"
-          variant={SelectVariant.single}
-          onToggle={() => setIsOpenFailurePolicy(!isOpenFailurePolicy)}
-          onSelect={onSelectFailurePolicy}
-          isOpen={isOpenFailurePolicy}
-          selections={failurePolicy}
-          value={failurePolicy}
-          aria-label="Failure Policy"
-          aria-describedby="failurePolicy-helper"
-        >
-          {failurePolicyOptions()}
-        </Select>
+        <SelectSingle id={'failurePolicy'}
+                      placeholder={''}
+                      selected={failurePolicy}
+                      options={failurePolicyOptions()}
+                      onSelect={value => setFailurePolicy(value) }/>
+
       </FormGroup>
       <FormGroup
         fieldId="timeout"
