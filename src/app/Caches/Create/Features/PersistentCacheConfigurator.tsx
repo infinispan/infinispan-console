@@ -10,13 +10,13 @@ import {
   Hint,
   HintBody,
   HintFooter,
+  SelectOptionProps,
   Switch,
   Text,
   TextContent,
   TextInput,
   TextVariants
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { PersistentCacheStorage, PersistentStorageConfig } from '@services/infinispanRefData';
@@ -26,6 +26,7 @@ import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const PersistentCacheConfigurator = () => {
   const { theme } = useContext(ThemeContext);
@@ -73,20 +74,19 @@ const PersistentCacheConfigurator = () => {
     return valid;
   };
 
-  const onSelectStorage = (event, selection) => {
+  const onSelectStorage = (selection) => {
     setStorage(selection);
     const initConfig = PersistentStorageConfig.get(PersistentCacheStorage[selection as PersistentCacheStorage]);
     setConfig(initConfig ? initConfig : '');
-    setIsOpenStorages(false);
     setValid(true);
   };
 
   const persistentStorageOptions = () => {
-    return Object.keys(PersistentCacheStorage).map((key) => (
-      <SelectOption id={key} key={key} value={key}>
-        {PersistentCacheStorage[key]}
-      </SelectOption>
-    ));
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(PersistentCacheStorage).forEach((key) => {
+      selectOptions.push({key, value: PersistentCacheStorage[key], children: PersistentCacheStorage[key]});
+    });
+    return selectOptions;
   };
 
   const changeAndValidate = (value: string) => {
@@ -280,20 +280,12 @@ const PersistentCacheConfigurator = () => {
           />
         }
       >
-        <Select
-          variant={SelectVariant.single}
-          typeAheadAriaLabel="persistent-storage"
-          onToggle={() => setIsOpenStorages(!isOpenStorages)}
-          onSelect={onSelectStorage}
-          selections={storage}
-          isOpen={isOpenStorages}
-          aria-labelledby="persistent-storage"
-          placeholderText={t('caches.create.configurations.feature.storage-placeholder')}
-          validated={storage.toString() !== '' ? 'success' : 'error'}
-          toggleId="persistentStorage"
-        >
-          {persistentStorageOptions()}
-        </Select>
+        <SelectSingle id={'persistentStorage'}
+                      placeholder={t('caches.create.configurations.feature.storage-placeholder')}
+                      selected={storage}
+                      options={persistentStorageOptions()}
+                      onSelect={onSelectStorage}
+        />
       </FormGroup>
       {displayEditor()}
     </FeatureCard>

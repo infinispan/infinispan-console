@@ -10,16 +10,17 @@ import {
   Label,
   LabelGroup,
   Radio,
+  SelectOptionProps,
   Spinner,
   TextInput
 } from '@patternfly/react-core';
-import { Select, SelectVariant, SelectOption } from '@patternfly/react-core/deprecated';
+import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import {
-  IndexedStorage,
   CacheFeature,
   EncodingType,
   IndexedStartupMode,
+  IndexedStorage,
   IndexingMode
 } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +31,7 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -50,7 +52,6 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   );
 
   const [isOpenEntities, setIsOpenEntities] = useState(false);
-  const [isOpenStartupMode, setIsOpenStartupMode] = useState(false);
   const [indexedSharding, setIndexedSharding] = useState(configuration.feature.indexedCache.indexedSharding);
 
   useEffect(() => {
@@ -93,14 +94,11 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const startupModeOptions = () => {
-    return Object.keys(IndexedStartupMode).map((key) => (
-      <SelectOption id={key} key={key} value={IndexedStartupMode[key]} />
-    ));
-  };
-
-  const onSelectStartupMode = (event, selection, isPlaceholder) => {
-    setIndexedStartupMode(selection);
-    setIsOpenStartupMode(false);
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(IndexedStartupMode).forEach((key) => {
+      selectOptions.push({key, value: IndexedStartupMode[key], children: IndexedStartupMode[key]});
+    });
+    return selectOptions;
   };
 
   const formSelectEntities = () => {
@@ -257,19 +255,13 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         fieldId="indexed-startup-mode"
         isInline
       >
-        <Select
-          toggleId="startupModeSelector"
-          variant={SelectVariant.single}
-          aria-label="startup-mode-select"
-          onToggle={() => setIsOpenStartupMode(!isOpenStartupMode)}
-          onSelect={onSelectStartupMode}
-          selections={indexedStartupMode}
-          isOpen={isOpenStartupMode}
-          aria-labelledby="toggle-id-startup-mode"
-          placeholderText={t('caches.create.configurations.feature.index-startup-mode-placeholder')}
-        >
-          {startupModeOptions()}
-        </Select>
+        <SelectSingle id={'startupModeSelector'}
+                      placeholder={t('caches.create.configurations.feature.index-startup-mode-placeholder')}
+                      selected={indexedStartupMode}
+                      options={startupModeOptions()}
+                      onSelect={value =>  setIndexedStartupMode(value)}
+        />
+
       </FormGroup>
       {formSelectEntities()}
       <LabelGroup>

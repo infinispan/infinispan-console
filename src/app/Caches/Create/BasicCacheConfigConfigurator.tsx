@@ -10,12 +10,9 @@ import {
   HelperTextItem,
   InputGroup,
   InputGroupItem,
-  MenuToggle,
-  MenuToggleElement,
   NumberInput,
   Radio,
-  Select,
-  SelectOption,
+  SelectOptionProps,
   Switch,
   TextInput
 } from '@patternfly/react-core';
@@ -25,6 +22,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { validateIndexedFeature, validateTransactionalFeature } from '@app/utils/featuresValidation';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const BasicCacheConfigConfigurator = () => {
   const { t } = useTranslation();
@@ -42,11 +40,6 @@ const BasicCacheConfigConfigurator = () => {
   const [lifeSpanUnit, setLifeSpanUnit] = useState(configuration.basic.lifeSpanUnit);
   const [maxIdleNumber, setMaxIdleNumber] = useState(configuration.basic.maxIdleNumber);
   const [maxIdleUnit, setMaxIdleUnit] = useState(configuration.basic.maxIdleUnit);
-
-  // Helper State
-  const [isOpenEncodingCache, setIsOpenEncodingCache] = useState(false);
-  const [isOpenLifeSpanUnit, setIsOpenLifeSpanUnit] = useState(false);
-  const [isOpenMaxIdleUnit, setIsOpenMaxIdleUnit] = useState(false);
 
   useEffect(() => {
     // Update the form when the state changes
@@ -214,14 +207,16 @@ const BasicCacheConfigConfigurator = () => {
     );
   };
 
-  const encodingTypeOptions = () => {
-    return Object.keys(EncodingType).map((key) => {
-        if (EncodingType[key] == EncodingType.Empty || EncodingType[key] == EncodingType.Unknown) {
-          return;
-        }
-        return <SelectOption id={key} key={key} value={EncodingType[key]}>{EncodingType[key]}</SelectOption>;
+  const encodingTypeOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(EncodingType).forEach((key) =>{
+      if (EncodingType[key] == EncodingType.Empty || EncodingType[key] == EncodingType.Unknown) {
+        return;
+      }
+      selectOptions.push({value: EncodingType[key], children: EncodingType[key]});
     });
-  };
+    return selectOptions;
+  }
 
   const formStatistics = () => {
     return (
@@ -253,28 +248,12 @@ const BasicCacheConfigConfigurator = () => {
           />
         }
       >
-        <Select
-          aria-label="encoding-select-label"
-          onSelect={(_event, selection) => {
-            setSelectedEncodingCache(selection as string);
-            setIsOpenEncodingCache(false);
-          }}
-          selected={selectedEncodingCache}
-          isOpen={isOpenEncodingCache}
-          aria-labelledby="toggle-id-encoding"
-          id="cacheEncoding"
-          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle
-              ref={toggleRef}
-              onClick={() => setIsOpenEncodingCache(!isOpenEncodingCache)}
-              isExpanded={isOpenEncodingCache}
-            >
-              {selectedEncodingCache}
-            </MenuToggle>
-          )}
-        >
-          {encodingTypeOptions()}
-        </Select>
+        <SelectSingle id={'encoding'}
+                      placeholder={''}
+                      selected={selectedEncodingCache}
+                      options={encodingTypeOptions()}
+                      onSelect={(value) => setSelectedEncodingCache(value)}
+        />
       </FormGroup>
     );
   };
@@ -301,8 +280,10 @@ const BasicCacheConfigConfigurator = () => {
   };
 
   const unitOptions = () => {
-    return Object.keys(TimeUnits).map((key) =>
-      <SelectOption key={key} value={TimeUnits[key]}>{TimeUnits[key]}</SelectOption>)
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(TimeUnits).forEach((key) =>
+      selectOptions.push({value: TimeUnits[key], children: TimeUnits[key]}));
+    return selectOptions;
   };
 
   const validateLifeSpan = (): 'default' | 'error' => {
@@ -341,33 +322,13 @@ const BasicCacheConfigConfigurator = () => {
                   />
                 </GridItem>
                 <GridItem span={4}>
-                  <Select
-                    aria-label="max-size-unit-input"
-                    onSelect={(_event, selection) => {
-                      setLifeSpanUnit(selection as string);
-                      setIsOpenLifeSpanUnit(false);
-                    }}
-                    selected={lifeSpanUnit}
-                    isOpen={isOpenLifeSpanUnit}
-                    aria-labelledby="toggle-id-max-size-unit"
-                    id="maxSizeUnitSelector"
-                    toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                      <MenuToggle
-                        ref={toggleRef}
-                        onClick={() => setIsOpenLifeSpanUnit(!isOpenLifeSpanUnit)}
-                        isExpanded={isOpenLifeSpanUnit}
-                        style={
-                          {
-                            width: '200px'
-                          } as React.CSSProperties
-                        }
-                      >
-                        {lifeSpanUnit}
-                      </MenuToggle>
-                    )}
-                  >
-                    {unitOptions()}
-                  </Select>
+                  <SelectSingle id={'lifeSpanUnitSelector'}
+                                placeholder={''}
+                                selected={lifeSpanUnit}
+                                options={unitOptions()}
+                                style={{width: '150px'}}
+                                onSelect={(value) => setLifeSpanUnit(value)}
+                  />
                 </GridItem>
               </Grid>
             </InputGroupItem>
@@ -407,34 +368,13 @@ const BasicCacheConfigConfigurator = () => {
                   />
                 </GridItem>
                 <GridItem span={4}>
-                  <Select
-                    aria-label="max-size-unit-input"
-                    onSelect={(_event, selection) => {
-                      setMaxIdleUnit(selection as string);
-                      setIsOpenMaxIdleUnit(false);
-                    }}
-                    selected={maxIdleUnit}
-                    isOpen={isOpenMaxIdleUnit}
-                    aria-labelledby="toggle-id-max-size-unit"
-                    id="maxSizeUnitSelector"
-                    toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                      <MenuToggle
-                        id="toggle-id-max-size-unit"
-                        ref={toggleRef}
-                        onClick={() => setIsOpenMaxIdleUnit(!isOpenMaxIdleUnit)}
-                        isExpanded={isOpenMaxIdleUnit}
-                        style={
-                          {
-                            width: '200px'
-                          } as React.CSSProperties
-                        }
-                      >
-                        {maxIdleUnit}
-                      </MenuToggle>
-                    )}
-                  >
-                    {unitOptions()}
-                  </Select>
+                  <SelectSingle id={'maxIdleSizeUnitSelector'}
+                                placeholder={''}
+                                selected={maxIdleUnit}
+                                options={unitOptions()}
+                                style={{width: '150px'}}
+                                onSelect={(value) => setMaxIdleUnit(value)}
+                  />
                 </GridItem>
               </Grid>
             </InputGroupItem>

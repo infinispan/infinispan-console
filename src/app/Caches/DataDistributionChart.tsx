@@ -6,39 +6,36 @@ import {
   CardTitle,
   EmptyState,
   EmptyStateBody,
+  EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
-  EmptyStateHeader,
   Level,
   LevelItem,
   Pagination,
   SearchInput,
+  SelectOptionProps,
   Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
-  MenuToggleElement,
-  Select,
-  SelectOption, MenuToggle, SelectList
+  ToolbarItemVariant
 } from '@patternfly/react-core';
 import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { Chart, ChartBar, ChartGroup, ChartVoronoiContainer, ChartThemeColor } from '@patternfly/react-charts';
+import { Chart, ChartBar, ChartGroup, ChartThemeColor, ChartVoronoiContainer } from '@patternfly/react-charts';
 import { SearchIcon } from '@patternfly/react-icons';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useDataDistribution } from '@app/services/dataDistributionHook';
-import { DataDistributionStatsOption } from '@services/infinispanRefData';
+import { DataDistributionStatsOption, StorageType } from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { onSearch } from '@app/utils/searchFilter';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const DataDistributionChart = (props: { cacheName: string }) => {
   const { t } = useTranslation();
   const { cache } = useCacheDetail();
-  const brandname = t('brandname.brandname');
   const MAX_NUMBER_FOR_CHART = 5;
-  const [isOpenStatsOptions, setIsOpenStatsOptions] = useState<boolean>(false);
   const [statsOption, setStatsOption] = useState<string>(DataDistributionStatsOption.Entries);
   const [tablePagination, setTablePagination] = useState({
     page: 1,
@@ -279,54 +276,22 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     return dataDistribution && dataDistribution.length <= MAX_NUMBER_FOR_CHART ? distributionChart : distributionTable;
   };
 
-  const onToggleClick = () => {
-    setIsOpenStatsOptions(!isOpenStatsOptions);
-  };
-
-  const onSelectStatsOptions = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
-    setStatsOption(value as DataDistributionStatsOption);
-    setIsOpenStatsOptions(false);
-  };
-
-  const statsOptionsToggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle
-      id="storageSelector"
-      ref={toggleRef}
-      onClick={onToggleClick}
-      isExpanded={isOpenStatsOptions}
-      style={
-        {
-          width: '200px'
-        } as React.CSSProperties
-      }
-    >
-      {statsOption}
-    </MenuToggle>
-  );
+  const distribOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    Object.keys(DataDistributionStatsOption).forEach((key) =>
+      selectOptions.push({value: DataDistributionStatsOption[key], children: DataDistributionStatsOption[key]}));
+    return selectOptions;
+  }
 
   const buildStatsOption = () => {
     return (
       <LevelItem>
-        <Select
-          id="storage-select"
-          aria-label="storage-select"
-          isOpen={isOpenStatsOptions}
-          selected={statsOption}
-          onSelect={onSelectStatsOptions}
-          onOpenChange={(isOpen) => setIsOpenStatsOptions(isOpen)}
-          toggle={statsOptionsToggle}
-          aria-labelledby="toggle-id-storage"
-          shouldFocusToggleOnSelect
-        >
-          <SelectList>
-            <SelectOption key={0} value={DataDistributionStatsOption.Entries}>
-              {DataDistributionStatsOption.Entries}
-            </SelectOption>
-            <SelectOption hidden={!displayMemoryUsed} key={1} value={DataDistributionStatsOption.MemoryUsed}>
-              {DataDistributionStatsOption.MemoryUsed}
-            </SelectOption>
-          </SelectList>
-        </Select>
+        <SelectSingle id={'distributionType'}
+                      placeholder={StorageType.HEAP as string}
+                      selected={statsOption as string}
+                      options={distribOptions()}
+                      onSelect={(value) => setStatsOption(value)}
+        />
       </LevelItem>
     );
   };

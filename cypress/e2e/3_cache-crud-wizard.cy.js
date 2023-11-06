@@ -14,8 +14,10 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
 
     //Filling bounded  cache properties
-    cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('boun');
-    cy.get('#BOUNDED > button').click();
+    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('#select-multi-typeahead-Bounded').click();
+    cy.get('[data-cy=featuresSelect]').click();
+
     cy.get('#size').click();
     cy.get('[data-cy=memorySizeInput]').clear().type('1');
     cy.get('#memorySizeUnit').click();
@@ -24,8 +26,9 @@ describe('Cache Creation Wizard', () => {
     cy.get('#REMOVE').click();
 
     //Filling indexed cache properties
-    cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('ind');
-    cy.get('#INDEXED > button').click();
+    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('#select-multi-typeahead-Indexed').click();
+    cy.get('[data-cy=featuresSelect]').click();
     cy.get('#persistent').click();
     cy.get('#auto').click();
     cy.get('#volatile').click();
@@ -37,18 +40,18 @@ describe('Cache Creation Wizard', () => {
     cy.get('[id$="org.infinispan.Car"]').click();
 
     //Filling auth cache properties
-    cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('auth');
-    cy.get('#SECURED > button').click();
-    cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('admin');
-    cy.get('#admin > button').click();
-    cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('application');
-    cy.get('#application > button').click();
-    cy.get('#roleSelector-select-multi-typeahead-typeahead').click().type('deployer');
-    cy.get('#deployer > button').click();
+    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('#select-multi-typeahead-Authorization').click();
+    cy.get('[data-cy=roleSelector]').click();
+    cy.get("#select-multi-typeahead-admin").click();
+    cy.get("#select-multi-typeahead-application").click();
+    cy.get("#select-multi-typeahead-deployer").click();
+    cy.get('[data-cy=roleSelector]').click();
 
     //Filling persistant cache properties
-    cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('pers');
-    cy.get('#PERSISTENCE > button').click();
+    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('#select-multi-typeahead-Persistence').click();
+    cy.get('[data-cy=featuresSelect]').click();
     cy.get('[data-cy=passivationSwitch]').next().click();
     cy.get('[data-cy=connectionAttempts]').type(5);
     cy.get('[data-cy=connectionInterval]').type(60);
@@ -57,9 +60,11 @@ describe('Cache Creation Wizard', () => {
     cy.get('#FileStore').click();
 
     //Filling transactional cache properties
-    cy.get('#featuresSelect-select-multi-typeahead-typeahead').click().type('trans');
-    cy.get('#TRANSACTIONAL > button').click();
+    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('#select-multi-typeahead-Transactional').click();
+    cy.get('[data-cy=featuresSelect]').click();
     cy.get('#non_xa').click();
+
     cy.get('#pessimistic').click();
     cy.get('[data-cy=wizardNextButton]').click();
 

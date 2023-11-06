@@ -15,6 +15,7 @@ import {
   EmptyStateVariant,
   Pagination,
   SearchInput,
+  SelectOptionProps,
   Toolbar,
   ToolbarContent,
   ToolbarFilter,
@@ -23,7 +24,6 @@ import {
   ToolbarToggleGroup,
   Tooltip
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
 import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
@@ -40,6 +40,7 @@ import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntry
 import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const CacheEntries = (props: { cacheName: string }) => {
   const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
@@ -56,7 +57,6 @@ const CacheEntries = (props: { cacheName: string }) => {
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [rows, setRows] = useState<CacheEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<CacheEntry[]>([]);
-  const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
   const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(ContentType.string);
   const [searchValue, setSearchValue] = useState<string>('');
   const [entriesPagination, setEntriesPagination] = useState<PaginationType>({
@@ -205,11 +205,6 @@ const CacheEntries = (props: { cacheName: string }) => {
     searchEntryByKey();
   };
 
-  const onSelectFilter = (event, selection) => {
-    setSelectSearchOption(selection);
-    setIsOpenFilter(false);
-  };
-
   const addEntryAction = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
       return '';
@@ -277,15 +272,13 @@ const CacheEntries = (props: { cacheName: string }) => {
     );
   };
 
-  const keyContentTypeOptions = () => {
-    return CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).map((contentType) => (
-      <SelectOption
-        id={contentType == ContentType.customType ? 'customtype' : contentType}
-        key={contentType as string}
-        value={contentType}
-      />
-    ));
-  };
+  const keyContentTypeOptions = () : SelectOptionProps[] => {
+    const selectOptions: SelectOptionProps[] = [];
+    CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).forEach((contentType) => {
+      selectOptions.push({id: contentType.toLowerCase().replace(' ', '_'), value: contentType, children: contentType});
+    });
+    return selectOptions;
+  }
 
   const searchEntryByKey = () => {
     if (searchValue.length == 0) {
@@ -298,19 +291,13 @@ const CacheEntries = (props: { cacheName: string }) => {
   const buildSearch = (
     <ToolbarGroup variant="filter-group">
       <ToolbarItem>
-        <Select
-          variant={SelectVariant.single}
-          aria-label={'search option'}
-          onToggle={() => setIsOpenFilter(!isOpenFilter)}
-          onSelect={onSelectFilter}
-          selections={selectSearchOption}
-          isOpen={isOpenFilter}
-          toggleIcon={<FilterIcon />}
-          maxHeight={'300px'}
-          toggleId="keyType"
-        >
-          {keyContentTypeOptions()}
-        </Select>
+        <SelectSingle id={'contentTypeFilter'}
+                      placeholder={''}
+                      selected={selectSearchOption}
+                      options={keyContentTypeOptions()}
+                      style={{width: '160px'}}
+                      onSelect={value =>  setSelectSearchOption(value)}
+        />
       </ToolbarItem>
       <ToolbarFilter categoryName={selectSearchOption}>
         <SearchInput
