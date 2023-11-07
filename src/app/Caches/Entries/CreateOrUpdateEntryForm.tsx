@@ -28,6 +28,7 @@ import { AddCircleOIcon, ExclamationCircleIcon, PencilAltIcon } from '@patternfl
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -99,21 +100,15 @@ const CreateOrUpdateEntryForm = (props: {
   const [flags, setFlags] = useState<ISelectField>(flagsInitialState);
   const [isEdition, setIsEdition] = useState<boolean>(props.keyToEdit != '');
 
-  const keyContentTypeOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.key as EncodingType).forEach((contentType) => {
-      selectOptions.push({id: contentType.toLowerCase().replace(' ', '_'), value: contentType, children: contentType});
-    });
-    return selectOptions;
-  }
+  const keyContentTypeOptions = (): SelectOptionProps[] => {
+    return selectOptionPropsFromArray(CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.key as EncodingType));
+  };
 
-  const valueContentTypeOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType).forEach((contentType) => {
-      selectOptions.push({id: contentType.toLowerCase().replace(' ', '_'), value: contentType, children: contentType});
-    });
-    return selectOptions;
-  }
+  const valueContentTypeOptions = (): SelectOptionProps[] => {
+    return selectOptionPropsFromArray(
+      CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType)
+    );
+  };
 
   useEffect(() => {
     if (!props.isModalOpen) {
@@ -222,12 +217,6 @@ const CreateOrUpdateEntryForm = (props: {
         }
         return false;
       });
-  };
-
-  const flagsOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(InfinispanFlags).forEach((key) => selectOptions.push({value: InfinispanFlags[key], children: InfinispanFlags[key]}));
-    return selectOptions;
   };
 
   const setExpanded = (expanded: boolean, stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>) => {
@@ -378,13 +367,14 @@ const CreateOrUpdateEntryForm = (props: {
         disabled={isEdition}
         isRequired
       >
-        <SelectSingle id={'keyContentType'}
-                      placeholder={''}
-                      selected={keyContentType.selected as string}
-                      options={keyContentTypeOptions()}
-                      isDisabled={isEdition}
-                      isFullWidth={true}
-                      onSelect={value =>  setSelection(value, false, setKeyContentType)}
+        <SelectSingle
+          id={'keyContentType'}
+          placeholder={''}
+          selected={keyContentType.selected as string}
+          options={keyContentTypeOptions()}
+          isDisabled={isEdition}
+          isFullWidth={true}
+          onSelect={(value) => setSelection(value, false, setKeyContentType)}
         />
         <FormHelperText>
           <HelperText>
@@ -599,12 +589,13 @@ const CreateOrUpdateEntryForm = (props: {
         fieldId="value-content-type-helper"
         isRequired
       >
-        <SelectSingle id={'valueContentType'}
-                      placeholder={''}
-                      selected={valueContentType.selected as string}
-                      options={valueContentTypeOptions()}
-                      isFullWidth={true}
-                      onSelect={value =>  setSelection(value, false, setValueContentType)}
+        <SelectSingle
+          id={'valueContentType'}
+          placeholder={''}
+          selected={valueContentType.selected as string}
+          options={valueContentTypeOptions()}
+          isFullWidth={true}
+          onSelect={(value) => setSelection(value, false, setValueContentType)}
         />
 
         <FormHelperText>
@@ -626,12 +617,13 @@ const CreateOrUpdateEntryForm = (props: {
     );
     return (
       <FormGroup label={t('caches.entries.add-entry-form-flags')} labelIcon={helper} fieldId="flags-helper">
-        <SelectMultiWithChips id="ispnFlags"
-                              placeholder={t('caches.entries.add-entry-form-flags-label')}
-                              options={flagsOptions()}
-                              onSelect={onSelectFlags}
-                              onClear={() => setFlags(flagsInitialState)}
-                              selection={flags.selected as string[]}
+        <SelectMultiWithChips
+          id="ispnFlags"
+          placeholder={t('caches.entries.add-entry-form-flags-label')}
+          options={selectOptionProps(InfinispanFlags)}
+          onSelect={onSelectFlags}
+          onClear={() => setFlags(flagsInitialState)}
+          selection={flags.selected as string[]}
         />
         <FormHelperText>
           <HelperText>

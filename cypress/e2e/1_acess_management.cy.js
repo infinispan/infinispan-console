@@ -27,9 +27,9 @@ describe('Global stats', () => {
     cy.get('button[data-cy="createRoleButton"]').click();
     cy.get("[aria-label=role-name-input]").type("aRole");
     cy.get("[aria-label=role-description-input]").type("aRole description");
-    cy.get("[data-cy=dropdown-button-permissions").click();
-    cy.get("#select-multi-typeahead-ALL").click();
-    cy.get("[data-cy=dropdown-button-permissions").click();
+    cy.get("[data-cy=menu-toogle-permissions").click();
+    cy.get("#option-typeahead-ALL").click();
+    cy.get("[data-cy=menu-toogle-permissions").click();
     cy.get("[aria-label=Create]").click();
     cy.contains('Role aRole has been created');
     cy.contains('aRole description');

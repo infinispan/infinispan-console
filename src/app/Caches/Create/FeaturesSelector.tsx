@@ -15,6 +15,7 @@ import { validFeatures } from '@app/utils/featuresValidation';
 import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { ConsoleACL } from '@services/securityService';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const FeaturesSelector = () => {
   const { t } = useTranslation();
@@ -82,12 +83,6 @@ const FeaturesSelector = () => {
     return !notSecured && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
   };
 
-  const featuresOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(CacheFeature).forEach((key) => selectOptions.push({value: CacheFeature[key], children: CacheFeature[key]}));
-    return selectOptions;
-  }
-
   return (
     <Form
       isWidthLimited
@@ -97,12 +92,14 @@ const FeaturesSelector = () => {
     >
       <FormSection title={t('caches.create.configurations.feature.cache-feature-list', { brandname: brandname })}>
         <FormGroup fieldId="cache-feature">
-          <SelectMultiWithChips id="featuresSelect"
-                                placeholder={t('caches.create.configurations.feature.cache-feature-list-placeholder')}
-                                options={featuresOptions()}
-                                onSelect={onSelectFeature}
-                                onClear={onClearFeatureSelection}
-                                selection={configuration.feature.cacheFeatureSelected}
+          <SelectMultiWithChips
+            id="featuresSelect"
+            placeholder={t('caches.create.configurations.feature.cache-feature-list-placeholder')}
+            options={selectOptionProps(CacheFeature)}
+            onSelect={onSelectFeature}
+            onClear={onClearFeatureSelection}
+            closeOnSelect={true}
+            selection={configuration.feature.cacheFeatureSelected}
           />
         </FormGroup>
       </FormSection>

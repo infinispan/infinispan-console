@@ -23,6 +23,7 @@ import { useCreateCache } from '@app/services/createCacheHook';
 import { validateIndexedFeature, validateTransactionalFeature } from '@app/utils/featuresValidation';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const BasicCacheConfigConfigurator = () => {
   const { t } = useTranslation();
@@ -207,16 +208,9 @@ const BasicCacheConfigConfigurator = () => {
     );
   };
 
-  const encodingTypeOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(EncodingType).forEach((key) =>{
-      if (EncodingType[key] == EncodingType.Empty || EncodingType[key] == EncodingType.Unknown) {
-        return;
-      }
-      selectOptions.push({value: EncodingType[key], children: EncodingType[key]});
-    });
-    return selectOptions;
-  }
+  const encodingTypeOptions = (): SelectOptionProps[] => {
+    return selectOptionProps(EncodingType, [EncodingType.Empty, EncodingType.Unknown]);
+  };
 
   const formStatistics = () => {
     return (
@@ -248,11 +242,12 @@ const BasicCacheConfigConfigurator = () => {
           />
         }
       >
-        <SelectSingle id={'encoding'}
-                      placeholder={''}
-                      selected={selectedEncodingCache}
-                      options={encodingTypeOptions()}
-                      onSelect={(value) => setSelectedEncodingCache(value)}
+        <SelectSingle
+          id={'encoding'}
+          placeholder={''}
+          selected={selectedEncodingCache}
+          options={encodingTypeOptions()}
+          onSelect={(value) => setSelectedEncodingCache(value)}
         />
       </FormGroup>
     );
@@ -277,13 +272,6 @@ const BasicCacheConfigConfigurator = () => {
         />
       </FormGroup>
     );
-  };
-
-  const unitOptions = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(TimeUnits).forEach((key) =>
-      selectOptions.push({value: TimeUnits[key], children: TimeUnits[key]}));
-    return selectOptions;
   };
 
   const validateLifeSpan = (): 'default' | 'error' => {
@@ -322,12 +310,13 @@ const BasicCacheConfigConfigurator = () => {
                   />
                 </GridItem>
                 <GridItem span={4}>
-                  <SelectSingle id={'lifeSpanUnitSelector'}
-                                placeholder={''}
-                                selected={lifeSpanUnit}
-                                options={unitOptions()}
-                                style={{width: '150px'}}
-                                onSelect={(value) => setLifeSpanUnit(value)}
+                  <SelectSingle
+                    id={'lifeSpanUnitSelector'}
+                    placeholder={''}
+                    selected={lifeSpanUnit}
+                    options={selectOptionProps(TimeUnits)}
+                    style={{ width: '150px' }}
+                    onSelect={(value) => setLifeSpanUnit(value)}
                   />
                 </GridItem>
               </Grid>
@@ -368,12 +357,13 @@ const BasicCacheConfigConfigurator = () => {
                   />
                 </GridItem>
                 <GridItem span={4}>
-                  <SelectSingle id={'maxIdleSizeUnitSelector'}
-                                placeholder={''}
-                                selected={maxIdleUnit}
-                                options={unitOptions()}
-                                style={{width: '150px'}}
-                                onSelect={(value) => setMaxIdleUnit(value)}
+                  <SelectSingle
+                    id={'maxIdleSizeUnitSelector'}
+                    placeholder={''}
+                    selected={maxIdleUnit}
+                    options={selectOptionProps(TimeUnits)}
+                    style={{ width: '150px' }}
+                    onSelect={(value) => setMaxIdleUnit(value)}
                   />
                 </GridItem>
               </Grid>

@@ -27,6 +27,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const PersistentCacheConfigurator = () => {
   const { theme } = useContext(ThemeContext);
@@ -37,18 +38,23 @@ const PersistentCacheConfigurator = () => {
   const [passivation, setPassivation] = useState(configuration.feature.persistentCache.passivation);
   const [connectionAttempts, setConnectionAttempts] = useState(
     configuration.feature.persistentCache.connectionAttempts
+      ? configuration.feature.persistentCache.connectionAttempts
+      : ''
   );
   const [connectionInterval, setConnectionInterval] = useState(
     configuration.feature.persistentCache.connectionInterval
+      ? configuration.feature.persistentCache.connectionInterval
+      : ''
   );
   const [availabilityInterval, setAvailabilityInterval] = useState(
     configuration.feature.persistentCache.availabilityInterval
+      ? configuration.feature.persistentCache.availabilityInterval
+      : ''
   );
 
   const [storage, setStorage] = useState(configuration.feature.persistentCache.storage as PersistentCacheStorage);
   const [config, setConfig] = useState(configuration.feature.persistentCache.config);
   const [valid, setValid] = useState(configuration.feature.persistentCache.valid);
-  const [isOpenStorages, setIsOpenStorages] = useState(false);
 
   useEffect(() => {
     setConfiguration((prevState) => {
@@ -58,35 +64,21 @@ const PersistentCacheConfigurator = () => {
           ...prevState.feature,
           persistentCache: {
             passivation: passivation,
-            connectionAttempts: connectionAttempts,
-            connectionInterval: connectionInterval,
-            availabilityInterval: availabilityInterval,
+            connectionAttempts: connectionAttempts as number,
+            connectionInterval: connectionInterval as number,
+            availabilityInterval: availabilityInterval as number,
             storage: storage,
             config: config,
-            valid: persistentFeatureValidation()
+            valid: valid
           }
         }
       };
     });
   }, [passivation, connectionAttempts, connectionInterval, availabilityInterval, storage, config, valid]);
 
-  const persistentFeatureValidation = (): boolean => {
-    return valid;
-  };
-
   const onSelectStorage = (selection) => {
     setStorage(selection);
-    const initConfig = PersistentStorageConfig.get(PersistentCacheStorage[selection as PersistentCacheStorage]);
-    setConfig(initConfig ? initConfig : '');
-    setValid(true);
-  };
-
-  const persistentStorageOptions = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(PersistentCacheStorage).forEach((key) => {
-      selectOptions.push({key, value: PersistentCacheStorage[key], children: PersistentCacheStorage[key]});
-    });
-    return selectOptions;
+    changeAndValidate(PersistentStorageConfig.get(selection) as string);
   };
 
   const changeAndValidate = (value: string) => {
@@ -130,37 +122,35 @@ const PersistentCacheConfigurator = () => {
             </Button>
           </HintFooter>
         </Hint>
-        <FormGroup fieldId="storage-configuration" isRequired>
-          <TextContent>
-            <Text component={TextVariants.h3}>{PersistentCacheStorage[storage]}</Text>
-            <Text component={TextVariants.p}>
-              {t('caches.create.configurations.feature.' + kebabCase(storage) + '-description', {
-                brandname: brandname
-              })}
-            </Text>
-          </TextContent>
+        <TextContent>
+          <Text component={TextVariants.h3}>{PersistentCacheStorage[storage]}</Text>
+          <Text component={TextVariants.p}>
+            {t('caches.create.configurations.feature.' + kebabCase(storage) + '-description', {
+              brandname: brandname
+            })}
+          </Text>
+        </TextContent>
 
-          {storageJARS.includes(PersistentCacheStorage[storage]) && (
-            <Alert
-              style={{ margin: global_spacer_md.value + ' 0' }}
-              variant="warning"
-              title={t('caches.create.configurations.feature.persistent-storage-jar-warning', {
-                persistentStorage: PersistentCacheStorage[storage]
-              })}
-            />
-          )}
-
-          <CodeEditor
-            isLineNumbersVisible
-            isLanguageLabelVisible
-            code={config}
-            onChange={changeAndValidate}
-            language={Language.json}
-            height={'sizeToFit'}
-            isDarkTheme={theme === 'dark'}
+        {storageJARS.includes(PersistentCacheStorage[storage]) && (
+          <Alert
+            style={{ margin: global_spacer_md.value + ' 0' }}
+            variant="warning"
+            title={t('caches.create.configurations.feature.persistent-storage-jar-warning', {
+              persistentStorage: PersistentCacheStorage[storage]
+            })}
           />
-          {displayValidationError()}
-        </FormGroup>
+        )}
+
+        <CodeEditor
+          isLineNumbersVisible
+          isLanguageLabelVisible
+          code={config}
+          onChange={changeAndValidate}
+          language={Language.json}
+          height={'sizeToFit'}
+          isDarkTheme={theme === 'dark'}
+        />
+        {displayValidationError()}
       </React.Fragment>
     );
   };
@@ -175,7 +165,7 @@ const PersistentCacheConfigurator = () => {
           aria-label="passivation"
           data-cy="passivationSwitch"
           id="passivation"
-          isChecked={passivation === undefined ? false : passivation}
+          isChecked={passivation}
           onChange={() => setPassivation(!passivation)}
           label={t('caches.create.configurations.feature.passivation')}
         />
@@ -280,11 +270,12 @@ const PersistentCacheConfigurator = () => {
           />
         }
       >
-        <SelectSingle id={'persistentStorage'}
-                      placeholder={t('caches.create.configurations.feature.storage-placeholder')}
-                      selected={storage}
-                      options={persistentStorageOptions()}
-                      onSelect={onSelectStorage}
+        <SelectSingle
+          id={'persistentStorage'}
+          placeholder={t('caches.create.configurations.feature.storage-placeholder')}
+          selected={storage}
+          options={selectOptionProps(PersistentCacheStorage)}
+          onSelect={onSelectStorage}
         />
       </FormGroup>
       {displayEditor()}

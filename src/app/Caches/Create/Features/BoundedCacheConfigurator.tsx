@@ -9,7 +9,6 @@ import {
   InputGroup,
   InputGroupItem,
   Radio,
-  SelectOptionProps,
   TextInput
 } from '@patternfly/react-core';
 import { EvictionStrategy, EvictionType, MaxSizeUnit } from '@services/infinispanRefData';
@@ -19,6 +18,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const BoundedCacheConfigurator = () => {
   const { t } = useTranslation();
@@ -60,24 +60,6 @@ const BoundedCacheConfigurator = () => {
       };
     });
   }, [evictionType, maxSize, maxCount, evictionStrategy, maxSizeUnit]);
-
-  // Options for Eviction Strategy
-  const evictionStrategyOptions = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(EvictionStrategy).forEach((key) => {
-      selectOptions.push({key, value: EvictionStrategy[key], children: EvictionStrategy[key]});
-    });
-    return selectOptions;
-  };
-
-  // Options for Max Size Unit
-  const unitOptions = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(MaxSizeUnit).forEach((key) => {
-      selectOptions.push({key, value: MaxSizeUnit[key], children: MaxSizeUnit[key]});
-    });
-    return selectOptions;
-  };
 
   const validateBoundedValue = (testedEvictionType: 'count' | 'size'): 'success' | 'default' | 'error' => {
     if (evictionType !== testedEvictionType) {
@@ -145,11 +127,12 @@ const BoundedCacheConfigurator = () => {
                 />
               </InputGroupItem>
               <InputGroupItem>
-                <SelectSingle id={'memorySizeUnit'}
-                              placeholder={''}
-                              selected={maxSizeUnit}
-                              options={unitOptions()}
-                              onSelect={value =>  setMaxSizeUnit(value)}
+                <SelectSingle
+                  id={'memorySizeUnit'}
+                  placeholder={''}
+                  selected={maxSizeUnit}
+                  options={selectOptionProps(MaxSizeUnit)}
+                  onSelect={(value) => setMaxSizeUnit(value)}
                 />
               </InputGroupItem>
             </InputGroup>
@@ -210,11 +193,12 @@ const BoundedCacheConfigurator = () => {
             />
           }
         >
-          <SelectSingle id={'evictionStrategy'}
-                        placeholder={''}
-                        selected={evictionStrategy}
-                        options={evictionStrategyOptions()}
-                        onSelect={value =>  setEvictionStrategy(value)}
+          <SelectSingle
+            id={'evictionStrategy'}
+            placeholder={''}
+            selected={evictionStrategy}
+            options={selectOptionProps(EvictionStrategy)}
+            onSelect={(value) => setEvictionStrategy(value)}
           />
         </FormGroup>
       </Grid>

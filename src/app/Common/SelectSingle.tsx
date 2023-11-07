@@ -8,16 +8,16 @@ import {
   SelectOptionProps
 } from '@patternfly/react-core';
 
-const SelectSingle = (props: {id: string,
-  placeholder:string,
-  options: SelectOptionProps[],
-  selected: string,
-  onSelect: (selection) => void,
-  style?: CSSProperties | undefined,
-  isDisabled?:boolean,
-  isFullWidth?:boolean,
-}
-) => {
+const SelectSingle = (props: {
+  id: string;
+  placeholder: string;
+  options: SelectOptionProps[];
+  selected: string;
+  onSelect: (selection) => void;
+  style?: CSSProperties | undefined;
+  isDisabled?: boolean;
+  isFullWidth?: boolean;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const onToggleClick = () => {
@@ -32,6 +32,8 @@ const SelectSingle = (props: {id: string,
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       ref={toggleRef}
+      id={'toggle-' + props.id}
+      data-cy={'toggle-' + props.id}
       onClick={onToggleClick}
       isExpanded={isOpen}
       style={props.style}
@@ -43,28 +45,28 @@ const SelectSingle = (props: {id: string,
   );
 
   return (
-      <Select
-        id={props.id}
-        data-cy={props.id}
-        isOpen={isOpen}
-        selected={props.selected}
-        onSelect={onSelect}
-        onOpenChange={(isOpen) => setIsOpen(isOpen)}
-        toggle={toggle}
-        shouldFocusToggleOnSelect
-        isScrollable={true}
-      >
-        <SelectList id={'select-' + props.id }>
-          {props.options.map((option, index) => (
-            <SelectOption  key={option.value || option.children}
-                           id={'select-value-' + option.id || option.value}
-                           value={option.value}>
+    <Select
+      id={'select-' + props.id}
+      isOpen={isOpen}
+      selected={props.selected}
+      onSelect={onSelect}
+      onOpenChange={(isOpen) => setIsOpen(isOpen)}
+      toggle={toggle}
+      shouldFocusToggleOnSelect
+      isScrollable={true}
+    >
+      <SelectList id={'select-list-' + props.id}>
+        {props.options.map((option, index) => {
+          const id = 'option-' + option.id;
+          return (
+            <SelectOption id={id} key={id} data-cy={id} aria-label={option.id} value={option.value}>
               {option.children}
             </SelectOption>
-          ))}
-        </SelectList>
-      </Select>
+          );
+        })}
+      </SelectList>
+    </Select>
   );
 };
 
-export { SelectSingle }
+export { SelectSingle };

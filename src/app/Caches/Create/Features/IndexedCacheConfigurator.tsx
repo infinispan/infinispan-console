@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -7,15 +6,10 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Label,
-  LabelGroup,
   Radio,
-  SelectOptionProps,
   Spinner,
   TextInput
 } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
-import { global_spacer_sm } from '@patternfly/react-tokens';
 import {
   CacheFeature,
   EncodingType,
@@ -32,6 +26,8 @@ import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
+import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -51,7 +47,6 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
     configuration.feature.indexedCache.indexedStartupMode!
   );
 
-  const [isOpenEntities, setIsOpenEntities] = useState(false);
   const [indexedSharding, setIndexedSharding] = useState(configuration.feature.indexedCache.indexedSharding);
 
   useEffect(() => {
@@ -79,26 +74,9 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
     return indexedEntities.length > 0 && configuration.basic.encoding === EncodingType.Protobuf;
   };
 
-  const deleteChip = (chipToDelete: string) => {
-    const newChips = indexedEntities.filter((chip) => !Object.is(chip, chipToDelete));
-    setIndexedEntities(newChips);
-  };
-
-  const onSelectSchemas = (event, selection, isPlaceholder) => {
+  const onSelectSchemas = (selection) => {
     if (indexedEntities.includes(selection)) setIndexedEntities(indexedEntities.filter((role) => role !== selection));
     else setIndexedEntities([...indexedEntities, selection]);
-  };
-
-  const entitiesOptions = () => {
-    return protobufTypes.map((schema, id) => <SelectOption id={id.toString()} key={id} value={schema} />);
-  };
-
-  const startupModeOptions = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(IndexedStartupMode).forEach((key) => {
-      selectOptions.push({key, value: IndexedStartupMode[key], children: IndexedStartupMode[key]});
-    });
-    return selectOptions;
   };
 
   const formSelectEntities = () => {
@@ -135,22 +113,15 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         }
         fieldId="indexed-entities"
       >
-        <Select
-          validated={validEntity}
-          placeholderText={'Select an entity'}
-          variant={SelectVariant.checkbox}
-          aria-label="entities-select"
-          onToggle={() => setIsOpenEntities(!isOpenEntities)}
+        <SelectMultiWithChips
+          id="entitiesSelector"
+          placeholder={'Select an entity'}
+          options={selectOptionPropsFromArray(protobufTypes)}
           onSelect={onSelectSchemas}
-          selections={indexedEntities}
-          isOpen={isOpenEntities}
-          aria-labelledby="toggle-id-entities"
-          toggleId="entitiesSelector"
-          hasInlineFilter
           onClear={() => setIndexedEntities([])}
-        >
-          {entitiesOptions()}
-        </Select>
+          selection={indexedEntities}
+        />
+
         {validEntity === 'error' && (
           <FormHelperText>
             <HelperText>
@@ -255,29 +226,15 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         fieldId="indexed-startup-mode"
         isInline
       >
-        <SelectSingle id={'startupModeSelector'}
-                      placeholder={t('caches.create.configurations.feature.index-startup-mode-placeholder')}
-                      selected={indexedStartupMode}
-                      options={startupModeOptions()}
-                      onSelect={value =>  setIndexedStartupMode(value)}
+        <SelectSingle
+          id={'startupModeSelector'}
+          placeholder={t('caches.create.configurations.feature.index-startup-mode-placeholder')}
+          selected={indexedStartupMode}
+          options={selectOptionProps(IndexedStartupMode)}
+          onSelect={(value) => setIndexedStartupMode(value)}
         />
-
       </FormGroup>
       {formSelectEntities()}
-      <LabelGroup>
-        {indexedEntities.map((currentChip) => (
-          <Label
-            data-cy={currentChip}
-            color="blue"
-            closeBtnAriaLabel="Remove entity"
-            style={{ marginRight: global_spacer_sm.value }}
-            key={currentChip}
-            onClose={() => deleteChip(currentChip)}
-          >
-            {currentChip}
-          </Label>
-        ))}
-      </LabelGroup>
       <FormGroup
         label={t('caches.create.configurations.feature.index-sharding')}
         labelIcon={

@@ -41,6 +41,7 @@ import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
 const CacheEntries = (props: { cacheName: string }) => {
   const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
@@ -272,13 +273,9 @@ const CacheEntries = (props: { cacheName: string }) => {
     );
   };
 
-  const keyContentTypeOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType).forEach((contentType) => {
-      selectOptions.push({id: contentType.toLowerCase().replace(' ', '_'), value: contentType, children: contentType});
-    });
-    return selectOptions;
-  }
+  const keyContentTypeOptions = (): SelectOptionProps[] => {
+    return selectOptionPropsFromArray(CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType));
+  };
 
   const searchEntryByKey = () => {
     if (searchValue.length == 0) {
@@ -291,12 +288,13 @@ const CacheEntries = (props: { cacheName: string }) => {
   const buildSearch = (
     <ToolbarGroup variant="filter-group">
       <ToolbarItem>
-        <SelectSingle id={'contentTypeFilter'}
-                      placeholder={''}
-                      selected={selectSearchOption}
-                      options={keyContentTypeOptions()}
-                      style={{width: '160px'}}
-                      onSelect={value =>  setSelectSearchOption(value)}
+        <SelectSingle
+          id={'contentTypeFilter'}
+          placeholder={''}
+          selected={selectSearchOption}
+          options={keyContentTypeOptions()}
+          style={{ width: '160px' }}
+          onSelect={(value) => setSelectSearchOption(value)}
         />
       </ToolbarItem>
       <ToolbarFilter categoryName={selectSearchOption}>

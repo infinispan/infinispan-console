@@ -19,6 +19,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import IndexedConfigurationTuning from '@app/Caches/Create/AdvancedTuning/IndexedConfigurationTuning';
 import BackupsCofigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsCofigurationTuning';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const AdvancedOptionsConfigurator = () => {
   const { t } = useTranslation();
@@ -56,12 +57,6 @@ const AdvancedOptionsConfigurator = () => {
     setLockAcquisitionTimeout(value);
   };
 
-  const storageOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(StorageType).forEach((key) => selectOptions.push({value: StorageType[key], children: StorageType[key]}));
-    return selectOptions;
-  }
-
   const formMemory = () => {
     return (
       <FormGroup
@@ -76,12 +71,13 @@ const AdvancedOptionsConfigurator = () => {
           />
         }
       >
-        <SelectSingle id={'storage'}
-                      placeholder={StorageType.HEAP as string}
-                      selected={storage as string}
-                      options={storageOptions()}
-                      style={{ width: '150px' }}
-                      onSelect={(value) => setStorage(value)}
+        <SelectSingle
+          id={'storage'}
+          placeholder={StorageType.HEAP as string}
+          selected={storage as string}
+          options={selectOptionProps(StorageType)}
+          style={{ width: '150px' }}
+          onSelect={(value) => setStorage(value)}
         />
       </FormGroup>
     );

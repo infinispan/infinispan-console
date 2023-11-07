@@ -14,62 +14,59 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
 
     //Filling bounded  cache properties
-    cy.get('[data-cy=featuresSelect]').click();
-    cy.get('#select-multi-typeahead-Bounded').click();
-    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('[data-cy=menu-toogle-featuresSelect]').click();
+    cy.get('[data-cy=option-typeahead-BOUNDED]').click();
 
     cy.get('#size').click();
     cy.get('[data-cy=memorySizeInput]').clear().type('1');
-    cy.get('#memorySizeUnit').click();
-    cy.get('#KB').click();
-    cy.get('#evictionStrategy').click();
-    cy.get('#REMOVE').click();
+    cy.get('[data-cy=toggle-memorySizeUnit]').click();
+    cy.get('#option-KB').click();
+    cy.get('[data-cy=toggle-evictionStrategy]').click();
+    cy.get('#option-REMOVE').click();
 
     //Filling indexed cache properties
-    cy.get('[data-cy=featuresSelect]').click();
-    cy.get('#select-multi-typeahead-Indexed').click();
-    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('[data-cy=menu-toogle-featuresSelect]').click();
+    cy.get('[data-cy=option-typeahead-INDEXED').click();
     cy.get('#persistent').click();
     cy.get('#auto').click();
     cy.get('#volatile').click();
-    cy.get('#startupModeSelector').click();
-    cy.get('#reindex').click();
+    cy.get('[data-cy=toggle-startupModeSelector]').click();
+    cy.get('#option-reindex').click();
+    cy.get('[data-cy=toggle-startupModeSelector]').click();
     cy.get('[data-cy=indexSharding]').type(10);
     cy.get('[data-cy=wizardNextButton]').should('be.disabled');
-    cy.get('#entitiesSelector').click();
-    cy.get('[id$="org.infinispan.Car"]').click();
+    cy.get('[data-cy=menu-toogle-entitiesSelector]').click().type('org.infinispan.Car').type('{enter}');
+    cy.get('[data-cy=menu-toogle-entitiesSelector]').click()
 
     //Filling auth cache properties
-    cy.get('[data-cy=featuresSelect]').click();
-    cy.get('#select-multi-typeahead-Authorization').click();
-    cy.get('[data-cy=roleSelector]').click();
-    cy.get("#select-multi-typeahead-admin").click();
-    cy.get("#select-multi-typeahead-application").click();
-    cy.get("#select-multi-typeahead-deployer").click();
-    cy.get('[data-cy=roleSelector]').click();
+    cy.get('[data-cy=menu-toogle-featuresSelect]').click();
+    cy.get('[data-cy=option-typeahead-SECURED]').click();
+    cy.get('[data-cy=menu-toogle-roleSelector]').click();
+    cy.get('[data-cy=option-typeahead-admin]').click();
+    cy.get('[data-cy=option-typeahead-application]').click();
+    cy.get('[data-cy=option-typeahead-deployer]').click();
+    cy.get('[data-cy=menu-toogle-roleSelector]').click();
 
     //Filling persistant cache properties
-    cy.get('[data-cy=featuresSelect]').click();
-    cy.get('#select-multi-typeahead-Persistence').click();
-    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('[data-cy=menu-toogle-featuresSelect]').click();
+    cy.get('[data-cy=option-typeahead-PERSISTENCE]').click();
     cy.get('[data-cy=passivationSwitch]').next().click();
     cy.get('[data-cy=connectionAttempts]').type(5);
     cy.get('[data-cy=connectionInterval]').type(60);
     cy.get('[data-cy=availabilityInterval]').type(5000);
-    cy.get('#persistentStorage').click();
-    cy.get('#FileStore').click();
+    cy.get('#toggle-persistentStorage').click();
+    cy.get('#option-FileStore').click();
 
     //Filling transactional cache properties
-    cy.get('[data-cy=featuresSelect]').click();
-    cy.get('#select-multi-typeahead-Transactional').click();
-    cy.get('[data-cy=featuresSelect]').click();
+    cy.get('[data-cy=menu-toogle-featuresSelect]').click();
+    cy.get('[data-cy=option-typeahead-TRANSACTIONAL]').click();
     cy.get('#non_xa').click();
 
     cy.get('#pessimistic').click();
     cy.get('[data-cy=wizardNextButton]').click();
 
-    cy.get('#storageSelector').click();
-    cy.get('#HEAP').click();
+    cy.get('[data-cy=toggle-storage]').click();
+    cy.get('#option-HEAP').click();
     cy.get('[data-cy=concurencyLevel]').clear().type(40);
     cy.get('[data-cy=lockTimeout]').clear().type(15);
     cy.get('#striping').next().click();
@@ -147,8 +144,8 @@ describe('Cache Creation Wizard', () => {
 
     cy.get('[data-cy=wizardNextButton]').click();
 
-    cy.get('#template-selector').click();
-    cy.contains('e2e-test-template').parent().find('button').click();
+    cy.get('[data-cy=toggle-templates]').click();
+    cy.get('[data-cy=option-typeahead-e2e-test-template]').click();
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache ' + cacheName + ' successfully created with e2e-test-template.');
     // Once the cache created, redirection to main page is done and the cache should be visible

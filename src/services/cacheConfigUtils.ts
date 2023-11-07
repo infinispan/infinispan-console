@@ -379,7 +379,12 @@ export class CacheConfigUtils {
     };
 
     const featurePersistent = () => {
-      cache[cacheType]['persistence'] = JSON.parse(data.feature.persistentCache.config);
+      try {
+        cache[cacheType]['persistence'] = JSON.parse(data.feature.persistentCache.config);
+      } catch (e) {
+        // unable to parse
+        cache[cacheType]['persistence'] = {};
+      }
       cache[cacheType]['persistence'].passivation = data.feature.persistentCache.passivation;
       cache[cacheType]['persistence']['connection-attempts'] = data.feature.persistentCache.connectionAttempts;
       cache[cacheType]['persistence']['connection-interval'] = data.feature.persistentCache.connectionInterval;

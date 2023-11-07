@@ -61,6 +61,7 @@ import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
+import { ToolbarChipGroup } from '@patternfly/react-core/src/components/Toolbar/ToolbarFilter';
 interface CacheAction {
   cacheName: string;
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
@@ -152,7 +153,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   }, [cachesPagination, filteredCaches]);
 
   useEffect(() => {
-    if (rows !=null) {
+    if (rows != null) {
       setRowsLoading(false);
     }
   }, [rows]);
@@ -692,7 +693,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
             chips={selectedCacheType}
             deleteChip={(category, chip) => onChipDelete(category as string, chip as string)}
             deleteChipGroup={() => setSelectedCacheType([])}
-            categoryName={t('cache-managers.cache-filter-type-label')}
+            categoryName={{ key: 'type', name: t('cache-managers.cache-filter-type-label') }}
             showToolbarItem={false}
           >
             <div />
@@ -701,7 +702,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
             chips={selectedCacheFeature}
             deleteChip={(category, chip) => onChipDelete(category as string, chip as string)}
             deleteChipGroup={() => setSelectedCacheFeature([])}
-            categoryName={t('cache-managers.cache-filter-feature-label')}
+            categoryName={{ key: 'feature', name: t('cache-managers.cache-filter-feature-label') }}
           >
             <div />
           </ToolbarFilter>
@@ -709,7 +710,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
             chips={selectedCacheStatus}
             deleteChip={(category, chip) => onChipDelete(category as string, chip as string)}
             deleteChipGroup={() => setSelectedCacheStatus([])}
-            categoryName={t('cache-managers.cache-filter-status-label')}
+            categoryName={{ key: 'status', name: t('cache-managers.cache-filter-status-label') }}
             data-cy="cacheFilterSelectExpanded"
           >
             {selectFilter}
@@ -732,7 +733,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   }
 
   const displayEmptyState = () => {
-    if (rowsLoading) {
+    if (rowsLoading || rows == null) {
       return (
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.sm}>
@@ -779,7 +780,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
                 </Tr>
               </Thead>
               <Tbody>
-                {rowsLoading || rows == null  ? (
+                {rowsLoading || rows == null || rows.length == 0 ? (
                   <Tr>
                     <Td colSpan={6}>{displayEmptyState()}</Td>
                   </Tr>

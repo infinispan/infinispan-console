@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { FormGroup, HelperText, HelperTextItem, Radio, Spinner, Switch, TextInput } from '@patternfly/react-core';
-import { Select, SelectOption, SelectVariant } from '@patternfly/react-core/deprecated';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+  Radio,
+  Spinner,
+  Switch,
+  TextInput
+} from '@patternfly/react-core';
+import { Select, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteStrategy, CacheFeature } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { InfoIcon } from '@patternfly/react-icons';
+import { ExclamationCircleIcon, InfoIcon } from '@patternfly/react-icons';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
+import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
+import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
+import { SelectSingle } from '@app/Common/SelectSingle';
 
 const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -24,7 +36,6 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
   const [localSite, setLocalSite] = useState('');
 
   const [loadingBackups, setLoadingBackups] = useState<boolean>(true);
-  const [isOpenSites, setIsOpenSites] = useState(false);
 
   const validateBackupsForField = (value): 'success' | 'error' => {
     if (!configuration.feature.backupsCache.backupFor.enabled) {
@@ -37,7 +48,6 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
 
     return 'error';
   };
-  const [isOpenRemoteSite, setIsOpenRemoteSite] = useState(false);
 
   useEffect(() => {
     setConfiguration((prevState) => {
@@ -57,6 +67,10 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
         }
       };
     });
+    if (!enableBackupFor) {
+      setRemoteCache('');
+      setRemoteSite('');
+    }
   }, [sites, remoteCache, remoteSite, enableBackupFor]);
 
   const backupsFeatureValidation = (): boolean => {
@@ -93,27 +107,16 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
     }
   }, [loadingBackups]);
 
-  const helperAddSite = (event, selection) => {
+  const helperAddSite = (selection) => {
     if (!sites.some((s) => s.siteName === selection)) {
       setSites([...sites, { siteName: selection }]);
     } else {
       setSites(sites.filter((item) => item.siteName !== selection));
     }
-    setIsOpenSites(false);
-  };
-
-  const sitesOptions = () => {
-    return availableSites.map((role) => <SelectOption key={role} value={role} />);
   };
 
   const clearSelection = () => {
     setSites([]);
-    setIsOpenSites(false);
-  };
-
-  const onSelectRemoteSite = (event, selection) => {
-    setRemoteSite(selection);
-    setIsOpenRemoteSite(false);
   };
 
   const formBackupSites = () => {
@@ -131,22 +134,24 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           />
         }
       >
-        <Select
-          isCreatable={true}
-          variant={SelectVariant.typeaheadMulti}
-          aria-label={t('caches.create.configurations.feature.select-sites')}
-          chipGroupProps={{ numChips: 4, expandedText: 'Hide', collapsedText: 'Show ${remaining}' }}
-          onToggle={() => setIsOpenSites(!isOpenSites)}
+        <SelectMultiWithChips
+          id="sitesSelector"
+          placeholder={t('caches.create.configurations.feature.select-sites')}
+          options={selectOptionPropsFromArray(availableSites)}
           onSelect={helperAddSite}
           onClear={clearSelection}
-          selections={sites.some((s) => s.siteName !== undefined) ? sites.map((s) => s.siteName) : []}
-          isOpen={isOpenSites}
-          validated={sites.length == 0 ? 'error' : 'success'}
-          placeholderText={t('caches.create.configurations.feature.select-sites')}
-          noResultsFoundText={t('caches.create.configurations.feature.select-sites-not-found')}
-        >
-          {sitesOptions()}
-        </Select>
+          create={true}
+          selection={sites.some((s) => s.siteName !== undefined) ? sites.map((s) => s.siteName as string) : []}
+        />
+        {sites.length == 0 && (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                {t('caches.create.configurations.feature.select-sites-helper')}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     );
   };
@@ -230,6 +235,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           fieldId="remote-site"
           isInline
           isRequired
+          label={t('caches.create.configurations.feature.remote-site')}
           labelIcon={
             <PopoverHelp
               name="remote-site"
@@ -238,19 +244,23 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
             />
           }
         >
-          <Select
-            validated={validateBackupsForField(remoteSite)}
-            variant={SelectVariant.single}
-            aria-label="remote-site-select"
-            onToggle={() => setIsOpenRemoteSite(!isOpenRemoteSite)}
-            onSelect={onSelectRemoteSite}
-            selections={remoteSite}
-            isOpen={isOpenRemoteSite}
-            aria-labelledby="toggle-id-remote-site"
-            placeholderText="Select remote site"
-          >
-            {sitesOptions()}
-          </Select>
+          <SelectSingle
+            id="remoteSiteSelector"
+            placeholder={'Select remote site'}
+            options={selectOptionPropsFromArray(availableSites)}
+            onSelect={(selection) => setRemoteSite(selection)}
+            selected={remoteSite}
+            isFullWidth={true}
+          />
+          {validateBackupsForField(remoteSite) === 'error' && (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  {t('caches.create.configurations.feature.remote-site-helper')}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
       </React.Fragment>
     );

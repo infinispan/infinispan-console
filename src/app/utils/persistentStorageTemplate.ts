@@ -88,12 +88,8 @@ export const jdbcStore = `{
   }
 }`;
 
-export const rocksDB = `{
-  "rocksdb-store":
-    {
-      "path": "rocksdb/data",
-      "expiration": {
-        "path": "rocksdb/expired"
-      }
+export const customStore = `{
+  "custom-store": {
+
   }
 }`;

@@ -13,7 +13,6 @@ import {
   LevelItem,
   Pagination,
   SearchInput,
-  SelectOptionProps,
   Spinner,
   Toolbar,
   ToolbarContent,
@@ -31,6 +30,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { onSearch } from '@app/utils/searchFilter';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const DataDistributionChart = (props: { cacheName: string }) => {
   const { t } = useTranslation();
@@ -276,21 +276,15 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     return dataDistribution && dataDistribution.length <= MAX_NUMBER_FOR_CHART ? distributionChart : distributionTable;
   };
 
-  const distribOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(DataDistributionStatsOption).forEach((key) =>
-      selectOptions.push({value: DataDistributionStatsOption[key], children: DataDistributionStatsOption[key]}));
-    return selectOptions;
-  }
-
   const buildStatsOption = () => {
     return (
       <LevelItem>
-        <SelectSingle id={'distributionType'}
-                      placeholder={StorageType.HEAP as string}
-                      selected={statsOption as string}
-                      options={distribOptions()}
-                      onSelect={(value) => setStatsOption(value)}
+        <SelectSingle
+          id={'distributionType'}
+          placeholder={StorageType.HEAP as string}
+          selected={statsOption as string}
+          options={selectOptionProps(DataDistributionStatsOption)}
+          onSelect={(value) => setStatsOption(value)}
         />
       </LevelItem>
     );

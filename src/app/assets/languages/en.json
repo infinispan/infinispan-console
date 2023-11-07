@@ -344,7 +344,7 @@
           "backups-site": "Backup locations",
           "backups-site-tooltip": "Select one or more remote sites to which {{brandname}} backs up data in the cache.",
           "select-sites": "Select or type a site name",
-          "select-sites-not-found": "Site names list is empty. Type a site name",
+          "select-sites-helper": "You must select or type at least one site name",
           "backups-setting": "Asynchronous backup settings",
           "merge-policy": "Merge policy",
           "merge-policy-tooltip": "Specify how {{brandname}} resolves conflicting entries between backup locations when using the ASYNC strategy. You can specify one of the default merge policies or the fully qualified name of a class that implements the XSiteEntryMergePolicy interface.",
@@ -358,6 +358,7 @@
           "remote-cache-tooltip": "Specify the name of the cache on the remote site if it is different to the cache you are creating. {{brandname}} replicates data between caches that have the same name by default.",
           "remote-site": "Remote site",
           "remote-site-tooltip": "Specify the name of the remote site where the backup cache is located, for example LON or NYC.",
+          "remote-site-helper": "You must chose an available remote site",
           "strategy": "Backup strategy",
           "strategy-tooltip": "Configure how {{brandname}} replicates data to the remote site. Synchronous backups offer the strongest guarantee of data consistency but add latency, which reduces performance. Asynchronous backups have lower consistency guarantees but higher performance.",
           "strategy-async": "ASYNC",
@@ -425,11 +426,10 @@
           "storage-placeholder": "Choose a cache store",
           "file-store-description": "Use the local host filesystem for persistent storage. For clustered caches, file-based cache stores are unique to each {{brandname}} node.",
           "remote-store-description": "Use a cache on another {{brandname}} cluster for persistent storage. Remote stores connect through the Hot Rod endpoint and are required to perform rolling upgrades for {{brandname}} clusters.",
-          "jdbc-store-description": "Use a relational database for persistent storage through a JDBC connection. You must ensure that the appropriate JDBC driver is available to the {{brandname}} cluster.",
+          "jdbc-string-based-store-description": "Use a relational database for persistent storage through a JDBC connection. You must ensure that the appropriate JDBC driver is available to the {{brandname}} cluster.",
           "table-sql-store-description": "Load entries from a single database table to your {{brandname}} cache. You must ensure that the appropriate JDBC driver is available to the {{brandname}} cluster.",
           "query-sql-store-description": "Perform SQL queries to load entries from one or more database tables, including sub-columns. You can also perform insert, update, and delete operations. You must ensure that the appropriate JDBC driver is available to the {{brandname}} cluster.",
-          "rocks-db-description": "Use RocksDB as a cache store. A RocksDB cache store uses two databases; one as a primary store and another to hold expired entries.",
-          "custom-description": "Use a custom cache store that you implement with the {{brandname}} Persistence SPI."
+          "custom-store-description": "Use a custom cache store that you implement with the {{brandname}} Persistence SPI."
         },
         "advanced-options": {
           "nav-title": "Cache tuning",

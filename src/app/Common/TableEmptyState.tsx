@@ -23,8 +23,6 @@ const TableEmptyState = (props: { loading: boolean; error: string; empty: string
     );
   }
 
-  const brandname = t('brandname.brandname');
-
   if (props.error != '') {
     return (
       <Bullseye>
