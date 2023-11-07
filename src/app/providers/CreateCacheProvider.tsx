@@ -88,7 +88,10 @@ const PersistentCacheInitialState: PersistentCache = {
   storage: '',
   config: '',
   passivation: false,
-  valid: false
+  valid: false,
+  connectionAttempts: undefined,
+  connectionInterval: undefined,
+  availabilityInterval: undefined
 };
 
 const CacheFeatureInitialState: CacheFeatureStep = {

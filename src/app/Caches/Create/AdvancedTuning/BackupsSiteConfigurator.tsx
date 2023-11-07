@@ -15,6 +15,7 @@ import { SelectSingle } from '@app/Common/SelectSingle';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteFailurePolicy, BackupSiteStateTransferMode, BackupSiteStrategy } from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const BackupSiteConfigurator = (props: {
   backupSiteOptions: BackupSite[];
@@ -277,15 +278,6 @@ const BackupSiteConfigurator = (props: {
     );
   };
 
-  // Options for Failure Policy
-  const failurePolicyOptions = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    Object.keys(BackupSiteFailurePolicy).forEach((policy) =>
-      selectOptions.push({value: policy, children: policy})
-    );
-    return selectOptions;
-  };
-
   const displayTwoPhaseCommit = () => {
     if (props.siteBasic.siteStrategy !== BackupSiteStrategy.SYNC) {
       return;
@@ -325,12 +317,13 @@ const BackupSiteConfigurator = (props: {
           />
         }
       >
-        <SelectSingle id={'failurePolicy'}
-                      placeholder={''}
-                      selected={failurePolicy}
-                      options={failurePolicyOptions()}
-                      onSelect={value => setFailurePolicy(value) }/>
-
+        <SelectSingle
+          id={'failurePolicy'}
+          placeholder={BackupSiteFailurePolicy.IGNORE}
+          selected={failurePolicy}
+          options={selectOptionProps(BackupSiteFailurePolicy)}
+          onSelect={(value) => setFailurePolicy(value)}
+        />
       </FormGroup>
       <FormGroup
         fieldId="timeout"

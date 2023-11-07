@@ -5,7 +5,7 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  SelectOptionProps, Spinner,
+  Spinner,
   Text,
   TextContent
 } from '@patternfly/react-core';
@@ -17,6 +17,7 @@ import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { useFetchAvailableRolesNames } from '@app/services/rolesHook';
+import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
 const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -51,12 +52,6 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
     return roles.length > 0;
   };
 
-  const rolesOptions = () : SelectOptionProps[] => {
-    const selectOptions: SelectOptionProps[] = [];
-    availableRoleNames.forEach((role) => selectOptions.push({value: role, children: role}));
-    return selectOptions;
-  };
-
   const onSelectRoles = (selection) => {
     if (roles.includes(selection)) setRoles(roles.filter((role) => role !== selection));
     else setRoles([...roles, selection]);
@@ -69,25 +64,24 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   const buildContent = () => {
     if (loading) {
       return (
-          <Bullseye>
-            <Spinner size={'md'} isInline />
-            <TextContent>
-              <Text>
-                {t('caches.create.configurations.feature.roles-loading')}
-              </Text>
-            </TextContent>
-          </Bullseye>
-      )
+        <Bullseye>
+          <Spinner size={'md'} isInline />
+          <TextContent>
+            <Text>{t('caches.create.configurations.feature.roles-loading')}</Text>
+          </TextContent>
+        </Bullseye>
+      );
     }
 
     return (
       <FormGroup fieldId="select-roles" isRequired label={'Roles'}>
-        <SelectMultiWithChips id="roleSelector"
-                              placeholder={t('caches.create.configurations.feature.select-roles')}
-                              options={rolesOptions()}
-                              selection={roles}
-                              onSelect={onSelectRoles}
-                              onClear={() => setRoles([])}
+        <SelectMultiWithChips
+          id="roleSelector"
+          placeholder={t('caches.create.configurations.feature.select-roles')}
+          options={selectOptionPropsFromArray(availableRoleNames)}
+          selection={roles}
+          onSelect={onSelectRoles}
+          onClear={() => setRoles([])}
         />
         {validateForm() === 'error' && (
           <FormHelperText>
@@ -100,7 +94,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
         )}
       </FormGroup>
     );
-  }
+  };
   return (
     <FeatureCard
       title="caches.create.configurations.feature.secured"

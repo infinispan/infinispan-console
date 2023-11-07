@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import {
   Button,
   MenuToggle,
@@ -13,15 +13,17 @@ import {
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 
-const SelectSingleTypehead = (props: {id: string,
-  placeholder:string,
-  options: SelectOptionProps[],
-  selected: string,
-  onSelect: (selection) => void,
-  onClear?: () => void,
-  isDisabled?: boolean
-}
-) => {
+const SelectSingleTypehead = (props: {
+  id: string;
+  placeholder: string;
+  options: SelectOptionProps[];
+  selected: string;
+  onSelect: (selection) => void;
+  onClear?: () => void;
+  isDisabled?: boolean;
+  isFullWidth?: boolean;
+  style?: CSSProperties | undefined;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
@@ -141,25 +143,31 @@ const SelectSingleTypehead = (props: {id: string,
   };
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle ref={toggleRef}
-                variant={'typeahead'}
-                onClick={onToggleClick}
-                isDisabled={props.isDisabled}
-                isExpanded={isOpen}>
+    <MenuToggle
+      ref={toggleRef}
+      variant={'typeahead'}
+      onClick={onToggleClick}
+      isDisabled={props.isDisabled}
+      id={'toggle-' + props.id}
+      data-cy={'toggle-' + props.id}
+      isExpanded={isOpen}
+      style={props.style}
+      isFullWidth={props.isFullWidth}
+    >
       <TextInputGroup isPlain>
         <TextInputGroupMain
           value={inputValue}
           onClick={onToggleClick}
           onChange={onTextInputChange}
           onKeyDown={onInputKeyDown}
-          id={"typeahead-select-input-" + props.id}
+          id={'typeahead-select-input-' + props.id}
           autoComplete="off"
           innerRef={textInputRef}
           placeholder={props.placeholder}
           {...(activeItem && { 'aria-activedescendant': activeItem })}
           role="combobox"
           isExpanded={isOpen}
-          aria-controls={"select-typeahead-listbox-" + props.id}
+          aria-controls={'select-typeahead-listbox-' + props.id}
         />
 
         <TextInputGroupUtilities>
@@ -167,6 +175,7 @@ const SelectSingleTypehead = (props: {id: string,
             <Button
               variant="plain"
               onClick={() => {
+                if (props.onClear) props.onClear();
                 setSelected('');
                 setInputValue('');
                 setFilterValue('');
@@ -182,10 +191,12 @@ const SelectSingleTypehead = (props: {id: string,
     </MenuToggle>
   );
 
+  const idSelect = 'select-typeahead-' + props.id;
+  const idSelectList = 'select-list-typeahead-' + props.id;
   return (
     <Select
-      id={props.id}
-      data-cy={props.id}
+      id={idSelect}
+      data-cy={idSelect}
       isOpen={isOpen}
       selected={selected}
       onSelect={onSelect}
@@ -193,15 +204,17 @@ const SelectSingleTypehead = (props: {id: string,
         setIsOpen(false);
       }}
       toggle={toggle}
+      isScrollable={true}
     >
-      <SelectList id={'select-typeahead-' + props.id }>
+      <SelectList id={idSelectList} data-cy={idSelectList}>
         {selectOptions.map((option, index) => (
           <SelectOption
             key={option.value || option.children}
             isFocused={focusedItemIndex === index}
             className={option.className}
             onClick={() => setSelected(option.value)}
-            id={`select-typeahead-${option.value.replace(' ', '-')}`}
+            id={`option-typeahead-${option.id}`}
+            data-cy={`option-typeahead-${option.id}`}
             {...option}
             ref={null}
           />
@@ -211,4 +224,4 @@ const SelectSingleTypehead = (props: {id: string,
   );
 };
 
-export { SelectSingleTypehead }
+export { SelectSingleTypehead };

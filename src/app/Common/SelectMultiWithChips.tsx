@@ -15,24 +15,28 @@ import {
 } from '@patternfly/react-core';
 import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon';
 
-const SelectMultiWithChips = (props: {id: string, placeholder:string,
-  options: SelectOptionProps[],
-  onSelect: (selection) => void,
-  onClear: () => void,
-  selection: string[]
-}
-) => {
+const SelectMultiWithChips = (props: {
+  id: string;
+  placeholder: string;
+  options: SelectOptionProps[];
+  onSelect: (selection) => void;
+  onClear: () => void;
+  selection: string[];
+  create?: boolean;
+  closeOnSelect?: boolean;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [selected, setSelected] = useState<string[]>(props.selection);
   const [selectOptions, setSelectOptions] = useState<SelectOptionProps[]>(props.options);
   const [focusedItemIndex, setFocusedItemIndex] = useState<number | null>(null);
   const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [onCreation, setOnCreation] = React.useState<boolean>(false);
   const textInputRef = React.useRef<HTMLInputElement>();
 
   useEffect(() => {
     setSelected(props.selection);
-  }, [props.selection])
+  }, [props.selection]);
 
   useEffect(() => {
     let newSelectOptions: SelectOptionProps[] = props.options;
@@ -43,11 +47,9 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
         String(menuItem.children).toLowerCase().includes(inputValue.toLowerCase())
       );
 
-      // When no options are found after filtering, display 'No results found'
+      // When no options are found after filtering, display creation option
       if (!newSelectOptions.length) {
-        newSelectOptions = [
-          { isDisabled: false, children: `No results found for "${inputValue}"`, value: 'no results' }
-        ];
+        newSelectOptions = [{ isDisabled: false, children: `Create new option "${inputValue}"`, value: 'create' }];
       }
 
       // Open the menu when the input value changes and the new value is not empty
@@ -59,7 +61,7 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
     setSelectOptions(newSelectOptions);
     setFocusedItemIndex(null);
     setActiveItem(null);
-  }, [inputValue]);
+  }, [inputValue, onCreation]);
 
   const handleMenuArrowKeys = (key: string) => {
     let indexToFocus;
@@ -125,39 +127,64 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
   };
 
   const onSelect = (value: string) => {
-    if (value && value !== 'no results') {
-      setSelected(
-        selected.includes(value) ? selected.filter((selection) => selection !== value) : [...selected, value]
-      );
+    if (props.create) {
+      if (value) {
+        if (value === 'create') {
+          if (!selectOptions.some((item) => item.value === inputValue)) {
+            setSelectOptions([...props.options, { id: inputValue, value: inputValue, children: inputValue }]);
+          }
+          setSelected(
+            selected.includes(inputValue)
+              ? selected.filter((selection) => selection !== inputValue)
+              : [...selected, inputValue]
+          );
+          setOnCreation(!onCreation);
+          props.onSelect(inputValue);
+        } else {
+          setSelected(
+            selected.includes(value) ? selected.filter((selection) => selection !== value) : [...selected, value]
+          );
+          props.onSelect(value);
+        }
+        setIsOpen(!props.closeOnSelect);
+      }
+    } else {
+      if (value && value !== 'no results') {
+        setSelected(
+          selected.includes(value) ? selected.filter((selection) => selection !== value) : [...selected, value]
+        );
+        props.onSelect(value);
+        setIsOpen(!props.closeOnSelect);
+      }
     }
-
     textInputRef.current?.focus();
-    props.onSelect(value);
   };
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle variant="typeahead"
-                data-cy={props.id}
-                onClick={onToggleClick}
-                innerRef={toggleRef}
-                isExpanded={isOpen}
-                isFullWidth>
+    <MenuToggle
+      variant="typeahead"
+      data-cy={'menu-toogle-' + props.id}
+      onClick={onToggleClick}
+      innerRef={toggleRef}
+      isExpanded={isOpen}
+      isFullWidth
+    >
       <TextInputGroup isPlain>
         <TextInputGroupMain
           value={inputValue}
           onClick={onToggleClick}
           onChange={onTextInputChange}
           onKeyDown={onInputKeyDown}
-          id={props.id + 'multi-typeahead-select-input'}
+          id={'multi-typeahead-select-input-' + props.id}
           autoComplete="off"
           innerRef={textInputRef}
           placeholder={props.placeholder}
           {...(activeItem && { 'aria-activedescendant': activeItem })}
           role="combobox"
           isExpanded={isOpen}
-          aria-controls={props.id + 'select-multi-typeahead'}
+          aria-controls={'select-multi-typeahead-' + props.id}
         >
-          <ChipGroup aria-label="Current selections">
+          <ChipGroup numChips={6} aria-label="Current selections">
             {selected.map((selection, index) => (
               <Chip
                 key={index}
@@ -178,7 +205,7 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
               onClick={() => {
                 setInputValue('');
                 setSelected([]);
-                props.onClear()
+                props.onClear();
                 textInputRef?.current?.focus();
               }}
               aria-label="Clear input value"
@@ -193,7 +220,8 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
 
   return (
     <Select
-      id={props.id + 'multi-typeahead-select'}
+      id={'select-multi-typeahead-' + props.id}
+      data-cy={'select-multi-typeahead-' + props.id}
       isOpen={isOpen}
       selected={selected}
       onSelect={(ev, selection) => onSelect(selection as string)}
@@ -201,13 +229,18 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
       toggle={toggle}
       isScrollable
     >
-      <SelectList isAriaMultiselectable id={props.id + 'select-multi-typeahead-listbox' }>
+      <SelectList
+        isAriaMultiselectable
+        id={'selectlist-multi-typeahead-' + props.id}
+        data-cy={'selectlist-multi-typeahead-' + props.id}
+      >
         {selectOptions.map((option, index) => (
           <SelectOption
             key={option.value || option.children}
             isFocused={focusedItemIndex === index}
             className={option.className}
-            id={`select-multi-typeahead-${option.value.replace(' ', '-')}`}
+            id={`option-typeahead-${option.id !== undefined ? option.id : option.value}`}
+            data-cy={`option-typeahead-${option.id !== undefined ? option.id : option.value}`}
             {...option}
             ref={null}
           />
@@ -217,4 +250,4 @@ const SelectMultiWithChips = (props: {id: string, placeholder:string,
   );
 };
 
-export { SelectMultiWithChips }
+export { SelectMultiWithChips };

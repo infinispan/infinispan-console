@@ -185,7 +185,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
         activeButton = configuration.start.valid;
         break;
       case 2:
-        if (!props.create) activeButton = false;
+        activeButton = props.create && cacheEditor.validConfig === 'success';
         break;
       case 3:
         activeButton = configuration.basic.valid;
@@ -197,7 +197,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
         activeButton = configuration.advanced.valid;
         break;
       case 6:
-        if (!props.create) activeButton = false;
+        activeButton = props.create;
         break;
       default:
     }
@@ -262,6 +262,13 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
 
   const downloadToolbarItem = (activeStep) => {
     if (activeStep.id !== 2 && activeStep.id !== 6) {
+      return '';
+    }
+    if (activeStep.id === 6 && !configuration.advanced.valid) {
+      return '';
+    }
+
+    if (activeStep.id === 2 && cacheEditor.validConfig !== 'success') {
       return '';
     }
 

@@ -21,7 +21,6 @@ import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
   const { roles } = useFetchAvailableRoles();
-  const brandname = t('brandname.brandname');
   const initialSelectOptions: SelectOptionProps[] = [
     { value: 'ALL', children: 'ALL', description: t('access-management.roles.permission-all') },
     { value: 'ADMIN', children: 'ADMIN', description: t('access-management.roles.permission-admin') },
@@ -189,12 +188,13 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
           )}
         </FormGroup>
         <FormGroup fieldId="permissions" isRequired isInline label={t('access-management.roles.modal-permissions')}>
-          <SelectMultiWithChips id="dropdown-button-permissions"
-                                placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
-                                options={initialSelectOptions}
-                                selection={selectedPermissions}
-                                onSelect={onSelectPermission}
-                                onClear={() => setSelectedPermissions([])}
+          <SelectMultiWithChips
+            id="permissions"
+            placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
+            options={initialSelectOptions}
+            selection={selectedPermissions}
+            onSelect={onSelectPermission}
+            onClear={() => setSelectedPermissions([])}
           />
           {rolePermissionsField.validated === 'error' && (
             <FormHelperText>

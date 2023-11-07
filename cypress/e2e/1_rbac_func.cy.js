@@ -225,8 +225,8 @@ describe('RBAC Functionality Tests', () => {
     //Waiting till at least one popup dissappears so that it is possible to type
     cy.wait(1500);
     cy.get('#key-entry').click().type('stringKey');
-    cy.get('#valueContentType').click();
-    cy.get('[id="Custom Type"]').click();
+    cy.get('#toggle-valueContentType').click();
+    cy.get('#option-custom_type').click();
     cy.get('#value-entry')
       .click()
       .type('{"_type": "org.infinispan.Child","name": "Baby","age": 1,"city": "Miami"}', {
@@ -335,8 +335,8 @@ describe('RBAC Functionality Tests', () => {
     //Checking that user may create/edit/delete entries
     cy.get('[data-cy=addEntryButton]').click();
     cy.get('#key-entry').click().type('fordCar');
-    cy.get('#valueContentType').click();
-    cy.get('[id="Custom Type"]').click();
+    cy.get('#toggle-valueContentType').click();
+    cy.get('#option-custom_type').click();
     cy.get('#value-entry')
       .click()
       .type('{"_type": "org.infinispan.Car","name": "Ford","year": 2012,"number": "1BC1898"}', {
@@ -348,8 +348,8 @@ describe('RBAC Functionality Tests', () => {
     //Adding one more entry
     cy.get('[data-cy=addEntryButton]').click();
     cy.get('#key-entry').click().type('kiaCar');
-    cy.get('#valueContentType').click();
-    cy.get('[id="Custom Type"]').click();
+    cy.get('#toggle-valueContentType').click();
+    cy.get('#option-custom_type').click();
     cy.get('#value-entry')
       .click()
       .type('{"_type": "org.infinispan.Car","name": "Kia","year": 2017,"number": "2AC1898"}', {

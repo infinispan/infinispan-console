@@ -4,13 +4,14 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
+  Bullseye,
   ExpandableSection,
   Form,
   FormGroup,
   FormHelperText,
   HelperText,
   HelperTextItem,
-  SelectOptionProps,
+  Spinner,
   Text,
   TextContent,
   TextVariants
@@ -21,6 +22,8 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingleTypehead } from '@app/Common/SelectSingleTypehead';
+import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
+import { TableEmptyState } from '@app/Common/TableEmptyState';
 
 const CacheConfigEditor = (props: {
   cmName: string;
@@ -140,28 +143,30 @@ const CacheConfigEditor = (props: {
   };
 
   const templates = () => {
-    const selectOptions: SelectOptionProps[] = [];
-    configs.forEach((option, index) =>
-      selectOptions.push({id: 'template-' + index, value: option.value, children: option.value})
-    );
-    return selectOptions;
-  }
+    return selectOptionPropsFromArray(configs.map((c) => c.value));
+  };
 
   const handleTemplates = () => {
+    if (loading) {
+      return <Spinner size={'xl'} />;
+    }
+
     if (configs.length == 0) {
       return displayCacheConfigEditor();
     }
 
     return (
-      <React.Fragment>
+      <Form>
         <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
           <SelectSingleTypehead
+            id="templates"
             onSelect={onSelectTemplate}
             selected={selectedConfig}
             isDisabled={selectedConfigDisabled}
             placeholder={t('caches.create.templates-placeholder')}
             onClear={clearSelection}
             options={templates()}
+            style={{ width: '400px' }}
           />
           <FormHelperText>
             <HelperText>
@@ -178,7 +183,7 @@ const CacheConfigEditor = (props: {
         >
           {displayCacheConfigEditor()}
         </ExpandableSection>
-      </React.Fragment>
+      </Form>
     );
   };
 
@@ -187,7 +192,7 @@ const CacheConfigEditor = (props: {
       <TextContent>
         <Text component={TextVariants.h2}>{t('caches.create.edit-config.page-title')}</Text>
       </TextContent>
-      <Form>{handleTemplates()}</Form>
+      {handleTemplates()}
     </React.Fragment>
   );
 };

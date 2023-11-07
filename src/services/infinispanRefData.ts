@@ -1,9 +1,9 @@
 import {
+  customStore,
   fileStore,
   jdbcStore,
   querySqlStore,
   remoteStore,
-  rocksDB,
   tableSqlStore
 } from '@app/utils/persistentStorageTemplate';
 
@@ -218,7 +218,7 @@ export const PersistentStorageConfig = new Map<string, string>([
   [PersistentCacheStorage.TableSQLStore, tableSqlStore],
   [PersistentCacheStorage.QuerySQLStore, querySqlStore],
   [PersistentCacheStorage.JDBCStore, jdbcStore],
-  [PersistentCacheStorage.Custom, '']
+  [PersistentCacheStorage.Custom, customStore]
 ]);
 
 export enum ConfigDownloadType {
