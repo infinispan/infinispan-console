@@ -165,7 +165,7 @@ export class SecurityService {
    *
    */
   public async getSecurityRoles(): Promise<Either<ActionResponse, Role[]>> {
-    return this.fetchCaller.get(this.endpoint + '/roles-detail', (data) =>
+    return this.fetchCaller.get(this.endpoint + '/roles?action=detailed', (data) =>
       Object.keys(data).map(
         (roleName) =>
           <Role>{
