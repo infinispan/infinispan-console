@@ -160,7 +160,7 @@ const DownloadCacheModal = (props: {
           <FormGroup hasNoPaddingTop isInline label="Code language" fieldId="code-language-radio-field">
             <Radio
               name="language-radio"
-              id="JSON"
+              id="modal-JSON"
               onChange={() => {
                 setDownloadLanguage(ConfigDownloadType.JSON);
               }}
@@ -169,14 +169,14 @@ const DownloadCacheModal = (props: {
             />
             <Radio
               name="language-radio"
-              id="XML"
+              id="modal-XML"
               onChange={() => setDownloadLanguage(ConfigDownloadType.XML)}
               isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.XML}
               label={t('caches.create.review.xml')}
             />
             <Radio
               name="language-radio"
-              id="YAML"
+              id="modal-YAML"
               onChange={() => setDownloadLanguage(ConfigDownloadType.YAML)}
               isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.YAML}
               label={t('caches.create.review.yaml')}
