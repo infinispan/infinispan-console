@@ -105,13 +105,13 @@ describe('Cache Creation Wizard', () => {
     downloadedFile.its('distributed-cache.mode').should('eq', 'SYNC');
 
     cy.get('[data-cy=downloadModal]').click();
-    cy.get('#XML').click();
+    cy.get('#modal-XML').click();
     cy.get('[data-cy=downloadButton]').click();
     downloadedFile = cy.readFile('./cypress/downloads/asuper-cache.xml');
     downloadedFile.should('exist');
 
     cy.get('[data-cy=downloadModal]').click();
-    cy.get('#YAML').click();
+    cy.get('#modal-YAML').click();
     cy.get('[data-cy=downloadButton]').click();
     downloadedFile = cy.readFile('./cypress/downloads/asuper-cache.yaml');
     downloadedFile.should('exist');
