@@ -1,22 +1,29 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Brand,
+  Dropdown,
+  DropdownGroup,
+  DropdownItem,
   Flex,
   FlexItem,
-  Nav,
-  NavItem,
-  NavList,
   Masthead,
   MastheadBrand,
   MastheadContent,
   MastheadMain,
   MastheadToggle,
+  MenuToggle,
+  MenuToggleElement,
+  Nav,
+  NavItem,
+  NavList,
   Page,
-  PageToggleButton,
   PageSidebar,
+  PageSidebarBody,
+  PageToggleButton,
   SkipToContent,
   Spinner,
+  Switch,
   Text,
   TextContent,
   TextVariants,
@@ -24,20 +31,15 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  Tooltip,
-  PageSidebarBody,
-  Switch,
-  MenuToggleElement,
-  MenuToggle
+  Tooltip
 } from '@patternfly/react-core';
-import { Dropdown, DropdownGroup, DropdownItem } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
-import { Link, NavLink, Redirect } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { IAppRoute, routes } from '@app/routes';
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
-import { useHistory } from 'react-router';
-import { global_Color_light_100, global_spacer_sm } from '@patternfly/react-tokens';
+import { Navigate, useLocation, useNavigate } from 'react-router';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 import { About } from '@app/About/About';
 import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
@@ -56,10 +58,9 @@ interface IAppLayout {
 
 const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { theme, toggleTheme } = useContext(ThemeContext);
-
-  const history = useHistory();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { connectedUser } = useConnectedUser();
 
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
@@ -68,16 +69,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
-    history.listen((location, action) => {
-      const isWelcomePage = location.pathname == '/welcome';
-      setIsWelcomePage(isWelcomePage);
-    });
-  }, []);
+    setIsWelcomePage(pathname == '/welcome');
+  }, [pathname]);
 
   const Logo = (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
       <FlexItem style={{ marginTop: global_spacer_sm.value }}>
-        <Link to={{ pathname: '/', search: location.search }}>
+        <Link to={{ pathname: '/' /*, search: location.search */ }}>
           <Brand src={icon} alt={t('layout.console-name')} widths={{ default: '150px' }}>
             <source srcSet={icon} />
           </Brand>
@@ -120,7 +118,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
                       KeycloakService.Instance.logout(ConsoleServices.landing());
                     } else {
                       ConsoleServices.authentication().logOutLink();
-                      history.push('/welcome');
+                      navigate('/welcome');
                       window.location.reload();
                     }
                   }}
@@ -229,6 +227,23 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     );
   };
 
+  const isCurrentActiveNavItem = (route: IAppRoute) => {
+    if (pathname == route.path) {
+      return true;
+    }
+
+    let isSubRoute = false;
+    if (route.subRoutes != null) {
+      for (let i = 0; i < route.subRoutes.length; i++) {
+        if (pathname.includes(route.subRoutes[i])) {
+          isSubRoute = true;
+          break;
+        }
+      }
+    }
+    return isSubRoute;
+  };
+
   const Navigation = (
     <Nav id="nav-primary-simple" theme="dark">
       <NavList id="nav-list-simple">
@@ -237,24 +252,9 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
             displayNavMenu(route) && (
               <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
                 <NavLink
-                  exact
-                  to={route.path + history.location.search}
-                  activeClassName="pf-m-current"
-                  isActive={(match, location) => {
-                    if (match) {
-                      return true;
-                    }
-                    let isSubRoute = false;
-                    if (route.subRoutes != null) {
-                      for (let i = 0; i < route.subRoutes.length; i++) {
-                        if (location.pathname.includes(route.subRoutes[i])) {
-                          isSubRoute = true;
-                          break;
-                        }
-                      }
-                    }
-                    return isSubRoute;
-                  }}
+                  caseSensitive={true}
+                  to={route.path + location.search}
+                  className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
                 >
                   {route.label}
                 </NavLink>
@@ -277,7 +277,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
     }
 
     if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
-      return <Redirect to="/welcome" />;
+      return <Navigate to="/welcome" />;
     }
 
     return (

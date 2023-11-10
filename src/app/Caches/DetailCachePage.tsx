@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { CacheDetailProvider } from '@app/providers/CacheDetailProvider';
 import { DetailCache } from '@app/Caches/DetailCache';
+import { useParams } from 'react-router-dom';
 
-const DetailCachePage = (props) => {
-  const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
+const DetailCachePage = () => {
+  const cacheName = useParams()['cacheName'] as string;
   return (
     <CacheDetailProvider>
       <DetailCache cacheName={cacheName} />

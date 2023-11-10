@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useHistory } from 'react-router';
-import { KeycloakService } from '@services/keycloakService';
+import { useNavigate } from 'react-router';
 
 const initialUserState = {
   error: '',
@@ -21,7 +20,7 @@ const UserContextProvider = ({ children }) => {
   const [connectedUser, setConnectedUser] = useState(initialUserState.connectedUser);
   const [notSecured, setNotSecured] = useState(initialUserState.notSecured);
   const [error, setError] = useState(initialUserState.error);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (loadingAcl) {
@@ -72,7 +71,7 @@ const UserContextProvider = ({ children }) => {
   const notSecuredModeOn = () => {
     setNotSecured(true);
     ConsoleServices.authentication().noSecurityMode();
-    history.push('/' + history.location.search);
+    navigate('/' + location.search);
   };
 
   const contextValue = {

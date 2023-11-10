@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { accessibleRouteChangeHandler } from '@app/utils/utils';
+import { Route, Routes } from 'react-router-dom';
 import { CacheManagerPage } from '@app/CacheManagers/CacheMangerPage';
 import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
 import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
-import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
@@ -20,52 +18,12 @@ import { ConsoleACL } from '@services/securityService';
 import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
 import { NotFound } from '@app/NotFound/NotFound';
 import { RoleDetail } from '@app/AccessManagement/RoleDetail';
-
-let routeFocusTimer: number;
-
-// a custom hook for sending focus to the primary content container
-// after a view has loaded so that subsequent press of tab key
-// sends focus directly to relevant content
-const useA11yRouteChange = (isAsync: boolean) => {
-  useEffect(() => {
-    if (!isAsync !== null) {
-      routeFocusTimer = accessibleRouteChangeHandler();
-    }
-    return () => {
-      window.clearTimeout(routeFocusTimer);
-    };
-  }, [isAsync]);
-};
-
-const RouteWithTitleUpdates = ({ component: Component, isAsync = false, title, admin, ...rest }: IAppRoute) => {
-  useA11yRouteChange(isAsync);
-  useDocumentTitle(title);
-  const { connectedUser } = useConnectedUser();
-  function routeWithTitle(routeProps: RouteComponentProps) {
-    if (admin && !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      return <PageNotAuthorized title={'Not authorized'} />;
-    }
-    return <Component {...rest} {...routeProps} />;
-  }
-
-  return <Route render={routeWithTitle} />;
-};
-
-const PageNotAuthorized = ({ title }: { title: string }) => {
-  useDocumentTitle(title);
-  return <Route component={NotAuthorized} />;
-};
-
-const PageNotFound = ({ title }: { title: string }) => {
-  useDocumentTitle(title);
-  return <Route component={NotFound} />;
-};
+import { useDocumentTitle } from '@utils/useDocumentTitle';
+import { accessibleRouteChangeHandler } from '@utils/utils';
 
 export interface IAppRoute {
   label?: string;
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  component: React.ComponentType<any>;
-  /* eslint-enable @typescript-eslint/no-explicit-any */
+  component: React.JSX.Element;
   exact?: boolean;
   path: string;
   title: string;
@@ -79,16 +37,7 @@ export interface IAppRoute {
 
 const routes: IAppRoute[] = [
   {
-    component: Welcome,
-    exact: true,
-    label: 'Welcome to the Infinispan server',
-    path: '/welcome',
-    title: 'Welcome to the Infinispan server',
-    menu: false,
-    admin: false
-  },
-  {
-    component: CacheManagerPage,
+    component: <CacheManagerPage />,
     exact: true,
     label: 'Data Container',
     path: '/',
@@ -98,7 +47,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: GlobalStats,
+    component: <GlobalStats />,
     exact: true,
     label: 'Global Statistics',
     path: '/global-stats',
@@ -107,7 +56,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: ClusterStatus,
+    component: <ClusterStatus />,
     exact: true,
     label: 'Cluster Membership',
     path: '/cluster-membership',
@@ -116,7 +65,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: CreateCache,
+    component: <CreateCache />,
     exact: true,
     label: 'Cache Setup',
     path: '/caches/setup',
@@ -126,7 +75,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: CreateCache,
+    component: <CreateCache />,
     exact: true,
     label: 'Create cache',
     path: '/container/caches/create',
@@ -135,7 +84,7 @@ const routes: IAppRoute[] = [
     admin: true
   },
   {
-    component: DetailConfigurations,
+    component: <DetailConfigurations />,
     exact: true,
     label: 'Cache Manager Configurations',
     path: '/container/:cmName/configurations',
@@ -144,7 +93,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: IndexManagement,
+    component: <IndexManagement />,
     exact: true,
     label: 'Index management',
     path: '/cache/:cacheName/indexing',
@@ -153,7 +102,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: XSiteCache,
+    component: <XSiteCache />,
     exact: true,
     label: 'XSite Replication Cache',
     path: '/cache/:cacheName/backups',
@@ -162,7 +111,7 @@ const routes: IAppRoute[] = [
     admin: true
   },
   {
-    component: DetailCachePage,
+    component: <DetailCachePage />,
     exact: true,
     label: 'Cache',
     path: '/cache/:cacheName',
@@ -171,7 +120,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: AccessManager,
+    component: <AccessManager />,
     exact: true,
     label: 'Access Management',
     path: '/access-management',
@@ -181,7 +130,7 @@ const routes: IAppRoute[] = [
     subRoutes: ['role']
   },
   {
-    component: ConnectedClients,
+    component: <ConnectedClients />,
     exact: true,
     label: 'Connected Clients',
     path: '/connected-clients',
@@ -190,7 +139,7 @@ const routes: IAppRoute[] = [
     admin: true
   },
   {
-    component: RoleDetail,
+    component: <RoleDetail />,
     exact: true,
     label: 'Role detail',
     path: '/access-management/role/:roleName',
@@ -200,24 +149,37 @@ const routes: IAppRoute[] = [
   }
 ];
 
+let routeFocusTimer: number;
+const useA11yRouteChange = (isAsync: boolean) => {
+  useEffect(() => {
+    if (!isAsync !== null) {
+      routeFocusTimer = accessibleRouteChangeHandler();
+    }
+    return () => {
+      window.clearTimeout(routeFocusTimer);
+    };
+  }, [isAsync]);
+};
+
+const ComponentWithTitleUpdates = (props: { appRoute: IAppRoute }) => {
+  useDocumentTitle(props.appRoute.title);
+  useA11yRouteChange(false);
+  return props.appRoute.component;
+};
+
 const AppRoutes = (props: { init: string }) => {
+  const { connectedUser } = useConnectedUser();
   return (
-    <Switch>
-      {routes.map(({ path, exact, component, title, admin, isAsync }, idx) => (
-        <RouteWithTitleUpdates
-          path={path}
-          exact={exact}
-          component={component}
-          key={idx}
-          title={title}
-          isAsync={isAsync}
-          init={props.init}
-          admin={admin}
-        />
-      ))}
-      ;
-      <PageNotFound title="404 Page Not Found" />
-    </Switch>
+    <Routes>
+      {routes.map((iroute, idx) => {
+        if (iroute.admin && !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+          return <Route path={iroute.path} key={idx} element={<NotAuthorized />} />;
+        }
+        return <Route key={idx} path={iroute.path} element={<ComponentWithTitleUpdates appRoute={iroute} />} />;
+      })}
+      <Route path={'/welcome'} element={<Welcome init={props.init} />} />
+      <Route path={'*'} element={<NotFound />} />
+    </Routes>
   );
 };
 

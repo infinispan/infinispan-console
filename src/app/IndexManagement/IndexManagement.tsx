@@ -25,7 +25,7 @@ import {
   EmptyStateIcon,
   EmptyStateBody
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
@@ -39,11 +39,11 @@ import { useConnectedUser } from '@app/services/userManagementHook';
 import { useSearchStats } from '@app/services/statsHook';
 import { DatabaseIcon } from '@patternfly/react-icons';
 
-const IndexManagement = (props) => {
+const IndexManagement = () => {
   const { t } = useTranslation();
   const { addAlert } = useApiAlert();
   const { connectedUser } = useConnectedUser();
-  const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
+  const cacheName = useParams()['cacheName'] as string;
   const { stats, loading, error, setLoading } = useSearchStats(cacheName);
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);

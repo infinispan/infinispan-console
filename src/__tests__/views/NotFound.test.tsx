@@ -3,13 +3,11 @@ import { fireEvent, screen } from '@testing-library/react';
 import { NotFound } from '@app/NotFound/NotFound';
 import { renderWithRouter } from '../../test-utils';
 
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as Object),
-  useHistory: () => ({
-    push: mockHistoryPush
-  })
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  useNavigate: () => mockNavigate,
 }));
 
 describe('Not found page', () => {
@@ -28,6 +26,6 @@ describe('Not found page', () => {
 
     fireEvent.click(button);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

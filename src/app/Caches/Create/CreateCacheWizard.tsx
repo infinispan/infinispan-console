@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import {
   Button,
+  PageSection,
+  PageSectionTypes,
+  PageSectionVariants,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
-  PageSection,
-  PageSectionVariants,
-  PageSectionTypes
+  ToolbarItem
 } from '@patternfly/react-core';
 import { Wizard, WizardContextConsumer, WizardFooter } from '@patternfly/react-core/deprecated';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { useStateCallback } from '@app/services/stateCallbackHook';
@@ -26,6 +26,7 @@ import DownloadCacheModal from '@app/Caches/Create/DownloadCacheModal';
 import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { useSearchParams } from 'react-router-dom';
 
 const CacheEditorInitialState: CacheEditorStep = {
   editorConfig: '',
@@ -58,10 +59,10 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
   const [contentType, setContentType] = useState<'json' | 'yaml' | 'xml'>('json');
 
-  const history = useHistory();
-
+  const navigate = useNavigate();
+  const searchParams = useSearchParams();
   const closeWizard = () => {
-    history.push('/' + history.location.search);
+    navigate('/' + searchParams);
   };
 
   const getNextStep = (event, activeStep, callback) => {
@@ -320,7 +321,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
     createCacheCall
       .then((actionResponse) => {
         if (actionResponse.success) {
-          history.push('/' + history.location.search);
+          navigate('/');
         }
         return actionResponse;
       })
