@@ -200,3 +200,35 @@ export function useFlushCache(call: () => void) {
     onFlushCache
   };
 }
+
+export function useCachesForRole(roleName: string) {
+  const [secured, setSecured] = useState<string[]>([]);
+  const [nonSecured, setNonSecured] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (loading) {
+      ConsoleServices.caches()
+        .getCachesForRole(roleName)
+        .then((either) => {
+          if (either.isRight()) {
+            const securedCaches = either.value.get('secured') as string[];
+            const nonSecuredCaches = either.value.get('non-secured') as string[];
+            setSecured(securedCaches.sort());
+            setNonSecured(nonSecuredCaches.sort());
+          } else {
+            setError(either.value.message);
+          }
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [loading]);
+
+  return {
+    secured,
+    nonSecured,
+    loading,
+    error
+  };
+}

@@ -598,4 +598,16 @@ export class CacheService {
   public async getClusterDistribution(): Promise<Either<ActionResponse, ClusterDistribution[]>> {
     return this.fetchCaller.get(this.endpoint + '/cluster?action=distribution', (text) => text);
   }
+
+  /**
+   * Retrieve caches for a role
+   *
+   */
+  public async getCachesForRole(role: string): Promise<Either<ActionResponse, Map<string, string[]>>> {
+    return this.fetchCaller.get(this.endpoint + '/caches?action=role-accessible&role=' + role,
+      (data) => new Map()
+      .set('secured', data['secured'])
+      .set('non-secured', data['non-secured'])
+    );
+  }
 }

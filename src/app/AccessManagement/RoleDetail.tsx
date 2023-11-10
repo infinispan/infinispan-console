@@ -24,20 +24,21 @@ import { useTranslation } from 'react-i18next';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { RoleGeneral } from '@app/AccessManagement/RoleDetailContent/RoleGeneral';
 import { RolePermissions } from '@app/AccessManagement/RoleDetailContent/RolePermissions';
+import { RoleCaches } from '@app/AccessManagement/RoleDetailContent/RoleCaches';
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
-import { useNavigate } from 'react-router';
 import { useDescribeRole } from '@app/services/rolesHook';
+import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
 
 const RoleDetail = () => {
   const navigate = useNavigate();
   const roleName = useParams()['roleName'] as string;
   const { t } = useTranslation();
-  const { role } = useDescribeRole(roleName);
-  const [activeTabKey, setActiveTabKey] = useState('0');
+  const { role, loading } = useDescribeRole(roleName);
+  const [activeTabKey, setActiveTabKey] = useState<'general' | 'permissions' | 'caches'>('general');
   const [showGeneralDescription, setShowGeneralDescription] = useState(true);
   const [showPermissions, setShowPermissions] = useState(false);
-  // const [showCaches, setShowCaches] = useState(false);
+  const [showCaches, setShowCaches] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteRole, setIsDeleteRole] = useState(false);
 
@@ -50,9 +51,9 @@ const RoleDetail = () => {
   };
 
   useEffect(() => {
-    setShowGeneralDescription(activeTabKey === '0');
-    setShowPermissions(activeTabKey === '1');
-    // setShowCaches(activeTabKey === '2');
+    setShowGeneralDescription(activeTabKey === 'general');
+    setShowPermissions(activeTabKey === 'permissions');
+    setShowCaches(activeTabKey === 'caches');
   }, [activeTabKey]);
 
   interface AccessTab {
@@ -65,9 +66,9 @@ const RoleDetail = () => {
   };
 
   const tabs: AccessTab[] = [
-    { name: t('access-management.role.tab-general'), key: '0' },
-    { name: t('access-management.role.tab-permissions'), key: '1' }
-    // { name: t('access-management.role.tab-caches'), key: '2' }
+    { name: t('access-management.role.tab-general'), key: 'general' },
+    { name: t('access-management.role.tab-permissions'), key: 'permissions' },
+    { name: t('access-management.role.tab-caches'), key: 'caches' }
   ];
 
   const buildTabs = () => {
@@ -76,7 +77,7 @@ const RoleDetail = () => {
         <NavList>
           {tabs.map((tab) => (
             <NavItem
-              aria-label={'nav-item-' + tab.name}
+              aria-label={'nav-item-' + tab.key}
               key={'nav-item-' + tab.key}
               itemId={tab.key}
               isActive={activeTabKey === tab.key}
@@ -147,7 +148,7 @@ const RoleDetail = () => {
           <CardBody>
             {showGeneralDescription && <RoleGeneral name={roleName} />}
             {showPermissions && <RolePermissions name={roleName} />}
-            {/*{showCaches && <RoleCaches />}*/}
+            {showCaches && <RoleCaches name={roleName}/>}
           </CardBody>
         </Card>
       </PageSection>
