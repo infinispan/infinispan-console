@@ -25,12 +25,13 @@ import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { RoleGeneral } from '@app/AccessManagement/RoleDetailContent/RoleGeneral';
 import { RolePermissions } from '@app/AccessManagement/RoleDetailContent/RolePermissions';
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useDescribeRole } from '@app/services/rolesHook';
+import { useParams } from 'react-router-dom';
 
-const RoleDetail = (props) => {
-  const roleName = decodeURIComponent(props.computedMatch.params.roleName);
-  const history = useHistory();
+const RoleDetail = () => {
+  const navigate = useNavigate();
+  const roleName = useParams()['roleName'] as string;
   const { t } = useTranslation();
   const { role } = useDescribeRole(roleName);
   const [activeTabKey, setActiveTabKey] = useState('0');
@@ -132,7 +133,7 @@ const RoleDetail = (props) => {
             <ToolbarGroup>
               <ToolbarItem>
                 <TextContent>
-                  <Text component={TextVariants.h1}>{roleName}</Text>
+                  <Text component={TextVariants.h1}>{role?.name}</Text>
                 </TextContent>
               </ToolbarItem>
             </ToolbarGroup>
@@ -155,7 +156,7 @@ const RoleDetail = (props) => {
         isModalOpen={isDeleteRole}
         submitModal={() => {
           setIsDeleteRole(false);
-          history.push('/access-management');
+          navigate('/access-management');
         }}
         closeModal={() => {
           setIsDeleteRole(false);

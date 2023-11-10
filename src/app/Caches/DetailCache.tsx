@@ -287,7 +287,7 @@ const DetailCache = (props: { cacheName: string }) => {
         <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
         <Link
           to={{
-            pathname: encodeURIComponent(cacheName) + '/indexing',
+            pathname: '/cache/' + encodeURIComponent(cacheName) + '/indexing',
             search: location.search
           }}
         >

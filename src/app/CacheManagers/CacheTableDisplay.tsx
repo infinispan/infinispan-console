@@ -467,10 +467,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
     <Link
       to={{
         pathname: '/container/' + props.cmName + '/configurations/',
-        search: location.search,
-        state: {
-          cmName: props.cmName
-        }
+        search: location.search
       }}
     >
       <Button variant={'link'} aria-label="view-cache-configurations-button" data-cy="showTemplatesButton">

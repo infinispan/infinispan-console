@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import {
   Button,
   EmptyState,
@@ -16,10 +16,10 @@ const NotAuthorized = () => {
   const { t } = useTranslation();
 
   function GoHomeBtn() {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     function handleClick() {
-      history.push(history?.location?.search ? '/' + history?.location?.search : '/');
+      navigate('/' + location.search);
     }
 
     return <Button onClick={handleClick}>{t('not-auth-page.button')}</Button>;

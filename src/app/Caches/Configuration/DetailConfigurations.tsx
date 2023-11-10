@@ -34,10 +34,11 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { onSearch } from '@app/utils/searchFilter';
 import { global_spacer_sm, global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { useParams } from 'react-router-dom';
 
-const DetailConfigurations = (props) => {
+const DetailConfigurations = () => {
   const { t } = useTranslation();
-  const cmName = props.computedMatch.params.cmName;
+  const cmName = useParams()['cmName'] as string;
   const { cacheTemplates, loading, error } = useFetchCacheTemplates(cmName);
   const [filteredTemplates, setFilteredTemplates] = useState<CacheConfig[]>([]);
   const [rows, setRows] = useState<CacheConfig[]>([]);

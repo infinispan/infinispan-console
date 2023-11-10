@@ -36,7 +36,7 @@ import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/c
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { onSearch } from '@app/utils/searchFilter';
 
-const ClusterStatus = (props) => {
+const ClusterStatus = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   Badge,
@@ -7,7 +7,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardTitle,
   Flex,
   FlexItem,
   Gallery,
@@ -21,23 +20,23 @@ import {
   TitleSizes
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
-import { CatalogIcon, GithubIcon, DownloadIcon, UnknownIcon } from '@patternfly/react-icons';
-import { chart_color_blue_500, global_BackgroundColor_100 } from '@patternfly/react-tokens';
+import { CatalogIcon, DownloadIcon, GithubIcon, UnknownIcon } from '@patternfly/react-icons';
+import { chart_color_blue_500 } from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackground/ConsoleBackground';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useFetchVersion } from '@app/services/serverHook';
-import { hotRodClientsLink, aboutLink, tutorialsLink, blogLink, apacheLicenseLink } from '@app/utils/links';
+import { aboutLink, apacheLicenseLink, blogLink, hotRodClientsLink, tutorialsLink } from '@app/utils/links';
 import './Welcome.css';
 
 const Welcome = (props) => {
   const authState = props.init;
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [supportOpen, setSupportOpen] = useState(false);
   const { notSecuredModeOn, logUser } = useConnectedUser();
   const { version } = useFetchVersion();
@@ -55,7 +54,7 @@ const Welcome = (props) => {
   };
 
   const notSecured = () => {
-    history.push('/' + history.location.search);
+    navigate('/');
   };
 
   const goToTheConsole = t('welcome-page.go-to-console');
@@ -79,7 +78,8 @@ const Welcome = (props) => {
               .then((r) => {
                 if (r.success) {
                   logUser();
-                  history.push('/' + history.location.search);
+                  navigate('/' + location.search);
+                  // history.push('/' + history.location.search);
                 } else {
                   // Do nothing
                 }

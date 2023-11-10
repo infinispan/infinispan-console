@@ -25,7 +25,7 @@ import {
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { global_spacer_xs } from '@patternfly/react-tokens';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
@@ -50,7 +50,7 @@ const XSiteCache = (props) => {
   const crossSiteReplicationService = ConsoleServices.xsite();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
-  const cacheName = decodeURIComponent(props.computedMatch.params.cacheName);
+  const cacheName = useParams()['cacheName'] as string;
   const { connectedUser } = useConnectedUser();
   const [backups, setBackups] = useState<XSite[]>([]);
   const [stateTransferStatus, setStateTransferStatus] = useState(new Map<string, Status>());
