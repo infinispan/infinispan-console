@@ -46,7 +46,7 @@ describe('Global stats', () => {
     cy.get('[aria-label=role-description-input]')
       .should('have.value', 'aRole description with update');
 
-    cy.get('[aria-label=nav-item-Permissions').click();
+    cy.get('[aria-label=nav-item-permissions').click();
     cy.contains('ALL');
     cy.get('[data-cy=addPermissionButton').click();
     cy.get('[data-cy=menu-toogle-permissions]').click();
@@ -57,6 +57,9 @@ describe('Global stats', () => {
     cy.get("[aria-label=removePermission-READ]").click();
     cy.get("[aria-label=Remove]").click();
     cy.contains('Role aRole has been updated');
+
+    cy.get('[aria-label=nav-item-caches').click();
+    cy.contains('default');
 
     // remove
     cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
