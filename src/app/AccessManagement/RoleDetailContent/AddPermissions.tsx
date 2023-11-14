@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { IField } from '@services/formUtils';
 import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useUpdateRole } from '@app/services/rolesHook';
-import { PERMISSIONS_MAP } from '@services/infinispanRefData';
+import { ROLES_MAP } from '@services/infinispanRefData';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const AddPermissions = (props: {
@@ -28,7 +28,7 @@ const AddPermissions = (props: {
   const { t } = useTranslation();
   const initPermissions = () => {
     const array: SelectOptionProps[] = [];
-    PERMISSIONS_MAP.forEach((value, key, map) => {
+    ROLES_MAP.forEach((value, key, map) => {
       if (!props.permissions.includes(key)) {
         const desc = t(value);
         array.push({

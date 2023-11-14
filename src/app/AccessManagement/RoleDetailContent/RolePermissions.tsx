@@ -20,7 +20,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useDescribeRole } from '@app/services/rolesHook';
-import { PERMISSIONS_MAP } from '@services/infinispanRefData';
+import { ROLES_MAP } from '@services/infinispanRefData';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { SearchIcon } from '@patternfly/react-icons';
@@ -138,9 +138,7 @@ const RolePermissions = (props: { name: string }) => {
             <Td dataLabel={columnNames.name} width={20}>
               {row}
             </Td>
-            <Td dataLabel={columnNames.description}>
-              {PERMISSIONS_MAP.get(row) ? t(PERMISSIONS_MAP.get(row) as string) : row}
-            </Td>
+            <Td dataLabel={columnNames.description}>{ROLES_MAP.get(row) ? t(ROLES_MAP.get(row) as string) : row}</Td>
             {!role.implicit && role.permissions.length > 1 && (
               <Td isActionCell aria-label={row + '-menu'}>
                 {<ActionsColumn items={rowActions(row)} />}

@@ -279,4 +279,50 @@ export class SecurityService {
       )
     );
   }
+
+  /**
+   * Created a new principal role mapper
+   */
+  public async grantAccess(principal: string, roles: string[], messageOk: string, messageError: string) {
+    const customHeaders = new Headers();
+    customHeaders.append('Content-Type', 'json');
+    return this.fetchCaller.post({
+      url: this.endpoint + '/roles/' + principal + '?action=grant&' + roles.map((p) => 'role=' + p).join('&'),
+      successMessage: messageOk,
+      errorMessage: messageError,
+      customHeaders: customHeaders
+    });
+  }
+
+  public async grantOrDenyRoles(
+    principal: string,
+    action: 'grant' | 'deny',
+    roles: string[],
+    messageOk: string,
+    messageError: string
+  ) {
+    const customHeaders = new Headers();
+    customHeaders.append('Content-Type', 'json');
+    return this.fetchCaller.put({
+      url: this.endpoint + '/roles/' + principal + '?action=' + action + '&' + roles.map((p) => 'role=' + p).join('&'),
+      successMessage: messageOk,
+      errorMessage: messageError,
+      customHeaders: customHeaders
+    });
+  }
+
+  public async removePrincipal(principal: string, messageOk: string, messageError: string) {
+    const customHeaders = new Headers();
+    customHeaders.append('Content-Type', 'json');
+    return this.fetchCaller.delete({
+      url: this.endpoint + '/roles/' + principal + '?action=grant',
+      successMessage: messageOk,
+      errorMessage: messageError,
+      customHeaders: customHeaders
+    });
+  }
+
+  public async describePrincipal(principalName: string): Promise<Either<ActionResponse, string[]>> {
+    return this.fetchCaller.get(this.endpoint + '/roles/' + principalName, (data) => data);
+  }
 }

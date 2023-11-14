@@ -7,7 +7,7 @@ const mockNavigate = jest.fn();
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockNavigate
 }));
 
 describe('Not found page', () => {

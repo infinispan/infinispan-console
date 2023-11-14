@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import formUtils, { IField } from '@services/formUtils';
 import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useCreateRole, useFetchAvailableRoles } from '@app/services/rolesHook';
-import { PERMISSIONS_MAP } from '@services/infinispanRefData';
+import { ROLES_MAP } from '@services/infinispanRefData';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
@@ -24,7 +24,7 @@ const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; clos
   const { roles } = useFetchAvailableRoles();
   const initPermissions = () => {
     const array: SelectOptionProps[] = [];
-    PERMISSIONS_MAP.forEach((value, key, map) => {
+    ROLES_MAP.forEach((value, key, map) => {
       const desc = t(value);
       array.push({
         id: key,

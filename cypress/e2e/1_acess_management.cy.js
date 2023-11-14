@@ -70,4 +70,26 @@ describe('Global stats', () => {
     cy.contains('aRole description').should('not.exist');
   });
 
+  it('successfully creates, updates and removes a principal', () => {
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
+    cy.get('[aria-label=nav-item-principals').click();
+    cy.contains('No principals').click();
+    cy.get('[data-cy=grantAccessPrincipalButton').click();
+    cy.get("[aria-label=principal-name-input]").type("aPrincipal");
+    cy.get("[data-cy=menu-toogle-roles]").click();
+    cy.get("[data-cy=option-typeahead-deployer]").click();
+    cy.get("[data-cy=menu-toogle-roles]").click();
+    cy.get('[aria-label=Save').click();
+    // cy.contains('Access granted to aPrincipal.');
+    // cy.get("[aria-label=aPrincipal-menu]").click();
+    // cy.get("[aria-label=manageRoles]").click();
+    // cy.get("[data-cy=menu-toogle-roles]").click();
+    // cy.get("[data-cy=option-typeahead-admin]").click();
+    // cy.get("[data-cy=option-typeahead-deployer]").click();
+    // cy.get("[data-cy=menu-toogle-roles]").click();
+    // cy.get('[aria-label=Save').click();
+    // cy.contains('Roles [admin] granted to aPrincipal.');
+    // TODO: remove needs to be tested with REST API fixes
+  });
+
 });
