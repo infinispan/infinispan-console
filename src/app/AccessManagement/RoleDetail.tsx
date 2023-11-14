@@ -73,7 +73,7 @@ const RoleDetail = () => {
 
   const buildTabs = () => {
     return (
-      <Nav data-cy="navigationTabs" onSelect={handleTabClick} variant={'tertiary'}>
+      <Nav onSelect={handleTabClick} variant={'tertiary'}>
         <NavList>
           {tabs.map((tab) => (
             <NavItem
@@ -148,7 +148,7 @@ const RoleDetail = () => {
           <CardBody>
             {showGeneralDescription && <RoleGeneral name={roleName} />}
             {showPermissions && <RolePermissions name={roleName} />}
-            {showCaches && <RoleCaches name={roleName}/>}
+            {showCaches && <RoleCaches name={roleName} />}
           </CardBody>
         </Card>
       </PageSection>

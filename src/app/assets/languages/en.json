@@ -965,7 +965,29 @@
       "loading-principals": "Loading principals",
       "loading-principals-error": "Unexpected error loading principals",
       "grant-access": "Grant access",
-      "no-principals-status": "No principals"
+      "no-principals-status": "No principals",
+      "modal-grant-title": "Grant new access",
+      "modal-grant-description": "Grant access to {{brandname}} to a principal by granting roles.",
+      "modal-principal-name": "Principal",
+      "modal-principal-name-is-required": "Principal role mapper name is required",
+      "modal-roles-is-required": "Select at least one role",
+      "modal-principal-exists": "Principal role mapper {{name}} already exists",
+      "modal-roles": "Roles",
+      "modal-roles-list-placeholder": "Select roles",
+      "grant-success": "Access granted to {{principalName}}.",
+      "grant-error": "Unexpected error while granting access to {{principalName}}. ",
+      "grant-role-success": "Roles {{roles}} granted to {{principalName}}.",
+      "grant-role-error": "Unexpected error granting {{roles}} to {{principalName}}. ",
+      "deny-role-success": "Roles {{roles}} denied to {{principalName}}.",
+      "deny-role-error": "Unexpected error denying {{roles}} to {{principalName}}. ",
+      "remove-success": "{{principalName}} successfully removed.",
+      "remove-error": "Unexpected error while removing {{principalName}}. ",
+      "manage-roles-action": "Manage roles",
+      "modal-remove-title": "Remove principal {{principalName}}",
+      "modal-remove-description-1": "Are you sure you want to remove this principal? After removing, the access will be completely denied to the {{brandname}} Server.",
+      "modal-remove-description-2": "You can always recreate the principal after.",
+      "modal-manage-roles-title": "Manage access",
+      "modal-manage-roles-description": "Grant or deny roles to a principal."
     }
   }
 }

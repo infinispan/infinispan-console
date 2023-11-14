@@ -604,10 +604,8 @@ export class CacheService {
    *
    */
   public async getCachesForRole(role: string): Promise<Either<ActionResponse, Map<string, string[]>>> {
-    return this.fetchCaller.get(this.endpoint + '/caches?action=role-accessible&role=' + role,
-      (data) => new Map()
-      .set('secured', data['secured'])
-      .set('non-secured', data['non-secured'])
+    return this.fetchCaller.get(this.endpoint + '/caches?action=role-accessible&role=' + role, (data) =>
+      new Map().set('secured', data['secured']).set('non-secured', data['non-secured'])
     );
   }
 }

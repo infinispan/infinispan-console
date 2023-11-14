@@ -25,11 +25,12 @@ import { useTranslation } from 'react-i18next';
 import { RoleTableDisplay } from '@app/AccessManagement/RoleTableDisplay';
 import { FlushRoleCacheModal } from '@app/AccessManagement/FlushRoleCacheModal';
 import { PrincipalTableDisplay } from '@app/AccessManagement/PrincipalTableDisplay';
+import { IAction } from '@patternfly/react-table';
 
 const AccessManager = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [activeTabKey, setActiveTabKey] = useState('0');
+  const [activeTabKey, setActiveTabKey] = useState<'roles' | 'principals'>('roles');
   const [showRoles, setShowRoles] = useState(true);
   const [showAccessControl, setShowAccessControl] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -51,21 +52,23 @@ const AccessManager = () => {
   const handleTabClick = (ev, nav) => {
     const tabIndex = nav.itemId;
     setActiveTabKey(tabIndex);
-    setShowRoles(tabIndex == '0');
-    setShowAccessControl(tabIndex == '1');
+    setShowRoles(tabIndex == 'roles');
+    setShowAccessControl(tabIndex == 'principals');
   };
+
   const buildTabs = () => {
     const tabs: AccessTab[] = [
-      { name: t('access-management.tab-roles'), key: '0' },
-      { name: t('access-management.tab-access-control'), key: '1' },
+      { name: t('access-management.tab-roles'), key: 'roles' },
+      { name: t('access-management.tab-access-control'), key: 'principals' }
     ];
 
     return (
-      <Nav data-cy="navigationTabs" onSelect={handleTabClick} variant={'tertiary'}>
+      <Nav onSelect={handleTabClick} variant={'tertiary'}>
         <NavList>
           {tabs.map((tab) => (
             <NavItem
-              aria-label={'nav-item-' + tab.name}
+              data-cy={'nav-item-' + tab.key}
+              aria-label={'nav-item-' + tab.key}
               key={'nav-item-' + tab.key}
               itemId={tab.key}
               isActive={activeTabKey === tab.key}

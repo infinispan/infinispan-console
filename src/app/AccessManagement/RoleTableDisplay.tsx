@@ -118,16 +118,12 @@ const RoleTableDisplay = () => {
         {rolesRows.map((row) => (
           <Tr key={row.name}>
             <Td dataLabel={columnNames.name} width={15}>
-              {row.implicit && (<LockIcon className="role-icon" />)}
+              {row.implicit && <LockIcon className="role-icon" />}
               <Link
                 key={row.name}
                 to={{ pathname: '/access-management/role/' + encodeURIComponent(row.name), search: location.search }}
               >
-                <Button
-                  data-cy={`detailLink-${row.name}`}
-                  key={`detailLink-${row}`}
-                  variant={ButtonVariant.link}
-                >
+                <Button data-cy={`detailLink-${row.name}`} key={`detailLink-${row}`} variant={ButtonVariant.link}>
                   {row.name}
                 </Button>
               </Link>

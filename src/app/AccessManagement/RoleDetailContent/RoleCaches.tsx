@@ -42,9 +42,7 @@ const RoleCaches = (props: { name: string }) => {
 
     const caches = secured.concat(nonSecured);
     if (searchValue.trim() !== '') {
-      setFilteredCaches(
-        caches.filter((perm) => perm.toLowerCase().includes(searchValue.toLowerCase())).sort()
-      );
+      setFilteredCaches(caches.filter((perm) => perm.toLowerCase().includes(searchValue.toLowerCase())).sort());
     } else {
       setFilteredCaches(caches);
     }
@@ -121,17 +119,13 @@ const RoleCaches = (props: { name: string }) => {
         {cachesRows.map((row) => (
           <Tr key={row}>
             <Td dataLabel={columnNames.name}>
-              {secured.includes(row) && <KeyIcon/> }
+              {secured.includes(row) && <KeyIcon />}
               <Link
                 data-cy={`detailLink-${row}`}
                 key={row}
                 to={{ pathname: '/cache/' + encodeURIComponent(row), search: location.search }}
               >
-                <Button
-                  data-cy={`detailButton-${row}`}
-                  key={`detail-button-${row}`}
-                  variant={ButtonVariant.link}
-                >
+                <Button data-cy={`detailButton-${row}`} key={`detail-button-${row}`} variant={ButtonVariant.link}>
                   {row}
                 </Button>
               </Link>
@@ -176,9 +170,12 @@ const RoleCaches = (props: { name: string }) => {
                 popover: <div>{t('access-management.role.caches-name-tooltip')}</div>,
                 ariaLabel: 'Cache name more information',
                 popoverProps: {
-                  headerContent: columnNames.name,
+                  headerContent: columnNames.name
                 }
-              }}>{columnNames.name}</Th>
+              }}
+            >
+              {columnNames.name}
+            </Th>
           </Tr>
         </Thead>
         <Tbody>{displayRows()}</Tbody>

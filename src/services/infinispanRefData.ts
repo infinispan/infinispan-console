@@ -252,7 +252,7 @@ export enum Permission {
   ALL = 'all'
 }
 
-export const PERMISSIONS_MAP = new Map<string, string>([
+export const ROLES_MAP = new Map<string, string>([
   ['ALL', 'access-management.roles.permission-all'],
   ['ADMIN', 'access-management.roles.permission-admin'],
   ['ALL_READ', 'access-management.roles.permission-all-read'],

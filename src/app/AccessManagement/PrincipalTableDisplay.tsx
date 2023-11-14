@@ -4,14 +4,14 @@ import {
   Bullseye,
   Button,
   ButtonVariant,
-  Chip,
-  ChipGroup,
   EmptyState,
   EmptyStateBody,
   EmptyStateFooter,
   EmptyStateHeader,
   EmptyStateIcon,
-  EmptyStateVariant, Label, LabelGroup,
+  EmptyStateVariant,
+  Label,
+  LabelGroup,
   Pagination,
   SearchInput,
   Title,
@@ -21,13 +21,16 @@ import {
   ToolbarItem,
   ToolbarItemVariant
 } from '@patternfly/react-core';
-import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
 import { useFetchAvailablePrincipals } from '@app/services/principalsHook';
 import { global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
+import { GrantNewAccess } from '@app/AccessManagement/GrantNewAccess';
+import { RemovePrincipal } from '@app/AccessManagement/RemovePrincipal';
+import { ManageRolesForPrincipal } from '@app/AccessManagement/ManageRolesForPrincipal';
 
 const PrincipalTableDisplay = () => {
   const { t } = useTranslation();
@@ -36,11 +39,15 @@ const PrincipalTableDisplay = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [principalsPagination, setPrincipalsPagination] = useState({
     page: 1,
-    perPage: 10
+    perPage: 5
   });
 
   const [filteredPrincipals, setFilteredPrincipals] = useState<Principal[]>([]);
   const [principalsRows, setPrincipalsRows] = useState<Principal[]>([]);
+  const [isGrantAccess, setIsGrantAccess] = useState(false);
+  const [isRemovePrincipal, setIsRemovePrincipal] = useState(false);
+  const [isManageRoles, setIsManageRoles] = useState(false);
+  const [principalToManage, setPrincipalToManage] = useState('');
 
   useEffect(() => {
     if (searchValue.trim() !== '') {
@@ -61,8 +68,30 @@ const PrincipalTableDisplay = () => {
 
   const columnNames = {
     name: t('access-management.principals.principal-name'),
-    roles: t('access-management.principals.roles'),
+    roles: t('access-management.principals.roles')
   };
+
+  const rowActions = (principal: Principal): IAction[] => [
+    {
+      'aria-label': 'manageRoles',
+      title: t('access-management.principals.manage-roles-action'),
+      onClick: () => {
+        setPrincipalToManage(principal.name);
+        setIsManageRoles(true);
+      }
+    },
+    {
+      isSeparator: true
+    },
+    {
+      'aria-label': 'removePrincipal',
+      title: t('common.actions.remove'),
+      onClick: () => {
+        setPrincipalToManage(principal.name);
+        setIsRemovePrincipal(true);
+      }
+    }
+  ];
 
   const onSetPage = (_event, pageNumber) => {
     setPrincipalsPagination({
@@ -100,28 +129,35 @@ const PrincipalTableDisplay = () => {
         {principalsRows.map((row) => (
           <Tr key={row.name}>
             <Td dataLabel={columnNames.name} width={15}>
-                {row.name}
+              {row.name}
             </Td>
             <Td dataLabel={columnNames.roles} width={30}>
               {
                 <LabelGroup>
                   {row.roles.map((currentRole) => (
-                    <Label key={currentRole}
-                           render={({ className, content, componentRef }) => (
-                             <Link
-                               data-cy={`detailLink-${currentRole}`}
-                               key={currentRole}
-                               to={{ pathname: '/access-management/role/' + encodeURIComponent(currentRole), search: location.search }}
-                             >
-                               {content}
-                             </Link>
-                           )}
+                    <Label
+                      key={currentRole}
+                      render={({ className, content, componentRef }) => (
+                        <Link
+                          data-cy={`detailLink-${currentRole}`}
+                          key={currentRole}
+                          to={{
+                            pathname: '/access-management/role/' + encodeURIComponent(currentRole),
+                            search: location.search
+                          }}
+                        >
+                          {content}
+                        </Link>
+                      )}
                     >
                       {currentRole}
                     </Label>
                   ))}
                 </LabelGroup>
               }
+            </Td>
+            <Td isActionCell aria-label={row.name + '-menu'}>
+              {<ActionsColumn items={rowActions(row)} />}
             </Td>
           </Tr>
         ))}
@@ -132,7 +168,7 @@ const PrincipalTableDisplay = () => {
   const displayEmptySearch = () => {
     return (
       <Tr>
-        <Td colSpan={2}>
+        <Td colSpan={3}>
           <Bullseye>
             <EmptyState variant={EmptyStateVariant.sm}>
               <EmptyStateIcon icon={SearchIcon} />
@@ -151,7 +187,7 @@ const PrincipalTableDisplay = () => {
     );
   };
 
-  const createPrincipalButtonHelper = (isEmptyPage?: boolean) => {
+  const grantAccessButtonHelper = (isEmptyPage?: boolean) => {
     const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
     const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
     return (
@@ -159,6 +195,7 @@ const PrincipalTableDisplay = () => {
         variant={ButtonVariant.primary}
         aria-label="grant-access-principal-button-helper"
         data-cy="grantAccessPrincipalButton"
+        onClick={() => setIsGrantAccess(true)}
         {...(isEmptyPage ? emptyPageButtonProp : normalPageButtonProps)}
       >
         {t('access-management.principals.grant-access')}
@@ -175,8 +212,10 @@ const PrincipalTableDisplay = () => {
             icon={<EmptyStateIcon icon={DatabaseIcon} />}
             headingLevel="h4"
           />
-          <EmptyStateBody>{t('access-management.principals.no-principals-body', { brandname: brandname })}</EmptyStateBody>
-          {/*<EmptyStateFooter>{createPrincipalButtonHelper(true)}</EmptyStateFooter>*/}
+          <EmptyStateBody>
+            {t('access-management.principals.no-principals-body', { brandname: brandname })}
+          </EmptyStateBody>
+          <EmptyStateFooter>{grantAccessButtonHelper(true)}</EmptyStateFooter>
         </EmptyState>
       );
     }
@@ -203,7 +242,7 @@ const PrincipalTableDisplay = () => {
                   onClear={() => setSearchValue('')}
                 />
               </ToolbarItem>
-              {/*<ToolbarItem>{createPrincipalButtonHelper(false)}</ToolbarItem>*/}
+              <ToolbarItem>{grantAccessButtonHelper(false)}</ToolbarItem>
             </ToolbarGroup>
             <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
           </ToolbarContent>
@@ -242,6 +281,40 @@ const PrincipalTableDisplay = () => {
   return (
     <React.Fragment>
       {displayContent()}
+      <GrantNewAccess
+        isModalOpen={isGrantAccess}
+        submitModal={() => {
+          setIsGrantAccess(false);
+          setLoading(true);
+        }}
+        closeModal={() => setIsGrantAccess(false)}
+      />
+      <ManageRolesForPrincipal
+        principalName={principalToManage}
+        isModalOpen={isManageRoles}
+        submitModal={() => {
+          setPrincipalToManage('');
+          setIsManageRoles(false);
+          setLoading(true);
+        }}
+        closeModal={() => {
+          setPrincipalToManage('');
+          setIsManageRoles(false);
+        }}
+      />
+      <RemovePrincipal
+        name={principalToManage}
+        isModalOpen={isRemovePrincipal}
+        submitModal={() => {
+          setPrincipalToManage('');
+          setIsRemovePrincipal(false);
+          setLoading(true);
+        }}
+        closeModal={() => {
+          setPrincipalToManage('');
+          setIsRemovePrincipal(false);
+        }}
+      />
     </React.Fragment>
   );
 };
