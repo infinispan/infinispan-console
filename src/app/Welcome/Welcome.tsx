@@ -21,7 +21,7 @@ import {
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
 import { CatalogIcon, DownloadIcon, GithubIcon, UnknownIcon } from '@patternfly/react-icons';
-import { chart_color_blue_500 } from '@patternfly/react-tokens';
+import { chart_color_blue_500, chart_global_Fill_Color_white } from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackground/ConsoleBackground';
 import { Support } from '@app/Support/Support';
 import { KeycloakService } from '@services/keycloakService';
@@ -68,47 +68,36 @@ const Welcome = (props) => {
       return <Alert variant="danger" title="Server error. Check navigator logs" />;
     }
 
+    let onClickGoToConsole;
     if (authState == 'HTTP_LOGIN') {
-      return (
-        <Button
-          onClick={() => {
-            ConsoleServices.authentication()
-              .loginLink()
-              .then((r) => {
-                if (r.success) {
-                  logUser();
-                  navigate('/' + location.search);
-                  // history.push('/' + history.location.search);
-                } else {
-                  // Do nothing
-                }
-              });
-          }}
-          variant={'control'}
-        >
-          <Text>{goToTheConsole}</Text>
-        </Button>
-      );
-    }
-
-    if (authState == 'NOT_READY') {
-      return (
-        <Button size="lg" onClick={() => setSupportOpen(true)} variant={'control'}>
-          {goToTheConsole}
-        </Button>
-      );
-    }
-
-    if (authState == 'READY') {
-      return (
-        <Button size="lg" onClick={() => notSecuredModeOn()} variant={'control'}>
-          {goToTheConsole}
-        </Button>
-      );
+      onClickGoToConsole = () => {
+        ConsoleServices.authentication()
+          .loginLink()
+          .then((r) => {
+            if (r.success) {
+              logUser();
+              navigate('/' + location.search);
+              // history.push('/' + history.location.search);
+            } else {
+              // Do nothing
+            }
+          });
+      };
+    } else if (authState == 'NOT_READY') {
+      onClickGoToConsole = () => setSupportOpen(true);
+    } else if (authState == 'READY') {
+      onClickGoToConsole = () => notSecuredModeOn();
+    } else {
+      onClickGoToConsole = () => login();
     }
 
     return (
-      <Button size="lg" onClick={() => login()} variant={'control'}>
+      <Button size="lg"
+              onClick={onClickGoToConsole}
+              style={{ backgroundColor: chart_color_blue_500.value,
+                color: chart_global_Fill_Color_white.value }}
+
+      >
         {goToTheConsole}
       </Button>
     );
