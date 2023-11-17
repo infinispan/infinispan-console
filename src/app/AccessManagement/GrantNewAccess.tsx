@@ -18,12 +18,14 @@ import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { useFetchAvailableRoles } from '@app/services/rolesHook';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { useFetchAvailablePrincipals, useGrantAccess } from '@app/services/principalsHook';
+import { useFetchAvailableUsers } from '@app/services/userManagementHook';
 
 const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { roles } = useFetchAvailableRoles();
   const { principals } = useFetchAvailablePrincipals();
+  const { realms } = useFetchAvailableUsers();
   const rolesOptions = () => {
     const array: SelectOptionProps[] = [];
     roles.forEach((role) => {
@@ -60,6 +62,19 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
     }
   }, [selectedRoles]);
 
+  const userNameExist = (principalName: string): boolean => {
+    let found = false;
+    realms.forEach((value, key) => {
+      if (found) {
+        return;
+      }
+      if (value.includes(principalName)) {
+        found = true;
+      }
+    });
+    return found;
+  };
+
   const handleSubmit = () => {
     let isValid = true;
     const trimmedPrincipalName = principalName.value.trim();
@@ -79,7 +94,16 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
         invalidText: t('access-management.principals.modal-principal-exists', { name: trimmedPrincipalName }),
         validated: 'error'
       });
+    } else if (userNameExist(trimmedPrincipalName)) {
+      isValid = false;
+      setPrincipalName({
+        ...principalName,
+        isValid: isValid,
+        invalidText: t('access-management.principals.modal-user-exists', { name: trimmedPrincipalName }),
+        validated: 'error'
+      });
     }
+
     // validates permissions
     if (selectedRoles.length == 0) {
       isValid = false;

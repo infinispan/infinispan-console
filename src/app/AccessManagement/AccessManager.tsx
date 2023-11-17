@@ -26,12 +26,14 @@ import { RoleTableDisplay } from '@app/AccessManagement/RoleTableDisplay';
 import { FlushRoleCacheModal } from '@app/AccessManagement/FlushRoleCacheModal';
 import { PrincipalTableDisplay } from '@app/AccessManagement/PrincipalTableDisplay';
 import { IAction } from '@patternfly/react-table';
+import { UsersTableDisplay } from '@app/AccessManagement/UsersTableDisplay';
 
 const AccessManager = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [activeTabKey, setActiveTabKey] = useState<'roles' | 'principals'>('roles');
+  const [activeTabKey, setActiveTabKey] = useState<'roles' | 'users' | 'principals'>('roles');
   const [showRoles, setShowRoles] = useState(true);
+  const [showUsers, setShowUsers] = useState(false);
   const [showAccessControl, setShowAccessControl] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isFlushCache, setIsFlushCache] = useState(false);
@@ -54,11 +56,13 @@ const AccessManager = () => {
     setActiveTabKey(tabIndex);
     setShowRoles(tabIndex == 'roles');
     setShowAccessControl(tabIndex == 'principals');
+    setShowUsers(tabIndex == 'users');
   };
 
   const buildTabs = () => {
     const tabs: AccessTab[] = [
       { name: t('access-management.tab-roles'), key: 'roles' },
+      { name: t('access-management.tab-users'), key: 'users' },
       { name: t('access-management.tab-access-control'), key: 'principals' }
     ];
 
@@ -86,6 +90,7 @@ const AccessManager = () => {
       <CardBody>
         {showRoles && <RoleTableDisplay />}
         {showAccessControl && <PrincipalTableDisplay />}
+        {showUsers && <UsersTableDisplay />}
       </CardBody>
     </Card>
   );

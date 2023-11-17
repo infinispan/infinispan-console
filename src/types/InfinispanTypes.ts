@@ -505,3 +505,8 @@ interface Principal {
   name: string;
   roles: string[];
 }
+
+interface Realm {
+  name: string;
+  users: string[];
+}

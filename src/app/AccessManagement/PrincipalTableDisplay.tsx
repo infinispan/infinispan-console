@@ -14,6 +14,8 @@ import {
   LabelGroup,
   Pagination,
   SearchInput,
+  Text,
+  TextContent,
   Title,
   Toolbar,
   ToolbarContent,

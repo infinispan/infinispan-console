@@ -92,11 +92,10 @@ const Welcome = (props) => {
     }
 
     return (
-      <Button size="lg"
-              onClick={onClickGoToConsole}
-              style={{ backgroundColor: chart_color_blue_500.value,
-                color: chart_global_Fill_Color_white.value }}
-
+      <Button
+        size="lg"
+        onClick={onClickGoToConsole}
+        style={{ backgroundColor: chart_color_blue_500.value, color: chart_global_Fill_Color_white.value }}
       >
         {goToTheConsole}
       </Button>

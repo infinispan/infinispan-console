@@ -265,6 +265,18 @@ export class SecurityService {
   }
 
   /**
+   * Retrieve security users
+   *
+   */
+  public async getSecurityUsers(): Promise<Either<ActionResponse, Map<string, string[]>>> {
+    return this.fetchCaller.get(this.endpoint + '/users', (data) => {
+      const realms = new Map<string, string[]>();
+      Object.keys(data).forEach((r) => realms.set(r, data[r]));
+      return realms;
+    });
+  }
+
+  /**
    * Retrieve security principals
    *
    */
