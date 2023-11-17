@@ -130,7 +130,8 @@ describe('Counters CRUD', () => {
 
         cy.get("#delete-counter-modal").should('not.exist');
         cy.contains("Counter weak-5 has been deleted.");
-        cy.get("[aria-label='counters-table-label']").contains("td", "weak-5").should("not.exist");
+        cy.get("[data-cy=counter-search]").type('weak-5')
+        cy.contains('No result found');
       });
 
       it ('successfully deletes strong counter', () => {
