@@ -361,6 +361,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
 
   const searchInput = (
     <SearchInput
+      data-cy={'counter-search'}
       placeholder={t('cache-managers.counters.search')}
       value={searchValue}
       onChange={(_event, val) => setSearchValue(val)}
