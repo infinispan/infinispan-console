@@ -73,7 +73,7 @@ describe('Global stats', () => {
   it('successfully creates, updates and removes a principal', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
     cy.get('[aria-label=nav-item-principals').click();
-    cy.contains('No principals').click();
+    cy.contains('No principal role mappers').click();
     cy.get('[data-cy=grantAccessPrincipalButton').click();
     cy.get("[aria-label=principal-name-input]").type("aPrincipal");
     cy.get("[data-cy=menu-toogle-roles]").click();

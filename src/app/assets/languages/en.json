@@ -7,7 +7,8 @@
     "configuration-docs-link": "https://infinispan.org/docs/stable/titles/configuring/configuring.html",
     "default-roles-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#default-user-roles_server-getting-started",
     "ickle-query-docs-link": "https://infinispan.org/docs/stable/titles/query/query.html#ickle-query-syntax_ickle-query-language",
-    "principals-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#configuring-role-mappers_rbac-remote"
+    "principals-docs-link": "https://infinispan.org/docs/stable/titles/server/server.html#configuring-role-mappers_rbac-remote",
+    "security-realms-docs-link": "https://infinispan.org/docs/stable/titles/security/security.html#security-realms"
   },
   "common": {
     "actions": {
@@ -873,6 +874,7 @@
     "title": "Access management",
     "description": "Access management allows you to control {{brandname}} Server administration.",
     "tab-roles": "Roles",
+    "tab-users": "Users",
     "tab-access-control": "Access control",
     "flush-cache-action": "Flush cache",
     "flush-cache-success": "Access control list cache successfully flushed across the cluster",
@@ -965,13 +967,14 @@
       "loading-principals": "Loading principals",
       "loading-principals-error": "Unexpected error loading principals",
       "grant-access": "Grant access",
-      "no-principals-status": "No principals",
+      "no-principals-status": "No principal role mappers",
       "modal-grant-title": "Grant new access",
       "modal-grant-description": "Grant access to {{brandname}} to a principal by granting roles.",
       "modal-principal-name": "Principal",
       "modal-principal-name-is-required": "Principal role mapper name is required",
       "modal-roles-is-required": "Select at least one role",
       "modal-principal-exists": "Principal role mapper {{name}} already exists",
+      "modal-user-exists": "A user named {{name}} exists. You don't need to create a principal mapper.",
       "modal-roles": "Roles",
       "modal-roles-list-placeholder": "Select roles",
       "grant-success": "Access granted to {{principalName}}.",
@@ -988,6 +991,13 @@
       "modal-remove-description-2": "You can always recreate the principal after.",
       "modal-manage-roles-title": "Manage access",
       "modal-manage-roles-description": "Grant or deny roles to a principal."
+    },
+    "users": {
+      "user-name": "User name",
+      "realm-label": "Security realm",
+      "search-placeholder": "User name",
+      "user-name-tooltip": "Known user names in the selected security realm.",
+      "users-hint-link": "Learn more about users in the Security Guide."
     }
   }
 }
