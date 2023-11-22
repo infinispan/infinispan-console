@@ -12,8 +12,7 @@ describe('Global stats', () => {
     cy.contains('Cluster distribution');
   });
 
-  //View all caches href
-  it('successfully loads Global stats', () => {
+  it('successfully links to caches link', () => {
     //click View all caches should navigate to console page
     cy.get('[data-cy="viewCachesLink"]').click();
     //Verify that page is properly loaded after click;
@@ -24,8 +23,7 @@ describe('Global stats', () => {
     cy.contains('java-serialized-cache');
   });
 
-  //View Cluster Status href
-  it('successfully loads Global stats', () => {
+  it('successfully links to cluster status', () => {
     //click View Cluster Status should navigate to cluster-membership page
     cy.get('[data-cy="viewClustersLink"]').click();
 
@@ -33,4 +31,14 @@ describe('Global stats', () => {
     cy.get('h1').should('contain', 'Cluster membership');
     cy.contains('Healthy');
   });
+
+  it('successfully resets and refresh global metrics', () => {
+    cy.get('[data-cy="globalStatsActions"]').click();
+    cy.get('[data-cy="clearAccessMetricsButton"]').click();
+    cy.contains('Permanently clear global metrics?');
+    cy.get('[data-cy="confirmButton"]').click();
+    cy.get('[data-cy="globalStatsActions"]').click();
+    cy.get('[data-cy="refreshAction"]').click();
+  });
+
 });

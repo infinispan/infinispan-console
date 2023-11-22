@@ -49,12 +49,14 @@ describe('Cache Detail Overview', () => {
     //Opening indexed-cache cache page.
     cy.login(Cypress.env("username"), Cypress.env("password"), '/cache/indexed-cache');
 
+    cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
     cy.contains("org.infinispan.Person");
     cy.contains("3 k");
     cy.get("[data-cy=backButton]").click();
     cy.contains("Elaia");
 
+    cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
     cy.get("[data-cy=clearIndexButton]").click();
     cy.contains("Permanently clear index?");
@@ -76,6 +78,7 @@ describe('Cache Detail Overview', () => {
 
     cy.get("[data-cy=backButton]").click();
     cy.contains("Elaia");
+    cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
     cy.contains("3 k");
   })

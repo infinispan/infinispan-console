@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {
   Button,
   ButtonVariant,
@@ -6,19 +7,23 @@ import {
   CardBody,
   CardTitle,
   Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
   EmptyState,
   EmptyStateBody,
+  EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
   Grid,
   GridItem,
   Level,
   LevelItem,
+  MenuToggle,
+  MenuToggleElement,
   PageSection,
   PageSectionVariants,
   Spinner,
-  Stack,
-  StackItem,
   Text,
   TextContent,
   TextList,
@@ -26,10 +31,9 @@ import {
   TextListItemVariants,
   TextListVariants,
   TextVariants,
-  EmptyStateHeader,
-  ToolbarGroup,
-  ToolbarContent,
   Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
 import { ArrowIcon, CubesIcon, RedoIcon } from '@patternfly/react-icons';
@@ -40,18 +44,20 @@ import { useFetchGlobalStats } from '@app/services/statsHook';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import ClusterDistributionChart from '@app/GlobalStats/ClusterDistributionChart';
-import { global_spacer_sm } from '@patternfly/react-tokens';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
 const GlobalStats = () => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
   const { stats, error, loading, reload } = useFetchGlobalStats();
+  const { connectedUser } = useConnectedUser();
+  const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const allOps = () => {
     return stats.hits + stats.misses + stats.remove_hits + stats.remove_misses + stats.stores + stats.evictions;
-    if (stats?.statistics_enabled) {
-    }
-    return 0;
   };
 
   const clusterStatsCard = () => {
@@ -117,6 +123,26 @@ const GlobalStats = () => {
         <TextListItem component={TextListItemVariants.dd}>
           <PopoverHelp name={name} label={label} content={tooltip} text={label} />
         </TextListItem>
+      </React.Fragment>
+    );
+  };
+
+  const buildClearStatsItem = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return '';
+    }
+
+    return (
+      <React.Fragment>
+        <Divider component="li" />
+        <DropdownItem
+          value={0}
+          key="clearAccessMetricsButton"
+          data-cy="clearAccessMetricsButton"
+          onClick={() => setClearMetricsModalOpen(true)}
+        >
+          {t('caches.cache-metrics.button-clear-access-stats')}
+        </DropdownItem>
       </React.Fragment>
     );
   };
@@ -332,18 +358,31 @@ const GlobalStats = () => {
     }
   };
 
-  const buildRefreshButton = (
-    <Button
-      style={{ paddingLeft: '0' }}
-      type="button"
-      aria-label={'refresh'}
-      variant="link"
-      onClick={reload}
-      icon={<RedoIcon />}
-      iconPosition="left"
-    >
-      {t('common.actions.refresh')}
-    </Button>
+  const displayActions = (
+    <ToolbarGroup align={{ default: 'alignRight' }}>
+      <ToolbarItem>
+        <Dropdown
+          isOpen={isOpen}
+          popperProps={{ position: 'right' }}
+          onSelect={() => setIsOpen(false)}
+          onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle ref={toggleRef} data-cy="globalStatsActions" onClick={() => setIsOpen(!isOpen)} isExpanded={isOpen}>
+              {t('common.actions.actions')}
+            </MenuToggle>
+          )}
+          ouiaId="globalAccessDropdown"
+          shouldFocusToggleOnSelect
+        >
+          <DropdownList>
+            <DropdownItem value={0} key="refreshAction" data-cy="refreshAction" onClick={reload} icon={<RedoIcon />}>
+              {t('common.actions.refresh')}
+            </DropdownItem>
+            {buildClearStatsItem()}
+          </DropdownList>
+        </Dropdown>
+      </ToolbarItem>
+    </ToolbarGroup>
   );
 
   return (
@@ -359,13 +398,20 @@ const GlobalStats = () => {
                 </TextContent>
               </ToolbarItem>
             </ToolbarGroup>
-            <ToolbarGroup align={{ default: 'alignRight' }}>
-              <ToolbarItem>{buildRefreshButton}</ToolbarItem>
-            </ToolbarGroup>
+            {displayActions}
           </ToolbarContent>
         </Toolbar>
       </PageSection>
       <PageSection>{buildStats()}</PageSection>
+      <ClearMetrics
+        name={stats.name}
+        isModalOpen={isClearMetricsModalOpen}
+        closeModal={() => {
+          reload();
+          setClearMetricsModalOpen(false);
+        }}
+        type={'global-stats'}
+      />
     </React.Fragment>
   );
 };

@@ -38,7 +38,7 @@ export class ContainerService {
   }
 
   private getCacheManager(name: string): Promise<Either<ActionResponse, CacheManager>> {
-    let healthPromise: Promise<Either<ActionResponse, String>> = this.fetchCaller.get(
+    const healthPromise: Promise<Either<ActionResponse, String>> = this.fetchCaller.get(
       this.endpoint + '/cache-managers/' + name + '/health',
       (data) => data.cluster_health.health_status
     );
@@ -85,10 +85,23 @@ export class ContainerService {
    * @param name, the name of the cache manager
    */
   public async getCacheManagerStats(name: string): Promise<Either<ActionResponse, CacheManagerStats>> {
-    return this.fetchCaller.get(
-      this.endpoint + '/cache-managers/' + name + '/stats',
-      (data) => <CacheManagerStats>data
-    );
+    return this.fetchCaller.get(this.endpoint + '/cache-managers/' + name + '/stats', (data) => {
+      const stats = <CacheManagerStats>data;
+      stats.name = name;
+      return stats;
+    });
+  }
+
+  /**
+   * Clear cache manager stats
+   */
+  public async clearCacheManagerStats(name: string): Promise<ActionResponse> {
+    const clearUrl = this.endpoint + '/cache-managers/' + name + '/stats?action=reset';
+    return this.fetchCaller.post({
+      url: clearUrl,
+      successMessage: `Global metrics cleared.`,
+      errorMessage: `Unexpected error when clearing global metrics.`
+    });
   }
 
   /**

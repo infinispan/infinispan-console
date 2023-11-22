@@ -83,11 +83,12 @@ export class SecurityService {
    * Console ACL
    * @param user
    */
-  public hasConsoleACL(consoleACL: ConsoleACL, user: ConnectedUser): boolean {
+  public hasConsoleACL(consoleACL: ConsoleACL, user: ConnectedUser | undefined): boolean {
     if (this.authenticationService.isNotSecured()) {
       return true;
     }
-    if (!user.acl) {
+
+    if (!user || !user.acl) {
       return false;
     }
     const globalAcl = user.acl.global;

@@ -38,14 +38,6 @@ const AccessManager = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFlushCache, setIsFlushCache] = useState(false);
 
-  const onToggleClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
-    setIsOpen(false);
-  };
-
   interface AccessTab {
     key: string;
     name: string;
@@ -100,10 +92,10 @@ const AccessManager = () => {
       <ToolbarItem>
         <Dropdown
           isOpen={isOpen}
-          onSelect={onSelect}
+          onSelect={() => setIsOpen(false)}
           onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle ref={toggleRef} data-cy="aclActions" onClick={onToggleClick} isExpanded={isOpen}>
+            <MenuToggle ref={toggleRef} data-cy="aclActions" onClick={() => setIsOpen(!isOpen)} isExpanded={isOpen}>
               {t('common.actions.actions')}
             </MenuToggle>
           )}

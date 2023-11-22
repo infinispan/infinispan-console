@@ -9,6 +9,9 @@ import {
   Card,
   CardBody,
   Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
@@ -18,6 +21,8 @@ import {
   EmptyStateVariant,
   Label,
   LabelGroup,
+  MenuToggle,
+  MenuToggleElement,
   PageSection,
   PageSectionVariants,
   Spinner,
@@ -40,14 +45,7 @@ import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { global_BackgroundColor_100, global_danger_color_200, global_info_color_200 } from '@patternfly/react-tokens';
-import {
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  InfoCircleIcon,
-  InfoIcon,
-  RedoIcon,
-  ArrowRightIcon
-} from '@patternfly/react-icons';
+import { ExclamationCircleIcon, InfoCircleIcon, InfoIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
 import { useCacheDetail } from '@app/services/cachesHook';
@@ -59,10 +57,12 @@ import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { EncodingType } from '@services/infinispanRefData';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { useNavigate } from 'react-router';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
   const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
@@ -70,6 +70,7 @@ const DetailCache = (props: { cacheName: string }) => {
   const { loading, error, cache, loadCache } = useCacheDetail();
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     loadCache(cacheName);
@@ -246,24 +247,31 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
-  const buildBackupsManage = () => {
-    if (!cache?.features.hasRemoteBackup) return;
+  const displayBackupsManagement = () => {
+    return cache?.features.hasRemoteBackup && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+  };
 
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      return;
-    }
+  const displayIndexManage = () => {
+    return cache?.features.indexed;
+  };
+
+  const buildBackupsManage = () => {
+    if (!displayBackupsManagement()) return;
+
     return (
-      <ToolbarItem>
-        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
-        <Link
-          to={{
-            pathname: encodeURIComponent(cacheName) + '/backups',
+      <DropdownItem
+        value={'backupsManage'}
+        key="manageBackupsLink"
+        data-cy="manageBackupsLink"
+        onClick={(ev: any) =>
+          navigate({
+            pathname: '/cache/' + encodeURIComponent(cacheName) + '/backups',
             search: location.search
-          }}
-        >
-          <Button variant={ButtonVariant.link}>{t('caches.actions.action-manage-backups')}</Button>
-        </Link>
-      </ToolbarItem>
+          })
+        }
+      >
+        {t('caches.actions.action-manage-backups')}
+      </DropdownItem>
     );
   };
 
@@ -281,40 +289,38 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const buildIndexManage = () => {
-    if (!cache?.features.indexed) return;
+    if (!displayIndexManage()) return;
     return (
-      <ToolbarItem>
-        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetMd' }} />
-        <Link
-          to={{
+      <DropdownItem
+        value={'indexManage'}
+        key="manageIndexesLink"
+        data-cy="manageIndexesLink"
+        onClick={(ev: any) =>
+          navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/indexing',
             search: location.search
-          }}
-        >
-          <Button data-cy="manageIndexesLink" variant={ButtonVariant.link}>
-            {t('caches.actions.action-manage-indexes')}
-          </Button>
-        </Link>
-      </ToolbarItem>
+          })
+        }
+      >
+        {t('caches.actions.action-manage-indexes')}
+      </DropdownItem>
     );
   };
 
-  const buildRefreshButton = () => {
+  const buildRefresh = () => {
     return (
-      <ToolbarItem>
-        <Button
-          type="button"
-          aria-label={'refresh'}
-          variant="link"
-          onClick={() => {
-            loadCache(cacheName);
-          }}
+      <React.Fragment>
+        {(displayBackupsManagement() || displayIndexManage()) && <Divider component="li" />}
+        <DropdownItem
+          value={'refresh'}
+          key="refreshAction"
+          data-cy="refreshAction"
+          onClick={() => loadCache(cacheName)}
           icon={<RedoIcon />}
-          iconPosition="left"
         >
           {t('common.actions.refresh')}
-        </Button>
-      </ToolbarItem>
+        </DropdownItem>
+      </React.Fragment>
     );
   };
 
@@ -342,10 +348,6 @@ const DetailCache = (props: { cacheName: string }) => {
             {buildDisplayReindexing()}
           </ToolbarGroup>
           <ToolbarGroup variant={'filter-group'}>{buildFeaturesChip()}</ToolbarGroup>
-          <ToolbarGroup variant={'button-group'}>
-            {buildBackupsManage()}
-            {buildIndexManage()}
-          </ToolbarGroup>
         </ToolbarContent>
       </Toolbar>
     );
@@ -391,6 +393,37 @@ const DetailCache = (props: { cacheName: string }) => {
       />
     );
   };
+
+  const displayActions = (
+    <ToolbarGroup align={{ default: 'alignRight' }}>
+      <ToolbarItem>
+        <Dropdown
+          popperProps={{ position: 'right' }}
+          isOpen={isOpen}
+          onSelect={() => setIsOpen(false)}
+          onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              data-cy="detailCacheActions"
+              onClick={() => setIsOpen(!isOpen)}
+              isExpanded={isOpen}
+            >
+              {t('common.actions.actions')}
+            </MenuToggle>
+          )}
+          ouiaId="detailCacheDropdown"
+          shouldFocusToggleOnSelect
+        >
+          <DropdownList>
+            {buildIndexManage()}
+            {buildBackupsManage()}
+            {buildRefresh()}
+          </DropdownList>
+        </Dropdown>
+      </ToolbarItem>
+    </ToolbarGroup>
+  );
 
   const buildCacheHeader = () => {
     if (loading || !cache) {
@@ -439,7 +472,7 @@ const DetailCache = (props: { cacheName: string }) => {
                 <CacheTypeBadge cacheType={cache.type} small={true} cacheName={cache.name} />
               </ToolbarItem>
             </ToolbarGroup>
-            <ToolbarGroup align={{ default: 'alignRight' }}>{buildRefreshButton()}</ToolbarGroup>
+            {displayActions}
           </ToolbarContent>
         </Toolbar>
         {buildShowMorePanel()}
