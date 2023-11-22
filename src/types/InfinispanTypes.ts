@@ -29,6 +29,7 @@ interface ClusterMember {
 }
 
 interface CacheManagerStats {
+  name: string;
   statistics_enabled: boolean;
   time_since_start?: number;
   time_since_reset?: number;

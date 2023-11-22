@@ -275,7 +275,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       {displayDataDistribution && <GridItem span={8}> {buildDataDistribution()}</GridItem>}
       <GridItem span={4}>
         <CacheLifecycle stats={stats} />
-        <DataAccess stats={stats} />
+        <DataAccess cacheName={props.cacheName} stats={stats} />
       </GridItem>
       <GridItem span={displayDataDistribution ? 12 : 8}>{buildQueryStats()}</GridItem>
     </Grid>

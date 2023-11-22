@@ -19,7 +19,7 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { ClearQueryMetrics } from '@app/Caches/Query/ClearQueryMetrics';
+import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
@@ -120,10 +120,11 @@ const QueryMetrics = (props: { cacheName: string }) => {
         >
           {t('caches.query.button-clear-query-stats')}
         </Button>
-        <ClearQueryMetrics
-          cacheName={props.cacheName}
+        <ClearMetrics
+          name={props.cacheName}
           isModalOpen={isClearMetricsModalOpen}
           closeModal={closeClearMetricsModal}
+          type={'query'}
         />
       </LevelItem>
     );

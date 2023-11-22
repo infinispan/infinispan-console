@@ -13,6 +13,8 @@ describe('RBAC Functionality Tests', () => {
     checkMenu(false);
     cy.login(monitorUserName, Cypress.env('password'), '/cache/default');
     checkNoEntriesTabView(false);
+    cy.login(monitorUserName, Cypress.env('password'), '/global-stats');
+    checkGlobalStatsView(false)
   });
 
   it('successfully logins and performs actions with observer user', () => {
@@ -36,6 +38,8 @@ describe('RBAC Functionality Tests', () => {
     checkCountersPageView();
     cy.login(observerUserName, Cypress.env('password'), '/cache/default');
     checkNoEntriesTabView(false);
+    cy.login(observerUserName, Cypress.env('password'), '/global-stats');
+    checkGlobalStatsView(false)
   });
 
   it('successfully logins and performs actions with application user', () => {
@@ -53,6 +57,8 @@ describe('RBAC Functionality Tests', () => {
     checkCountersPageView();
     cy.login(applicationUserName, Cypress.env('password'), '/cache/default');
     checkNoEntriesTabView(false);
+    cy.login(applicationUserName, Cypress.env('password'), '/global-stats');
+    checkGlobalStatsView(false)
   });
 
   it('successfully logins and performs actions with deployer user', () => {
@@ -70,6 +76,8 @@ describe('RBAC Functionality Tests', () => {
     checkCountersPageView();
     cy.login(deployerUserName, Cypress.env('password'), '/cache/default');
     checkNoEntriesTabView(false);
+    cy.login(deployerUserName, Cypress.env('password'), '/global-stats');
+    checkGlobalStatsView(false)
   });
 
   it('successfully logins and performs actions with admin user', () => {
@@ -181,6 +189,7 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=queriesTab]').should('exist');
     }
 
+    cy.get('[data-cy=detailCacheActions]').click();
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');
@@ -277,6 +286,7 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=cacheConfigurationTab]').click();
       cy.contains('authorization').should('not.exist');
     }
+    cy.get('[data-cy=detailCacheActions]').click();
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');
@@ -410,6 +420,10 @@ describe('RBAC Functionality Tests', () => {
       // metrics tab is visible
       cy.contains('Data access').should('exist');
     }
+  }
 
+  function checkGlobalStatsView() {
+    cy.get('[data-cy="globalStatsActions"]').click();
+    cy.contains('[data-cy="clearAccessMetricsButton"]').should('not.exist');
   }
 });

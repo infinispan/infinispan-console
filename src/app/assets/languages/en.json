@@ -640,16 +640,15 @@
       "view-all-query-stats": "View all query statistics",
       "query-metrics-title": "Query metrics",
       "query-metrics-tooltip": "Average time, in nanoseconds, for queries on this cache.",
-      "button-clear-query-stats": "Clear all stats",
+      "button-clear-query-stats": "Clear all metrics",
       "stat-max": "Max",
       "stat-count": "Count",
       "stat-average": "Average",
       "stat-slowest": "Slowest",
-      "modal-clear-query-stats": "Permanently clear query stats?",
-      "modal-clear-query-stats-label": "Clear query stats modal",
-      "modal-button-query-clear-stats": "Clear stats",
-      "modal-button-cancel": "Cancel",
-      "modal-button-query-clear-stats-body": "All query statistics in this cluster will be removed."
+      "modal-clear-stats": "Permanently clear query metrics?",
+      "modal-clear-stats-label": "Clear query metrics modal",
+      "modal-button-clear-stats": "Clear metrics",
+      "modal-button-clear-stats-body": "All query metrics in this cluster will be removed."
     },
     "index": {
       "title": "Index management",
@@ -755,7 +754,12 @@
       "cache-started-since": "Time since start",
       "cache-reset-since": "Time since reset",
       "cache-started-since-info": "Elapsed time in seconds since the cache was started.",
-      "cache-reset-since-info": "Elapsed time in seconds since the statistics were last reset."
+      "cache-reset-since-info": "Elapsed time in seconds since the statistics were last reset.",
+      "button-clear-access-stats": "Clear all metrics",
+      "modal-clear-stats": "Permanently clear data access metrics?",
+      "modal-clear-stats-label": "Clear cache access metrics modal",
+      "modal-button-clear-stats": "Clear metrics",
+      "modal-button-clear-stats-body": "All data access metrics in this cache will be removed."
     }
   },
   "schemas": {
@@ -837,7 +841,11 @@
     "cluster-distribution-option-memory-available": "Memory available",
     "cluster-distribution-option-no-memory": "No memory",
     "global-stats-enable-msg": "Global statistics for all caches in the cluster",
-    "global-stats-disable-msg": "You must enable global statistics in the Cache Manager configuration to display values."
+    "global-stats-disable-msg": "You must enable global statistics in the Cache Manager configuration to display values.",
+    "modal-clear-stats": "Permanently clear global metrics?",
+    "modal-clear-stats-label": "Clear global stats modal",
+    "modal-button-clear-stats": "Clear metrics",
+    "modal-button-clear-stats-body": "All data access global metrics in this cluster will be removed."
   },
   "cluster-membership": {
     "title": "Cluster membership",

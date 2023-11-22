@@ -608,4 +608,17 @@ export class CacheService {
       new Map().set('secured', data['secured']).set('non-secured', data['non-secured'])
     );
   }
+
+  /**
+   * Clear cache stats
+   * @param cacheName, the name of the cache
+   */
+  public async clearStats(cacheName: string): Promise<ActionResponse> {
+    const clearUrl = this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=stats-reset';
+    return this.fetchCaller.post({
+      url: clearUrl,
+      successMessage: `Cache stats ${cacheName} cleared.`,
+      errorMessage: `Unexpected error when clearing the cache ${cacheName} stats.`
+    });
+  }
 }

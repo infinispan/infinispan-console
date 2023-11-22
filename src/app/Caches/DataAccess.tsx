@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardBody,
@@ -9,16 +9,26 @@ import {
   TextList,
   TextListItem,
   TextListVariants,
-  TextListItemVariants
+  TextListItemVariants,
+  LevelItem,
+  Level,
+  Button,
+  ButtonVariant
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import displayUtils from '@services/displayUtils';
 import { global_spacer_sm } from '@patternfly/react-tokens';
+import { ConsoleServices } from '@services/ConsoleServices';
+import { ConsoleACL } from '@services/securityService';
+import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
+import { useConnectedUser } from '@app/services/userManagementHook';
 
-const DataAccess = (props: { stats: CacheStats }) => {
+const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
+  const { connectedUser } = useConnectedUser();
+  const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(false);
+
   const all =
     props.stats.hits +
     props.stats.retrievals +
@@ -41,9 +51,38 @@ const DataAccess = (props: { stats: CacheStats }) => {
     );
   };
 
+  const buildClearStatsButton = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return '';
+    }
+
+    return (
+      <LevelItem>
+        <Button
+          data-cy="clearAccessMetricsButton"
+          variant={ButtonVariant.danger}
+          onClick={() => setClearMetricsModalOpen(true)}
+        >
+          {t('caches.cache-metrics.button-clear-access-stats')}
+        </Button>
+        <ClearMetrics
+          name={props.cacheName}
+          isModalOpen={isClearMetricsModalOpen}
+          closeModal={() => setClearMetricsModalOpen(false)}
+          type={'cache-metrics'}
+        />
+      </LevelItem>
+    );
+  };
+
   return (
     <Card>
-      <CardTitle>{t('caches.cache-metrics.data-access-title')}</CardTitle>
+      <CardTitle>
+        <Level id={'access-stats'}>
+          <LevelItem>{t('caches.cache-metrics.data-access-title')}</LevelItem>
+          {buildClearStatsButton()}
+        </Level>
+      </CardTitle>
       <CardBody>
         <TextContent>
           <TextList component={TextListVariants.dl}>

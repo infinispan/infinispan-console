@@ -33,6 +33,15 @@ describe('Cache Metrics Overview', () => {
     verifyCacheMetrics(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   });
 
+  it('successfully resets metrics', () => {
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/people');
+    cy.get('[data-cy=cacheMetricsTab]').click();
+    cy.get('[data-cy=clearAccessMetricsButton]').click();
+    cy.contains('Permanently clear data access metrics?');
+    cy.get('[data-cy=confirmButton]').click();
+    cy.contains('Cache stats people cleared');
+  });
+
   // TODO: Add a test of good stats display with a cache that does not change and provided different metrics
 
   function verifyCacheMetrics(
