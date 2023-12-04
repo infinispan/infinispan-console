@@ -367,7 +367,12 @@ const GlobalStats = () => {
           onSelect={() => setIsOpen(false)}
           onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle ref={toggleRef} data-cy="globalStatsActions" onClick={() => setIsOpen(!isOpen)} isExpanded={isOpen}>
+            <MenuToggle
+              ref={toggleRef}
+              data-cy="globalStatsActions"
+              onClick={() => setIsOpen(!isOpen)}
+              isExpanded={isOpen}
+            >
               {t('common.actions.actions')}
             </MenuToggle>
           )}

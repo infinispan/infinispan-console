@@ -112,7 +112,7 @@ export class FetchCaller {
   }
 
   private createAuthenticatedHeader = (): Headers => {
-    let headers = new Headers();
+    const headers = new Headers();
     if (KeycloakService.Instance.isInitialized()) {
       headers.append('Authorization', 'Bearer ' + localStorage.getItem('react-token'));
     } else if (this.user && this.password) {

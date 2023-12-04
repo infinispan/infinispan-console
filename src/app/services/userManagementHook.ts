@@ -4,8 +4,12 @@ import { ConsoleServices } from '@services/ConsoleServices';
 
 export function useConnectedUser() {
   const { connectedUser, error, notSecuredModeOn, logUser, notSecured, reloadAcl } = useContext(UserContext);
-
   return { connectedUser, error, logUser, notSecuredModeOn, notSecured, reloadAcl };
+}
+
+export function useAppInitState() {
+  const { init } = useContext(UserContext);
+  return { init };
 }
 
 export function useFetchAvailableUsers() {
