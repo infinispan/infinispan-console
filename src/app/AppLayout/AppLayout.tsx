@@ -45,19 +45,19 @@ import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import { BarsIcon, ExternalLinkAltIcon, InfoCircleIcon, QuestionCircleIcon } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 
 interface IAppLayout {
-  init: string;
   children: React.ReactNode;
 }
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
+const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const { t } = useTranslation();
+  const { init } = useAppInitState();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();

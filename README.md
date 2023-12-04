@@ -129,26 +129,12 @@ If you run a server without any user or password, the 'Support' popup should be 
 
 ### Keycloak
 
-1. `docker run -p 8080:8080 -e KEYCLOAK_USER=keycloak -e KEYCLOAK_PASSWORD=keycloak --name keycloak jboss/keycloak:12.0.2`
-2. Connect to `http://localhost:8080` to access the Keycloak admin console.
-3. Select `Add realm` and then upload `data/infinispan-keycloak-realm.json`.
-4. Create an Infinispan server configuration with the following security realm:
+1. Add an alias between 127.0.0.1  keycloak in the 'etc/hosts' file.
+2. Run the Docker compose file under the folder 'keycloak'. It will spin up an Infinispan Server with keycloak realm and Keycloak server.
 
-```xml
-  <security>
-    <security-realms>
-      <security-realm name="default">
-        <token-realm name="infinispan" auth-server-url="http://localhost:8080/auth/" client-id="infinispan-console">
-          <oauth2-introspection
-            introspection-url="http://localhost:8080/auth/realms/infinispan/protocol/openid-connect/token/introspect"
-            client-id="infinispan-server" client-secret="1fdca4ec-c416-47e0-867a-3d471af7050f"/>
-        </token-realm>
-      </security-realm>
-    </security-realms>
-  </security>
+```shell
+docker-compose up 
 ```
 
-You can also copy the security realm from `data/infinispan-security-realm.xml`.
-
-4. Run the console in dev mode. When you open the dev console in your browser, Keycloak prompts you for credentials.
-5. Enter the `admin/adminPassword` credentials. Keycloak redirects you to the dev console.
+3. Run the console in dev mode. When you open the dev console in your browser, Keycloak prompts you for credentials.
+4. Enter the `admin/adminPassword` credentials. Keycloak redirects you to the dev console.

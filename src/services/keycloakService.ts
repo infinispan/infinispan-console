@@ -2,7 +2,7 @@ import Keycloak, { KeycloakError, KeycloakLoginOptions } from 'keycloak-js';
 
 export class KeycloakService {
   private initialized = false;
-  public static keycloakAuth;
+  public static keycloakAuth: Keycloak;
   private static instance: KeycloakService = new KeycloakService();
 
   private constructor() {
@@ -22,12 +22,12 @@ export class KeycloakService {
 
       return new Promise((resolve, reject) => {
         KeycloakService.keycloakAuth
-          .init()
-          .success(() => {
+          .init({})
+          .then(() => {
             KeycloakService.Instance.initialized = true;
             resolve();
           })
-          .error((errorData: KeycloakError) => {
+          .catch((errorData: KeycloakError) => {
             reject(errorData);
           });
       });
@@ -46,10 +46,10 @@ export class KeycloakService {
     return new Promise<boolean>((resolve, reject) => {
       KeycloakService.keycloakAuth
         .login(options)
-        .success(() => {
+        .then(() => {
           resolve(true);
         })
-        .error(() => {
+        .catch(() => {
           reject(false);
         });
     });
@@ -80,7 +80,7 @@ export class KeycloakService {
           .then(() => {
             resolve(KeycloakService.keycloakAuth.token as string);
           })
-          .error(() => {
+          .catch(() => {
             reject('Failed to refresh token');
           });
       } else {

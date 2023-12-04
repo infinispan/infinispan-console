@@ -12,7 +12,7 @@ import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
 import { AccessManager } from '@app/AccessManagement/AccessManager';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
@@ -167,8 +167,9 @@ const ComponentWithTitleUpdates = (props: { appRoute: IAppRoute }) => {
   return props.appRoute.component;
 };
 
-const AppRoutes = (props: { init: string }) => {
+const AppRoutes = () => {
   const { connectedUser } = useConnectedUser();
+  const { init } = useAppInitState();
   return (
     <Routes>
       {routes.map((iroute, idx) => {
@@ -177,7 +178,7 @@ const AppRoutes = (props: { init: string }) => {
         }
         return <Route key={idx} path={iroute.path} element={<ComponentWithTitleUpdates appRoute={iroute} />} />;
       })}
-      <Route path={'/welcome'} element={<Welcome init={props.init} />} />
+      <Route path={'/welcome'} element={<Welcome init={init} />} />
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );
