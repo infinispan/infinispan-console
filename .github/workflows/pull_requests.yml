@@ -18,11 +18,11 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 12.16.3
+          node-version: 20.7.0
           cache: 'npm'
 
       - name: Install
-        run: npm ci
+        run: npm ci --force
 
       - name: Unit Test
         run: npm test
@@ -57,7 +57,7 @@ jobs:
           # Wait for server to startup
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
 
-      - name: Initialize Infnispan Server
+      - name: Initialize Infinispan Server
         run: cd data; bash ./create-data.sh admin password
 
       - name: Cypress run
