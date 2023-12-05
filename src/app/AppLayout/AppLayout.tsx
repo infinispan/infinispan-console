@@ -20,9 +20,6 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
   Tooltip
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/brand.svg';
@@ -37,19 +34,19 @@ import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
 
 interface IAppLayout {
-  init: string;
   children: React.ReactNode;
 }
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
+const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const history = useHistory();
-  const { connectedUser, notSecured, logUser } = useConnectedUser();
+  const { connectedUser } = useConnectedUser();
+  const { init } = useAppInitState();
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const logoProps = {
     target: '_self',
@@ -57,8 +54,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   };
 
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
-
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(true);
@@ -66,7 +61,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
-    history.listen((location, action) => {
+    history.listen((location) => {
       const isWelcomePage = location.pathname == '/welcome';
       setIsWelcomePage(isWelcomePage);
     });
@@ -121,7 +116,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ init, children }) => {
   ];
 
   const userActions = () => {
-    let chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
+    const chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
     if (chromeAgent || (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated())) {
       return (
         <PageHeaderTools>
