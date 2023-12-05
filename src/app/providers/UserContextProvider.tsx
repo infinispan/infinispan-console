@@ -11,7 +11,8 @@ const initialUserState = {
   notSecuredModeOn: () => {},
   reloadAcl: (): Promise<boolean> => {
     return Promise.resolve(true);
-  }
+  },
+  init: 'PENDING'
 };
 
 export const UserContext = React.createContext(initialUserState);
@@ -22,9 +23,56 @@ const UserContextProvider = ({ children }) => {
   const [notSecured, setNotSecured] = useState(initialUserState.notSecured);
   const [error, setError] = useState(initialUserState.error);
   const history = useHistory();
+  const [init, setInit] = useState<
+    'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN' | 'HTTP_LOGIN'
+  >('PENDING');
 
   useEffect(() => {
-    if (loadingAcl) {
+    if (init == 'PENDING') {
+      ConsoleServices.authentication()
+        .config()
+        .then((eitherAuth) => {
+          if (eitherAuth.isRight()) {
+            if (eitherAuth.value.keycloakConfig) {
+              // Keycloak
+              KeycloakService.init(eitherAuth.value.keycloakConfig)
+                .catch((err) => {
+                  console.error(err);
+                  setInit('SERVER_ERROR');
+                })
+                .then(() => {
+                  // if not welcome page
+                  if (!KeycloakService.Instance.authenticated()) {
+                    KeycloakService.Instance.login();
+                  }
+                  localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
+                  localStorage.setItem('react-refresh-token', KeycloakService.keycloakAuth.refreshToken as string);
+                  setTimeout(() => {
+                    KeycloakService.Instance.getToken().then((token) => {
+                      localStorage.setItem('react-token', token);
+                    });
+                  }, 60000);
+                  setInit('DONE');
+                });
+            } else if (eitherAuth.value.ready) {
+              if (eitherAuth.value.mode === 'HTTP') {
+                setInit('HTTP_LOGIN');
+              } else {
+                ConsoleServices.authentication().noSecurityMode();
+                setInit('READY');
+              }
+            } else {
+              setInit('NOT_READY');
+            }
+          } else {
+            setInit('SERVER_ERROR');
+          }
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loadingAcl && init != 'PENDING') {
       ConsoleServices.security()
         .userAcl()
         .then((eitherAcl) => {
@@ -37,7 +85,7 @@ const UserContextProvider = ({ children }) => {
           setLoadingAcl(false);
         });
     }
-  }, [loadingAcl]);
+  }, [loadingAcl, init]);
 
   const logUser = () => {
     setError('');
@@ -81,7 +129,8 @@ const UserContextProvider = ({ children }) => {
     notSecured: notSecured,
     logUser: useCallback(logUser, []),
     notSecuredModeOn: useCallback(notSecuredModeOn, []),
-    reloadAcl: useCallback(reloadAcl, [])
+    reloadAcl: useCallback(reloadAcl, []),
+    init: init
   };
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

@@ -6,3 +6,8 @@ export function useConnectedUser() {
 
   return { connectedUser, error, logUser, notSecuredModeOn, notSecured, reloadAcl };
 }
+
+export function useAppInitState() {
+  const { init } = useContext(UserContext);
+  return { init };
+}
