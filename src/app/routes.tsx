@@ -14,7 +14,6 @@ import { useDocumentTitle } from '@app/utils/useDocumentTitle';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
-import { useAppInitState } from '@app/services/userManagementHook';
 
 let routeFocusTimer: number;
 
@@ -60,7 +59,6 @@ export interface IAppRoute {
   isAsync?: boolean;
   menu?: boolean;
   subRoutes?: string[];
-  init?: string;
   readonlyUser?: boolean;
 }
 
@@ -150,8 +148,6 @@ const routes: IAppRoute[] = [
 ];
 
 const AppRoutes = () => {
-  const { init } = useAppInitState();
-
   return (
     <LastLocationProvider>
       <Switch>
@@ -163,7 +159,6 @@ const AppRoutes = () => {
             key={idx}
             title={title}
             isAsync={isAsync}
-            init={init}
           />
         ))}
         <PageNotFound title="404 Page Not Found" />

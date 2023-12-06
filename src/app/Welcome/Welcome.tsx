@@ -26,10 +26,10 @@ import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useHistory } from 'react-router';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
 
-const Welcome = (props) => {
-  const authState = props.init;
+const Welcome = () => {
+  const { init } = useAppInitState();
   const { t } = useTranslation();
   const history = useHistory();
   const [supportOpen, setSupportOpen] = useState(false);
@@ -83,9 +83,8 @@ const Welcome = (props) => {
   };
 
   const login = () => {
-    if (authState == 'LOGIN' && !KeycloakService.Instance.authenticated()) {
-      KeycloakService.Instance.login({ redirectUri: ConsoleServices.landing() });
-    }
+    history.push('/' + history.location.search);
+    location.reload();
   };
 
   const notSecured = () => {
@@ -95,15 +94,15 @@ const Welcome = (props) => {
   const goToTheConsole = t('welcome-page.go-to-console');
 
   const buildConsoleButton = () => {
-    if (authState == 'PENDING') {
+    if (init == 'PENDING') {
       return <Spinner size={'sm'} />;
     }
 
-    if (authState == 'SERVER_ERROR') {
-      return <Alert variant="danger" title="Server error. Check navigator logs" />;
+    if (init == 'SERVER_ERROR') {
+      return <Alert variant="danger" title="Server error. Check browser logs" />;
     }
 
-    if (authState == 'HTTP_LOGIN') {
+    if (init == 'HTTP_LOGIN') {
       return (
         <Button
           onClick={() => {
@@ -126,7 +125,7 @@ const Welcome = (props) => {
       );
     }
 
-    if (authState == 'NOT_READY') {
+    if (init == 'NOT_READY') {
       return (
         <Button style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => setSupportOpen(true)}>
           {goToTheConsole}
@@ -134,7 +133,7 @@ const Welcome = (props) => {
       );
     }
 
-    if (authState == 'READY') {
+    if (init == 'READY') {
       return (
         <Button style={{ backgroundColor: chart_color_blue_500.value }} onClick={() => notSecuredModeOn()}>
           {goToTheConsole}
