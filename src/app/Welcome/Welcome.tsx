@@ -28,13 +28,13 @@ import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useNavigate } from 'react-router';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
 import { useFetchVersion } from '@app/services/serverHook';
 import { aboutLink, apacheLicenseLink, blogLink, hotRodClientsLink, tutorialsLink } from '@app/utils/links';
 import './Welcome.css';
 
-const Welcome = (props) => {
-  const authState = props.init;
+const Welcome = () => {
+  const { init } = useAppInitState();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [supportOpen, setSupportOpen] = useState(false);
@@ -48,9 +48,8 @@ const Welcome = (props) => {
   const license = t('welcome-page.license');
 
   const login = () => {
-    if (authState == 'LOGIN' && !KeycloakService.Instance.authenticated()) {
-      KeycloakService.Instance.login({ redirectUri: ConsoleServices.landing() });
-    }
+    navigate('/')
+    location.reload();
   };
 
   const notSecured = () => {
@@ -60,16 +59,16 @@ const Welcome = (props) => {
   const goToTheConsole = t('welcome-page.go-to-console');
 
   const buildConsoleButton = () => {
-    if (authState == 'PENDING') {
+    if (init == 'PENDING') {
       return <Spinner size={'sm'} />;
     }
 
-    if (authState == 'SERVER_ERROR') {
+    if (init == 'SERVER_ERROR') {
       return <Alert variant="danger" title="Server error. Check navigator logs" />;
     }
 
     let onClickGoToConsole;
-    if (authState == 'HTTP_LOGIN') {
+    if (init == 'HTTP_LOGIN') {
       onClickGoToConsole = () => {
         ConsoleServices.authentication()
           .loginLink()
@@ -83,9 +82,9 @@ const Welcome = (props) => {
             }
           });
       };
-    } else if (authState == 'NOT_READY') {
+    } else if (init == 'NOT_READY') {
       onClickGoToConsole = () => setSupportOpen(true);
-    } else if (authState == 'READY') {
+    } else if (init == 'READY') {
       onClickGoToConsole = () => notSecuredModeOn();
     } else {
       onClickGoToConsole = () => login();
