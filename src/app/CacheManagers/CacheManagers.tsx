@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   FlexItem,
+  Icon,
   Nav,
   NavItem,
   NavList,
@@ -34,6 +35,7 @@ import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { RebalancingCacheManager } from '@app/Rebalancing/RebalancingCacheManager';
+import { ClusterIcon } from '@patternfly/react-icons';
 
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();
@@ -171,6 +173,7 @@ const CacheManagers = () => {
     }
 
     title = displayUtils.capitalize(cm.name);
+
     return (
       <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>
         <Toolbar id="cluster-manager-header">
@@ -182,9 +185,25 @@ const CacheManagers = () => {
         </Toolbar>
         <Toolbar id="cluster-manager-sub-header">
           <ToolbarContent>
+            {cm.local_site != null && cm.local_site !== '' && (
+              <>
+                <ToolbarItem>
+                  <Flex data-cy="localSite">
+                    <FlexItem spacer={{ default: 'spacerXs' }}>
+                      <Icon>
+                        <ClusterIcon />
+                      </Icon>
+                    </FlexItem>
+                    <FlexItem>{cm.local_site}</FlexItem>
+                  </Flex>
+                </ToolbarItem>
+                <ToolbarItem variant="separator"></ToolbarItem>
+              </>
+            )}
             <ToolbarItem>
               <Status status={cm.cache_manager_status} />
             </ToolbarItem>
+            <ToolbarItem variant="separator"></ToolbarItem>
             <ToolbarItem>
               <RebalancingCacheManager />
             </ToolbarItem>

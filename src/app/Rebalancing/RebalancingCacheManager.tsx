@@ -30,7 +30,6 @@ const RebalancingCacheManager = () => {
     return (
       <>
         <Flex>
-          <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetSm' }} />
           <FlexItem>
             <Switch
               data-cy="rebalancingSwitch"

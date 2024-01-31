@@ -48,7 +48,7 @@ const Welcome = () => {
   const license = t('welcome-page.license');
 
   const login = () => {
-    navigate('/')
+    navigate('/');
     location.reload();
   };
 
