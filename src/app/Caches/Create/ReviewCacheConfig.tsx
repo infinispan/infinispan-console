@@ -74,7 +74,7 @@ const ReviewCacheConfig = (props: {
           onChange={onChangeConfig}
           isLineNumbersVisible
           code={config}
-          height={"400px"}
+          height={'400px'}
           isCopyEnabled
           isDarkTheme={theme === 'dark'}
           copyButtonSuccessTooltipText={t('caches.create.review.copied-tooltip')}

@@ -18,7 +18,7 @@ const Health = (props: { health: string; displayIcon?: boolean; cacheName?: stri
   return (
     <Flex>
       {displayIcon && (
-        <FlexItem>
+        <FlexItem spacer={{ default: 'spacerXs' }}>
           <AlertIcon
             data-testid={'HealthIcon'}
             variant={displayUtils.healthAlertVariant(health)}

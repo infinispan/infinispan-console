@@ -9,7 +9,7 @@ const Status = (props: { status?: Status }) => {
 
   return (
     <Flex data-cy="cacheManagerStatus">
-      <FlexItem>
+      <FlexItem spacer={{ default: 'spacerXs' }}>
         <AlertIcon
           variant={status.icon as AlertVariant}
           style={{

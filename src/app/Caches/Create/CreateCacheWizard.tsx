@@ -60,9 +60,8 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   const [contentType, setContentType] = useState<'json' | 'yaml' | 'xml'>('json');
 
   const navigate = useNavigate();
-  const searchParams = useSearchParams();
   const closeWizard = () => {
-    navigate('/' + searchParams);
+    navigate('/');
   };
 
   const getNextStep = (event, activeStep, callback) => {
