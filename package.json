@@ -80,6 +80,9 @@
     "webpack-dev-server": "^4.11.1",
     "webpack-merge": "^5.8.0"
   },
+  "overrides": {
+    "follow-redirects": "1.15.5"
+  },
   "dependencies": {
     "@patternfly/react-charts": "^6.94.19",
     "@patternfly/react-code-editor": "^4.82.113",
