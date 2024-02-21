@@ -9,7 +9,6 @@ import {
   Switch,
   TextInput
 } from '@patternfly/react-core';
-import { Select, SelectVariant } from '@patternfly/react-core/deprecated';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteStrategy, CacheFeature } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
