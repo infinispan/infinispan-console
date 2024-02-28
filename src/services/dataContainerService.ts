@@ -1,5 +1,5 @@
 import { FetchCaller } from './fetchCaller';
-import { Either, left } from './either';
+import { Either } from './either';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import displayUtils from '@services/displayUtils';
 
@@ -27,25 +27,14 @@ export class ContainerService {
    * For now there is a single cache manager
    */
   public getDefaultCacheManager(): Promise<Either<ActionResponse, CacheManager>> {
-    return this.fetchCaller
-      .get(this.endpoint + '/server/cache-managers/', (data) => data[0])
-      .then((maybeCmName) => {
-        if (maybeCmName.isRight()) {
-          return this.getCacheManager(maybeCmName.value);
-        }
-        return left(maybeCmName);
-      });
-  }
-
-  private getCacheManager(name: string): Promise<Either<ActionResponse, CacheManager>> {
-    const healthPromise: Promise<Either<ActionResponse, String>> = this.fetchCaller.get(
-      this.endpoint + '/cache-managers/' + name + '/health',
+    const healthPromise: Promise<Either<ActionResponse, string>> = this.fetchCaller.get(
+      this.endpoint + '/container/health',
       (data) => data.cluster_health.health_status
     );
 
     return healthPromise.then((maybeHealth) =>
       this.fetchCaller.get(
-        this.endpoint + '/cache-managers/' + name,
+        this.endpoint + '/container/',
         (data) =>
           <CacheManager>{
             name: data.name,
@@ -81,22 +70,18 @@ export class ContainerService {
 
   /**
    * Retrieve the cache manager stats
-   *
-   * @param name, the name of the cache manager
    */
-  public async getCacheManagerStats(name: string): Promise<Either<ActionResponse, CacheManagerStats>> {
-    return this.fetchCaller.get(this.endpoint + '/cache-managers/' + name + '/stats', (data) => {
-      const stats = <CacheManagerStats>data;
-      stats.name = name;
-      return stats;
+  public async getCacheManagerStats(): Promise<Either<ActionResponse, CacheManagerStats>> {
+    return this.fetchCaller.get(this.endpoint + '/container/stats', (data) => {
+      return <CacheManagerStats>data;
     });
   }
 
   /**
    * Clear cache manager stats
    */
-  public async clearCacheManagerStats(name: string): Promise<ActionResponse> {
-    const clearUrl = this.endpoint + '/cache-managers/' + name + '/stats?action=reset';
+  public async clearCacheManagerStats(): Promise<ActionResponse> {
+    const clearUrl = this.endpoint + '/container/stats?action=reset';
     return this.fetchCaller.post({
       url: clearUrl,
       successMessage: `Global metrics cleared.`,
@@ -107,10 +92,9 @@ export class ContainerService {
   /**
    * Get cache configuration templates for in the cache manager name
    *
-   * @param name, the name of the cache manager
    */
-  public async getCacheConfigurationTemplates(name: string): Promise<Either<ActionResponse, CacheConfig[]>> {
-    return this.fetchCaller.get(this.endpoint + '/cache-managers/' + name + '/cache-configs/templates', (data) =>
+  public async getCacheConfigurationTemplates(): Promise<Either<ActionResponse, CacheConfig[]>> {
+    return this.fetchCaller.get(this.endpoint + '/container/cache-configs/templates', (data) =>
       data
         .filter((config) => !this.isInternalTemplate(config.name))
         .map(
@@ -127,8 +111,8 @@ export class ContainerService {
    * Get all caches for a cache manager
    * @param name
    */
-  public async getCaches(name: string): Promise<Either<ActionResponse, CacheInfo[]>> {
-    return this.fetchCaller.get(this.endpoint + '/cache-managers/' + name + '/caches', (data) =>
+  public async getCaches(): Promise<Either<ActionResponse, CacheInfo[]>> {
+    return this.fetchCaller.get(this.endpoint + '/caches?action=detailed', (data) =>
       data
         .map(
           (cacheInfo) =>
@@ -155,12 +139,11 @@ export class ContainerService {
 
   /**
    * Enables or disables rebalancing on a cluster
-   * @param name of the cache manager
    * @param enable, true to enable, false for disable
    */
-  public async rebalancing(name: string, enable: boolean): Promise<ActionResponse> {
+  public async rebalancing(enable: boolean): Promise<ActionResponse> {
     const action = enable ? 'enable' : 'disable';
-    const url = this.endpoint + '/cache-managers/' + encodeURIComponent(name) + '?action=' + action + '-rebalancing';
+    const url = this.endpoint + '/container?action=' + action + '-rebalancing';
     return this.fetchCaller.post({
       url: url,
       successMessage: `Rebalancing ${action}d.`,

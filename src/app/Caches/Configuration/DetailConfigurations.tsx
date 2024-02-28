@@ -38,8 +38,7 @@ import { useParams } from 'react-router-dom';
 
 const DetailConfigurations = () => {
   const { t } = useTranslation();
-  const cmName = useParams()['cmName'] as string;
-  const { cacheTemplates, loading, error } = useFetchCacheTemplates(cmName);
+  const { cacheTemplates, loading, error } = useFetchCacheTemplates();
   const [filteredTemplates, setFilteredTemplates] = useState<CacheConfig[]>([]);
   const [rows, setRows] = useState<CacheConfig[]>([]);
   const [expandedTemplateNames, setExpandedRepoNames] = useState<string[]>([]);

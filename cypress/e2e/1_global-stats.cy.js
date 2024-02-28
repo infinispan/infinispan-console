@@ -16,7 +16,7 @@ describe('Global stats', () => {
     //click View all caches should navigate to console page
     cy.get('[data-cy="viewCachesLink"]').click();
     //Verify that page is properly loaded after click;
-    cy.contains('Default'); // cluster name
+    cy.contains('Data container');
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
     cy.contains('default'); // cache default

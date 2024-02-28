@@ -113,7 +113,7 @@ describe('RBAC Functionality Tests', () => {
 
   function checkDataContainerView(isMonitor, isDeployer, isAdmin, isSuperAdmin) {
     //Checking Data Container view
-    cy.contains('Default'); // cluster name
+    cy.contains('Data container'); // cluster name
     cy.contains('Running'); // cluster status
     if (isSuperAdmin) {
       cy.get('[data-cy=rebalancingSwitch]').should('exist'); // rebalancing status

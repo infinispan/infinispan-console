@@ -54,7 +54,6 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
   });
 
   const [cacheEditor, setCacheEditor] = useState<CacheEditorStep>(CacheEditorInitialState);
-  const [stepIdReached, setStepIdReached] = useState(1);
   const [reviewConfig, setReviewConfig] = useState<string>('');
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
@@ -211,7 +210,6 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
           <CacheConfigEditor
             cacheEditor={cacheEditor}
             cacheEditorModifier={setCacheEditor}
-            cmName={props.cacheManager.name}
             setReviewConfig={setReviewConfig}
           />
         </WizardStep>

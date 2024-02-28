@@ -35,7 +35,6 @@ const CreateCache = () => {
   const [loadingBackups, setLoadingBackups] = useState(true);
   const [isBackupAvailable, setIsBackupAvailable] = useState(false);
   const [localSite, setLocalSite] = useState('');
-  const [title, setTitle] = useState('Data container is empty.');
   const { connectedUser } = useConnectedUser();
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
 
@@ -47,7 +46,6 @@ const CreateCache = () => {
           if (r.isRight()) {
             const cm = r.value;
             setCacheManager(cm);
-            setTitle(displayUtils.capitalize(displayUtils.capitalize(cm.name)));
             setIsBackupAvailable(cm.backups_enabled);
             if (cm.backups_enabled && cm.local_site) {
               setLocalSite(cm.local_site);
@@ -92,8 +90,8 @@ const CreateCache = () => {
             <TextContent>
               <Text component={TextVariants.h1}>
                 {localSite == ''
-                  ? t(`caches.${id}.page-title`, { cmName: title })
-                  : t(`caches.${id}.page-title-with-backups`, { cmName: title, localsite: localSite })}
+                  ? t(`caches.${id}.page-title`)
+                  : t(`caches.${id}.page-title-with-backups`, { localsite: localSite })}
               </Text>
             </TextContent>
           </ToolbarContent>

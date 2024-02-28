@@ -87,7 +87,7 @@ const routes: IAppRoute[] = [
     component: <DetailConfigurations />,
     exact: true,
     label: 'Cache Manager Configurations',
-    path: '/container/:cmName/configurations',
+    path: '/container/configurations',
     title: 'Configurations',
     menu: false,
     admin: false
@@ -178,7 +178,7 @@ const AppRoutes = () => {
         }
         return <Route key={idx} path={iroute.path} element={<ComponentWithTitleUpdates appRoute={iroute} />} />;
       })}
-      <Route path={'/welcome'} element={<Welcome init={init} />} />
+      <Route path={'/welcome'} element={<Welcome />} />
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );

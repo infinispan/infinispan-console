@@ -7,7 +7,7 @@ describe('Data Container Overview', () => {
 
   //Data Container Overview
   it('successfully loads Data Container Overview', () => {
-    cy.contains('Default'); // cluster name
+    cy.contains('Data container');
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
     cy.get('#cluster-manager-header').should('exist');

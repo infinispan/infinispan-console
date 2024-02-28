@@ -9,15 +9,14 @@ import { useIgnoreCache, useUndoIgnoreCache } from '@app/services/cachesHook';
  * Ignore cache modal
  */
 const IgnoreCache = (props: {
-  cmName: string;
   cacheName: string;
   isModalOpen: boolean;
   closeModal: (boolean) => void;
   action: string;
 }) => {
   const { reloadCaches } = useCaches();
-  const { onIgnore } = useIgnoreCache(props.cmName, props.cacheName);
-  const { onUndoIgnore } = useUndoIgnoreCache(props.cmName, props.cacheName);
+  const { onIgnore } = useIgnoreCache(props.cacheName);
+  const { onUndoIgnore } = useUndoIgnoreCache(props.cacheName);
 
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');

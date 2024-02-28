@@ -67,7 +67,7 @@ interface CacheAction {
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
 }
 
-const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: number) => void; isVisible: boolean }) => {
+const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
   const { setBanner } = useBanner();
@@ -466,7 +466,7 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
   const cacheTemplateButton = (
     <Link
       to={{
-        pathname: '/container/' + props.cmName + '/configurations/',
+        pathname: '/container/configurations/',
         search: location.search
       }}
     >
@@ -810,7 +810,6 @@ const CacheTableDisplay = (props: { cmName: string; setCachesCount: (count: numb
               closeModal={closeDeleteModal}
             />
             <IgnoreCache
-              cmName={props.cmName}
               cacheName={cacheAction.cacheName}
               isModalOpen={cacheAction.action == 'ignore' || cacheAction.action == 'undo'}
               action={cacheAction.action}

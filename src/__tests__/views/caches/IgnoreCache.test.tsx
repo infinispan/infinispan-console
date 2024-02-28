@@ -32,13 +32,7 @@ mockedCacheHook.useUndoIgnoreCache.mockImplementation(() => {
 describe('Ignore/Hide cache', () => {
   test('not render the dialog if the modal is closed', () => {
     renderWithRouter(
-      <IgnoreCache
-        cmName={'cm-1'}
-        cacheName={'cache-1'}
-        isModalOpen={false}
-        closeModal={() => closeModalCalls++}
-        action="ignore"
-      />
+      <IgnoreCache cacheName={'cache-1'} isModalOpen={false} closeModal={() => closeModalCalls++} action="ignore" />
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -48,16 +42,10 @@ describe('Ignore/Hide cache', () => {
 
   test('render the dialog and buttons work', () => {
     renderWithRouter(
-      <IgnoreCache
-        cmName={'cm-1'}
-        cacheName={'cache-1'}
-        isModalOpen={true}
-        closeModal={() => closeModalCalls++}
-        action="ignore"
-      />
+      <IgnoreCache cacheName={'cache-1'} isModalOpen={true} closeModal={() => closeModalCalls++} action="ignore" />
     );
 
-    expect(mockedCacheHook.useIgnoreCache).toHaveBeenCalledWith('cm-1', 'cache-1');
+    expect(mockedCacheHook.useIgnoreCache).toHaveBeenCalledWith('cache-1');
 
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
@@ -77,13 +65,7 @@ describe('Ignore/Hide cache', () => {
 describe('Undo hide cache', () => {
   test('not render the dialog if the modal is closed', () => {
     renderWithRouter(
-      <IgnoreCache
-        cmName={'cm-1'}
-        cacheName={'cache-1'}
-        isModalOpen={false}
-        closeModal={() => closeModalCalls++}
-        action="undo"
-      />
+      <IgnoreCache cacheName={'cache-1'} isModalOpen={false} closeModal={() => closeModalCalls++} action="undo" />
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -93,16 +75,10 @@ describe('Undo hide cache', () => {
 
   test('render the dialog and buttons work', () => {
     renderWithRouter(
-      <IgnoreCache
-        cmName={'cm-1'}
-        cacheName={'cache-1'}
-        isModalOpen={true}
-        closeModal={() => closeModalCalls++}
-        action="undo"
-      />
+      <IgnoreCache cacheName={'cache-1'} isModalOpen={true} closeModal={() => closeModalCalls++} action="undo" />
     );
 
-    expect(mockedCacheHook.useIgnoreCache).toHaveBeenCalledWith('cm-1', 'cache-1');
+    expect(mockedCacheHook.useIgnoreCache).toHaveBeenCalledWith('cache-1');
 
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);

@@ -14,7 +14,8 @@ import {
   TextList,
   TextListItem,
   TextListItemVariants,
-  TextListVariants
+  TextListVariants,
+  Spinner
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
 import backgroundImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
@@ -29,12 +30,13 @@ import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
 import { useTranslation } from 'react-i18next';
 import './About.css';
+import { useEffect } from 'react';
 
 const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const { version } = useFetchVersion();
+  const { version, loading, setLoading } = useFetchVersion();
 
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
@@ -45,6 +47,12 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const description2 = t('welcome-page.description2', { brandname: brandname });
   const license = t('welcome-page.license', { brandname: brandname });
   const apacheLicense = t('welcome-page.apache-license');
+
+  useEffect(() => {
+    if (props.isModalOpen) {
+      setLoading(true);
+    }
+  }, [props.isModalOpen]);
 
   return (
     <AboutModal
@@ -74,7 +82,9 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
           <TextContent>
             <TextList component={TextListVariants.dl}>
               <TextListItem component={TextListItemVariants.dt}>Version</TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>{version}</TextListItem>
+              <TextListItem component={TextListItemVariants.dd}>
+                {loading ? <Spinner size={'sm'} /> : version}
+              </TextListItem>
             </TextList>
           </TextContent>
         </StackItem>
