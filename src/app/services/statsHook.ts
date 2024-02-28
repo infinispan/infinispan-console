@@ -4,7 +4,6 @@ import { useApiAlert } from '@utils/useApiAlert';
 
 export function useFetchGlobalStats() {
   const [stats, setStats] = useState<CacheManagerStats>({
-    name: '',
     statistics_enabled: false,
     hits: -1,
     retrievals: -1,
@@ -20,20 +19,12 @@ export function useFetchGlobalStats() {
   useEffect(() => {
     if (loading) {
       ConsoleServices.dataContainer()
-        .getDefaultCacheManager()
-        .then((eitherDefaultCm) => {
-          if (eitherDefaultCm.isRight()) {
-            ConsoleServices.dataContainer()
-              .getCacheManagerStats(eitherDefaultCm.value.name)
-              .then((eitherDetailedStats) => {
-                if (eitherDetailedStats.isRight()) {
-                  setStats(eitherDetailedStats.value);
-                } else {
-                  setError(eitherDetailedStats.value.message);
-                }
-              });
+        .getCacheManagerStats()
+        .then((eitherDetailedStats) => {
+          if (eitherDetailedStats.isRight()) {
+            setStats(eitherDetailedStats.value);
           } else {
-            setError(eitherDefaultCm.value.message);
+            setError(eitherDetailedStats.value.message);
           }
         })
         .then(() => setLoading(false));
@@ -93,7 +84,7 @@ export function useClearStats(name: string, type: 'query' | 'cache-metrics' | 'g
     } else if (type == 'cache-metrics') {
       actionResponsePromise = ConsoleServices.caches().clearStats(name);
     } else if (type == 'global-stats') {
-      actionResponsePromise = ConsoleServices.dataContainer().clearCacheManagerStats(name);
+      actionResponsePromise = ConsoleServices.dataContainer().clearCacheManagerStats();
     } else {
       console.warn('Requesting a reset type that is not available. Do nothing');
       actionResponsePromise = undefined;

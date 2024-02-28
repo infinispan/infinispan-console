@@ -3,7 +3,7 @@ import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
 
-export function useFetchCaches(cacheManager: string) {
+export function useFetchCaches() {
   const [caches, setCaches] = useState<CacheInfo[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ export function useFetchCaches(cacheManager: string) {
   useEffect(() => {
     if (loading) {
       ConsoleServices.dataContainer()
-        .getCaches(cacheManager)
+        .getCaches()
         .then((either) => {
           if (either.isRight()) {
             setCaches(either.value);
@@ -70,12 +70,12 @@ export function useDeleteCache(cacheName: string) {
   };
 }
 
-export function useIgnoreCache(cmName: string, cacheName: string) {
+export function useIgnoreCache(cacheName: string) {
   const { addAlert } = useApiAlert();
 
   const onIgnore = () => {
     ConsoleServices.caches()
-      .ignoreCache(cmName, cacheName)
+      .ignoreCache(cacheName)
       .then((actionResponse) => {
         addAlert(actionResponse);
       });
@@ -85,12 +85,12 @@ export function useIgnoreCache(cmName: string, cacheName: string) {
   };
 }
 
-export function useUndoIgnoreCache(cmName: string, cacheName: string) {
+export function useUndoIgnoreCache(cacheName: string) {
   const { addAlert } = useApiAlert();
 
   const onUndoIgnore = () => {
     ConsoleServices.caches()
-      .undoIgnoreCache(cmName, cacheName)
+      .undoIgnoreCache(cacheName)
       .then((actionResponse) => {
         addAlert(actionResponse);
       });
@@ -115,7 +115,7 @@ export function useSetAvailableCache(cacheName: string) {
   };
 }
 
-export function useFetchCacheTemplates(cmName) {
+export function useFetchCacheTemplates() {
   const [cacheTemplates, setCacheTemplates] = useState<CacheConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -123,7 +123,7 @@ export function useFetchCacheTemplates(cmName) {
   useEffect(() => {
     if (loading) {
       ConsoleServices.dataContainer()
-        .getCacheConfigurationTemplates(cmName)
+        .getCacheConfigurationTemplates()
         .then((eitherConfigs) => {
           if (eitherConfigs.isRight()) {
             setCacheTemplates(eitherConfigs.value);

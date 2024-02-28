@@ -4,7 +4,6 @@ import { ConsoleServices } from '@services/ConsoleServices';
 /**
  * Authentication Service calls Infinispan endpoints related to Authentication
  *
- * @author Katia Aresti
  * @since 1.0
  */
 export class AuthenticationService {
@@ -18,51 +17,6 @@ export class AuthenticationService {
 
   public isNotSecured() {
     return this.notSecured;
-  }
-
-  /**
-   * Retrieve the http login endpoint
-   */
-  public httpLoginUrl(): string {
-    return this.endpoint;
-  }
-
-  public getUserName(): string {
-    return this.username;
-  }
-
-  public isLoggedIn(): boolean {
-    return this.username != ''; // && this.authenticatedClient != undefined;
-  }
-
-  public logOut() {
-    return fetch(ConsoleServices.endpoint() + '/server', {
-      headers: { Authorization: 'Basic xxx' }
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.ok) {
-          return <ActionResponse>{
-            success: true,
-            message: ' logged in'
-          };
-        }
-        if (response.status == 401) {
-          return <ActionResponse>{
-            success: false,
-            message: 'not authorized'
-          };
-        }
-
-        throw response;
-      })
-      .catch((err) => {
-        console.error(err);
-        return <ActionResponse>{
-          success: false,
-          message: 'Unexpected error. Check the logs'
-        };
-      });
   }
 
   public noSecurityMode() {

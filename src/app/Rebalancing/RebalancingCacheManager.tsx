@@ -43,7 +43,7 @@ const RebalancingCacheManager = () => {
               isModalOpen={confirmationModalOpened}
               confirmAction={() =>
                 ConsoleServices.dataContainer()
-                  .rebalancing(cm.name, !cm.rebalancing_enabled)
+                  .rebalancing(!cm.rebalancing_enabled)
                   .then((r) => {
                     addAlert(r);
                     reload();

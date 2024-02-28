@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Badge,
@@ -39,7 +39,7 @@ const Welcome = () => {
   const navigate = useNavigate();
   const [supportOpen, setSupportOpen] = useState(false);
   const { notSecuredModeOn, logUser } = useConnectedUser();
-  const { version } = useFetchVersion();
+  const { version, setLoading } = useFetchVersion();
 
   const brandname = t('brandname.brandname');
 
@@ -47,13 +47,13 @@ const Welcome = () => {
   const description2 = t('welcome-page.description2', { brandname: brandname });
   const license = t('welcome-page.license');
 
+  useEffect(() => {
+    setLoading(true);
+  }, []);
+
   const login = () => {
     navigate('/');
     location.reload();
-  };
-
-  const notSecured = () => {
-    navigate('/');
   };
 
   const goToTheConsole = t('welcome-page.go-to-console');

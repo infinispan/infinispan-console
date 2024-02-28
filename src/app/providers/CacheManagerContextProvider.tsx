@@ -43,7 +43,7 @@ const ContainerDataProvider = ({ children }) => {
     if (loadingCaches && cm) {
       if (ConsoleServices.authentication().isNotSecured()) {
         ConsoleServices.dataContainer()
-          .getCaches(cm.name)
+          .getCaches()
           .then((either) => {
             if (either.isRight()) {
               setCaches(either.value);
@@ -56,7 +56,7 @@ const ContainerDataProvider = ({ children }) => {
         reloadAcl().then((r) => {
           if (r) {
             ConsoleServices.dataContainer()
-              .getCaches(cm.name)
+              .getCaches()
               .then((either) => {
                 if (either.isRight()) {
                   setCaches(either.value);

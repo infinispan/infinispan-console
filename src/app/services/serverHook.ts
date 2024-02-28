@@ -5,7 +5,7 @@ import { groupConnections } from '@app/utils/connectedClientUtils';
 export function useFetchVersion() {
   const [version, setVersion] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (loading && version == '') {

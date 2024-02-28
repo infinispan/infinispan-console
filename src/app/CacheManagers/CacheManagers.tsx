@@ -50,7 +50,6 @@ const CacheManagers = () => {
   const [showTasks, setShowTasks] = useState(false);
   const [showSerializationContext, setShowSerializationContext] = useState(false);
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
 
   const handleTabClick = (nav) => {
     const tabIndex = nav.itemId;
@@ -131,7 +130,7 @@ const CacheManagers = () => {
 
     return (
       <React.Fragment>
-        {cm && <CacheTableDisplay cmName={cm.name} setCachesCount={setCachesCount} isVisible={showCaches} />}
+        {cm && <CacheTableDisplay setCachesCount={setCachesCount} isVisible={showCaches} />}
         {cm && <CounterTableDisplay setCountersCount={setCountersCount} isVisible={showCounters} />}
         {cm && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser) && (
           <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />
@@ -157,7 +156,7 @@ const CacheManagers = () => {
   };
 
   const buildHeader = () => {
-    let title = t('cache-managers.title');
+    const title = t('cache-managers.title');
     if (!cm) {
       return (
         <PageSection variant={PageSectionVariants.light}>
@@ -171,8 +170,6 @@ const CacheManagers = () => {
         </PageSection>
       );
     }
-
-    title = displayUtils.capitalize(cm.name);
 
     return (
       <PageSection variant={PageSectionVariants.light} style={{ paddingBottom: 0 }}>

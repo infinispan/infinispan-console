@@ -27,7 +27,6 @@ import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 
 const CacheConfigEditor = (props: {
-  cmName: string;
   cacheEditor: CacheEditorStep;
   cacheEditorModifier: (CacheEditorStep) => void;
   setReviewConfig: (string) => void;
@@ -46,7 +45,6 @@ const CacheConfigEditor = (props: {
 
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
-  const cmName = props.cmName;
   const configurationDocs = t('brandname.configuration-docs-link');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
 
@@ -62,7 +60,7 @@ const CacheConfigEditor = (props: {
   useEffect(() => {
     if (loading) {
       ConsoleServices.dataContainer()
-        .getCacheConfigurationTemplates(cmName)
+        .getCacheConfigurationTemplates()
         .then((eitherTemplates) => {
           if (eitherTemplates.isRight()) {
             const options: TemplateOptionSelect[] = [];

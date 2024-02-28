@@ -409,7 +409,7 @@ const GlobalStats = () => {
       </PageSection>
       <PageSection>{buildStats()}</PageSection>
       <ClearMetrics
-        name={stats.name}
+        name={'cm'}
         isModalOpen={isClearMetricsModalOpen}
         closeModal={() => {
           reload();

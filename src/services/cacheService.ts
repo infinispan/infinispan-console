@@ -156,9 +156,9 @@ export class CacheService {
    *
    * @param cacheName, to be deleted if such exists
    */
-  public async ignoreCache(cacheManager: string, cacheName: string): Promise<ActionResponse> {
+  public async ignoreCache(cacheName: string): Promise<ActionResponse> {
     return this.fetchCaller.post({
-      url: this.endpoint + '/server/ignored-caches/' + cacheManager + '/' + encodeURIComponent(cacheName),
+      url: this.endpoint + '/server/ignored-caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} hidden.`,
       errorMessage: `Unexpected error hidding cache ${cacheName}.`
     });
@@ -169,9 +169,9 @@ export class CacheService {
    *
    * @param cacheName, to be deleted if such exists
    */
-  public async undoIgnoreCache(cacheManager: string, cacheName: string): Promise<ActionResponse> {
+  public async undoIgnoreCache(cacheName: string): Promise<ActionResponse> {
     return this.fetchCaller.delete({
-      url: this.endpoint + '/server/ignored-caches/' + cacheManager + '/' + encodeURIComponent(cacheName),
+      url: this.endpoint + '/server/ignored-caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} is now visible.`,
       errorMessage: `Unexpected error making cache ${cacheName} visible again.`
     });

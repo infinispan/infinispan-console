@@ -198,8 +198,8 @@
   },
   "caches": {
     "setup": {
-      "page-title": "Configure a cache in {{cmName}}",
-      "page-title-with-backups": "Configure a cache in {{cmName}} on site {{localsite}}",
+      "page-title": "Configure a cache",
+      "page-title-with-backups": "Configure a cache on site {{localsite}}",
       "page-title-description": "You can generate a cache config. Note that the new cache will not be stored by {{brandname}}",
       "getting-started": {
         "cache-setup-title": "Select a way to configure your cache"

@@ -14,7 +14,7 @@ describe('Welcome page', () => {
   it('successfully logs in and logs out', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
 
-    cy.contains('Default'); // cluster name
+    cy.contains('Data container');
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
     cy.contains('15 Caches');
@@ -35,7 +35,7 @@ describe('Welcome page', () => {
   it('successfully opens and navigates side menu', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
 
-    cy.contains('Default'); // cluster name
+    cy.contains('Data container');
     cy.contains('Running'); // cluster status
 
     //Checks if navigation menu is hidden
@@ -63,7 +63,7 @@ describe('Welcome page', () => {
 
     //Clicks the Data Container link and should go to Data Container page
     cy.contains('Data Container').click();
-    cy.contains('Default').should('be.visible');
+    cy.contains('Data container').should('be.visible');
     cy.contains('Running'); // cluster status
     cy.contains('Cluster rebalancing on'); // rebalancing status
   });
