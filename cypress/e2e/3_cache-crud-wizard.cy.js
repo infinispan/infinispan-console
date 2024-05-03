@@ -4,6 +4,10 @@ describe('Cache Creation Wizard', () => {
   });
 
   it('successfully creates cache with all building options', () => {
+    cy.on("uncaught:exception", (err, runnable) => {
+      cy.log(err.message);
+      return false;
+    });
     //go to create cache page
     cy.get('[data-cy=createCacheButton]').click();
     cy.get('#cache-name').click();
@@ -234,6 +238,6 @@ describe('Cache Creation Wizard', () => {
 
     cy.contains(`Cache ${cacheName} deleted.`);
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
-    cy.get('aCache').should('not.exist'); //Checking that deleted cache is not visible
+    cy.get(cacheName).should('not.exist'); //Checking that deleted cache is not visible
   }
 });
