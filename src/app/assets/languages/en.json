@@ -220,8 +220,8 @@
     },
     "create": {
       "breadcrumb": "Create a cache",
-      "page-title": "Create a cache in {{cmName}}",
-      "page-title-with-backups": "Create a cache in {{cmName}} on site {{localsite}}",
+      "page-title": "Create a cache",
+      "page-title-with-backups": "Create a cache on site {{localsite}}",
       "cache-name": "Cache name",
       "cache-name-help": "Enter a unique name for your cache.",
       "cache-name-help-invalid": "You must specify a unique name for each cache.",

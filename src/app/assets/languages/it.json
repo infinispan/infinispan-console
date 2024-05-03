@@ -157,12 +157,12 @@
   },
   "caches": {
     "create": {
-      "page-title-with-backups": "Crea una cache in {{cmName}} sul sito {{localsite}}",
+      "page-title-with-backups": "Crea una cache sul sito {{localsite}}",
       "breadcrumb": "Crea una cache",
       "configuration-info": "Usa la cache distribuita per scopi dimostrativi.",
       "cache-name-help-invalid": "Devi specificare un nome univoco per ciascuna cache.",
       "cache-configuration-docs": "Hai bisogno d'aiuto? Leggi \"Configuring caches\" nella documentazione.",
-      "page-title": "Crea una cache in {{cmName}}",
+      "page-title": "Crea una cache",
       "page-title-description": "Descrizione o stato",
       "cache-name": "Nome cache",
       "cache-name-help": "Inserisci un nome univoco per la cache.",
