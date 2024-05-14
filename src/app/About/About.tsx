@@ -18,7 +18,6 @@ import {
   Spinner
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
-import backgroundImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
 import {
   FacebookIcon,
   GithubIcon,
@@ -29,8 +28,8 @@ import {
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
 import { useTranslation } from 'react-i18next';
-import './About.css';
 import { useEffect } from 'react';
+import './About.css';
 
 const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
@@ -62,7 +61,7 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       brandImageSrc={icon}
       brandImageAlt={brandname + ' Logo'}
       productName={brandname}
-      backgroundImageSrc={backgroundImage}
+      // backgroundImageSrc={backgroundImage}
     >
       <Stack>
         <StackItem style={{ paddingBottom: global_spacer_lg.value }}>

@@ -24,7 +24,6 @@ import { CatalogIcon, DownloadIcon, GithubIcon, UnknownIcon } from '@patternfly/
 import { chart_color_blue_500, chart_global_Fill_Color_white } from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackground/ConsoleBackground';
 import { Support } from '@app/Support/Support';
-import { KeycloakService } from '@services/keycloakService';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useNavigate } from 'react-router';
