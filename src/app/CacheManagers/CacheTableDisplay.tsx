@@ -61,7 +61,7 @@ import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
-import { ToolbarChipGroup } from '@patternfly/react-core/src/components/Toolbar/ToolbarFilter';
+
 interface CacheAction {
   cacheName: string;
   action: '' | 'ignore' | 'undo' | 'delete' | 'available';
@@ -233,8 +233,8 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
     const category = Object.keys(CacheType).includes(itemStr)
       ? 'Type'
       : Object.keys(CacheFeatureFilter).includes(itemStr)
-      ? 'Feature'
-      : 'Status';
+        ? 'Feature'
+        : 'Status';
 
     if (category === 'Type') {
       setSelectedCacheType(
