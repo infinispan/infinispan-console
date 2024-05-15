@@ -212,8 +212,8 @@ const DataDistributionChart = (props: { cacheName: string }) => {
               datum.y !== 0
                 ? `${datum.y}`
                 : statsOption !== DataDistributionStatsOption.MemoryUsed
-                ? `${t('caches.cache-metrics.data-distribution-no-entry')}`
-                : `${t('caches.cache-metrics.data-distribution-no-memory')}`
+                  ? `${t('caches.cache-metrics.data-distribution-no-entry')}`
+                  : `${t('caches.cache-metrics.data-distribution-no-memory')}`
             }
             constrainToVisibleArea
           />

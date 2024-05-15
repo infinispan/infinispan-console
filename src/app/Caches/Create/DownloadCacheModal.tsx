@@ -47,8 +47,8 @@ const DownloadCacheModal = (props: {
     downloadLanguage === ConfigDownloadType.JSON
       ? setCode(jsonConfig)
       : downloadLanguage === ConfigDownloadType.YAML
-      ? setCode(yamlConfig)
-      : setCode(xmlConfig);
+        ? setCode(yamlConfig)
+        : setCode(xmlConfig);
   }, [jsonConfig, yamlConfig, xmlConfig, downloadLanguage]);
 
   useEffect(() => {

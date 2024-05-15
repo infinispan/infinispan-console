@@ -53,8 +53,8 @@ const ReviewCacheConfig = (props: {
     language === ConfigDownloadType.JSON
       ? setConfig(jsonConfig)
       : language === ConfigDownloadType.YAML
-      ? setConfig(yamlConfig)
-      : setConfig(xmlConfig);
+        ? setConfig(yamlConfig)
+        : setConfig(xmlConfig);
   }, [jsonConfig, yamlConfig, xmlConfig, language]);
 
   const onChangeConfig = (editedConfig) => {

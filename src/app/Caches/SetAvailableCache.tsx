@@ -36,13 +36,6 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
       title={t('caches.availability.modal-available-title')}
       onClose={() => clearSetAvailableCacheModal(false)}
       aria-label="make-cache-available"
-      description={
-        <TextContent>
-          <Text>
-            <strong>{`'${props.cacheName}'`}</strong> {t('caches.availability.modal-available-description')}
-          </Text>
-        </TextContent>
-      }
       actions={[
         <Button aria-label="Confirm" key="available" onClick={handleAvailableButton}>
           {t('caches.availability.modal-available-button-done')}
@@ -52,7 +45,11 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
         </Button>
       ]}
     >
-      {/* {buildContent()} */}
+      <TextContent>
+        <Text>
+          <strong>{`'${props.cacheName}'`}</strong> {t('caches.availability.modal-available-description')}
+        </Text>
+      </TextContent>
     </Modal>
   );
 };
