@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, ButtonVariant, Modal, Text, TextContent } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useClearStats } from '@app/services/statsHook';
+import { useCacheDetail } from '@app/services/cachesHook';
 
 /**
  * ClearMetrics entry modal
@@ -13,7 +14,11 @@ const ClearMetrics = (props: {
   closeModal: () => void;
 }) => {
   const { t } = useTranslation();
-  const { onClearStats } = useClearStats(props.name, props.type, props.closeModal);
+  const { loadCache } = useCacheDetail();
+  const { onClearStats } = useClearStats(props.name, props.type, () => {
+    loadCache(props.name);
+    props.closeModal();
+  });
   const label = props.type == 'global-stats' ? props.type : 'caches.' + props.type;
 
   return (
