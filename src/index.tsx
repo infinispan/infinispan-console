@@ -2,19 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from '@app/index';
 import './i18n';
+import * as monaco from 'monaco-editor';
+import { loader } from '@monaco-editor/react';
 
-if (process.env.NODE_ENV !== 'production') {
-  // tslint:disable-next-line
-  const axe = require('react-axe');
-  // TODO: deal with react axe errors
-  // axe(React, ReactDOM, 1000);
-}
+loader.config({ monaco });
+
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-  <React.Fragment>
     <React.Suspense fallback={'loading'}>
       <App />
     </React.Suspense>
-  </React.Fragment>
 );

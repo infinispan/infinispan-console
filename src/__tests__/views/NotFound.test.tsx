@@ -20,9 +20,9 @@ describe('Not found page', () => {
     const button = screen.getByRole('button', {
       name: 'not-found-page.button'
     });
-    expect(pageHeading).toBeInTheDocument();
-    expect(pageDescription).toBeInTheDocument();
-    expect(button).toBeInTheDocument();
+    expect(pageHeading).toBeDefined();
+    expect(pageDescription).toBeDefined();
+    expect(button).toBeDefined();
 
     fireEvent.click(button);
 

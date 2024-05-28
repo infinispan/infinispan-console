@@ -1,6 +1,6 @@
 {
   "name": "infinispan-console",
-  "version": "15.0.0",
+  "version": "15.0.5",
   "description": "The console for Infinispan/Red Hat Data Grid",
   "main": "index.js",
   "repository": "https://github.com/infinispan/infinispan-console.git",
@@ -38,7 +38,7 @@
     "@webpack-cli/serve": "^2.0.5",
     "ajv": "^8.12.0",
     "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^5.2.6",
+    "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "cypress": "^13.2.0",
     "dotenv-webpack": "^8.0.1",
@@ -55,6 +55,7 @@
     "license-reporter": "1.5.0",
     "mini-css-extract-plugin": "^2.9.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
+    "postcss": "^8.4.31",
     "prettier": "^3.2.5",
     "prop-types": "^15.8.1",
     "raw-loader": "^4.0.2",
@@ -93,8 +94,8 @@
     "i18next-http-backend": "^2.5.1",
     "keycloak-js": "^23.0.7",
     "numeral": "^2.0.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^18",
+    "react-dom": "^18",
     "react-i18next": "^14.1.1",
     "react-syntax-highlighter": "^15.5.0"
   }

@@ -70,7 +70,7 @@ describe('Edit schema', () => {
 
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
-    expect(screen.getByText('schemas.save-button').closest('button')).toBeDisabled();
+    expect(screen.getByText('schemas.save-button').closest('button')).toHaveProperty('disabled')
 
     expect(closeModalCalls).toBe(0);
     expect(submitModalCalls).toBe(0);

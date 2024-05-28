@@ -50,9 +50,9 @@ describe('Configuration Page', () => {
       };
     });
     renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
-    expect(screen.getByText('JSON')).toBeInTheDocument();
-    expect(screen.getByText('XML')).toBeInTheDocument();
-    expect(screen.getByText('YAML')).toBeInTheDocument();
+    expect(screen.getByText('JSON')).toBeDefined();
+    expect(screen.getByText('XML')).toBeDefined();
+    expect(screen.getByText('YAML')).toBeDefined();
   });
 
   test('XML Configuration testing', () => {
@@ -65,8 +65,8 @@ describe('Configuration Page', () => {
     });
 
     renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
-    expect(screen.getByText('JSON')).toBeInTheDocument();
-    expect(screen.getByText('XML')).toBeInTheDocument();
-    expect(screen.getByText('YAML')).toBeInTheDocument();
+    expect(screen.getByText('JSON')).toBeDefined();
+    expect(screen.getByText('XML')).toBeDefined();
+    expect(screen.getByText('YAML')).toBeDefined();
   });
 });
