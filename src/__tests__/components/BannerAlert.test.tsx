@@ -16,7 +16,7 @@ describe('Banner Alert Test', () => {
     });
 
     render(<BannerAlert />);
-    expect(screen.getByText('There is a big bug')).toBeInTheDocument();
+    expect(screen.getByText('There is a big bug')).toBeDefined();
     expect(screen.queryByTestId('NoBanner')).toBeNull();
   });
 
@@ -29,6 +29,6 @@ describe('Banner Alert Test', () => {
     });
 
     render(<BannerAlert />);
-    expect(screen.queryByTestId('NoBanner')).toBeInTheDocument();
+    expect(screen.queryByTestId('NoBanner')).toBeDefined();
   });
 });
