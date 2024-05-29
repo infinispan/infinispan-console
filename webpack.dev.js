@@ -14,9 +14,12 @@ module.exports = merge(common('development'), {
     host: HOST,
     port: PORT,
     compress: true,
-    historyApiFallback: true,
-    open: true,
+    historyApiFallback: {
+      index:'/console/'
+    },
+    open: 'console',
     static: {
+      serveIndex: true,
       directory: path.resolve(__dirname, 'dist'),
     },
     client: {

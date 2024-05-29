@@ -70,12 +70,13 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
 
   const isButtonNextOrCreateDisabled = (activeStep: WizardStepType): boolean => {
     let activeButton = true;
+    console.log(activeStep.id);
     switch (activeStep.id) {
       case 1:
         activeButton = configuration.start.valid;
         break;
       case 2:
-        activeButton = props.create && cacheEditor.validConfig === 'success';
+        activeButton = props.create && cacheEditor.validConfig !== 'error';
         break;
       case 3:
         activeButton = configuration.basic.valid;
