@@ -48,7 +48,7 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const apacheLicense = t('welcome-page.apache-license');
 
   useEffect(() => {
-    if (props.isModalOpen) {
+    if (props.isModalOpen && version == '') {
       setLoading(true);
     }
   }, [props.isModalOpen]);
