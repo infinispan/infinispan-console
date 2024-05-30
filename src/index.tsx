@@ -7,10 +7,9 @@ import { loader } from '@monaco-editor/react';
 
 loader.config({ monaco });
 
-
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-    <React.Suspense fallback={'loading'}>
-      <App />
-    </React.Suspense>
+  <React.Suspense fallback={'loading'}>
+    <App />
+  </React.Suspense>
 );
