@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, AlertVariant, Flex, Form, FormGroup, Text, TextContent, TextVariants } from '@patternfly/react-core';
-import { CodeEditor } from '@patternfly/react-code-editor';
+import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -8,6 +8,7 @@ import { ThemeContext } from '@app/providers/ThemeProvider';
 import LanguageToggleRadios from './LanguageToggleRadios';
 import { ConfigDownloadType } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { toCodeEditorLanguage } from '@utils/getLanguage';
 
 const ReviewCacheConfig = (props: {
   setReviewConfig: (string) => void;
@@ -72,7 +73,9 @@ const ReviewCacheConfig = (props: {
         )}
         <CodeEditor
           onChange={onChangeConfig}
+          language={toCodeEditorLanguage(language)}
           isLineNumbersVisible
+          isLanguageLabelVisible
           code={config}
           height={'400px'}
           isCopyEnabled
