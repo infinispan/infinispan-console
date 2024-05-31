@@ -2,9 +2,9 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BG_IMAGES_DIRNAME = 'bgimages';
 const ASSET_PATH = process.env.ASSET_PATH || '/console/';
 module.exports = (env) => {
@@ -120,12 +120,14 @@ module.exports = (env) => {
     plugins: [
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'src', 'index.html'),
-        favicon: path.resolve(__dirname, 'src/app/assets/favicons', 'favicon.ico'),
-        manifest: path.resolve(__dirname, 'src/app/assets/favicons', 'manifest.json'),
+        favicon: path.resolve(__dirname, 'src/app/assets/favicons', 'favicon.ico')
       }),
       new Dotenv({
         systemvars: true,
         silent: true,
+      }),
+      new MonacoWebpackPlugin({
+        languages: ['xml', 'json', 'yaml', 'plaintext']
       }),
     ],
     resolve: {

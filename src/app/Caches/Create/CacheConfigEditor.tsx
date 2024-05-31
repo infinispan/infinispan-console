@@ -4,7 +4,6 @@ import {
   Alert,
   AlertActionLink,
   AlertVariant,
-  Bullseye,
   ExpandableSection,
   Form,
   FormGroup,
@@ -12,10 +11,7 @@ import {
   FormSection,
   HelperText,
   HelperTextItem,
-  Spinner,
-  Text,
-  TextContent,
-  TextVariants
+  Spinner
 } from '@patternfly/react-core';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +20,6 @@ import { useApiAlert } from '@app/utils/useApiAlert';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingleTypehead } from '@app/Common/SelectSingleTypehead';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
-import { TableEmptyState } from '@app/Common/TableEmptyState';
 
 const CacheConfigEditor = (props: {
   cacheEditor: CacheEditorStep;
@@ -119,7 +114,7 @@ const CacheConfigEditor = (props: {
       >
         <CodeEditor
           isLineNumbersVisible
-          isLanguageLabelVisible
+          language={Language.plaintext}
           code={editorConfig}
           onChange={handleChangeConfig}
           id="cache-config"
