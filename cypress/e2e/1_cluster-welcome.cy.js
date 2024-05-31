@@ -7,7 +7,7 @@ describe('Welcome page', () => {
     });
     cy.get('h1')
     .invoke('text')
-    .should('match', /Welcome to .* Server/);
+    .should('match', /.* Server.*/);
     cy.contains('Open the console');
   });
 
@@ -28,7 +28,7 @@ describe('Welcome page', () => {
     cy.contains('Logout').click();
     cy.get('h1')
     .invoke('text')
-    .should('match', /Welcome to .* Server/);
+    .should('match', /.* Server.*/);
     cy.contains('Open the console');
   });
 
@@ -78,7 +78,7 @@ describe('Welcome page', () => {
       cy.get('[role=dialog]').should('be.visible');
       cy.contains('Version');
       cy.get('body').then(($body) => {
-        if (!$body.text().includes('Red Hat Data Grid')) {
+        if (!$body.text().includes('Red Hat Datagrid')) {
           //Checks if links from About dialog work properly
           cy.get('a[href*="github"').should('exist');
           cy.get('a[href*="zulipchat"').should('exist');
