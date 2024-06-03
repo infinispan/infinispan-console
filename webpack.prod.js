@@ -10,7 +10,6 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = merge(common('production'), {
   mode: 'production',
-  devtool: 'source-map',
   optimization: {
     minimizer: [
       new TerserJSPlugin({}),
