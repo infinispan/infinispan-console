@@ -25,7 +25,6 @@ import { useTranslation } from 'react-i18next';
 import { RoleTableDisplay } from '@app/AccessManagement/RoleTableDisplay';
 import { FlushRoleCacheModal } from '@app/AccessManagement/FlushRoleCacheModal';
 import { PrincipalTableDisplay } from '@app/AccessManagement/PrincipalTableDisplay';
-import { IAction } from '@patternfly/react-table';
 import { UsersTableDisplay } from '@app/AccessManagement/UsersTableDisplay';
 
 const AccessManager = () => {

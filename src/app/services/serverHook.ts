@@ -51,5 +51,5 @@ export function useFetchConnectedClients() {
     }
   }, [loading]);
 
-  return { connectedClients, error, loading };
+  return { connectedClients, error, loading, setLoading };
 }
