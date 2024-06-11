@@ -10,7 +10,7 @@ describe('Client connection page', () => {
     cy.contains('Principal').should('exist');
     cy.contains('Client library').should('exist');
     cy.contains('Client address').should('exist');
-    cy.contains('Client version').should('exist');
+    cy.contains('Protocol').should('exist');
     cy.contains('infinispan-4-e2e').should('exist');
   });
 });
