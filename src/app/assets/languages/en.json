@@ -130,6 +130,7 @@
     "parameters": "Parameters",
     "allowed-role": "Allowed role",
     "allowed-role-null": "-",
+    "tracing-enabled": "Tracing is enabled",
     "rebalancing": {
       "disabled-status": "Cluster rebalancing off",
       "enabled": "Cluster rebalancing on",

@@ -20,6 +20,7 @@ interface CacheManager {
   local_site?: string;
   rebalancing_enabled?: boolean;
   backups_enabled: boolean;
+  tracing_enabled: boolean;
   sites_view: string[];
 }
 

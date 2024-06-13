@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Flex, FlexItem, Spinner, Switch } from '@patternfly/react-core';
+import { Flex, FlexItem, Spinner, Switch } from '@patternfly/react-core';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';

@@ -21,7 +21,6 @@ import {
   ToolbarContent,
   ToolbarItem
 } from '@patternfly/react-core';
-import displayUtils from '@services/displayUtils';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
 import { TasksTableDisplay } from '@app/CacheManagers/TasksTableDisplay';
@@ -36,6 +35,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { RebalancingCacheManager } from '@app/Rebalancing/RebalancingCacheManager';
 import { ClusterIcon } from '@patternfly/react-icons';
+import { TracingEnabled } from '@app/Common/TracingEnabled';
 
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();
@@ -200,6 +200,14 @@ const CacheManagers = () => {
             <ToolbarItem>
               <Status status={cm.cache_manager_status} />
             </ToolbarItem>
+            {cm.tracing_enabled && (
+              <React.Fragment>
+                <ToolbarItem variant="separator"></ToolbarItem>
+                <ToolbarItem>
+                  <TracingEnabled />
+                </ToolbarItem>
+              </React.Fragment>
+            )}
             <ToolbarItem variant="separator"></ToolbarItem>
             <ToolbarItem>
               <RebalancingCacheManager />
