@@ -8,6 +8,11 @@
   <cache-container name="default" statistics="true">
     <transport cluster="${infinispan.cluster.name:cluster}" stack="${infinispan.cluster.stack:tcp}" node-name="${infinispan.node.name:}"/>
     <metrics accurate-size="true"/>
+    <tracing collector-endpoint="http://localhost:4318"
+             enabled="true"
+             exporter-protocol="OTLP"
+             service-name="infinispan-server"
+             security="false" />
     <security>
       <authorization/>
     </security>
