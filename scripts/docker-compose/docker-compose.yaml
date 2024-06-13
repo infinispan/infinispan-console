@@ -1,0 +1,62 @@
+version: '3'
+
+networks:
+  mynetwork:
+    driver: bridge
+services:
+  infinispan-server-lon-1:
+    image: quay.io/infinispan/server:14.0
+    ports:
+      - "11222:11222"
+    container_name: ispn-lon-1
+    environment:
+      USER: admin
+      PASS: password
+    networks:
+      - mynetwork
+    volumes: 
+      - ../infinispan-basic-auth-xsite.xml:/opt/infinispan/server/conf/infinispan-xsite-basic.xml
+      - ../../dist:/opt/infinispan/static/console
+    command: -c infinispan-xsite-basic.xml -Dinfinispan.site.name=LON -Djgroups.mcast_port=46656 -n lon-1
+  infinispan-server-lon-2:
+    image: quay.io/infinispan/server:14.0
+    ports:
+      - "11221:11222"
+    container_name: ispn-lon-2
+    environment:
+      USER: admin
+      PASS: password
+    networks:
+      - mynetwork
+    volumes: 
+      - ../infinispan-basic-auth-xsite.xml:/opt/infinispan/server/conf/infinispan-xsite-basic.xml 
+      - ../../dist:/opt/infinispan/static/console
+    command: -c infinispan-xsite-basic.xml -Dinfinispan.site.name=LON -Djgroups.mcast_port=46656 -n lon-2
+  infinispan-server-nyc-1:
+    image: quay.io/infinispan/server:14.0
+    ports:
+      - "31222:11222"
+    container_name: ispn-nyc-1
+    environment:
+      USER: admin
+      PASS: password
+    networks:
+      - mynetwork
+    volumes: 
+      - ../infinispan-basic-auth-xsite.xml:/opt/infinispan/server/conf/infinispan-xsite-basic.xml 
+      - ../../dist:/opt/infinispan/static/console
+    command: -c infinispan-xsite-basic.xml -Dinfinispan.site.name=NYC -Djgroups.mcast_port=46666 -n nyc-1
+  infinispan-server-nyc-2:
+    image: quay.io/infinispan/server:14.0
+    ports:
+      - "31223:11222"
+    container_name: ispn-nyc-2
+    environment:
+      USER: admin
+      PASS: password
+    networks:
+      - mynetwork
+    volumes: 
+      - ../infinispan-basic-auth-xsite.xml:/opt/infinispan/server/conf/infinispan-xsite-basic.xml 
+      - ../../dist:/opt/infinispan/static/console
+    command: -c infinispan-xsite-basic.xml -Dinfinispan.site.name=NYC -Djgroups.mcast_port=46666 -n nyc-2
