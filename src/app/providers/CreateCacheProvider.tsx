@@ -94,6 +94,12 @@ const PersistentCacheInitialState: PersistentCache = {
   availabilityInterval: undefined
 };
 
+const TracingCacheInitialState: TracingCache = {
+  globalEnabled: false,
+  enabled: true,
+  categories: ['container']
+};
+
 const CacheFeatureInitialState: CacheFeatureStep = {
   cacheFeatureSelected: [],
   boundedCache: BoundedCacheInitialState,
@@ -109,6 +115,7 @@ const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
   indexMerge: IndexMergeInitialState,
   backupSetting: BackupSettingInitialState,
   transactionalAdvance: TransactionalCacheAdvanceInitialState,
+  tracing: TracingCacheInitialState,
   valid: true
 };
 
@@ -145,6 +152,10 @@ const CreateCacheProvider = ({ children }) => {
   };
 
   const addFeature = (feature: CacheFeature) => {
+    if (configuration.feature.cacheFeatureSelected.includes(feature)) {
+      return;
+    }
+
     setConfiguration((prevState) => {
       return {
         ...prevState,

@@ -20,8 +20,8 @@ interface CacheManager {
   local_site?: string;
   rebalancing_enabled?: boolean;
   backups_enabled: boolean;
-  tracing_enabled: boolean;
   sites_view: string[];
+  tracing_enabled: boolean;
 }
 
 interface ClusterMember {
@@ -89,6 +89,7 @@ interface CacheInfo {
   health: string;
   features: Features;
   rebalancing_enabled?: boolean;
+  tracing: boolean;
 }
 
 interface CacheEntry {
@@ -135,6 +136,7 @@ interface DetailedInfinispanCache {
   mode: string;
   memory?: CacheMemory;
   async: boolean;
+  tracing: boolean;
 }
 
 interface CacheMemory {
@@ -359,6 +361,13 @@ interface SecuredCache {
   roles: string[];
   valid: boolean;
 }
+
+interface TracingCache {
+  globalEnabled: boolean;
+  enabled: boolean;
+  categories: string[];
+}
+
 interface BackupTakeOffline {
   afterFailures?: number;
   minWait?: number;
@@ -448,6 +457,7 @@ interface AdvancedConfigurationStep {
   backupSetting?: BackupSetting;
   backupSiteData?: BackupSite[];
   transactionalAdvance?: TransactionalCacheAdvance;
+  tracing: TracingCache;
   valid: boolean;
 }
 

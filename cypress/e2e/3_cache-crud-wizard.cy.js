@@ -97,6 +97,15 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=stopTimeout]').type(10000);
     cy.get('[data-cy=completeTimeout]').type(50000);
     cy.get('[data-cy=reaperInterval]').type(20000);
+
+    //Filling tracing properties
+    cy.get('[data-cy=menu-toogle-categorySelector]').click();
+    cy.get('[data-cy=option-typeahead-cluster]').click();
+    cy.get('[data-cy=option-typeahead-x-site]').click();
+    cy.get('[data-cy=option-typeahead-persistence]').click();
+    cy.get('[data-cy=menu-toogle-categorySelector]').click();
+
+    // Next
     cy.get('[data-cy=wizardNextButton]').click();
 
     //Verify before submitting and downloading file
