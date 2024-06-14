@@ -448,6 +448,14 @@ export class CacheConfigUtils {
       featurePersistent();
     }
 
+    if (data.advanced.tracing.globalEnabled) {
+      cache[cacheType]['tracing'] = {};
+      cache[cacheType]['tracing'].enabled = data.advanced.tracing.enabled;
+      if (data.advanced.tracing.categories.length > 0) {
+        cache[cacheType]['tracing'].categories = data.advanced.tracing.categories;
+      }
+    }
+
     return JSON.stringify(cache, null, 2);
   }
 

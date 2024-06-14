@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Form, FormAlert, FormGroup, FormSection, SelectOptionProps } from '@patternfly/react-core';
+import { Alert, Form, FormAlert, FormGroup, FormSection } from '@patternfly/react-core';
 import { CacheFeature, CacheMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -25,11 +25,11 @@ const FeaturesSelector = () => {
 
   const brandname = t('brandname.brandname');
 
-  const [loadingBackups, setLoadingBackups] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isBackups, setIsBackups] = useState(false);
 
   useEffect(() => {
-    if (loadingBackups) {
+    if (loading) {
       // Check if backups cache is enabled
       ConsoleServices.dataContainer()
         .getDefaultCacheManager()
@@ -38,9 +38,9 @@ const FeaturesSelector = () => {
             setIsBackups(r.value.backups_enabled);
           }
         })
-        .then(() => setLoadingBackups(false));
+        .then(() => setLoading(false));
     }
-  }, [loadingBackups]);
+  }, [loading]);
 
   const onSelectFeature = (selection) => {
     if (configuration.feature.cacheFeatureSelected.includes(selection)) {

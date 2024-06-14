@@ -438,6 +438,7 @@ class DisplayUtils {
     if (features.hasRemoteBackup) {
       featuresString = this.appendFeature(featuresString, 'Backups');
     }
+
     return featuresString.length > 0 ? featuresString : 'None';
   }
 
@@ -462,6 +463,7 @@ class DisplayUtils {
     if (features.hasRemoteBackup) {
       featureChipGroup = ['Backups', ...featureChipGroup];
     }
+
     return featureChipGroup;
   }
 

@@ -50,7 +50,7 @@ const IndexedConfigurationTuning = () => {
       return {
         ...prevState,
         advanced: {
-          ...prevState,
+          ...prevState.advanced,
           indexReader: refreshInterval,
           indexWriter: {
             commitInterval: commitInterval,

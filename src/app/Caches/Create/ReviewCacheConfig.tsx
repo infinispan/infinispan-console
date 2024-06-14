@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, AlertVariant, Flex, Form, FormGroup, Text, TextContent, TextVariants } from '@patternfly/react-core';
-import { CodeEditor, Language } from '@patternfly/react-code-editor';
+import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useCreateCache } from '@app/services/createCacheHook';

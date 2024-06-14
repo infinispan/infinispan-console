@@ -76,6 +76,7 @@ export class CacheService {
           secured: data.secured,
           hasRemoteBackup: data['has_remote_backup']
         },
+        tracing: data.tracing,
         configuration: cacheConfig,
         stats: cacheStats,
         memory: cacheMemory,

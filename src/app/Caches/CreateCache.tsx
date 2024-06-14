@@ -6,6 +6,7 @@ import {
   AlertVariant,
   Bullseye,
   EmptyState,
+  EmptyStateHeader,
   EmptyStateIcon,
   PageSection,
   PageSectionVariants,
@@ -14,10 +15,8 @@ import {
   TextContent,
   TextVariants,
   Toolbar,
-  ToolbarContent,
-  EmptyStateHeader
+  ToolbarContent
 } from '@patternfly/react-core';
-import displayUtils from '@services/displayUtils';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useTranslation } from 'react-i18next';

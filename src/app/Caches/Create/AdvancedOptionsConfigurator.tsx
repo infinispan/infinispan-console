@@ -7,7 +7,6 @@ import {
   GridItem,
   HelperText,
   HelperTextItem,
-  SelectOptionProps,
   Switch,
   TextInput
 } from '@patternfly/react-core';
@@ -20,11 +19,11 @@ import IndexedConfigurationTuning from '@app/Caches/Create/AdvancedTuning/Indexe
 import BackupsCofigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsCofigurationTuning';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import TracingCacheConfigurator from '@app/Caches/Create/Features/TracingCacheConfigurator';
 
-const AdvancedOptionsConfigurator = () => {
+const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
   const { t } = useTranslation();
   const { configuration, setConfiguration } = useCreateCache();
-  const brandname = t('brandname.brandname');
 
   const [storage, setStorage] = useState<StorageType | undefined>(configuration.advanced.storage as StorageType);
   const [concurrencyLevel, setConcurrencyLevel] = useState<number | undefined>(configuration.advanced.concurrencyLevel);
@@ -42,8 +41,7 @@ const AdvancedOptionsConfigurator = () => {
           storage: storage,
           concurrencyLevel: concurrencyLevel,
           lockAcquisitionTimeout: lockAcquisitionTimeout,
-          striping: striping,
-          valid: true
+          striping: striping
         }
       };
     });
@@ -162,6 +160,7 @@ const AdvancedOptionsConfigurator = () => {
       }}
     >
       {formMemory()}
+      <TracingCacheConfigurator tracingEnabled={props.cacheManager.tracing_enabled} />
       {formLocking()}
       <IndexedConfigurationTuning />
       <BackupsCofigurationTuning />

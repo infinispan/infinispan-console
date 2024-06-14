@@ -120,6 +120,7 @@
     "cache-filter-feature-trans": "Transactions",
     "cache-filter-feature-secure": "Authorization",
     "cache-filter-feature-xsite": "Backups",
+    "cache-filter-feature-tracing": "Tracing",
     "cache-filter-status-ignored": "Hidden",
     "counters-table-label": "Counters",
     "tasks-table-label": "Tasks",
@@ -499,7 +500,16 @@
           "reaper-interval": "Reaper interval",
           "reaper-interval-tooltip": "Sets the amount of time, in milliseconds, between which {{brandname}} checks if transactions are complete.",
           "transactional-tuning": "Transaction tuning",
-          "transactional-tuning-tooltip": "Adjust settings for transactional caches."
+          "transactional-tuning-tooltip": "Adjust settings for transactional caches.",
+          "tracing-title": "Tracing configuration",
+          "tracing-enable": "Enable tracing for your cache",
+          "tracing-disable": "Disable tracing for your cache",
+          "tracing-tooltip": "Enable tracing to track the events configured in your tracing exporter endpoint.",
+          "tracing": "Tracing categories",
+          "tracing-description": "Tracing is enabled by default in every cache when tracing is enabled globally. Disable tracing or specify which events to track within this cache.",
+          "select-tracing-categories": "Select categories",
+          "select-tracing-categories-helper": "You must select at least one category.",
+          "tracing-loading": "Loading available categories..."
         }
       },
       "review": {
