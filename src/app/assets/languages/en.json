@@ -36,7 +36,7 @@
     "current-version": "Current version",
     "latest-version": "Latest version",
     "already-latest-version": "Already up to date",
-    "description1": "{{brandname}} is an in-memory data store that offers scalability, interoperability, and fault tolerance.",
+    "description1": "{{brandname}} is an in-memory database that offers scalability, interoperability, and fault tolerance.",
     "description2": "Use high-performance caching capabilities and create distributed data grids designed for microservice architectures.",
     "license": "Available under ",
     "apache-license": "Apache License 2.0",
