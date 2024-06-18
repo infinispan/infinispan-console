@@ -20,7 +20,7 @@
     "connect": "Connetti a cluster di {{brandname}} con client remoti.",
     "current-version": "Versione attuale",
     "welcome-title": "Benvenuto a {{brandname}} Server",
-    "description1": "{{brandname}} è un sistema di archiviazione in memoria che offre scalabilità, interoperabilità e tolleranza agli errori.",
+    "description1": "{{brandname}} è un database in memoria che offre scalabilità, interoperabilità e tolleranza agli errori.",
     "description2": "Usa funzionalità di cache ad alte prestazioni e crea data grid distribuiti per architetture a microservizi.",
     "servers": "Installa e configura cluster {{brandname}}.",
     "learn-more": " Inizia",
