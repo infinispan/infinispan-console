@@ -20,7 +20,11 @@
       "delete": "Delete",
       "remove": "Remove"
     },
-    "loading-error-message": "There was an error retrieving data. Check your connection and try again."
+    "loading-error-message": "There was an error retrieving data. Check your connection and try again.",
+    "tracing" : {
+      "enabled": "Tracing is enabled",
+      "disabled": "Tracing is disabled"
+    }
   },
   "layout": {
     "console-name": "Server Management Console",
@@ -131,7 +135,6 @@
     "parameters": "Parameters",
     "allowed-role": "Allowed role",
     "allowed-role-null": "-",
-    "tracing-enabled": "Tracing is enabled",
     "rebalancing": {
       "disabled-status": "Cluster rebalancing off",
       "enabled": "Cluster rebalancing on",
@@ -560,6 +563,7 @@
     },
     "actions": {
       "action-manage-indexes": "Manage indexes",
+      "action-manage-tracing": "Manage tracing",
       "action-manage-backups": "Manage backups",
       "refresh": "Refresh",
       "back": "Back"
@@ -670,6 +674,14 @@
       "indexing-status": "Indexing",
       "button-clear": "Clear index",
       "button-rebuild": "Rebuild index"
+    },
+    "tracing": {
+      "title": "Tracing management",
+      "tracing-disable": "Tracing is disabled",
+      "tracing-enable": "Tracing is enabled",
+      "tracing-tooltip": "Enable tracing to track the events configured in your tracing exporter endpoint.",
+      "select-tracing-categories": "Select categories",
+      "select-tracing-categories-helper": "You must select at least one category."
     },
     "backups": {
       "title": "Backups management",

@@ -443,6 +443,49 @@ export class CacheService {
     );
   }
 
+  /**
+   * Retrieve cache config attribute
+   *
+   * @param cacheName
+   * @param configAttribute
+   */
+  public async getConfigAttribute(cacheName: string, configAttribute: string): Promise<Either<ActionResponse, string>> {
+    const customHeaders = this.createCustomHeader('Accept', 'json');
+    return this.fetchCaller.get(
+      this.endpoint +
+        '/caches/' +
+        encodeURIComponent(cacheName) +
+        '?action=get-mutable-attribute&attribute-name=' +
+        configAttribute,
+      (text) => text,
+      customHeaders,
+      true
+    );
+  }
+
+  /**
+   * Update cache config attribute
+   *
+   * @param cacheName
+   * @param configAttribute
+   * @param configAttributeValue
+   */
+  public async setConfigAttribute(cacheName: string, configAttribute: string, value: string): Promise<ActionResponse> {
+    const url =
+      this.endpoint +
+      '/caches/' +
+      encodeURIComponent(cacheName) +
+      '?action=set-mutable-attribute&attribute-name=' +
+      configAttribute +
+      '&attribute-value=' +
+      encodeURIComponent(value);
+    return this.fetchCaller.post({
+      url: url,
+      successMessage: `Cache ${cacheName} successfully updated.`,
+      errorMessage: `Unexpected error when updating ${cacheName} config.`
+    });
+  }
+
   public async getSize(cacheName: string): Promise<Either<ActionResponse, number>> {
     return this.fetchCaller
       .fetch(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=size', 'GET')

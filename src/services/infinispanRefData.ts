@@ -7,6 +7,8 @@ import {
   tableSqlStore
 } from '@app/utils/persistentStorageTemplate';
 
+export const TracingCategories = ['container', 'x-site', 'cluster', 'persistence'];
+
 export enum ComponentHealth {
   HEALTHY = 'HEALTHY',
   HEALTHY_REBALANCING = 'HEALTHY_REBALANCING',

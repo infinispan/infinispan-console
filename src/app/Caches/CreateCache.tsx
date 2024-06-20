@@ -25,37 +25,23 @@ import { CreateCacheProvider } from '@app/providers/CreateCacheProvider';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
+import { useDataContainer } from '@app/services/dataContainerHooks';
 
 const CreateCache = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [cacheManager, setCacheManager] = useState<CacheManager | undefined>();
-  const [error, setError] = useState('');
-  const [loadingBackups, setLoadingBackups] = useState(true);
-  const [isBackupAvailable, setIsBackupAvailable] = useState(false);
+  const { cm, loading, error } = useDataContainer();
   const [localSite, setLocalSite] = useState('');
   const { connectedUser } = useConnectedUser();
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
 
   useEffect(() => {
-    if (!cacheManager && loadingBackups) {
-      ConsoleServices.dataContainer()
-        .getDefaultCacheManager()
-        .then((r) => {
-          if (r.isRight()) {
-            const cm = r.value;
-            setCacheManager(cm);
-            setIsBackupAvailable(cm.backups_enabled);
-            if (cm.backups_enabled && cm.local_site) {
-              setLocalSite(cm.local_site);
-            }
-          } else {
-            setError(r.value.message);
-          }
-        })
-        .then(() => setLoadingBackups(false));
+    if (cm) {
+      if (cm.backups_enabled && cm.local_site) {
+        setLocalSite(cm.local_site);
+      }
     }
-  }, []);
+  }, [cm]);
 
   const displayError = () => {
     return (
@@ -106,9 +92,9 @@ const CreateCache = () => {
           )}
         </Toolbar>
       </PageSection>
-      {!cacheManager && displayLoading()}
+      {loading && displayLoading()}
       {error != '' && displayError()}
-      {cacheManager && <CreateCacheWizard cacheManager={cacheManager} create={create} />}
+      {cm && <CreateCacheWizard cacheManager={cm} create={create} />}
     </CreateCacheProvider>
   );
 };

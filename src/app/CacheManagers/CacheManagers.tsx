@@ -204,7 +204,7 @@ const CacheManagers = () => {
               <React.Fragment>
                 <ToolbarItem variant="separator"></ToolbarItem>
                 <ToolbarItem>
-                  <TracingEnabled />
+                  <TracingEnabled enabled={cm.tracing_enabled}/>
                 </ToolbarItem>
               </React.Fragment>
             )}
