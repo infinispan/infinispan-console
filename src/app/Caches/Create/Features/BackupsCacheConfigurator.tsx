@@ -11,7 +11,6 @@ import {
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { BackupSiteStrategy, CacheFeature } from '@services/infinispanRefData';
-import { ConsoleServices } from '@services/ConsoleServices';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -20,8 +19,10 @@ import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { useDataContainer } from '@app/services/dataContainerHooks';
 
 const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
+  const { loading, error, cm, reload } = useDataContainer();
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
@@ -89,22 +90,14 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   useEffect(() => {
-    if (loadingBackups) {
-      // Fetch available sites
-      ConsoleServices.dataContainer()
-        .getDefaultCacheManager()
-        .then((r) => {
-          if (r.isRight()) {
-            const cm = r.value;
-            const localSiteName = cm.local_site ? cm.local_site : '';
-            const siteView = cm.sites_view.filter((s) => s !== localSiteName);
-            setLocalSite(localSiteName);
-            setAvailableSites(siteView);
-          }
-        })
-        .then(() => setLoadingBackups(false));
+    if (cm && !loading) {
+      const localSiteName = cm.local_site ? cm.local_site : '';
+      const siteView = cm.sites_view.filter((s) => s !== localSiteName);
+      setLocalSite(localSiteName);
+      setAvailableSites(siteView);
+      setLoadingBackups(false);
     }
-  }, [loadingBackups]);
+  }, [loading]);
 
   const helperAddSite = (selection) => {
     if (!sites.some((s) => s.siteName === selection)) {

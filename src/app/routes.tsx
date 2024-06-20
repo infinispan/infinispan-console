@@ -20,6 +20,8 @@ import { NotFound } from '@app/NotFound/NotFound';
 import { RoleDetail } from '@app/AccessManagement/RoleDetail';
 import { useDocumentTitle } from '@utils/useDocumentTitle';
 import { accessibleRouteChangeHandler } from '@utils/utils';
+import { ContainerDataProvider } from '@app/providers/CacheManagerContextProvider';
+import { TracingManagement } from '@app/TracingManagement/TracingManagement';
 
 export interface IAppRoute {
   label?: string;
@@ -65,7 +67,11 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: <CreateCache />,
+    component: (
+      <ContainerDataProvider>
+        <CreateCache />
+      </ContainerDataProvider>
+    ),
     exact: true,
     label: 'Cache Setup',
     path: '/caches/setup',
@@ -75,7 +81,11 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: <CreateCache />,
+    component: (
+      <ContainerDataProvider>
+        <CreateCache />
+      </ContainerDataProvider>
+    ),
     exact: true,
     label: 'Create cache',
     path: '/container/caches/create',
@@ -98,6 +108,15 @@ const routes: IAppRoute[] = [
     label: 'Index management',
     path: '/cache/:cacheName/indexing',
     title: 'Index management',
+    menu: false,
+    admin: false
+  },
+  {
+    component: <TracingManagement />,
+    exact: true,
+    label: 'Tracing management',
+    path: '/cache/:cacheName/tracing',
+    title: 'Tracing management',
     menu: false,
     admin: false
   },

@@ -4,8 +4,9 @@ import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/Alert
 import { useTranslation } from 'react-i18next';
 import { global_info_color_100 } from '@patternfly/react-tokens';
 
-const TracingEnabled = () => {
+const TracingEnabled = (props: { enabled: boolean }) => {
   const { t } = useTranslation();
+
   return (
     <Flex data-cy="tracingEnabled">
       <FlexItem spacer={{ default: 'spacerXs' }}>
@@ -19,7 +20,8 @@ const TracingEnabled = () => {
       </FlexItem>
       <FlexItem>
         <TextContent>
-          <Text component={TextVariants.p}>{t('cache-managers.tracing-enabled')}</Text>
+          <Text component={TextVariants.p}>{props.enabled ? t('common.tracing.enabled')
+            : t('common.tracing.disabled') }</Text>
         </TextContent>
       </FlexItem>
     </Flex>

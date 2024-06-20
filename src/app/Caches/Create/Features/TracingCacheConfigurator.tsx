@@ -6,12 +6,12 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { TracingCategories } from '@services/infinispanRefData';
 
 const TracingCacheConfigurator = (props: { tracingEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const [tracingConf, setTracingConf] = useState(configuration.advanced.tracing);
-  const availableCategories = ['container', 'x-site', 'cluster', 'persistence'];
 
   useEffect(() => {
     setTracingConf((prevState) => {
@@ -103,7 +103,7 @@ const TracingCacheConfigurator = (props: { tracingEnabled: boolean }) => {
           <SelectMultiWithChips
             id="categorySelector"
             placeholder={t('caches.create.configurations.advanced-options.select-tracing-categories')}
-            options={selectOptionPropsFromArray(availableCategories)}
+            options={selectOptionPropsFromArray(TracingCategories)}
             selection={tracingConf.categories}
             onSelect={onSelectCategories}
             onClear={() => {

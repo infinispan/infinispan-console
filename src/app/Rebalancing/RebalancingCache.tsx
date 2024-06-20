@@ -7,7 +7,6 @@ import { ConsoleACL } from '@services/securityService';
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { RebalancingConfirmationModal } from '@app/Rebalancing/RebalancingConfirmationModal';
-import { global_spacer_xs } from '@patternfly/react-tokens';
 
 const RebalancingCache = () => {
   const { addAlert } = useApiAlert();
@@ -17,7 +16,11 @@ const RebalancingCache = () => {
   const { cache, cacheManager, loading, reload } = useCacheDetail();
 
   // If rebalancing is not activated at cluster level, don't display anything
-  if (!cacheManager.rebalancing_enabled || cache.rebalancing_enabled == undefined) {
+  if (
+    !cacheManager.rebalancing_enabled ||
+    cache.rebalancing_enabled == null ||
+    cache.rebalancing_enabled == undefined
+  ) {
     return <></>;
   }
 
@@ -46,7 +49,7 @@ const RebalancingCache = () => {
    */
   if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
     return (
-      <ToolbarItem style={{ paddingTop: global_spacer_xs.value }}>
+      <ToolbarItem>
         <Switch
           id="rebalancing-switch"
           label={t('caches.rebalancing.enabled')}

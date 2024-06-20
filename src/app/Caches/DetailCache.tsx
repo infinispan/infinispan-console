@@ -19,6 +19,8 @@ import {
   EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
+  Flex,
+  FlexItem,
   Label,
   LabelGroup,
   MenuToggle,
@@ -44,7 +46,13 @@ import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 import { CacheTypeBadge } from '@app/Common/CacheTypeBadge';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
-import { global_BackgroundColor_100, global_danger_color_200, global_info_color_200 } from '@patternfly/react-tokens';
+import {
+  global_BackgroundColor_100,
+  global_danger_color_200,
+  global_info_color_100,
+  global_info_color_200,
+  global_warning_color_100
+} from '@patternfly/react-tokens';
 import { ExclamationCircleIcon, InfoCircleIcon, InfoIcon, RedoIcon } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
@@ -58,6 +66,8 @@ import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { EncodingType } from '@services/infinispanRefData';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useNavigate } from 'react-router';
+import { TracingEnabled } from '@app/Common/TracingEnabled';
+import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -67,7 +77,7 @@ const DetailCache = (props: { cacheName: string }) => {
   const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
-  const { loading, error, cache, loadCache } = useCacheDetail();
+  const { loading, error, cache, cacheManager, loadCache } = useCacheDetail();
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [isOpen, setIsOpen] = useState(false);
@@ -263,7 +273,7 @@ const DetailCache = (props: { cacheName: string }) => {
         value={'backupsManage'}
         key="manageBackupsLink"
         data-cy="manageBackupsLink"
-        onClick={(ev: any) =>
+        onClick={(ev) =>
           navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/backups',
             search: location.search
@@ -281,10 +291,47 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <ToolbarItem>
-        <Spinner size={'md'} isInline />
-        <Alert variant="warning" isInline isPlain title={t('caches.rebuilding-index')} />
-      </ToolbarItem>
+      <React.Fragment>
+        <ToolbarItem>
+          <Flex data-cy="rebuildingIndex">
+            <FlexItem spacer={{ default: 'spacerXs' }}>
+              <AlertIcon
+                variant={AlertVariant.warning}
+                style={{
+                  color: global_warning_color_100.value,
+                  display: 'inline'
+                }}
+              />
+            </FlexItem>
+            <FlexItem>
+              <TextContent>
+                <Text component={TextVariants.p}>{t('caches.rebuilding-index')}</Text>
+              </TextContent>
+            </FlexItem>
+          </Flex>
+        </ToolbarItem>
+        <ToolbarItem variant="separator"></ToolbarItem>
+      </React.Fragment>
+    );
+  };
+
+  const buildTracing = () => {
+    if (!cacheManager || !cacheManager.tracing_enabled) return;
+
+    return (
+      <DropdownItem
+        value={'tracingManage'}
+        key="manageTracingLink"
+        data-cy="manageTracingLink"
+        onClick={(ev) =>
+          navigate({
+            pathname: '/cache/' + encodeURIComponent(cacheName) + '/tracing',
+            search: location.search
+          })
+        }
+      >
+        {t('caches.actions.action-manage-tracing')}
+      </DropdownItem>
     );
   };
 
@@ -295,7 +342,7 @@ const DetailCache = (props: { cacheName: string }) => {
         value={'indexManage'}
         key="manageIndexesLink"
         data-cy="manageIndexesLink"
-        onClick={(ev: any) =>
+        onClick={(ev) =>
           navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/indexing',
             search: location.search
@@ -344,10 +391,17 @@ const DetailCache = (props: { cacheName: string }) => {
       <Toolbar id="cache-header-actions">
         <ToolbarContent>
           <ToolbarGroup>
-            <RebalancingCache />
+            {cacheManager.tracing_enabled && (
+              <React.Fragment>
+                <ToolbarItem>
+                  <TracingEnabled enabled={cache.tracing}/>
+                </ToolbarItem>
+                <ToolbarItem variant="separator"></ToolbarItem>
+              </React.Fragment>
+            )}
             {buildDisplayReindexing()}
+            <RebalancingCache />
           </ToolbarGroup>
-          <ToolbarGroup variant={'filter-group'}>{buildFeaturesChip()}</ToolbarGroup>
         </ToolbarContent>
       </Toolbar>
     );
@@ -416,6 +470,7 @@ const DetailCache = (props: { cacheName: string }) => {
           shouldFocusToggleOnSelect
         >
           <DropdownList>
+            {buildTracing()}
             {buildIndexManage()}
             {buildBackupsManage()}
             {buildRefresh()}
@@ -436,6 +491,7 @@ const DetailCache = (props: { cacheName: string }) => {
                   <Text component={TextVariants.h1}>{t('caches.info.loading', { cacheName: cacheName })}</Text>
                 </TextContent>
               </ToolbarItem>
+              <ToolbarItem></ToolbarItem>
             </ToolbarContent>
           </ToolbarGroup>
         </Toolbar>
@@ -471,6 +527,7 @@ const DetailCache = (props: { cacheName: string }) => {
               <ToolbarItem>
                 <CacheTypeBadge cacheType={cache.type} small={true} cacheName={cache.name} />
               </ToolbarItem>
+              {buildFeaturesChip()}
             </ToolbarGroup>
             {displayActions}
           </ToolbarContent>
