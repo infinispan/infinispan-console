@@ -124,18 +124,32 @@ const CacheEntries = (props: { cacheName: string }) => {
     });
   };
 
-  const displayActions = (row): IAction[] => [
-    {
-      'aria-label': 'editEntryAction',
-      title: t('caches.entries.action-edit'),
-      onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
-    },
-    {
-      'aria-label': 'deleteEntryAction',
-      title: t('caches.entries.action-delete'),
-      onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
+  const displayActions = (row) => {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
+      return (
+        <Td></Td>
+      );
     }
-  ];
+
+    const actions = [
+        {
+          'aria-label': 'editEntryAction',
+          title: t('caches.entries.action-edit'),
+          onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
+        },
+        {
+          'aria-label': 'deleteEntryAction',
+          title: t('caches.entries.action-delete'),
+          onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
+        }
+      ]
+
+    return (
+      <Td isActionCell data-cy={`actions-${row.key}`}>
+        <ActionsColumn items={actions} />
+      </Td>
+    );
+  }
 
   const columnNames = {
     key: t('caches.entries.column-key'),
@@ -439,9 +453,7 @@ const CacheEntries = (props: { cacheName: string }) => {
                       <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
                       <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>
                       <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>
-                      <Td isActionCell data-cy={`actions-${row.key}`}>
-                        <ActionsColumn items={displayActions(row)} />
-                      </Td>
+                      {displayActions(row)}
                     </Tr>
                   );
                 })
