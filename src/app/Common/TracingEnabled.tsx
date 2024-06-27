@@ -2,7 +2,7 @@ import React from 'react';
 import { AlertVariant, Flex, FlexItem, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
 import { useTranslation } from 'react-i18next';
-import { global_info_color_100 } from '@patternfly/react-tokens';
+import { global_disabled_color_100, global_info_color_100 } from '@patternfly/react-tokens';
 
 const TracingEnabled = (props: { enabled: boolean }) => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ const TracingEnabled = (props: { enabled: boolean }) => {
         <AlertIcon
           variant={AlertVariant.info}
           style={{
-            color: global_info_color_100.value,
+            color: props.enabled? global_info_color_100.value : global_disabled_color_100.value,
             display: 'inline'
           }}
         />
