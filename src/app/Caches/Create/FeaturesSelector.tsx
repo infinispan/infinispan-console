@@ -16,6 +16,8 @@ import { useFetchProtobufTypes } from '@app/services/protobufHook';
 import { ConsoleACL } from '@services/securityService';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import { useDataContainer } from '@app/services/dataContainerHooks';
+
 
 const FeaturesSelector = () => {
   const { t } = useTranslation();
@@ -25,22 +27,14 @@ const FeaturesSelector = () => {
 
   const brandname = t('brandname.brandname');
 
-  const [loadingBackups, setLoadingBackups] = useState(true);
+  const { cm, loading } = useDataContainer();
   const [isBackups, setIsBackups] = useState(false);
 
   useEffect(() => {
-    if (loadingBackups) {
-      // Check if backups cache is enabled
-      ConsoleServices.dataContainer()
-        .getDefaultCacheManager()
-        .then((r) => {
-          if (r.isRight()) {
-            setIsBackups(r.value.backups_enabled);
-          }
-        })
-        .then(() => setLoadingBackups(false));
+    if (!loading) {
+      setIsBackups(cm.backups_enabled);
     }
-  }, [loadingBackups]);
+  }, [loading]);
 
   const onSelectFeature = (selection) => {
     if (configuration.feature.cacheFeatureSelected.includes(selection)) {
