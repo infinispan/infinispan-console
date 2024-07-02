@@ -26,15 +26,13 @@ const CreateCacheGettingStarted = (props: { create: boolean }) => {
   const id = props.create ? 'create' : 'setup';
 
   const handleChangeName = (name) => {
-    const trimmedName = name.trim();
-
     // Check if name is not null or empty
-    if (trimmedName.length > 0) {
+    if (name.length > 0) {
       setValidName('default');
     } else {
       setValidName('error');
     }
-    setCacheName(trimmedName);
+    setCacheName(name);
   };
 
   useEffect(() => {
