@@ -58,7 +58,6 @@ describe('Proto Schema CRUD', () => {
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.contains(schemaName + '.proto');
     cy.contains('Schema ' + schemaName + '.proto has errors');
-    cy.wait(50000)
 
     // Update
     cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
@@ -74,7 +73,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Schema ' + schemaName +'.proto updated.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
-    cy.wait(10000)
+
     cy.contains('schemaValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
