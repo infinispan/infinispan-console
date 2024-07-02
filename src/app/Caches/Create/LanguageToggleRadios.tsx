@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 const LanguageToggleRadios = (props: {
   language: ConfigDownloadType;
   setLanguage: (ConfigDownloadType) => void;
-  setContentType: (string) => void;
 }) => {
   const { t } = useTranslation();
 
@@ -17,7 +16,6 @@ const LanguageToggleRadios = (props: {
         id="JSON"
         onChange={() => {
           props.setLanguage(ConfigDownloadType.JSON);
-          props.setContentType(ConfigDownloadType.JSON.toLowerCase());
         }}
         isChecked={(props.language as ConfigDownloadType) == ConfigDownloadType.JSON}
         label={t('caches.create.review.json')}
@@ -27,7 +25,6 @@ const LanguageToggleRadios = (props: {
         id="XML"
         onChange={() => {
           props.setLanguage(ConfigDownloadType.XML);
-          props.setContentType(ConfigDownloadType.XML.toLowerCase());
         }}
         isChecked={(props.language as ConfigDownloadType) == ConfigDownloadType.XML}
         label={t('caches.create.review.xml')}
@@ -37,7 +34,6 @@ const LanguageToggleRadios = (props: {
         id="YAML"
         onChange={() => {
           props.setLanguage(ConfigDownloadType.YAML);
-          props.setContentType(ConfigDownloadType.YAML.toLowerCase());
         }}
         isChecked={(props.language as ConfigDownloadType) == ConfigDownloadType.YAML}
         label={t('caches.create.review.yaml')}

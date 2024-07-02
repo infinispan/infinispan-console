@@ -13,11 +13,9 @@ import { toCodeEditorLanguage } from '@utils/getLanguage';
 const ReviewCacheConfig = (props: {
   setReviewConfig: (string) => void;
   setContentType: (string) => void;
-  contentType: 'json' | 'yaml' | 'xml';
 }) => {
   const { configuration } = useCreateCache();
   const { t } = useTranslation();
-  const [config, setConfig] = useState(CacheConfigUtils.createCacheConfigFromData(configuration));
   const { theme } = useContext(ThemeContext);
 
   const [language, setLanguage] = useState(ConfigDownloadType.JSON);
@@ -25,43 +23,52 @@ const ReviewCacheConfig = (props: {
   const [yamlConfig, setYamlConfig] = useState('');
   const [xmlConfig, setXmlConfig] = useState('');
   const [error, setError] = useState('');
+  const [validate, setValidate] = useState(true);
 
   useEffect(() => {
-    props.setContentType('json');
-  }, []);
-  useEffect(() => {
-    props.setReviewConfig(config);
-
-    if (configuration && config && language.toLowerCase() === props.contentType) {
+    if (validate) {
       // Convert the config to all formats
       // Also to check if the config is valid
       ConsoleServices.caches()
-        .convertToAllFormat(configuration.start.cacheName, config, props.contentType)
+        .convertToAllFormat(configuration.start.cacheName, jsonConfig, 'json')
         .then((r) => {
           if (r.isRight()) {
             setYamlConfig(r.value.yaml);
             setJsonConfig(r.value.json);
             setXmlConfig(r.value.xml);
             setError('');
+            props.setReviewConfig(r.value.json);
           } else {
             setError(r.value.message);
           }
-        });
+        }).then(() => setValidate(false));
     }
-  }, [config, configuration]);
+  }, [validate]);
 
   useEffect(() => {
-    language === ConfigDownloadType.JSON
-      ? setConfig(jsonConfig)
-      : language === ConfigDownloadType.YAML
-        ? setConfig(yamlConfig)
-        : setConfig(xmlConfig);
-  }, [jsonConfig, yamlConfig, xmlConfig, language]);
+    props.setContentType(language.toLowerCase());
+  }, [language]);
 
   const onChangeConfig = (editedConfig) => {
     props.setReviewConfig(editedConfig);
-    setConfig(editedConfig);
+    if (language == ConfigDownloadType.JSON) {
+      setJsonConfig(editedConfig);
+    } else if (language == ConfigDownloadType.YAML) {
+      setYamlConfig(editedConfig);
+    } else {
+      setXmlConfig(editedConfig);
+    }
   };
+
+  const config = () => {
+    if (language == ConfigDownloadType.JSON) {
+      return jsonConfig;
+    }
+    if (language == ConfigDownloadType.YAML) {
+      return  yamlConfig;
+    }
+    return xmlConfig;
+  }
 
   const displayCacheConfigEditor = () => {
     return (
@@ -76,7 +83,7 @@ const ReviewCacheConfig = (props: {
           language={toCodeEditorLanguage(language)}
           isLineNumbersVisible
           isLanguageLabelVisible
-          code={config}
+          code={config()}
           height={'400px'}
           isCopyEnabled
           isDarkTheme={theme === 'dark'}
@@ -103,7 +110,7 @@ const ReviewCacheConfig = (props: {
           <Text component={TextVariants.h4}>{configuration.start.cacheName}</Text>
         </Flex>
       </TextContent>
-      <LanguageToggleRadios language={language} setLanguage={setLanguage} setContentType={props.setContentType} />
+      <LanguageToggleRadios language={language} setLanguage={setLanguage} />
       {displayCacheConfigEditor()}
     </Form>
   );
