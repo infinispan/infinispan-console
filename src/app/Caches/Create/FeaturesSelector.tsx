@@ -30,7 +30,6 @@ const FeaturesSelector = () => {
   const [isBackups, setIsBackups] = useState(false);
 
   useEffect(() => {
-    console.log(cm);
     if (!loading) {
       setIsBackups(cm.backups_enabled);
     }

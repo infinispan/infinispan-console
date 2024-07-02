@@ -258,7 +258,6 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
           <ReviewCacheConfig
             setReviewConfig={setReviewConfig}
             setContentType={setContentType}
-            contentType={contentType}
           />
         </WizardStep>
       </Wizard>
