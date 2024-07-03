@@ -18,7 +18,9 @@ const initialContext = {
   loadingEntries: false,
   errorEntries: '',
   infoEntries: '',
-  reloadEntries: () => {}
+  limit: '100',
+  reloadEntries: () => {},
+  setLimit: (limit: string) => {}
 };
 
 export const CacheDetailContext = React.createContext(initialContext);
@@ -35,13 +37,17 @@ const CacheDetailProvider = ({ children }) => {
   const [errorEntries, setErrorEntries] = useState(initialContext.errorEntries);
   const [infoEntries, setInfoEntries] = useState(initialContext.infoEntries);
   const [loadingEntries, setLoadingEntries] = useState(initialContext.loadingEntries);
-
+  const [limit, setLimit] = useState(initialContext.limit);
   const loadCache = (name: string | undefined) => {
     if (name != undefined && name != '' && cacheName != name) {
       setCacheName(name);
       setLoading(true);
     }
   };
+
+  useEffect( () => {
+    setLoadingEntries(true);
+  }, [limit]);
 
   useEffect(() => {
     fetchEntries();
@@ -97,7 +103,7 @@ const CacheDetailProvider = ({ children }) => {
       if (ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
         if (cache) {
           ConsoleServices.caches()
-            .getEntries(cacheName, cache.encoding, '100')
+            .getEntries(cacheName, cache.encoding, limit)
             .then((eitherEntries) => {
               if (eitherEntries.isRight()) {
                 setCacheEntries(eitherEntries.value);
@@ -135,8 +141,10 @@ const CacheDetailProvider = ({ children }) => {
     loadingEntries: loadingEntries,
     errorEntries: errorEntries,
     infoEntries: infoEntries,
+    limit: limit,
     reloadEntries: useCallback(() => setLoadingEntries(true), []),
-    getByKey: fetchEntry
+    getByKey: fetchEntry,
+    setLimit: setLimit
   };
   return <CacheDetailContext.Provider value={contextValue}>{children}</CacheDetailContext.Provider>;
 };

@@ -35,16 +35,16 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { ContentType, EncodingType } from '@services/infinispanRefData';
+import { ContentType, EncodingType, StorageType } from '@services/infinispanRefData';
 import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
 import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
-import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
+import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
 const CacheEntries = (props: { cacheName: string }) => {
-  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
+  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey, limit, setLimit } =
     useCacheEntries();
   const { cache } = useCacheDetail();
   const { connectedUser } = useConnectedUser();
@@ -342,7 +342,15 @@ const CacheEntries = (props: { cacheName: string }) => {
         {clearAllAction()}
         <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
         <ToolbarItem>
-          <Tooltip content={t('caches.entries.pagination-tooltip')}>
+          <SelectSingle
+            id={'view'}
+            placeholder={'100'}
+            selected={limit}
+            options={selectOptionProps(['100', '500', '1000'])}
+            style={{ width: '100px' }}
+            onSelect={(value) => setLimit(value)}
+          />
+          <Tooltip content={t('caches.entries.pagination-tooltip', {'number' : limit})}>
             <Button variant="plain">
               <HelpIcon />
             </Button>
