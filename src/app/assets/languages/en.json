@@ -581,7 +581,7 @@
       "get-entry-button-label": "Query input button",
       "add-entry-button-label": "Add entry",
       "clear-entry-button-label": "Clear all entries",
-      "pagination-tooltip": "Shows up to 100 entries of the cache",
+      "pagination-tooltip": "Shows up to {{number}} entries of the cache",
       "entries-table-label": "Entries",
       "modal-clear-title": "Permanently clear all entries?",
       "modal-clear-label": "Clear all entries modal",
