@@ -36,7 +36,7 @@ export function useFetchCaches() {
 }
 
 export function useCacheEntries() {
-  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey } =
+  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, limit, reloadEntries, getByKey, setLimit } =
     useContext(CacheDetailContext);
   return {
     cacheEntries,
@@ -44,8 +44,10 @@ export function useCacheEntries() {
     loadingEntries,
     errorEntries,
     infoEntries,
+    limit,
     reloadEntries,
-    getByKey
+    getByKey,
+    setLimit
   };
 }
 
