@@ -21,7 +21,7 @@
       "remove": "Remove"
     },
     "loading-error-message": "There was an error retrieving data. Check your connection and try again.",
-    "tracing" : {
+    "tracing": {
       "enabled": "Tracing is enabled",
       "disabled": "Tracing is disabled"
     }
@@ -648,6 +648,7 @@
     "query": {
       "no-query-body": "Enter query above to search",
       "no-search-value": "Values not found.",
+      "query-loading": "Executing query ...",
       "query-error": "Query error",
       "ickle-query": "Ickle query",
       "ickle-query-docs": "Ickle query syntax",

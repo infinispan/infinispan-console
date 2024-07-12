@@ -1,5 +1,5 @@
 import { FetchCaller } from './fetchCaller';
-import { Either } from './either';
+import { Either, left, right } from './either';
 import displayUtils from '@services/displayUtils';
 
 /**
@@ -28,23 +28,56 @@ export class SearchService {
     query: string,
     maxResults: number,
     offset: number
-  ): Promise<Either<ActionResponse, SearchResut>> {
-    return this.utils.get(
-      this.endpoint +
-        encodeURIComponent(cacheName) +
-        '?action=search' +
-        '&query=' +
-        encodeURIComponent(query) +
-        '&max_results=' +
-        maxResults +
-        '&offset=' +
-        offset * maxResults,
-      (data) =>
-        <SearchResut>{
-          total: data.total_results,
-          values: data.hits.map((hit) => JSON.stringify(hit.hit, null, 2))
+  ): Promise<SearchResult> {
+    const url = this.endpoint + encodeURIComponent(cacheName) + '?action=search';
+    const body = JSON.stringify({
+      query: query,
+      max_results: maxResults,
+      offset: offset * maxResults
+    });
+    return this.utils
+      .fetch(url, 'POST', undefined, body)
+      .then((response) => {
+        if (response.ok || response.status == 400) {
+          // Ok or bad request
+          return response.json();
         }
-    );
+
+        return response.text().then((text) => {
+          throw text;
+        });
+      })
+      .then((data) => {
+        // Parse the results
+        if (data['hits']) {
+          return <SearchResult>{
+            total: data.hit_count,
+            values: data.hits.map((hit) => JSON.stringify(hit.hit, null, 2)),
+            error: false,
+            cause: '',
+            executed: true
+          };
+        }
+        // Parse the error
+        return <SearchResult>{
+          total: 0,
+          values: [],
+          error: true,
+          executed: true,
+          cause: data['error'] ? data['error'].cause : JSON.stringify(data)
+        };
+      })
+      .catch(
+        (err) =>
+          <SearchResult>{
+            total: 0,
+            values: [],
+            error: true,
+            cause: 'Error executing search',
+            message: err,
+            executed: true
+          }
+      );
   }
 
   /**

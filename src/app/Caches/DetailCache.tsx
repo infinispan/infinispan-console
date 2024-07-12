@@ -394,7 +394,7 @@ const DetailCache = (props: { cacheName: string }) => {
             {cacheManager.tracing_enabled && (
               <React.Fragment>
                 <ToolbarItem>
-                  <TracingEnabled enabled={cache.tracing}/>
+                  <TracingEnabled enabled={cache.tracing} />
                 </ToolbarItem>
                 <ToolbarItem variant="separator"></ToolbarItem>
               </React.Fragment>
