@@ -234,9 +234,12 @@ interface ActionResponse {
   data?: string;
 }
 
-interface SearchResut {
+interface SearchResult {
   total: number;
   values: string[];
+  error: boolean;
+  cause: string;
+  executed: boolean;
 }
 
 interface ProtoError {

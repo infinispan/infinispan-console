@@ -10,10 +10,7 @@ import { ConfigDownloadType } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { toCodeEditorLanguage } from '@utils/getLanguage';
 
-const ReviewCacheConfig = (props: {
-  setReviewConfig: (string) => void;
-  setContentType: (string) => void;
-}) => {
+const ReviewCacheConfig = (props: { setReviewConfig: (string) => void; setContentType: (string) => void }) => {
   const { configuration } = useCreateCache();
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -41,7 +38,8 @@ const ReviewCacheConfig = (props: {
           } else {
             setError(r.value.message);
           }
-        }).then(() => setValidate(false));
+        })
+        .then(() => setValidate(false));
     }
   }, [validate]);
 
@@ -65,10 +63,10 @@ const ReviewCacheConfig = (props: {
       return jsonConfig;
     }
     if (language == ConfigDownloadType.YAML) {
-      return  yamlConfig;
+      return yamlConfig;
     }
     return xmlConfig;
-  }
+  };
 
   const displayCacheConfigEditor = () => {
     return (

@@ -4,8 +4,6 @@ import { Either, left, right } from '@services/either';
 
 /**
  * Fetch Caller
- *
- * @author Katia Aresti
  */
 export class FetchCaller {
   private authenticationService: AuthenticationService;
@@ -47,7 +45,7 @@ export class FetchCaller {
    * @param deleteCall
    */
   public delete(deleteCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(deleteCall.url, 'DELETE', deleteCall.customHeaders);
+    const responsePromise = this.fetch(deleteCall.url, 'DELETE', deleteCall.customHeaders);
     return this.handleCRUDActionResponse(deleteCall.successMessage, deleteCall.errorMessage, responsePromise);
   }
 
@@ -57,7 +55,7 @@ export class FetchCaller {
    * @param putCall
    */
   public put(putCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(putCall.url, 'PUT', putCall.customHeaders, putCall.body);
+    const responsePromise = this.fetch(putCall.url, 'PUT', putCall.customHeaders, putCall.body);
     return this.handleCRUDActionResponse(putCall.successMessage, putCall.errorMessage, responsePromise);
   }
 
@@ -67,7 +65,7 @@ export class FetchCaller {
    * @param postCall
    */
   public post(postCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(postCall.url, 'POST', postCall.customHeaders, postCall.body);
+    const responsePromise = this.fetch(postCall.url, 'POST', postCall.customHeaders, postCall.body);
     return this.handleCRUDActionResponse(postCall.successMessage, postCall.errorMessage, responsePromise);
   }
 
@@ -77,7 +75,7 @@ export class FetchCaller {
    * @param url
    */
   public head(headCall: ServiceCall): Promise<ActionResponse> {
-    let responsePromise = this.fetch(headCall.url, 'HEAD');
+    const responsePromise = this.fetch(headCall.url, 'HEAD');
     return this.handleCRUDActionResponse(headCall.successMessage, headCall.errorMessage, responsePromise);
   }
 
@@ -88,13 +86,13 @@ export class FetchCaller {
    * @param method
    */
   public fetch(url: string, method: string, customHeaders?: Headers, body?: string): Promise<Response> {
-    let headers = this.createAuthenticatedHeader();
+    const headers = this.createAuthenticatedHeader();
 
     if (customHeaders) {
       customHeaders.forEach((v, k) => headers.set(k, v));
     }
 
-    let fetchOptions: RequestInit = {
+    const fetchOptions: RequestInit = {
       method: method,
       headers: headers,
       credentials: 'include'
@@ -191,7 +189,7 @@ export class FetchCaller {
 
     let success = false;
     let message = '';
-    let text = JSON.stringify(error);
+    const text = JSON.stringify(error);
 
     if (text.includes("missing type id property '_type'")) {
       message = "You are trying to write a JSON key or value that needs '_type' field in this cache.";

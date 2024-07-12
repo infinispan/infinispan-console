@@ -45,7 +45,7 @@ const CacheDetailProvider = ({ children }) => {
     }
   };
 
-  useEffect( () => {
+  useEffect(() => {
     setLoadingEntries(true);
   }, [limit]);
 
