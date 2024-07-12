@@ -44,8 +44,17 @@ import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
 const CacheEntries = (props: { cacheName: string }) => {
-  const { cacheEntries, totalEntriesCount, loadingEntries, errorEntries, infoEntries, reloadEntries, getByKey, limit, setLimit } =
-    useCacheEntries();
+  const {
+    cacheEntries,
+    totalEntriesCount,
+    loadingEntries,
+    errorEntries,
+    infoEntries,
+    reloadEntries,
+    getByKey,
+    limit,
+    setLimit
+  } = useCacheEntries();
   const { cache } = useCacheDetail();
   const { connectedUser } = useConnectedUser();
   const { t } = useTranslation();
@@ -126,30 +135,28 @@ const CacheEntries = (props: { cacheName: string }) => {
 
   const displayActions = (row) => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
-      return (
-        <Td></Td>
-      );
+      return <Td></Td>;
     }
 
     const actions = [
-        {
-          'aria-label': 'editEntryAction',
-          title: t('caches.entries.action-edit'),
-          onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
-        },
-        {
-          'aria-label': 'deleteEntryAction',
-          title: t('caches.entries.action-delete'),
-          onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
-        }
-      ]
+      {
+        'aria-label': 'editEntryAction',
+        title: t('caches.entries.action-edit'),
+        onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
+      },
+      {
+        'aria-label': 'deleteEntryAction',
+        title: t('caches.entries.action-delete'),
+        onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
+      }
+    ];
 
     return (
       <Td isActionCell data-cy={`actions-${row.key}`}>
         <ActionsColumn items={actions} />
       </Td>
     );
-  }
+  };
 
   const columnNames = {
     key: t('caches.entries.column-key'),
@@ -350,7 +357,7 @@ const CacheEntries = (props: { cacheName: string }) => {
             style={{ width: '100px' }}
             onSelect={(value) => setLimit(value)}
           />
-          <Tooltip content={t('caches.entries.pagination-tooltip', {'number' : limit})}>
+          <Tooltip content={t('caches.entries.pagination-tooltip', { number: limit })}>
             <Button variant="plain">
               <HelpIcon />
             </Button>

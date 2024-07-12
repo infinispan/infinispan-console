@@ -13,15 +13,16 @@ const TracingEnabled = (props: { enabled: boolean }) => {
         <AlertIcon
           variant={AlertVariant.info}
           style={{
-            color: props.enabled? global_info_color_100.value : global_disabled_color_100.value,
+            color: props.enabled ? global_info_color_100.value : global_disabled_color_100.value,
             display: 'inline'
           }}
         />
       </FlexItem>
       <FlexItem>
         <TextContent>
-          <Text component={TextVariants.p}>{props.enabled ? t('common.tracing.enabled')
-            : t('common.tracing.disabled') }</Text>
+          <Text component={TextVariants.p}>
+            {props.enabled ? t('common.tracing.enabled') : t('common.tracing.disabled')}
+          </Text>
         </TextContent>
       </FlexItem>
     </Flex>

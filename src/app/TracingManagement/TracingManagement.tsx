@@ -54,16 +54,12 @@ const TracingManagement = () => {
           isChecked={tracingEnabled}
           onChange={() => {
             setChange(true);
-            setTracingEnabled(!tracingEnabled)
+            setTracingEnabled(!tracingEnabled);
           }}
           labelOff={t('caches.tracing.tracing-disable')}
           label={t('caches.tracing.tracing-enable')}
         />
-        <PopoverHelp
-          name={'tracing'}
-          label={t('caches.tracing.title')}
-          content={t('caches.tracing.tracing-tooltip')}
-        />
+        <PopoverHelp name={'tracing'} label={t('caches.tracing.title')} content={t('caches.tracing.tracing-tooltip')} />
       </FormGroup>
     );
   };
@@ -115,10 +111,14 @@ const TracingManagement = () => {
     }
 
     return (
-      <Button data-cy="saveButton" isDisabled={validateForm() == 'error' || !change} onClick={ () => {
-        setChange(false);
-        update();
-      }}>
+      <Button
+        data-cy="saveButton"
+        isDisabled={validateForm() == 'error' || !change}
+        onClick={() => {
+          setChange(false);
+          update();
+        }}
+      >
         {t('common.actions.save')}
       </Button>
     );
