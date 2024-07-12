@@ -256,10 +256,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
           isHidden={!configuration.start.valid || configuration.start.createType == 'edit'}
           id={7}
         >
-          <ReviewCacheConfig
-            setReviewConfig={setReviewConfig}
-            setContentType={setContentType}
-          />
+          <ReviewCacheConfig setReviewConfig={setReviewConfig} setContentType={setContentType} />
         </WizardStep>
       </Wizard>
       <DownloadCacheModal

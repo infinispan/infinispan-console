@@ -633,6 +633,7 @@
     "query": {
       "no-query-body": "Enter query above to search",
       "no-search-value": "Values not found.",
+      "query-loading": "Executing query ...",
       "query-error": "Query error",
       "ickle-query": "Ickle query",
       "ickle-query-docs": "Ickle query syntax",

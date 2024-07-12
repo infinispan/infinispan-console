@@ -3,10 +3,7 @@ import { FormGroup, Radio } from '@patternfly/react-core';
 import { ConfigDownloadType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 
-const LanguageToggleRadios = (props: {
-  language: ConfigDownloadType;
-  setLanguage: (ConfigDownloadType) => void;
-}) => {
+const LanguageToggleRadios = (props: { language: ConfigDownloadType; setLanguage: (ConfigDownloadType) => void }) => {
   const { t } = useTranslation();
 
   return (
