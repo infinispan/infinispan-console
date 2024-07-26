@@ -402,6 +402,10 @@ export class CacheConfigUtils {
     data.basic.expiration === true && expiration();
     memoryConfiguration();
 
+    if (data.advanced.aliases.length > 0) {
+      cache[cacheType]['aliases'] = data.advanced.aliases;
+    }
+
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
       featureIndexed();
       data.feature.indexedCache.indexedSharding && indexSharding();

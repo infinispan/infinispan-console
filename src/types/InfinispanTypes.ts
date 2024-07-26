@@ -461,6 +461,7 @@ interface AdvancedConfigurationStep {
   backupSiteData?: BackupSite[];
   transactionalAdvance?: TransactionalCacheAdvance;
   tracing: TracingCache;
+  aliases: string[];
   valid: boolean;
 }
 
