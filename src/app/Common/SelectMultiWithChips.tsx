@@ -50,7 +50,7 @@ const SelectMultiWithChips = (props: {
 
       // When no options are found after filtering, display creation option
       if (!newSelectOptions.length) {
-        newSelectOptions = [{ isDisabled: false, children: `Create new option "${inputValue}"`, value: 'create' }];
+        newSelectOptions = [{ isDisabled: false, children: `Create "${inputValue}"`, value: 'create' }];
       }
 
       // Open the menu when the input value changes and the new value is not empty

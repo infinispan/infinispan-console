@@ -17,9 +17,10 @@ import { useCreateCache } from '@app/services/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import IndexedConfigurationTuning from '@app/Caches/Create/AdvancedTuning/IndexedConfigurationTuning';
 import BackupsCofigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsCofigurationTuning';
+import TracingCacheConfigurator from '@app/Caches/Create/Features/TracingCacheConfigurator';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
-import TracingCacheConfigurator from '@app/Caches/Create/Features/TracingCacheConfigurator';
+import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
     configuration.advanced.lockAcquisitionTimeout
   );
   const [striping, setStriping] = useState<boolean>(configuration.advanced.striping!);
+  const [aliases, setAliases] = useState<string[]>(configuration.advanced.aliases!);
 
   useEffect(() => {
     setConfiguration((prevState) => {
@@ -41,11 +43,12 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
           storage: storage,
           concurrencyLevel: concurrencyLevel,
           lockAcquisitionTimeout: lockAcquisitionTimeout,
-          striping: striping
+          striping: striping,
+          aliases: aliases
         }
       };
     });
-  }, [storage, concurrencyLevel, lockAcquisitionTimeout, striping]);
+  }, [storage, concurrencyLevel, lockAcquisitionTimeout, striping, aliases]);
 
   const handleConcurrencyLevel = (value) => {
     setConcurrencyLevel(value);
@@ -76,6 +79,45 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
           options={selectOptionProps(StorageType)}
           style={{ width: '150px' }}
           onSelect={(value) => setStorage(value)}
+        />
+      </FormGroup>
+    );
+  };
+
+  const helperAddAlias = (selection) => {
+    if (!aliases.some((alias) => alias === selection)) {
+      setAliases([...aliases, selection]);
+    } else {
+      setAliases(aliases.filter((alias) => alias !== selection));
+    }
+  };
+
+  const clearAliasesSelection = () => {
+    setAliases([]);
+  };
+
+  const formAliases = () => {
+    return (
+      <FormGroup
+        isInline
+        fieldId="field-aliases"
+        label={t('caches.create.configurations.advanced-options.aliases')}
+        labelIcon={
+          <PopoverHelp
+            name="aliases"
+            label={t('caches.create.configurations.advanced-options.aliases-title')}
+            content={t('caches.create.configurations.advanced-options.aliases-tooltip')}
+          />
+        }
+      >
+        <SelectMultiWithChips
+          id="aliasesSelector"
+          placeholder={t('caches.create.configurations.advanced-options.aliases')}
+          options={[]}
+          onSelect={helperAddAlias}
+          onClear={clearAliasesSelection}
+          create={true}
+          selection={aliases}
         />
       </FormGroup>
     );
@@ -160,6 +202,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
       }}
     >
       {formMemory()}
+      {formAliases()}
       <TracingCacheConfigurator tracingEnabled={props.cacheManager.tracing_enabled} />
       {formLocking()}
       <IndexedConfigurationTuning />

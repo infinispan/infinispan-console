@@ -512,7 +512,10 @@
           "tracing-description": "Tracing is enabled by default in every cache when tracing is enabled globally. Disable tracing or specify which events to track within this cache.",
           "select-tracing-categories": "Select categories",
           "select-tracing-categories-helper": "You must select at least one category.",
-          "tracing-loading": "Loading available categories..."
+          "tracing-loading": "Loading available categories...",
+          "aliases": "Aliases",
+          "aliases-title": "Cache aliases",
+          "aliases-tooltip": "Add aliases to caches to access them using different names."
         }
       },
       "review": {

@@ -116,6 +116,7 @@ const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
   backupSetting: BackupSettingInitialState,
   transactionalAdvance: TransactionalCacheAdvanceInitialState,
   tracing: TracingCacheInitialState,
+  aliases: [],
   valid: true
 };
 
