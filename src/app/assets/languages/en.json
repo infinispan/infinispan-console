@@ -18,7 +18,9 @@
       "cancel": "Cancel",
       "save": "Save",
       "delete": "Delete",
-      "remove": "Remove"
+      "remove": "Remove",
+      "clear": "Clear",
+      "update": "Update"
     },
     "loading-error-message": "There was an error retrieving data. Check your connection and try again.",
     "tracing": {
@@ -677,7 +679,24 @@
       "size": "Index size in bytes",
       "indexing-status": "Indexing",
       "button-clear": "Clear index",
-      "button-rebuild": "Rebuild index"
+      "button-rebuild": "Rebuild index",
+      "button-update-schema": "Update schema",
+      "reindex": {
+        "title": "Rebuild index?",
+        "button-rebuild-index": "Rebuild index",
+        "description1": "All indexes will be rebuilt. To ensure accurate results, do not query caches until rebuilding is complete.",
+        "description2": "This process may take a few minutes."
+      },
+      "purge": {
+        "title": "Permanently clear index?",
+        "description1": "All indexes in",
+        "description2": "will be deleted."
+      },
+      "update-schema": {
+        "title": "Update schema?",
+        "description1": "Add new fields to the existing schema without having to rebuild the entire index.",
+        "description2": "This process may take a few minutes."
+      }
     },
     "tracing": {
       "title": "Tracing management",

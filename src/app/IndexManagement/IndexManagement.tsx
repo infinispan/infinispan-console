@@ -38,6 +38,7 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useSearchStats } from '@app/services/statsHook';
 import { DatabaseIcon } from '@patternfly/react-icons';
+import { UpdateSchema } from '@app/IndexManagement/UpdateSchema';
 
 const IndexManagement = () => {
   const { t } = useTranslation();
@@ -47,6 +48,7 @@ const IndexManagement = () => {
   const { stats, loading, error, setLoading } = useSearchStats(cacheName);
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
+  const [updateSchemaModalOpen, setUpdateSchemaModalOpen] = useState<boolean>(false);
 
   const closePurgeModal = () => {
     setPurgeModalOpen(false);
@@ -56,6 +58,32 @@ const IndexManagement = () => {
   const closeReindexModal = () => {
     setReindexModalOpen(false);
     setLoading(true);
+  };
+
+  const closeUpdateSchemaModal = () => {
+    setUpdateSchemaModalOpen(false);
+    setLoading(true);
+  };
+
+  const buildUpdateSchemaAction = () => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+      return;
+    }
+
+    if (stats?.reindexing) {
+      return <Spinner size={'md'} />;
+    }
+    return (
+      <ToolbarItem>
+        <Button
+          data-cy="updateSchemaIndexButton"
+          variant={ButtonVariant.primary}
+          onClick={() => setUpdateSchemaModalOpen(true)}
+        >
+          {t('caches.index.button-update-schema')}
+        </Button>
+      </ToolbarItem>
+    );
   };
 
   const buildReindexAction = () => {
@@ -68,7 +96,11 @@ const IndexManagement = () => {
     }
     return (
       <ToolbarItem>
-        <Button data-cy="rebuildIndexButton" variant={ButtonVariant.primary} onClick={() => setReindexModalOpen(true)}>
+        <Button
+          data-cy="rebuildIndexButton"
+          variant={ButtonVariant.secondary}
+          onClick={() => setReindexModalOpen(true)}
+        >
           {t('caches.index.button-rebuild')}
         </Button>
       </ToolbarItem>
@@ -165,6 +197,7 @@ const IndexManagement = () => {
             {buildIndexPageContent()}
             <Toolbar id="indexing-page-toolbar">
               <ToolbarContent style={{ paddingLeft: 0, paddingTop: global_spacer_md.value }}>
+                {buildUpdateSchemaAction()}
                 {buildReindexAction()}
                 {buildPurgeIndexButton()}
                 <ToolbarItem>
@@ -186,6 +219,7 @@ const IndexManagement = () => {
       </PageSection>
       <PurgeIndex cacheName={cacheName} isModalOpen={purgeModalOpen} closeModal={closePurgeModal} />
       <Reindex cacheName={cacheName} isModalOpen={reindexModalOpen} closeModal={closeReindexModal} />
+      <UpdateSchema cacheName={cacheName} isModalOpen={updateSchemaModalOpen} closeModal={closeUpdateSchemaModal} />
     </React.Fragment>
   );
 };
