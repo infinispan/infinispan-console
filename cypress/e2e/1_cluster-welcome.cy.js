@@ -80,7 +80,7 @@ describe('Welcome page', () => {
       cy.get('[role=dialog]').should('be.visible');
       cy.contains('Version');
       cy.get('body').then(($body) => {
-        if (!$body.text().includes('Red Hat Datagrid')) {
+        if (!$body.text().includes('Red Hat Data Grid')) {
           //Checks if links from About dialog work properly
           cy.get('a[href*="github"').should('exist');
           cy.get('a[href*="zulipchat"').should('exist');
