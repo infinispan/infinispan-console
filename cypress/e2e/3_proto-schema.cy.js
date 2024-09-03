@@ -72,6 +72,8 @@ describe('Proto Schema CRUD', () => {
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
     cy.contains('Schema ' + schemaName +'.proto updated.');
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    //Waiting 5 seconds so that the proto schema is managed to be updated on the page.
+    cy.wait(5000);
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
 
     cy.contains('schemaValue').should('not.exist');
