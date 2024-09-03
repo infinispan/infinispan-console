@@ -58,6 +58,15 @@ describe('Cache Detail Overview', () => {
 
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
+
+    cy.get("[data-cy=updateSchemaIndexButton]").click();
+    cy.contains("Update schema?");
+    cy.get("[data-cy=cancelButton]").click();
+    cy.get("[data-cy=updateSchemaIndexButton]").click();
+    cy.contains("Update schema?");
+    cy.get("[data-cy=updateCacheSchema]").click();
+    cy.contains("Schema of cache indexed-cache updated.").click();
+
     cy.get("[data-cy=clearIndexButton]").click();
     cy.contains("Permanently clear index?");
     cy.get("[data-cy=cancelButton]").click();

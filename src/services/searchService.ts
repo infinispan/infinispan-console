@@ -128,6 +128,19 @@ export class SearchService {
   }
 
   /**
+   * Update schema for the cache name
+   *
+   * @param cacheName
+   */
+  public async updateSchema(cacheName: string): Promise<ActionResponse> {
+    return this.utils.post({
+      url: this.endpoint + encodeURIComponent(cacheName) + '/search/indexes?action=updateSchema',
+      successMessage: `Schema of cache ${cacheName} updated.`,
+      errorMessage: `An error occurred when updating the schema for cache ${cacheName}.`
+    });
+  }
+
+  /**
    * Reindex cache
    *
    * @param cacheName

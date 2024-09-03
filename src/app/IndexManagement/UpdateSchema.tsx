@@ -5,15 +5,15 @@ import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 
 /**
- * Purge index modal
+ * Update schema modal
  */
-const PurgeIndex = (props: { cacheName: string; isModalOpen: boolean; closeModal: () => void }) => {
+const UpdateSchema = (props: { cacheName: string; isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
   const { addAlert } = useApiAlert();
 
   const onClickPurgeButton = () => {
     ConsoleServices.search()
-      .purgeIndexes(props.cacheName)
+      .updateSchema(props.cacheName)
       .then((actionResponse) => {
         props.closeModal();
         addAlert(actionResponse);
@@ -22,15 +22,15 @@ const PurgeIndex = (props: { cacheName: string; isModalOpen: boolean; closeModal
 
   return (
     <Modal
-      titleIconVariant={'warning'}
+      titleIconVariant={'info'}
       width={'50%'}
       isOpen={props.isModalOpen}
-      title={t('caches.index.purge.title')}
+      title={t('caches.index.update-schema.title')}
       onClose={props.closeModal}
-      aria-label="Clear index modal"
+      aria-label="update schema modal"
       actions={[
-        <Button data-cy="clearIndex" key="purge" variant={ButtonVariant.danger} onClick={onClickPurgeButton}>
-          {t('common.actions.clear')}
+        <Button data-cy="updateCacheSchema" key="purge" variant={ButtonVariant.primary} onClick={onClickPurgeButton}>
+          {t('common.actions.update')}
         </Button>,
         <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t('common.actions.cancel')}
@@ -38,13 +38,11 @@ const PurgeIndex = (props: { cacheName: string; isModalOpen: boolean; closeModal
       ]}
     >
       <TextContent>
-        <Text>
-          {t('caches.index.purge.description1')} <strong>{props.cacheName}</strong>{' '}
-          {t('caches.index.purge.description2')}
-        </Text>
+        <Text>{t('caches.index.update-schema.description1')}</Text>
+        <Text>{t('caches.index.update-schema.description2')}</Text>
       </TextContent>
     </Modal>
   );
 };
 
-export { PurgeIndex };
+export { UpdateSchema };
