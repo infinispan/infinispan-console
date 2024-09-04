@@ -33,7 +33,8 @@ const ViewMetamodel = (props: {
     multiValuedInRoot: t('caches.index.metamodel.column-multi-valued-root'),
     type: t('caches.index.metamodel.column-type'),
     projectionType: t('caches.index.metamodel.column-projection-type'),
-    argumentType: t('caches.index.metamodel.column-argument-type')
+    argumentType: t('caches.index.metamodel.column-argument-type'),
+    analyzer: t('caches.index.metamodel.column-analyzer')
   };
 
   const displayEnabled = (enabled: boolean) => {
@@ -96,6 +97,17 @@ const ViewMetamodel = (props: {
             <Tr>
               <Th>{columnNames.name}</Th>
               <Th>{columnNames.type}</Th>
+              <Th
+                info={{
+                  popover: t('caches.index.metamodel.column-analyzer-tooltip'),
+                  popoverProps: {
+                    headerContent: t('caches.index.metamodel.column-analyzer')
+                  }
+                }}
+                colSpan={1}
+              >
+                {columnNames.analyzer}
+              </Th>
               <Th
                 info={{
                   popover: t('caches.index.metamodel.column-multi-valued-tooltip'),
@@ -169,6 +181,7 @@ const ViewMetamodel = (props: {
               <Tr key={field.name}>
                 <Td dataLabel={columnNames.name}>{field.name}</Td>
                 <Td dataLabel={columnNames.type}>{field.type}</Td>
+                <Td dataLabel={columnNames.analyzer}>{field.analyzer}</Td>
                 <Td dataLabel={columnNames.multiValued}>{displayEnabled(field.multiValued)}</Td>
                 <Td dataLabel={columnNames.multiValuedInRoot}>{displayEnabled(field.multiValuedInRoot)}</Td>
                 <Td dataLabel={columnNames.aggregable}>{displayEnabled(field.aggregable)}</Td>
