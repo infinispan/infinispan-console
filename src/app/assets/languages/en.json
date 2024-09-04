@@ -716,7 +716,9 @@
         "column-multi-valued-root-tooltip": "A multi-valued in root is a field that can hold multiple values at the top level of a document or object.",
         "column-type": "Type",
         "column-projection-type": "Projection type",
-        "column-argument-type": "Argument type"
+        "column-argument-type": "Argument type",
+        "column-analyzer": "Analyzer",
+        "column-analyzer-tooltip": "An \"Analyzer\" is a tool that processes text data by breaking it into smaller units (tokens) and applying filters (like lowercasing or removing stopwords) to make it easier to search and index."
       }
     },
     "tracing": {
