@@ -39,7 +39,7 @@ const TableEmptyState = (props: { loading: boolean; error: string; empty: string
   }
 
   return (
-    <Bullseye data-cy="noCacheConfigsFound">
+    <Bullseye data-cy="emptyStateTable">
       <EmptyState variant={EmptyStateVariant.sm}>
         <EmptyStateHeader
           titleText={<>{props.empty}</>}

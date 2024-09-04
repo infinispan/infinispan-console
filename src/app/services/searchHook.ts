@@ -35,3 +35,30 @@ export function useSearch(cacheName: string) {
 
   return { search, setSearch };
 }
+
+export function useIndexMetamodel(cacheName: string) {
+  const [indexMetamodel, setIndexMetamodel] = useState<Map<string, IndexMetamodel>>(new Map());
+  const [errorIndexMetamodel, setErrorMetamodel] = useState('');
+  const [loadingIndexMetamodel, setLoadingIndexMetamodel] = useState(true);
+
+  useEffect(() => {
+    if (loadingIndexMetamodel) {
+      ConsoleServices.search()
+        .retrieveIndexMetamodel(cacheName)
+        .then((eitherMetamodel) => {
+          if (eitherMetamodel.isRight()) {
+            setIndexMetamodel(eitherMetamodel.value);
+          } else {
+            setErrorMetamodel(eitherMetamodel.value.message);
+          }
+        })
+        .then(() => setLoadingIndexMetamodel(false));
+    }
+  }, [loadingIndexMetamodel]);
+
+  return {
+    loadingIndexMetamodel,
+    errorIndexMetamodel,
+    indexMetamodel
+  };
+}

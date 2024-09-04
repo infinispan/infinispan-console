@@ -148,7 +148,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
     if (filteredCaches) {
       const initSlice = (cachesPagination.page - 1) * cachesPagination.perPage;
       const updateRows = filteredCaches.slice(initSlice, initSlice + cachesPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setRows(updateRows);
     }
   }, [cachesPagination, filteredCaches]);
 
@@ -218,7 +218,9 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
     setTimeout(() => {
       if (menuRef.current) {
         const firstElement = menuRef.current.querySelector('li > button:not(:disabled)');
-        firstElement && (firstElement as HTMLElement).focus();
+        if (firstElement) {
+          (firstElement as HTMLElement).focus();
+        }
       }
     }, 0);
     setIsFilterOpen(!isFilterOpen);

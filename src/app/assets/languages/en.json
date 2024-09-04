@@ -22,6 +22,7 @@
       "clear": "Clear",
       "update": "Update"
     },
+    "loading-empty-message": "No result found.",
     "loading-error-message": "There was an error retrieving data. Check your connection and try again.",
     "tracing": {
       "enabled": "Tracing is enabled",
@@ -696,6 +697,26 @@
         "title": "Update schema?",
         "description1": "Add new fields to the existing schema without having to rebuild the entire index.",
         "description2": "This process may take a few minutes."
+      },
+      "metamodel": {
+        "tooltip-title": "Index metamodel",
+        "tooltip-content": "An index metamodel defines the structure and schema for how data is organized, stored, and searched within the index.",
+        "column-name": "Name",
+        "column-searchable": "Searchable",
+        "column-searchable-tooltip": "A searchable field is one you can search within to find matching content.",
+        "column-sortable": "Sortable",
+        "column-sortable-tooltip": "A sortable field is one you can use to sort search results in order.",
+        "column-projectable": "Projectable",
+        "column-projectable-tooltip": "A projectable field is one you can include in the search results to display its value.",
+        "column-aggregable": "Aggregable",
+        "column-aggregable-tooltip": "An aggregable field is one you can use to group or calculate summary data, like totals or averages.",
+        "column-multi-valued": "Multi valued",
+        "column-multi-valued-tooltip": "A multi-valued field is one that can hold multiple values instead of just one.",
+        "column-multi-valued-root": "Multi valued in root",
+        "column-multi-valued-root-tooltip": "A multi-valued in root is a field that can hold multiple values at the top level of a document or object.",
+        "column-type": "Type",
+        "column-projection-type": "Projection type",
+        "column-argument-type": "Argument type"
       }
     },
     "tracing": {

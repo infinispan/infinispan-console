@@ -525,3 +525,23 @@ interface Realm {
   name: string;
   users: string[];
 }
+
+interface IndexMetamodel {
+  entityName: string;
+  indexName: string;
+  valueFields: IndexValueField[];
+}
+
+interface IndexValueField {
+  name: string;
+  multiValued: boolean;
+  multiValuedInRoot: boolean;
+  type: string;
+  projectionType: string;
+  argumentType: string;
+  searchable: boolean;
+  sortable: boolean;
+  projectable: boolean;
+  aggregable: boolean;
+  analyzer: string;
+}

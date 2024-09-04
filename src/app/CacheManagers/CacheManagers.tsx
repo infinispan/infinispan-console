@@ -142,19 +142,6 @@ const CacheManagers = () => {
     );
   };
 
-  const buildSiteDisplay = (siteName: string | undefined) => {
-    if (!siteName || siteName == '') {
-      return '';
-    }
-
-    return (
-      <React.Fragment>
-        <Divider orientation={{ default: 'vertical' }} />
-        <FlexItem>{'Site: ' + siteName}</FlexItem>
-      </React.Fragment>
-    );
-  };
-
   const buildHeader = () => {
     const title = t('cache-managers.title');
     if (!cm) {

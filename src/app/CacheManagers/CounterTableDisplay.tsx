@@ -97,7 +97,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     if (filteredCounters) {
       const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
       const updateRows = filteredCounters.slice(initSlice, initSlice + countersPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setRows(updateRows);
     }
   }, [countersPagination, filteredCounters]);
 
@@ -250,7 +250,9 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     setTimeout(() => {
       if (menuRef.current) {
         const firstElement = menuRef.current.querySelector('li > button:not(:disabled)');
-        firstElement && (firstElement as HTMLElement).focus();
+        if (firstElement) {
+          (firstElement as HTMLElement).focus();
+        }
       }
     }, 0);
     setIsFilterOpen(!isFilterOpen);

@@ -115,6 +115,41 @@ export class SearchService {
   }
 
   /**
+   * Retrieve index metamodel
+   *
+   * @param cacheName
+   */
+  public async retrieveIndexMetamodel(cacheName: string): Promise<Either<ActionResponse, Map<string, IndexMetamodel>>> {
+    return this.utils.get(this.endpoint + encodeURIComponent(cacheName) + '/search/indexes/metamodel', (data) => {
+      const metamodels = new Map();
+      data.forEach((metamodel) => {
+        const name = metamodel['entity-name'];
+        metamodels.set(name, <IndexMetamodel>{
+          indexName: metamodel['index-name'],
+          entityName: name,
+          valueFields: Object.keys(metamodel['value-fields']).map(
+            (valueField) =>
+              <IndexValueField>{
+                name: valueField,
+                multiValued: metamodel['value-fields'][valueField]['multi-valued'],
+                multiValuedInRoot: metamodel['value-fields'][valueField]['multi-valued-in-root'],
+                type: metamodel['value-fields'][valueField]['type'],
+                projectionType: metamodel['value-fields'][valueField]['projection-type'],
+                argumentType: metamodel['value-fields'][valueField]['argument-type'],
+                searchable: metamodel['value-fields'][valueField]['searchable'],
+                sortable: metamodel['value-fields'][valueField]['sortable'],
+                projectable: metamodel['value-fields'][valueField]['projectable'],
+                aggregable: metamodel['value-fields'][valueField]['aggregable'],
+                analyzer: metamodel['value-fields'][valueField]['analyzer']
+              }
+          )
+        });
+      });
+      return metamodels;
+    });
+  }
+
+  /**
    * Purge index for the cache name
    *
    * @param cacheName
