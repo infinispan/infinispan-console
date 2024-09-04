@@ -109,7 +109,7 @@ const CacheEntries = (props: { cacheName: string }) => {
     if (filteredEntries) {
       const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
       const updateRows = filteredEntries.slice(initSlice, initSlice + entriesPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setRows(updateRows);
     }
   }, [entriesPagination, filteredEntries]);
 
