@@ -26,7 +26,7 @@ import { global_danger_color_200, global_spacer_md, global_spacer_sm } from '@pa
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useSearch } from '@app/services/searchHook';
 
-const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: () => void }) => {
+const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { search, setSearch } = useSearch(props.cacheName);
@@ -94,11 +94,6 @@ const QueryEntries = (props: { cacheName: string; indexed: boolean; changeTab: (
   };
 
   const buildViewAllQueryStats = () => {
-    // Display the button only if the cache is indexed
-    if (!props.indexed) {
-      return <></>;
-    }
-
     return (
       <React.Fragment>
         <ToolbarItem variant={'separator'} style={{ marginInline: global_spacer_sm.value }} />

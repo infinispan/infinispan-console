@@ -56,8 +56,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     }
 
     setStats(cache.stats);
-    const loadQueryStats = cache.stats != undefined && cache.stats.enabled && cache.features.indexed;
-    setDisplayQueryStats(loadQueryStats);
+    setDisplayQueryStats(cache.queryable);
   }, [cache, error]);
 
   const buildOperationsPerformanceCard = () => {
