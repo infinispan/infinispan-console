@@ -91,9 +91,9 @@ export class SearchService {
         (stat) =>
           <QueryStat>{
             name: (stat.charAt(0).toUpperCase() + stat.slice(1)).replace('_', ' '),
-            count: displayUtils.formatNumber(data.query[stat].count),
-            max: displayUtils.formatNumber(data.query[stat].max),
-            average: displayUtils.formatNumber(data.query[stat].average),
+            count: displayUtils.formatNumber(data.query[stat].count) + ' ns',
+            max: displayUtils.formatNumber(data.query[stat].max) + ' ns',
+            average: displayUtils.formatNumber(data.query[stat].average) + ' ns',
             slowest: data.query[stat].slowest
           }
       );
