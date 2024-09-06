@@ -1,7 +1,7 @@
-import { CacheFeature, ContentType, EncodingType } from '@services/infinispanRefData';
+import { CacheFeature, CacheType, ContentType, EncodingType } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { convertToMilliseconds } from '@app/utils/convertToMilliseconds';
+import { convertToTimeQuantity } from '@app/utils/convertToTimeQuantity';
 
 export const Distributed = 'distributed-cache';
 export const Replicated = 'replicated-cache';
@@ -234,24 +234,29 @@ export class CacheConfigUtils {
     };
 
     // Choose topology and add to the configuration
-    data.basic.topology === 'Distributed'
-      ? ((cache = { [distributedCache]: generalCache }), (cacheType = distributedCache))
-      : ((cache = { [replicatedCache]: generalCache }), (cacheType = replicatedCache));
+    if (data.basic.topology === CacheType.Distributed.valueOf()) {
+      cache = { [distributedCache]: generalCache };
+      cacheType = distributedCache;
+    } else {
+      cache = { [replicatedCache]: generalCache };
+      cacheType = replicatedCache;
+    }
 
     const locking = () => {
       cache[cacheType].locking = {
         striping: data.advanced.striping,
         'concurrency-level': data.advanced.concurrencyLevel,
-        'acquire-timeout': data.advanced.lockAcquisitionTimeout
+        'acquire-timeout': convertToTimeQuantity(data.advanced.lockAcquisitionTimeout, data.advanced.lockAcquisitionTimeoutUnit)
       };
     };
 
     // config for Expiration cache
     const expiration = () => {
-      cache[cacheType]['expiration'] = {
-        lifespan: convertToMilliseconds(data.basic.lifeSpanNumber, data.basic.lifeSpanUnit),
-        'max-idle': convertToMilliseconds(data.basic.maxIdleNumber, data.basic.maxIdleUnit)
-      };
+      const expiration = 'expiration';
+      cache[cacheType][expiration] = {
+        lifespan : convertToTimeQuantity(data.basic.lifeSpanNumber, data.basic.lifeSpanUnit),
+        'max-idle': convertToTimeQuantity(data.basic.maxIdleNumber, data.basic.maxIdleUnit)
+      }
     };
 
     // config for Memory and Bounded cache
@@ -293,13 +298,13 @@ export class CacheConfigUtils {
 
     const indexReader = () => {
       cache[cacheType]['indexing']['index-reader'] = {
-        'refresh-interval': data.advanced.indexReader
+        'refresh-interval': convertToTimeQuantity(data.advanced.indexReader.refreshInterval, data.advanced.indexReader.refreshIntervalUnit)
       };
     };
 
     const indexWriter = () => {
       cache[cacheType]['indexing']['index-writer'] = {
-        'commit-interval': data.advanced.indexWriter.commitInterval,
+        'commit-interval': convertToTimeQuantity(data.advanced.indexWriter.commitInterval, data.advanced.indexWriter.commitIntervalUnit),
         'max-buffered-entries': data.advanced.indexWriter.maxBufferedEntries,
         'queue-count': data.advanced.indexWriter.queueCount,
         'queue-size': data.advanced.indexWriter.queueSize,
@@ -311,7 +316,9 @@ export class CacheConfigUtils {
 
     const indexMerge = () => {
       // Add index merge config to the configuration
-      !cache[cacheType]['indexing']['index-writer'] && (cache[cacheType]['indexing']['index-writer'] = {});
+      if (!cache[cacheType]['indexing']['index-writer']) {
+        cache[cacheType]['indexing']['index-writer'] = {};
+      }
 
       cache[cacheType]['indexing']['index-writer']['index-merge'] = {
         factor: data.advanced.indexMerge.factor,
@@ -342,7 +349,7 @@ export class CacheConfigUtils {
       cache[cacheType]['backups'] = {
         'merge-policy': data.advanced.backupSetting?.mergePolicy,
         'tombstone-map-size': data.advanced.backupSetting?.tombstoneMapSize,
-        'max-cleanup-delay': data.advanced.backupSetting?.maxCleanupDelay
+        'max-cleanup-delay': convertToTimeQuantity(data.advanced.backupSetting?.maxCleanupDelay, data.advanced.backupSetting?.maxCleanupDelayUnit),
       };
     };
 
@@ -352,7 +359,7 @@ export class CacheConfigUtils {
           backup: {
             strategy: site.siteStrategy,
             'failure-policy': data.advanced.backupSiteData![index].failurePolicy,
-            timeout: data.advanced.backupSiteData![index].timeout,
+            timeout: convertToTimeQuantity(data.advanced.backupSiteData![index].timeout,data.advanced.backupSiteData![index].timeoutUnit),
             'two-phase-commit': data.advanced.backupSiteData![index].twoPhaseCommit,
             'failure-policy-class': data.advanced.backupSiteData![index].failurePolicyClass
           }
@@ -363,7 +370,7 @@ export class CacheConfigUtils {
         ) {
           cache[cacheType]['backups'][site.siteName!].backup['take-offline'] = {
             'after-failures': data.advanced.backupSiteData![index].takeOffline?.afterFailures,
-            'min-wait': data.advanced.backupSiteData![index].takeOffline?.minWait
+            'min-wait': convertToTimeQuantity(data.advanced.backupSiteData![index].takeOffline?.minWait, data.advanced.backupSiteData![index].takeOffline?.minWaitUnit)
           };
         }
         if (
@@ -376,9 +383,9 @@ export class CacheConfigUtils {
           cache[cacheType]['backups'][site.siteName!].backup['state-transfer'] = {
             'chunk-size': data.advanced.backupSiteData![index].stateTransfer?.chunckSize,
             'max-retries': data.advanced.backupSiteData![index].stateTransfer?.maxRetries,
-            timeout: data.advanced.backupSiteData![index].stateTransfer?.timeout,
+            timeout: convertToTimeQuantity(data.advanced.backupSiteData![index].stateTransfer?.timeout, data.advanced.backupSiteData![index].stateTransfer?.timeoutUnit),
             mode: data.advanced.backupSiteData![index].stateTransfer?.mode,
-            'wait-time': data.advanced.backupSiteData![index].stateTransfer?.waitTime
+            'wait-time': convertToTimeQuantity(data.advanced.backupSiteData![index].stateTransfer?.waitTime, data.advanced.backupSiteData![index].stateTransfer?.waitTimeUnit)
           };
         }
       });
@@ -395,9 +402,9 @@ export class CacheConfigUtils {
       cache[cacheType]['transaction'] = {
         mode: data.feature.transactionalCache.mode,
         locking: data.feature.transactionalCache.locking,
-        'stop-timeout': data.advanced.transactionalAdvance?.stopTimeout,
-        'complete-timeout': data.advanced.transactionalAdvance?.completeTimeout,
-        'reaper-interval': data.advanced.transactionalAdvance?.reaperInterval
+        'stop-timeout': convertToTimeQuantity(data.advanced.transactionalAdvance?.stopTimeout, data.advanced.transactionalAdvance?.stopTimeoutUnit),
+        'complete-timeout': convertToTimeQuantity(data.advanced.transactionalAdvance?.completeTimeout, data.advanced.transactionalAdvance?.completeTimeoutUnit),
+        'reaper-interval': convertToTimeQuantity(data.advanced.transactionalAdvance?.reaperInterval, data.advanced.transactionalAdvance?.reaperIntervalUnit),
       };
     };
 
@@ -413,16 +420,20 @@ export class CacheConfigUtils {
         cache[cacheType]['persistence']['connection-attempts'] = data.feature.persistentCache.connectionAttempts;
       }
       if (data.feature.persistentCache.connectionInterval) {
-        cache[cacheType]['persistence']['connection-interval'] = data.feature.persistentCache.connectionInterval;
+        cache[cacheType]['persistence']['connection-interval'] = convertToTimeQuantity(data.feature.persistentCache.connectionInterval, data.feature.persistentCache.connectionIntervalUnit );
       }
       if (data.feature.persistentCache.availabilityInterval) {
-        cache[cacheType]['persistence']['availability-interval'] = data.feature.persistentCache.availabilityInterval;
+        cache[cacheType]['persistence']['availability-interval'] = convertToTimeQuantity(data.feature.persistentCache.availabilityInterval, data.feature.persistentCache.availabilityIntervalUnit );
       }
     };
 
-    if (data.advanced.concurrencyLevel || data.advanced.striping || data.advanced.lockAcquisitionTimeout) locking();
+    if (data.advanced.concurrencyLevel || data.advanced.striping || data.advanced.lockAcquisitionTimeout) {
+      locking();
+    }
 
-    data.basic.expiration === true && expiration();
+    if (data.basic.expiration) {
+      expiration();
+    }
     memoryConfiguration();
 
     if (data.advanced.aliases.length > 0) {
@@ -431,8 +442,14 @@ export class CacheConfigUtils {
 
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED)) {
       featureIndexed();
-      data.feature.indexedCache.indexedSharding && indexSharding();
-      data.advanced.indexReader && indexReader();
+      if (data.feature.indexedCache.indexedSharding) {
+        indexSharding();
+      }
+
+      if (data.advanced.indexReader) {
+        indexReader();
+      }
+
       if (
         data.advanced.indexWriter.commitInterval ||
         data.advanced.indexWriter.maxBufferedEntries ||
@@ -463,11 +480,15 @@ export class CacheConfigUtils {
       }
     }
 
-    data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && featureSecured();
+    if (data.feature.cacheFeatureSelected.includes(CacheFeature.SECURED)) {
+      featureSecured();
+    }
 
     if (data.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
       featureTransactional();
-      !cache[cacheType]['locking'] && (cache[cacheType]['locking'] = {});
+      if (!cache[cacheType]['locking']) {
+        cache[cacheType]['locking'] = {};
+      }
       cache[cacheType]['locking'].isolation = data.advanced.transactionalAdvance?.isolationLevel;
     }
 

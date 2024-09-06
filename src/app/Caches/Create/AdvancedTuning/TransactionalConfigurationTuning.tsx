@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { CacheFeature, IsolationLevel } from '@services/infinispanRefData';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
 const TransactionalConfigurationTuning = () => {
   const { t } = useTranslation();
@@ -20,8 +21,11 @@ const TransactionalConfigurationTuning = () => {
   const brandname = t('brandname.brandname');
 
   const [stopTimeout, setStopTimeout] = useState(configuration.advanced.transactionalAdvance?.stopTimeout);
+  const [stopTimeoutUnit, setStopTimeoutUnit] = useState(configuration.advanced.transactionalAdvance?.stopTimeoutUnit);
   const [completeTimeout, setCompleteTimeout] = useState(configuration.advanced.transactionalAdvance?.completeTimeout);
+  const [completeTimeoutUnit, setCompleteTimeoutUnit] = useState(configuration.advanced.transactionalAdvance?.completeTimeoutUnit);
   const [reaperInterval, setReaperInterval] = useState(configuration.advanced.transactionalAdvance?.reaperInterval);
+  const [reaperIntervalUnit, setReaperIntervalUnit] = useState(configuration.advanced.transactionalAdvance?.reaperIntervalUnit);
   const [isolationLevel, setIsolationLevel] = useState<IsolationLevel | undefined>(
     configuration.advanced.transactionalAdvance?.isolationLevel as IsolationLevel
   );
@@ -34,14 +38,17 @@ const TransactionalConfigurationTuning = () => {
           ...prevState.advanced,
           transactionalAdvance: {
             stopTimeout: stopTimeout,
+            stopTimeoutUnit: stopTimeoutUnit,
             completeTimeout: completeTimeout,
+            completeTimeoutUnit: completeTimeoutUnit,
             reaperInterval: reaperInterval,
+            reaperIntervalUnit: reaperIntervalUnit,
             isolationLevel: isolationLevel
           }
         }
       };
     });
-  }, [stopTimeout, completeTimeout, reaperInterval, isolationLevel]);
+  }, [stopTimeout, stopTimeoutUnit, completeTimeout, completeTimeoutUnit, reaperInterval, reaperIntervalUnit, isolationLevel]);
 
   if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
     return <div />;
@@ -102,7 +109,7 @@ const TransactionalConfigurationTuning = () => {
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={4}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="stopTimeout"
             label={t('caches.create.configurations.advanced-options.stop-timeout')}
@@ -116,19 +123,15 @@ const TransactionalConfigurationTuning = () => {
               />
             }
           >
-            <TextInput
-              data-cy="stopTimeout"
-              placeholder="30000"
-              value={stopTimeout}
-              type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setStopTimeout(undefined!) : setStopTimeout(parseInt(val));
-              }}
-              aria-label="stop-timeout"
-            />
+            <TimeQuantityInputGroup name={'stopTimeout'}
+                                    defaultValue={'30000'}
+                                    value={stopTimeout}
+                                    valueModifier={setStopTimeout}
+                                    unit={stopTimeoutUnit}
+                                    unitModifier={setStopTimeoutUnit}/>
           </FormGroup>
         </GridItem>
-        <GridItem span={4}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="completeTimeout"
             label={t('caches.create.configurations.advanced-options.complete-timeout')}
@@ -142,19 +145,15 @@ const TransactionalConfigurationTuning = () => {
               />
             }
           >
-            <TextInput
-              data-cy="completeTimeout"
-              placeholder="60000"
-              value={completeTimeout}
-              type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setCompleteTimeout(undefined!) : setCompleteTimeout(parseInt(val));
-              }}
-              aria-label="complete-timeout"
-            />
+            <TimeQuantityInputGroup name={'completeTimeout'}
+                                    defaultValue={'60000'}
+                                    value={completeTimeout}
+                                    valueModifier={setCompleteTimeout}
+                                    unit={completeTimeoutUnit}
+                                    unitModifier={setCompleteTimeoutUnit}/>
           </FormGroup>
         </GridItem>
-        <GridItem span={4}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="reaperInterval"
             label={t('caches.create.configurations.advanced-options.reaper-interval')}
@@ -168,16 +167,12 @@ const TransactionalConfigurationTuning = () => {
               />
             }
           >
-            <TextInput
-              data-cy="reaperInterval"
-              placeholder="30000"
-              value={reaperInterval}
-              type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setReaperInterval(undefined!) : setReaperInterval(parseInt(val));
-              }}
-              aria-label="reaper-interval"
-            />
+            <TimeQuantityInputGroup name={'reaperInterval'}
+                                    defaultValue={'30000'}
+                                    value={reaperInterval}
+                                    valueModifier={setReaperInterval}
+                                    unit={reaperIntervalUnit}
+                                    unitModifier={setReaperIntervalUnit}/>
           </FormGroup>
         </GridItem>
       </Grid>

@@ -336,8 +336,14 @@ interface BoundedCache {
   valid: boolean;
 }
 
+interface IndexReader {
+  refreshInterval?:number;
+  refreshIntervalUnit?:string;
+}
+
 interface IndexWriter {
   commitInterval?: number;
+  commitIntervalUnit?: string;
   lowLevelTrace?: boolean;
   maxBufferedEntries?: number;
   queueCount?: number;
@@ -376,19 +382,23 @@ interface TracingCache {
 interface BackupTakeOffline {
   afterFailures?: number;
   minWait?: number;
+  minWaitUnit?: string;
 }
 
 interface BackupStateTransfer {
   chunckSize?: number;
   timeout?: number;
+  timeoutUnit?: string;
   maxRetries?: number;
   waitTime?: number;
+  waitTimeUnit?: string;
   mode?: 'MANUAL' | 'AUTO';
 }
 interface BackupSite {
   site?: string;
   failurePolicy?: 'IGNORE' | 'WARN' | 'FAIL' | 'CUSTOM';
   timeout?: number;
+  timeoutUnit?: string;
   twoPhaseCommit?: boolean;
   failurePolicyClass?: string;
   takeOffline?: BackupTakeOffline;
@@ -409,6 +419,7 @@ interface BackupSiteBasic {
 interface BackupSetting {
   mergePolicy?: string;
   maxCleanupDelay?: number;
+  maxCleanupDelayUnit?: string;
   tombstoneMapSize?: number;
 }
 
@@ -426,8 +437,11 @@ interface TransactionalCache {
 
 interface TransactionalCacheAdvance {
   stopTimeout?: number;
+  stopTimeoutUnit?: string;
   completeTimeout?: number;
+  completeTimeoutUnit?: string;
   reaperInterval?: number;
+  reaperIntervalUnit?: string;
   isolationLevel?: string;
 }
 
@@ -438,7 +452,9 @@ interface PersistentCache {
   passivation: boolean;
   connectionAttempts?: number;
   connectionInterval?: number;
+  connectionIntervalUnit?: string;
   availabilityInterval?: number;
+  availabilityIntervalUnit?: string;
 }
 
 interface CacheFeatureStep {
@@ -455,8 +471,9 @@ interface AdvancedConfigurationStep {
   storage?: string;
   concurrencyLevel?: number;
   lockAcquisitionTimeout?: number;
+  lockAcquisitionTimeoutUnit?: string;
   striping?: boolean;
-  indexReader?: number;
+  indexReader: IndexReader;
   indexWriter: IndexWriter;
   indexMerge: IndexMerge;
   backupSetting?: BackupSetting;

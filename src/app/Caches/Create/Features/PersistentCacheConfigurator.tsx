@@ -2,15 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   Button,
-  Flex,
   FlexItem,
-  FormGroup,
+  FormGroup, Grid, GridItem,
   HelperText,
   HelperTextItem,
   Hint,
   HintBody,
   HintFooter,
-  SelectOptionProps,
   Switch,
   Text,
   TextContent,
@@ -28,6 +26,7 @@ import { global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
 const PersistentCacheConfigurator = () => {
   const { theme } = useContext(ThemeContext);
@@ -38,18 +37,18 @@ const PersistentCacheConfigurator = () => {
   const [passivation, setPassivation] = useState(configuration.feature.persistentCache.passivation);
   const [connectionAttempts, setConnectionAttempts] = useState(
     configuration.feature.persistentCache.connectionAttempts
-      ? configuration.feature.persistentCache.connectionAttempts
-      : ''
   );
   const [connectionInterval, setConnectionInterval] = useState(
     configuration.feature.persistentCache.connectionInterval
-      ? configuration.feature.persistentCache.connectionInterval
-      : ''
+  );
+  const [connectionIntervalUnit, setConnectionIntervalUnit] = useState(
+    configuration.feature.persistentCache.connectionIntervalUnit
   );
   const [availabilityInterval, setAvailabilityInterval] = useState(
     configuration.feature.persistentCache.availabilityInterval
-      ? configuration.feature.persistentCache.availabilityInterval
-      : ''
+  );
+  const [availabilityIntervalUnit, setAvailabilityIntervalUnit] = useState(
+    configuration.feature.persistentCache.availabilityIntervalUnit
   );
 
   const [storage, setStorage] = useState(configuration.feature.persistentCache.storage as PersistentCacheStorage);
@@ -66,7 +65,9 @@ const PersistentCacheConfigurator = () => {
             passivation: passivation,
             connectionAttempts: connectionAttempts as number,
             connectionInterval: connectionInterval as number,
+            connectionIntervalUnit: connectionIntervalUnit,
             availabilityInterval: availabilityInterval as number,
+            availabilityIntervalUnit: availabilityIntervalUnit,
             storage: storage,
             config: config,
             valid: valid
@@ -74,7 +75,15 @@ const PersistentCacheConfigurator = () => {
         }
       };
     });
-  }, [passivation, connectionAttempts, connectionInterval, availabilityInterval, storage, config, valid]);
+  }, [passivation,
+    connectionAttempts,
+    connectionInterval,
+    connectionIntervalUnit,
+    availabilityInterval,
+    availabilityIntervalUnit,
+    storage,
+    config,
+    valid]);
 
   const onSelectStorage = (selection) => {
     setStorage(selection);
@@ -160,23 +169,25 @@ const PersistentCacheConfigurator = () => {
       title="caches.create.configurations.feature.persistent"
       description="caches.create.configurations.feature.persistent-description"
     >
-      <FormGroup fieldId="passivation">
-        <Switch
-          aria-label="passivation"
-          data-cy="passivationSwitch"
-          id="passivation"
-          isChecked={passivation}
-          onChange={() => setPassivation(!passivation)}
-          label={t('caches.create.configurations.feature.passivation')}
-        />
-        <PopoverHelp
-          name={'passivation'}
-          label={t('caches.create.configurations.feature.passivation')}
-          content={t('caches.create.configurations.feature.passivation-tooltip', { brandname: brandname })}
-        />
-      </FormGroup>
-      <Flex>
-        <FlexItem grow={{ default: 'grow' }} style={{ maxWidth: '25rem' }}>
+      <Grid hasGutter>
+        <GridItem>
+          <FormGroup fieldId="passivation">
+          <Switch
+            aria-label="passivation"
+            data-cy="passivationSwitch"
+            id="passivation"
+            isChecked={passivation}
+            onChange={() => setPassivation(!passivation)}
+            label={t('caches.create.configurations.feature.passivation')}
+          />
+          <PopoverHelp
+            name={'passivation'}
+            label={t('caches.create.configurations.feature.passivation')}
+            content={t('caches.create.configurations.feature.passivation-tooltip', { brandname: brandname })}
+          />
+          </FormGroup>
+        </GridItem>
+        <GridItem span={4}>
           <FormGroup
             isInline
             fieldId="connection-attempts"
@@ -197,13 +208,14 @@ const PersistentCacheConfigurator = () => {
               value={connectionAttempts}
               type="number"
               onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setConnectionAttempts(undefined!) : setConnectionAttempts(parseInt(val));
+                const parsedVal = parseInt(val);
+                setConnectionAttempts(isNaN(parsedVal) ? undefined! : parsedVal);
               }}
               aria-label="connection-attempts"
             />
           </FormGroup>
-        </FlexItem>
-        <FlexItem grow={{ default: 'grow' }} style={{ maxWidth: '25rem' }}>
+        </GridItem>
+        <GridItem span={4}>
           <FormGroup
             isInline
             fieldId="connection-interval"
@@ -218,19 +230,15 @@ const PersistentCacheConfigurator = () => {
               />
             }
           >
-            <TextInput
-              data-cy="connectionInterval"
-              placeholder="50"
-              value={connectionInterval}
-              type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setConnectionInterval(undefined!) : setConnectionInterval(parseInt(val));
-              }}
-              aria-label="connection-interval"
-            />
+            <TimeQuantityInputGroup name={'connectionInterval'}
+                                    defaultValue={'50'}
+                                    value={connectionInterval}
+                                    valueModifier={setConnectionInterval}
+                                    unit={connectionIntervalUnit}
+                                    unitModifier={setConnectionIntervalUnit}/>
           </FormGroup>
-        </FlexItem>
-        <FlexItem grow={{ default: 'grow' }} style={{ maxWidth: '25rem' }}>
+        </GridItem>
+        <GridItem span={4}>
           <FormGroup
             isInline
             fieldId="availability-interval"
@@ -245,39 +253,37 @@ const PersistentCacheConfigurator = () => {
               />
             }
           >
-            <TextInput
-              data-cy="availabilityInterval"
-              placeholder="1000"
-              value={availabilityInterval}
-              type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setAvailabilityInterval(undefined!) : setAvailabilityInterval(parseInt(val));
-              }}
-              aria-label="availability-interval"
+            <TimeQuantityInputGroup name={'availabilityInterval'}
+                                    defaultValue={'1000'}
+                                    value={availabilityInterval}
+                                    valueModifier={setAvailabilityInterval}
+                                    unit={availabilityIntervalUnit}
+                                    unitModifier={setAvailabilityIntervalUnit}/>
+          </FormGroup>
+        </GridItem>
+        <GridItem>
+          <FormGroup
+            fieldId="storages"
+            isRequired
+            label={t('caches.create.configurations.feature.storages')}
+            labelIcon={
+              <PopoverHelp
+                name={'storages'}
+                label={t('caches.create.configurations.feature.storages')}
+                content={t('caches.create.configurations.feature.storages-tooltip', { brandname: brandname })}
+              />
+            }
+          >
+            <SelectSingle
+              id={'persistentStorage'}
+              placeholder={t('caches.create.configurations.feature.storage-placeholder')}
+              selected={storage}
+              options={selectOptionProps(PersistentCacheStorage)}
+              onSelect={onSelectStorage}
             />
           </FormGroup>
-        </FlexItem>
-      </Flex>
-      <FormGroup
-        fieldId="storages"
-        isRequired
-        label={t('caches.create.configurations.feature.storages')}
-        labelIcon={
-          <PopoverHelp
-            name={'storages'}
-            label={t('caches.create.configurations.feature.storages')}
-            content={t('caches.create.configurations.feature.storages-tooltip', { brandname: brandname })}
-          />
-        }
-      >
-        <SelectSingle
-          id={'persistentStorage'}
-          placeholder={t('caches.create.configurations.feature.storage-placeholder')}
-          selected={storage}
-          options={selectOptionProps(PersistentCacheStorage)}
-          onSelect={onSelectStorage}
-        />
-      </FormGroup>
+        </GridItem>
+      </Grid>
       {displayEditor()}
     </FeatureCard>
   );

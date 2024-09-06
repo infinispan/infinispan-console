@@ -24,6 +24,7 @@ import { validateIndexedFeature, validateTransactionalFeature } from '@app/utils
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
 const BasicCacheConfigConfigurator = () => {
   const { t } = useTranslation();
@@ -284,101 +285,67 @@ const BasicCacheConfigConfigurator = () => {
 
   const formExpirationSettings = () => {
     return (
-      <Grid md={6} hasGutter>
-        <FormGroup
-          fieldId="form-life-span"
-          label={t('caches.create.configurations.basic.lifespan')}
-          labelIcon={
-            <PopoverHelp
-              name={'lifespan'}
-              label={t('caches.create.configurations.basic.lifespan')}
-              content={t('caches.create.configurations.basic.lifespan-tooltip')}
-            />
-          }
-        >
-          <InputGroup>
-            <InputGroupItem>
-              <Grid>
-                <GridItem span={8}>
-                  <TextInput
-                    min={-1}
-                    validated={validateLifeSpan()}
-                    value={lifeSpanNumber}
-                    type="number"
-                    onChange={(_event, value) => setLifeSpanNumber(parseInt(value))}
-                    aria-label="life-span-input"
-                  />
-                </GridItem>
-                <GridItem span={4}>
-                  <SelectSingle
-                    id={'lifeSpanUnitSelector'}
-                    placeholder={''}
-                    selected={lifeSpanUnit}
-                    options={selectOptionProps(TimeUnits)}
-                    style={{ width: '150px' }}
-                    onSelect={(value) => setLifeSpanUnit(value)}
-                  />
-                </GridItem>
-              </Grid>
-            </InputGroupItem>
-          </InputGroup>
-          {validateLifeSpan() === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {t('caches.create.configurations.basic.lifespan-helper-invalid')}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
-        <FormGroup
-          fieldId="form-max-idle"
-          label={t('caches.create.configurations.basic.max-idle')}
-          labelIcon={
-            <PopoverHelp
-              name={'maxidle'}
-              label={t('caches.create.configurations.basic.max-idle')}
-              content={t('caches.create.configurations.basic.max-idle-tooltip')}
-            />
-          }
-        >
-          <InputGroup>
-            <InputGroupItem>
-              <Grid>
-                <GridItem span={8}>
-                  <TextInput
-                    min={-1}
-                    validated={validateMaxIdle()}
-                    value={maxIdleNumber}
-                    type="number"
-                    onChange={(_event, value) => setMaxIdleNumber(parseInt(value))}
-                    aria-label="life-span-input"
-                  />
-                </GridItem>
-                <GridItem span={4}>
-                  <SelectSingle
-                    id={'maxIdleSizeUnitSelector'}
-                    placeholder={''}
-                    selected={maxIdleUnit}
-                    options={selectOptionProps(TimeUnits)}
-                    style={{ width: '150px' }}
-                    onSelect={(value) => setMaxIdleUnit(value)}
-                  />
-                </GridItem>
-              </Grid>
-            </InputGroupItem>
-          </InputGroup>
-          {validateMaxIdle() === 'error' && (
-            <FormHelperText>
-              <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                  {t('caches.create.configurations.basic.max-idle-helper-invalid')}
-                </HelperTextItem>
-              </HelperText>
-            </FormHelperText>
-          )}
-        </FormGroup>
+      <Grid hasGutter>
+        <GridItem span={6}>
+          <FormGroup
+            fieldId="form-life-span"
+            label={t('caches.create.configurations.basic.lifespan')}
+            labelIcon={
+              <PopoverHelp
+                name={'lifespan'}
+                label={t('caches.create.configurations.basic.lifespan')}
+                content={t('caches.create.configurations.basic.lifespan-tooltip')}
+              />
+            }
+          >
+            <TimeQuantityInputGroup name={'lifespan'}
+                                    validate={validateLifeSpan}
+                                    minValue={-1}
+                                    value={lifeSpanNumber}
+                                    valueModifier={setLifeSpanNumber}
+                                    unit={lifeSpanUnit}
+                                    unitModifier={setLifeSpanUnit}/>
+            {validateLifeSpan() === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {t('caches.create.configurations.basic.lifespan-helper-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+        </GridItem>
+        <GridItem span={6}>
+          <FormGroup
+            fieldId="form-max-idle"
+            label={t('caches.create.configurations.basic.max-idle')}
+            labelIcon={
+              <PopoverHelp
+                name={'maxidle'}
+                label={t('caches.create.configurations.basic.max-idle')}
+                content={t('caches.create.configurations.basic.max-idle-tooltip')}
+              />
+            }
+          >
+            <TimeQuantityInputGroup name={'maxidle'}
+                                    validate={validateMaxIdle}
+                                    minValue={-1}
+                                    value={maxIdleNumber}
+                                    valueModifier={setMaxIdleNumber}
+                                    unit={maxIdleUnit}
+                                    unitModifier={setMaxIdleUnit}/>
+            {validateMaxIdle() === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    {t('caches.create.configurations.basic.max-idle-helper-invalid')}
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
+          </FormGroup>
+        </GridItem>
       </Grid>
     );
   };
