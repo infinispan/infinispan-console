@@ -4,7 +4,6 @@ import {
   Grid,
   GridItem,
   Radio,
-  SelectOptionProps,
   Switch,
   Text,
   TextContent,
@@ -16,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { BackupSiteFailurePolicy, BackupSiteStateTransferMode, BackupSiteStrategy } from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
 const BackupSiteConfigurator = (props: {
   backupSiteOptions: BackupSite[];
@@ -26,43 +26,51 @@ const BackupSiteConfigurator = (props: {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const [failurePolicy, setFailurePolicy] = useState(props.backupSiteOptions[props.index]?.failurePolicy!);
-  const [timeout, setTimeout] = useState(props.backupSiteOptions[props.index]?.timeout!);
-  const [twoPhaseCommit, setTwoPhaseCommit] = useState(props.backupSiteOptions[props.index]?.twoPhaseCommit!);
+  const [failurePolicy, setFailurePolicy] = useState(props.backupSiteOptions[props.index]?.failurePolicy);
+  const [timeout, setTimeout] = useState(props.backupSiteOptions[props.index]?.timeout);
+  const [timeoutUnit, setTimeoutUnit] = useState(props.backupSiteOptions[props.index]?.timeoutUnit);
+  const [twoPhaseCommit, setTwoPhaseCommit] = useState(props.backupSiteOptions[props.index]?.twoPhaseCommit);
   const [failurePolicyClass, setFailurePolicyClass] = useState(
-    props.backupSiteOptions[props.index]?.failurePolicyClass!
+    props.backupSiteOptions[props.index]?.failurePolicyClass
   );
 
   const [afterFailures, setAfterFailures] = useState(
-    props.backupSiteOptions![props.index]?.takeOffline?.afterFailures!
+    props.backupSiteOptions![props.index]?.takeOffline?.afterFailures
   );
-  const [minWait, setMinWait] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWait!);
+  const [minWait, setMinWait] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWait);
+  const [minWaitUnit, setMinWaitUnit] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWaitUnit);
 
-  const [chunckSize, setChunckSize] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.chunckSize!);
+  const [chunckSize, setChunckSize] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.chunckSize);
   const [timeoutStateTransfer, setTimeoutStateTransfer] = useState(
-    props.backupSiteOptions[props.index]?.stateTransfer?.timeout!
+    props.backupSiteOptions[props.index]?.stateTransfer?.timeout
   );
-  const [maxRetries, setMaxRetries] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.maxRetries!);
-  const [waitTime, setWaitTime] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.waitTime!);
-  const [mode, setMode] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.mode!);
-
-  const [isOpenFailurePolicy, setIsOpenFailurePolicy] = useState(false);
+  const [timeoutStateTransferUnit, setTimeoutStateTransferUnit] = useState(
+    props.backupSiteOptions[props.index]?.stateTransfer?.timeoutUnit
+  );
+  const [maxRetries, setMaxRetries] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.maxRetries);
+  const [waitTime, setWaitTime] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.waitTime);
+  const [waitTimeUnit, setWaitTimeUnit] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.waitTimeUnit);
+  const [mode, setMode] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.mode);
 
   useEffect(() => {
     const data = {
       failurePolicy: failurePolicy,
       timeout: timeout,
+      timeoutUnit: timeoutUnit,
       twoPhaseCommit: twoPhaseCommit,
       failurePolicyClass: failurePolicyClass,
       takeOffline: {
         afterFailures: afterFailures,
-        minWait: minWait
+        minWait: minWait,
+        minWaitUnit: minWaitUnit
       },
       stateTransfer: {
         chunckSize: chunckSize,
         timeout: timeoutStateTransfer,
+        timeoutUnit: timeoutStateTransferUnit,
         maxRetries: maxRetries,
         waitTime: waitTime,
+        waitTimeUnit: waitTimeUnit,
         mode: mode
       }
     };
@@ -74,14 +82,18 @@ const BackupSiteConfigurator = (props: {
   }, [
     failurePolicy,
     timeout,
+    timeoutUnit,
     twoPhaseCommit,
     failurePolicyClass,
     afterFailures,
     minWait,
+    minWaitUnit,
     chunckSize,
     timeoutStateTransfer,
+    timeoutStateTransferUnit,
     maxRetries,
     waitTime,
+    waitTimeUnit,
     mode
   ]);
 
@@ -110,10 +122,11 @@ const BackupSiteConfigurator = (props: {
           <TextInput
             placeholder="0"
             type="number"
-            id="timeout"
+            id="afterFailures"
             value={afterFailures}
             onChange={(e, val) => {
-              isNaN(parseInt(val)) ? setAfterFailures(undefined!) : setAfterFailures(parseInt(val));
+              const value = parseInt(val);
+              setAfterFailures(isNaN(value)? undefined!: value)
             }}
           />
         </FormGroup>
@@ -128,15 +141,12 @@ const BackupSiteConfigurator = (props: {
             />
           }
         >
-          <TextInput
-            placeholder="0"
-            type="number"
-            id="minwait"
-            value={minWait}
-            onChange={(e, val) => {
-              isNaN(parseInt(val)) ? setMinWait(undefined!) : setMinWait(parseInt(val));
-            }}
-          />
+          <TimeQuantityInputGroup name={'minwait'}
+                                  defaultValue={'0'}
+                                  value={minWait}
+                                  valueModifier={setMinWait}
+                                  unit={minWaitUnit}
+                                  unitModifier={setMinWaitUnit}/>
         </FormGroup>
       </React.Fragment>
     );
@@ -182,7 +192,7 @@ const BackupSiteConfigurator = (props: {
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={3}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="chuncksize"
             label={t('caches.create.configurations.feature.chunk-size')}
@@ -200,12 +210,13 @@ const BackupSiteConfigurator = (props: {
               id="chuncksize"
               value={chunckSize}
               onChange={(e, val) => {
-                isNaN(parseInt(val)) ? setChunckSize(undefined!) : setChunckSize(parseInt(val));
+                const value = parseInt(val);
+                setChunckSize(isNaN(value)? undefined!: value)
               }}
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={3}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="timeout-state-transfer"
             label={t('caches.create.configurations.feature.timeout-state-transfer')}
@@ -217,18 +228,15 @@ const BackupSiteConfigurator = (props: {
               />
             }
           >
-            <TextInput
-              placeholder="1200000"
-              type="number"
-              id="timeout"
-              value={timeoutStateTransfer}
-              onChange={(e, val) => {
-                isNaN(parseInt(val)) ? setTimeoutStateTransfer(undefined!) : setTimeoutStateTransfer(parseInt(val));
-              }}
-            />
+            <TimeQuantityInputGroup name={'timeoutStateTransfer'}
+                                    defaultValue={'1200000'}
+                                    value={timeoutStateTransfer}
+                                    valueModifier={setTimeoutStateTransfer}
+                                    unit={timeoutStateTransferUnit}
+                                    unitModifier={setTimeoutStateTransferUnit}/>
           </FormGroup>
         </GridItem>
-        <GridItem span={3}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="maxretries"
             label={t('caches.create.configurations.feature.max-retries')}
@@ -246,12 +254,13 @@ const BackupSiteConfigurator = (props: {
               id="maxretries"
               value={maxRetries}
               onChange={(e, val) => {
-                isNaN(parseInt(val)) ? setMaxRetries(undefined!) : setMaxRetries(parseInt(val));
+                const value = parseInt(val);
+                setMaxRetries(isNaN(value)? undefined!: value)
               }}
             />
           </FormGroup>
         </GridItem>
-        <GridItem span={3}>
+        <GridItem span={6}>
           <FormGroup
             fieldId="wait-time"
             label={t('caches.create.configurations.feature.wait-time')}
@@ -263,15 +272,12 @@ const BackupSiteConfigurator = (props: {
               />
             }
           >
-            <TextInput
-              placeholder="2000"
-              type="number"
-              id="waittime"
-              value={waitTime}
-              onChange={(e, val) => {
-                isNaN(parseInt(val)) ? setWaitTime(undefined!) : setWaitTime(parseInt(val));
-              }}
-            />
+            <TimeQuantityInputGroup name={'waitTime'}
+                                    defaultValue={'2000'}
+                                    value={waitTime}
+                                    valueModifier={setWaitTime}
+                                    unit={waitTimeUnit}
+                                    unitModifier={setWaitTimeUnit}/>
           </FormGroup>
         </GridItem>
       </React.Fragment>
@@ -320,7 +326,7 @@ const BackupSiteConfigurator = (props: {
         <SelectSingle
           id={'failurePolicy'}
           placeholder={BackupSiteFailurePolicy.IGNORE}
-          selected={failurePolicy}
+          selected={failurePolicy!}
           options={selectOptionProps(BackupSiteFailurePolicy)}
           onSelect={(value) => setFailurePolicy(value)}
         />
@@ -336,15 +342,12 @@ const BackupSiteConfigurator = (props: {
           />
         }
       >
-        <TextInput
-          placeholder="15000"
-          type="number"
-          id="timeout"
-          value={timeout}
-          onChange={(e, val) => {
-            isNaN(parseInt(val)) ? setTimeout(undefined!) : setTimeout(parseInt(val));
-          }}
-        />
+        <TimeQuantityInputGroup name={'timeout'}
+                                defaultValue={'15000'}
+                                value={timeout}
+                                valueModifier={setTimeout}
+                                unit={timeoutUnit}
+                                unitModifier={setTimeoutUnit}/>
       </FormGroup>
       <FormGroup
         fieldId="failurePolicyClass"
@@ -361,9 +364,9 @@ const BackupSiteConfigurator = (props: {
           type="text"
           id="failurePolicyClass"
           value={failurePolicyClass}
-          onChange={(e, val) => {
-            val === '' ? setFailurePolicyClass(undefined!) : setFailurePolicyClass(val);
-          }}
+          onChange={(e, val) =>
+             setFailurePolicyClass(val === ''? undefined!: val)
+          }
         />
       </FormGroup>
       {formTakeOffline()}

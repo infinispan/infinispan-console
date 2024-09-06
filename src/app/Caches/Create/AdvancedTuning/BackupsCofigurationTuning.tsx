@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import BackupSiteConfigurator from '@app/Caches/Create/AdvancedTuning/BackupsSiteConfigurator';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
 const BackupsConfigurationTuning = () => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -25,6 +26,7 @@ const BackupsConfigurationTuning = () => {
   );
   const [mergePolicy, setMergePolicy] = useState(configuration.advanced.backupSetting?.mergePolicy);
   const [maxCleanupDelay, setMaxCleanupDelay] = useState(configuration.advanced.backupSetting?.maxCleanupDelay);
+  const [maxCleanupDelayUnit, setMaxCleanupDelayUnit] = useState(configuration.advanced.backupSetting?.maxCleanupDelayUnit);
   const [tombstoneMapSize, setTombstoneMapSize] = useState(configuration.advanced.backupSetting?.tombstoneMapSize);
 
   useEffect(() => {
@@ -36,6 +38,7 @@ const BackupsConfigurationTuning = () => {
           backupSetting: {
             mergePolicy: mergePolicy,
             maxCleanupDelay: maxCleanupDelay,
+            maxCleanupDelayUnit: maxCleanupDelayUnit,
             tombstoneMapSize: tombstoneMapSize
           },
           backupSiteData: backupSiteData,
@@ -43,7 +46,7 @@ const BackupsConfigurationTuning = () => {
         }
       };
     });
-  }, [backupSiteData, mergePolicy, maxCleanupDelay, tombstoneMapSize]);
+  }, [backupSiteData, mergePolicy, maxCleanupDelay, maxCleanupDelayUnit, tombstoneMapSize]);
 
   if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
     return <div />;
@@ -66,9 +69,9 @@ const BackupsConfigurationTuning = () => {
           <TextInput
             placeholder="DEFAULT"
             value={mergePolicy}
-            onChange={(_event, val) => {
-              val === '' ? setMergePolicy(undefined!) : setMergePolicy(val);
-            }}
+            onChange={(_event, val) =>
+               setMergePolicy(val === ''? undefined! : val)
+            }
             aria-label="merge-policy-input"
           />
         </FormGroup>
@@ -84,15 +87,12 @@ const BackupsConfigurationTuning = () => {
             />
           }
         >
-          <TextInput
-            placeholder="30000"
-            type="number"
-            value={maxCleanupDelay}
-            onChange={(_event, val) => {
-              isNaN(parseInt(val)) ? setMaxCleanupDelay(undefined!) : setMaxCleanupDelay(parseInt(val));
-            }}
-            aria-label="max-cleanup-delay-input"
-          />
+          <TimeQuantityInputGroup name={'maxCleanupDelay'}
+                                  defaultValue={'30000'}
+                                  value={maxCleanupDelay}
+                                  valueModifier={setMaxCleanupDelay}
+                                  unit={maxCleanupDelayUnit}
+                                  unitModifier={setMaxCleanupDelayUnit}/>
         </FormGroup>
 
         <FormGroup
@@ -111,7 +111,8 @@ const BackupsConfigurationTuning = () => {
             type="number"
             value={tombstoneMapSize}
             onChange={(_event, val) => {
-              isNaN(parseInt(val)) ? setTombstoneMapSize(undefined!) : setTombstoneMapSize(parseInt(val));
+              const parsedVal = parseInt(val);
+              setTombstoneMapSize(isNaN(parsedVal) ? undefined! : parsedVal)
             }}
             aria-label="tombstone-map-size-input"
           />

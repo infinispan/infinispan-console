@@ -6,11 +6,11 @@ import {
   Grid,
   GridItem,
   HelperText,
-  HelperTextItem,
+  HelperTextItem, InputGroup, InputGroupItem,
   Switch,
   TextInput
 } from '@patternfly/react-core';
-import { StorageType } from '@services/infinispanRefData';
+import { StorageType, TimeUnits } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import TransactionalConfigurationTuning from '@app/Caches/Create/AdvancedTuning/TransactionalConfigurationTuning';
 import { useCreateCache } from '@app/services/createCacheHook';
@@ -31,6 +31,9 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
   const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<number | undefined>(
     configuration.advanced.lockAcquisitionTimeout
   );
+  const [lockAcquisitionTimeoutUnit, setLockAcquisitionTimeoutUnit] = useState<string | undefined>(
+    configuration.advanced.lockAcquisitionTimeoutUnit
+  );
   const [striping, setStriping] = useState<boolean>(configuration.advanced.striping!);
   const [aliases, setAliases] = useState<string[]>(configuration.advanced.aliases!);
 
@@ -43,12 +46,13 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
           storage: storage,
           concurrencyLevel: concurrencyLevel,
           lockAcquisitionTimeout: lockAcquisitionTimeout,
+          lockAcquisitionTimeoutUnit: lockAcquisitionTimeoutUnit,
           striping: striping,
           aliases: aliases
         }
       };
     });
-  }, [storage, concurrencyLevel, lockAcquisitionTimeout, striping, aliases]);
+  }, [storage, concurrencyLevel, lockAcquisitionTimeout, lockAcquisitionTimeoutUnit, striping, aliases]);
 
   const handleConcurrencyLevel = (value) => {
     setConcurrencyLevel(value);
@@ -130,6 +134,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
           <HelperTextItem>{t('caches.create.configurations.advanced-options.locking-tooltip')}</HelperTextItem>
         </HelperText>
         <Grid hasGutter md={4}>
+          <GridItem span={4}>
           <FormGroup
             isInline
             fieldId="field-concurrency-level"
@@ -151,6 +156,8 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
               data-cy="concurencyLevel"
             />
           </FormGroup>
+          </GridItem>
+          <GridItem span={6}>
           <FormGroup
             isInline
             fieldId="field-lock-acquisition-timeout"
@@ -163,15 +170,34 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
               />
             }
           >
-            <TextInput
-              placeholder="10"
-              value={lockAcquisitionTimeout}
-              type="number"
-              onChange={(_event, value) => handleLockAcquisitionTimeout(value)}
-              aria-label="lock-acquisition-timeout-input"
-              data-cy="lockTimeout"
-            />
+            <InputGroup>
+              <InputGroupItem>
+                <Grid>
+                  <GridItem span={8}>
+                    <TextInput
+                      placeholder="10"
+                      value={lockAcquisitionTimeout}
+                      type="number"
+                      onChange={(_event, value) => handleLockAcquisitionTimeout(value)}
+                      aria-label="lock-acquisition-timeout-input"
+                      data-cy="lockTimeout"
+                    />
+                  </GridItem>
+                  <GridItem span={4}>
+                    <SelectSingle
+                      id={'lockAcquisitionTimeoutUnitSelector'}
+                      placeholder={''}
+                      selected={lockAcquisitionTimeoutUnit || TimeUnits.milliseconds}
+                      options={selectOptionProps(TimeUnits)}
+                      style={{ width: '150px' }}
+                      onSelect={(value) => setLockAcquisitionTimeoutUnit(value)}
+                    />
+                  </GridItem>
+                </Grid>
+              </InputGroupItem>
+            </InputGroup>
           </FormGroup>
+          </GridItem>
           <GridItem span={12}>
             <FormGroup fieldId="field-striping">
               <Switch

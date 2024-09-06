@@ -45,6 +45,8 @@ const BoundedCacheInitialState: BoundedCache = {
   valid: true
 };
 
+const IndexReaderInitialState: IndexReader = {};
+
 const IndexWriterInitialState: IndexWriter = {};
 
 const IndexMergeInitialState: IndexMerge = {};
@@ -111,6 +113,7 @@ const CacheFeatureInitialState: CacheFeatureStep = {
 };
 
 const AdvancedOptionsInitialState: AdvancedConfigurationStep = {
+  indexReader: IndexReaderInitialState,
   indexWriter: IndexWriterInitialState,
   indexMerge: IndexMergeInitialState,
   backupSetting: BackupSettingInitialState,

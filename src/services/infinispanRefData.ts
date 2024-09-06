@@ -152,7 +152,8 @@ export enum TimeUnits {
   milliseconds = 'milliseconds',
   seconds = 'seconds',
   minutes = 'minutes',
-  hours = 'hours'
+  hours = 'hours',
+  days = 'days'
 }
 
 export enum EvictionType {

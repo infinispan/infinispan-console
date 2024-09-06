@@ -15,6 +15,7 @@ import { CacheFeature } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/services/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
 const IndexedConfigurationTuning = () => {
   const { configuration, setConfiguration } = useCreateCache();
@@ -22,10 +23,12 @@ const IndexedConfigurationTuning = () => {
   const brandname = t('brandname.brandname');
 
   //Index Reader
-  const [refreshInterval, setRefreshInterval] = useState<number>(configuration.advanced.indexReader!);
+  const [refreshInterval, setRefreshInterval] = useState<number>(configuration.advanced.indexReader.refreshInterval!);
+  const [refreshIntervalUnit, setRefreshIntervalUnit] = useState<string>(configuration.advanced.indexReader.refreshIntervalUnit!);
 
   //Index Writer
   const [commitInterval, setCommitInterval] = useState<number>(configuration.advanced.indexWriter.commitInterval!);
+  const [commitIntervalUnit, setCommitIntervalUnit] = useState<string>(configuration.advanced.indexWriter.commitIntervalUnit!);
   const [lowLevelTrace, setLowLevelTrace] = useState<boolean>(configuration.advanced.indexWriter.lowLevelTrace!);
   const [maxBufferedEntries, setMaxBufferedEntries] = useState<number>(
     configuration.advanced.indexWriter.maxBufferedEntries!
@@ -51,9 +54,13 @@ const IndexedConfigurationTuning = () => {
         ...prevState,
         advanced: {
           ...prevState.advanced,
-          indexReader: refreshInterval,
+          indexReader: {
+            refreshInterval: refreshInterval,
+            refreshIntervalUnit: refreshIntervalUnit
+          },
           indexWriter: {
             commitInterval: commitInterval,
+            commitIntervalUnit: commitIntervalUnit,
             lowLevelTrace: lowLevelTrace,
             maxBufferedEntries: maxBufferedEntries,
             queueCount: queueCount,
@@ -75,7 +82,9 @@ const IndexedConfigurationTuning = () => {
     });
   }, [
     refreshInterval,
+    refreshIntervalUnit,
     commitInterval,
+    commitIntervalUnit,
     lowLevelTrace,
     maxBufferedEntries,
     queueCount,
@@ -118,17 +127,12 @@ const IndexedConfigurationTuning = () => {
             />
           }
         >
-          <TextInput
-            data-cy="refreshInterval"
-            size={150}
-            placeholder="0"
-            value={refreshInterval}
-            type="number"
-            onChange={(_event, val) => {
-              isNaN(parseInt(val)) ? setRefreshInterval(undefined!) : setRefreshInterval(parseInt(val));
-            }}
-            aria-label="refresh-interval"
-          />
+          <TimeQuantityInputGroup name={'refreshInterval'}
+                                  defaultValue={'0'}
+                                  value={refreshInterval}
+                                  valueModifier={setRefreshInterval}
+                                  unit={refreshIntervalUnit}
+                                  unitModifier={setRefreshIntervalUnit}/>
         </FormGroup>
       </FormFieldGroupExpandable>
     );
@@ -176,16 +180,12 @@ const IndexedConfigurationTuning = () => {
               />
             }
           >
-            <TextInput
-              data-cy="commitInterval"
-              placeholder="1000"
-              value={commitInterval}
-              type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setCommitInterval(undefined!) : setCommitInterval(parseInt(val));
-              }}
-              aria-label="commit-interval"
-            />
+            <TimeQuantityInputGroup name={'commitInterval'}
+                                    defaultValue={'1000'}
+                                    value={commitInterval}
+                                    valueModifier={setCommitInterval}
+                                    unit={commitIntervalUnit}
+                                    unitModifier={setCommitIntervalUnit}/>
           </FormGroup>
           <FormGroup
             fieldId="ram-buffer-size"
@@ -203,9 +203,9 @@ const IndexedConfigurationTuning = () => {
               placeholder="32"
               value={ramBufferSize}
               type="number"
-              onChange={(_event, val) => {
-                isNaN(parseInt(val)) ? setRamBufferSize(undefined!) : setRamBufferSize(parseInt(val));
-              }}
+              onChange={(_event, val) =>
+                 setRamBufferSize(isNaN(parseInt(val)) ?undefined! : parseInt(val))
+              }
               aria-label="ram-buffer-size"
             />
           </FormGroup>
