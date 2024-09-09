@@ -132,17 +132,40 @@ export class CacheConfigUtils {
   }
 
   /**
+   * Retrieve if an encoding can display entries
+   *
+   * @param encoding
+   */
+  public static canUpdateEntries(encoding: EncodingType): boolean {
+    return (
+      encoding == EncodingType.Text ||
+      encoding == EncodingType.JSON ||
+      encoding == EncodingType.XML ||
+      encoding == EncodingType.Protobuf
+    );
+  }
+
+  /**
+   * Retrieve if an encoding can display entries
+   *
+   * @param encoding
+   */
+  public static canDeleteEntries(encoding: EncodingType): boolean {
+    return (
+      encoding == EncodingType.Text ||
+      encoding == EncodingType.JSON ||
+      encoding == EncodingType.XML ||
+      encoding == EncodingType.Protobuf
+    );
+  }
+
+  /**
    * Retrieve if an encoding is editable or not
    *
    * @param encoding
    */
   public static isEditable(encoding: EncodingType): boolean {
-    return (
-      encoding != EncodingType.Empty &&
-      encoding != EncodingType.Unknown &&
-      encoding != EncodingType.JavaSerialized &&
-      encoding != EncodingType.Octet
-    );
+    return encoding != EncodingType.Empty && encoding != EncodingType.Unknown;
   }
 
   /**
@@ -186,7 +209,7 @@ export class CacheConfigUtils {
       contentTypes.push(ContentType.XML);
     } else if (encodingType == EncodingType.JSON) {
       contentTypes.push(ContentType.JSON);
-    } else if (encodingType == EncodingType.Text) {
+    } else {
       contentTypes.push(ContentType.StringContentType);
     }
 

@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
+  Alert,
+  AlertActionLink,
+  AlertVariant,
   Bullseye,
   Button,
   ButtonVariant,
@@ -24,7 +27,7 @@ import {
   ToolbarToggleGroup,
   Tooltip
 } from '@patternfly/react-core';
-import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -35,7 +38,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { ContentType, EncodingType, StorageType } from '@services/infinispanRefData';
+import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
 import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
@@ -43,7 +46,7 @@ import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
-const CacheEntries = (props: { cacheName: string }) => {
+const CacheEntries = () => {
   const {
     cacheEntries,
     totalEntriesCount,
@@ -59,6 +62,7 @@ const CacheEntries = (props: { cacheName: string }) => {
   const { connectedUser } = useConnectedUser();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const encodingDocs = t('brandname.encoding-docs-link');
   const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] = useState<boolean>(false);
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
   const [keyToDelete, setKeyToDelete] = useState<string>('');
@@ -138,18 +142,29 @@ const CacheEntries = (props: { cacheName: string }) => {
       return <Td></Td>;
     }
 
-    const actions = [
-      {
+    const actions = [];
+    if (cache.updateEntry) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      actions.push({
         'aria-label': 'editEntryAction',
         title: t('caches.entries.action-edit'),
         onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
-      },
-      {
+      });
+    }
+    if (cache.deleteEntry) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      actions.push({
         'aria-label': 'deleteEntryAction',
         title: t('caches.entries.action-delete'),
         onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
-      }
-    ];
+      });
+    }
+
+    if (actions.length == 0) {
+      return undefined;
+    }
 
     return (
       <Td isActionCell data-cy={`actions-${row.key}`}>
@@ -379,8 +394,50 @@ const CacheEntries = (props: { cacheName: string }) => {
     return entry.expires ? entry.expires : t('caches.entries.never-expire');
   };
 
+  const encodingMessageDisplay = () => {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cache.name, connectedUser)) {
+      return '';
+    }
+    const encodingKey = CacheConfigUtils.toEncoding(cache.encoding.key);
+    const encodingValue = CacheConfigUtils.toEncoding(cache.encoding.value);
+    if (
+      encodingKey == EncodingType.Java ||
+      encodingKey == EncodingType.JavaSerialized ||
+      encodingKey == EncodingType.JBoss ||
+      encodingKey == EncodingType.Octet ||
+      encodingValue == EncodingType.Java ||
+      encodingValue == EncodingType.JavaSerialized ||
+      encodingValue == EncodingType.JBoss ||
+      encodingValue == EncodingType.Octet
+    ) {
+      return (
+        <Card isCompact>
+          <CardBody>
+            <Alert
+              isPlain
+              isInline
+              title={t('caches.configuration.pojo-encoding', {
+                brandname: brandname,
+                encodingKey: encodingKey,
+                encodingValue: encodingValue
+              })}
+              variant={AlertVariant.info}
+              actionLinks={
+                <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
+                  {t('caches.configuration.encoding-docs-message')}
+                </AlertActionLink>
+              }
+            />
+          </CardBody>
+        </Card>
+      );
+    }
+    return '';
+  };
+
   return (
     <React.Fragment>
+      {encodingMessageDisplay()}
       {totalEntriesCount == 0 ? (
         emptyPage
       ) : (
@@ -481,7 +538,7 @@ const CacheEntries = (props: { cacheName: string }) => {
         </React.Fragment>
       )}
       <CreateOrUpdateEntryForm
-        cacheName={props.cacheName}
+        cacheName={cache.name}
         cacheEncoding={cache.encoding}
         keyToEdit={keyToEdit}
         keyContentType={keyContentTypeToEdit}
@@ -489,18 +546,14 @@ const CacheEntries = (props: { cacheName: string }) => {
         closeModal={closeCreateOrEditEntryFormModal}
       />
       <DeleteEntry
-        cacheName={props.cacheName}
+        cacheName={cache.name}
         cacheEncoding={cache.encoding}
         entryKey={keyToDelete}
         keyContentType={keyContentTypeToEdit}
         isModalOpen={isDeleteEntryModalOpen}
         closeModal={closeDeleteEntryModal}
       />
-      <ClearAllEntries
-        cacheName={props.cacheName}
-        isModalOpen={isClearAllModalOpen}
-        closeModal={closeClearAllEntryModal}
-      />
+      <ClearAllEntries cacheName={cache.name} isModalOpen={isClearAllModalOpen} closeModal={closeClearAllEntryModal} />
     </React.Fragment>
   );
 };

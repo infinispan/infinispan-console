@@ -67,6 +67,8 @@ export class CacheService {
           data.indexed ||
           (CacheConfigUtils.isEditable(keyValueEncoding.key as EncodingType) &&
             CacheConfigUtils.isEditable(keyValueEncoding.value as EncodingType)),
+        updateEntry: CacheConfigUtils.canUpdateEntries(keyValueEncoding.key as EncodingType),
+        deleteEntry: CacheConfigUtils.canDeleteEntries(keyValueEncoding.key as EncodingType),
         queryable: data.queryable,
         features: <Features>{
           bounded: data.bounded,
@@ -311,7 +313,9 @@ export class CacheService {
       customHeaders.append('Accept', 'application/xml');
     } else if (
       (encoding.value as EncodingType) == EncodingType.JSON ||
-      (encoding.value as EncodingType) == EncodingType.Protobuf
+      (encoding.value as EncodingType) == EncodingType.Protobuf ||
+      (encoding.value as EncodingType) == EncodingType.JavaSerialized ||
+      (encoding.value as EncodingType) == EncodingType.Java
     ) {
       customHeaders.append('Accept', 'application/json');
     } else {

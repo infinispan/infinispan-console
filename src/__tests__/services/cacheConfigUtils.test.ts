@@ -40,16 +40,40 @@ describe('Cache Config Utils tests', () => {
     expect(CacheConfigUtils.isAsync(INVALIDATION_SYNC)).toBe(false);
   });
 
-  test('editable', () => {
+  test('editable cache (display entries/ add entries)', () => {
     expect(CacheConfigUtils.isEditable(EncodingType.Protobuf)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JBoss)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.XML)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Text)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.JSON)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Java)).toBeTruthy();
-    expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeFalsy();
-    expect(CacheConfigUtils.isEditable(EncodingType.Octet)).toBeFalsy();
+    expect(CacheConfigUtils.isEditable(EncodingType.JavaSerialized)).toBeTruthy();
+    expect(CacheConfigUtils.isEditable(EncodingType.Octet)).toBeTruthy();
     expect(CacheConfigUtils.isEditable(EncodingType.Empty)).toBeFalsy();
+  });
+
+  test('can update entries', () => {
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.Protobuf)).toBeTruthy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.XML)).toBeTruthy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.Text)).toBeTruthy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.JSON)).toBeTruthy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.JBoss)).toBeFalsy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.Java)).toBeFalsy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.JavaSerialized)).toBeFalsy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.Octet)).toBeFalsy();
+    expect(CacheConfigUtils.canUpdateEntries(EncodingType.Empty)).toBeFalsy();
+  });
+
+  test('can delete entries', () => {
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.Protobuf)).toBeTruthy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.XML)).toBeTruthy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.Text)).toBeTruthy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.JSON)).toBeTruthy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.JBoss)).toBeFalsy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.Java)).toBeFalsy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.JavaSerialized)).toBeFalsy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.Octet)).toBeFalsy();
+    expect(CacheConfigUtils.canDeleteEntries(EncodingType.Empty)).toBeFalsy();
   });
 
   test('content types depending on encoding', () => {
