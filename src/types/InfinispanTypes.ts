@@ -129,6 +129,8 @@ interface DetailedInfinispanCache {
   indexing_in_progress?: boolean;
   rebalancing_enabled?: boolean;
   editable: boolean;
+  updateEntry: boolean;
+  deleteEntry: boolean;
   queryable: boolean;
   features: Features;
   backupSites?: [XSite];

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import {
-  Alert,
-  AlertActionLink,
   AlertVariant,
   Button,
   ButtonVariant,
@@ -49,7 +47,6 @@ import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import {
   global_BackgroundColor_100,
   global_danger_color_200,
-  global_info_color_100,
   global_info_color_200,
   global_warning_color_100
 } from '@patternfly/react-tokens';
@@ -62,8 +59,6 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { useTranslation } from 'react-i18next';
 import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
-import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { EncodingType } from '@services/infinispanRefData';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useNavigate } from 'react-router';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
@@ -74,8 +69,6 @@ const DetailCache = (props: { cacheName: string }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
-  const brandname = t('brandname.brandname');
-  const encodingDocs = t('brandname.encoding-docs-link');
   const { connectedUser } = useConnectedUser();
   const { loading, error, cache, cacheManager, loadCache } = useCacheDetail();
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
@@ -100,55 +93,13 @@ const DetailCache = (props: { cacheName: string }) => {
     }
   }, [cache]);
 
-  const encodingMessageDisplay = () => {
-    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
-      return '';
-    }
-    const encodingKey = CacheConfigUtils.toEncoding(cache.encoding.key);
-    const encodingValue = CacheConfigUtils.toEncoding(cache.encoding.value);
-    if (
-      encodingKey == EncodingType.Java ||
-      encodingKey == EncodingType.JBoss ||
-      encodingValue == EncodingType.Java ||
-      encodingValue == EncodingType.JBoss
-    ) {
-      return (
-        <Card isCompact>
-          <CardBody>
-            <Alert
-              isPlain
-              isInline
-              title={t('caches.configuration.pojo-encoding', {
-                brandname: brandname,
-                encodingKey: encodingKey,
-                encodingValue: encodingValue
-              })}
-              variant={AlertVariant.info}
-              actionLinks={
-                <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
-                  {t('caches.configuration.encoding-docs-message')}
-                </AlertActionLink>
-              }
-            />
-          </CardBody>
-        </Card>
-      );
-    }
-    return '';
-  };
-
-  const buildEntriesTabContent = (queryable: boolean) => {
+  const buildEntriesTabContent = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
       return '';
     }
 
-    if (!queryable) {
-      return (
-        <React.Fragment>
-          {encodingMessageDisplay()}
-          <CacheEntries cacheName={cacheName} />
-        </React.Fragment>
-      );
+    if (!cache.queryable) {
+      return <CacheEntries />;
     }
 
     return (
@@ -166,8 +117,7 @@ const DetailCache = (props: { cacheName: string }) => {
           title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}
           data-cy="manageEntriesTab"
         >
-          {encodingMessageDisplay()}
-          <CacheEntries cacheName={cacheName} />
+          <CacheEntries />
         </Tab>
         <Tab eventKey={11} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
           <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)} />
@@ -221,7 +171,7 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     if (activeTabKey1 == 0) {
-      return buildEntriesTabContent(cache.queryable);
+      return buildEntriesTabContent();
     }
 
     if (activeTabKey1 == 1) {
