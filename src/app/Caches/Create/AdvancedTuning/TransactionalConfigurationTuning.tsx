@@ -23,9 +23,13 @@ const TransactionalConfigurationTuning = () => {
   const [stopTimeout, setStopTimeout] = useState(configuration.advanced.transactionalAdvance?.stopTimeout);
   const [stopTimeoutUnit, setStopTimeoutUnit] = useState(configuration.advanced.transactionalAdvance?.stopTimeoutUnit);
   const [completeTimeout, setCompleteTimeout] = useState(configuration.advanced.transactionalAdvance?.completeTimeout);
-  const [completeTimeoutUnit, setCompleteTimeoutUnit] = useState(configuration.advanced.transactionalAdvance?.completeTimeoutUnit);
+  const [completeTimeoutUnit, setCompleteTimeoutUnit] = useState(
+    configuration.advanced.transactionalAdvance?.completeTimeoutUnit
+  );
   const [reaperInterval, setReaperInterval] = useState(configuration.advanced.transactionalAdvance?.reaperInterval);
-  const [reaperIntervalUnit, setReaperIntervalUnit] = useState(configuration.advanced.transactionalAdvance?.reaperIntervalUnit);
+  const [reaperIntervalUnit, setReaperIntervalUnit] = useState(
+    configuration.advanced.transactionalAdvance?.reaperIntervalUnit
+  );
   const [isolationLevel, setIsolationLevel] = useState<IsolationLevel | undefined>(
     configuration.advanced.transactionalAdvance?.isolationLevel as IsolationLevel
   );
@@ -48,7 +52,15 @@ const TransactionalConfigurationTuning = () => {
         }
       };
     });
-  }, [stopTimeout, stopTimeoutUnit, completeTimeout, completeTimeoutUnit, reaperInterval, reaperIntervalUnit, isolationLevel]);
+  }, [
+    stopTimeout,
+    stopTimeoutUnit,
+    completeTimeout,
+    completeTimeoutUnit,
+    reaperInterval,
+    reaperIntervalUnit,
+    isolationLevel
+  ]);
 
   if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
     return <div />;
@@ -123,12 +135,14 @@ const TransactionalConfigurationTuning = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'stopTimeout'}
-                                    defaultValue={'30000'}
-                                    value={stopTimeout}
-                                    valueModifier={setStopTimeout}
-                                    unit={stopTimeoutUnit}
-                                    unitModifier={setStopTimeoutUnit}/>
+            <TimeQuantityInputGroup
+              name={'stopTimeout'}
+              defaultValue={'30000'}
+              value={stopTimeout}
+              valueModifier={setStopTimeout}
+              unit={stopTimeoutUnit}
+              unitModifier={setStopTimeoutUnit}
+            />
           </FormGroup>
         </GridItem>
         <GridItem span={6}>
@@ -145,12 +159,14 @@ const TransactionalConfigurationTuning = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'completeTimeout'}
-                                    defaultValue={'60000'}
-                                    value={completeTimeout}
-                                    valueModifier={setCompleteTimeout}
-                                    unit={completeTimeoutUnit}
-                                    unitModifier={setCompleteTimeoutUnit}/>
+            <TimeQuantityInputGroup
+              name={'completeTimeout'}
+              defaultValue={'60000'}
+              value={completeTimeout}
+              valueModifier={setCompleteTimeout}
+              unit={completeTimeoutUnit}
+              unitModifier={setCompleteTimeoutUnit}
+            />
           </FormGroup>
         </GridItem>
         <GridItem span={6}>
@@ -167,12 +183,14 @@ const TransactionalConfigurationTuning = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'reaperInterval'}
-                                    defaultValue={'30000'}
-                                    value={reaperInterval}
-                                    valueModifier={setReaperInterval}
-                                    unit={reaperIntervalUnit}
-                                    unitModifier={setReaperIntervalUnit}/>
+            <TimeQuantityInputGroup
+              name={'reaperInterval'}
+              defaultValue={'30000'}
+              value={reaperInterval}
+              valueModifier={setReaperInterval}
+              unit={reaperIntervalUnit}
+              unitModifier={setReaperIntervalUnit}
+            />
           </FormGroup>
         </GridItem>
       </Grid>

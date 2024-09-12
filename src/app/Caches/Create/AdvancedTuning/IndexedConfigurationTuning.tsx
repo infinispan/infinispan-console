@@ -24,11 +24,15 @@ const IndexedConfigurationTuning = () => {
 
   //Index Reader
   const [refreshInterval, setRefreshInterval] = useState<number>(configuration.advanced.indexReader.refreshInterval!);
-  const [refreshIntervalUnit, setRefreshIntervalUnit] = useState<string>(configuration.advanced.indexReader.refreshIntervalUnit!);
+  const [refreshIntervalUnit, setRefreshIntervalUnit] = useState<string>(
+    configuration.advanced.indexReader.refreshIntervalUnit!
+  );
 
   //Index Writer
   const [commitInterval, setCommitInterval] = useState<number>(configuration.advanced.indexWriter.commitInterval!);
-  const [commitIntervalUnit, setCommitIntervalUnit] = useState<string>(configuration.advanced.indexWriter.commitIntervalUnit!);
+  const [commitIntervalUnit, setCommitIntervalUnit] = useState<string>(
+    configuration.advanced.indexWriter.commitIntervalUnit!
+  );
   const [lowLevelTrace, setLowLevelTrace] = useState<boolean>(configuration.advanced.indexWriter.lowLevelTrace!);
   const [maxBufferedEntries, setMaxBufferedEntries] = useState<number>(
     configuration.advanced.indexWriter.maxBufferedEntries!
@@ -127,12 +131,14 @@ const IndexedConfigurationTuning = () => {
             />
           }
         >
-          <TimeQuantityInputGroup name={'refreshInterval'}
-                                  defaultValue={'0'}
-                                  value={refreshInterval}
-                                  valueModifier={setRefreshInterval}
-                                  unit={refreshIntervalUnit}
-                                  unitModifier={setRefreshIntervalUnit}/>
+          <TimeQuantityInputGroup
+            name={'refreshInterval'}
+            defaultValue={'0'}
+            value={refreshInterval}
+            valueModifier={setRefreshInterval}
+            unit={refreshIntervalUnit}
+            unitModifier={setRefreshIntervalUnit}
+          />
         </FormGroup>
       </FormFieldGroupExpandable>
     );
@@ -180,12 +186,14 @@ const IndexedConfigurationTuning = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'commitInterval'}
-                                    defaultValue={'1000'}
-                                    value={commitInterval}
-                                    valueModifier={setCommitInterval}
-                                    unit={commitIntervalUnit}
-                                    unitModifier={setCommitIntervalUnit}/>
+            <TimeQuantityInputGroup
+              name={'commitInterval'}
+              defaultValue={'1000'}
+              value={commitInterval}
+              valueModifier={setCommitInterval}
+              unit={commitIntervalUnit}
+              unitModifier={setCommitIntervalUnit}
+            />
           </FormGroup>
           <FormGroup
             fieldId="ram-buffer-size"
@@ -203,9 +211,7 @@ const IndexedConfigurationTuning = () => {
               placeholder="32"
               value={ramBufferSize}
               type="number"
-              onChange={(_event, val) =>
-                 setRamBufferSize(isNaN(parseInt(val)) ?undefined! : parseInt(val))
-              }
+              onChange={(_event, val) => setRamBufferSize(isNaN(parseInt(val)) ? undefined! : parseInt(val))}
               aria-label="ram-buffer-size"
             />
           </FormGroup>

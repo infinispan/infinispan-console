@@ -298,13 +298,15 @@ const BasicCacheConfigConfigurator = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'lifespan'}
-                                    validate={validateLifeSpan}
-                                    minValue={-1}
-                                    value={lifeSpanNumber}
-                                    valueModifier={setLifeSpanNumber}
-                                    unit={lifeSpanUnit}
-                                    unitModifier={setLifeSpanUnit}/>
+            <TimeQuantityInputGroup
+              name={'lifespan'}
+              validate={validateLifeSpan}
+              minValue={-1}
+              value={lifeSpanNumber}
+              valueModifier={setLifeSpanNumber}
+              unit={lifeSpanUnit}
+              unitModifier={setLifeSpanUnit}
+            />
             {validateLifeSpan() === 'error' && (
               <FormHelperText>
                 <HelperText>
@@ -328,13 +330,15 @@ const BasicCacheConfigConfigurator = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'maxidle'}
-                                    validate={validateMaxIdle}
-                                    minValue={-1}
-                                    value={maxIdleNumber}
-                                    valueModifier={setMaxIdleNumber}
-                                    unit={maxIdleUnit}
-                                    unitModifier={setMaxIdleUnit}/>
+            <TimeQuantityInputGroup
+              name={'maxidle'}
+              validate={validateMaxIdle}
+              minValue={-1}
+              value={maxIdleNumber}
+              valueModifier={setMaxIdleNumber}
+              unit={maxIdleUnit}
+              unitModifier={setMaxIdleUnit}
+            />
             {validateMaxIdle() === 'error' && (
               <FormHelperText>
                 <HelperText>

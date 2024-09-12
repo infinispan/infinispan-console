@@ -6,7 +6,9 @@ import {
   Grid,
   GridItem,
   HelperText,
-  HelperTextItem, InputGroup, InputGroupItem,
+  HelperTextItem,
+  InputGroup,
+  InputGroupItem,
   Switch,
   TextInput
 } from '@patternfly/react-core';
@@ -135,68 +137,68 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
         </HelperText>
         <Grid hasGutter md={4}>
           <GridItem span={4}>
-          <FormGroup
-            isInline
-            fieldId="field-concurrency-level"
-            label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
-            labelIcon={
-              <PopoverHelp
-                name="concurrency-level"
-                label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
-                content={t('caches.create.configurations.advanced-options.concurrency-level-tooltip')}
+            <FormGroup
+              isInline
+              fieldId="field-concurrency-level"
+              label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
+              labelIcon={
+                <PopoverHelp
+                  name="concurrency-level"
+                  label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
+                  content={t('caches.create.configurations.advanced-options.concurrency-level-tooltip')}
+                />
+              }
+            >
+              <TextInput
+                placeholder="32"
+                value={concurrencyLevel}
+                type="number"
+                onChange={(_event, value) => handleConcurrencyLevel(value)}
+                aria-label="concurrency-level-input"
+                data-cy="concurencyLevel"
               />
-            }
-          >
-            <TextInput
-              placeholder="32"
-              value={concurrencyLevel}
-              type="number"
-              onChange={(_event, value) => handleConcurrencyLevel(value)}
-              aria-label="concurrency-level-input"
-              data-cy="concurencyLevel"
-            />
-          </FormGroup>
+            </FormGroup>
           </GridItem>
           <GridItem span={6}>
-          <FormGroup
-            isInline
-            fieldId="field-lock-acquisition-timeout"
-            label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
-            labelIcon={
-              <PopoverHelp
-                name="lock-acquisition-timeout"
-                label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
-                content={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-tooltip')}
-              />
-            }
-          >
-            <InputGroup>
-              <InputGroupItem>
-                <Grid>
-                  <GridItem span={8}>
-                    <TextInput
-                      placeholder="10"
-                      value={lockAcquisitionTimeout}
-                      type="number"
-                      onChange={(_event, value) => handleLockAcquisitionTimeout(value)}
-                      aria-label="lock-acquisition-timeout-input"
-                      data-cy="lockTimeout"
-                    />
-                  </GridItem>
-                  <GridItem span={4}>
-                    <SelectSingle
-                      id={'lockAcquisitionTimeoutUnitSelector'}
-                      placeholder={''}
-                      selected={lockAcquisitionTimeoutUnit || TimeUnits.milliseconds}
-                      options={selectOptionProps(TimeUnits)}
-                      style={{ width: '150px' }}
-                      onSelect={(value) => setLockAcquisitionTimeoutUnit(value)}
-                    />
-                  </GridItem>
-                </Grid>
-              </InputGroupItem>
-            </InputGroup>
-          </FormGroup>
+            <FormGroup
+              isInline
+              fieldId="field-lock-acquisition-timeout"
+              label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
+              labelIcon={
+                <PopoverHelp
+                  name="lock-acquisition-timeout"
+                  label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
+                  content={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-tooltip')}
+                />
+              }
+            >
+              <InputGroup>
+                <InputGroupItem>
+                  <Grid>
+                    <GridItem span={8}>
+                      <TextInput
+                        placeholder="10"
+                        value={lockAcquisitionTimeout}
+                        type="number"
+                        onChange={(_event, value) => handleLockAcquisitionTimeout(value)}
+                        aria-label="lock-acquisition-timeout-input"
+                        data-cy="lockTimeout"
+                      />
+                    </GridItem>
+                    <GridItem span={4}>
+                      <SelectSingle
+                        id={'lockAcquisitionTimeoutUnitSelector'}
+                        placeholder={''}
+                        selected={lockAcquisitionTimeoutUnit || TimeUnits.milliseconds}
+                        options={selectOptionProps(TimeUnits)}
+                        style={{ width: '150px' }}
+                        onSelect={(value) => setLockAcquisitionTimeoutUnit(value)}
+                      />
+                    </GridItem>
+                  </Grid>
+                </InputGroupItem>
+              </InputGroup>
+            </FormGroup>
           </GridItem>
           <GridItem span={12}>
             <FormGroup fieldId="field-striping">
