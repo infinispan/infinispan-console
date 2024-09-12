@@ -81,23 +81,23 @@ const CacheEntries = () => {
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   useEffect(() => {
-    if (cache.encoding.key == EncodingType.Protobuf) {
+    if (cache.encoding?.key == EncodingType.Protobuf) {
       setSelectSearchOption(ContentType.string);
       setKeyContentTypeToEdit(ContentType.string);
     } else if (
-      cache.encoding.key == EncodingType.Java ||
-      cache.encoding.key == EncodingType.JBoss ||
-      cache.encoding.key == EncodingType.JavaSerialized
+      cache.encoding?.key == EncodingType.Java ||
+      cache.encoding?.key == EncodingType.JBoss ||
+      cache.encoding?.key == EncodingType.JavaSerialized
     ) {
       setSelectSearchOption(ContentType.StringContentType);
       setKeyContentTypeToEdit(ContentType.StringContentType);
-    } else if (cache.encoding.key == EncodingType.XML) {
+    } else if (cache.encoding?.key == EncodingType.XML) {
       setSelectSearchOption(ContentType.XML);
       setKeyContentTypeToEdit(ContentType.XML);
-    } else if (cache.encoding.key == EncodingType.JSON) {
+    } else if (cache.encoding?.key == EncodingType.JSON) {
       setSelectSearchOption(ContentType.JSON);
       setSelectSearchOption(ContentType.JSON);
-    } else if (cache.encoding.key == EncodingType.Text) {
+    } else if (cache.encoding?.key == EncodingType.Text) {
       setSelectSearchOption(ContentType.StringContentType);
       setSelectSearchOption(ContentType.StringContentType);
     }
@@ -284,7 +284,7 @@ const CacheEntries = () => {
             icon={<EmptyStateIcon icon={PlusCircleIcon} />}
             headingLevel="h4"
           />
-          <EmptyStateBody>{infoEntries ? infoEntries : t('caches.entries.empty-cache-body')}</EmptyStateBody>
+          <EmptyStateBody>{infoEntries ? t(infoEntries) : t('caches.entries.empty-cache-body')}</EmptyStateBody>
           <EmptyStateFooter>
             <EmptyStateActions style={{ marginTop: global_spacer_sm.value }}>{addEntryAction()}</EmptyStateActions>
           </EmptyStateFooter>
@@ -310,7 +310,7 @@ const CacheEntries = () => {
   };
 
   const keyContentTypeOptions = (): SelectOptionProps[] => {
-    return selectOptionPropsFromArray(CacheConfigUtils.getContentTypeOptions(cache.encoding.key as EncodingType));
+    return selectOptionPropsFromArray(CacheConfigUtils.getContentTypeOptions(cache.encoding?.key as EncodingType));
   };
 
   const searchEntryByKey = () => {
@@ -398,8 +398,8 @@ const CacheEntries = () => {
     if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cache.name, connectedUser)) {
       return '';
     }
-    const encodingKey = CacheConfigUtils.toEncoding(cache.encoding.key);
-    const encodingValue = CacheConfigUtils.toEncoding(cache.encoding.value);
+    const encodingKey = CacheConfigUtils.toEncoding(cache.encoding?.key);
+    const encodingValue = CacheConfigUtils.toEncoding(cache.encoding?.value);
     if (
       encodingKey == EncodingType.Java ||
       encodingKey == EncodingType.JavaSerialized ||
@@ -435,6 +435,10 @@ const CacheEntries = () => {
     return '';
   };
 
+  if (!cache.started) {
+    // Don't display anything if the cache is not started
+    return <></>;
+  }
   return (
     <React.Fragment>
       {encodingMessageDisplay()}
@@ -511,14 +515,14 @@ const CacheEntries = () => {
                       <Td dataLabel={columnNames.key}>
                         {displayHighlighted(
                           row.key,
-                          cache.encoding.key as EncodingType,
+                          cache.encoding?.key as EncodingType,
                           row.keyContentType as ContentType
                         )}
                       </Td>
                       <Td dataLabel={columnNames.value}>
                         {displayHighlighted(
                           row.value,
-                          cache.encoding.value as EncodingType,
+                          cache.encoding?.value as EncodingType,
                           row.valueContentType as ContentType
                         )}
                       </Td>
@@ -539,7 +543,7 @@ const CacheEntries = () => {
       )}
       <CreateOrUpdateEntryForm
         cacheName={cache.name}
-        cacheEncoding={cache.encoding}
+        cacheEncoding={cache.encoding!}
         keyToEdit={keyToEdit}
         keyContentType={keyContentTypeToEdit}
         isModalOpen={isCreateOrUpdateEntryFormOpen}
@@ -547,7 +551,7 @@ const CacheEntries = () => {
       />
       <DeleteEntry
         cacheName={cache.name}
-        cacheEncoding={cache.encoding}
+        cacheEncoding={cache.encoding!}
         entryKey={keyToDelete}
         keyContentType={keyContentTypeToEdit}
         isModalOpen={isDeleteEntryModalOpen}

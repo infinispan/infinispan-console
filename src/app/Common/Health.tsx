@@ -6,8 +6,8 @@ import { ComponentHealth } from '@services/infinispanRefData';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { chart_global_label_Fill, global_Color_light_100 } from '@patternfly/react-tokens';
 
-const Health = (props: { health: string; displayIcon?: boolean; cacheName?: string }) => {
-  const health = ComponentHealth[props.health];
+const Health = (props: { health?: string; displayIcon?: boolean; cacheName?: string }) => {
+  const health = props.health ? ComponentHealth[props.health] : ComponentHealth.UNKNOWN;
   const displayIcon = props.displayIcon == undefined ? true : props.displayIcon;
   const { theme } = useContext(ThemeContext);
 

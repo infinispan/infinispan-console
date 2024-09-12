@@ -63,6 +63,7 @@ import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useNavigate } from 'react-router';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { AlertIcon } from '@patternfly/react-core/dist/js/components/Alert/AlertIcon';
+import { Health } from '@app/Common/Health';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -84,7 +85,11 @@ const DetailCache = (props: { cacheName: string }) => {
       return;
     }
 
-    if (cache.editable && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+    if (
+      cache.started &&
+      cache.editable &&
+      ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)
+    ) {
       setActiveTabKey1(0);
     } else if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       setActiveTabKey1(1);
@@ -94,7 +99,7 @@ const DetailCache = (props: { cacheName: string }) => {
   }, [cache]);
 
   const buildEntriesTabContent = () => {
-    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+    if (cache.started && !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
       return '';
     }
 
@@ -127,7 +132,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const entriesTabEnabled = (): boolean => {
-    return cache.editable && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
+    return cache.editable! && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
   };
 
   const buildDetailContent = () => {
@@ -177,7 +182,11 @@ const DetailCache = (props: { cacheName: string }) => {
     if (activeTabKey1 == 1) {
       return (
         cache.configuration && (
-          <CacheConfiguration cacheName={cache.name} editable={cache.editable} config={cache.configuration.config} />
+          <CacheConfiguration
+            cacheName={cache.name}
+            editable={cache?.editable || true}
+            config={cache.configuration.config}
+          />
         )
       );
     }
@@ -208,11 +217,15 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const displayBackupsManagement = () => {
-    return cache?.features.hasRemoteBackup && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+    return (
+      cache &&
+      cache?.features?.hasRemoteBackup &&
+      ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
+    );
   };
 
   const displayIndexManage = () => {
-    return cache?.features.indexed;
+    return cache && cache?.features?.indexed;
   };
 
   const buildBackupsManage = () => {
@@ -266,7 +279,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const buildTracing = () => {
-    if (!cacheManager || !cacheManager.tracing_enabled) return;
+    if (!cacheManager || !cacheManager.tracing_enabled || !cache || !cache.started) return;
 
     return (
       <DropdownItem
@@ -344,7 +357,7 @@ const DetailCache = (props: { cacheName: string }) => {
             {cacheManager.tracing_enabled && (
               <React.Fragment>
                 <ToolbarItem>
-                  <TracingEnabled enabled={cache.tracing} />
+                  <TracingEnabled enabled={cache.tracing!} />
                 </ToolbarItem>
                 <ToolbarItem variant="separator"></ToolbarItem>
               </React.Fragment>
@@ -464,6 +477,36 @@ const DetailCache = (props: { cacheName: string }) => {
       );
     }
 
+    if (!cache.started) {
+      // cache is not ok
+      return (
+        <React.Fragment>
+          <Toolbar id="cache-detail-header">
+            <ToolbarContent>
+              <ToolbarGroup>
+                <ToolbarItem>
+                  <Flex>
+                    <FlexItem>
+                      <TextContent>
+                        <Text component={TextVariants.h1}>{cache.name}</Text>
+                      </TextContent>
+                    </FlexItem>
+                    <FlexItem>
+                      <Health health={cache.health} displayIcon={true} cacheName={cache.name} />
+                    </FlexItem>
+                  </Flex>
+                </ToolbarItem>
+              </ToolbarGroup>
+              {displayActions}
+            </ToolbarContent>
+          </Toolbar>
+          <Tabs isBox={false} activeKey={activeTabKey1} isSecondary={true} component={TabsComponent.nav}>
+            {displayConfiguration()}
+          </Tabs>
+        </React.Fragment>
+      );
+    }
+
     return (
       <React.Fragment>
         <Toolbar id="cache-detail-header">
@@ -475,7 +518,7 @@ const DetailCache = (props: { cacheName: string }) => {
                 </TextContent>
               </ToolbarItem>
               <ToolbarItem>
-                <CacheTypeBadge cacheType={cache.type} small={true} cacheName={cache.name} />
+                <CacheTypeBadge cacheType={cache.type!} small={true} cacheName={cache.name} />
               </ToolbarItem>
               {buildFeaturesChip()}
             </ToolbarGroup>

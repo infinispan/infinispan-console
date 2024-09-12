@@ -121,24 +121,25 @@ interface CacheEncoding {
 interface DetailedInfinispanCache {
   name: string;
   configuration?: CacheConfig;
-  encoding: CacheEncoding;
-  type: string;
+  encoding?: CacheEncoding;
+  type?: string;
   started: boolean;
+  health?: string;
   size?: number;
   rehash_in_progress?: boolean;
   indexing_in_progress?: boolean;
   rebalancing_enabled?: boolean;
-  editable: boolean;
-  updateEntry: boolean;
-  deleteEntry: boolean;
-  queryable: boolean;
-  features: Features;
+  editable?: boolean;
+  updateEntry?: boolean;
+  deleteEntry?: boolean;
+  queryable?: boolean;
+  features?: Features;
   backupSites?: [XSite];
   stats?: CacheStats;
-  mode: string;
+  mode?: string;
   memory?: CacheMemory;
-  async: boolean;
-  tracing: boolean;
+  async?: boolean;
+  tracing?: boolean;
 }
 
 interface CacheMemory {
