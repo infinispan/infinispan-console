@@ -26,7 +26,9 @@ const BackupsConfigurationTuning = () => {
   );
   const [mergePolicy, setMergePolicy] = useState(configuration.advanced.backupSetting?.mergePolicy);
   const [maxCleanupDelay, setMaxCleanupDelay] = useState(configuration.advanced.backupSetting?.maxCleanupDelay);
-  const [maxCleanupDelayUnit, setMaxCleanupDelayUnit] = useState(configuration.advanced.backupSetting?.maxCleanupDelayUnit);
+  const [maxCleanupDelayUnit, setMaxCleanupDelayUnit] = useState(
+    configuration.advanced.backupSetting?.maxCleanupDelayUnit
+  );
   const [tombstoneMapSize, setTombstoneMapSize] = useState(configuration.advanced.backupSetting?.tombstoneMapSize);
 
   useEffect(() => {
@@ -69,9 +71,7 @@ const BackupsConfigurationTuning = () => {
           <TextInput
             placeholder="DEFAULT"
             value={mergePolicy}
-            onChange={(_event, val) =>
-               setMergePolicy(val === ''? undefined! : val)
-            }
+            onChange={(_event, val) => setMergePolicy(val === '' ? undefined! : val)}
             aria-label="merge-policy-input"
           />
         </FormGroup>
@@ -87,12 +87,14 @@ const BackupsConfigurationTuning = () => {
             />
           }
         >
-          <TimeQuantityInputGroup name={'maxCleanupDelay'}
-                                  defaultValue={'30000'}
-                                  value={maxCleanupDelay}
-                                  valueModifier={setMaxCleanupDelay}
-                                  unit={maxCleanupDelayUnit}
-                                  unitModifier={setMaxCleanupDelayUnit}/>
+          <TimeQuantityInputGroup
+            name={'maxCleanupDelay'}
+            defaultValue={'30000'}
+            value={maxCleanupDelay}
+            valueModifier={setMaxCleanupDelay}
+            unit={maxCleanupDelayUnit}
+            unitModifier={setMaxCleanupDelayUnit}
+          />
         </FormGroup>
 
         <FormGroup
@@ -112,7 +114,7 @@ const BackupsConfigurationTuning = () => {
             value={tombstoneMapSize}
             onChange={(_event, val) => {
               const parsedVal = parseInt(val);
-              setTombstoneMapSize(isNaN(parsedVal) ? undefined! : parsedVal)
+              setTombstoneMapSize(isNaN(parsedVal) ? undefined! : parsedVal);
             }}
             aria-label="tombstone-map-size-input"
           />

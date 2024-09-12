@@ -34,9 +34,7 @@ const BackupSiteConfigurator = (props: {
     props.backupSiteOptions[props.index]?.failurePolicyClass
   );
 
-  const [afterFailures, setAfterFailures] = useState(
-    props.backupSiteOptions![props.index]?.takeOffline?.afterFailures
-  );
+  const [afterFailures, setAfterFailures] = useState(props.backupSiteOptions![props.index]?.takeOffline?.afterFailures);
   const [minWait, setMinWait] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWait);
   const [minWaitUnit, setMinWaitUnit] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWaitUnit);
 
@@ -126,7 +124,7 @@ const BackupSiteConfigurator = (props: {
             value={afterFailures}
             onChange={(e, val) => {
               const value = parseInt(val);
-              setAfterFailures(isNaN(value)? undefined!: value)
+              setAfterFailures(isNaN(value) ? undefined! : value);
             }}
           />
         </FormGroup>
@@ -141,12 +139,14 @@ const BackupSiteConfigurator = (props: {
             />
           }
         >
-          <TimeQuantityInputGroup name={'minwait'}
-                                  defaultValue={'0'}
-                                  value={minWait}
-                                  valueModifier={setMinWait}
-                                  unit={minWaitUnit}
-                                  unitModifier={setMinWaitUnit}/>
+          <TimeQuantityInputGroup
+            name={'minwait'}
+            defaultValue={'0'}
+            value={minWait}
+            valueModifier={setMinWait}
+            unit={minWaitUnit}
+            unitModifier={setMinWaitUnit}
+          />
         </FormGroup>
       </React.Fragment>
     );
@@ -211,7 +211,7 @@ const BackupSiteConfigurator = (props: {
               value={chunckSize}
               onChange={(e, val) => {
                 const value = parseInt(val);
-                setChunckSize(isNaN(value)? undefined!: value)
+                setChunckSize(isNaN(value) ? undefined! : value);
               }}
             />
           </FormGroup>
@@ -228,12 +228,14 @@ const BackupSiteConfigurator = (props: {
               />
             }
           >
-            <TimeQuantityInputGroup name={'timeoutStateTransfer'}
-                                    defaultValue={'1200000'}
-                                    value={timeoutStateTransfer}
-                                    valueModifier={setTimeoutStateTransfer}
-                                    unit={timeoutStateTransferUnit}
-                                    unitModifier={setTimeoutStateTransferUnit}/>
+            <TimeQuantityInputGroup
+              name={'timeoutStateTransfer'}
+              defaultValue={'1200000'}
+              value={timeoutStateTransfer}
+              valueModifier={setTimeoutStateTransfer}
+              unit={timeoutStateTransferUnit}
+              unitModifier={setTimeoutStateTransferUnit}
+            />
           </FormGroup>
         </GridItem>
         <GridItem span={6}>
@@ -255,7 +257,7 @@ const BackupSiteConfigurator = (props: {
               value={maxRetries}
               onChange={(e, val) => {
                 const value = parseInt(val);
-                setMaxRetries(isNaN(value)? undefined!: value)
+                setMaxRetries(isNaN(value) ? undefined! : value);
               }}
             />
           </FormGroup>
@@ -272,12 +274,14 @@ const BackupSiteConfigurator = (props: {
               />
             }
           >
-            <TimeQuantityInputGroup name={'waitTime'}
-                                    defaultValue={'2000'}
-                                    value={waitTime}
-                                    valueModifier={setWaitTime}
-                                    unit={waitTimeUnit}
-                                    unitModifier={setWaitTimeUnit}/>
+            <TimeQuantityInputGroup
+              name={'waitTime'}
+              defaultValue={'2000'}
+              value={waitTime}
+              valueModifier={setWaitTime}
+              unit={waitTimeUnit}
+              unitModifier={setWaitTimeUnit}
+            />
           </FormGroup>
         </GridItem>
       </React.Fragment>
@@ -342,12 +346,14 @@ const BackupSiteConfigurator = (props: {
           />
         }
       >
-        <TimeQuantityInputGroup name={'timeout'}
-                                defaultValue={'15000'}
-                                value={timeout}
-                                valueModifier={setTimeout}
-                                unit={timeoutUnit}
-                                unitModifier={setTimeoutUnit}/>
+        <TimeQuantityInputGroup
+          name={'timeout'}
+          defaultValue={'15000'}
+          value={timeout}
+          valueModifier={setTimeout}
+          unit={timeoutUnit}
+          unitModifier={setTimeoutUnit}
+        />
       </FormGroup>
       <FormGroup
         fieldId="failurePolicyClass"
@@ -364,9 +370,7 @@ const BackupSiteConfigurator = (props: {
           type="text"
           id="failurePolicyClass"
           value={failurePolicyClass}
-          onChange={(e, val) =>
-             setFailurePolicyClass(val === ''? undefined!: val)
-          }
+          onChange={(e, val) => setFailurePolicyClass(val === '' ? undefined! : val)}
         />
       </FormGroup>
       {formTakeOffline()}

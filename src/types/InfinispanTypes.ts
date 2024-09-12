@@ -337,8 +337,8 @@ interface BoundedCache {
 }
 
 interface IndexReader {
-  refreshInterval?:number;
-  refreshIntervalUnit?:string;
+  refreshInterval?: number;
+  refreshIntervalUnit?: string;
 }
 
 interface IndexWriter {

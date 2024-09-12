@@ -3,7 +3,9 @@ import {
   Alert,
   Button,
   FlexItem,
-  FormGroup, Grid, GridItem,
+  FormGroup,
+  Grid,
+  GridItem,
   HelperText,
   HelperTextItem,
   Hint,
@@ -75,7 +77,8 @@ const PersistentCacheConfigurator = () => {
         }
       };
     });
-  }, [passivation,
+  }, [
+    passivation,
     connectionAttempts,
     connectionInterval,
     connectionIntervalUnit,
@@ -83,7 +86,8 @@ const PersistentCacheConfigurator = () => {
     availabilityIntervalUnit,
     storage,
     config,
-    valid]);
+    valid
+  ]);
 
   const onSelectStorage = (selection) => {
     setStorage(selection);
@@ -172,19 +176,19 @@ const PersistentCacheConfigurator = () => {
       <Grid hasGutter>
         <GridItem>
           <FormGroup fieldId="passivation">
-          <Switch
-            aria-label="passivation"
-            data-cy="passivationSwitch"
-            id="passivation"
-            isChecked={passivation}
-            onChange={() => setPassivation(!passivation)}
-            label={t('caches.create.configurations.feature.passivation')}
-          />
-          <PopoverHelp
-            name={'passivation'}
-            label={t('caches.create.configurations.feature.passivation')}
-            content={t('caches.create.configurations.feature.passivation-tooltip', { brandname: brandname })}
-          />
+            <Switch
+              aria-label="passivation"
+              data-cy="passivationSwitch"
+              id="passivation"
+              isChecked={passivation}
+              onChange={() => setPassivation(!passivation)}
+              label={t('caches.create.configurations.feature.passivation')}
+            />
+            <PopoverHelp
+              name={'passivation'}
+              label={t('caches.create.configurations.feature.passivation')}
+              content={t('caches.create.configurations.feature.passivation-tooltip', { brandname: brandname })}
+            />
           </FormGroup>
         </GridItem>
         <GridItem span={4}>
@@ -230,12 +234,14 @@ const PersistentCacheConfigurator = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'connectionInterval'}
-                                    defaultValue={'50'}
-                                    value={connectionInterval}
-                                    valueModifier={setConnectionInterval}
-                                    unit={connectionIntervalUnit}
-                                    unitModifier={setConnectionIntervalUnit}/>
+            <TimeQuantityInputGroup
+              name={'connectionInterval'}
+              defaultValue={'50'}
+              value={connectionInterval}
+              valueModifier={setConnectionInterval}
+              unit={connectionIntervalUnit}
+              unitModifier={setConnectionIntervalUnit}
+            />
           </FormGroup>
         </GridItem>
         <GridItem span={4}>
@@ -253,12 +259,14 @@ const PersistentCacheConfigurator = () => {
               />
             }
           >
-            <TimeQuantityInputGroup name={'availabilityInterval'}
-                                    defaultValue={'1000'}
-                                    value={availabilityInterval}
-                                    valueModifier={setAvailabilityInterval}
-                                    unit={availabilityIntervalUnit}
-                                    unitModifier={setAvailabilityIntervalUnit}/>
+            <TimeQuantityInputGroup
+              name={'availabilityInterval'}
+              defaultValue={'1000'}
+              value={availabilityInterval}
+              valueModifier={setAvailabilityInterval}
+              unit={availabilityIntervalUnit}
+              unitModifier={setAvailabilityIntervalUnit}
+            />
           </FormGroup>
         </GridItem>
         <GridItem>
