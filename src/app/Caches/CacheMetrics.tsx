@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
+  Button,
+  ButtonVariant,
   Card,
   CardBody,
   CardTitle,
   EmptyState,
+  EmptyStateActions,
   EmptyStateBody,
+  EmptyStateFooter,
   EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
@@ -20,7 +24,7 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
-import { CubesIcon } from '@patternfly/react-icons';
+import { CubesIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
 import { DataDistributionChart } from './DataDistributionChart';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
@@ -32,32 +36,24 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { CacheLifecycle } from '@app/Caches/CacheLifecycle';
+import { global_danger_color_200 } from '@patternfly/react-tokens';
+import { Link } from 'react-router-dom';
 
 const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
+  const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
   const { cache, error, loading } = useCacheDetail();
   const [stats, setStats] = useState<CacheStats | undefined>(cache.stats);
-  const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(false);
-  const [displayDataDistribution, setDisplayDataDistribution] = useState<boolean>(false);
-  const [memory, setMemory] = useState<string | undefined>(undefined);
-  const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
-
-  useEffect(() => {
-    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      // Data distribution is for admin only
-      setDisplayDataDistribution(true);
-      const loadMemory = cache.memory;
-      if (loadMemory) {
-        setMemory(loadMemory.storage_type == 'OFF_HEAP' ? StorageType.OFF_HEAP : StorageType.HEAP);
-      } else {
-        setMemory(StorageType.HEAP);
-      }
+  const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(cache.queryable!);
+  const [displayDataDistribution, setDisplayDataDistribution] = useState<boolean>(
+    ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
+  );
+  const memory = () => {
+    if (cache.memory) {
+      return cache.memory.storage_type == 'OFF_HEAP' ? StorageType.OFF_HEAP : StorageType.HEAP;
     }
-
-    setStats(cache.stats);
-    setDisplayQueryStats(cache.queryable);
-  }, [cache, error]);
+    return StorageType.HEAP;
+  };
 
   const buildOperationsPerformanceCard = () => {
     if (!stats) {
@@ -180,7 +176,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       return '';
     }
     let content;
-    if (memory === StorageType.OFF_HEAP) {
+    if (memory() === StorageType.OFF_HEAP) {
       content = (
         <React.Fragment>
           <TextListItem aria-label="view-cache-metrics-off-heap" component={TextListItemVariants.dt}>
@@ -242,18 +238,59 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   };
 
   if (!props.display) {
-    return <span />;
+    return <></>;
   }
 
-  if (!stats || loading) {
-    return <Spinner size={'xl'} />;
+  if (loading && error.length == 0) {
+    return (
+      <Card>
+        <CardBody>
+          <EmptyState>
+            <EmptyStateHeader
+              titleText={t('common.loading')}
+              headingLevel="h4"
+              icon={<EmptyStateIcon icon={Spinner} />}
+            />
+          </EmptyState>
+        </CardBody>
+      </Card>
+    );
   }
 
-  if (!stats.enabled) {
+  if (error.length > 0) {
+    return (
+      <Card>
+        <CardBody>
+          <EmptyState variant={EmptyStateVariant.sm}>
+            <EmptyStateHeader
+              titleText={<>{`An error occurred while retrieving stats ${props.cacheName}`}</>}
+              icon={<EmptyStateIcon icon={ExclamationCircleIcon} color={global_danger_color_200.value} />}
+              headingLevel="h2"
+            />
+            <EmptyStateBody>{error}</EmptyStateBody>
+            <EmptyStateFooter>
+              <EmptyStateActions>
+                <Link
+                  to={{
+                    pathname: '/',
+                    search: location.search
+                  }}
+                >
+                  <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
+                </Link>
+              </EmptyStateActions>
+            </EmptyStateFooter>
+          </EmptyState>
+        </CardBody>
+      </Card>
+    );
+  }
+
+  if (stats && !stats.enabled) {
     return (
       <EmptyState variant={EmptyStateVariant.sm}>
         <EmptyStateHeader
-          titleText={<>{t('caches.cache-metrics.metrics-title')}</>}
+          titleText={t('caches.cache-metrics.metrics-title')}
           icon={<EmptyStateIcon icon={CubesIcon} />}
           headingLevel="h5"
         />
@@ -273,8 +310,8 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <GridItem span={4}>{buildOperationsPerformanceCard()}</GridItem>
       {displayDataDistribution && <GridItem span={8}> {buildDataDistribution()}</GridItem>}
       <GridItem span={4}>
-        <CacheLifecycle stats={stats} />
-        <DataAccess cacheName={props.cacheName} stats={stats} />
+        <CacheLifecycle stats={stats!} />
+        <DataAccess cacheName={props.cacheName} stats={stats!} />
       </GridItem>
       <GridItem span={displayDataDistribution ? 12 : 8}>{buildQueryStats()}</GridItem>
     </Grid>

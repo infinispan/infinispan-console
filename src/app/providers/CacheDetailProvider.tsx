@@ -70,23 +70,63 @@ const CacheDetailProvider = ({ children }) => {
                 if (eitherDetail.isRight()) {
                   setCache(eitherDetail.value);
                 } else {
-                  setError(eitherDetail.value.message);
+                  // Cache can be unhealthy but existing
+                  ConsoleServices.caches()
+                    .retrieveHealth(cacheName)
+                    .then((eitherHealth) => {
+                      if (eitherHealth.isRight()) {
+                        // We have the health. Get the config
+                        return ConsoleServices.caches()
+                          .retrieveConfig(cacheName)
+                          .then((eitherConfig) => {
+                            if (eitherConfig.isRight()) {
+                              const detail: DetailedInfinispanCache = {
+                                name: cacheName,
+                                configuration: eitherConfig.value,
+                                health: eitherHealth.value,
+                                started: false
+                              };
+                              setCache(detail);
+                              // we are good;
+                              return '';
+                            } else {
+                              // return the error
+                              return eitherConfig.value.message;
+                            }
+                          })
+                          .finally(() => {
+                            // loading is over here
+                            setLoading(false);
+                          });
+                        // we are good
+                        return '';
+                      } else {
+                        // return the error
+                        return eitherHealth.value.message;
+                      }
+                    })
+                    .then((error) => {
+                      if (error.length > 0) {
+                        setError(error);
+                        setLoading(false);
+                      }
+                    });
                 }
               })
               .finally(() => {
-                setLoading(false);
-                isEncodingAvailable(cache) && setLoadingEntries(true);
+                setLoadingEntries(isEncodingAvailable(cache));
               });
           } else {
             setError(maybeCm.value.message);
           }
-        });
+        })
+        .finally(() => setLoading(false));
     }
   };
 
   const fetchEntry = (keyToSearch: string, kct: ContentType) => {
     ConsoleServices.caches()
-      .getEntry(cacheName, cache.encoding, keyToSearch, kct)
+      .getEntry(cacheName, cache.encoding!, keyToSearch, kct)
       .then((response) => {
         let entries: CacheEntry[] = [];
         if (response.isRight()) {
@@ -103,7 +143,7 @@ const CacheDetailProvider = ({ children }) => {
       if (ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
         if (cache) {
           ConsoleServices.caches()
-            .getEntries(cacheName, cache.encoding, limit)
+            .getEntries(cacheName, cache.encoding!, limit)
             .then((eitherEntries) => {
               if (eitherEntries.isRight()) {
                 setCacheEntries(eitherEntries.value);
@@ -124,7 +164,7 @@ const CacheDetailProvider = ({ children }) => {
         }
       } else {
         setLoadingEntries(false);
-        setInfoEntries('Connected user lacks BULK_READ permission to browse the cache content.');
+        setInfoEntries('caches.entries.read-error');
       }
     }
   };

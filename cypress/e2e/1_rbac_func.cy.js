@@ -11,7 +11,7 @@ describe('RBAC Functionality Tests', () => {
     checkNotOwnSecuredCache('a-rbac-test-cache');
     checkNonSecuredCacheDetailView(true, false);
     checkMenu(false);
-    cy.login(monitorUserName, Cypress.env('password'), '/cache/default');
+    cy.login(monitorUserName, Cypress.env('password'), '/cache/indexed-cache');
     checkNoEntriesTabView(false);
     cy.login(monitorUserName, Cypress.env('password'), '/global-stats');
     checkGlobalStatsView(false)
@@ -36,7 +36,7 @@ describe('RBAC Functionality Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView();
-    cy.login(observerUserName, Cypress.env('password'), '/cache/default');
+    cy.login(observerUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(observerUserName, Cypress.env('password'), '/global-stats');
     checkGlobalStatsView(false)
@@ -55,7 +55,7 @@ describe('RBAC Functionality Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView();
-    cy.login(applicationUserName, Cypress.env('password'), '/cache/default');
+    cy.login(applicationUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(applicationUserName, Cypress.env('password'), '/global-stats');
     checkGlobalStatsView(false)
@@ -74,7 +74,7 @@ describe('RBAC Functionality Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(true);
     checkCountersPageView();
-    cy.login(deployerUserName, Cypress.env('password'), '/cache/default');
+    cy.login(deployerUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(deployerUserName, Cypress.env('password'), '/global-stats');
     checkGlobalStatsView(false)
@@ -94,7 +94,7 @@ describe('RBAC Functionality Tests', () => {
     checkSchemasPageView(true);
     checkCountersPageView();
     checkTasksPage();
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(true);
   });
 

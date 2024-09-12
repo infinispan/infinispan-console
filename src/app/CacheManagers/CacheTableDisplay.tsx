@@ -760,6 +760,18 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
     );
   };
 
+  if (loadingCaches) {
+    return (
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateHeader
+          titleText={<>{t('cache-managers.loading-caches')}</>}
+          icon={<EmptyStateIcon icon={Spinner} />}
+          headingLevel="h4"
+        />
+      </EmptyState>
+    );
+  }
+
   return (
     <React.Fragment>
       {!loadingCaches && !rowsLoading && caches.length == 0 ? (

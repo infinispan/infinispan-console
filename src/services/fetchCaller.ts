@@ -194,10 +194,10 @@ export class FetchCaller {
     if (text.includes("missing type id property '_type'")) {
       message = "You are trying to write a JSON key or value that needs '_type' field in this cache.";
     } else if (text.includes('Unknown type id : 5901')) {
-      message = 'This cache contains Spring Session entries that can not be read or edited from the Console.';
+      message = 'caches.entries.read-error-spring-session';
       success = true;
     } else if (text.includes('Unknown type id')) {
-      message = 'This cache contains entries that can not be read or edited from the Console.';
+      message = 'caches.entries.read-error-unknown-type';
       success = true;
     } else if (text != '') {
       message = errorMessage + '\n' + text;

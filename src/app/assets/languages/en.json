@@ -11,6 +11,7 @@
     "security-realms-docs-link": "https://infinispan.org/docs/stable/titles/security/security.html#security-realms"
   },
   "common": {
+    "loading": "Loading...",
     "actions": {
       "actions": "Actions",
       "refresh": "Refresh",
@@ -575,6 +576,9 @@
       "back": "Back"
     },
     "entries": {
+      "read-error": "Connected user lacks BULK_READ permission to browse the cache content.",
+      "read-error-unknown-type": "This cache contains entries that can not be read or edited from the Console.",
+      "read-error-spring-session": "This cache contains Spring Session entries that can not be read or edited from the Console.",
       "action-edit": "Edit",
       "action-delete": "Delete",
       "action-enter": "Enter",
