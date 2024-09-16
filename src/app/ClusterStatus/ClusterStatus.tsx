@@ -128,7 +128,7 @@ const ClusterStatus = () => {
 
   const searchInput = (
     <SearchInput
-      placeholder={t('cache-managers.cache-search')}
+      placeholder={t('cluster-membership.node-search')}
       value={searchValue}
       onChange={(_event, val) => setSearchValue(val)}
       onClear={() => setSearchValue('')}

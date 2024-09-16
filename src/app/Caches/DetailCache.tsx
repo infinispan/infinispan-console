@@ -48,6 +48,7 @@ import {
   global_BackgroundColor_100,
   global_danger_color_200,
   global_info_color_200,
+  global_spacer_xs,
   global_warning_color_100
 } from '@patternfly/react-tokens';
 import { ExclamationCircleIcon, InfoCircleIcon, InfoIcon, RedoIcon } from '@patternfly/react-icons';
@@ -349,11 +350,30 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
+  const buildAliasesChips = () => {
+    if (!cache?.aliases || cache?.aliases?.length == 0) return;
+
+    return (
+      <React.Fragment>
+        <ToolbarItem>
+          <LabelGroup categoryName={t('caches.info.aliases')} numLabels={8}>
+            {cache.aliases.map((feature) => (
+              <Label isCompact key={feature}>
+                {feature}
+              </Label>
+            ))}
+          </LabelGroup>
+        </ToolbarItem>
+      </React.Fragment>
+    );
+  };
+
   const buildShowMorePanel = () => {
     return (
       <Toolbar id="cache-header-actions">
         <ToolbarContent>
           <ToolbarGroup>
+            {buildAliasesChips()}
             {cacheManager.tracing_enabled && (
               <React.Fragment>
                 <ToolbarItem>

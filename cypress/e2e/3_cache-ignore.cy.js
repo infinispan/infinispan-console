@@ -1,4 +1,4 @@
-describe('Data Container Caches list', () => {
+describe('Data Container Caches', () => {
   beforeEach(() => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
   });

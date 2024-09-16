@@ -122,6 +122,7 @@ export class ContainerService {
               status: cacheInfo.status,
               type: CacheConfigUtils.mapCacheType(cacheInfo.type),
               simpleCache: cacheInfo.simpleCache,
+              aliases: cacheInfo.aliases,
               features: <Features>{
                 transactional: cacheInfo.transactional,
                 persistent: cacheInfo.persistent,

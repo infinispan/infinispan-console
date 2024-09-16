@@ -90,6 +90,7 @@ interface CacheInfo {
   features: Features;
   rebalancing_enabled?: boolean;
   tracing: boolean;
+  aliases: string[];
 }
 
 interface CacheEntry {
@@ -140,6 +141,7 @@ interface DetailedInfinispanCache {
   memory?: CacheMemory;
   async?: boolean;
   tracing?: boolean;
+  aliases?: string[];
 }
 
 interface CacheMemory {

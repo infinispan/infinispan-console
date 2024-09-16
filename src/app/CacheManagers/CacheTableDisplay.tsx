@@ -72,7 +72,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
   const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
   const { setBanner } = useBanner();
-  const { caches, errorCaches, loadingCaches } = useCaches();
+  const { caches, errorCaches, loadingCaches, reloadCaches } = useCaches();
   const { cm } = useDataContainer();
 
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
@@ -160,11 +160,22 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
   }, [rows]);
 
   useEffect(() => {
-    setFilteredCaches(caches.filter((cache) => onSearch(searchValue, cache.name)).filter(onFilter));
+    setFilteredCaches(
+      caches
+        .filter(
+          (cache) =>
+            // on cache name
+            onSearch(searchValue, cache.name) ||
+            // on aliases
+            cache.aliases.map((alias) => onSearch(searchValue, alias)).filter((r) => r).length > 0
+        )
+        .filter(onFilter)
+    );
   }, [searchValue, selectedCacheFeature, selectedCacheType, selectedCacheStatus]);
 
   const columnNames = {
     name: t('cache-managers.cache-name'),
+    aliases: t('cache-managers.cache-aliases'),
     mode: t('cache-managers.cache-mode'),
     health: t('cache-managers.cache-health'),
     features: t('cache-managers.cache-features'),
@@ -329,6 +340,27 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
       >
         {cacheDetailAccess}
       </Link>
+    );
+  };
+
+  const displayCacheAliases = (cacheInfo: CacheInfo) => {
+    if (cacheInfo.aliases.length == 0) {
+      return (
+        <TextContent>
+          <Text component={TextVariants.small} data-cy={`alias-none`}>
+            {t('cache-managers.aliases-none')}
+          </Text>
+        </TextContent>
+      );
+    }
+    return (
+      <LabelGroup>
+        {cacheInfo.aliases.map((alias) => (
+          <Label data-cy={`alias-${alias}`} isCompact>
+            {alias}
+          </Label>
+        ))}
+      </LabelGroup>
     );
   };
 
@@ -798,6 +830,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
               <Thead>
                 <Tr>
                   <Th colSpan={1}>{columnNames.name}</Th>
+                  <Th colSpan={1}>{columnNames.aliases}</Th>
                   <Th colSpan={1}>{columnNames.mode}</Th>
                   <Th colSpan={1}>{columnNames.health}</Th>
                   <Th colSpan={1}>{columnNames.features}</Th>
@@ -814,6 +847,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
                     return (
                       <Tr key={row.name}>
                         <Td dataLabel={columnNames.name}>{displayCacheName(row)}</Td>
+                        <Td dataLabel={columnNames.aliases}>{displayCacheAliases(row)}</Td>
                         <Td dataLabel={columnNames.mode}>{displayCacheType(row.type)}</Td>
                         <Td dataLabel={columnNames.health}>{displayCacheHealth(row.health)}</Td>
                         <Td dataLabel={columnNames.features}>{displayCacheFeatures(row)}</Td>
@@ -851,7 +885,10 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
             <UpdateAliasCache
               cacheName={cacheAction.cacheName}
               isModalOpen={cacheAction.action == 'aliases'}
-              closeModal={() => setCacheAction({ cacheName: '', action: '' })}
+              closeModal={() => {
+                setCacheAction({ cacheName: '', action: '' });
+                reloadCaches();
+              }}
             />
           </CardBody>
         </Card>

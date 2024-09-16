@@ -96,6 +96,7 @@
     "schemas-tab": "Schemas",
     "cache-table-label": "Caches",
     "cache-name": "Name",
+    "cache-aliases": "Aliases",
     "cache-mode": "Type",
     "cache-health": "Health",
     "cache-features": "Features",
@@ -106,8 +107,9 @@
     "ignored-status": "Hidden",
     "delete": "Delete",
     "available": "Make available",
+    "aliases-none": "None",
     "clear-all-button": "Clear all",
-    "cache-search": "Search by cache name",
+    "cache-search": "Search by cache name or cache alias",
     "loading-caches": "Loading caches",
     "no-caches-status": "No caches",
     "no-caches-body": "Click \"Create a cache\" and provide configuration in XML, JSON, or YAML format or use a custom template. You can also create caches from the CLI and remote clients.",
@@ -574,7 +576,8 @@
       "breadcrumb": "Detail of cache {{cacheName}}",
       "loading": "Loading cache {{cacheName}} ...",
       "error": "An error occurred while loading {{cacheName}}",
-      "features": "Features"
+      "features": "Features",
+      "aliases": "Aliases"
     },
     "actions": {
       "action-manage-indexes": "Manage indexes",
@@ -936,7 +939,8 @@
     "downloading": "Downloading",
     "empty-cluster": "This cluster is empty",
     "no-cluster-title": "No cluster members",
-    "no-cluster-body": "Add nodes to create a cluster."
+    "no-cluster-body": "Add nodes to create a cluster.",
+    "node-search": "Search by node name"
   },
   "connected-clients": {
     "title": "Connected clients",
