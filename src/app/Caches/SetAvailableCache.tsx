@@ -13,7 +13,6 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
   const { onSetAvailable } = useSetAvailableCache(props.cacheName);
 
   const { t } = useTranslation();
-  const brandname = t('brandname.brandname');
 
   const clearSetAvailableCacheModal = (setAvailableDone: boolean) => {
     props.closeModal(setAvailableDone);

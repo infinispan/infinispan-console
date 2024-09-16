@@ -93,6 +93,7 @@ export class CacheService {
         rehash_in_progress: data['rehash_in_progress'],
         indexing_in_progress: data['indexing_in_progress'],
         rebalancing_enabled: data['rebalancing_enabled'],
+        aliases: data.aliases,
         editable:
           data.indexed ||
           (CacheConfigUtils.isEditable(keyValueEncoding.key as EncodingType) &&

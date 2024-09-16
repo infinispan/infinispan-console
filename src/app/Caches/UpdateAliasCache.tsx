@@ -9,7 +9,6 @@ import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
  */
 const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { loading, setLoading, error, aliases, setAliases, update } = useCacheAliases(props.cacheName);
-
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -69,8 +68,8 @@ const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; clos
 
   return (
     <Modal
-      data-cy={`updateAliasCacheModal`}
-      id="updateAliasCacheModal"
+      data-cy={`updateAliasesCacheModal`}
+      id="updateAliasesCacheModal"
       titleIconVariant={'warning'}
       width={'70%'}
       isOpen={props.isModalOpen}
@@ -88,7 +87,7 @@ const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; clos
           {t('common.actions.update')}
         </Button>,
         <Button
-          aria-label="Close"
+          aria-label="CloseAction"
           key="close"
           variant="link"
           onClick={() => clearUpdateAliasesModal(false)}

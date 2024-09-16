@@ -5,7 +5,7 @@ import { RoleFilterOption } from '@services/infinispanRefData';
  * @param value - value to search
  * @param listItem - item to search from
  */
-export const onSearch = (value: string, listItem: string) => {
+export const onSearch = (value: string, listItem: string): boolean => {
   let searchValueInput: RegExp;
   try {
     searchValueInput = new RegExp(value, 'i');

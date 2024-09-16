@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { formatXml } from '@app/utils/dataSerializerUtils';
 import { useApiAlert } from '@utils/useApiAlert';
+import { useCaches } from '@app/services/dataContainerHooks';
 
 export function useFetchTracingConfig(cacheName: string) {
   const { addAlert } = useApiAlert();
@@ -86,6 +87,7 @@ export function useFetchTracingConfig(cacheName: string) {
 
 export function useCacheAliases(cacheName: string) {
   const { addAlert } = useApiAlert();
+  const { reloadCaches } = useCaches();
   const [aliases, setAliases] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
