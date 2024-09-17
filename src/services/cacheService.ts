@@ -505,14 +505,16 @@ export class CacheService {
    * @param configAttributeValue
    */
   public async setConfigAttribute(cacheName: string, configAttribute: string, value: string): Promise<ActionResponse> {
-    const url =
+    let url =
       this.endpoint +
       '/caches/' +
       encodeURIComponent(cacheName) +
       '?action=set-mutable-attribute&attribute-name=' +
       configAttribute +
-      '&attribute-value=' +
-      encodeURIComponent(value);
+      '&attribute-value=';
+    if (value.length > 0) {
+      url = url + encodeURIComponent(value);
+    }
     return this.fetchCaller.post({
       url: url,
       successMessage: `Cache ${cacheName} successfully updated.`,
