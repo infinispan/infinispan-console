@@ -21,7 +21,8 @@
       "delete": "Delete",
       "remove": "Remove",
       "clear": "Clear",
-      "update": "Update"
+      "update": "Update",
+      "close": "Close"
     },
     "loading-empty-message": "No result found.",
     "loading-error-message": "There was an error retrieving data. Check your connection and try again.",
@@ -99,6 +100,7 @@
     "cache-health": "Health",
     "cache-features": "Features",
     "cache-status": "",
+    "update-aliases": "Edit aliases",
     "ignore": "Hide",
     "undo-ignore": "Show",
     "ignored-status": "Hidden",
@@ -213,6 +215,12 @@
       "getting-started": {
         "cache-setup-title": "Select a way to configure your cache"
       }
+    },
+    "aliases": {
+      "title": "Update aliases of cache \"{{cacheName}}\"?",
+      "body1": "Add cache aliases to access \"{{cacheName}}\" using different names.",
+      "body2": "If you remove existing cache aliases, the old alias will no longer access the \"{{cacheName}}\" cache. You can always add aliases after.",
+      "values": "Aliases"
     },
     "delete": {
       "title": "Permanently delete cache?",

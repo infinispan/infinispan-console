@@ -61,10 +61,11 @@ import { onSearch } from '@app/utils/searchFilter';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
+import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 
 interface CacheAction {
   cacheName: string;
-  action: '' | 'ignore' | 'undo' | 'delete' | 'available';
+  action: '' | 'ignore' | 'undo' | 'delete' | 'available' | 'aliases';
 }
 
 const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isVisible: boolean }) => {
@@ -188,6 +189,13 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
     setCacheAction({
       cacheName: cacheName,
       action: ignored ? 'undo' : 'ignore'
+    });
+  };
+
+  const openUpdateAliasesCacheModal = (cacheName: string) => {
+    setCacheAction({
+      cacheName: cacheName,
+      action: 'aliases'
     });
   };
 
@@ -405,6 +413,12 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
     let actions: IAction[] = [];
 
     if (isAdmin) {
+      actions.push({
+        'aria-label': 'updateAliasesCacheAction',
+        title: t('cache-managers.update-aliases'),
+        onClick: () => openUpdateAliasesCacheModal(cacheName)
+      });
+
       actions.push({
         'aria-label': 'ignoreCacheAction',
         title: t('cache-managers.ignore'),
@@ -832,6 +846,11 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
             <SetAvailableCache
               cacheName={cacheAction.cacheName}
               isModalOpen={cacheAction.action == 'available'}
+              closeModal={() => setCacheAction({ cacheName: '', action: '' })}
+            />
+            <UpdateAliasCache
+              cacheName={cacheAction.cacheName}
+              isModalOpen={cacheAction.action == 'aliases'}
               closeModal={() => setCacheAction({ cacheName: '', action: '' })}
             />
           </CardBody>

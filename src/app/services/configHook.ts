@@ -21,6 +21,9 @@ export function useFetchTracingConfig(cacheName: string) {
   const parseCategories = (value: string): string[] => {
     try {
       const parsed: string = JSON.parse(value);
+      if (parsed === '[]') {
+        return [];
+      }
       return parsed.replace('[', '').replace(']', '').split(', ');
     } catch {
       return [];
@@ -33,7 +36,7 @@ export function useFetchTracingConfig(cacheName: string) {
       .then((actionResponse) => {
         if (tracingCategories.length > 0) {
           ConsoleServices.caches()
-            .setConfigAttribute(cacheName, 'tracing.categories', tracingCategories.toString())
+            .setConfigAttribute(cacheName, 'tracing.categories', tracingCategories.join(' '))
             .then((actionResponse) => {
               addAlert(actionResponse);
             });
@@ -79,6 +82,58 @@ export function useFetchTracingConfig(cacheName: string) {
   }, [tracingEnabled]);
 
   return { loading, error, tracingEnabled, tracingCategories, setTracingEnabled, setTracingCategories, update };
+}
+
+export function useCacheAliases(cacheName: string) {
+  const { addAlert } = useApiAlert();
+  const [aliases, setAliases] = useState<string[]>([]);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const update = (cacheName: string) => {
+    const newAliases = aliases.join(' ');
+    ConsoleServices.caches()
+      .setConfigAttribute(cacheName, 'aliases', newAliases)
+      .then((actionResponse) => {
+        if (actionResponse.success) {
+          addAlert(actionResponse);
+        } else {
+          setError(actionResponse.message);
+        }
+      });
+  };
+
+  const parseAliases = (value: string): string[] => {
+    try {
+      const parsed: string = JSON.parse(value);
+      if (parsed === '[]') {
+        return [];
+      }
+      return parsed.replace('[', '').replace(']', '').split(', ');
+    } catch {
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    if (loading) {
+      setError('');
+      ConsoleServices.caches()
+        .getConfigAttribute(cacheName, 'aliases')
+        .then((r) => {
+          if (r.isRight()) {
+            setAliases(parseAliases(r.value));
+          } else {
+            setError(r.value.message);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [loading]);
+
+  return { loading, setLoading, error, aliases, setAliases, update };
 }
 
 export function useFetchConfigurationYAML(cacheName: string) {
