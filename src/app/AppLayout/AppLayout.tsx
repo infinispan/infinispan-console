@@ -186,7 +186,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
               >
                 {t('layout.documentation-name')}
               </DropdownItem>
-              ,
               <DropdownItem onClick={() => setIsAboutOpen(!isAboutOpen)} key="about" component="button">
                 {t('layout.about-name')}
               </DropdownItem>
