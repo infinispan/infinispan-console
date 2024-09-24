@@ -18,7 +18,6 @@ import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import { useDataContainer } from '@app/services/dataContainerHooks';
 
-
 const FeaturesSelector = () => {
   const { t } = useTranslation();
   const { notSecured, connectedUser } = useConnectedUser();

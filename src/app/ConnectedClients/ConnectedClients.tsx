@@ -29,7 +29,12 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
   ToolbarGroup,
-  EmptyStateHeader, Dropdown, MenuToggleElement, MenuToggle, DropdownList, DropdownItem
+  EmptyStateHeader,
+  Dropdown,
+  MenuToggleElement,
+  MenuToggle,
+  DropdownList,
+  DropdownItem
 } from '@patternfly/react-core';
 import { CubesIcon, SearchIcon, InfoCircleIcon, RedoIcon } from '@patternfly/react-icons';
 import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
@@ -241,13 +246,17 @@ const ConnectedClients = () => {
         <DescriptionListGroup>
           <DescriptionListTerm>{t('connected-clients.client-version')}</DescriptionListTerm>
           <DescriptionListDescription>
-            <Label color="blue">{row['client-version'] == null? t('connected-clients.null') : row['client-version']}</Label>
+            <Label color="blue">
+              {row['client-version'] == null ? t('connected-clients.null') : row['client-version']}
+            </Label>
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>{t('connected-clients.local-address')}</DescriptionListTerm>
           <DescriptionListDescription>
-            <Label color="blue">{row['local-address'] == null? t('connected-clients.null') : row['local-address']}</Label>
+            <Label color="blue">
+              {row['local-address'] == null ? t('connected-clients.null') : row['local-address']}
+            </Label>
           </DescriptionListDescription>
         </DescriptionListGroup>
       </DescriptionList>
@@ -289,11 +298,9 @@ const ConnectedClients = () => {
     if (connectedClients.length === 0) {
       return (
         <Card>
-          <CardBody>
-            {emptyPage}
-          </CardBody>
+          <CardBody>{emptyPage}</CardBody>
         </Card>
-      )
+      );
     }
 
     return (
@@ -365,8 +372,8 @@ const ConnectedClients = () => {
           </Toolbar>
         </CardBody>
       </Card>
-    )
-  }
+    );
+  };
 
   const displayActions = (
     <ToolbarGroup align={{ default: 'alignRight' }}>
@@ -384,7 +391,13 @@ const ConnectedClients = () => {
           shouldFocusToggleOnSelect
         >
           <DropdownList>
-            <DropdownItem value={0} key="refreshAction" data-cy="refreshAction" onClick={() => setLoading(true)} icon={<RedoIcon />}>
+            <DropdownItem
+              value={0}
+              key="refreshAction"
+              data-cy="refreshAction"
+              onClick={() => setLoading(true)}
+              icon={<RedoIcon />}
+            >
               {t('common.actions.refresh')}
             </DropdownItem>
           </DropdownList>

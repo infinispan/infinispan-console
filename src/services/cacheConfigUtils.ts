@@ -77,30 +77,6 @@ export class CacheConfigUtils {
   }
 
   /**
-   * Map cache name from cache mode
-   * @param mode or cache type name
-   */
-  public static mapCacheTypeFromCacheMode(mode: string): string {
-    if (mode.includes('DIST')) {
-      return 'Distributed';
-    }
-
-    if (mode.includes('REPL')) {
-      return 'Replicated';
-    }
-
-    if (mode.includes('LOCAL')) {
-      return 'Local';
-    }
-
-    if (mode.includes('INVALIDATION')) {
-      return 'Invalidated';
-    }
-
-    return 'Unknown';
-  }
-
-  /**
    * Map cache name from json configuration or from the label in the conf
    * @param config or cache type name
    */
@@ -142,6 +118,34 @@ export class CacheConfigUtils {
       encoding != EncodingType.Unknown &&
       encoding != EncodingType.JavaSerialized &&
       encoding != EncodingType.Octet
+    );
+  }
+
+  /**
+   * Retrieve if an encoding can display entries
+   *
+   * @param encoding
+   */
+  public static canUpdateEntries(encoding: EncodingType): boolean {
+    return (
+      encoding == EncodingType.Text ||
+      encoding == EncodingType.JSON ||
+      encoding == EncodingType.XML ||
+      encoding == EncodingType.Protobuf
+    );
+  }
+
+  /**
+   * Retrieve if an encoding can display entries
+   *
+   * @param encoding
+   */
+  public static canDeleteEntries(encoding: EncodingType): boolean {
+    return (
+      encoding == EncodingType.Text ||
+      encoding == EncodingType.JSON ||
+      encoding == EncodingType.XML ||
+      encoding == EncodingType.Protobuf
     );
   }
 

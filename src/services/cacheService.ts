@@ -20,6 +20,36 @@ export class CacheService {
   }
 
   /**
+   * Retrieve cache health
+   *
+   * @param cacheName
+   */
+  public retrieveHealth(cacheName: string): Promise<Either<ActionResponse, string>> {
+    return this.fetchCaller.get(
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=health',
+      (data) => data,
+      undefined,
+      true
+    );
+  }
+
+  /**
+   * Retrieve cache config
+   *
+   * @param cacheName
+   */
+  public retrieveConfig(cacheName: string): Promise<Either<ActionResponse, CacheConfig>> {
+    return this.fetchCaller.get(
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=config',
+      (data) =>
+        <CacheConfig>{
+          name: cacheName,
+          config: JSON.stringify(data, null, 2)
+        }
+    );
+  }
+
+  /**
    * Retrieves all the properties to be displayed in the cache detail in a single rest call
    *
    * @param cacheName
@@ -67,6 +97,8 @@ export class CacheService {
           data.indexed ||
           (CacheConfigUtils.isEditable(keyValueEncoding.key as EncodingType) &&
             CacheConfigUtils.isEditable(keyValueEncoding.value as EncodingType)),
+        updateEntry: CacheConfigUtils.canUpdateEntries(keyValueEncoding.key as EncodingType),
+        deleteEntry: CacheConfigUtils.canDeleteEntries(keyValueEncoding.key as EncodingType),
         queryable: data.queryable,
         features: <Features>{
           bounded: data.bounded,
