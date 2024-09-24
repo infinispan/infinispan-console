@@ -49,8 +49,10 @@ const SelectMultiWithChips = (props: {
       );
 
       // When no options are found after filtering, display creation option
-      if (!newSelectOptions.length) {
-        newSelectOptions = [{ isDisabled: false, children: `Create new option "${inputValue}"`, value: 'create' }];
+      if (!newSelectOptions.length && props.create) {
+        newSelectOptions = [{ isDisabled: false, children: `Create "${inputValue}"`, value: 'create' }];
+      } else if (!newSelectOptions.length) {
+        newSelectOptions = [{ isDisabled: false, children: 'no results', value: 'no results' }];
       }
 
       // Open the menu when the input value changes and the new value is not empty
@@ -104,6 +106,7 @@ const SelectMultiWithChips = (props: {
           setIsOpen((prevIsOpen) => !prevIsOpen);
         } else if (isOpen && focusedItem.value !== 'no results') {
           onSelect(focusedItem.value as string);
+          setInputValue('');
         }
         break;
       case 'Tab':
