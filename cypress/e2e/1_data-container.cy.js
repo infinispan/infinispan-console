@@ -9,6 +9,7 @@ describe('Data Container Overview', () => {
   it('successfully loads Data Container Overview', () => {
     cy.contains('Data container');
     cy.contains('Running'); // cluster status
+    cy.contains('Tracing is enabled');
     cy.contains('Cluster rebalancing on'); // rebalancing status
     cy.get('#cluster-manager-header').should('exist');
     cy.get('[data-cy=cacheManagerStatus]').should('exist');

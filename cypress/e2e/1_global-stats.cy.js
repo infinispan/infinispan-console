@@ -37,8 +37,25 @@ describe('Global stats', () => {
     cy.get('[data-cy="clearAccessMetricsButton"]').click();
     cy.contains('Permanently clear global metrics?');
     cy.get('[data-cy="confirmButton"]').click();
+    cy.contains('Global metrics cleared');
     cy.get('[data-cy="globalStatsActions"]').click();
-    cy.get('[data-cy="refreshAction"]').click();
+    
+    //Comparing the value of the start time before and after refresh to make sure that refresh takes place
+    cy.get('[data-cy=cacheManagerStartTime]').then(($field) => {
+      const timeTextBefore = $field.text();
+      //Wait for a few seconds before refresh
+      cy.wait(2000);
+
+      //Refreshing the stat page
+      cy.get('[data-cy="refreshAction"]').click();
+
+      cy.get('[data-cy=cacheManagerStartTime]').then(($field) => {
+        const timeTextAfter = $field.text();
+        if (timeTextBefore === timeTextAfter) {
+          throw new Error("The page was not refreshed properly.")
+        }
+      });
+    });
   });
 
 });
