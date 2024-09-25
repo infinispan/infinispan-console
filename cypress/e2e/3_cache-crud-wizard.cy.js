@@ -105,6 +105,9 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=option-typeahead-persistence]').click();
     cy.get('[data-cy=menu-toogle-categorySelector]').click();
 
+    //Filling alias 
+    cy.get('[data-cy=menu-toogle-aliasesSelector]').click().type('securedAlias').type('{enter}');
+
     // Next
     cy.get('[data-cy=wizardNextButton]').click();
 
@@ -136,6 +139,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=cacheManagerStatus]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('asuper-cache');
+    cy.contains('securedAlias');
     cy.get('[data-cy=feature-asuper-cache]').contains('Bounded');
     cy.get('[data-cy=feature-asuper-cache]').contains('Indexed');
     cy.get('[data-cy=feature-asuper-cache]').contains('Secured');
@@ -179,10 +183,14 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.get('[data-cy=provideConfigArea] > button').click();
 
-    cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
-      .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-      .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-      .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}").type('"distributed-cache": {{}"mode": "ASYNC", "statistics": true }{del}');
+    if (Cypress.browser.name === "firefox") {
+      //At the moment do nothing as the proper command for editing the config is not found yet
+    } else {
+      cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
+        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
+        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
+        .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}").type('"distributed-cache": {{}"mode": "ASYNC", "statistics": true }{del}');
+    }
 
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleCache created with the provided configuration.');
@@ -203,17 +211,21 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.get('[data-cy=provideConfigArea] > button').click();
 
-    cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
-      .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-      .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-      .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}")
-      .type(
-        '<local-cache name="local">\
-        <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
-        <memory storage="OFF_HEAP" max-size="200 MB" when-full="MANUAL" />\
-    </local-cache>',
-        { parseSpecialCharSequences: false }
-      ).type("{del}{del}").type("{upArrow}{backspace}");
+    if (Cypress.browser.name === "firefox") {
+      //At the moment do nothing as the proper command for editing the config is not found yet
+    } else {
+      cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
+        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
+        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
+        .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}")
+        .type(
+          '<local-cache name="local">\
+          <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
+          <memory storage="OFF_HEAP" max-size="200 MB" when-full="MANUAL" />\
+      </local-cache>',
+          { parseSpecialCharSequences: false }
+        ).type("{del}{del}").type("{upArrow}{backspace}");
+    }
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleXmlCache created with the provided configuration.');
     // Once the cache created, redirection to main page is done and the cache should be visible
