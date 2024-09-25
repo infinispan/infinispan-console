@@ -35,7 +35,7 @@ describe('RBAC Functionality Tests', () => {
     checkNonSecuredCacheDetailView(false, false);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
-    checkCountersPageView();
+    checkCountersPageView(false);
     cy.login(observerUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(observerUserName, Cypress.env('password'), '/global-stats');
@@ -54,7 +54,7 @@ describe('RBAC Functionality Tests', () => {
     checkNonSecuredCacheDetailView(false, false);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
-    checkCountersPageView();
+    checkCountersPageView(false);
     cy.login(applicationUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(applicationUserName, Cypress.env('password'), '/global-stats');
@@ -73,7 +73,7 @@ describe('RBAC Functionality Tests', () => {
     checkNonSecuredCacheDetailView(false, false);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(true);
-    checkCountersPageView();
+    checkCountersPageView(false);
     cy.login(deployerUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(deployerUserName, Cypress.env('password'), '/global-stats');
@@ -92,7 +92,7 @@ describe('RBAC Functionality Tests', () => {
     checkNonSecuredCacheDetailView(false, true);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(true);
-    checkCountersPageView();
+    checkCountersPageView(true);
     checkTasksPage();
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(true);
@@ -114,7 +114,7 @@ describe('RBAC Functionality Tests', () => {
   function checkDataContainerView(isMonitor, isDeployer, isAdmin, isSuperAdmin) {
     //Checking Data Container view
     cy.contains('Data container'); // cluster name
-    cy.contains('Running'); // cluster status
+    cy.contains('Tracing is enabled'); // Tracing enabled
     if (isSuperAdmin) {
       cy.get('[data-cy=rebalancingSwitch]').should('exist'); // rebalancing status
     } else {
@@ -190,6 +190,13 @@ describe('RBAC Functionality Tests', () => {
     }
 
     cy.get('[data-cy=detailCacheActions]').click();
+    if(isSuperAdmin) {
+      cy.get('[data-cy=manageTracingLink]').should('exist');
+    } else {
+      //@TODO uncomment when ISPN-16622 is fixed.
+      //cy.get('[data-cy=manageTracingLink]').should('not.exist');
+    }
+
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
       cy.get('[data-cy=clearIndexButton]').should('exist');
@@ -328,17 +335,46 @@ describe('RBAC Functionality Tests', () => {
     }
   }
 
-  function checkCountersPageView() {
+  function checkCountersPageView(isSuperAdmin) {
     //Checking counters page
     cy.get('a[aria-label="nav-item-Counters"]').click();
     cy.contains('strong-1');
-    // cy.get('#counterFilterSelect').should('exist');
-    // cy.contains('td', 'strong-1').parent()
-    //   .within($tr => {
-    //     cy.get('td button').should('exist');
-    //     cy.get('td button').click();
-    //     cy.get('[data-cy=deleteCounter]').should('exist');
-    //   });
+    cy.get('body').then(($body) => {
+      if ($body.find('button[aria-label="Show Filters"]').length) {
+        cy.get('button[aria-label="Show Filters"]').click();
+      }
+    })
+    
+    cy.get('[data-cy=counterFilterSelectExpanded]').should('exist');
+    //Checking delete counter functionality
+    cy.contains('td', 'strong-1').parent()
+      .within($tr => {
+        cy.get('td button').should('exist');
+        cy.get('td button').click();
+        cy.get('[aria-label="deleteCounter"]').should('exist');
+        cy.get('[aria-label="deleteCounter"]').click();
+    });
+    cy.get('[data-cy="deleteCounterButton"]').should('exist');
+    if (isSuperAdmin) {
+      cy.get('[data-cy="deleteCounterButton"]').should('not.be.disabled');
+    } else {
+      cy.get('[data-cy="deleteCounterButton"]').should('be.disabled');
+    }
+    cy.get('[data-cy="cancelCounterDeleteButton"]').click();
+    //Checking edit for counter functionality
+    cy.contains('td', 'strong-1').parent()
+    .within($tr => {
+      cy.get('td button').should('exist');
+      cy.get('td button').click();
+      cy.get('[aria-label="setCounterAction"]').should('exist');
+      cy.get('[aria-label="setCounterAction"]').click();
+    });
+    cy.get('[data-cy="confirmSetbutton"]').should('exist');
+    cy.get('[data-cy="confirmSetbutton"]').should('not.be.disabled');
+    cy.get('[data-cy="cancelSetButton"]').click();
+    if (isSuperAdmin) {
+      cy.get('[data-cy="createCounterButton"]').should('exist');
+    }
   }
 
   function checkActionsOnSuperCache() {
