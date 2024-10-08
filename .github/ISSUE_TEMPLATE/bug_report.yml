@@ -59,17 +59,9 @@ body:
     attributes:
       label: Output of `uname -a` or `ver`
   - type: input
-    id: java_version
-    attributes:
-      label:  Output of `java -version`
-  - type: input
-    id: quarkus_version
+    id: infinispan_version
     attributes:
       label:  Infinispan version or git rev
-  - type: input
-    id: build_tool
-    attributes:
-      label:  Build tool (ie. output of `mvnw --version` or `gradlew --version`)
   - type: textarea
     id: additional_info
     attributes:
