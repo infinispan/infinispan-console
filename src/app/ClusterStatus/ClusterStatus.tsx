@@ -223,6 +223,7 @@ const ClusterStatus = () => {
                       <Td dataLabel={columnNames.physicalAdd}>{row.physical_address}</Td>
                       <Td dataLabel={columnNames.physicalAdd}>
                         <Button
+                          data-cy="downloadReportLink"
                           variant="link"
                           isInline
                           isLoading={isDownloading}
