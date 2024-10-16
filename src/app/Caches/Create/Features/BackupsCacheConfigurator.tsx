@@ -20,11 +20,13 @@ import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { SelectSingle } from '@app/Common/SelectSingle';
+import { useDataContainer } from '@app/services/dataContainerHooks';
 
-const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
-  const { configuration, setConfiguration } = useCreateCache();
+const BackupsCacheConfigurator = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
+  const { cm, loading } = useDataContainer();
+  const { configuration, setConfiguration } = useCreateCache();
 
   const [enableBackupFor, setEnableBackupFor] = useState(configuration.feature.backupsCache.backupFor.enabled);
   const [remoteCache, setRemoteCache] = useState(configuration.feature.backupsCache.backupFor.remoteCache!);
@@ -73,7 +75,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
   }, [sites, remoteCache, remoteSite, enableBackupFor]);
 
   const backupsFeatureValidation = (): boolean => {
-    if (!props.isEnabled) {
+    if (cm && !cm.backups_enabled) {
       return false;
     }
 
@@ -176,8 +178,8 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
                 name={index.toString()}
                 id={`async-${index}`}
                 onChange={() => {
-                  (site.siteStrategy = BackupSiteStrategy.ASYNC),
-                    setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip)));
+                  site.siteStrategy = BackupSiteStrategy.ASYNC;
+                  setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip)));
                 }}
                 isChecked={site.siteStrategy === 'ASYNC'}
                 label={t('caches.create.configurations.feature.strategy-async')}
@@ -186,8 +188,8 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
                 name={index.toString()}
                 id={`sync-${index}`}
                 onChange={() => {
-                  (site.siteStrategy = BackupSiteStrategy.SYNC),
-                    setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip)));
+                  site.siteStrategy = BackupSiteStrategy.SYNC;
+                  setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip)));
                 }}
                 isChecked={site.siteStrategy === 'SYNC'}
                 label={t('caches.create.configurations.feature.strategy-sync')}
@@ -265,7 +267,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
     );
   };
 
-  if (!props.isEnabled) {
+  if (!loading && !cm.backups_enabled) {
     return <FeatureAlert feature={CacheFeature.BACKUPS} />;
   }
 
