@@ -26,15 +26,6 @@ const FeaturesSelector = () => {
 
   const brandname = t('brandname.brandname');
 
-  const { cm, loading } = useDataContainer();
-  const [isBackups, setIsBackups] = useState(false);
-
-  useEffect(() => {
-    if (!loading) {
-      setIsBackups(cm.backups_enabled);
-    }
-  }, [loading]);
-
   const onSelectFeature = (selection) => {
     if (configuration.feature.cacheFeatureSelected.includes(selection)) {
       removeFeature(selection);
@@ -104,9 +95,7 @@ const FeaturesSelector = () => {
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && (
         <SecuredCacheConfigurator isEnabled={isSecuredCacheCreationEnabled()} />
       )}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS) && (
-        <BackupsCacheConfigurator isEnabled={isBackups} />
-      )}
+      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS) && <BackupsCacheConfigurator />}
       {configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && (
         <TransactionalCacheConfigurator isEnabled={configuration.basic.mode === CacheMode.SYNC} />
       )}
