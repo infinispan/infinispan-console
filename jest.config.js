@@ -31,6 +31,6 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test-setup.js'],
 
   // The test environment that will be used for testing.
-  transformIgnorePatterns: ['/node_modules/(?!(react-syntax-highlighter)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!(react-syntax-highlighter|keycloak-js)/)'],
   testEnvironment: "jsdom",
 };
