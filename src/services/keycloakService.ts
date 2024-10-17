@@ -1,4 +1,4 @@
-import Keycloak, { KeycloakError, KeycloakLoginOptions } from 'keycloak-js';
+import Keycloak, { KeycloakConfig, KeycloakLoginOptions } from 'keycloak-js';
 
 export class KeycloakService {
   private initialized = false;
@@ -13,7 +13,7 @@ export class KeycloakService {
     return this.instance;
   }
 
-  public static init(configOptions: Keycloak.KeycloakConfig | undefined): Promise<void> {
+  public static init(configOptions: KeycloakConfig | undefined): Promise<void> {
     if (!configOptions) {
       console.error('Unable to init Keycloak with undefined configOptions');
       return new Promise((resolve, reject) => reject('Unable to init Keycloak with undefined configOptions'));
@@ -27,7 +27,7 @@ export class KeycloakService {
             KeycloakService.Instance.initialized = true;
             resolve();
           })
-          .catch((errorData: KeycloakError) => {
+          .catch((errorData) => {
             reject(errorData);
           });
       });
@@ -55,8 +55,17 @@ export class KeycloakService {
     });
   }
 
-  public logout(redirectUri?: string): void {
-    KeycloakService.keycloakAuth.logout({ redirectUri: redirectUri });
+  public logout(redirectUri?: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      KeycloakService.keycloakAuth
+        .logout({ redirectUri: redirectUri })
+        .then(() => {
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
+    });
   }
 
   public account(): void {
