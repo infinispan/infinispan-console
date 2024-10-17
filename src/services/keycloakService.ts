@@ -56,7 +56,7 @@ export class KeycloakService {
   }
 
   public logout(redirectUri?: string): void {
-    KeycloakService.keycloakAuth.logout({ redirectUri: redirectUri });
+    KeycloakService.keycloakAuth.logout();
   }
 
   public account(): void {
