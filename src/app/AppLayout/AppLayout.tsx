@@ -152,16 +152,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
           spacer={{ default: 'spacerNone', md: 'spacerMd' }}
         >
           <ToolbarItem>
-            <Switch
-              id="darkThemeSwitch"
-              isChecked={theme === 'dark'}
-              onChange={toggleTheme}
-              ouiaId="DarkThemeOuiaId"
-              label={t('layout.dark-theme')}
-              className="darkThemeSwitch"
-            />
-          </ToolbarItem>
-          <ToolbarItem>
             <Dropdown
               id="aboutInfoQuestionMark"
               onSelect={() => setIsHelpOpen(!isHelpOpen)}
@@ -190,6 +180,16 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
                 {t('layout.about-name')}
               </DropdownItem>
             </Dropdown>
+          </ToolbarItem>
+          <ToolbarItem>
+            <Switch
+              id="darkThemeSwitch"
+              isChecked={theme === 'dark'}
+              onChange={toggleTheme}
+              ouiaId="DarkThemeOuiaId"
+              label={t('layout.dark-theme')}
+              className="darkThemeSwitch"
+            />
           </ToolbarItem>
         </ToolbarGroup>
         {!ConsoleServices.authentication().isNotSecured() && userActions()}
