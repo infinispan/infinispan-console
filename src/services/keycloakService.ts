@@ -55,8 +55,17 @@ export class KeycloakService {
     });
   }
 
-  public logout(redirectUri?: string): void {
-    KeycloakService.keycloakAuth.logout({ redirectUri: redirectUri });
+  public logout(redirectUri?: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      KeycloakService.keycloakAuth
+        .logout({ redirectUri: redirectUri })
+        .then(() => {
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
+    });
   }
 
   public account(): void {
