@@ -274,7 +274,7 @@ const GlobalStats = () => {
         <CardBody>
           <TextContent style={{ height: '208px' }}>
             <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>
+              <TextListItem component={TextListItemVariants.dt} data-cy="cacheManagerStartTime">
                 {displayUtils.formatNumber(stats.time_since_start)}
               </TextListItem>
               <TextListItem component={TextListItemVariants.dd}>

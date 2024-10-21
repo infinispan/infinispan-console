@@ -64,16 +64,24 @@ describe('Proto Schema CRUD', () => {
     cy.get('[aria-label="editSchemaAction"]').click();
     cy.contains('schemaValue');
     cy.contains('Save');
+    //Artificially adding here some delays between actions so that the proto schema is updated properly and normally shown on the page.
+    cy.wait(3000);
     cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
+    cy.wait(3000);
     cy.get('[data-cy=schemaEditArea]').type(
       'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
       { parseSpecialCharSequences: false }
     );
+    cy.wait(3000);
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
+    cy.wait(3000);
     cy.contains('Schema ' + schemaName +'.proto updated.');
+    cy.wait(3000);
     cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    //Waiting 5 seconds so that the proto schema is managed to be updated on the page.
+    cy.wait(3000);
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
-
+    cy.wait(3000);
     cy.contains('schemaValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');

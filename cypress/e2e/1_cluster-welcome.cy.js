@@ -23,13 +23,18 @@ describe('Welcome page', () => {
     cy.contains('13 Schemas');
     cy.contains('invalidationCache');
 
-    //Checks that user's dropbox exists on the page.
-    cy.contains('admin').click();
-    cy.contains('Logout').click();
-    cy.get('h1')
-    .invoke('text')
-    .should('match', /.* Server.*/);
-    cy.contains('Open the console');
+    if (Cypress.browser.name === 'firefox') {
+      cy.contains('admin');
+      cy.get('[aria-label*="incognito"]').should('exist');
+    } else {
+      //Checks that user's dropbox exists on the page.
+      cy.contains('admin').click();
+      cy.contains('Logout').click();
+      cy.get('h1')
+      .invoke('text')
+      .should('match', /.* Server.*/);
+      cy.contains('Open the console');
+    }
   });
 
   it('successfully opens and navigates side menu', () => {
@@ -61,6 +66,18 @@ describe('Welcome page', () => {
     cy.contains('Cluster-wide statistics');
     cy.contains('Cache Manager lifecycle values');
 
+    //Clicks the Access management link and should go to Access management page
+    cy.contains('Access Management').click();
+    cy.contains('Access management').should('be.visible');
+    cy.contains('Access control');
+    cy.contains('Create role');
+
+    //Clicks the Connected clients link and should go to Connected clients page
+    cy.contains('Connected Clients').click();
+    cy.contains('Connected clients').should('be.visible');
+    cy.contains('Client library');
+    cy.contains('Server node');
+
     //Clicks the Data Container link and should go to Data Container page
     cy.contains('Data Container').click();
     cy.contains('Data container').should('be.visible');
@@ -78,7 +95,7 @@ describe('Welcome page', () => {
       cy.get('[role=dialog]').should('be.visible');
       cy.contains('Version');
       cy.get('body').then(($body) => {
-        if (!$body.text().includes('Red Hat Datagrid')) {
+        if (!$body.text().includes('Red Hat Data Grid')) {
           //Checks if links from About dialog work properly
           cy.get('a[href*="github"').should('exist');
           cy.get('a[href*="zulipchat"').should('exist');

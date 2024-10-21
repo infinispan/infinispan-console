@@ -29,6 +29,7 @@ const RemovePrincipal = (props: {
         <Button
           key={'Remove'}
           aria-label={'Remove'}
+          data-cy="removePrincipalButton"
           variant={ButtonVariant.warning}
           onClick={() => {
             onRemove();

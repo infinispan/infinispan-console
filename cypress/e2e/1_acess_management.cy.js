@@ -80,7 +80,12 @@ describe('Global stats', () => {
     cy.get("[data-cy=option-typeahead-deployer]").click();
     cy.get("[data-cy=menu-toogle-roles]").click();
     cy.get('[aria-label=Save').click();
-    // cy.contains('Access granted to aPrincipal.');
+    cy.contains('Access granted to aPrincipal.');
+    cy.get('[data-cy=detailLink-admin]').should('not.exist');
+    cy.get('[data-cy=detailLink-deployer]').should('exist');
+    cy.get('[aria-label^="Close"]').first().click();
+//@TODO uncomment when ISPN-16618 is fixed
+    //Managing roles of the principal
     // cy.get("[aria-label=aPrincipal-menu]").click();
     // cy.get("[aria-label=manageRoles]").click();
     // cy.get("[data-cy=menu-toogle-roles]").click();
@@ -88,8 +93,22 @@ describe('Global stats', () => {
     // cy.get("[data-cy=option-typeahead-deployer]").click();
     // cy.get("[data-cy=menu-toogle-roles]").click();
     // cy.get('[aria-label=Save').click();
+    // cy.get('[data-cy=detailLink-admin]').should('exist');
+    // cy.get('[data-cy=detailLink-deployer]').should('not.exist');
+    //@TODO uncomment when the both popups will be shown properly
     // cy.contains('Roles [admin] granted to aPrincipal.');
-    // TODO: remove needs to be tested with REST API fixes
+    //cy.contains('Roles [deployer] denied to aPrincipal.');
+
+    //Removing principal
+    // cy.get("[aria-label=aPrincipal-menu]").click();
+    // cy.get("[aria-label=removePrincipal]").click();
+    // cy.get("[data-cy=cancelPrincipalRemoveButton]").click();
+    // cy.contains("aPrincipal");
+    // cy.get("[aria-label=aPrincipal-menu]").click();
+    // cy.get("[aria-label=removePrincipal]").click();
+    // cy.get("[data-cy=removePrincipalButton]").click();
+    // cy.contains('aPrincipal successfully removed.')
+    // cy.contains('aPrincipal').should('not.exist');
   });
 
 });
