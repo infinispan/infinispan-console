@@ -267,6 +267,24 @@ describe('Cache Detail Overview', () => {
     cy.contains('-2147483647').should('not.exist');
   });
 
+  it('successfully switches on/off rebalancing of the cache', () => {
+    cy.get('#rebalancing-switch').click({force: true});
+    cy.contains('Disable rebalancing on this cache?');
+    //Testing cancel button
+    cy.get('[data-cy=rebalanceChangeCancelButton]').click();
+    cy.contains('Disable rebalancing on this cache?').should('not.exist');
+    //Testing switching off functionality
+    cy.get('#rebalancing-switch').click({force: true});
+    cy.contains('Disable rebalancing on this cache?');
+    cy.get('[data-cy=rebalanceChangeButton]').click();
+    cy.contains('Rebalancing is off');
+    //Testing switching on again
+    cy.get('#rebalancing-switch').click({force: true});
+    cy.contains('Enable rebalancing on this cache?');
+    cy.get('[data-cy=rebalanceChangeButton]').click();
+    cy.contains('Rebalancing is on');
+  });
+
   function verifyGet(keyType, key, value) {
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();
