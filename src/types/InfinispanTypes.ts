@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { KeycloakConfig } from 'keycloak-js';
 
 interface Status {
   name: string;
@@ -264,7 +264,7 @@ interface AuthInfo {
   mode: string;
   ready: boolean;
   digest: boolean;
-  keycloakConfig?: Keycloak.KeycloakConfig;
+  keycloakConfig?: KeycloakConfig;
 }
 
 interface IndexStat {
