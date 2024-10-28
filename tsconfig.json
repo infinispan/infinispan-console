@@ -8,7 +8,7 @@
     "lib": ["es6", "dom"],
     "sourceMap": true,
     "jsx": "react",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
