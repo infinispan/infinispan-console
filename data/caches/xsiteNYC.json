@@ -1,0 +1,9 @@
+{
+  "distributed-cache": {
+    "mode": "SYNC",
+    "statistics": true,
+    "encoding": {
+      "media-type": "application/x-protostream"
+    }
+  }
+}

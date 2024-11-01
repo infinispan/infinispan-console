@@ -132,6 +132,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
           options={selectOptionPropsFromArray(availableSites)}
           onSelect={helperAddSite}
           onClear={clearSelection}
+          toggleId="backup-selector"
           create={true}
           selection={sites.some((s) => s.siteName !== undefined) ? sites.map((s) => s.siteName as string) : []}
         />
@@ -221,6 +222,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
               validateBackupsForField(trimmedVal);
             }}
             aria-label="remote-cache-input"
+            data-cy="remote-cache-input"
           />
         </FormGroup>
         <FormGroup
@@ -243,6 +245,7 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
             onSelect={(selection) => setRemoteSite(selection)}
             selected={remoteSite}
             isFullWidth={true}
+            toggleId='remote-site-selector'
           />
           {validateBackupsForField(remoteSite) === 'error' && (
             <FormHelperText>
