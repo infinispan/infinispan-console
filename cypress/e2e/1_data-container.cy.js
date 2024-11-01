@@ -1,5 +1,5 @@
 describe('Data Container Overview', () => {
-  const numberOfCaches = 15;
+  const numberOfCaches = 16;
 
   beforeEach(() => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
@@ -172,12 +172,12 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelect]').click();
 
     //Verifying that only distributed caches are shown
-    cy.contains('1 - 10 of 12');
+    cy.contains('1 - 10 of 13');
     cy.contains('java-serialized-cache');
     cy.get('[data-cy=cachesTable] tr').should('have.length', 11); //11 including header row
     //Navigating to the next page to see the rest of the caches
     cy.get('[data-action=next]').first().click();
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //3 including header row
     cy.contains('xml-cache');
     cy.contains('java-serialized-cache').should('not.exist');
 
@@ -186,8 +186,8 @@ describe('Data Container Overview', () => {
     cy.get('[data-action=per-page-20]').click();
     cy.contains('not-encoded');
     cy.contains('xml-cache');
-    cy.contains('1 - 12 of 12');
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 13); //13 including header row
+    cy.contains('1 - 13 of 13');
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 14); //13 including header row
 
     //Verifying that all entries are distributed caches
     cy.get('[data-cy^=type-]').each((badge) => {
@@ -288,6 +288,17 @@ describe('Data Container Overview', () => {
       cy.wrap(badge).contains(/Bounded/);
     });
     cy.contains('heap-test');
+
+     //Clearing all filters and setting Backups
+    cy.get('button:contains("Clear all filters"):visible').click();
+    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
+    cy.get('[data-cy="backupsFeature"]').find('input:checkbox').click(); //Filtering secured caches
+    cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 2); //2 including header row - nothing is changed
+    cy.get('[data-cy^=feature-]').each((badge) => {
+      cy.wrap(badge).contains(/Backups/);
+    });
+    cy.contains('xsiteCache');
   });
 
   // Displays templates page

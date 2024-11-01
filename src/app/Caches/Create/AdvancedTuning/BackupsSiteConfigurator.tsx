@@ -107,11 +107,11 @@ const BackupSiteConfigurator = (props: {
           </TextContent>
         </GridItem>
         <FormGroup
-          fieldId="afterfailures"
+          fieldId="afterFailures"
           label={t('caches.create.configurations.feature.after-failure')}
           labelIcon={
             <PopoverHelp
-              name="after-failure"
+              name="afterFailures"
               label={t('caches.create.configurations.feature.after-failure')}
               content={t('caches.create.configurations.feature.after-failure-tooltip')}
             />
@@ -121,6 +121,7 @@ const BackupSiteConfigurator = (props: {
             placeholder="0"
             type="number"
             id="afterFailures"
+            data-cy="afterFailuresInput"
             value={afterFailures}
             onChange={(e, val) => {
               const value = parseInt(val);
@@ -179,6 +180,7 @@ const BackupSiteConfigurator = (props: {
             <Radio
               name="mood-radio"
               id="manual"
+              data-cy="manual-radio"
               onChange={() => setMode(BackupSiteStateTransferMode.MANUAL)}
               isChecked={(mode as BackupSiteStateTransferMode) == BackupSiteStateTransferMode.MANUAL}
               label={t('caches.create.configurations.feature.mode-manual')}
@@ -186,6 +188,7 @@ const BackupSiteConfigurator = (props: {
             <Radio
               name="mood-radio"
               id="auto"
+              data-cy="auto-radio"
               onChange={() => setMode(BackupSiteStateTransferMode.AUTO)}
               isChecked={(mode as BackupSiteStateTransferMode) == BackupSiteStateTransferMode.AUTO}
               label={t('caches.create.configurations.feature.mode-auto')}
@@ -208,6 +211,7 @@ const BackupSiteConfigurator = (props: {
               placeholder="512"
               type="number"
               id="chuncksize"
+              data-cy="chunckSizeInput"
               value={chunckSize}
               onChange={(e, val) => {
                 const value = parseInt(val);
@@ -254,6 +258,7 @@ const BackupSiteConfigurator = (props: {
               placeholder="30"
               type="number"
               id="maxretries"
+              data-cy="maxRetriesInput"
               value={maxRetries}
               onChange={(e, val) => {
                 const value = parseInt(val);
@@ -333,6 +338,7 @@ const BackupSiteConfigurator = (props: {
           selected={failurePolicy!}
           options={selectOptionProps(BackupSiteFailurePolicy)}
           onSelect={(value) => setFailurePolicy(value)}
+          toggleId='failurePolicySelector'
         />
       </FormGroup>
       <FormGroup

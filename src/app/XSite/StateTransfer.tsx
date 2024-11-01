@@ -47,10 +47,11 @@ const StateTransfer = (props: {
           key="state-transfer-button"
           onClick={() => props.closeModal(true)}
           variant={props.action == 'start' ? ButtonVariant.primary : ButtonVariant.danger}
+          data-cy={props.action == 'start' ? 'startTransferButton' : 'cancelStateTransferButton'}
         >
           {props.action == 'start' ? 'Start transfer' : 'Cancel transfer'}
         </Button>,
-        <Button key="cancel" variant="link" onClick={() => props.closeModal(false)}>
+        <Button data-cy="closeModalButton" key="cancel" variant="link" onClick={() => props.closeModal(false)}>
           Cancel
         </Button>
       ]}
