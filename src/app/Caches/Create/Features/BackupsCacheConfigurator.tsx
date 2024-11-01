@@ -230,6 +230,7 @@ const BackupsCacheConfigurator = () => {
               validateBackupsForField(trimmedVal);
             }}
             aria-label="remote-cache-input"
+            data-cy="remote-cache-input"
           />
         </FormGroup>
         <FormGroup

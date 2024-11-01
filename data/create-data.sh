@@ -39,6 +39,9 @@ curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@cache
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/octet-stream.json" "http://localhost:11222/rest/v2/caches/octet-stream-cache"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/javaSerializedCache.json" "http://localhost:11222/rest/v2/caches/java-serialized-cache"
 # curl -XPOST  -u $userPass -H "Content-Type: application/json" -d "@caches/invalidationCache.json" "http://localhost:11222/rest/v2/caches/invalidation-cache"
+echo "= Create X-Site Cache"
+curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/xsiteLON.json" http://localhost:11222/rest/v2/caches/xsiteCache
+curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/xsiteNYC.json" http://localhost:31222/rest/v2/caches/xsiteCache
 
 
 for i in {1..10}
@@ -55,7 +58,17 @@ curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-objec
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.Double" -H "Content-Type: application/x-java-object;type=java.lang.String" -d double http://localhost:11222/rest/v2/caches/java-cache/123.909
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.Float" -H "Content-Type: application/x-java-object;type=java.lang.String" -d float http://localhost:11222/rest/v2/caches/java-cache/12.87
 
-#Jboss data
+#XSite data
+echo "= Put 5 entries in XSite cache"
+for i in {1..5}
+do
+  URL='http://localhost:11222/rest/v2/caches/xsiteCache/key'$i
+  DATA='{
+             "_type": "string",
+             "_value": "value'$i'"
+          }'
+  curl -XPOST --digest -u $userPass -d "$DATA" -H 'Content-Type: application/json' $URL
+done
 
 
 echo "= Delete counters"

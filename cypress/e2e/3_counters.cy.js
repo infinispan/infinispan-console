@@ -141,11 +141,14 @@ describe('Counters CRUD', () => {
         .within($tr => {
             cy.get('td button').should('exist');
             cy.get('td button').click();
+            //Adding some sleeps for avoiding random failing test scenario
+            cy.wait(3000);
             cy.get('[aria-label=deleteCounter]').click();
+            cy.wait(3000);
         });
-
+        cy.wait(3000);
         cy.get("[data-cy=deleteCounterButton]").click();
-
+        cy.wait(3000);
         cy.get("#delete-counter-modal").should('not.exist');
         cy.contains("Counter strong-5 has been deleted.");
         cy.get("[aria-label='counters-table-label']").contains("td", "strong-5").should("not.exist");
