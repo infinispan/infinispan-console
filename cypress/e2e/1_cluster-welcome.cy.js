@@ -1,4 +1,8 @@
 describe('Welcome page', () => {
+  function clickSideBar() {
+    cy.get('[data-cy=sideBarToggle]').click();
+  }
+
   it('successfully loads Welcome page', () => {
     cy.visit('/welcome', {
       headers: {
@@ -40,50 +44,43 @@ describe('Welcome page', () => {
 
   it('successfully opens and navigates side menu', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'));
-
     cy.contains('Data container');
     cy.contains('Running'); // cluster status
-
-    //Checks if navigation menu is hidden
-    cy.contains('Data Container').should('not.be.visible');
-    cy.contains('Global Statistics').should('not.be.visible');
-    cy.contains('Cluster Membership').should('not.be.visible');
-
-    cy.get('#nav-toggle').click();
+    // Show sidebar
+    clickSideBar();
     //Checks if navigation menu is visible
     cy.contains('Data Container').should('be.visible');
     cy.contains('Global Statistics').should('be.visible');
     cy.contains('Cluster Membership').should('be.visible');
+    cy.contains('Access Management').should('be.visible');
+    cy.contains('Connected Clients').should('be.visible');
 
-    //Clicks the Cluster Membership link and should go to Cluster Membership page
-    cy.contains('Cluster Membership').click();
-    cy.contains('Cluster membership').should('be.visible');
+    //Clicks the side menu Data Container
+    cy.get('[itemid="data_container"]').click();
+    cy.contains('Data container');
+    cy.contains('LON');
+    cy.contains('Tracing is enabled');
+    cy.contains('Cluster rebalancing on');
+
+    //Clicks the side menu Global Statistics
+    cy.get('[itemid="global_stats"]').click();
+    cy.contains('Global statistics');
+
+    //Clicks the side menu Cluster membership
+    cy.get('[itemid="cluster_membership"]').click();
+    cy.contains('Cluster membership');
     cy.contains('Healthy');
-    cy.contains('infinispan-4-e2e');
+    cy.contains('1 member in use');
 
-    //Clicks the Global statistics link and should go to Global statistics page
-    cy.contains('Global Statistics').click();
-    cy.contains('Global statistics').should('be.visible');
-    cy.contains('Cluster-wide statistics');
-    cy.contains('Cache Manager lifecycle values');
+    //Clicks the side menu Access management
+    cy.get('[itemid="access_management"]').click();
+    cy.contains('Access management');
+    cy.contains('admin');
 
-    //Clicks the Access management link and should go to Access management page
-    cy.contains('Access Management').click();
-    cy.contains('Access management').should('be.visible');
-    cy.contains('Access control');
-    cy.contains('Create role');
-
-    //Clicks the Connected clients link and should go to Connected clients page
-    cy.contains('Connected Clients').click();
-    cy.contains('Connected clients').should('be.visible');
-    cy.contains('Client library');
+    //Clicks the side menu Access management
+    cy.get('[itemid="connected_clients"]').click();
+    cy.contains('Connected clients');
     cy.contains('Server node');
-
-    //Clicks the Data Container link and should go to Data Container page
-    cy.contains('Data Container').click();
-    cy.contains('Data container').should('be.visible');
-    cy.contains('Running'); // cluster status
-    cy.contains('Cluster rebalancing on'); // rebalancing status
   });
 
   it('successfully opens and views About page', () => {

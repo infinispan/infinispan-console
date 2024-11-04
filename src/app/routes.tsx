@@ -6,7 +6,7 @@ import { CreateCache } from '@app/Caches/CreateCache';
 import { Welcome } from '@app/Welcome/Welcome';
 import { DetailConfigurations } from '@app/Caches/Configuration/DetailConfigurations';
 import { GlobalStats } from '@app/GlobalStats/GlobalStats';
-import { ClusterStatus } from '@app/ClusterStatus/ClusterStatus';
+import { ClusterMembership } from '@app/ClusterStatus/ClusterMembership';
 import { IndexManagement } from '@app/IndexManagement/IndexManagement';
 import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
@@ -24,6 +24,7 @@ import { ContainerDataProvider } from '@app/providers/CacheManagerContextProvide
 import { TracingManagement } from '@app/TracingManagement/TracingManagement';
 
 export interface IAppRoute {
+  id: string;
   label?: string;
   component: React.JSX.Element;
   exact?: boolean;
@@ -39,6 +40,7 @@ export interface IAppRoute {
 
 const routes: IAppRoute[] = [
   {
+    id: 'data_container',
     component: <CacheManagerPage />,
     exact: true,
     label: 'Data Container',
@@ -49,6 +51,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'global_stats',
     component: <GlobalStats />,
     exact: true,
     label: 'Global Statistics',
@@ -58,7 +61,8 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
-    component: <ClusterStatus />,
+    id: 'cluster_membership',
+    component: <ClusterMembership />,
     exact: true,
     label: 'Cluster Membership',
     path: '/cluster-membership',
@@ -67,6 +71,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'cache_setup',
     component: (
       <ContainerDataProvider>
         <CreateCache />
@@ -81,6 +86,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'create_cache',
     component: (
       <ContainerDataProvider>
         <CreateCache />
@@ -94,6 +100,7 @@ const routes: IAppRoute[] = [
     admin: true
   },
   {
+    id: 'detail_configurations',
     component: <DetailConfigurations />,
     exact: true,
     label: 'Cache Manager Configurations',
@@ -103,6 +110,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'cache_index_management',
     component: <IndexManagement />,
     exact: true,
     label: 'Index management',
@@ -112,6 +120,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'cache_tracing_management',
     component: <TracingManagement />,
     exact: true,
     label: 'Tracing management',
@@ -121,6 +130,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'cache_xsite_management',
     component: <XSiteCache />,
     exact: true,
     label: 'XSite Replication Cache',
@@ -130,6 +140,7 @@ const routes: IAppRoute[] = [
     admin: true
   },
   {
+    id: 'cache_detail',
     component: <DetailCachePage />,
     exact: true,
     label: 'Cache',
@@ -139,6 +150,7 @@ const routes: IAppRoute[] = [
     admin: false
   },
   {
+    id: 'access_management',
     component: <AccessManager />,
     exact: true,
     label: 'Access Management',
@@ -149,6 +161,7 @@ const routes: IAppRoute[] = [
     subRoutes: ['role']
   },
   {
+    id: 'connected_clients',
     component: <ConnectedClients />,
     exact: true,
     label: 'Connected Clients',
@@ -158,6 +171,7 @@ const routes: IAppRoute[] = [
     admin: true
   },
   {
+    id: 'access_management_role_detail',
     component: <RoleDetail />,
     exact: true,
     label: 'Role detail',
@@ -171,7 +185,7 @@ const routes: IAppRoute[] = [
 let routeFocusTimer: number;
 const useA11yRouteChange = (isAsync: boolean) => {
   useEffect(() => {
-    if (!isAsync !== null) {
+    if (isAsync !== null) {
       routeFocusTimer = accessibleRouteChangeHandler();
     }
     return () => {
@@ -193,12 +207,12 @@ const AppRoutes = () => {
     <Routes>
       {routes.map((iroute, idx) => {
         if (iroute.admin && !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-          return <Route path={iroute.path} key={idx} element={<NotAuthorized />} />;
+          return <Route key={idx} path={iroute.path} element={<NotAuthorized />} />;
         }
         return <Route key={idx} path={iroute.path} element={<ComponentWithTitleUpdates appRoute={iroute} />} />;
       })}
-      <Route path={'/welcome'} element={<Welcome />} />
-      <Route path={'*'} element={<NotFound />} />
+      <Route key={'welcome'} path={'/welcome'} element={<Welcome />} />
+      <Route key={'not-found'} path={'*'} element={<NotFound />} />
     </Routes>
   );
 };

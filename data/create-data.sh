@@ -16,6 +16,8 @@ curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/java-s
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/invalidation-cache
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/xsiteCache
 curl -XDELETE --digest -u $userPass http://localhost:31222/rest/v2/caches/xsiteCache
+curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/xsite-cache
+curl -XDELETE --digest -u $userPass http://localhost:31222/rest/v2/caches/xsite-backup
 
 echo "= Create schema"
 
@@ -40,7 +42,6 @@ curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@cache
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/indexedCacheNonAuth.json" "http://localhost:11222/rest/v2/caches/indexed-cache-no-auth"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/octet-stream.json" "http://localhost:11222/rest/v2/caches/octet-stream-cache"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/javaSerializedCache.json" "http://localhost:11222/rest/v2/caches/java-serialized-cache"
-# curl -XPOST  -u $userPass -H "Content-Type: application/json" -d "@caches/invalidationCache.json" "http://localhost:11222/rest/v2/caches/invalidation-cache"
 echo "= Create X-Site Cache"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/xsiteLON.json" http://localhost:11222/rest/v2/caches/xsiteCache
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" -d "@caches/xsiteNYC.json" http://localhost:31222/rest/v2/caches/xsiteCache

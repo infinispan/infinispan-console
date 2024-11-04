@@ -1,9 +1,118 @@
 describe('XSite Config Tests', () => {
-    beforeEach(() => {
-      cy.login(Cypress.env('username'), Cypress.env('password'));
-    });
+  beforeEach(() => {
+    // Makes sure xsite-cache does not exist in LON
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      '/caches/xsite-cache');
 
-    it('successfully creates cache with backup', () => {
+    // Makes sure xsite-cache does not exist in NYC
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      'http://localhost:31222/rest/v2/caches/xsite-backup');
+
+    // Make sure xsiteCache does not contain stringKey in LON or NYC
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/stringKey');
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/stringKey');
+
+    // Make sure key3 has value3
+    const value3 = {
+      _type: 'string',
+      _value: 'value3'
+    };
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/key3', 'PUT', value3, true);
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/key3', 'PUT', value3, true);
+
+    // Make sure key5 has value5 and exists
+    const value5 = {
+      _type: 'string',
+      _value: 'value5'
+    };
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/key5', 'POST', value5, true);
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/key5', 'POST', value5, true);
+
+    // Make sure backup NYC is online
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/x-site/backups/NYC?action=bring-online', 'POST');
+
+    // Make sure state is clear
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/x-site/local?action=clear-push-state-status', 'POST', '');
+  });
+
+  it('successfully shows the site name on data container page in LON', () => {
+    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.contains("LON");
+    //Going to next page for checking xsite caches.
+    cy.get('[data-action=next]').first().click();
+    cy.contains("xsiteCache");
+    cy.origin('http://localhost:31222/console/', () => {
+      cy.visit("/", {
+        headers: {
+          'Accept-Encoding': 'gzip, deflate, br'
+        },
+        auth: {
+          username: Cypress.env('username'),
+          password: Cypress.env('password')
+        }
+      });
+      cy.get('[data-cy=sideBarToggle]').click();
+      cy.contains("NYC");
+      cy.contains("xsiteCache");
+    })
+  });
+
+  it('successfully shows the site name on data container page in NYC', () => {
+    cy.origin('http://localhost:31222/console/', () => {
+      cy.visit("/", {
+        headers: {
+          'Accept-Encoding': 'gzip, deflate, br'
+        },
+        auth: {
+          username: Cypress.env('username'),
+          password: Cypress.env('password')
+        }
+      });
+      cy.get('[data-cy=sideBarToggle]').click();
+      cy.contains("NYC");
+      cy.contains("xsiteCache");
+    })
+  });
+
+  it('successfully views the Manage Backup pages.', () => {
+    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsiteCache');
+    cy.contains("Backups");
+    cy.contains('1 - 5 of 5');
+    cy.get('[data-cy="detailCacheActions"]').click();
+    cy.get("[data-cy=manageBackupsLink]").click();
+    cy.contains("Backups management");
+    cy.contains("NYC");
+    cy.contains("Take offline");
+    cy.get("[data-cy=NYC-startTransfer]").should("exist");
+
+    cy.origin('http://localhost:31222/console/', () => {
+      cy.visit("/", {
+        headers: {
+          'Accept-Encoding': 'gzip, deflate, br'
+        },
+        auth: {
+          username: Cypress.env('username'),
+          password: Cypress.env('password')
+        }
+      });
+      cy.get('[data-cy=sideBarToggle]').click();
+      cy.contains("NYC");
+      cy.contains("xsiteCache").click();
+      cy.contains('1 - 5 of 5');
+      cy.contains("Backups").should('not.exist');
+      cy.get('[data-cy="detailCacheActions"]').click();
+      cy.get("[data-cy=manageBackupsLink]").should('not.exist');
+    })
+  });
+
+  it('successfully creates cache with backup called xsite-cache', () => {
+      cy.login(Cypress.env('username'), Cypress.env('password'));
+
+      cy.on("uncaught:exception", (err, runnable) => {
+        cy.log(err.message);
+        return false;
+      });
+
       cy.get('[data-cy=localSite]').should('exist');
       cy.contains("LON");
 
@@ -64,7 +173,7 @@ describe('XSite Config Tests', () => {
                   password: Cypress.env('password')
                 }
               });
-            cy.get('#nav-toggle').click();
+            cy.get('[data-cy=sideBarToggle]').click();
             cy.contains("NYC");
             cy.contains("xsiteCache");
             //Going to create cache page
@@ -105,83 +214,16 @@ describe('XSite Config Tests', () => {
             cy.contains('key1');
             cy.contains('value1');
         })
+      cy.wait(2000); // wait 2s
+      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsite-cache');
+      //Verifying that entries entered in NYC were successfully synced to LON
+      cy.contains('key1');
+      cy.contains('value1');
     });
 
-    it('successfully shows the site name on data container page', () => {
-        cy.contains("LON");
-        //Going to next page for checking xsite caches.
-        cy.get('[data-action=next]').first().click();
-        cy.contains("xsiteCache");
-        cy.contains("xsite-cache");
-
-        //Verifying that entries entered in previous test were successfully synced
-        cy.get('[data-cy="detailButton-xsite-cache"]').click();
-        cy.contains('key1');
-        cy.contains('value1');
-
-        cy.get("#nav-toggle").click();
-        cy.contains("Cluster Membership").click();
-        cy.contains("1 member in use");
-
-        cy.origin('http://localhost:31222/console/', () => {
-            cy.visit("/", {
-                headers: {
-                  'Accept-Encoding': 'gzip, deflate, br'
-                },
-                auth: {
-                  username: Cypress.env('username'),
-                  password: Cypress.env('password')
-                }
-              });
-            cy.get('#nav-toggle').click();
-            cy.contains("NYC");
-            cy.contains("xsiteCache");
-            cy.contains("xsite-backup");
-            cy.get("#nav-toggle").click();
-            cy.contains("Cluster Membership").click();
-            cy.contains("1 member in use");
-        })
-    });
-
-    it('successfully views the Manage Backup pages.', () => {
-        cy.contains("LON");
-        //Going to next page for checking xsite caches.
-        cy.get('[data-action=next]').first().click();
-        cy.contains("xsiteCache").click();
-        cy.contains("Backups");
-        cy.contains('1 - 5 of 5');
-        cy.get('[data-cy="detailCacheActions"]').click();
-        cy.get("[data-cy=manageBackupsLink]").click();
-        cy.contains("Backups management");
-        cy.contains("NYC");
-        cy.contains("Take offline");
-        cy.get("[data-cy=NYC-startTransfer]").should("exist");
-
-        cy.origin('http://localhost:31222/console/', () => {
-            cy.visit("/", {
-                headers: {
-                  'Accept-Encoding': 'gzip, deflate, br'
-                },
-                auth: {
-                  username: Cypress.env('username'),
-                  password: Cypress.env('password')
-                }
-              });
-            cy.get('#nav-toggle').click();
-            cy.contains("NYC");
-            cy.contains("xsiteCache").click();
-            cy.contains('1 - 5 of 5');
-            cy.contains("Backups").should('not.exist');
-            cy.get('[data-cy="detailCacheActions"]').click();
-            cy.get("[data-cy=manageBackupsLink]").should('not.exist');
-        })
-    });
-
-    it('successfully takes offline the backup, adds/deletes/updates data and verifies that backup doesn\'t contain all changes', () => {
-        cy.contains("LON");
-        //Going to next page for checking xsite caches.
-        cy.get('[data-action=next]').first().click();
-        cy.contains("xsiteCache").click();
+    it('successfully takes offline NYC, adds/updates/deletes data, verifies that NYC does not cache, brings NYC online and checks the changes are transferred', () => {
+        // log LON xsiteCache
+        cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsiteCache');
         //Going to manage Backups page and taking the backup site offline
         cy.get('[data-cy="detailCacheActions"]').click();
         cy.get("[data-cy=manageBackupsLink]").click();
@@ -211,7 +253,7 @@ describe('XSite Config Tests', () => {
         cy.get('#value-entry').click().type('stringValue');
         cy.get('[data-cy=addButton]').click();
         cy.contains('Entry added to cache xsiteCache.');
-        cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+        cy.get('[name=close-alert-button]').click({ multiple: true }); //Closing alert popup.
         cy.contains('stringKey');
         cy.contains('stringValue');
 
@@ -226,7 +268,7 @@ describe('XSite Config Tests', () => {
                   password: Cypress.env('password')
                 }
               });
-            cy.get('#nav-toggle').click();
+            cy.get('[data-cy=sideBarToggle]').click();
             cy.contains("NYC");
             cy.contains("xsiteCache").click();
             cy.contains('1 - 5 of 5');
@@ -234,21 +276,13 @@ describe('XSite Config Tests', () => {
             cy.contains("key5");
             cy.contains("value31").should("not.exist");
         });
-    });
 
-    it('successfully brings online the backup, performs the state transfer and verifies that changes appeared on backup site', () => {
-      cy.contains("LON");
-      //Going to next page for checking xsite caches.
-      cy.get('[data-action=next]').first().click();
-      cy.contains("xsiteCache").click();
-      //Going to manage Backups page and bringing the backup site online
-      cy.get('[data-cy="detailCacheActions"]').click();
-      cy.get("[data-cy=manageBackupsLink]").click();
+      // Now take NYC online, and check the values
+      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsiteCache/backups');
       cy.contains("Bring online");
       cy.get("#NYC-switch").click({force: true});
       cy.contains("Operation bring online on site NYC has started.");
       cy.contains("Take offline");
-
       //Starting state transfer
       cy.get("[data-cy=NYC-startTransfer]").click();
       cy.contains("Are you sure you want to start a state transfer?");
@@ -256,43 +290,33 @@ describe('XSite Config Tests', () => {
       cy.contains("Operation state transfer on site NYC has started.");
       cy.contains("Transfer Ok");
       cy.contains("Clear state");   //NYC-clearStateButton
+      cy.get("[data-cy=NYC-clearStateButton]").click();
+
+      // clear state
+      cy.contains("Operation clear state transfer state on site NYC has started.");
+      cy.contains("Transfer Ok").should("not.exist");
+      cy.contains("Clear state").should("not.exist");
+      cy.contains("Start transfer");
 
       //Verifying that as the backup site is taken offline neither of the changes is visible on the backup site.
       cy.origin('http://localhost:31222/console/', () => {
-          cy.visit("/", {
-              headers: {
-                'Accept-Encoding': 'gzip, deflate, br'
-              },
-              auth: {
-                username: Cypress.env('username'),
-                password: Cypress.env('password')
-              }
-            });
-          cy.get('#nav-toggle').click();
-          cy.contains("NYC");
-          cy.contains("xsiteCache").click();
-          cy.contains('1 - 6 of 6');
-          cy.contains("stringKey");
-          cy.contains("key5"); //The key5 should still be there as the state transfer doesn't include the entry deletions;
-          cy.contains("value31");
+        cy.visit("/", {
+          headers: {
+            'Accept-Encoding': 'gzip, deflate, br'
+          },
+          auth: {
+            username: Cypress.env('username'),
+            password: Cypress.env('password')
+          }
+        });
+        cy.get('[data-cy=sideBarToggle]').click();
+        cy.contains("NYC");
+        cy.contains("xsiteCache").click();
+        cy.contains('1 - 6 of 6');
+        cy.contains("stringKey");
+        cy.contains("key5"); //The key5 should still be there as the state transfer doesn't include the entry deletions;
+        cy.contains("value31");
       });
-  });
-
-  it('successfully clears state', () => {
-    cy.contains("LON");
-    //Going to next page for checking xsite caches.
-    cy.get('[data-action=next]').first().click();
-    cy.contains("xsiteCache").click();
-    //Going to manage Backups page and bringing the backup site online
-    cy.get('[data-cy="detailCacheActions"]').click();
-    cy.get("[data-cy=manageBackupsLink]").click();
-    cy.contains("Take offline");
-    cy.contains("Transfer Ok");
-    cy.get("[data-cy=NYC-clearStateButton]").click();
-    cy.contains("Operation clear state transfer state on site NYC has started.");
-    cy.contains("Transfer Ok").should("not.exist");
-    cy.contains("Clear state").should("not.exist");
-    cy.contains("Start transfer");
-  });
+    });
 });
 

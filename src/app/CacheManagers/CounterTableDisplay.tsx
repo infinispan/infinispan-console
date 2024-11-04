@@ -1,47 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Bullseye,
   Button,
   ButtonVariant,
-  Bullseye,
-  Card,
-  CardBody,
+  Content,
+  ContentVariants,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
+  EmptyStateFooter,
   EmptyStateVariant,
   Grid,
   GridItem,
   Label,
-  Menu,
-  MenuContent,
-  MenuGroup,
-  MenuList,
-  MenuItem,
-  MenuToggle,
-  Popper,
   Pagination,
   SearchInput,
-  Text,
-  TextContent,
-  TextVariants,
+  SelectOptionProps,
   Title,
   Toolbar,
   ToolbarContent,
-  ToolbarToggleGroup,
-  ToolbarFilter,
   ToolbarItem,
-  ToolbarItemVariant,
-  EmptyStateHeader,
-  EmptyStateActions,
-  EmptyStateFooter
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import { Table, Thead, Tr, Th, Tbody, Td, IAction, ActionsColumn } from '@patternfly/react-table';
+import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
 import { numberWithCommas } from '@utils/numberWithComma';
-import { FilterIcon, SearchIcon } from '@patternfly/react-icons';
-import { CounterType, CounterStorage } from '@services/infinispanRefData';
+import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
+import { CounterStorage, CounterType } from '@services/infinispanRefData';
 import { AddDeltaCounter } from '@app/Counters/AddDeltaCounter';
 import { ResetCounter } from '@app/Counters/ResetCounter';
 import { CreateCounter } from '@app/Counters/CreateCounter';
@@ -50,8 +36,9 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { SetCounter } from '@app/Counters/SetCounter';
 import { onSearch } from '@app/utils/searchFilter';
-import { global_spacer_sm, global_spacer_xl } from '@patternfly/react-tokens';
-import { DatabaseIcon } from '@patternfly/react-icons';
+import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
+import { SelectSingle } from '@app/Common/SelectSingle';
+import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
@@ -206,21 +193,6 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     );
   };
 
-  const onSelectFilter = (event: React.MouseEvent | undefined, itemId: string | number | undefined) => {
-    if (typeof itemId === 'undefined') {
-      return;
-    }
-
-    const itemStr = itemId.toString();
-    const category = Object.values(CounterType).includes(itemStr as CounterType) ? 'Type' : 'Storage';
-
-    if (category === 'Type') {
-      setSelectedCounterType(selectedCounterType.includes(itemStr) ? '' : itemStr);
-    } else {
-      setSelectedCounterStorage(selectedCounterStorage.includes(itemStr) ? '' : itemStr);
-    }
-  };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (isFilterOpen && !menuRef.current?.contains(event.target as Node)) {
       setIsFilterOpen(false);
@@ -245,22 +217,13 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     };
   }, [isFilterOpen, menuRef]);
 
-  const onToggleClick = (ev: React.MouseEvent) => {
-    ev.stopPropagation(); // Stop handleClickOutside from handling
-    setTimeout(() => {
-      if (menuRef.current) {
-        const firstElement = menuRef.current.querySelector('li > button:not(:disabled)');
-        if (firstElement) {
-          (firstElement as HTMLElement).focus();
-        }
-      }
-    }, 0);
-    setIsFilterOpen(!isFilterOpen);
-  };
-
   const createCounterButtonHelper = (isEmptyPage?: boolean) => {
-    const emptyPageButtonProp = { style: { marginTop: global_spacer_xl.value } };
-    const normalPageButtonProps = { style: { marginLeft: global_spacer_sm.value } };
+    const emptyPageButtonProp = {
+      style: { marginTop: t_global_spacer_xl.value }
+    };
+    const normalPageButtonProps = {
+      style: { marginLeft: t_global_spacer_sm.value }
+    };
     return (
       <Button
         variant={ButtonVariant.primary}
@@ -281,7 +244,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     return (
       <ToolbarItem
         variant={ToolbarItemVariant.separator}
-        style={{ marginInline: global_spacer_sm.value }}
+        style={{ marginInline: t_global_spacer_sm.value }}
       ></ToolbarItem>
     );
   };
@@ -292,74 +255,6 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     }
     return <ToolbarItem>{createCounterButtonHelper()}</ToolbarItem>;
   };
-
-  const filterMenu = (
-    <Menu ref={menuRef} id="filter-faceted-counter-menu" onSelect={onSelectFilter} selected={selectedCounterType}>
-      <MenuContent>
-        <MenuList>
-          <MenuGroup label={t('cache-managers.counters.counter-type')}>
-            <MenuItem
-              isSelected={selectedCounterType.includes(CounterType.STRONG_COUNTER)}
-              itemId="Strong"
-              data-cy="strongCounter"
-            >
-              {CounterType.STRONG_COUNTER}
-            </MenuItem>
-            <MenuItem
-              isSelected={selectedCounterType.includes(CounterType.WEAK_COUNTER)}
-              itemId="Weak"
-              data-cy="weakCounter"
-            >
-              {CounterType.WEAK_COUNTER}
-            </MenuItem>
-          </MenuGroup>
-          <MenuGroup label={t('cache-managers.counters.storage')}>
-            <MenuItem
-              isSelected={selectedCounterStorage.includes(CounterStorage.PERSISTENT)}
-              itemId="Persistent"
-              data-cy="persistentCounter"
-            >
-              {CounterStorage.PERSISTENT}
-            </MenuItem>
-            <MenuItem
-              isSelected={selectedCounterStorage.includes(CounterStorage.VOLATILE)}
-              itemId="Volatile"
-              data-cy="volatileCounter"
-            >
-              {CounterStorage.VOLATILE}
-            </MenuItem>
-          </MenuGroup>
-        </MenuList>
-      </MenuContent>
-    </Menu>
-  );
-
-  const toggleFilter = (
-    <MenuToggle
-      ref={toggleRef}
-      onClick={onToggleClick}
-      isExpanded={isFilterOpen}
-      icon={<FilterIcon />}
-      style={
-        {
-          width: '200px'
-        } as React.CSSProperties
-      }
-    >
-      {t('cache-managers.counters.counter-filter-label')}
-    </MenuToggle>
-  );
-
-  const selectFilter = (
-    <div ref={containerRef}>
-      <Popper
-        trigger={toggleFilter}
-        popper={filterMenu}
-        appendTo={containerRef.current || undefined}
-        isVisible={isFilterOpen}
-      />
-    </div>
-  );
 
   const searchInput = (
     <SearchInput
@@ -395,27 +290,37 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       }}
     >
       <ToolbarContent>
-        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
-          <ToolbarFilter
-            data-cy="counterFilterSelect"
-            chips={selectedCounterType !== '' ? [selectedCounterType] : ([] as string[])}
-            deleteChip={() => setSelectedCounterType('')}
-            deleteChipGroup={() => setSelectedCounterType('')}
-            categoryName={t('cache-managers.counters.counter-type')}
-          >
-            <span />
-          </ToolbarFilter>
-          <ToolbarFilter
-            chips={selectedCounterStorage !== '' ? [selectedCounterStorage] : ([] as string[])}
-            deleteChip={() => setSelectedCounterStorage('')}
-            deleteChipGroup={() => setSelectedCounterStorage('')}
-            categoryName={t('cache-managers.counters.storage')}
-            data-cy="counterFilterSelectExpanded"
-          >
-            {selectFilter}
-          </ToolbarFilter>
-        </ToolbarToggleGroup>
-        <ToolbarItem variant="search-filter">{searchInput}</ToolbarItem>
+        <ToolbarItem>
+          <SelectSingle
+            id={'counterTypeFilter'}
+            placeholder={t('cache-managers.counters.counter-type')}
+            options={[
+              {
+                id: 'counterTypeFilterClear',
+                value: 'clear',
+                children: t('cache-managers.counters.counter-type')
+              } as SelectOptionProps
+            ].concat(selectOptionProps(CounterType))}
+            selected={selectedCounterType}
+            onSelect={(value) => (value == 'clear' ? setSelectedCounterType('') : setSelectedCounterType(value))}
+          />
+        </ToolbarItem>
+        <ToolbarItem>
+          <SelectSingle
+            id={'counterStorageFilter'}
+            placeholder={t('cache-managers.counters.storage')}
+            options={[
+              {
+                id: 'counterStorageFilterClear',
+                value: 'clear',
+                children: t('cache-managers.counters.storage')
+              } as SelectOptionProps
+            ].concat(selectOptionProps(CounterStorage))}
+            selected={selectedCounterStorage}
+            onSelect={(value) => (value == 'clear' ? setSelectedCounterStorage('') : setSelectedCounterStorage(value))}
+          />
+        </ToolbarItem>
+        <ToolbarItem>{searchInput}</ToolbarItem>
         {buildSeparator()}
         {buildCreateCounterButton()}
         {filteredCounters.length !== 0 && (
@@ -426,12 +331,12 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   );
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.lg}>
-      <EmptyStateHeader
-        titleText={t('cache-managers.counters.no-counters-status')}
-        icon={<EmptyStateIcon icon={DatabaseIcon} />}
-        headingLevel="h4"
-      />
+    <EmptyState
+      variant={EmptyStateVariant.lg}
+      titleText={t('cache-managers.counters.no-counters-status')}
+      icon={DatabaseIcon}
+      headingLevel="h4"
+    >
       <EmptyStateBody>{t('cache-managers.counters.no-counters-body')}</EmptyStateBody>
       <EmptyStateFooter>{createCounterButtonHelper(true)}</EmptyStateFooter>
     </EmptyState>
@@ -442,35 +347,29 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       return (
         <Grid>
           <GridItem>
-            <TextContent>
-              <Text component={TextVariants.small}>
-                {t('cache-managers.counters.lower-bound')} {numberWithCommas(config.lowerBound)}
-              </Text>
-            </TextContent>
+            <Content component={ContentVariants.small}>
+              {t('cache-managers.counters.lower-bound')} {numberWithCommas(config.lowerBound)}
+            </Content>
           </GridItem>
           <GridItem>
-            <TextContent>
-              <Text component={TextVariants.small}>
-                {t('cache-managers.counters.upper-bound')} {numberWithCommas(config.upperBound)}
-              </Text>
-            </TextContent>
+            <Content component={ContentVariants.small}>
+              {t('cache-managers.counters.upper-bound')} {numberWithCommas(config.upperBound)}
+            </Content>
           </GridItem>
         </Grid>
       );
     } else if (config.type === CounterType.WEAK_COUNTER) {
       return (
-        <TextContent>
-          <Text component={TextVariants.small}>
-            {t('cache-managers.counters.concurrency-level')} {config.concurrencyLevel}
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.small}>
+          {t('cache-managers.counters.concurrency-level')} {config.concurrencyLevel}
+        </Content>
       );
     }
     return '';
   };
 
   const displayStorage = (storage) => {
-    const labelColor = storage === CounterStorage.PERSISTENT.toUpperCase() ? 'purple' : 'cyan';
+    const labelColor = storage === CounterStorage.PERSISTENT.toUpperCase() ? 'purple' : 'blue';
     const storageValue =
       storage === CounterStorage.PERSISTENT.toUpperCase() ? CounterStorage.PERSISTENT : CounterStorage.VOLATILE;
     return (
@@ -484,67 +383,65 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     return <span />;
   }
 
+  if (counters.length == 0) {
+    return emptyPage;
+  }
+
   return (
     <React.Fragment>
-      {counters.length === 0 ? (
-        emptyPage
-      ) : (
-        <Card>
-          <CardBody>
-            {toolbar}
-            <Table className={'counters-table'} aria-label={'counters-table-label'} variant={'compact'}>
-              <Thead>
-                <Tr>
-                  <Th colSpan={1}>{columnNames.name}</Th>
-                  <Th colSpan={1}>{columnNames.currVal}</Th>
-                  <Th colSpan={1}>{columnNames.initVal}</Th>
-                  <Th colSpan={1}>{columnNames.storage}</Th>
-                  <Th colSpan={2}>{columnNames.config}</Th>
+      {toolbar}
+      <Table className={'counters-table'} aria-label={'counters-table-label'} variant={'compact'}>
+        <Thead>
+          <Tr>
+            <Th colSpan={1}>{columnNames.name}</Th>
+            <Th colSpan={1}>{columnNames.currVal}</Th>
+            <Th colSpan={1}>{columnNames.initVal}</Th>
+            <Th colSpan={1}>{columnNames.storage}</Th>
+            <Th colSpan={2}>{columnNames.config}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {filteredCounters.length == 0 ? (
+            <Tr>
+              <Td colSpan={6}>
+                <Bullseye>
+                  <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
+                    <Title headingLevel="h2" size="lg">
+                      {t('cache-managers.counters.no-filtered-counter')}
+                    </Title>
+                    <EmptyStateBody>{t('cache-managers.counters.no-filtered-counter-body')}</EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              </Td>
+            </Tr>
+          ) : (
+            rows.map((row) => {
+              let rowActions: IAction[];
+              if (row.config.type === CounterType.STRONG_COUNTER) {
+                rowActions = strongCountersActions(row);
+              } else {
+                rowActions = weakCountersActions(row);
+              }
+              return (
+                <Tr key={row.name}>
+                  <Td dataLabel={columnNames.name}>{row.name}</Td>
+                  <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                  <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                  <Td dataLabel={columnNames.storage}>{displayStorage(row.config.storage)}</Td>
+                  <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+                  <Td isActionCell data-cy={'actions-' + row.name}>
+                    <ActionsColumn items={rowActions} />
+                  </Td>
                 </Tr>
-              </Thead>
-              <Tbody>
-                {filteredCounters.length == 0 ? (
-                  <Tr>
-                    <Td colSpan={6}>
-                      <Bullseye>
-                        <EmptyState variant={EmptyStateVariant.sm}>
-                          <EmptyStateIcon icon={SearchIcon} />
-                          <Title headingLevel="h2" size="lg">
-                            {t('cache-managers.counters.no-filtered-counter')}
-                          </Title>
-                          <EmptyStateBody>{t('cache-managers.counters.no-filtered-counter-body')}</EmptyStateBody>
-                        </EmptyState>
-                      </Bullseye>
-                    </Td>
-                  </Tr>
-                ) : (
-                  rows.map((row) => {
-                    let rowActions: IAction[];
-                    row.config.type === CounterType.STRONG_COUNTER
-                      ? (rowActions = strongCountersActions(row))
-                      : (rowActions = weakCountersActions(row));
-
-                    return (
-                      <Tr key={row.name}>
-                        <Td dataLabel={columnNames.name}>{row.name}</Td>
-                        <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
-                        <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
-                        <Td dataLabel={columnNames.storage}>{displayStorage(row.config.storage)}</Td>
-                        <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
-                        <Td isActionCell>
-                          <ActionsColumn items={rowActions} />
-                        </Td>
-                      </Tr>
-                    );
-                  })
-                )}
-              </Tbody>
-            </Table>
-            {filteredCounters.length !== 0 && (
-              <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('up')}</ToolbarItem>
-            )}
-          </CardBody>
-        </Card>
+              );
+            })
+          )}
+        </Tbody>
+      </Table>
+      {filteredCounters.length !== 0 && (
+        <Toolbar id="bottom-pagination-counter">
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('up')}</ToolbarItem>
+        </Toolbar>
       )}
       <DeleteCounter
         name={counterToDelete}

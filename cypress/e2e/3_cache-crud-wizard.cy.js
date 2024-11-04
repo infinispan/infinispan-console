@@ -105,7 +105,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=option-typeahead-persistence]').click();
     cy.get('[data-cy=menu-toogle-categorySelector]').click();
 
-    //Filling alias 
+    //Filling alias
     cy.get('[data-cy=menu-toogle-aliasesSelector]').click().type('securedAlias').type('{enter}');
 
     // Next
@@ -135,8 +135,8 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
 
     // Once the cache created, redirection to main page is done and the cache should be visible
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('asuper-cache');
     cy.contains('securedAlias');
@@ -167,8 +167,8 @@ describe('Cache Creation Wizard', () => {
     cy.contains('Cache ' + cacheName + ' successfully created with e2e-test-template.');
     // Once the cache created, redirection to main page is done and the cache should be visible
     //Is redirected to Data Container page
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains(cacheName);
     deleteCache(cacheName);
@@ -181,22 +181,18 @@ describe('Cache Creation Wizard', () => {
     cy.get('#cache-name').type('aSimpleCache');
     cy.get('#edit').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    cy.get('[data-cy=provideConfigArea] > button').click();
-
+    cy.get('#provideConfigAreaToggle').click({force: true});
     if (Cypress.browser.name === "firefox") {
       //At the moment do nothing as the proper command for editing the config is not found yet
     } else {
-      cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
-        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-        .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}").type('"distributed-cache": {{}"mode": "ASYNC", "statistics": true }{del}');
+      cy.get('.pf-v6-c-code-editor__code:first').click({force: true}).focused()
     }
 
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleCache created with the provided configuration.');
     // Once the cache created, redirection to main page is done and the cache should be visible
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('aSimpleCache');
     deleteCache('aSimpleCache');
@@ -209,12 +205,12 @@ describe('Cache Creation Wizard', () => {
     cy.get('#cache-name').type('aSimpleXmlCache');
     cy.get('#edit').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    cy.get('[data-cy=provideConfigArea] > button').click();
+    cy.get('#provideConfigAreaToggle').click({force: true});
 
     if (Cypress.browser.name === "firefox") {
       //At the moment do nothing as the proper command for editing the config is not found yet
     } else {
-      cy.get('.pf-v5-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
+      cy.get('.pf-v6-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
         .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
         .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
         .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}")
@@ -229,8 +225,8 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleXmlCache created with the provided configuration.');
     // Once the cache created, redirection to main page is done and the cache should be visible
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('aSimpleXmlCache');
     deleteCache('aSimpleXmlCache');
@@ -258,7 +254,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=deleteCacheButton]').click(); //Deleting cache aCache
 
     cy.contains(`Cache ${cacheName} deleted.`);
-    cy.get('.pf-v5-c-alert__action > .pf-v5-c-button').click(); //Closing alert popup.
+    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     cy.get(cacheName).should('not.exist'); //Checking that deleted cache is not visible
   }
 });

@@ -1,9 +1,13 @@
-describe('Global stats', () => {
+describe('Access Management', () => {
   beforeEach(() => {
+    // cleanup created data
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/security/permissions/aRole')
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/security/roles/aPrincipal?action=grant')
+    // logs in the access management page
     cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
   });
 
-  it('successfully loads Access Management page', () => {
+  it('successfully loads the page', () => {
     cy.get('h1').should('contain', 'Access management');
     cy.contains('admin');
     cy.contains('Superuser');
@@ -71,13 +75,13 @@ describe('Global stats', () => {
   });
 
   it('successfully creates, updates and removes a principal', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
+    // Log in the console
     cy.get('[aria-label=nav-item-principals').click();
     cy.contains('No principal role mappers').click();
     cy.get('[data-cy=grantAccessPrincipalButton').click();
     cy.get("[aria-label=principal-name-input]").type("aPrincipal");
     cy.get("[data-cy=menu-toogle-roles]").click();
-    cy.get("[data-cy=option-typeahead-deployer]").click();
+    cy.get("[data-cy=option-typeahead-deployer]").click({animationDistanceThreshold: 20});
     cy.get("[data-cy=menu-toogle-roles]").click();
     cy.get('[aria-label=Save').click();
     cy.contains('Access granted to aPrincipal.');
