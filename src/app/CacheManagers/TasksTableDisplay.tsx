@@ -2,39 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { TableVariant } from '@patternfly/react-table';
 import { Table, TableBody, TableHeader } from '@patternfly/react-table/deprecated';
 import {
-  Badge,
   Bullseye,
   Card,
   CardBody,
+  Content,
+  ContentVariants,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
+  Label,
   Pagination,
   Stack,
-  StackItem,
-  Text,
-  TextContent,
-  TextVariants,
-  EmptyStateHeader,
-  EmptyStateFooter
+  StackItem
 } from '@patternfly/react-core';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
-import displayUtils from '@services/displayUtils';
-import {
-  chart_color_blue_500,
-  global_FontSize_sm,
-  global_spacer_md,
-  global_spacer_sm,
-  global_spacer_xs
-} from '@patternfly/react-tokens';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { TaskType } from '@services/infinispanRefData';
 
 const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: boolean }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-
+  const [error, setError] = useState('');
   const [tasksPagination, setTasksPagination] = useState({
     page: 1,
     perPage: 10
@@ -73,7 +62,7 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
           const initSlice = (tasksPagination.page - 1) * tasksPagination.perPage;
           updateRows(maybeTasks.value.slice(initSlice, initSlice + tasksPagination.perPage));
         } else {
-          // TODO: deal loading, error, empty status
+          setError(maybeTasks.value.message);
         }
       });
   }, []);
@@ -97,54 +86,37 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   };
 
   const taskType = (type: string) => {
+    const labelColor = type === TaskType.ADMIN_SERVER_TASK.toUpperCase() ? 'purple' : 'blue';
     return (
-      <Badge
-        style={{
-          backgroundColor: displayUtils.taskTypeColor(type),
-          fontSize: global_FontSize_sm.value,
-          color: chart_color_blue_500.value,
-          fontWeight: 'lighter',
-          marginRight: global_spacer_md.value,
-          padding: global_spacer_xs.value,
-          paddingRight: global_spacer_sm.value,
-          paddingLeft: global_spacer_sm.value
-        }}
-      >
+      <Label color={labelColor} data-cy={'task-type-' + type}>
         {type}
-      </Badge>
+      </Label>
     );
   };
 
   const taskParameters = (params: [string]) => {
-    return (
-      <TextContent>
-        {params.map((param, index) => (
-          <Text key={param + index} component={TextVariants.p}>
-            {' [' + param + ']'}
-          </Text>
-        ))}
-      </TextContent>
-    );
+    const parameters = params.map((param, index) => (
+      <Content key={param + index} component={ContentVariants.p}>
+        {' [' + param + ']'}
+      </Content>
+    ));
+    return <>{parameters}</>;
   };
 
   const taskAllowedRoles = (allowedRole: string) => {
     if (allowedRole == null || allowedRole.trim().length == 0) {
-      return <TextContent>{t('cache-managers.allowed-role-null')}</TextContent>;
+      allowedRole = t('cache-managers.allowed-role-null');
     }
-    return (
-      <TextContent>
-        <Text component={TextVariants.p}>{allowedRole}</Text>
-      </TextContent>
-    );
+    return <Content component={ContentVariants.p}>{allowedRole}</Content>;
   };
 
   const emptyPage = (
-    <EmptyState variant={EmptyStateVariant.lg}>
-      <EmptyStateHeader
-        titleText={t('cache-managers.tasks.no-tasks-status')}
-        icon={<EmptyStateIcon icon={DatabaseIcon} />}
-        headingLevel="h4"
-      />
+    <EmptyState
+      variant={EmptyStateVariant.lg}
+      titleText={t('cache-managers.tasks.no-tasks-status')}
+      icon={DatabaseIcon}
+      headingLevel="h4"
+    >
       <EmptyStateBody>{t('cache-managers.tasks.no-tasks-body')}</EmptyStateBody>
     </EmptyState>
   );
@@ -162,12 +134,12 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
               title: (
                 <Bullseye>
                   {
-                    <EmptyState variant={EmptyStateVariant.sm}>
-                      <EmptyStateHeader
-                        titleText={<>{t('cache-managers.tasks.no-filtered-task')}</>}
-                        icon={<EmptyStateIcon icon={SearchIcon} />}
-                        headingLevel="h2"
-                      />
+                    <EmptyState
+                      variant={EmptyStateVariant.sm}
+                      titleText={<>{t('cache-managers.tasks.no-filtered-task')}</>}
+                      icon={SearchIcon}
+                      headingLevel="h2"
+                    >
                       <EmptyStateBody>{t('cache-managers.tasks.no-filtered-task-body')}</EmptyStateBody>
                     </EmptyState>
                   }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Label, Spinner, Switch, ToolbarItem } from '@patternfly/react-core';
+import { Content, ContentVariants, Flex, FlexItem, Icon, Label, Spinner, Switch } from '@patternfly/react-core';
 import { useCacheDetail } from '@app/services/cachesHook';
 import { useConnectedUser } from '@app/services/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -7,6 +7,7 @@ import { ConsoleACL } from '@services/securityService';
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { RebalancingConfirmationModal } from '@app/Rebalancing/RebalancingConfirmationModal';
+import { CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 
 const RebalancingCache = () => {
   const { addAlert } = useApiAlert();
@@ -25,11 +26,7 @@ const RebalancingCache = () => {
   }
 
   if (loading || !cache) {
-    return (
-      <ToolbarItem>
-        <Spinner size={'md'} />
-      </ToolbarItem>
-    );
+    return <Spinner size={'md'} />;
   }
 
   /**
@@ -37,10 +34,14 @@ const RebalancingCache = () => {
    */
   if (cache?.rehash_in_progress) {
     return (
-      <ToolbarItem>
-        <Spinner size={'md'} isInline />
-        <Alert variant="warning" isInline isPlain title={t('caches.rebalancing.rebalancing')} />
-      </ToolbarItem>
+      <Flex data-cy="rehashInProgress">
+        <FlexItem spacer={{ default: 'spacerXs' }}>
+          <Spinner size={'sm'} isInline />
+        </FlexItem>
+        <FlexItem>
+          <Content component={ContentVariants.p}>{t('caches.rebalancing.rebalancing')}</Content>
+        </FlexItem>
+      </Flex>
     );
   }
 
@@ -49,12 +50,12 @@ const RebalancingCache = () => {
    */
   if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
     return (
-      <ToolbarItem>
+      <>
         <Switch
           id="rebalancing-switch"
-          label={t('caches.rebalancing.enabled')}
-          labelOff={t('caches.rebalancing.disabled')}
+          label={cache.rebalancing_enabled ? t('caches.rebalancing.enabled') : t('caches.rebalancing.disabled')}
           isChecked={cache.rebalancing_enabled}
+          hasCheckIcon
           onChange={() => setConfirmationModalOpened(true)}
         />
         <RebalancingConfirmationModal
@@ -72,14 +73,23 @@ const RebalancingCache = () => {
           closeModal={() => setConfirmationModalOpened(false)}
           enabled={cache.rebalancing_enabled}
         />
-      </ToolbarItem>
+      </>
     );
   }
 
   return (
-    <ToolbarItem>
-      <Label>{cache.rebalancing_enabled ? t('caches.rebalancing.rebalanced') : t('caches.rebalancing.disabled')}</Label>
-    </ToolbarItem>
+    <Flex data-cy="cacheRebalanceInfo">
+      <FlexItem spacer={{ default: 'spacerXs' }}>
+        <Icon status={cache.rebalancing_enabled ? 'success' : 'warning'}>
+          {cache.rebalancing_enabled ? <CheckCircleIcon /> : <ExclamationTriangleIcon />}
+        </Icon>
+      </FlexItem>
+      <FlexItem>
+        <Content component={ContentVariants.p}>
+          {cache.rebalancing_enabled ? t('caches.rebalancing.rebalanced') : t('caches.rebalancing.disabled')}
+        </Content>
+      </FlexItem>
+    </Flex>
   );
 };
 

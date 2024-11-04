@@ -26,7 +26,7 @@ do
 done
 
 #Restarting containers
-$DOCKER_COMMAND restart $(docker ps -q)
+$DOCKER_COMMAND restart $($DOCKER_COMMAND ps -q)
 
 sleep 20
 #Creating data

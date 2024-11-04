@@ -51,7 +51,7 @@
 }
 
 .version-text {
-  font-weight: var(--pf-v5-global--FontWeight--bold);
+  font-weight: var(--pf-t--global--font--weight--body--bold);
   margin: 0 0 0.2rem;
 }
 
@@ -98,6 +98,10 @@
   justify-content: center;
   font-weight: bolder;
   text-align: center;
+}
+
+.card-title {
+  color: var(--pf-t--color--white);
 }
 
 .card-contents {

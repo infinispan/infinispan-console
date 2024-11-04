@@ -14,7 +14,7 @@ describe('RBAC Functionality Tests', () => {
     cy.login(monitorUserName, Cypress.env('password'), '/cache/indexed-cache');
     checkNoEntriesTabView(false);
     cy.login(monitorUserName, Cypress.env('password'), '/global-stats');
-    checkGlobalStatsView(false)
+    checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with observer user', () => {
@@ -30,7 +30,6 @@ describe('RBAC Functionality Tests', () => {
     cy.get('button[aria-label=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
-``
     checkNotOwnSecuredCache('a-rbac-test-cache');
     checkNonSecuredCacheDetailView(false, false);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
@@ -39,7 +38,7 @@ describe('RBAC Functionality Tests', () => {
     cy.login(observerUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(observerUserName, Cypress.env('password'), '/global-stats');
-    checkGlobalStatsView(false)
+    checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with application user', () => {
@@ -58,7 +57,7 @@ describe('RBAC Functionality Tests', () => {
     cy.login(applicationUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(applicationUserName, Cypress.env('password'), '/global-stats');
-    checkGlobalStatsView(false)
+    checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with deployer user', () => {
@@ -77,7 +76,7 @@ describe('RBAC Functionality Tests', () => {
     cy.login(deployerUserName, Cypress.env('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
     cy.login(deployerUserName, Cypress.env('password'), '/global-stats');
-    checkGlobalStatsView(false)
+    checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with admin user', () => {
@@ -99,6 +98,7 @@ describe('RBAC Functionality Tests', () => {
   });
 
   function checkMenu(isSuperAdmin) {
+    cy.get('[data-cy=sideBarToggle]').click();
     cy.contains('Data Container').should('exist');
     cy.contains('Global Statistics').should('exist');
     cy.contains('Cluster Membership').should('exist');
@@ -109,6 +109,7 @@ describe('RBAC Functionality Tests', () => {
       cy.contains('Connected Clients').should('not.exist');
       cy.contains('Access Management').should('not.exist');
     }
+    cy.get('[data-cy=sideBarToggle]').click();
   }
 
   function checkDataContainerView(isMonitor, isDeployer, isAdmin, isSuperAdmin) {
@@ -121,8 +122,8 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=rebalancingSwitch]').should('not.exist'); // rebalancing status
     }
 
-    cy.get('#cluster-manager-header').should('exist');
-    cy.get('[data-cy=cacheManagerStatus]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
+    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=navigationTabs]').should('exist');
     cy.contains(/^\d+ Caches$/);
     cy.contains('Counters');
@@ -162,7 +163,7 @@ describe('RBAC Functionality Tests', () => {
   }
 
   function checkSecuredCacheDetailsView(isMonitor, isAdmin, isSuperAdmin, roleName, cacheName) {
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
+    cy.get('[id^="pagination-caches-top-toggle"]').first().click();
     cy.get('[data-action=per-page-100]').click();
     //Going to secured cache details page
     cy.get('[data-cy=detailButton-' + cacheName + ']').click();
@@ -223,7 +224,7 @@ describe('RBAC Functionality Tests', () => {
   function checkNotOwnSecuredCache(cacheName) {
     //Checking not owned cache to be invisible for the current user.
     cy.contains('Data container').click();
-    cy.get('[id^="pagination-caches-top-pagination"]').first().click();
+    cy.get('[id^="pagination-caches-top-toggle"]').first().click();
     cy.get('[data-action=per-page-100]').click();
     cy.contains('/' + cacheName +'$/').should('not.exist');
   }
@@ -317,7 +318,7 @@ describe('RBAC Functionality Tests', () => {
   function checkSchemasPageView(isAdmin) {
     //Go to schemas and check that no create/edit/delete buttons available
     cy.contains('Data container').click();
-    cy.get('a[aria-label="nav-item-Schemas"]').click();
+    cy.get('[data-cy="tab-Schemas"]').click({multiple: true, force: true});
     cy.contains('people');
     cy.contains('test-6.proto');
     cy.get('[data-cy="people.protoConfig"]').click();
@@ -337,23 +338,20 @@ describe('RBAC Functionality Tests', () => {
 
   function checkCountersPageView(isSuperAdmin) {
     //Checking counters page
-    cy.get('a[aria-label="nav-item-Counters"]').click();
+    cy.get('[data-cy="tab-Counters"]').click({multiple: true, force: true});
     cy.contains('strong-1');
     cy.get('body').then(($body) => {
       if ($body.find('button[aria-label="Show Filters"]').length) {
         cy.get('button[aria-label="Show Filters"]').click();
       }
     })
-    
-    cy.get('[data-cy=counterFilterSelectExpanded]').should('exist');
+
+    cy.get('[data-cy=toggle-counterTypeFilter]').should('exist');
+    cy.get('[data-cy=toggle-counterStorageFilter]').should('exist');
     //Checking delete counter functionality
-    cy.contains('td', 'strong-1').parent()
-      .within($tr => {
-        cy.get('td button').should('exist');
-        cy.get('td button').click();
-        cy.get('[aria-label="deleteCounter"]').should('exist');
-        cy.get('[aria-label="deleteCounter"]').click();
-    });
+    cy.get('[data-cy=actions-strong-1]').click();
+    cy.get('[aria-label="deleteCounter"]').click();
+    // Delete Counter Modal Opens
     cy.get('[data-cy="deleteCounterButton"]').should('exist');
     if (isSuperAdmin) {
       cy.get('[data-cy="deleteCounterButton"]').should('not.be.disabled');
@@ -362,13 +360,9 @@ describe('RBAC Functionality Tests', () => {
     }
     cy.get('[data-cy="cancelCounterDeleteButton"]').click();
     //Checking edit for counter functionality
-    cy.contains('td', 'strong-1').parent()
-    .within($tr => {
-      cy.get('td button').should('exist');
-      cy.get('td button').click();
-      cy.get('[aria-label="setCounterAction"]').should('exist');
-      cy.get('[aria-label="setCounterAction"]').click();
-    });
+    cy.get('[data-cy=actions-strong-1]').click();
+    cy.get('[aria-label="setCounterAction"]').click();
+    // Set Counter Modal Opens
     cy.get('[data-cy="confirmSetbutton"]').should('exist');
     cy.get('[data-cy="confirmSetbutton"]').should('not.be.disabled');
     cy.get('[data-cy="cancelSetButton"]').click();
@@ -436,7 +430,7 @@ describe('RBAC Functionality Tests', () => {
 
   function checkTasksPage() {
     //Checking Tasks page
-    cy.get('a[aria-label="nav-item-Tasks"]').click();
+    cy.get('[data-cy="tab-Tasks"]').click({multiple: true, force: true});
     cy.contains('hello');
   }
 

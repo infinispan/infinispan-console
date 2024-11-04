@@ -1,23 +1,22 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import {
   AboutModal,
   Button,
   ButtonVariant,
+  Content,
+  ContentVariants,
   Divider,
   Flex,
   FlexItem,
   Icon,
+  Spinner,
   Stack,
-  StackItem,
-  Text,
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-  Spinner
+  StackItem
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
+import backgroundImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
+
 import {
   FacebookIcon,
   GithubIcon,
@@ -25,16 +24,13 @@ import {
   StackOverflowIcon,
   TwitterIcon
 } from '@patternfly/react-icons';
-import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFetchVersion } from '@app/services/serverHook';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 import './About.css';
 
 const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-
   const { version, loading, setLoading } = useFetchVersion();
 
   const infinispanGithubLink = 'https://github.com/infinispan/';
@@ -61,33 +57,27 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       brandImageSrc={icon}
       brandImageAlt={brandname + ' Logo'}
       productName={brandname}
-      // backgroundImageSrc={backgroundImage}
+      backgroundImageSrc={backgroundImage}
     >
-      <Stack>
-        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
-          <TextContent style={{ margin: '0.2rem 0' }}>
-            <Text>{description1}</Text>
-            <Text>{description2}</Text>
-            <Text>
-              {license}
-              {apacheLicense}
-            </Text>
-          </TextContent>
+      <Stack hasGutter>
+        <StackItem>
+          <Content component={ContentVariants.p}>{description1}</Content>
+          <Content component={ContentVariants.p}>{description2}</Content>
+          <Content component={ContentVariants.p}>
+            {license}
+            {apacheLicense}
+          </Content>
         </StackItem>
-        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
+        <StackItem>
           <Divider />
         </StackItem>
-        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
-          <TextContent>
-            <TextList component={TextListVariants.dl}>
-              <TextListItem component={TextListItemVariants.dt}>Version</TextListItem>
-              <TextListItem component={TextListItemVariants.dd}>
-                {loading ? <Spinner size={'sm'} /> : version}
-              </TextListItem>
-            </TextList>
-          </TextContent>
+        <StackItem>
+          <Content component={ContentVariants.dl}>
+            <Content component={ContentVariants.dt}>Version</Content>
+            <Content component={ContentVariants.dd}> {loading ? <Spinner size={'sm'} /> : version}</Content>
+          </Content>
         </StackItem>
-        <StackItem style={{ paddingBottom: global_spacer_lg.value }}>
+        <StackItem>
           <Divider />
         </StackItem>
         <StackItem>

@@ -7,55 +7,33 @@ body,
 .caches-table {
 }
 
-.pf-v5-c-brand {
-}
-.pf-v5-c-nav {
-  /*--pf-v5-c-nav--m-dark__item--m-current--BackgroundColor: #004B95;*/
-}
-
 .status-label {
-  padding-bottom: var(--pf-v5-global--spacer--sm);
+  padding-bottom: var(--pf-t--global--spacer--sm);
 }
 
 .status-icon {
-  padding-left: var(--pf-v5-global--spacer--md);
-  padding-right: var(--pf-v5-global--spacer--sm);
-  padding-bottom: var(--pf-v5-global--spacer--sm);
+  padding-left: var(--pf-t--global--spacer--md);
+  padding-right: var(--pf-t--global--spacer--sm);
+  padding-bottom: var(--pf-t--global--spacer--sm);
 }
 
-.pf-v5-c-dropdown__menu-item {
-  cursor: pointer;
+.alert-message.pf-v6-c-alert.pf-m-inline {
+  --pf-v6-c-alert--BackgroundColor: var(--pf-t--global--background--color--primary--default);
+  --pf-v6-c-alert--BorderTopWidth: 0;
+  --pf-v6-c-alert--PaddingTop: 0;
 }
 
-.alert-message.pf-v5-c-alert.pf-m-inline {
-  --pf-v5-c-alert--BackgroundColor: var(--pf-v5-global--BackgroundColor--100);
-  --pf-v5-c-alert--BorderTopWidth: 0;
-  --pf-v5-c-alert--PaddingTop: 0;
-}
-
-.failed-link.pf-v5-c-button {
-  --pf-v5-c-button--m-link--Color: var(--pf-v5-global--danger-color--100);
-  --pf-v5-c-button--m-link--hover--Color: var(--pf-v5-global--danger-color--200);
-  --pf-v5-c-button--m-link--focus--Color: var(--pf-v5-global--danger-color--200);
-  --pf-v5-c-button--m-link--active--Color: var(--pf-v5-global--danger-color--200);
-}
-
-.pf-v5-c-toolbar {
-  padding-bottom: 0;
-}
-
-.pf-v5-c-table__action {
-  text-align: right;
+.failed-link.pf-v6-c-button {
+  --pf-v6-c-button--m-link--Color: var(--pf-t--global--icon--color--status--danger--default);
+  --pf-v6-c-button--m-link--hover--Color: var(--pf-t--global--icon--color--status--danger--default);
+  --pf-v6-c-button--m-link--focus--Color: var(--pf-t--global--icon--color--status--danger--default);
+  --pf-v6-c-button--m-link--active--Color: var(--pf-t--global--icon--color--status--danger--default);
 }
 
 .role-table-display {
-  margin-bottom: var(--pf-v5-global--spacer--md);
+  margin-bottom: var(--pf-t--global--spacer--md);
 }
 
 .role-icon {
-  margin-right: var(--pf-v5-global--spacer--xs);
-}
-
-.darkThemeSwitch .pf-v5-c-switch__input:not(:checked) ~ .pf-v5-c-switch__label {
-  color: var(--pf-v5-global--Color--light-100);
+  margin-right: var(--pf-t--global--spacer--xs);
 }

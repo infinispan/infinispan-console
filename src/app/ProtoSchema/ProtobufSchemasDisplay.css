@@ -1,10 +1,10 @@
 .app-prefix--m-scroll-content {
-  --pf-v5-c-table--cell--MinWidth: var(--pf-v5-c-table--m-truncate--cell--MinWidth);
-  --pf-v5-c-table--cell--MaxWidth: var(--pf-v5-c-table--m-truncate--cell--MaxWidth);
-  --pf-v5-c-table--cell--Overflow: auto;
-  --pf-v5-c-table--cell--WhiteSpace: nowrap;
+  --pf-v6-c-table--cell--MinWidth: var(--pf-v6-c-table--m-truncate--cell--MinWidth);
+  --pf-v6-c-table--cell--MaxWidth: var(--pf-v6-c-table--m-truncate--cell--MaxWidth);
+  --pf-v6-c-table--cell--Overflow: auto;
+  --pf-v6-c-table--cell--WhiteSpace: nowrap;
 }
 
-.pf-v5-c-file-upload {
-  --pf-v5-c-file-upload__file-details__c-form-control--MinHeight: 300px;
+.pf-v6-c-file-upload {
+  --pf-v6-c-file-upload__file-details__c-form-control--MinHeight: 300px;
 }

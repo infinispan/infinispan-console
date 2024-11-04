@@ -34,5 +34,22 @@ Cypress.Commands.add('login', (username, password, url = '/') => {
       password: password
     }
   });
-  cy.get('#nav-toggle').click();
+  cy.get('[data-cy=sideBarToggle]').click();
+});
+
+Cypress.Commands.add('cleanupTest',(username, password, endpoint = '/', method = 'DELETE', body = '', ignoreError = false) => {
+  cy.request({
+    method: method,
+    url: endpoint.includes('http') ? endpoint : 'http://localhost:11222/rest/v2' + endpoint,
+    auth: {
+      username: username,
+      password: password
+    },
+    body: body,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // Ignore if 404 on delete
+    failOnStatusCode: !(method == 'DELETE' || ignoreError)
+  });
 });
