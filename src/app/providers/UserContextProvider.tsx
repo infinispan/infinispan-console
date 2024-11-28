@@ -35,7 +35,7 @@ const UserContextProvider = ({ children }) => {
           if (eitherAuth.isRight()) {
             if (eitherAuth.value.keycloakConfig) {
               // Keycloak
-              KeycloakService.init(eitherAuth.value.keycloakConfig)
+              KeycloakService.Instance.init(eitherAuth.value.keycloakConfig)
                 .catch((err) => {
                   console.error(err);
                   setInit('SERVER_ERROR');
@@ -48,8 +48,8 @@ const UserContextProvider = ({ children }) => {
                   localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
                   localStorage.setItem('react-refresh-token', KeycloakService.keycloakAuth.refreshToken as string);
                   setTimeout(() => {
-                    KeycloakService.Instance.getToken().then((token) => {
-                      localStorage.setItem('react-token', token);
+                    KeycloakService.Instance.getToken().then((result) => {
+                      localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
                     });
                   }, 60000);
                   setInit('DONE');
@@ -72,7 +72,7 @@ const UserContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (loadingAcl && init != 'PENDING') {
+    if (loadingAcl && init !== 'PENDING' && init !== 'SERVER_ERROR') {
       ConsoleServices.security()
         .userAcl()
         .then((eitherAcl) => {
@@ -82,8 +82,8 @@ const UserContextProvider = ({ children }) => {
           } else {
             setError(eitherAcl.value.message);
           }
-          setLoadingAcl(false);
-        });
+        })
+        .finally(() => setLoadingAcl(false));
     }
   }, [loadingAcl, init]);
 
