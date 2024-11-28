@@ -134,7 +134,8 @@ const BackupsConfigurationTuning = () => {
       {configuration.feature.backupsCache &&
         configuration.feature.backupsCache.sites.map((site, index) => {
           return (
-            <FormFieldGroupExpandable id={site.siteName + '-expand-button'}
+            <FormFieldGroupExpandable
+              id={site.siteName + '-expand-button'}
               key={site.siteName + '-expand'}
               header={<FormFieldGroupHeader titleText={{ text: site.siteName, id: site.siteName + '-titleText-id' }} />}
             >

@@ -205,7 +205,8 @@ const XSiteCache = (props) => {
 
     if (stStatus == ST_SENDING) {
       return (
-        <Button data-cy={backup.name + "-cancelStateTransferButton"}
+        <Button
+          data-cy={backup.name + '-cancelStateTransferButton'}
           variant={ButtonVariant.danger}
           onClick={() =>
             setStateTransferModal({
@@ -222,14 +223,19 @@ const XSiteCache = (props) => {
 
     if (stStatus == ST_SEND_OK || stStatus == ST_SEND_FAILED || stStatus == ST_SEND_CANCELED) {
       return (
-        <Button data-cy={backup.name + "-clearStateButton"} variant={ButtonVariant.tertiary} onClick={() => clearStateTransfer(backup.name)}>
+        <Button
+          data-cy={backup.name + '-clearStateButton'}
+          variant={ButtonVariant.tertiary}
+          onClick={() => clearStateTransfer(backup.name)}
+        >
           {t('caches.backups.clear-state-action')}
         </Button>
       );
     }
 
     return (
-      <Button data-cy={backup.name + "-startTransfer"}
+      <Button
+        data-cy={backup.name + '-startTransfer'}
         variant={ButtonVariant.secondary}
         onClick={() =>
           setStateTransferModal({

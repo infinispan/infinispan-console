@@ -43,7 +43,8 @@ const StateTransfer = (props: {
       onClose={() => props.closeModal(false)}
       aria-label="State transfer modal"
       actions={[
-        <Button data-cy={props.action == 'start' ? 'startTransferButton' : 'cancelStateTransferButton'}
+        <Button
+          data-cy={props.action == 'start' ? 'startTransferButton' : 'cancelStateTransferButton'}
           key="state-transfer-button"
           onClick={() => props.closeModal(true)}
           variant={props.action == 'start' ? ButtonVariant.primary : ButtonVariant.danger}
