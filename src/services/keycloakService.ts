@@ -13,24 +13,21 @@ export class KeycloakService {
     return this.instance;
   }
 
-  public static init(configOptions: Keycloak.KeycloakConfig | undefined): Promise<void> {
+  public init(configOptions: Keycloak.KeycloakConfig | undefined): Promise<boolean> {
     if (!configOptions) {
       console.error('Unable to init Keycloak with undefined configOptions');
       return new Promise((resolve, reject) => reject('Unable to init Keycloak with undefined configOptions'));
     } else {
       KeycloakService.keycloakAuth = new Keycloak(configOptions);
-
-      return new Promise((resolve, reject) => {
-        KeycloakService.keycloakAuth
-          .init({})
-          .then(() => {
-            KeycloakService.Instance.initialized = true;
-            resolve();
-          })
-          .catch((errorData: KeycloakError) => {
-            reject(errorData);
-          });
-      });
+      return KeycloakService.keycloakAuth
+        .init()
+        .catch((errorData: KeycloakError) => {
+          console.error(errorData);
+          return false;
+        })
+        .finally(() => {
+          KeycloakService.Instance.initialized = true;
+        });
     }
   }
 
@@ -42,21 +39,12 @@ export class KeycloakService {
     return KeycloakService.keycloakAuth.authenticated ? KeycloakService.keycloakAuth.authenticated : false;
   }
 
-  public login(options?: KeycloakLoginOptions): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      KeycloakService.keycloakAuth
-        .login(options)
-        .then(() => {
-          resolve(true);
-        })
-        .catch(() => {
-          reject(false);
-        });
-    });
+  public login(options?: KeycloakLoginOptions): Promise<void> {
+    return KeycloakService.keycloakAuth.login(options);
   }
 
-  public logout(redirectUri?: string): void {
-    KeycloakService.keycloakAuth.logout();
+  public logout(redirectUri?: string): Promise<void> {
+    return KeycloakService.keycloakAuth.logout({ redirectUri: redirectUri });
   }
 
   public account(): void {
@@ -72,20 +60,7 @@ export class KeycloakService {
     return KeycloakService.keycloakAuth.realm;
   }
 
-  public getToken(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      if (KeycloakService.keycloakAuth.token) {
-        KeycloakService.keycloakAuth
-          .updateToken(5)
-          .then(() => {
-            resolve(KeycloakService.keycloakAuth.token as string);
-          })
-          .catch(() => {
-            reject('Failed to refresh token');
-          });
-      } else {
-        reject('Not logged in');
-      }
-    });
+  public getToken(): Promise<boolean> {
+    return KeycloakService.keycloakAuth.updateToken(5);
   }
 }
