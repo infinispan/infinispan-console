@@ -1,0 +1,65 @@
+<infinispan>
+<cache-container name="default" statistics="true">
+  <metrics accurate-size="true"/>
+  <tracing collector-endpoint="http://localhost:4318"
+           enabled="true"
+           exporter-protocol="OTLP"
+           service-name="infinispan-server"
+           security="false" />
+  <security>
+    <authorization/>
+  </security>
+  <distributed-cache name="people" statistics="true">
+    <encoding media-type="application/x-protostream"/>
+    <transaction mode="NON_XA"/>
+  </distributed-cache>
+  <distributed-cache-configuration name="e2e-test-template">
+    <encoding media-type="application/x-protostream"/>
+  </distributed-cache-configuration>
+  <distributed-cache name="heap-test" statistics="true">
+    <encoding media-type="application/x-protostream"/>
+    <transaction mode="NON_XA"/>
+    <memory storage="HEAP" max-size="1.5GB"/>
+  </distributed-cache>
+  <distributed-cache name="off-heap-test" statistics="true">
+    <encoding media-type="application/x-protostream"/>
+    <transaction mode="NON_XA"/>
+    <memory storage="OFF_HEAP"/>
+  </distributed-cache>
+  <invalidation-cache name="invalidationCache" mode="SYNC" statistics="true">
+    <encoding media-type="application/x-protostream"/>
+  </invalidation-cache>
+  <distributed-cache name="a-rbac-test-cache" statistics="true">
+    <encoding media-type="application/x-protostream"/>
+    <security>
+      <authorization enabled="true" roles="admin application deployer"/>
+    </security>
+    <indexing enabled="true" startup-mode="reindex">
+      <indexed-entities>
+        <indexed-entity>org.infinispan.Car</indexed-entity>
+      </indexed-entities>
+    </indexing>
+    <persistence passivation="false">
+      <file-store>
+        <data path="data"/>
+        <index path="index"/>
+      </file-store>
+    </persistence>
+    <memory storage="HEAP" max-size="1.5GB"/>
+  </distributed-cache>
+</cache-container>
+  <server>
+  <endpoints>
+    <endpoint  socket-binding="default" security-realm="default" >
+      <hotrod-connector name="hotrod">
+        <authentication>
+          <sasl mechanisms="PLAIN" server-name="infinispan"/>
+        </authentication>
+      </hotrod-connector>
+      <rest-connector name="rest">
+        <authentication mechanisms="BASIC DIGEST"/>
+      </rest-connector>
+    </endpoint>
+  </endpoints>
+</server>
+</infinispan>

@@ -1,0 +1,22 @@
+<infinispan>
+<cache-container name="default" statistics="true">
+  <metrics accurate-size="true"/>
+  <security>
+    <authorization/>
+  </security>
+</cache-container>
+  <server>
+  <endpoints>
+    <endpoint  socket-binding="default" security-realm="default" >
+      <hotrod-connector name="hotrod">
+        <authentication>
+          <sasl mechanisms="PLAIN" server-name="infinispan"/>
+        </authentication>
+      </hotrod-connector>
+      <rest-connector name="rest">
+        <authentication mechanisms="BASIC DIGEST"/>
+      </rest-connector>
+    </endpoint>
+  </endpoints>
+</server>
+</infinispan>
