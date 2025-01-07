@@ -6,10 +6,12 @@ on:
       - main
       - 14.x
       - 15.0
+      - 15.1
   pull_request:
     branches:
       - main
       - 15.0
+      - 15.1
       - 14.x
 
 jobs:
@@ -33,7 +35,7 @@ jobs:
         run: npm run build
 
       # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
-      - if: github.base_ref == 'main' || github.ref_name == 'main'
+      - if: github.base_ref == 'main' || github.ref_name == 'main'  || github.base_ref == '15.0' || github.ref_name == '15.0' || github.base_ref == '15.1' || github.ref_name == '15.1'
         name: Start Infinispan Server Latest Version
         run: |
           docker run -d -p 11222:11222 -v ${{ github.workspace }}/scripts/identities.batch:/user-config/identities.batch -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e JAVA_OPTIONS="-Xms1024m -Xmx3072m -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m" -e IDENTITIES_BATCH="/user-config/identities.batch" quay.io/infinispan-test/server:main --node-name=infinispan-4-e2e
