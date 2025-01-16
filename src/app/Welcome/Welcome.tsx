@@ -13,6 +13,7 @@ import {
   FlexItem,
   Gallery,
   GalleryItem,
+  PageSection,
   Spinner,
   Stack,
   StackItem,
