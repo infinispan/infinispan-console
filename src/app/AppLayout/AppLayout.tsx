@@ -209,6 +209,12 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     </Toolbar>
   );
 
+  const NoHeader = (
+    <Masthead style={{ zIndex: 0 }}>
+      <MastheadMain></MastheadMain>
+    </Masthead>
+  );
+
   const Header = (
     <Masthead>
       <MastheadMain>
@@ -307,9 +313,9 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     return (
       <Page
         mainContainerId="primary-app-container"
-        masthead={isWelcomePage ? null : Header}
+        masthead={isWelcomePage ? NoHeader : Header}
         isContentFilled
-        skipToContent={PageSkipToContent}
+        skipToContent={isWelcomePage ? undefined : PageSkipToContent}
         sidebar={!isWelcomePage && sidebarOpen && Sidebar}
       >
         <ActionResponseAlert />

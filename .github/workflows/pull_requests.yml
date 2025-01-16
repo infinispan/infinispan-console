@@ -48,7 +48,7 @@ jobs:
           #Adding nashorn libraries to both containers
           for containerId in $(docker ps -q)
           do
-            docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+            docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.6
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
@@ -69,7 +69,7 @@ jobs:
           #Adding nashorn libraries to both containers
           for containerId in $(docker ps -q)
           do
-            docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+            docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.6
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
@@ -89,7 +89,7 @@ jobs:
           #Adding nashorn libraries to both containers
           for containerId in $(docker ps -q)
           do
-            docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+            docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.6
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
@@ -103,7 +103,7 @@ jobs:
           # Wait for server to startup
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
           #Installing Nashorn dependencies
-          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.6
           docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
           docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
           docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4

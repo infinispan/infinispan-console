@@ -18,7 +18,7 @@ $DOCKER_COMMAND run --name ispn-nyc -d -p 31222:11222 -v ${ABSOLUTE_PATH}/script
 #Adding nashorn libraries to both containers
 for containerId in $($DOCKER_COMMAND ps -q)
 do
-  $DOCKER_COMMAND exec -it $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.4
+  $DOCKER_COMMAND exec -it $containerId /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.6
   $DOCKER_COMMAND exec -it $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
   $DOCKER_COMMAND exec -it $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
   $DOCKER_COMMAND exec -it $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4

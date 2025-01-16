@@ -1,5 +1,10 @@
 describe('Proto Schema CRUD', () => {
+  const schemaName = 'aTestSchema';
   beforeEach(() => {
+    // Make sure aTestSchema schema does not exist
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      '/schemas/' + schemaName + '.proto');
+    cy.wait(1000);
     cy.login(Cypress.env('username'), Cypress.env('password'));
   });
 
@@ -50,11 +55,11 @@ describe('Proto Schema CRUD', () => {
   });
 
   it('successfully creates, edits and deletes a proto schema', () => {
+    cy.wait(2000); // wait for the delete to be done
     clickTabSchemas();
 
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
-    const schemaName = 'aTestSchema';
     cy.get('#schema-name').click().type(schemaName);
     cy.get('#schema').click().type('schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
@@ -69,23 +74,22 @@ describe('Proto Schema CRUD', () => {
     cy.contains('schemaValue');
     cy.contains('Save');
     //Artificially adding here some delays between actions so that the proto schema is updated properly and normally shown on the page.
-    cy.wait(3000);
-    cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 10000 });
-    cy.wait(3000);
+    cy.wait(1000);
+    cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 5000 });
+    cy.wait(1000);
     cy.get('[data-cy=schemaEditArea]').type(
       'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
       { parseSpecialCharSequences: false }
     );
-    cy.wait(3000);
+    cy.wait(1000);
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
-    cy.wait(3000);
     cy.contains('Schema ' + schemaName +'.proto updated.');
-    cy.wait(3000);
+    cy.wait(1000);
     cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     //Waiting 5 seconds so that the proto schema is managed to be updated on the page.
-    cy.wait(3000);
+    cy.wait(1000);
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
-    cy.wait(3000);
+    cy.wait(1000);
     cy.contains('schemaValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
