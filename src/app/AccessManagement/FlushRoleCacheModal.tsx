@@ -17,7 +17,9 @@ const FlushRoleCacheModal = (props: { isModalOpen: boolean; submitModal: () => v
       disableFocusTrap={true}
     >
       <ModalHeader titleIconVariant={'warning'} title={t('access-management.modal-flush-cache-title')} />
-      <ModalBody></ModalBody>
+      <ModalBody>
+        <Content component={'p'}>{t('access-management.modal-flush-cache-description')}</Content>
+      </ModalBody>
       <ModalFooter>
         <Button
           key={'Flush'}
@@ -33,7 +35,6 @@ const FlushRoleCacheModal = (props: { isModalOpen: boolean; submitModal: () => v
           {t('common.actions.cancel')}
         </Button>
       </ModalFooter>
-      <Content component={'p'}>{t('access-management.modal-flush-cache-description')}</Content>
     </Modal>
   );
 };
