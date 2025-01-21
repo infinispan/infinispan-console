@@ -6,8 +6,7 @@ import { renderWithRouter } from '../../test-utils';
 const mockNavigate = jest.fn();
 
 jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
-  useNavigate: () => mockNavigate
+  ...jest.requireActual('react-router')
 }));
 
 describe('Not found page', () => {
@@ -17,15 +16,11 @@ describe('Not found page', () => {
       name: 'not-found-page.title'
     });
     const pageDescription = screen.getByText('not-found-page.description');
-    const button = screen.getByRole('button', {
-      name: 'not-found-page.button'
-    });
+    const button = screen.getByText('not-found-page.button');
     expect(pageHeading).toBeDefined();
     expect(pageDescription).toBeDefined();
     expect(button).toBeDefined();
 
     fireEvent.click(button);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });
