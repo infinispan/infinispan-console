@@ -35,7 +35,7 @@ jobs:
         run: npm run build
 
       # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
-      - if: github.base_ref == 'main' || github.ref_name == 'main' || github.base_ref == '15.0' || github.ref_name == '15.0' || github.base_ref == '15.2' || github.ref_name == '15.2'
+      - if: github.base_ref == 'main' || github.ref_name == 'main'
         name: Start 2 Cross-site Infinispan Servers Latest Version
         shell: bash
         run: |
@@ -57,7 +57,7 @@ jobs:
 
       # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
       - if: github.base_ref == '15.0' || github.ref_name == '15.0'
-        name: Start 2 Cross-site Infinispan Servers Latest Version
+        name: Start 2 Cross-site Infinispan Servers 15.0
         shell: bash
         run: |
           docker run -d -p 11222:11222 -v ${{ github.workspace }}/scripts/identities.batch:/user-config/identities.batch -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/e2eTestsConfigLON.xml:/user-config/e2eTestsConfigLON.xml -e JAVA_OPTIONS="-Xms1024m -Xmx3072m -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m -Dinfinispan.site.name=LON -Djgroups.mcast_port=46656" -e IDENTITIES_BATCH="/user-config/identities.batch" quay.io/infinispan/server:15.0 --node-name=infinispan-4-lon-e2e -c "infinispan-xsite.xml" -c "/user-config/e2eTestsConfigLON.xml"
@@ -77,7 +77,7 @@ jobs:
           done
       # It's not possible to use GH action services, as we need to mount custom configuration from checked out source to the server
       - if: github.base_ref == '15.2' || github.ref_name == '15.2'
-        name: Start 2 Cross-site Infinispan Servers Latest Version
+        name: Start 2 Cross-site Infinispan Servers 15.2
         shell: bash
         run: |
           docker run -d -p 11222:11222 -v ${{ github.workspace }}/scripts/identities.batch:/user-config/identities.batch -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/e2eTestsConfigLON.xml:/user-config/e2eTestsConfigLON.xml -e JAVA_OPTIONS="-Xms1024m -Xmx3072m -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m -Dinfinispan.site.name=LON -Djgroups.mcast_port=46656" -e IDENTITIES_BATCH="/user-config/identities.batch" quay.io/infinispan/server:15.2 --node-name=infinispan-4-lon-e2e -c "infinispan-xsite.xml" -c "/user-config/e2eTestsConfigLON.xml"
