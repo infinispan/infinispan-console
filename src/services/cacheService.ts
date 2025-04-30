@@ -254,7 +254,7 @@ export class CacheService {
     if (flags.length > 0) headers.append('flags', flags.join(','));
 
     // treat key to send in the url
-    let keyForUrl = '';
+    let keyForUrl: ActionResponse | string = '';
     const maybeKeyForUrl = CacheRequestResponseMapper.formatContent(
       key,
       keyContentType,
@@ -365,7 +365,9 @@ export class CacheService {
       );
       if (keyProtobuffed.isLeft()) {
         // Return the error
-        return Promise.resolve(left(keyProtobuffed.value));
+        return Promise.resolve(left(keyProtobuffed.value as ActionResponse)) as Promise<
+          Either<ActionResponse, CacheEntry[]>
+        >;
       }
       keyForURL = keyProtobuffed.value;
     } else {
@@ -401,7 +403,7 @@ export class CacheService {
       .then((data) => right(data) as Either<ActionResponse, CacheEntry[]>)
       .catch((err) => {
         return left(this.fetchCaller.mapError(err, 'An error occurred retrieving key ' + key));
-      });
+      }) as Promise<Either<ActionResponse, CacheEntry[]>>;
   }
 
   /**
@@ -522,23 +524,6 @@ export class CacheService {
       successMessage: `Cache ${cacheName} successfully updated.`,
       errorMessage: `Unexpected error when updating ${cacheName} config.`
     });
-  }
-
-  public async getSize(cacheName: string): Promise<Either<ActionResponse, number>> {
-    return this.fetchCaller
-      .fetch(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=size', 'GET')
-      .then((response) => response.text())
-      .then((data) => {
-        if (Number.isNaN(data)) {
-          return right(Number.parseInt(data)) as Either<ActionResponse, number>;
-        } else {
-          return left(<ActionResponse>{
-            message: 'Size of cache ' + cacheName + ' is not a number :' + data,
-            success: false
-          }) as Either<ActionResponse, number>;
-        }
-      })
-      .catch((err) => left(this.fetchCaller.mapError(err, 'Cannot get size for cache ' + cacheName)));
   }
 
   /**
@@ -675,10 +660,6 @@ export class CacheService {
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=distribution',
       (text) => text
     );
-  }
-
-  public async getClusterDistribution(): Promise<Either<ActionResponse, ClusterDistribution[]>> {
-    return this.fetchCaller.get(this.endpoint + '/cluster?action=distribution', (text) => text);
   }
 
   /**

@@ -29,7 +29,7 @@ describe('Global stats', () => {
 
     //Verify that page is properly loaded after click;
     cy.get('h1').should('contain', 'Cluster membership');
-    cy.contains('Healthy');
+    cy.contains('Running');
   });
 
   it('successfully resets and refresh global metrics', () => {
@@ -39,7 +39,7 @@ describe('Global stats', () => {
     cy.get('[data-cy="confirmButton"]').click();
     cy.contains('Global metrics cleared');
     cy.get('[data-cy="globalStatsActions"]').click();
-    
+
     //Comparing the value of the start time before and after refresh to make sure that refresh takes place
     cy.get('[data-cy=cacheManagerStartTime]').then(($field) => {
       const timeTextBefore = $field.text();

@@ -6,13 +6,11 @@ on:
       - main
       - 15.0
       - 15.2
-      - 14.x
   pull_request:
     branches:
       - main
       - 15.0
       - 15.2
-      - 14.x
 
 jobs:
   test:
@@ -95,19 +93,6 @@ jobs:
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
             docker exec -i $containerId /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-util:9.4
           done
-
-      - if: github.base_ref == '14.x' || github.ref_name == '14.x'
-        name: Start Infinispan Server 14.x Version
-        run: |
-          docker run -d -p 11222:11222 -v ${{ github.workspace }}/scripts/identities.batch:/user-config/identities.batch -v ${{ github.workspace }}/dist:/opt/infinispan/static/console -v ${{ github.workspace }}/scripts/infinispan-basic-auth.xml:/opt/infinispan/server/conf/infinispan.xml -e JAVA_OPTIONS="-Xms1024m -Xmx3072m -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m" -e IDENTITIES_BATCH="/user-config/identities.batch" quay.io/infinispan-test/server:14.0.x --node-name=infinispan-4-e2e
-          # Wait for server to startup
-          curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
-          #Installing Nashorn dependencies
-          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.openjdk.nashorn:nashorn-core:15.6
-          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm:9.4
-          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-commons:9.4
-          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-tree:9.4
-          docker exec $(docker ps -q -l) /opt/infinispan/bin/cli.sh install org.ow2.asm:asm-util:9.4
 
       - name: Restarting Infinispan Servers After Nashorn Installation
         run: |

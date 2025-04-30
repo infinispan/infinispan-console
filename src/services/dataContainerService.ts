@@ -46,7 +46,7 @@ export class ContainerService {
             defined_caches: this.removeInternalCaches(data.defined_caches),
             cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names),
             cluster_members: this.clusterMembers(data.cluster_members, data.cluster_members_physical_addresses),
-            health: maybeHealth.isRight() ? maybeHealth.value : maybeHealth.value.message,
+            health: maybeHealth.isRight() ? maybeHealth.value : (maybeHealth.value as ActionResponse).message,
             local_site: data.local_site,
             rebalancing_enabled: data.rebalancing_enabled,
             backups_enabled: data.relay_node || (data.local_site != null && data.local_site !== ''), // relay node might be false if not coordinator
@@ -156,10 +156,12 @@ export class ContainerService {
 
   private clusterMembers(cluster_members: [string], cluster_members_physical_addresses: [string]): ClusterMember[] {
     return cluster_members.map(
-      (mem, index) =>
+      (member, index) =>
         <ClusterMember>{
-          name: mem,
-          physical_address: cluster_members_physical_addresses[index]
+          node_address: member,
+          physical_addresses: cluster_members_physical_addresses[index],
+          version: '',
+          cache_manager_status: ''
         }
     );
   }

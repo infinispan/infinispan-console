@@ -56,6 +56,7 @@ import { IgnoreCache } from '@app/Caches/IgnoreCache';
 import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
+import { CACHES_BANNER } from '@app/providers/APIAlertProvider';
 
 interface CacheAction {
   cacheName: string;
@@ -65,7 +66,7 @@ interface CacheAction {
 const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
-  const { setBanner } = useBanner();
+  const { addBanner, removeBanner } = useBanner();
   const { caches, errorCaches, loadingCaches, reloadCaches } = useCaches();
   const { cm } = useDataContainer();
 
@@ -126,9 +127,9 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
       }, '');
 
       if (failedCaches.length > 0) {
-        setBanner('[' + failedCaches + '] ' + t('cache-managers.cache-failed-status'));
+        addBanner(CACHES_BANNER, '[' + failedCaches + '] ' + t('cache-managers.cache-failed-status'));
       } else {
-        setBanner('');
+        removeBanner(CACHES_BANNER);
       }
 
       props.setCachesCount(caches.length);

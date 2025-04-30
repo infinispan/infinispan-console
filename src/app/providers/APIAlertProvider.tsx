@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
 const initialAlertState = {
-  banner: '',
-  setBanner: (banner: string) => {},
+  bannerMap: new Map(),
+  addBanner: (id: string, message: string) => {},
+  removeBanner: (id: string) => {},
   alertMap: new Map(),
   addAlert: (alert: ActionResponse) => {},
   removeAlert: (pos: number) => {}
@@ -10,13 +11,20 @@ const initialAlertState = {
 
 export const APIAlertContext = React.createContext(initialAlertState);
 
+export const CACHES_BANNER = 'caches';
+export const ROLLING_UPGRADE_BANNER = 'rolling';
+
 const APIAlertProvider = ({ children }) => {
   const [alertMap, setAlertMap] = useState(new Map());
-  const [banner, setBanner] = useState<string>('');
+  const [bannerMap, setBannerMap] = useState(new Map());
 
-  const removeAlert = (id: number) => {
-    alertMap.delete(id);
-    setAlertMap(new Map(alertMap));
+  const addBanner = (id: string, message: string) => {
+    setBannerMap(new Map(bannerMap.set(id, message)));
+  };
+
+  const removeBanner = (id: string) => {
+    bannerMap.delete(id);
+    setBannerMap(new Map(bannerMap));
   };
 
   const addAlert = (actionResponse) => {
@@ -27,9 +35,15 @@ const APIAlertProvider = ({ children }) => {
     }, 10000);
   };
 
+  const removeAlert = (id: number) => {
+    alertMap.delete(id);
+    setAlertMap(new Map(alertMap));
+  };
+
   const contextValue = {
-    banner,
-    setBanner: useCallback(setBanner, []),
+    bannerMap,
+    addBanner: useCallback(addBanner, []),
+    removeBanner: useCallback(removeBanner, []),
     alertMap,
     addAlert: useCallback(addAlert, []),
     removeAlert: useCallback(removeAlert, [])

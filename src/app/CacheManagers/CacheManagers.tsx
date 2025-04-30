@@ -99,17 +99,35 @@ const CacheManagers = () => {
         style={{ marginTop: t_global_spacer_md.value }}
         activeKey={activeTabKey}
       >
-        <>
-          {tabs.map((tab) => (
-            <Tab
-              data-cy={'tab-' + tab.name}
-              aria-label={'nav-item-' + tab.name}
-              key={'nav-item-' + tab.key}
-              eventKey={tab.key}
-              title={<TabTitleText>{tab.count + ' ' + tab.name}</TabTitleText>}
-            ></Tab>
-          ))}
-        </>
+        {tabs.map((tab) => (
+          <Tab
+            data-cy={'tab-' + tab.name}
+            aria-label={'nav-item-' + tab.name}
+            key={'nav-item-' + tab.key}
+            eventKey={tab.key}
+            title={<TabTitleText>{tab.count + ' ' + tab.name}</TabTitleText>}
+          ></Tab>
+        ))}
+      </Tabs>
+    );
+
+    return (
+      <Tabs
+        data-cy="navigationTabs"
+        onSelect={(_event, tab) => handleTabClick(tab)}
+        style={{ marginTop: t_global_spacer_md.value }}
+        activeKey={activeTabKey}
+        role={'region'}
+      >
+        {tabs.map((tab) => (
+          <Tab
+            data-cy={`tab-${tab.name}`}
+            aria-label={`nav-item-${tab.name}`}
+            key={`nav-item-${tab.key}`}
+            eventKey={tab.key}
+            title={<TabTitleText>{tab.count + ' ' + tab.name}</TabTitleText>}
+          ></Tab>
+        ))}
       </Tabs>
     );
   };

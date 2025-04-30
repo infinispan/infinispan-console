@@ -19,13 +19,13 @@ export class FetchCaller {
    */
   public get(
     url: string,
-    transformer: (data: any) => {},
+    transformer: (data: any) => any,
     customHeaders?: Headers,
     text?: boolean
   ): Promise<Either<any, any>> {
     const promise: Promise<Response> = this.fetch(url, 'GET', customHeaders);
     return promise
-      .then((response) => {
+      .then((response): Promise<any> => {
         if (response.ok) {
           return text ? response.text() : response.json();
         }
@@ -132,7 +132,7 @@ export class FetchCaller {
     response: Promise<Response>
   ): Promise<ActionResponse> {
     return response
-      .then((response) => {
+      .then((response): Promise<string> => {
         if (response.ok) {
           return response.text();
         }
@@ -145,7 +145,7 @@ export class FetchCaller {
         if (response.status == 409) {
           throw 'Already exists.';
         }
-        return response.text().then((text) => {
+        return response.text().then((text): string => {
           throw text;
         });
       })
