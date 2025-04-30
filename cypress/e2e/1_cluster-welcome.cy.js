@@ -69,7 +69,7 @@ describe('Welcome page', () => {
     //Clicks the side menu Cluster membership
     cy.get('[itemid="cluster_membership"]').click();
     cy.contains('Cluster membership');
-    cy.contains('Healthy');
+    cy.contains('Running');
     cy.contains('1 member in use');
 
     //Clicks the side menu Access management

@@ -27,12 +27,12 @@ import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/c
 import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { onSearch } from '@app/utils/searchFilter';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
+import displayUtils from '@services/displayUtils';
 
 const ClusterMembership = () => {
   const { t } = useTranslation();
   const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
-
-  const { clusterMembers, cacheManager, loading, error, reload } = useFetchClusterMembers();
+  const { clusterMembers, loading, error } = useFetchClusterMembers();
   const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
   const [clusterMembersPagination, setClusterMembersPagination] = useState({
     page: 1,
@@ -43,11 +43,13 @@ const ClusterMembership = () => {
 
   const columnNames = {
     name: t('cluster-membership.node-name'),
+    status: t('cluster-membership.status'),
+    version: t('cluster-membership.version'),
     physicalAdd: t('cluster-membership.physical-address')
   };
 
   useEffect(() => {
-    if (clusterMembers) setFilteredClusterMembers(clusterMembers);
+    if (clusterMembers) setFilteredClusterMembers(clusterMembers.members);
   }, [clusterMembers, error, loading]);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ const ClusterMembership = () => {
 
   useEffect(() => {
     if (clusterMembers) {
-      setFilteredClusterMembers(clusterMembers.filter((data) => onSearch(searchValue, data.name)));
+      setFilteredClusterMembers(clusterMembers.members.filter((data) => onSearch(searchValue, data.node_address)));
       onSetPage(1);
     }
   }, [searchValue, clusterMembers]);
@@ -80,12 +82,12 @@ const ClusterMembership = () => {
   };
 
   const buildHeader = () => {
-    if (!cacheManager) {
+    if (!clusterMembers) {
       return <Content component={ContentVariants.h1}>-</Content>;
     }
 
-    const member = cacheManager.cluster_size > 1 ? ' members ' : ' member ';
-    const sizeLabel = cacheManager.cluster_size + member + 'in use';
+    const member = clusterMembers.members.length > 1 ? ' members ' : ' member ';
+    const sizeLabel = clusterMembers.members.length + member + 'in use';
 
     return (
       <React.Fragment>
@@ -98,10 +100,6 @@ const ClusterMembership = () => {
         </Toolbar>
         <Toolbar id="cluster-status-info">
           <ToolbarContent>
-            <ToolbarItem>
-              <InfinispanComponentStatus status={cacheManager.health} />
-            </ToolbarItem>
-            <ToolbarItem variant="separator" />
             <ToolbarItem>
               <Content component={ContentVariants.p}>{sizeLabel}</Content>
             </ToolbarItem>
@@ -157,7 +155,7 @@ const ClusterMembership = () => {
       );
     }
 
-    if (!cacheManager) {
+    if (!clusterMembers) {
       return (
         <EmptyState variant={EmptyStateVariant.full} icon={CubesIcon}>
           <EmptyStateBody>{t('cluster-membership.empty-cluster')}</EmptyStateBody>
@@ -177,8 +175,10 @@ const ClusterMembership = () => {
           <Thead>
             <Tr>
               <Th colSpan={1}>{columnNames.name}</Th>
+              <Th colSpan={1}>{columnNames.status}</Th>
+              <Th colSpan={1}>{columnNames.version}</Th>
               <Th colSpan={1}>{columnNames.physicalAdd}</Th>
-              <Th style={{ width: '28%' }} />
+              <Th style={{ width: '28%' }} screenReaderText="Download server report buttons" />
             </Tr>
           </Thead>
           <Tbody>
@@ -199,11 +199,19 @@ const ClusterMembership = () => {
               </Tr>
             ) : (
               rows.map((row) => {
-                const isDownloading = downloading && downloadNodeName === row.name;
+                const isDownloading = downloading && downloadNodeName === row.node_address;
                 return (
-                  <Tr key={row.name}>
-                    <Td dataLabel={columnNames.name}>{row.name}</Td>
-                    <Td dataLabel={columnNames.physicalAdd}>{row.physical_address}</Td>
+                  <Tr key={row.node_address}>
+                    <Td dataLabel={columnNames.name}>{row.node_address}</Td>
+                    <Td dataLabel={columnNames.status}>
+                      {
+                        <InfinispanComponentStatus
+                          status={displayUtils.parseComponentStatus(row.cache_manager_status)}
+                        />
+                      }
+                    </Td>
+                    <Td dataLabel={columnNames.version}>{row.version}</Td>
+                    <Td dataLabel={columnNames.physicalAdd}>{row.physical_addresses}</Td>
                     <Td dataLabel={columnNames.physicalAdd}>
                       <Button
                         data-cy="downloadReportLink"
@@ -211,7 +219,7 @@ const ClusterMembership = () => {
                         isInline
                         isLoading={isDownloading}
                         icon={!isDownloading ? <DownloadIcon /> : null}
-                        onClick={() => downloadServerReport(row.name)}
+                        onClick={() => downloadServerReport(row.node_address)}
                       >
                         {isDownloading ? t('cluster-membership.downloading') : t('cluster-membership.download-report')}
                       </Button>

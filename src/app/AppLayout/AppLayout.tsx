@@ -36,7 +36,6 @@ import brandLight from '!!url-loader!@app/assets/images/brand.svg';
 import brandDark from '!!url-loader!@app/assets/images/brand_dark.svg';
 import { NavLink } from 'react-router-dom';
 import { IAppRoute, routes } from '@app/routes';
-import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 import { ActionResponseAlert } from '@app/Common/ActionResponseAlert';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { t_global_spacer_sm } from '@patternfly/react-tokens';
@@ -325,7 +324,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       </Page>
     );
   };
-  return <APIAlertProvider>{displayPage()}</APIAlertProvider>;
+  return displayPage();
 };
 
 export { AppLayout };
