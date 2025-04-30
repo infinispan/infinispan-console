@@ -21,11 +21,6 @@ interface CacheManager {
   tracing_enabled: boolean;
 }
 
-interface ClusterMember {
-  name: string;
-  physical_address: string;
-}
-
 interface CacheManagerStats {
   statistics_enabled: boolean;
   time_since_start?: number;
@@ -502,6 +497,20 @@ interface DataDistribution {
 interface ClusterDistribution {
   node_name: string;
   node_addresses: string[];
+  memory_available: number;
+  memory_used: number;
+}
+
+interface ClusterMember {
+  version: string;
+  node_address: string;
+  physical_addresses: string;
+  cache_manager_status: string;
+}
+
+interface ClusterMembers {
+  rolling_upgrade: boolean;
+  members: ClusterMember[];
   memory_available: number;
   memory_used: number;
 }

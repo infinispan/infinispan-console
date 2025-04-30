@@ -11,6 +11,6 @@ export function useApiAlert() {
  * Custom Hook for banner
  */
 export function useBanner() {
-  const { banner, setBanner } = useContext(APIAlertContext);
-  return { banner, setBanner };
+  const { bannerMap, addBanner, removeBanner } = useContext(APIAlertContext);
+  return { bannerMap, addBanner, removeBanner };
 }
