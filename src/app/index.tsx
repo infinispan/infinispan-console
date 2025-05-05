@@ -7,6 +7,8 @@ import '@app/app.css';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { UserContextProvider } from '@app/providers/UserContextProvider';
 import { ThemeProvider } from './providers/ThemeProvider';
+import { RollingUpgradeDetectionProvider } from '@app/providers/RollingUpgradeDetectionProvider';
+import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 
 const App = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -26,9 +28,13 @@ const App = () => {
     <Router basename="/console">
       <ThemeProvider>
         <UserContextProvider>
-          <AppLayout>
-            <AppRoutes />
-          </AppLayout>
+          <APIAlertProvider>
+            <RollingUpgradeDetectionProvider>
+              <AppLayout>
+                <AppRoutes />
+              </AppLayout>
+            </RollingUpgradeDetectionProvider>
+          </APIAlertProvider>
         </UserContextProvider>
       </ThemeProvider>
     </Router>

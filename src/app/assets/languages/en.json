@@ -941,6 +941,8 @@
     "title": "Cluster membership",
     "node-name": "Name",
     "physical-address": "Physical address",
+    "version": "Version",
+    "status": "Status",
     "download-report": "Download server report",
     "downloading": "Downloading",
     "empty-cluster": "This cluster is empty",
@@ -1099,5 +1101,9 @@
       "user-name-tooltip": "Known user names in the selected security realm.",
       "users-hint-link": "Learn more about users in the Security Guide."
     }
+  },
+  "rolling-upgrade": {
+    "started": "Rolling Upgrade in Progress — Some features may be temporarily unavailable",
+    "finished": "Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version."
   }
 }

@@ -3,21 +3,20 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
 
 export function useFetchClusterMembers() {
-  const [cacheManager, setCacheManager] = useState<CacheManager>();
-  const [clusterMembers, setClusterMembers] = useState<ClusterMember[]>([]);
+  const [clusterMembers, setClusterMembers] = useState<ClusterMembers>();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (loading) {
-      ConsoleServices.dataContainer()
-        .getDefaultCacheManager()
+      ConsoleServices.cluster()
+        .getClusterMembers()
         .then((eitherDefaultCm) => {
           if (eitherDefaultCm.isRight()) {
-            setCacheManager(eitherDefaultCm.value);
-            setClusterMembers(eitherDefaultCm.value.cluster_members);
+            setClusterMembers(eitherDefaultCm.value as unknown as ClusterMembers);
           } else {
-            setError(eitherDefaultCm.value.message);
+            const actionResponse = eitherDefaultCm.value as unknown as ActionResponse;
+            setError(actionResponse.message);
           }
         })
         .finally(() => setLoading(false));
@@ -30,7 +29,6 @@ export function useFetchClusterMembers() {
 
   return {
     clusterMembers,
-    cacheManager,
     loading,
     error,
     reload
