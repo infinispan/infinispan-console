@@ -33,24 +33,15 @@
       <name>See http://www.infinispan.org for a complete list of contributors</name>
     </developer>
   </developers>
+
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/ISPN</url>
+    <system>github</system>
+    <url>https://github.com/infinispan/infinispan-console/issues</url>
   </issueManagement>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>${maven.snapshots.repo.id}</id>
-      <url>${maven.snapshots.repo.url}</url>
-    </snapshotRepository>
-    <repository>
-      <id>${maven.releases.repo.id}</id>
-      <url>${maven.releases.repo.url}</url>
-    </repository>
-  </distributionManagement>
 
   <ciManagement>
-    <system>Jenkins</system>
-    <url>https://ci.infinispan.org</url>
+    <system>github</system>
+    <url>https://github.com/infinispan/infinispan-console/actions</url>
   </ciManagement>
 
   <scm>
@@ -65,16 +56,8 @@
     <infinispan-console.brand.name>Infinispan Management Console</infinispan-console.brand.name>
     <branding.infinispan.shortName>infinispan</branding.infinispan.shortName>
     <maven-frontend-plugin.version>1.12.1</maven-frontend-plugin.version>
-
-    <!-- maven repository urls -->
-    <maven.releases.nexus.url>https://s01.oss.sonatype.org/</maven.releases.nexus.url>
-    <maven.releases.repo.id>ossrh</maven.releases.repo.id>
-    <maven.releases.repo.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</maven.releases.repo.url>
-    <maven.snapshots.repo.id>ossrh</maven.snapshots.repo.id>
-    <maven.snapshots.repo.url>https://s01.oss.sonatype.org/content/repositories/snapshots</maven.snapshots.repo.url>
-
-    <version.maven.nexus-staging>1.6.13</version.maven.nexus-staging>
-    <version.maven.gpg>3.0.1</version.maven.gpg>
+    <version.maven.sonatype.central>0.7.0</version.maven.sonatype.central>
+    <version.maven.gpg>3.2.7</version.maven.gpg>
   </properties>
 
   <profiles>
@@ -202,9 +185,13 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
             <extensions>true</extensions>
+            <configuration>
+              <autoPublish>true</autoPublish>
+              <publishingServerId>central</publishingServerId>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -278,16 +265,9 @@
           <version>${version.source.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>${version.maven.nexus-staging}</version>
-          <extensions>true</extensions>
-          <configuration>
-            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-            <stagingDescription>${infinispan-console.brand.name} ${project.version} release</stagingDescription>
-            <nexusUrl>${maven.releases.nexus.url}</nexusUrl>
-            <serverId>${maven.releases.repo.id}</serverId>
-          </configuration>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+          <version>${version.maven.sonatype.central}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
