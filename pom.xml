@@ -190,6 +190,7 @@
             <extensions>true</extensions>
             <configuration>
               <autoPublish>true</autoPublish>
+              <deploymentName>Infinispan Console ${project.version}</deploymentName>
               <publishingServerId>central</publishingServerId>
             </configuration>
           </plugin>
