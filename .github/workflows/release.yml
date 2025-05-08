@@ -54,14 +54,14 @@ jobs:
 
       - name: Tag Release
         run: |
-          git commit -a -m "Releasing ${{ github.event.inputs.version }}"
+          git commit --no-verify -a -m "Releasing ${{ github.event.inputs.version }}"
           git tag ${{ github.event.inputs.version }}
 
       - name: Next Version
         run: |
           ./mvnw -B versions:set -DnewVersion=${{ github.event.inputs.nextVersion }} -DprocessAllModules=true
           ./mvnw -B versions:set-property -Dproperty=version.infinispan -DnewVersion=${{ github.event.inputs.nextVersion }}
-          git commit -a -m "Next version ${{ github.event.inputs.nextVersion }}"
+          git commit --no-verify -a -m "Next version ${{ github.event.inputs.nextVersion }}"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
