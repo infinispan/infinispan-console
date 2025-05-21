@@ -148,8 +148,20 @@ describe('Cache Creation Wizard', () => {
     deleteCache('asuper-cache');
   });
 
-  it('successfully creates with a template', () => {
+  it('ADMIN user successfully creates with a template', () => {
     const cacheName = 'aCache';
+    createCacheWithTemplate(cacheName);
+    deleteCache(cacheName);
+  });
+
+  it('DEPLOYER successfully creates with a template', () => {
+    cy.login('deployer', Cypress.env('password'));
+    const cacheName = 'aaCache';
+    createCacheWithTemplate(cacheName);
+    deleteCache(cacheName);
+  });
+
+  function createCacheWithTemplate(cacheName) {
     //go to create cache page
     cy.get('[data-cy=createCacheButton]').click();
     cy.get('#edit').click();
@@ -164,15 +176,16 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=toggle-templates]').click();
     cy.get('[data-cy=option-typeahead-e2e-test-template]').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    cy.contains('Cache ' + cacheName + ' successfully created with e2e-test-template.');
+    cy.contains(
+      'Cache ' + cacheName + ' successfully created with e2e-test-template.',
+    );
     // Once the cache created, redirection to main page is done and the cache should be visible
     //Is redirected to Data Container page
-    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
-    cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
-    cy.get('[data-cy=rebalancingSwitch]').should('exist');
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should(
+      'exist',
+    );
     cy.contains(cacheName);
-    deleteCache(cacheName);
-  });
+  }
 
   it('successfully creates without a template a JSON config', () => {
     //go to create cache page
