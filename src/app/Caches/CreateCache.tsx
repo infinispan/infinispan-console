@@ -32,7 +32,6 @@ const CreateCache = () => {
   const [localSite, setLocalSite] = useState('');
   const { connectedUser } = useConnectedUser();
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
-
   useEffect(() => {
     if (cm) {
       if (cm.backups_enabled && cm.local_site) {
@@ -59,12 +58,11 @@ const CreateCache = () => {
     );
   };
 
-  const create = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
-  const id = create ? 'create' : 'setup';
+  const id = canCreateCache ? 'create' : 'setup';
 
   return (
     <CreateCacheProvider>
-      {create && <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />}
+      {canCreateCache && <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />}
       <PageHeader
         title={
           localSite == ''
@@ -76,7 +74,7 @@ const CreateCache = () => {
 
       {loading && displayLoading()}
       {error != '' && displayError()}
-      {cm && <CreateCacheWizard cacheManager={cm} create={create} />}
+      {cm && <CreateCacheWizard cacheManager={cm} create={canCreateCache} />}
     </CreateCacheProvider>
   );
 };
