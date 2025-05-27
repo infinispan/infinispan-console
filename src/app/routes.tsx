@@ -81,7 +81,7 @@ const routes: IAppRoute[] = [
     path: '/container/caches/create',
     title: 'Create cache',
     menu: false,
-    admin: true
+    admin: false
   },
   {
     component: <DetailConfigurations />,
