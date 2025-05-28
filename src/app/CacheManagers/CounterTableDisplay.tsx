@@ -217,20 +217,13 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     };
   }, [isFilterOpen, menuRef]);
 
-  const createCounterButtonHelper = (isEmptyPage?: boolean) => {
-    const emptyPageButtonProp = {
-      style: { marginTop: t_global_spacer_xl.value }
-    };
-    const normalPageButtonProps = {
-      style: { marginLeft: t_global_spacer_sm.value }
-    };
+  const createCounterButtonHelper = () => {
     return (
       <Button
         variant={ButtonVariant.primary}
         aria-label="create-counter-button-helper"
         data-cy="createCounterButton"
         onClick={() => setIsCreateCounter(true)}
-        {...(isEmptyPage ? emptyPageButtonProp : normalPageButtonProps)}
       >
         {t('cache-managers.counters.modal-create-title')}
       </Button>
@@ -338,7 +331,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
       headingLevel="h4"
     >
       <EmptyStateBody>{t('cache-managers.counters.no-counters-body')}</EmptyStateBody>
-      <EmptyStateFooter>{createCounterButtonHelper(true)}</EmptyStateFooter>
+      <EmptyStateFooter>{createCounterButtonHelper()}</EmptyStateFooter>
     </EmptyState>
   );
 
@@ -383,66 +376,71 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
     return <span />;
   }
 
-  if (counters.length == 0) {
-    return emptyPage;
+  let page = emptyPage;
+  if (counters.length > 0) {
+    page = (
+      <>
+        {toolbar}
+        <Table className={'counters-table'} aria-label={'counters-table-label'} variant={'compact'}>
+          <Thead>
+            <Tr>
+              <Th colSpan={1}>{columnNames.name}</Th>
+              <Th colSpan={1}>{columnNames.currVal}</Th>
+              <Th colSpan={1}>{columnNames.initVal}</Th>
+              <Th colSpan={1}>{columnNames.storage}</Th>
+              <Th colSpan={2}>{columnNames.config}</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredCounters.length == 0 ? (
+              <Tr>
+                <Td colSpan={6}>
+                  <Bullseye>
+                    <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
+                      <Title headingLevel="h2" size="lg">
+                        {t('cache-managers.counters.no-filtered-counter')}
+                      </Title>
+                      <EmptyStateBody>{t('cache-managers.counters.no-filtered-counter-body')}</EmptyStateBody>
+                    </EmptyState>
+                  </Bullseye>
+                </Td>
+              </Tr>
+            ) : (
+              rows.map((row) => {
+                let rowActions: IAction[];
+                if (row.config.type === CounterType.STRONG_COUNTER) {
+                  rowActions = strongCountersActions(row);
+                } else {
+                  rowActions = weakCountersActions(row);
+                }
+                return (
+                  <Tr key={row.name}>
+                    <Td dataLabel={columnNames.name}>{row.name}</Td>
+                    <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                    <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                    <Td dataLabel={columnNames.storage}>{displayStorage(row.config.storage)}</Td>
+                    <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
+                    <Td isActionCell data-cy={'actions-' + row.name}>
+                      <ActionsColumn items={rowActions} />
+                    </Td>
+                  </Tr>
+                );
+              })
+            )}
+          </Tbody>
+        </Table>
+        {filteredCounters.length !== 0 && (
+          <Toolbar id="bottom-pagination-counter">
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('up')}</ToolbarItem>
+          </Toolbar>
+        )}
+      </>
+    );
   }
 
   return (
     <React.Fragment>
-      {toolbar}
-      <Table className={'counters-table'} aria-label={'counters-table-label'} variant={'compact'}>
-        <Thead>
-          <Tr>
-            <Th colSpan={1}>{columnNames.name}</Th>
-            <Th colSpan={1}>{columnNames.currVal}</Th>
-            <Th colSpan={1}>{columnNames.initVal}</Th>
-            <Th colSpan={1}>{columnNames.storage}</Th>
-            <Th colSpan={2}>{columnNames.config}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {filteredCounters.length == 0 ? (
-            <Tr>
-              <Td colSpan={6}>
-                <Bullseye>
-                  <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
-                    <Title headingLevel="h2" size="lg">
-                      {t('cache-managers.counters.no-filtered-counter')}
-                    </Title>
-                    <EmptyStateBody>{t('cache-managers.counters.no-filtered-counter-body')}</EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              </Td>
-            </Tr>
-          ) : (
-            rows.map((row) => {
-              let rowActions: IAction[];
-              if (row.config.type === CounterType.STRONG_COUNTER) {
-                rowActions = strongCountersActions(row);
-              } else {
-                rowActions = weakCountersActions(row);
-              }
-              return (
-                <Tr key={row.name}>
-                  <Td dataLabel={columnNames.name}>{row.name}</Td>
-                  <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
-                  <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
-                  <Td dataLabel={columnNames.storage}>{displayStorage(row.config.storage)}</Td>
-                  <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
-                  <Td isActionCell data-cy={'actions-' + row.name}>
-                    <ActionsColumn items={rowActions} />
-                  </Td>
-                </Tr>
-              );
-            })
-          )}
-        </Tbody>
-      </Table>
-      {filteredCounters.length !== 0 && (
-        <Toolbar id="bottom-pagination-counter">
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('up')}</ToolbarItem>
-        </Toolbar>
-      )}
+      {page}
       <DeleteCounter
         name={counterToDelete}
         isModalOpen={counterToDelete != ''}
