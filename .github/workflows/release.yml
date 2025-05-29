@@ -54,7 +54,7 @@ jobs:
 
       - name: Tag Release
         run: |
-          git commit -a -m "Releasing ${{ github.event.inputs.version }}"
+          git commit --no-verify -a -m "Releasing ${{ github.event.inputs.version }}"
           git tag ${{ github.event.inputs.version }}
 
       - name: Next Version
