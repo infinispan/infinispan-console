@@ -177,9 +177,11 @@ describe('RBAC Functionality Tests', () => {
     if (isSuperAdmin) {
       cy.get('#rebalancing-switch').should('exist');
       cy.get('[data-cy=cacheConfigurationTab]').should('exist');
+      cy.get('[data-cy=edit-alias-button]').should('exist');
     } else {
       cy.get('#rebalancing-switch').should('not.exist');
       cy.get('[data-cy=cacheConfigurationTab]').should('not.exist');
+      cy.get('[data-cy=edit-alias-button]').should('not.exist');
     }
 
     if (isMonitor) {

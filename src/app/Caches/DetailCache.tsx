@@ -52,6 +52,7 @@ import { useNavigate } from 'react-router';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { PageHeader } from '@patternfly/react-component-groups';
+import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -63,6 +64,9 @@ const DetailCache = (props: { cacheName: string }) => {
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [isOpen, setIsOpen] = useState(false);
+  const [cacheAction, setCacheAction] = useState<string>('');
+  const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+  const isCacheReader = ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
 
   useEffect(() => {
     loadCache(cacheName);
@@ -73,21 +77,21 @@ const DetailCache = (props: { cacheName: string }) => {
       return;
     }
 
-    if (
-      cache.started &&
-      cache.editable &&
-      ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)
-    ) {
+    if (cache.started && cache.editable && isCacheReader) {
       setActiveTabKey1(0);
-    } else if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+    } else if (isAdmin) {
       setActiveTabKey1(1);
     } else {
       setActiveTabKey1(2);
     }
   }, [cache]);
 
+  const openUpdateAliasesCacheModal = (cacheName: string) => {
+    setCacheAction('aliases');
+  };
+
   const buildEntriesTabContent = () => {
-    if (cache.started && !ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser)) {
+    if (cache.started && !isCacheReader) {
       return '';
     }
 
@@ -120,7 +124,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const entriesTabEnabled = (): boolean => {
-    return cache.editable! && ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
+    return cache.editable! && isCacheReader;
   };
 
   const buildDetailContent = () => {
@@ -191,11 +195,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const displayBackupsManagement = () => {
-    return (
-      cache &&
-      cache?.features?.hasRemoteBackup &&
-      ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-    );
+    return cache && cache?.features?.hasRemoteBackup && isAdmin;
   };
 
   const displayIndexManage = () => {
@@ -307,14 +307,31 @@ const DetailCache = (props: { cacheName: string }) => {
 
     return (
       <Flex>
-        {cache && cache.aliases && (
+        {cache && (
           <FlexItem>
-            <LabelGroup categoryName={t('caches.info.aliases')}>
-              {cache.aliases.map((feature) => (
-                <Label isCompact key={feature}>
-                  {feature}
-                </Label>
-              ))}
+            <LabelGroup
+              categoryName={
+                cache.aliases && cache.aliases.length > 0 ? t('caches.info.aliases') : t('caches.info.no-alias')
+              }
+              addLabelControl={
+                isAdmin ? (
+                  <Label
+                    data-cy="edit-alias-button"
+                    isCompact
+                    variant="overflow"
+                    onClick={() => openUpdateAliasesCacheModal(cacheName)}
+                  >
+                    {t('caches.info.add-alias')}
+                  </Label>
+                ) : null
+              }
+            >
+              {cache.aliases &&
+                cache.aliases.map((feature) => (
+                  <Label isCompact key={feature}>
+                    {feature}
+                  </Label>
+                ))}
             </LabelGroup>
           </FlexItem>
         )}
@@ -381,7 +398,7 @@ const DetailCache = (props: { cacheName: string }) => {
   };
 
   const displayConfiguration = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+    if (!isAdmin) {
       // Only ADMIN can read the full configuration for security reasons
       return;
     }
@@ -482,6 +499,14 @@ const DetailCache = (props: { cacheName: string }) => {
         )}
         {buildDetailContent()}
       </PageSection>
+      <UpdateAliasCache
+        cacheName={cacheName}
+        isModalOpen={cacheAction == 'aliases'}
+        closeModal={() => {
+          setCacheAction('');
+          loadCache(cacheName);
+        }}
+      />
     </React.Fragment>
   );
 };

@@ -5,6 +5,7 @@ describe('Cache Detail Overview', () => {
 
   it('successfully loads cache detail', () => {
     cy.contains('people');
+    cy.contains('No alias');
     cy.contains('Transactional');
     cy.contains('Distributed');
     cy.contains('Rebalancing is on');

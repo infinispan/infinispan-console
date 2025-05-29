@@ -4,7 +4,7 @@ describe('Data Container Caches', () => {
   });
 
   const cacheNames = ['default']//, 'indexed-cache'];
-  
+
   cacheNames.forEach((cacheName) => {
     it('successfully add / update / remove an alias for cache ' + cacheName, () => {
       cy.get('[data-cy=actions-'+ cacheName + ']').click();
@@ -32,6 +32,11 @@ describe('Data Container Caches', () => {
       cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);
       cy.contains('Aliases');
       cy.contains('alias1');
+      cy.get('[data-cy=edit-alias-button]').click();
+      // Check modal exists
+      cy.get('[data-cy=updateAliasesCacheModal]').should('exist');
+      cy.get('[data-cy=closeAction]').click(); //Closing modal with Close button
+
       cy.login(Cypress.env('username'), Cypress.env('password'));
 
       cy.get('[data-cy=actions-'+ cacheName + ']').click();
