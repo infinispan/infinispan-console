@@ -61,7 +61,7 @@ jobs:
         run: |
           ./mvnw -B versions:set -DnewVersion=${{ github.event.inputs.nextVersion }} -DprocessAllModules=true
           ./mvnw -B versions:set-property -Dproperty=version.infinispan -DnewVersion=${{ github.event.inputs.nextVersion }}
-          git commit -a -m "Next version ${{ github.event.inputs.nextVersion }}"
+          git commit --no-verify -a -m "Next version ${{ github.event.inputs.nextVersion }}"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
