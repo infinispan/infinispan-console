@@ -580,7 +580,9 @@
       "breadcrumb": "Detail of cache {{cacheName}}",
       "error": "An error occurred while loading {{cacheName}}",
       "features": "Features",
-      "aliases": "Aliases"
+      "aliases": "Aliases",
+      "add-alias": "Edit",
+      "no-alias": "No alias"
     },
     "actions": {
       "action-manage-indexes": "Manage indexes",
