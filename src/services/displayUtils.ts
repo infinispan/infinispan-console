@@ -205,6 +205,42 @@ class DisplayUtils {
     return featureChipGroup;
   }
 
+  public formatContentToDisplayWithTruncate(content: any, contentType?: ContentType): string {
+    if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
+      // Try parse and stringify
+      try {
+        const json = this.trimJsonValues(JSON.parse(content), 40, 10);
+        return JSON.stringify(json, null, 2);
+      } catch (err) {
+        /* empty */
+      }
+    }
+
+    return (content as string).length > 40 ? content.substring(0, 30) + '...' : content;
+  }
+
+  public trimJsonValues(obj, stringMax: number, arrayMax: number) {
+    const trimmed = {};
+
+    for (const key in obj) {
+      if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+
+      const value = obj[key];
+
+      if (key === '_type') {
+        trimmed[key] = value; // Do not trim _type
+      } else if (typeof value === 'string') {
+        trimmed[key] = value.length > stringMax ? value.slice(0, stringMax) + '…' : value;
+      } else if (Array.isArray(value)) {
+        trimmed[key] = value.length > arrayMax ? [...value.slice(0, arrayMax), '…'] : value;
+      } else {
+        trimmed[key] = value;
+      }
+    }
+
+    return trimmed;
+  }
+
   public formatContentToDisplay(content: any, contentType?: ContentType): string {
     if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
       // Try parse and stringify

@@ -8,6 +8,7 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  Checkbox,
   Divider,
   EmptyState,
   EmptyStateActions,
@@ -23,10 +24,11 @@ import {
   ToolbarGroup,
   ToolbarItem,
   ToolbarToggleGroup,
-  Tooltip
+  Tooltip,
+  Truncate
 } from '@patternfly/react-core';
 import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import { EyeIcon, FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import displayUtils from '@services/displayUtils';
@@ -71,6 +73,7 @@ const CacheEntries = () => {
   const [filteredEntries, setFilteredEntries] = useState<CacheEntry[]>([]);
   const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(ContentType.string);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [trim, setTrim] = useState<boolean>(false);
   const [entriesPagination, setEntriesPagination] = useState<PaginationType>({
     page: 1,
     perPage: 10
@@ -188,7 +191,9 @@ const CacheEntries = () => {
         useInlineStyles={true}
         wrapLongLines={true}
       >
-        {displayUtils.formatContentToDisplay(value, contentType)}
+        {trim
+          ? displayUtils.formatContentToDisplayWithTruncate(value, contentType)
+          : displayUtils.formatContentToDisplay(value, contentType)}
       </SyntaxHighlighter>
     );
 
@@ -372,6 +377,16 @@ const CacheEntries = () => {
           </Tooltip>
         </ToolbarItem>
         <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+      </ToolbarContent>
+      <ToolbarContent>
+        <ToolbarItem>
+          <Checkbox
+            labelPosition="start"
+            label={t('caches.entries.truncate-values')}
+            id="checkbox-trim"
+            onClick={() => setTrim(!trim)}
+          />
+        </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
