@@ -15,14 +15,13 @@ import {
   StackItem
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
-import backgroundImage from '!!url-loader!@app/assets/images/infinispanbg_1200.png';
 
 import {
   FacebookIcon,
   GithubIcon,
   OutlinedCommentsIcon,
   StackOverflowIcon,
-  TwitterIcon
+  TwitterSquareIcon
 } from '@patternfly/react-icons';
 import { useFetchVersion } from '@app/services/serverHook';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +35,7 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
   const infinispanStackOverflowLink = 'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
-  const infinispanTwitterLink = 'https://twitter.com/infinispan/';
+  const infinispanTwitterLink = 'https://x.com/infinispan/';
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
   const description1 = t('welcome-page.description1', { brandname: brandname });
   const description2 = t('welcome-page.description2', { brandname: brandname });
@@ -57,7 +56,6 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
       brandImageSrc={icon}
       brandImageAlt={brandname + ' Logo'}
       productName={brandname}
-      backgroundImageSrc={backgroundImage}
     >
       <Stack hasGutter>
         <StackItem>
@@ -131,7 +129,7 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
                 target="_blank"
               >
                 <Icon size="md">
-                  <TwitterIcon />
+                  <TwitterSquareIcon />
                 </Icon>
               </Button>
             </FlexItem>

@@ -609,6 +609,7 @@
       "column-created": "Created",
       "column-modified": "Modified",
       "column-lastused": "Last used",
+      "truncate-values": "Truncate values",
       "lifespan-immortal": "Forever",
       "maxidle-immortal": "Forever",
       "never-expire": "Never",
