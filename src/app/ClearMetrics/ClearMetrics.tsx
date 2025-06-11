@@ -9,7 +9,7 @@ import { useCacheDetail } from '@app/services/cachesHook';
  */
 const ClearMetrics = (props: {
   name: string;
-  type: 'query' | 'cache-metrics' | 'global-stats';
+  type: 'query' | 'cache-metrics';
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -19,7 +19,7 @@ const ClearMetrics = (props: {
     loadCache(props.name);
     props.closeModal();
   });
-  const label = props.type == 'global-stats' ? props.type : 'caches.' + props.type;
+  const label = 'caches.' + props.type;
 
   return (
     <Modal

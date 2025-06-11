@@ -9,7 +9,6 @@ import {
   CardTitle,
   Content,
   ContentVariants,
-  DescriptionList,
   Divider,
   Dropdown,
   DropdownItem,
@@ -19,8 +18,6 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  Level,
-  LevelItem,
   MenuToggle,
   MenuToggleElement,
   PageSection,
@@ -38,10 +35,8 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import ClusterDistributionChart from '@app/GlobalStats/ClusterDistributionChart';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
-import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
 import { useConnectedUser } from '@app/services/userManagementHook';
-import { MultiContentCard, PageHeader } from '@patternfly/react-component-groups';
-import { MetricDescriptionListGroup } from '@app/Caches/Metrics/MetricDescriptionListGroup';
+import { PageHeader } from '@patternfly/react-component-groups';
 
 const GlobalStats = () => {
   const { t } = useTranslation();
@@ -50,13 +45,9 @@ const GlobalStats = () => {
   const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const allOps = () => {
-    return stats.hits + stats.misses + stats.remove_hits + stats.remove_misses + stats.stores + stats.evictions;
-  };
-
   const clusterStatsCard = () => {
     return (
-      <Card isFullHeight isPlain>
+      <Card isFullHeight>
         <CardTitle>
           <PopoverHelp
             name="cluster-wide-stats"
@@ -67,14 +58,10 @@ const GlobalStats = () => {
         </CardTitle>
         <CardBody>
           <Content component={ContentVariants.dl}>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.number_of_entries)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.no-of-entries')}</Content>
             <Content component={ContentVariants.dt}>
-              {displayUtils.formatNumber(stats.current_number_of_entries_in_memory)}
+              {displayUtils.formatNumber(stats.required_minimum_number_of_nodes)}
             </Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.current-entry-in-memory')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.total_number_of_entries)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.total-no-entries')}</Content>
+            <Content component={ContentVariants.dd}>{t('global-stats.required-minimum-number-of-nodes')}</Content>
             <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.data_memory_used)}</Content>
             <Content component={ContentVariants.dd}>{t('global-stats.data-memory-used')}</Content>
             <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.off_heap_memory_used)}</Content>
@@ -88,129 +75,6 @@ const GlobalStats = () => {
             </Button>
           </Link>
         </CardFooter>
-      </Card>
-    );
-  };
-
-  const displayStats = (name: string, stat: number, label: string) => {
-    return (
-      <MetricDescriptionListGroup dataCy={'stat' + name} metricName={label} metricValue={stat} ariaLabel={label} />
-    );
-  };
-
-  const buildClearStatsItem = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
-      return '';
-    }
-
-    return (
-      <React.Fragment>
-        <Divider component="li" />
-        <DropdownItem
-          value={0}
-          key="clearAccessMetricsButton"
-          data-cy="clearAccessMetricsButton"
-          onClick={() => setClearMetricsModalOpen(true)}
-        >
-          {t('caches.cache-metrics.button-clear-access-stats')}
-        </DropdownItem>
-      </React.Fragment>
-    );
-  };
-
-  const dataAccessCard = () => {
-    return (
-      <Card>
-        <CardTitle>{t('global-stats.data-access-stats')}</CardTitle>
-        <CardBody>
-          <DescriptionList isHorizontal isCompact>
-            <MetricDescriptionListGroup
-              metricName="global-stats.data-total"
-              isBig={true}
-              metricValue={allOps()}
-              ariaLabel="global-stats-data-total"
-            />
-          </DescriptionList>
-          <Divider component="li" role="none" />
-          <DescriptionList isHorizontal isCompact>
-            {displayStats('hits', stats.hits, 'global-stats.data-access-hits')}
-            {displayStats('misses', stats.misses, 'global-stats.data-access-misses')}
-            {displayStats('stores', stats.stores, 'global-stats.data-access-stores')}
-            {displayStats('remove_hits', stats.remove_hits, 'global-stats.data-access-remove-hits')}
-            {displayStats('remove_misses', stats.remove_misses, 'global-stats.data-access-remove-misses')}
-            {displayStats('evictions', stats.evictions, 'global-stats.data-access-evictions')}
-          </DescriptionList>
-        </CardBody>
-      </Card>
-    );
-  };
-
-  const operationPerformanceCard = () => {
-    return (
-      <Card isFullHeight isPlain>
-        <CardTitle>
-          <PopoverHelp
-            name={'operation-performance-values'}
-            label={t('global-stats.operation-performance-values')}
-            content={t('global-stats.operation-performance-values-tooltip')}
-            text={t('global-stats.operation-performance-values')}
-          />
-        </CardTitle>
-        <CardBody>
-          <Content component={ContentVariants.dl}>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.average_read_time)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.average-reads')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.average_remove_time)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.average-writes')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.average_write_time)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.average-removes')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.read_write_ratio)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.average-read-write-ratio')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.hit_ratio)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.average-hits-ratio')}</Content>
-          </Content>
-        </CardBody>
-      </Card>
-    );
-  };
-
-  const cacheManagerLifecycleCard = () => {
-    return (
-      <Card isFullHeight isPlain>
-        <CardTitle>
-          <Level>
-            <LevelItem>
-              <PopoverHelp
-                name={'cache-manager-lifecycle-values'}
-                label={t('global-stats.cache-manager-lifecycle')}
-                content={t('global-stats.cache-manager-lifecycle-tooltip')}
-                text={t('global-stats.cache-manager-lifecycle')}
-              />
-            </LevelItem>
-            <LevelItem>
-              <Link
-                to={{
-                  pathname: '/cluster-membership',
-                  search: location.search
-                }}
-              >
-                <Button data-cy="viewClustersLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
-                  {t('global-stats.view-cluster-membership-link')}
-                </Button>
-              </Link>
-            </LevelItem>
-          </Level>
-        </CardTitle>
-        <CardBody>
-          <Content component={ContentVariants.dl}>
-            <Content component={ContentVariants.dt} data-cy="cacheManagerStartTime">
-              {displayUtils.formatNumber(stats.time_since_start)}
-            </Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.cache-manager-start-time')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.time_since_reset)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.cache-manager-reset-time')}</Content>
-          </Content>
-        </CardBody>
       </Card>
     );
   };
@@ -255,16 +119,10 @@ const GlobalStats = () => {
 
     return (
       <Grid hasGutter={true}>
-        <GridItem span={12}>
-          <MultiContentCard
-            withDividers
-            cards={[clusterStatsCard(), operationPerformanceCard(), cacheManagerLifecycleCard()]}
-          />
-        </GridItem>
+        <GridItem span={4}>{clusterStatsCard()}</GridItem>
         <GridItem span={8}>
           <ClusterDistributionChart />
         </GridItem>
-        <GridItem span={4}>{dataAccessCard()}</GridItem>
       </Grid>
     );
   };
@@ -302,7 +160,6 @@ const GlobalStats = () => {
             <DropdownItem value={0} key="refreshAction" data-cy="refreshAction" onClick={reload} icon={<RedoIcon />}>
               {t('common.actions.refresh')}
             </DropdownItem>
-            {buildClearStatsItem()}
           </DropdownList>
         </Dropdown>
       </ToolbarItem>
@@ -313,15 +170,6 @@ const GlobalStats = () => {
     <React.Fragment>
       <PageHeader title={t('global-stats.title')} subtitle={descriptionText()} actionMenu={displayActions} />
       <PageSection>{buildStats()}</PageSection>
-      <ClearMetrics
-        name={'cm'}
-        isModalOpen={isClearMetricsModalOpen}
-        closeModal={() => {
-          reload();
-          setClearMetricsModalOpen(false);
-        }}
-        type={'global-stats'}
-      />
     </React.Fragment>
   );
 };

@@ -4,14 +4,7 @@ import { useApiAlert } from '@utils/useApiAlert';
 
 export function useFetchGlobalStats() {
   const [stats, setStats] = useState<CacheManagerStats>({
-    statistics_enabled: false,
-    hits: -1,
-    retrievals: -1,
-    remove_misses: -1,
-    remove_hits: -1,
-    evictions: -1,
-    stores: -1,
-    misses: -1
+    statistics_enabled: false
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
