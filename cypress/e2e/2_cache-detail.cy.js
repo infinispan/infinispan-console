@@ -246,6 +246,46 @@ describe('Cache Detail Overview', () => {
     clearCache();
   });
 
+  it('successfully shows truncated values if checkbox is marked', () => {
+      //Testing the truncate data for custom type
+      cy.get('[data-cy=addEntryButton]').click();
+      cy.get('#toggle-keyContentType').click();
+      cy.get('#option-string').click();
+      const value = 'This is a long text which will be truncated when I will mark the checkbox.';
+      const keyPerson = 'long_key_value';
+      const valuePerson = '{"_type": "org.infinispan.Person","name": "' + value + '","age" : 12}';
+      cy.get('#key-entry')
+        .click()
+        .type(keyPerson, { parseSpecialCharSequences: false });
+      cy.get('#value-entry')
+        .click()
+        .type(valuePerson, { parseSpecialCharSequences: false });
+      cy.get('[data-cy=addButton]').click();
+      cy.contains('org.infinispan.Person');
+      verifyGet('#option-string', keyPerson, value);
+
+      //Checking the truncate checkbox
+      cy.get('#checkbox-trim').click();
+      cy.contains(valuePerson).should('not.exist');
+      cy.contains('{"_type": "org.infinispan.Pers...').should('exist');
+      //Unchecking the truncate checkbox
+      cy.get('#checkbox-trim').click();
+
+      //Testing the truncate data for string type
+      const stringKey = 'longValueKey';
+      const stringValue = 'This is a long string text which will be truncated when I will mark the checkbox.';
+      cy.get('[data-cy=addEntryButton]').click();
+      cy.get('#key-entry').click().type(stringKey);
+      cy.get('#value-entry').click().type(stringValue);
+      cy.get('[data-cy=addButton]').click();
+      cy.contains(stringKey);
+      cy.contains(stringValue);
+      //Checking the truncate checkbox
+      cy.get('#checkbox-trim').click();
+      cy.contains(stringValue).should('not.exist');
+      cy.contains('This is a long string text whi...');
+    });
+
   it('successfully adds new entry with expiration and waits till entry is expired', () => {
     //Adding sint32 key/value
     cy.get('[data-cy=addEntryButton]').click();

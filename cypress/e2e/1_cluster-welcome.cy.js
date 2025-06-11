@@ -98,7 +98,7 @@ describe('Welcome page', () => {
           cy.get('a[href*="github"').should('exist');
           cy.get('a[href*="zulipchat"').should('exist');
           cy.get('a[href*="stackoverflow"').should('exist');
-          cy.get('a[href*="twitter"').should('exist');
+          cy.get('a[href*="x.com"').should('exist');
           cy.get('a[href*="facebook"').should('exist');
         } else {
           cy.contains('Sponsored by Red Hat');
