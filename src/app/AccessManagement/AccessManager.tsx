@@ -3,23 +3,16 @@ import { useState } from 'react';
 import {
   Card,
   CardBody,
-  Content,
-  ContentVariants,
   Dropdown,
   DropdownItem,
   DropdownList,
   MenuToggle,
   MenuToggleElement,
-  Nav,
-  NavItem,
-  NavList,
   PageSection,
   PageSectionVariants,
   Tab,
   Tabs,
   TabTitleText,
-  Toolbar,
-  ToolbarContent,
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
@@ -33,7 +26,7 @@ import { PageHeader } from '@patternfly/react-component-groups';
 const AccessManager = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [activeTabKey, setActiveTabKey] = useState<number>(0);
+  const [activeTabKey, setActiveTabKey] = useState<string | number>(0);
   const [showRoles, setShowRoles] = useState(true);
   const [showUsers, setShowUsers] = useState(false);
   const [showAccessControl, setShowAccessControl] = useState(false);
@@ -57,7 +50,11 @@ const AccessManager = () => {
     const tabs: AccessTab[] = [
       { name: t('access-management.tab-roles'), key: 'roles', eventKey: 0 },
       { name: t('access-management.tab-users'), key: 'users', eventKey: 1 },
-      { name: t('access-management.tab-access-control'), key: 'principals', eventKey: 2 }
+      {
+        name: t('access-management.tab-access-control'),
+        key: 'principals',
+        eventKey: 2
+      }
     ];
 
     return (

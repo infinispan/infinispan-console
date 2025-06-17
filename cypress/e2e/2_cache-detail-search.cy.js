@@ -1,16 +1,37 @@
 describe('Cache Detail Overview', () => {
-  beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/people');
+  before(() => {
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      '/caches/indexed-cache/oihana',
+      'DELETE');
+    const payload = '{"_type": "org.infinispan.Person", "name": "Oihana", "age": "9", "city": "Paris"}';
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      '/caches/indexed-cache/oihana',
+      'POST', payload);
   });
 
-  it('successfully searches by values', () => {
-    //Opening indexed-cache cache page.
+  beforeEach(() => {
+    // Opening indexed-cache cache page.
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/indexed-cache');
+  });
 
+  it('successfully deletes by query', () => {
+    cy.get('[data-cy=manageEntriesTab]').click();
+    cy.get('[data-cy=queriesTab]').click();
+    cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age = 9');
+    cy.get('button[aria-label=searchButton]').click();
+    cy.contains('1 - 1 of 1');
+    cy.contains('Oihana');
+    cy.get('[data-cy=deleteByQueryButton]').click();
+    cy.get('[data-cy=deleteButton]').click();
+    cy.get('button[aria-label=searchButton]').click();
+    cy.contains('Values not found.');
+  })
+
+  it('successfully searches by values', () => {
     // Going back to cache entries page
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age>2');
+    cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age > 2');
     cy.get('button[aria-label=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
@@ -31,7 +52,7 @@ describe('Cache Detail Overview', () => {
     cy.get('button[aria-label=searchButton]').click();
     cy.contains('Values not found.');
 
-    //Verify query metrics available
+    // Verify query metrics available
     cy.get('[data-cy=viewQueryMetricsButton]').click();
     cy.contains('Query metrics');
     cy.contains('from org.infinispan.Person');
@@ -46,9 +67,6 @@ describe('Cache Detail Overview', () => {
   });
 
   it('successfully manages indexes', () => {
-    //Opening indexed-cache cache page.
-    cy.login(Cypress.env("username"), Cypress.env("password"), '/cache/indexed-cache');
-
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
     cy.contains("org.infinispan.Person");
