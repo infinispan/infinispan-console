@@ -13,6 +13,7 @@ const TimeQuantityInputGroup = (props: {
   valueModifier: (number) => void;
   unitModifier: (string) => void;
   validate?: () => 'success' | 'warning' | 'error' | 'default';
+  disabled?: boolean;
 }) => {
   return (
     <InputGroup>
@@ -31,6 +32,7 @@ const TimeQuantityInputGroup = (props: {
                 props.valueModifier(isNaN(parseInt(val)) ? undefined! : parseInt(val));
               }}
               aria-label={props.name}
+              isDisabled={props.disabled}
             />
           </GridItem>
           <GridItem span={7}>
@@ -41,6 +43,8 @@ const TimeQuantityInputGroup = (props: {
               options={selectOptionProps(TimeUnits)}
               style={{ width: '150px' }}
               onSelect={(value) => props.unitModifier(value)}
+              isDisabled={props.disabled}
+              includePrefixOnOptions={true}
             />
           </GridItem>
         </Grid>

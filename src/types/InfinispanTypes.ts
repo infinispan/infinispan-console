@@ -555,3 +555,8 @@ interface IndexValueField {
   aggregable: boolean;
   analyzer: string;
 }
+
+interface EditableConfig {
+  lifespan: string;
+  maxIdle: string;
+}

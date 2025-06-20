@@ -521,8 +521,8 @@ export class CacheService {
     }
     return this.fetchCaller.post({
       url: url,
-      successMessage: `Cache ${cacheName} successfully updated.`,
-      errorMessage: `Unexpected error when updating ${cacheName} config.`
+      successMessage: `Updated ${cacheName} cache: ${configAttribute} configured successfully`,
+      errorMessage: `Unexpected error when updating ${cacheName} configuration attribute: ${configAttribute}.`
     });
   }
 
@@ -682,6 +682,24 @@ export class CacheService {
       url: clearUrl,
       successMessage: `Cache stats ${cacheName} cleared.`,
       errorMessage: `Unexpected error when clearing the cache ${cacheName} stats.`
+    });
+  }
+
+  /**
+   * Get editable config
+   *
+   * @param cacheName, the name of the cache
+   */
+  public async getEditableConfig(
+    cacheDetail: DetailedInfinispanCache
+  ): Promise<Either<ActionResponse, EditableConfig>> {
+    const editableConfigUrl =
+      this.endpoint + '/caches/' + encodeURIComponent(cacheDetail.name) + '?action=get-mutable-attributes&full=true';
+    return this.fetchCaller.get(editableConfigUrl, (data) => {
+      return <EditableConfig>{
+        maxIdle: data['expiration.max-idle'].value,
+        lifespan: data['expiration.lifespan'].value
+      };
     });
   }
 }

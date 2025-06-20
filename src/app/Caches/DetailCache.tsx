@@ -16,7 +16,6 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
-  Icon,
   Label,
   LabelGroup,
   MenuToggle,
@@ -38,7 +37,15 @@ import { CacheEntries } from '@app/Caches/Entries/CacheEntries';
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { t_global_background_color_100 } from '@patternfly/react-tokens';
-import { ExclamationCircleIcon, ExclamationTriangleIcon, InfoCircleIcon, RedoIcon } from '@patternfly/react-icons';
+import {
+  CogIcon,
+  DatabaseIcon,
+  ExclamationCircleIcon,
+  InfoCircleIcon,
+  MonitoringIcon,
+  PencilAltIcon,
+  RedoIcon
+} from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
 import { useCacheDetail } from '@app/services/cachesHook';
@@ -53,6 +60,7 @@ import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { PageHeader } from '@patternfly/react-component-groups';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
+import { CacheType } from '@services/infinispanRefData';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -202,6 +210,10 @@ const DetailCache = (props: { cacheName: string }) => {
     return cache && cache?.features?.indexed;
   };
 
+  const displayEditConfigManage = () => {
+    return isAdmin && cache;
+  };
+
   const buildBackupsManage = () => {
     if (!displayBackupsManagement()) return;
 
@@ -251,6 +263,7 @@ const DetailCache = (props: { cacheName: string }) => {
       <DropdownItem
         value={'tracingManage'}
         key="manageTracingLink"
+        icon={<MonitoringIcon />}
         data-cy="manageTracingLink"
         onClick={(ev) =>
           navigate({
@@ -264,6 +277,26 @@ const DetailCache = (props: { cacheName: string }) => {
     );
   };
 
+  const buildEditConfigManage = () => {
+    if (!displayEditConfigManage()) return;
+    return (
+      <DropdownItem
+        value={'cacheConfigEdition'}
+        key="manageConfigEditionLink"
+        data-cy="manageConfigEditionLink"
+        icon={<PencilAltIcon />}
+        onClick={(ev) =>
+          navigate({
+            pathname: '/cache/' + encodeURIComponent(cacheName) + '/configuration',
+            search: location.search
+          })
+        }
+      >
+        {t('caches.actions.action-manage-config')}
+      </DropdownItem>
+    );
+  };
+
   const buildIndexManage = () => {
     if (!displayIndexManage()) return;
     return (
@@ -271,6 +304,7 @@ const DetailCache = (props: { cacheName: string }) => {
         value={'indexManage'}
         key="manageIndexesLink"
         data-cy="manageIndexesLink"
+        icon={<DatabaseIcon />}
         onClick={(ev) =>
           navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/indexing',
@@ -434,6 +468,7 @@ const DetailCache = (props: { cacheName: string }) => {
               data-cy="detailCacheActions"
               onClick={() => setIsOpen(!isOpen)}
               isExpanded={isOpen}
+              icon={<CogIcon />}
             >
               {t('common.actions.actions')}
             </MenuToggle>
@@ -442,6 +477,7 @@ const DetailCache = (props: { cacheName: string }) => {
           shouldFocusToggleOnSelect
         >
           <DropdownList>
+            {buildEditConfigManage()}
             {buildTracing()}
             {buildIndexManage()}
             {buildBackupsManage()}

@@ -138,6 +138,11 @@ const CacheDetailProvider = ({ children }) => {
       });
   };
 
+  const fetchEditableProperties = () => {
+    if (cache) {
+    }
+  };
+
   const fetchEntries = () => {
     if (loadingEntries) {
       if (ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {

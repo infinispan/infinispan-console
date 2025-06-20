@@ -55,7 +55,7 @@ const DetailConfigurations = () => {
     if (filteredTemplates) {
       const initSlice = (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
       const updateRows = filteredTemplates.slice(initSlice, initSlice + pageConfigsPagination.perPage);
-      updateRows.length > 0 ? setRows(updateRows) : setRows([]);
+      setRows(updateRows);
     }
   }, [pageConfigsPagination, filteredTemplates]);
 
