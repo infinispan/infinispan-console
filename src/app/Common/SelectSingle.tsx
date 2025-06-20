@@ -17,6 +17,7 @@ const SelectSingle = (props: {
   style?: CSSProperties | undefined;
   isDisabled?: boolean;
   isFullWidth?: boolean;
+  includePrefixOnOptions?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -57,7 +58,7 @@ const SelectSingle = (props: {
     >
       <SelectList id={'select-list-' + props.id}>
         {props.options.map((option, index) => {
-          const id = 'option-' + option.id;
+          const id = props.includePrefixOnOptions ? `${props.id}-option-${option.id}` : `option-${option.id}`;
           return (
             <SelectOption id={id} key={id} data-cy={id} aria-label={option.id} value={option.value}>
               {option.children}

@@ -3,6 +3,7 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { formatXml } from '@app/utils/dataSerializerUtils';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useCaches } from '@app/services/dataContainerHooks';
+import { useCacheDetail } from '@app/services/cachesHook';
 
 export function useFetchTracingConfig(cacheName: string) {
   const { addAlert } = useApiAlert();
@@ -87,7 +88,6 @@ export function useFetchTracingConfig(cacheName: string) {
 
 export function useCacheAliases(cacheName: string) {
   const { addAlert } = useApiAlert();
-  const { reloadCaches } = useCaches();
   const [aliases, setAliases] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -182,4 +182,31 @@ export function useFetchConfigurationXML(cacheName: string) {
   }, [loading]);
 
   return { loading, error, configuration };
+}
+
+export function useFetchEditableConfiguration(cacheName: string) {
+  const { cache, loading, error, loadCache } = useCacheDetail();
+  const [loadingConfig, setLoadingConfig] = useState(true);
+  const [errorConfig, setErrorConfig] = useState('');
+  const [editableConfig, setEditableConfig] = useState<EditableConfig>();
+
+  useEffect(() => {
+    loadCache(cacheName);
+  }, []);
+
+  useEffect(() => {
+    if (!loading && error == '' && cache) {
+      ConsoleServices.caches()
+        .getEditableConfig(cache)
+        .then((r) => {
+          if (r.isRight()) {
+            setEditableConfig(r.value);
+          } else {
+            setErrorConfig(r.value.message);
+          }
+        })
+        .then(() => setLoadingConfig(false));
+    }
+  }, [loading, error, cache]);
+  return { loadingConfig, errorConfig, editableConfig };
 }

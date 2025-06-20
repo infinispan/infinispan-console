@@ -379,14 +379,18 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
       }}
     >
       <FormSection title={t('caches.create.configurations.basic.title')}>
-        {formMode()}
-        {/* Display the number of owners of the cache when the topology is distributed. */}
-        {(topology as CacheType) == CacheType.Distributed && formNumberOwners()}
-        {formTopology()}
-        {formEncodingCache()}
-        {formStatistics()}
+        <Grid hasGutter>
+          <GridItem span={5}>{formMode()}</GridItem>
+          <GridItem span={7}>{formTopology()}</GridItem>
+          <GridItem span={5}>{formEncodingCache()}</GridItem>
+          <GridItem span={7}>
+            {/* Display the number of owners of the cache when the topology is distributed. */}
+            {(topology as CacheType) == CacheType.Distributed && formNumberOwners()}
+          </GridItem>
+          <GridItem span={12}>{formStatistics()}</GridItem>
+        </Grid>
       </FormSection>
-      <FormSection title={t('caches.create.configurations.basic.expiration-title')}>
+      <FormSection title={t('caches.create.configurations.basic.expiration-title')} style={{ marginTop: 0 }}>
         {formExpiration()}
         {isExpiration && formExpirationSettings()}
       </FormSection>

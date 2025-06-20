@@ -48,7 +48,7 @@ describe('Data Container Caches', () => {
       cy.get('[data-cy=updateAliasesButton]').click(); //Update aliases
       cy.get('[data-cy=closeAction]').click(); //Closing modal with Close button
       cy.contains('alias1').should('not.exist');
-      cy.contains('Success alert:Cache ' + cacheName + ' successfully updated.');
+      cy.contains(`Updated ${cacheName} cache: aliases configured successfully`);
 
       // Check detail has aliases
       cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);

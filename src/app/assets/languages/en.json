@@ -588,6 +588,7 @@
       "action-manage-indexes": "Manage indexes",
       "action-manage-tracing": "Manage tracing",
       "action-manage-backups": "Manage backups",
+      "action-manage-config": "Edit configuration",
       "refresh": "Refresh",
       "back": "Back"
     },
@@ -748,6 +749,21 @@
       "tracing-tooltip": "Enable tracing to track the events configured in your tracing exporter endpoint.",
       "select-tracing-categories": "Select categories",
       "select-tracing-categories-helper": "You must select at least one category."
+    },
+    "edit-configuration": {
+      "title": "Edit configuration",
+      "expiration-title": "Expiration settings",
+      "expiration-tooltip": "Enable expiration to limit the amount of time that entries can remain in the cache. Expiration takes place across the cluster and removes entries based on a lifespan or maximum idle time.",
+      "expiration-enable": "Expiration is enabled",
+      "expiration-disable": "Expiration is disabled",
+      "lifespan": "Lifespan",
+      "lifespan-tooltip": "Set the amount of time that entries can remain in the cache after creation. If you set the lifespan value to -1, entries never expire.",
+      "lifespan-helper-invalid": "The minimum value is -1.",
+      "max-idle": "Maximum idle",
+      "max-idle-tooltip": "Set the amount of time that entries can remain in the cache after last access. Must be lower than lifespan. If you set the maximum idle value to -1, entries never expire.",
+      "max-idle-helper-invalid": "The minimum value is -1. Must be lower than lifespan",
+      "error-set-lifespan-or-maxidle": "Expiration is enabled. Set at least maxidle or lifespan value",
+      "error-maxidle-must-be-lower": "Maxidle must be lower than lifespan"
     },
     "backups": {
       "title": "Backups management",

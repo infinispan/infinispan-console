@@ -22,6 +22,8 @@ import { useDocumentTitle } from '@utils/useDocumentTitle';
 import { accessibleRouteChangeHandler } from '@utils/utils';
 import { ContainerDataProvider } from '@app/providers/CacheManagerContextProvider';
 import { TracingManagement } from '@app/TracingManagement/TracingManagement';
+import { EditConfiguration } from '@app/Caches/Configuration/EditConfiguration';
+import { CacheDetailProvider } from '@app/providers/CacheDetailProvider';
 
 export interface IAppRoute {
   id: string;
@@ -128,6 +130,20 @@ const routes: IAppRoute[] = [
     title: 'Tracing management',
     menu: false,
     admin: false
+  },
+  {
+    id: 'cache_edit_configuration',
+    component: (
+      <CacheDetailProvider>
+        <EditConfiguration />
+      </CacheDetailProvider>
+    ),
+    exact: true,
+    label: 'Edit cache configuration',
+    path: '/cache/:cacheName/configuration',
+    title: 'Edit configuration',
+    menu: false,
+    admin: true
   },
   {
     id: 'cache_xsite_management',
