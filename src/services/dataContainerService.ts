@@ -38,6 +38,7 @@ export class ContainerService {
         (data) =>
           <CacheManager>{
             name: data.name,
+            isLocal: data.node_address == 'local',
             physical_addresses: data.physical_addresses,
             coordinator: data.coordinator,
             cluster_name: data.cluster_name,
