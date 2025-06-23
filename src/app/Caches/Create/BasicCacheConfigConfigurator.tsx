@@ -23,10 +23,10 @@ import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
-const BasicCacheConfigConfigurator = () => {
+const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => {
   const { t } = useTranslation();
   const { configuration, setConfiguration } = useCreateCache();
-
+  const isLocal = props.cacheManager.isLocal;
   // State for the form
   // Passed to the parent component
   const [topology, setTopology] = useState<string>(configuration.basic.topology);
@@ -46,7 +46,7 @@ const BasicCacheConfigConfigurator = () => {
       return {
         ...prevState,
         basic: {
-          topology: topology,
+          topology: isLocal ? CacheType.Local : topology,
           mode: mode,
           numberOfOwners: topology == CacheType.Distributed ? selectedNumberOwners : undefined,
           encoding: selectedEncodingCache,
@@ -106,6 +106,10 @@ const BasicCacheConfigConfigurator = () => {
   };
 
   const formMode = () => {
+    if (isLocal) {
+      return;
+    }
+
     return (
       <FormGroup
         isRequired
@@ -142,6 +146,10 @@ const BasicCacheConfigConfigurator = () => {
   };
 
   const formTopology = () => {
+    if (isLocal) {
+      return;
+    }
+
     return (
       <FormGroup
         isRequired
@@ -175,6 +183,10 @@ const BasicCacheConfigConfigurator = () => {
   };
 
   const formNumberOwners = () => {
+    if (isLocal) {
+      return;
+    }
+
     return (
       <FormGroup
         label={t('caches.create.configurations.basic.number-owners')}

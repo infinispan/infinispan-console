@@ -242,7 +242,7 @@ const CreateCacheWizard = (props: { cacheManager: CacheManager; create: boolean 
               name={t('caches.create.configurations.basic.nav-title')}
               footer={<CustomStepsFooter />}
             >
-              <BasicCacheConfigConfigurator />
+              <BasicCacheConfigConfigurator cacheManager={props.cacheManager} />
             </WizardStep>,
             <WizardStep
               id={SUBSTEP_FEATURES}

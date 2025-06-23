@@ -5,6 +5,7 @@ interface ComponentStatusType {
 
 interface CacheManager {
   name: string;
+  isLocal: boolean;
   physical_addresses: string[];
   coordinator: boolean;
   cluster_name: string;

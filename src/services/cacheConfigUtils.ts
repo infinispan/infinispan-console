@@ -222,9 +222,10 @@ export class CacheConfigUtils {
 
     const distributedCache = 'distributed-cache';
     const replicatedCache = 'replicated-cache';
+    const localCache = 'local-cache';
 
     // Default cache configuration
-    const generalCache = {
+    const generalCacheClustered = {
       mode: data.basic.mode,
       owners: data.basic.numberOfOwners,
       statistics: data.basic.statistics,
@@ -233,13 +234,23 @@ export class CacheConfigUtils {
       }
     };
 
+    const generalCacheLocal = {
+      statistics: data.basic.statistics,
+      encoding: {
+        'media-type': data.basic.encoding
+      }
+    };
+
     // Choose topology and add to the configuration
     if (data.basic.topology === CacheType.Distributed.valueOf()) {
-      cache = { [distributedCache]: generalCache };
+      cache = { [distributedCache]: generalCacheClustered };
       cacheType = distributedCache;
-    } else {
-      cache = { [replicatedCache]: generalCache };
+    } else if (data.basic.topology === CacheType.Replicated.valueOf()) {
+      cache = { [replicatedCache]: generalCacheClustered };
       cacheType = replicatedCache;
+    } else {
+      cache = { [localCache]: generalCacheLocal };
+      cacheType = localCache;
     }
 
     const locking = () => {
