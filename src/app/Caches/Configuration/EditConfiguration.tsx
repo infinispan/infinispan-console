@@ -1,130 +1,81 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  Alert,
-  Button,
-  ButtonVariant,
-  Form,
-  FormGroup,
-  FormHelperText,
-  FormSection,
-  Grid,
-  GridItem,
-  HelperText,
-  HelperTextItem,
-  PageSection,
-  Switch,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem
-} from '@patternfly/react-core';
-import { Link, useParams } from 'react-router-dom';
-import { t_global_spacer_md } from '@patternfly/react-tokens';
+import { Card, CardBody, EmptyState, PageSection, Spinner, Tab, Tabs, TabTitleText } from '@patternfly/react-core';
+import { useParams } from 'react-router-dom';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { useTranslation } from 'react-i18next';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { TimeUnits } from '@services/infinispanRefData';
-import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { ConsoleServices } from '@services/ConsoleServices';
-import { useFetchEditableConfiguration } from '@app/services/configHook';
 import { PageHeader } from '@patternfly/react-component-groups';
-import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
-import {
-  convertFromTimeQuantity,
-  convertTimeToMilliseconds,
-  convertToTimeQuantity
-} from '@utils/convertToTimeQuantity';
-import { useApiAlert } from '@utils/useApiAlert';
+import { ExpirationConfigEdition } from '@app/Caches/Configuration/Features/ExpirationConfigEdition';
+import BoundedConfigEdition from '@app/Caches/Configuration/Features/BoundedConfigEdition';
+import { useCacheDetail } from '@app/services/cachesHook';
+import { TableErrorState } from '@app/Common/TableErrorState';
+import { TableLoadingState } from '@app/Common/TableLoadingState';
+
+interface EditConfigTab {
+  key: string;
+  name: string;
+  eventKey: number;
+}
 
 const EditConfiguration = () => {
   const { t } = useTranslation();
-  const { addAlert } = useApiAlert();
   const cacheName = useParams()['cacheName'] as string;
-  const { loadingConfig, errorConfig, editableConfig } = useFetchEditableConfiguration(cacheName);
-  const [isExpiration, setIsExpiration] = useState(false);
-  const [lifeSpanNumber, setLifeSpanNumber] = useState(-1);
-  const [lifeSpanUnit, setLifeSpanUnit] = useState(TimeUnits.milliseconds);
-  const [maxIdleNumber, setMaxIdleNumber] = useState(-1);
-  const [maxIdleUnit, setMaxIdleUnit] = useState(TimeUnits.milliseconds);
-  const [error, setError] = useState('');
-
-  const updateExpiration = () => {
-    if (lifeSpanNumber < -1 || maxIdleNumber < -1) {
-      // do nothing
-      return;
-    }
-
-    if (isExpiration && lifeSpanNumber == -1 && maxIdleNumber == -1) {
-      setError('error-set-lifespan-or-maxidle');
-      return;
-    }
-
-    const lifespanMilliseconds = convertTimeToMilliseconds(lifeSpanNumber, lifeSpanUnit);
-    const maxIdleMilliseconds = convertTimeToMilliseconds(maxIdleNumber, maxIdleUnit);
-
-    if (lifespanMilliseconds < maxIdleMilliseconds) {
-      setError('error-maxidle-must-be-lower');
-      return;
-    }
-
-    setError('');
-
-    const newLifespan = isExpiration ? convertToTimeQuantity(lifeSpanNumber, lifeSpanUnit) : '-1';
-    const newMaxidle = isExpiration ? convertToTimeQuantity(maxIdleNumber, maxIdleUnit) : '-1';
-
-    if (newMaxidle && newMaxidle != editableConfig?.maxIdle) {
-      ConsoleServices.caches()
-        .setConfigAttribute(cacheName, 'expiration.max-idle', newMaxidle)
-        .then((actionResponse) => {
-          if (actionResponse.success) {
-            addAlert(actionResponse);
-          } else {
-            setError(actionResponse.message);
-          }
-        });
-    }
-    if (newLifespan && newLifespan != editableConfig?.lifespan) {
-      ConsoleServices.caches()
-        .setConfigAttribute(cacheName, 'expiration.lifespan', newLifespan)
-        .then((actionResponse) => {
-          if (actionResponse.success) {
-            addAlert(actionResponse);
-          } else {
-            setError(actionResponse.message);
-          }
-        });
-    }
-  };
+  const { loading, error, cache, loadCache } = useCacheDetail();
+  const [activeTabKey, setActiveTabKey] = useState<number>(0);
+  const [tabs, setTabs] = useState<EditConfigTab[]>([]);
 
   useEffect(() => {
-    if (!loadingConfig && errorConfig.length == 0 && editableConfig) {
-      const maxIdle = convertFromTimeQuantity(editableConfig.maxIdle);
-      const lifespan = convertFromTimeQuantity(editableConfig.lifespan);
-      setLifeSpanNumber(lifespan[0]);
-      setLifeSpanUnit(lifespan[1]);
-      setMaxIdleNumber(maxIdle[0]);
-      setMaxIdleUnit(maxIdle[1]);
-      setIsExpiration(lifespan[0] != -1 || maxIdle[0] != -1);
+    loadCache(cacheName);
+  }, []);
+
+  useEffect(() => {
+    if (!cache) return;
+
+    const cacheConfigTabs: EditConfigTab[] = [];
+    cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-expiration'), key: 'expiration', eventKey: 0 });
+    if (cache.features?.bounded) {
+      cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-bounded'), key: 'bounded', eventKey: 1 });
     }
-  }, [loadingConfig, errorConfig, editableConfig]);
+    setTabs(cacheConfigTabs);
+  }, [cache]);
 
-  const validateLifeSpan = (): 'default' | 'error' => {
-    return lifeSpanNumber >= -1 ? 'default' : 'error';
+  const handleTabClick = (index: number) => {
+    setActiveTabKey(index);
   };
 
-  const validateMaxIdle = (): 'default' | 'error' => {
-    return maxIdleNumber >= -1 ? 'default' : 'error';
-  };
+  const buildTabs = (
+    <Tabs data-cy="navigationTabs" activeKey={activeTabKey} onSelect={(_event, tab) => handleTabClick(tab as number)}>
+      {tabs.map((tab) => (
+        <Tab
+          data-cy={'nav-item-' + tab.name}
+          aria-label={'nav-item-' + tab.key}
+          key={'nav-item-' + tab.key}
+          eventKey={tab.eventKey}
+          title={<TabTitleText>{tab.name}</TabTitleText>}
+        />
+      ))}
+    </Tabs>
+  );
 
-  const displayError = () => {
-    if (error.length == 0) {
-      return <></>;
+  const buildContent = () => {
+    if (loading) {
+      return <TableLoadingState message={t('common.loading')} />;
+    }
+
+    if (error) {
+      return <TableErrorState error={error} />;
     }
 
     return (
-      <GridItem span={12}>
-        <Alert variant="danger" isInline title={t(`caches.edit-configuration.${error}`)} />
-      </GridItem>
+      <React.Fragment>
+        {buildTabs}
+        <Card isFullHeight isPlain>
+          <CardBody>
+            {activeTabKey == 0 && <ExpirationConfigEdition />}
+            {activeTabKey == 1 && <BoundedConfigEdition />}
+          </CardBody>
+        </Card>
+      </React.Fragment>
     );
   };
 
@@ -132,133 +83,7 @@ const EditConfiguration = () => {
     <React.Fragment>
       <DataContainerBreadcrumb currentPage={t('caches.edit-configuration.title')} cacheName={cacheName} />
       <PageHeader title={t('caches.edit-configuration.title')} subtitle={''} />
-      <PageSection>
-        <Form
-          isWidthLimited
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <FormSection title={t('caches.edit-configuration.expiration-title')}>
-            <FormGroup fieldId="form-expiration">
-              <Switch
-                aria-label="expiration"
-                data-cy="expirationSwitch"
-                id="expiration"
-                isChecked={isExpiration}
-                onChange={() => setIsExpiration(!isExpiration)}
-                hasCheckIcon
-                label={
-                  isExpiration
-                    ? t('caches.edit-configuration.expiration-enable')
-                    : t('caches.edit-configuration.expiration-disable')
-                }
-              />
-              <PopoverHelp
-                name={'expiration'}
-                label={t('caches.edit-configuration.expiration-title')}
-                content={t('caches.edit-configuration.expiration-tooltip')}
-              />
-            </FormGroup>
-            <Grid hasGutter>
-              {displayError()}
-              <GridItem span={4}>
-                <FormGroup
-                  fieldId="form-life-span"
-                  label={t('caches.edit-configuration.lifespan')}
-                  labelHelp={
-                    <PopoverHelp
-                      name={'lifespan'}
-                      label={t('caches.edit-configuration.lifespan')}
-                      content={t('caches.edit-configuration.lifespan-tooltip')}
-                    />
-                  }
-                >
-                  <TimeQuantityInputGroup
-                    name={'lifespan'}
-                    validate={validateLifeSpan}
-                    minValue={-1}
-                    value={lifeSpanNumber}
-                    valueModifier={setLifeSpanNumber}
-                    unit={lifeSpanUnit}
-                    unitModifier={setLifeSpanUnit}
-                    disabled={!isExpiration}
-                  />
-                  {validateLifeSpan() === 'error' && (
-                    <FormHelperText>
-                      <HelperText>
-                        <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                          {t('caches.edit-configuration.lifespan-helper-invalid')}
-                        </HelperTextItem>
-                      </HelperText>
-                    </FormHelperText>
-                  )}
-                </FormGroup>
-              </GridItem>
-              <GridItem span={5}>
-                <FormGroup
-                  fieldId="form-max-idle"
-                  label={t('caches.edit-configuration.max-idle')}
-                  labelHelp={
-                    <PopoverHelp
-                      name={'maxidle'}
-                      label={t('caches.edit-configuration.max-idle')}
-                      content={t('caches.edit-configuration.max-idle-tooltip')}
-                    />
-                  }
-                >
-                  <TimeQuantityInputGroup
-                    name={'maxidle'}
-                    validate={validateMaxIdle}
-                    minValue={-1}
-                    value={maxIdleNumber}
-                    valueModifier={setMaxIdleNumber}
-                    unit={maxIdleUnit}
-                    unitModifier={setMaxIdleUnit}
-                    disabled={!isExpiration}
-                  />
-                  {validateMaxIdle() === 'error' && (
-                    <FormHelperText>
-                      <HelperText>
-                        <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                          {t('caches.edit-configuration.max-idle-helper-invalid')}
-                        </HelperTextItem>
-                      </HelperText>
-                    </FormHelperText>
-                  )}
-                </FormGroup>
-              </GridItem>
-            </Grid>
-          </FormSection>
-        </Form>
-        <Toolbar id="edit-config-page-toolbar">
-          <ToolbarContent style={{ paddingLeft: 0, paddingTop: t_global_spacer_md.value }}>
-            <ToolbarItem>
-              <Button
-                variant={ButtonVariant.primary}
-                data-cy="saveConfigButton"
-                onClick={() => {
-                  updateExpiration();
-                }}
-              >
-                {t('common.actions.save')}
-              </Button>
-            </ToolbarItem>
-            <ToolbarItem>
-              <Link
-                to={{
-                  pathname: '/cache/' + encodeURIComponent(cacheName),
-                  search: location.search
-                }}
-              >
-                <Button variant={ButtonVariant.link} data-cy="backButton">
-                  {t('common.actions.back')}
-                </Button>
-              </Link>
-            </ToolbarItem>
-          </ToolbarContent>
-        </Toolbar>
-      </PageSection>
+      <PageSection>{buildContent()}</PageSection>
     </React.Fragment>
   );
 };

@@ -38,6 +38,7 @@ const CacheDetailProvider = ({ children }) => {
   const [infoEntries, setInfoEntries] = useState(initialContext.infoEntries);
   const [loadingEntries, setLoadingEntries] = useState(initialContext.loadingEntries);
   const [limit, setLimit] = useState(initialContext.limit);
+
   const loadCache = (name: string | undefined) => {
     if (name != undefined && name != '' && cacheName != name) {
       setCacheName(name);

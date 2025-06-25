@@ -752,6 +752,7 @@
     },
     "edit-configuration": {
       "title": "Edit configuration",
+      "tab-expiration": "Expiration",
       "expiration-title": "Expiration settings",
       "expiration-tooltip": "Enable expiration to limit the amount of time that entries can remain in the cache. Expiration takes place across the cluster and removes entries based on a lifespan or maximum idle time.",
       "expiration-enable": "Expiration is enabled",
@@ -763,7 +764,15 @@
       "max-idle-tooltip": "Set the amount of time that entries can remain in the cache after last access. Must be lower than lifespan. If you set the maximum idle value to -1, entries never expire.",
       "max-idle-helper-invalid": "The minimum value is -1. Must be lower than lifespan",
       "error-set-lifespan-or-maxidle": "Expiration is enabled. Set at least maxidle or lifespan value",
-      "error-maxidle-must-be-lower": "Maxidle must be lower than lifespan"
+      "error-maxidle-must-be-lower": "Maxidle must be lower than lifespan",
+      "tab-bounded": "Bounded",
+      "bounded-title": "Bounded settings",
+      "bounded-description-size": "Configure a maximum size for the cache. When the cache reaches this threshold, {{brandname}} removes entries according to the eviction strategy that you configure.",
+      "bounded-description-count": "Configure the total number of entries that the cache can contain. When the cache reaches this threshold, {{brandname}} removes entries according to the eviction strategy that you configure.",
+      "bounded-max-size": "Maximum amount of memory",
+      "bounded-max-size-helper-invalid": "You must specify a positive number",
+      "bounded-max-count": "Total number of entries",
+      "bounded-max-count-helper-invalid": "You must specify a positive number"
     },
     "backups": {
       "title": "Backups management",
