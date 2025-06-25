@@ -684,6 +684,7 @@
       "query-metrics-title": "Query metrics",
       "query-metrics-tooltip": "Average time, in nanoseconds, for queries on this cache.",
       "button-clear-query-stats": "Clear all metrics",
+      "button-delete-entries": "Delete entries",
       "stat-max": "Max",
       "stat-count": "Count",
       "stat-average": "Average",
@@ -691,7 +692,12 @@
       "modal-clear-stats": "Permanently clear query metrics?",
       "modal-clear-stats-label": "Clear query metrics modal",
       "modal-button-clear-stats": "Clear metrics",
-      "modal-button-clear-stats-body": "All query metrics in this cluster will be removed."
+      "modal-button-clear-stats-body": "All query metrics in this cluster will be removed.",
+      "modal-delete-entries-label": "Permanently delete matching entries?",
+      "modal-delete-entries-title": "Permanently delete matching entries?",
+      "modal-delete-entries-body-line-one": "This action will permanently delete all the mathing entries in {{cacheName}}, executing a 'DELETE' Ickle Query statement.",
+      "modal-delete-entries-body-line-two": "This cannot be undone. You can always create the entries again.",
+      "modal-action-entries-success": "Delete by query successfully executed."
     },
     "index": {
       "title": "Index management",

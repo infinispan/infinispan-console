@@ -81,6 +81,45 @@ export class SearchService {
   }
 
   /**
+   * Delete by query
+   *
+   * @param cacheName
+   * @param query
+   */
+  public async deleteByQuery(cacheName: string, query: string, message: string): Promise<ActionResponse> {
+    const url = this.endpoint + encodeURIComponent(cacheName) + '?action=deleteByQuery';
+    const body = JSON.stringify({
+      query: query
+    });
+    return this.utils
+      .fetch(url, 'POST', undefined, body)
+      .then((response) => {
+        if (response.ok || response.status == 400) {
+          // Ok or bad request
+          return response.json();
+        }
+
+        return response.text().then((text) => {
+          throw text;
+        });
+      })
+      .then(
+        () =>
+          <ActionResponse>{
+            message: message,
+            success: true
+          }
+      )
+      .catch(
+        (err) =>
+          <ActionResponse>{
+            message: err as string,
+            success: false
+          }
+      );
+  }
+
+  /**
    * Retrieve index and query stats
    *
    * @param cacheName

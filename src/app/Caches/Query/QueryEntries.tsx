@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   ButtonVariant,
   Card,
   CardBody,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
@@ -20,16 +21,17 @@ import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
+import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useSearch } from '@app/services/searchHook';
+import { DeleteByQueryEntries } from '@app/Caches/Query/DeleteByQueryEntries';
 
 const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { search, setSearch } = useSearch(props.cacheName);
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
-
+  const [deleteByQueryOpen, setDeleteByQueryOpen] = useState(false);
   const columnNames = {
     value: 'Value'
   };
@@ -91,17 +93,22 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
     });
   };
 
-  const buildViewAllQueryStats = () => {
+  const buildButtons = () => {
     return (
       <React.Fragment>
-        <ToolbarItem variant={'separator'} style={{ marginInline: t_global_spacer_sm.value }} />
+        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetSm' }} />
         <ToolbarItem>
           <Button
-            style={{ marginLeft: t_global_spacer_md.value }}
-            variant={ButtonVariant.secondary}
-            onClick={() => props.changeTab()}
-            data-cy="viewQueryMetricsButton"
+            variant={ButtonVariant.link}
+            onClick={() => setDeleteByQueryOpen(true)}
+            data-cy="deleteByQueryButton"
+            isDisabled={search.searchResult.total <= 0}
           >
+            {t('caches.query.button-delete-entries')}
+          </Button>
+        </ToolbarItem>
+        <ToolbarItem>
+          <Button variant={ButtonVariant.secondary} onClick={() => props.changeTab()} data-cy="viewQueryMetricsButton">
             {t('caches.query.view-all-query-stats')}
           </Button>
         </ToolbarItem>
@@ -141,8 +148,6 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
             onSearch={onSearch}
             onClear={onClear}
           />
-        </ToolbarItem>
-        <ToolbarItem>
           <Popover
             headerContent={t('caches.query.ickle-query')}
             bodyContent={t('caches.query.ickle-query-tooltip', {
@@ -165,12 +170,11 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
               aria-label={'more-info-ickle'}
               onClick={(e) => e.preventDefault()}
               aria-describedby={'helpickle'}
-              className="pf-v5-c-form__group-label-help"
               icon={<HelpIcon />}
             />
           </Popover>
         </ToolbarItem>
-        {buildViewAllQueryStats()}
+        {buildButtons()}
         <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
       </ToolbarContent>
     </Toolbar>
@@ -245,6 +249,15 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
       <CardBody>
         {toolbar}
         {displayContent()}
+        <DeleteByQueryEntries
+          isModalOpen={deleteByQueryOpen}
+          closeModal={() => {
+            onSearch();
+            setDeleteByQueryOpen(false);
+          }}
+          cacheName={props.cacheName}
+          query={search.query}
+        />
       </CardBody>
     </Card>
   );
