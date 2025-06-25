@@ -5,6 +5,10 @@
     "state-transfer": {
       "timeout": 60000
     },
+    "memory": {
+      "max-count": "9000",
+      "when-full": "REMOVE"
+    },
     "encoding": {
       "media-type": "application/json"
     },

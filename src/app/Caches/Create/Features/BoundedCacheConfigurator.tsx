@@ -19,6 +19,7 @@ import { useCreateCache } from '@app/services/createCacheHook';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import { validateNumber } from '@utils/validateInputNumber';
 
 const BoundedCacheConfigurator = () => {
   const { t } = useTranslation();
@@ -50,8 +51,8 @@ const BoundedCacheConfigurator = () => {
           ...prevState.feature,
           boundedCache: {
             evictionType: evictionType,
-            maxSize: evictionType === 'size' ? parseInt(maxSize) : 0,
-            maxCount: evictionType === 'count' ? parseInt(maxCount) : 0,
+            maxSize: evictionType === 'size' ? validateNumber(maxSize)[1] : 0,
+            maxCount: evictionType === 'count' ? validateNumber(maxCount, true)[1] : 0,
             evictionStrategy: evictionStrategy,
             maxSizeUnit: maxSizeUnit.toString(),
             valid: boundedFeatureValidation()
@@ -65,15 +66,7 @@ const BoundedCacheConfigurator = () => {
     if (evictionType !== testedEvictionType) {
       return 'default';
     }
-    const test = evictionType === 'count' ? maxCount : maxSize;
-    if (/^\d+$/.test(test)) {
-      if (parseInt(test, 10) > 0) {
-        return 'success';
-      } else {
-        return 'error';
-      }
-    }
-    return 'error';
+    return evictionType === 'count' ? validateNumber(maxCount, true)[0] : validateNumber(maxSize)[0];
   };
 
   return (

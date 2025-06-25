@@ -185,28 +185,21 @@ export function useFetchConfigurationXML(cacheName: string) {
 }
 
 export function useFetchEditableConfiguration(cacheName: string) {
-  const { cache, loading, error, loadCache } = useCacheDetail();
   const [loadingConfig, setLoadingConfig] = useState(true);
   const [errorConfig, setErrorConfig] = useState('');
   const [editableConfig, setEditableConfig] = useState<EditableConfig>();
 
   useEffect(() => {
-    loadCache(cacheName);
+    ConsoleServices.caches()
+      .getEditableConfig(cacheName)
+      .then((r) => {
+        if (r.isRight()) {
+          setEditableConfig(r.value);
+        } else {
+          setErrorConfig(r.value.message);
+        }
+      })
+      .finally(() => setLoadingConfig(false));
   }, []);
-
-  useEffect(() => {
-    if (!loading && error == '' && cache) {
-      ConsoleServices.caches()
-        .getEditableConfig(cache)
-        .then((r) => {
-          if (r.isRight()) {
-            setEditableConfig(r.value);
-          } else {
-            setErrorConfig(r.value.message);
-          }
-        })
-        .then(() => setLoadingConfig(false));
-    }
-  }, [loading, error, cache]);
   return { loadingConfig, errorConfig, editableConfig };
 }

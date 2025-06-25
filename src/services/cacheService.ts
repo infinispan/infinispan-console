@@ -690,16 +690,20 @@ export class CacheService {
    *
    * @param cacheName, the name of the cache
    */
-  public async getEditableConfig(
-    cacheDetail: DetailedInfinispanCache
-  ): Promise<Either<ActionResponse, EditableConfig>> {
+  public async getEditableConfig(cacheName: string): Promise<Either<ActionResponse, EditableConfig>> {
     const editableConfigUrl =
-      this.endpoint + '/caches/' + encodeURIComponent(cacheDetail.name) + '?action=get-mutable-attributes&full=true';
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=get-mutable-attributes&full=true';
     return this.fetchCaller.get(editableConfigUrl, (data) => {
       return <EditableConfig>{
         maxIdle: data['expiration.max-idle'].value,
-        lifespan: data['expiration.lifespan'].value
+        lifespan: data['expiration.lifespan'].value,
+        memoryMaxSize: this.extractValueOrUndefined('memory.max-size', data),
+        memoryMaxCount: this.extractValueOrUndefined('memory.max-count', data)
       };
     });
+  }
+
+  private extractValueOrUndefined(property: string, data: object) {
+    return data[property] ? data[property].value : undefined;
   }
 }

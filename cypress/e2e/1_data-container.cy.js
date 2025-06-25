@@ -252,7 +252,7 @@ describe('Data Container Overview', () => {
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click();
     cy.get('[data-cy="boundedFeature"]').find('input:checkbox').click(); //Filtering bounded caches
     cy.get('[data-cy=cacheFilterSelectExpanded] div > button').click(); //Closing filter selectbox
-    cy.get('[data-cy=cachesTable] tr').should('have.length', 3); //3 including header row - nothing is changed
+    cy.get('[data-cy=cachesTable] tr').should('have.length', 4); //4 including header row - nothing is changed
     cy.get('[data-cy^=feature-]').each((badge) => {
       cy.wrap(badge).contains(/Bounded/);
     });

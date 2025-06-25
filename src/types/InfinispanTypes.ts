@@ -559,4 +559,6 @@ interface IndexValueField {
 interface EditableConfig {
   lifespan: string;
   maxIdle: string;
+  memoryMaxSize?: string;
+  memoryMaxCount?: number;
 }
