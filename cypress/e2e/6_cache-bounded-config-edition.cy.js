@@ -1,13 +1,15 @@
+import { CONF_MUTABLE_MEMORY_MAX_COUNT, CONF_MUTABLE_MEMORY_MAX_SIZE } from '../../src/services/cacheConfigUtils';
+
 describe('Bounded Cache Update', () => {
   before(() => {
     // Set  a-rbac-test-cache Max Size to 1.5
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/a-rbac-test-cache?action=set-mutable-attribute&attribute-name=memory.max-size&attribute-value=1.5GB',
+      `/caches/a-rbac-test-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_MEMORY_MAX_SIZE}&attribute-value=1.5GB`,
       'POST');
 
     // Set jsonCache Max Count to 9000
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/json-cache?action=set-mutable-attribute&attribute-name=memory.max-count&attribute-value=9000',
+      `/caches/json-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_MEMORY_MAX_COUNT}&attribute-value=9000`,
       'POST');
   });
 

@@ -561,4 +561,5 @@ interface EditableConfig {
   maxIdle: string;
   memoryMaxSize?: string;
   memoryMaxCount?: number;
+  indexedEntities: string[];
 }

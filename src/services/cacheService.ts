@@ -1,6 +1,13 @@
 import { FetchCaller } from './fetchCaller';
 import { Either, left, right } from './either';
-import { CacheConfigUtils } from '@services/cacheConfigUtils';
+import {
+  CacheConfigUtils,
+  CONF_MUTABLE_EXPIRATION_LIFESPAN,
+  CONF_MUTABLE_EXPIRATION_MAXIDLE,
+  CONF_MUTABLE_INDEXING_INDEXED_ENTITIES,
+  CONF_MUTABLE_MEMORY_MAX_COUNT,
+  CONF_MUTABLE_MEMORY_MAX_SIZE
+} from '@services/cacheConfigUtils';
 import { ContentTypeHeaderMapper } from '@services/contentTypeHeaderMapper';
 import { CacheRequestResponseMapper } from '@services/cacheRequestResponseMapper';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
@@ -695,15 +702,20 @@ export class CacheService {
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?action=get-mutable-attributes&full=true';
     return this.fetchCaller.get(editableConfigUrl, (data) => {
       return <EditableConfig>{
-        maxIdle: data['expiration.max-idle'].value,
-        lifespan: data['expiration.lifespan'].value,
-        memoryMaxSize: this.extractValueOrUndefined('memory.max-size', data),
-        memoryMaxCount: this.extractValueOrUndefined('memory.max-count', data)
+        maxIdle: data[CONF_MUTABLE_EXPIRATION_MAXIDLE].value,
+        lifespan: data[CONF_MUTABLE_EXPIRATION_LIFESPAN].value,
+        memoryMaxSize: this.extractValueOrUndefined(CONF_MUTABLE_MEMORY_MAX_SIZE, data),
+        memoryMaxCount: this.extractValueOrUndefined(CONF_MUTABLE_MEMORY_MAX_COUNT, data),
+        indexedEntities: this.extractValueOrEmpty(CONF_MUTABLE_INDEXING_INDEXED_ENTITIES, data)
       };
     });
   }
 
   private extractValueOrUndefined(property: string, data: object) {
     return data[property] ? data[property].value : undefined;
+  }
+
+  private extractValueOrEmpty(property: string, data: object): string[] {
+    return data[property] ? data[property].value : [];
   }
 }

@@ -772,7 +772,12 @@
       "bounded-max-size": "Maximum amount of memory",
       "bounded-max-size-helper-invalid": "You must specify a positive number",
       "bounded-max-count": "Total number of entries",
-      "bounded-max-count-helper-invalid": "You must specify a positive number"
+      "bounded-max-count-helper-invalid": "You must specify a positive number",
+      "tab-indexed": "Indexed",
+      "indexed-title": "Indexing settings",
+      "index-storage-entity": "Entities to index",
+      "index-storage-description": "Specify the fully qualified class names of the entities you want {{brandname}} to include when building the index.",
+      "index-storage-entity-helper-invalid": "You must add at least one entity."
     },
     "backups": {
       "title": "Backups management",
