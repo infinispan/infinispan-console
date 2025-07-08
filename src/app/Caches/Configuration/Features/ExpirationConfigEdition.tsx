@@ -27,6 +27,7 @@ import {
   convertTimeToMilliseconds,
   convertToTimeQuantity
 } from '@utils/convertToTimeQuantity';
+import { CONF_MUTABLE_EXPIRATION_LIFESPAN, CONF_MUTABLE_EXPIRATION_MAXIDLE } from '@services/cacheConfigUtils';
 
 const ExpirationConfigEdition = () => {
   const { t } = useTranslation();
@@ -86,7 +87,7 @@ const ExpirationConfigEdition = () => {
 
     if (newMaxidle && newMaxidle != editableConfig?.maxIdle) {
       ConsoleServices.caches()
-        .setConfigAttribute(cacheName, 'expiration.max-idle', newMaxidle)
+        .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_MAXIDLE, newMaxidle)
         .then((actionResponse) => {
           if (actionResponse.success) {
             addAlert(actionResponse);
@@ -97,7 +98,7 @@ const ExpirationConfigEdition = () => {
     }
     if (newLifespan && newLifespan != editableConfig?.lifespan) {
       ConsoleServices.caches()
-        .setConfigAttribute(cacheName, 'expiration.lifespan', newLifespan)
+        .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_LIFESPAN, newLifespan)
         .then((actionResponse) => {
           if (actionResponse.success) {
             addAlert(actionResponse);
@@ -225,7 +226,7 @@ const ExpirationConfigEdition = () => {
             </FormGroup>
           </GridItem>
         </Grid>
-        {<TabsToolbar id="expiration" saveAction={updateExpiration} cancelAction={setActualValues} />}
+        {<TabsToolbar id="expiration" saveAction={updateExpiration} />}
       </FormSection>
     </Form>
   );

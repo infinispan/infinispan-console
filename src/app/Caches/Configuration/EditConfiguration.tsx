@@ -10,6 +10,7 @@ import BoundedConfigEdition from '@app/Caches/Configuration/Features/BoundedConf
 import { useCacheDetail } from '@app/services/cachesHook';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
+import { IndexedConfigEdition } from '@app/Caches/Configuration/Features/IndexedConfigEdition';
 
 interface EditConfigTab {
   key: string;
@@ -35,6 +36,9 @@ const EditConfiguration = () => {
     cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-expiration'), key: 'expiration', eventKey: 0 });
     if (cache.features?.bounded) {
       cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-bounded'), key: 'bounded', eventKey: 1 });
+    }
+    if (cache.features?.indexed) {
+      cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-indexed'), key: 'indexed', eventKey: 2 });
     }
     setTabs(cacheConfigTabs);
   }, [cache]);
@@ -73,6 +77,7 @@ const EditConfiguration = () => {
           <CardBody>
             {activeTabKey == 0 && <ExpirationConfigEdition />}
             {activeTabKey == 1 && <BoundedConfigEdition />}
+            {activeTabKey == 2 && <IndexedConfigEdition />}
           </CardBody>
         </Card>
       </React.Fragment>

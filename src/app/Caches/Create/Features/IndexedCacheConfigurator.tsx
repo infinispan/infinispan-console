@@ -75,7 +75,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const onSelectSchemas = (selection) => {
-    if (indexedEntities.includes(selection)) setIndexedEntities(indexedEntities.filter((role) => role !== selection));
+    if (indexedEntities.includes(selection))
+      setIndexedEntities(indexedEntities.filter((entity) => entity !== selection));
     else setIndexedEntities([...indexedEntities, selection]);
   };
 

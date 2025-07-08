@@ -27,6 +27,7 @@ import { TabsToolbar } from '@app/Caches/Configuration/Features/TabsToolbar';
 import { convertToMaxSizeUnit, convertToSizeAndUnit } from '@utils/convertToSizeAndUnit';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { validateNumber } from '@utils/validateInputNumber';
+import { CONF_MUTABLE_MEMORY_MAX_COUNT, CONF_MUTABLE_MEMORY_MAX_SIZE } from '@services/cacheConfigUtils';
 
 const BoundedCacheConfigurator = () => {
   const { t } = useTranslation();
@@ -63,8 +64,9 @@ const BoundedCacheConfigurator = () => {
       newValue = convertToMaxSizeUnit(validation[1], maxSizeUnit);
     }
 
+    const property = evictionType == 'count' ? CONF_MUTABLE_MEMORY_MAX_COUNT : CONF_MUTABLE_MEMORY_MAX_SIZE;
     ConsoleServices.caches()
-      .setConfigAttribute(cacheName, `memory.max-${evictionType}`, newValue)
+      .setConfigAttribute(cacheName, property, newValue)
       .then((actionResponse) => {
         if (actionResponse.success) {
           addAlert(actionResponse);
@@ -186,7 +188,7 @@ const BoundedCacheConfigurator = () => {
             </FormGroup>
           )}
         </Grid>
-        {<TabsToolbar id="bounded" saveAction={updateBounded} cancelAction={setActualValues} />}
+        {<TabsToolbar id="bounded" saveAction={updateBounded} />}
       </FormSection>
     </Form>
   );

@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const TabsToolbar = (props: { id: string; saveAction: () => void; cancelAction: () => void }) => {
+const TabsToolbar = (props: { id: string; saveAction: () => void }) => {
   const { t } = useTranslation();
   const cacheName = useParams()['cacheName'] as string;
   return (
@@ -17,15 +17,6 @@ const TabsToolbar = (props: { id: string; saveAction: () => void; cancelAction: 
             onClick={() => props.saveAction()}
           >
             {t('common.actions.save')}
-          </Button>
-        </ToolbarItem>
-        <ToolbarItem>
-          <Button
-            variant={ButtonVariant.secondary}
-            ata-cy={`cancelButton-${props.id}`}
-            onClick={() => props.cancelAction()}
-          >
-            {t('common.actions.cancel')}
           </Button>
         </ToolbarItem>
         <ToolbarItem>

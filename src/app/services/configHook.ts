@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { formatXml } from '@app/utils/dataSerializerUtils';
 import { useApiAlert } from '@utils/useApiAlert';
-import { useCaches } from '@app/services/dataContainerHooks';
-import { useCacheDetail } from '@app/services/cachesHook';
 
 export function useFetchTracingConfig(cacheName: string) {
   const { addAlert } = useApiAlert();

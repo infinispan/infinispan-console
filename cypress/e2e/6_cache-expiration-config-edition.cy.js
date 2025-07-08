@@ -1,3 +1,5 @@
+import { CONF_MUTABLE_EXPIRATION_LIFESPAN, CONF_MUTABLE_EXPIRATION_MAXIDLE } from '../../src/services/cacheConfigUtils';
+
 describe('Cache Expiration', () => {
   const expirationCaches = ['people', 'indexed-cache']; //non-auth and auth caches
   const nonAdminUserNames = ['monitor', 'observer', 'application', 'deployer']; // non admin users
@@ -5,20 +7,20 @@ describe('Cache Expiration', () => {
   before(() => {
     // Set people cache expiration disabled
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/people?action=set-mutable-attribute&attribute-name=expiration.max-idle&attribute-value=-1',
+      `/caches/people?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_MAXIDLE}&attribute-value=-1`,
       'POST');
 
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/people?action=set-mutable-attribute&attribute-name=expiration.lifespan&attribute-value=-1',
+      `/caches/people?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_LIFESPAN}&attribute-value=-1`,
       'POST');
 
     // Set indexed-cache cache expiration disabled
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/indexed-cache?action=set-mutable-attribute&attribute-name=expiration.max-idle&attribute-value=-1',
+      `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_MAXIDLE}&attribute-value=-1`,
       'POST');
     // Set indexed-cache cache expiration disabled
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/indexed-cache?action=set-mutable-attribute&attribute-name=expiration.lifespan&attribute-value=-1',
+      `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_LIFESPAN}&attribute-value=-1`,
       'POST');
   });
 
@@ -65,7 +67,6 @@ describe('Cache Expiration', () => {
       cy.get('[data-cy=maxidle]').should('have.value', '12');
       cy.get('[data-cy=toggle-maxidleUnitSelector]').contains('minutes');
       cy.get('[data-cy=expirationSwitch]').uncheck({force: true});
-      cy.get('[data-cy=saveConfigButton-expiration]').click();
       cy.get('[data-cy=saveConfigButton-expiration]').click();
       cy.get('[data-cy=backButton-expiration]').click();
       cy.get("[data-cy=cacheConfigurationTab]").click();

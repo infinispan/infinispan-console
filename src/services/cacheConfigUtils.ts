@@ -14,6 +14,11 @@ export const INVALIDATION_SYNC = 'INVALIDATION_SYNC';
 export const INVALIDATION_ASYNC = 'INVALIDATION_ASYNC';
 export const DIST_SYNC = 'DIST_SYNC';
 export const DIST_ASYNC = 'DIST_ASYNC';
+export const CONF_MUTABLE_EXPIRATION_MAXIDLE = 'expiration.max-idle';
+export const CONF_MUTABLE_EXPIRATION_LIFESPAN = 'expiration.lifespan';
+export const CONF_MUTABLE_MEMORY_MAX_SIZE = 'memory.max-size';
+export const CONF_MUTABLE_MEMORY_MAX_COUNT = 'memory.max-count';
+export const CONF_MUTABLE_INDEXING_INDEXED_ENTITIES = 'indexing.indexed-entities';
 
 /**
  * Utility class to map cache configuration
