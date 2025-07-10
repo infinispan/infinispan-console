@@ -19,6 +19,7 @@ export const CONF_MUTABLE_EXPIRATION_LIFESPAN = 'expiration.lifespan';
 export const CONF_MUTABLE_MEMORY_MAX_SIZE = 'memory.max-size';
 export const CONF_MUTABLE_MEMORY_MAX_COUNT = 'memory.max-count';
 export const CONF_MUTABLE_INDEXING_INDEXED_ENTITIES = 'indexing.indexed-entities';
+export const CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES = 'security.authorization.roles';
 
 /**
  * Utility class to map cache configuration

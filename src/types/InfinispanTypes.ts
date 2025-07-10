@@ -562,4 +562,5 @@ interface EditableConfig {
   memoryMaxSize?: string;
   memoryMaxCount?: number;
   indexedEntities: string[];
+  securityAuthorizationRoles: string[];
 }

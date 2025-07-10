@@ -3,7 +3,7 @@ import { CONF_MUTABLE_INDEXING_INDEXED_ENTITIES } from '../../src/services/cache
 describe('Indexed Cache Update', () => {
   before(() => {
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_INDEXING_INDEXED_ENTITIES}&attribute-value=['org.infinispan.Person']`,
+      `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_INDEXING_INDEXED_ENTITIES}&attribute-value='org.infinispan.Person'`,
       'POST');
   });
 

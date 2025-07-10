@@ -777,7 +777,13 @@
       "indexed-title": "Indexing settings",
       "index-storage-entity": "Entities to index",
       "index-storage-description": "Specify the fully qualified class names of the entities you want {{brandname}} to include when building the index.",
-      "index-storage-entity-helper-invalid": "You must add at least one entity."
+      "index-storage-entity-helper-invalid": "You must add at least one entity.",
+      "tab-secured": "Security",
+      "security-title": "Security settings",
+      "security-description": "Update roles in this cache and grant or deny access to {{brandname}} cache operations.",
+      "security-authz-roles": "Roles",
+      "security-authz-roles-helper-invalid": "You must add at least one role.",
+      "security-config-error": "Unable to upgrade roles in this cache: {{error}}"
     },
     "backups": {
       "title": "Backups management",
