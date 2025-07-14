@@ -20,6 +20,8 @@ export const CONF_MUTABLE_MEMORY_MAX_SIZE = 'memory.max-size';
 export const CONF_MUTABLE_MEMORY_MAX_COUNT = 'memory.max-count';
 export const CONF_MUTABLE_INDEXING_INDEXED_ENTITIES = 'indexing.indexed-entities';
 export const CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES = 'security.authorization.roles';
+export const CONF_MUTABLE_TRACING_ENABLED = 'tracing.enabled';
+export const CONF_MUTABLE_TRACING_CATEGORIES = 'tracing.categories';
 
 /**
  * Utility class to map cache configuration

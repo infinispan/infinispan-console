@@ -789,7 +789,9 @@
       "security-description": "Update roles in this cache and grant or deny access to {{brandname}} cache operations.",
       "security-authz-roles": "Roles",
       "security-authz-roles-helper-invalid": "You must add at least one role.",
-      "security-config-error": "Unable to upgrade roles in this cache: {{error}}"
+      "security-config-error": "Unable to upgrade roles in this cache: {{error}}",
+      "tab-tracing": "Tracing",
+      "tracing-title": "Tracing settings"
     },
     "backups": {
       "title": "Backups management",

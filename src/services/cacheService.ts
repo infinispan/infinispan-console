@@ -7,7 +7,9 @@ import {
   CONF_MUTABLE_INDEXING_INDEXED_ENTITIES,
   CONF_MUTABLE_MEMORY_MAX_COUNT,
   CONF_MUTABLE_MEMORY_MAX_SIZE,
-  CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES
+  CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES,
+  CONF_MUTABLE_TRACING_CATEGORIES,
+  CONF_MUTABLE_TRACING_ENABLED
 } from '@services/cacheConfigUtils';
 import { ContentTypeHeaderMapper } from '@services/contentTypeHeaderMapper';
 import { CacheRequestResponseMapper } from '@services/cacheRequestResponseMapper';
@@ -708,9 +710,15 @@ export class CacheService {
         memoryMaxSize: this.extractValueOrUndefined(CONF_MUTABLE_MEMORY_MAX_SIZE, data),
         memoryMaxCount: this.extractValueOrUndefined(CONF_MUTABLE_MEMORY_MAX_COUNT, data),
         indexedEntities: this.extractValueOrEmpty(CONF_MUTABLE_INDEXING_INDEXED_ENTITIES, data),
-        securityAuthorizationRoles: this.extractValueOrEmpty(CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES, data)
+        securityAuthorizationRoles: this.extractValueOrEmpty(CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES, data),
+        tracingEnabled: this.extractValueOrFalse(CONF_MUTABLE_TRACING_ENABLED, data),
+        tracingCategories: this.extractValueOrEmpty(CONF_MUTABLE_TRACING_CATEGORIES, data)
       };
     });
+  }
+
+  private extractValueOrFalse(property: string, data: object): boolean {
+    return data[property] ? data[property].value : false;
   }
 
   private extractValueOrUndefined(property: string, data: object) {

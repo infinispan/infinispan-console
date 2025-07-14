@@ -193,12 +193,6 @@ describe('RBAC Functionality Tests', () => {
     }
 
     cy.get('[data-cy=detailCacheActions]').click();
-    if(isSuperAdmin) {
-      cy.get('[data-cy=manageTracingLink]').should('exist');
-    } else {
-      //@TODO uncomment when ISPN-16622 is fixed.
-      //cy.get('[data-cy=manageTracingLink]').should('not.exist');
-    }
 
     cy.get('[data-cy=manageIndexesLink]').click();
     if (isSuperAdmin) {
