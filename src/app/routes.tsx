@@ -21,7 +21,6 @@ import { RoleDetail } from '@app/AccessManagement/RoleDetail';
 import { useDocumentTitle } from '@utils/useDocumentTitle';
 import { accessibleRouteChangeHandler } from '@utils/utils';
 import { ContainerDataProvider } from '@app/providers/CacheManagerContextProvider';
-import { TracingManagement } from '@app/TracingManagement/TracingManagement';
 import { EditConfiguration } from '@app/Caches/Configuration/EditConfiguration';
 import { CacheDetailProvider } from '@app/providers/CacheDetailProvider';
 
@@ -118,16 +117,6 @@ const routes: IAppRoute[] = [
     label: 'Index management',
     path: '/cache/:cacheName/indexing',
     title: 'Index management',
-    menu: false,
-    admin: false
-  },
-  {
-    id: 'cache_tracing_management',
-    component: <TracingManagement />,
-    exact: true,
-    label: 'Tracing management',
-    path: '/cache/:cacheName/tracing',
-    title: 'Tracing management',
     menu: false,
     admin: false
   },

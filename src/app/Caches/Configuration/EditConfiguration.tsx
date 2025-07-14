@@ -12,6 +12,7 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { IndexedConfigEdition } from '@app/Caches/Configuration/Features/IndexedConfigEdition';
 import { SecurityConfigEdition } from '@app/Caches/Configuration/Features/SecurityConfigEdition';
+import { TracingConfigEdition } from '@app/Caches/Configuration/Features/TracingConfigEdition';
 
 interface EditConfigTab {
   key: string;
@@ -22,7 +23,7 @@ interface EditConfigTab {
 const EditConfiguration = () => {
   const { t } = useTranslation();
   const cacheName = useParams()['cacheName'] as string;
-  const { loading, error, cache, loadCache } = useCacheDetail();
+  const { loading, error, cache, cacheManager, loadCache } = useCacheDetail();
   const [activeTabKey, setActiveTabKey] = useState<number>(0);
   const [tabs, setTabs] = useState<EditConfigTab[]>([]);
 
@@ -43,6 +44,10 @@ const EditConfiguration = () => {
     }
     if (cache.features?.secured) {
       cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-secured'), key: 'secured', eventKey: 3 });
+    }
+    // Display Tracing Management only if Tracing is enabled in the Server
+    if (cacheManager.tracing_enabled) {
+      cacheConfigTabs.push({ name: t('caches.edit-configuration.tab-tracing'), key: 'tracing', eventKey: 4 });
     }
     setTabs(cacheConfigTabs);
   }, [cache]);
@@ -83,6 +88,7 @@ const EditConfiguration = () => {
             {activeTabKey == 1 && <BoundedConfigEdition />}
             {activeTabKey == 2 && <IndexedConfigEdition />}
             {activeTabKey == 3 && <SecurityConfigEdition />}
+            {activeTabKey == 4 && <TracingConfigEdition />}
           </CardBody>
         </Card>
       </React.Fragment>

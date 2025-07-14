@@ -38,11 +38,11 @@ import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { t_global_background_color_100 } from '@patternfly/react-tokens';
 import {
+  ClusterIcon,
   CogIcon,
   DatabaseIcon,
   ExclamationCircleIcon,
   InfoCircleIcon,
-  MonitoringIcon,
   PencilAltIcon,
   RedoIcon
 } from '@patternfly/react-icons';
@@ -60,7 +60,6 @@ import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { PageHeader } from '@patternfly/react-component-groups';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
-import { CacheType } from '@services/infinispanRefData';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -222,6 +221,7 @@ const DetailCache = (props: { cacheName: string }) => {
         value={'backupsManage'}
         key="manageBackupsLink"
         data-cy="manageBackupsLink"
+        icon={<ClusterIcon />}
         onClick={(ev) =>
           navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/backups',
@@ -253,27 +253,6 @@ const DetailCache = (props: { cacheName: string }) => {
         </ToolbarItem>
         <ToolbarItem variant="separator"></ToolbarItem>
       </React.Fragment>
-    );
-  };
-
-  const buildTracing = () => {
-    if (!cacheManager || !cacheManager.tracing_enabled || !cache || !cache.started) return;
-
-    return (
-      <DropdownItem
-        value={'tracingManage'}
-        key="manageTracingLink"
-        icon={<MonitoringIcon />}
-        data-cy="manageTracingLink"
-        onClick={(ev) =>
-          navigate({
-            pathname: '/cache/' + encodeURIComponent(cacheName) + '/tracing',
-            search: location.search
-          })
-        }
-      >
-        {t('caches.actions.action-manage-tracing')}
-      </DropdownItem>
     );
   };
 
@@ -478,7 +457,6 @@ const DetailCache = (props: { cacheName: string }) => {
         >
           <DropdownList>
             {buildEditConfigManage()}
-            {buildTracing()}
             {buildIndexManage()}
             {buildBackupsManage()}
             {buildRefresh()}
