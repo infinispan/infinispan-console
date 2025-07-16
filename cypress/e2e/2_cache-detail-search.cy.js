@@ -25,6 +25,7 @@ describe('Cache Detail Overview', () => {
     cy.get('[data-cy=deleteButton]').click();
     cy.get('button[aria-label=searchButton]').click();
     cy.contains('Values not found.');
+    cy.get('[data-cy=deleteByQueryButton]').should('be.disabled');
   })
 
   it('successfully searches by values', () => {

@@ -30,7 +30,7 @@ describe('Welcome page', () => {
 
     if (Cypress.browser.name === 'firefox') {
       cy.contains('admin');
-      cy.get('[aria-label*="incognito"]').should('exist');
+      cy.get('[aria-label*="more-info-close"]').should('exist');
     } else {
       //Checks that user's dropbox exists on the page.
       cy.contains('admin').click();

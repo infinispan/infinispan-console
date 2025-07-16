@@ -4,6 +4,7 @@ userPass="$user:$pass"
 echo "= Init create data"
 echo "= Delete caches"
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/schemas/people
+curl -XDELETE --digest -u $userPass http://localhost:41222/rest/v2/schemas/people
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/json-cache
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/xml-cache
 curl -XDELETE --digest -u $userPass http://localhost:11222/rest/v2/caches/java-cache
@@ -24,6 +25,7 @@ echo "= Create schema"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/people.proto" "http://localhost:11222/rest/v2/schemas/people"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/child.proto" "http://localhost:11222/rest/v2/schemas/child"
 curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/car.proto" "http://localhost:11222/rest/v2/schemas/car"
+curl -XPOST --digest -u $userPass -H "Content-Type: application/json" --data-binary "@schemas/people.proto" "http://localhost:41222/rest/v2/schemas/people"
 
 #Creating some more schemas for testing pagination and navigation
 for i in {1..10}
