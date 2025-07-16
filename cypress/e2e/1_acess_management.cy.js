@@ -81,7 +81,7 @@ describe('Access Management', () => {
     cy.get('[data-cy=grantAccessPrincipalButton').click();
     cy.get("[aria-label=principal-name-input]").type("aPrincipal");
     cy.get("[data-cy=menu-toogle-roles]").click();
-    cy.get("[data-cy=option-typeahead-deployer]").click({animationDistanceThreshold: 20});
+    cy.get("[data-cy=option-typeahead-deployer]").click({animationDistanceThreshold: 20, waitForAnimations: false});
     cy.get("[data-cy=menu-toogle-roles]").click();
     cy.get('[aria-label=Save').click();
     cy.contains('Access granted to aPrincipal.');

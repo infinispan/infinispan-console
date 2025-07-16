@@ -53,6 +53,8 @@ describe('Bounded Cache Update', () => {
 
   it('tab is invisible for not bounded caches', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    cy.get('[data-cy=detailCacheActions]').click();
+    cy.get('[data-cy=manageConfigEditionLink]').click();
     cy.get('[data-cy=nav-item-Bounded]').should('not.exist');
   });
 });

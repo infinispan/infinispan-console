@@ -32,8 +32,10 @@ describe('RBAC Cache Update', () => {
     cy.contains("deployer").should('exist');
   });
 
-  it('tab is invisible for not indexed caches', () => {
+  it('tab is invisible for not secured caches', () => {
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
-    cy.get('[data-cy=nav-item-Indexed]').should('not.exist');
+    cy.get('[data-cy=detailCacheActions]').click();
+    cy.get('[data-cy=manageConfigEditionLink]').click();
+    cy.get('[data-cy=nav-item-Security]').should('not.exist');
   });
 });

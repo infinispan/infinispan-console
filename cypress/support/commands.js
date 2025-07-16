@@ -23,6 +23,19 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+const COMMAND_DELAY = 0;
+
+for (const command of ['click', 'trigger', 'type', 'clear', 'reload']) {
+    Cypress.Commands.overwrite(command, (originalFn, ...args) => {
+        const origVal = originalFn(...args);
+
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(origVal);
+            }, COMMAND_DELAY);
+        });
+    });
+}
 
 Cypress.Commands.add('login', (username, password, url = '/') => {
   cy.visit(url, {

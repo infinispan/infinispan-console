@@ -233,8 +233,8 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
           hasCheckIcon
           label={
             isStatistics
-              ? t('caches.create.configurations.basic.statistics-disable')
-              : t('caches.create.configurations.basic.statistics-enable')
+              ? t('caches.create.configurations.basic.statistics-enable')
+              : t('caches.create.configurations.basic.statistics-disable')
           }
         />
       </FormGroup>
