@@ -19,7 +19,6 @@ const ResetCounter = (props: {
   return (
     <Modal
       id={'reset-counter-modal'}
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={props.closeModal}

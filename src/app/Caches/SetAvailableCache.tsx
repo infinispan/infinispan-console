@@ -27,7 +27,6 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
 
   return (
     <Modal
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={() => clearSetAvailableCacheModal(false)}

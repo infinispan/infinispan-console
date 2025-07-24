@@ -17,7 +17,6 @@ const RemovePrincipal = (props: {
   return (
     <Modal
       id={'remove-principal-modal'}
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={props.closeModal}

@@ -647,7 +647,6 @@ const CreateOrUpdateEntryForm = (props: {
 
   return (
     <Modal
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={onClose}

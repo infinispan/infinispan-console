@@ -49,13 +49,7 @@ const EditSchema = (props: {
   };
 
   return (
-    <Modal
-      isOpen={props.isModalOpen}
-      className="pf-m-redhat-font"
-      onClose={props.closeModal}
-      aria-label="Edit schema modal"
-      variant={'small'}
-    >
+    <Modal isOpen={props.isModalOpen} onClose={props.closeModal} aria-label="Edit schema modal" variant={'small'}>
       <ModalHeader titleIconVariant={'warning'} title={t('schemas.edit.heading')} />
       <ModalBody>
         <Content style={{ paddingBottom: '1rem' }}>

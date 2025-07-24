@@ -25,7 +25,6 @@ const ClearAllEntries = (props: { cacheName: string; isModalOpen: boolean; close
 
   return (
     <Modal
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={props.closeModal}

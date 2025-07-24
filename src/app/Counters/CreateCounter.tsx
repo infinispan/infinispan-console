@@ -216,7 +216,6 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
     <Modal
       variant={ModalVariant.small}
       id={'create-counter-modal'}
-      className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
       onClose={onCloseModal}
       aria-label={'counters-modal-create-title'}
