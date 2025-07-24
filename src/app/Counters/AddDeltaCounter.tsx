@@ -44,7 +44,6 @@ const AddDeltaCounter = (props: {
   return (
     <Modal
       id={'add-delta-counter-modal'}
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={props.closeModal}

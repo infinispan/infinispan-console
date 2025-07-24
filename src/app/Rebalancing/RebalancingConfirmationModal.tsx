@@ -17,7 +17,6 @@ const RebalancingConfirmationModal = (props: {
     <Modal
       data-cy="rebalancingModal"
       variant={'small'}
-      className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
       onClose={() => props.closeModal()}
       aria-label={props.enabled ? 'Disable' : 'Enable'}

@@ -147,7 +147,6 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
       tabIndex={0}
       variant={ModalVariant.small}
       id={'grant-new-access-modal'}
-      className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
       onClose={onCloseModal}
       aria-label={'principals-modal-grant-title'}

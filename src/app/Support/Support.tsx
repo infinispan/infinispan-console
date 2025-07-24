@@ -49,13 +49,7 @@ const Support = (props: { isModalOpen: boolean; closeModal: () => void }) => {
   );
 
   return (
-    <Modal
-      isOpen={props.isModalOpen}
-      className="pf-m-redhat-font"
-      onClose={props.closeModal}
-      width={'80%'}
-      disableFocusTrap={true}
-    >
+    <Modal isOpen={props.isModalOpen} onClose={props.closeModal} width={'80%'} disableFocusTrap={true}>
       <ModalHeader titleIconVariant={'info'} aria-label={t('support.no-user-label')}>
         {header}
       </ModalHeader>

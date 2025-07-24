@@ -14,13 +14,7 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
   };
 
   return (
-    <Modal
-      isOpen={props.isModalOpen}
-      onClose={props.closeModal}
-      variant={'small'}
-      className="pf-m-redhat-font"
-      aria-label="Delete schema modal"
-    >
+    <Modal isOpen={props.isModalOpen} onClose={props.closeModal} variant={'small'} aria-label="Delete schema modal">
       <ModalHeader titleIconVariant={'danger'} title={t('schemas.delete.heading')} />
       <ModalBody>
         <Content component={'p'}>

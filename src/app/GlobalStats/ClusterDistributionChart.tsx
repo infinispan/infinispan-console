@@ -3,31 +3,22 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Pagination,
   SearchInput,
   Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
-  Pagination
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import { Table, Thead, Tr, Th, Tbody, Td, TableVariant } from '@patternfly/react-table';
-import {
-  Chart,
-  ChartAxis,
-  ChartBar,
-  ChartLegend,
-  ChartThemeColor,
-  ChartStack,
-  ChartTooltip
-} from '@patternfly/react-charts/victory';
+import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { Chart, ChartAxis, ChartBar, ChartStack, ChartTooltip } from '@patternfly/react-charts/victory';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
 import { useClusterDistribution } from '@app/services/dataDistributionHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { formatBytes } from '@utils/formatBytes';
 import { onSearch } from '@app/utils/searchFilter';
-import { chart_color_blue_300, chart_color_blue_200 } from '@patternfly/react-tokens';
 import './ClusterDistributionChart.css';
 
 const ClusterDistributionChart = () => {
@@ -165,20 +156,14 @@ const ClusterDistributionChart = () => {
       <Chart
         ariaDesc={t('global-stats.cluster-distribution')}
         domainPadding={{ x: [30, 25] }}
-        legendComponent={
-          <ChartLegend
-            data={[
-              {
-                name: t('global-stats.cluster-distribution-option-memory-used'),
-                symbol: { fill: chart_color_blue_300.var }
-              },
-              {
-                name: t('global-stats.cluster-distribution-option-memory-available'),
-                symbol: { fill: chart_color_blue_200.var }
-              }
-            ]}
-          />
-        }
+        legendData={[
+          {
+            name: t('global-stats.cluster-distribution-option-memory-used')
+          },
+          {
+            name: t('global-stats.cluster-distribution-option-memory-available')
+          }
+        ]}
         domain={{ y: [0, maxDomain] }}
         legendPosition="bottom-left"
         height={250}
@@ -189,11 +174,10 @@ const ClusterDistributionChart = () => {
           top: 0
         }}
         width={700}
-        themeColor={ChartThemeColor.blue}
       >
         <ChartAxis />
         <ChartAxis dependentAxis tickFormat={(t) => formatBytes(t)} />
-        <ChartStack colorScale={[chart_color_blue_300.var, chart_color_blue_200.var]} horizontal>
+        <ChartStack horizontal>
           <ChartBar data={dataMemoryUsed} labelComponent={<ChartTooltip />} />
           <ChartBar data={dataMemoryAvailable} labelComponent={<ChartTooltip />} />
         </ChartStack>
@@ -210,7 +194,13 @@ const ClusterDistributionChart = () => {
       return <TableErrorState error={errorCluster} />;
     }
 
-    return clusterDistribution && clusterDistribution.length < MAX_NUMBER_FOR_CHART ? clusterChart : clusterTable;
+    // Chart for low number of nodes
+    if (clusterDistribution && clusterDistribution.length < MAX_NUMBER_FOR_CHART) {
+      return clusterChart;
+    }
+
+    // table for high number of nodes
+    return clusterTable;
   };
 
   return (

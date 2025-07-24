@@ -44,7 +44,6 @@ const SetCounter = (props: {
   return (
     <Modal
       id={'set-counter-modal'}
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={props.closeModal}

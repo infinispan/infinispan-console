@@ -38,7 +38,6 @@ const StateTransfer = (props: {
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={() => props.closeModal(false)}
-      className="pf-m-redhat-font"
       aria-label="State transfer modal"
     >
       <ModalHeader

@@ -58,7 +58,6 @@ const IgnoreCache = (props: {
     <Modal
       data-cy={`${props.action}CacheModal`}
       id="hideShowModal"
-      className="pf-m-redhat-font"
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={() => clearIgnoreCacheModal(false)}

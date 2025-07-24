@@ -64,7 +64,6 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
   return (
     <Modal
       variant={'small'}
-      className="pf-m-redhat-font"
       isOpen={props.isModalOpen}
       onClose={() => clearDeleteCacheModal(false)}
       aria-label="Delete cache modal"

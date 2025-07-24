@@ -77,7 +77,7 @@ const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
             ariaLabel="view-cache-metrics-data-total"
           />
         </DescriptionList>
-        <Divider component="li" role="none" />
+        <Divider component="li" role="separator" />
         <DescriptionList isHorizontal isCompact>
           {displayStats('hits', props.stats.hits, 'caches.cache-metrics.data-access-hits')}
           {displayStats('misses', props.stats.misses, 'caches.cache-metrics.data-access-misses')}

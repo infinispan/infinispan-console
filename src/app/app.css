@@ -2,6 +2,8 @@ html,
 body,
 #root {
   height: 100%;
+  --pf-v6-chart-axis--tick-label--Fill: var(--pf-v6-c-content--Color);
+  --pf-v6-chart-global--label--Fill: var(--pf-v6-c-content--Color);
 }
 
 .caches-table {

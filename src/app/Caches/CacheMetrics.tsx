@@ -253,11 +253,11 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
               <MultiContentCard withDividers cards={[buildLifecycleCard(), buildOperationsPerformanceCard()]} />
             )}
           </GridItem>
-          <GridItem span={6}>
+          <GridItem span={5}>
             <DataAccess cacheName={props.cacheName} stats={stats!} />
           </GridItem>
-          {displayDataDistribution && <GridItem span={6}> {buildDataDistribution()}</GridItem>}
-          <GridItem span={displayDataDistribution ? 12 : 6}>{buildQueryStats()}</GridItem>
+          {displayDataDistribution && <GridItem span={7}> {buildDataDistribution()}</GridItem>}
+          <GridItem span={displayDataDistribution ? 12 : 7}>{buildQueryStats()}</GridItem>
         </Grid>
       </CardBody>
     </Card>

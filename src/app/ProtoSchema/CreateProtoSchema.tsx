@@ -158,7 +158,6 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
     <Modal
       id={'create-schema-modal'}
       isOpen={props.isModalOpen}
-      className="pf-m-redhat-font"
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
     >
