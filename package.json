@@ -82,6 +82,7 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
+    "@patternfly/patternfly": "^6.3.0",
     "@patternfly/react-charts": "^8.3.0",
     "@patternfly/react-code-editor": "^6.3.0",
     "@patternfly/react-component-groups": "^6.3.0",
