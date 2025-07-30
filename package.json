@@ -20,6 +20,8 @@
     "bundle-profile:analyze": "npm run build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
     "cy:run": "cypress run --headless",
+    "cy:run:chrome": "cypress run --headless --browser chrome",
+    "cy:run:firefox": "cypress run --headless --browser firefox",
     "cy:e2e": "cypress open"
   },
   "prettier": {
