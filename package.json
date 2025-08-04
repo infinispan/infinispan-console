@@ -101,6 +101,6 @@
     "react-dom": "^18",
     "react-i18next": "^15.6.1",
     "react-syntax-highlighter": "^15.6.1",
-    "victory": "latest"
+    "victory": "37.3.6"
   }
 }
