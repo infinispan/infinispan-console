@@ -38,7 +38,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const [stats, setStats] = useState<CacheStats | undefined>(cache.stats);
   const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(cache.queryable!);
   const [displayDataDistribution, setDisplayDataDistribution] = useState<boolean>(
-    ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
+    ConsoleServices.security().hasConsoleACL(ConsoleACL.MONITOR, connectedUser)
   );
   const memory = () => {
     if (cache.memory) {

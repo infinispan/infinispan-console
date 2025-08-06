@@ -208,8 +208,8 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=data-distribution-chart]').should('exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('exist');
     } else {
+      cy.get('[data-cy=data-distribution-chart]').should('exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('not.exist');
-      cy.get('[data-cy=data-distribution-chart]').should('not.exist');
     }
 
     if (!isMonitor)
@@ -305,7 +305,7 @@ describe('RBAC Functionality Tests', () => {
       cy.get('[data-cy=data-distribution-chart]').should('exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('exist');
     } else {
-      cy.get('[data-cy=data-distribution-chart]').should('not.exist');
+      cy.get('[data-cy=data-distribution-chart]').should('exist');
       cy.get('[data-cy=clearQueryMetricsButton]').should('not.exist');
     }
 
