@@ -4,6 +4,14 @@ describe('RBAC Functionality Tests', () => {
   const applicationUserName = 'application';
   const deployerUserName = 'deployer';
 
+  beforeEach(() => {
+    // cleanup created data for a-rbac-test-cache
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/a-rbac-test-cache/fordCar', 'DELETE')
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/a-rbac-test-cache/kiaCar', 'DELETE')
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/indexed-cache-no-auth/stringKey', 'DELETE')
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/indexed-cache-no-auth/stringKey1', 'DELETE')
+  });
+
   it('successfully logins and performs actions with monitor user', () => {
     cy.login(monitorUserName, Cypress.env('password'));
     checkDataContainerView(true, false, false, false);

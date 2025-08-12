@@ -35,10 +35,18 @@ describe('Data Container Caches', () => {
       cy.get('[data-cy=edit-alias-button]').click();
       // Check modal exists
       cy.get('[data-cy=updateAliasesCacheModal]').should('exist');
+      // add aliases
+      cy.get('[data-cy=menu-toogle-aliasesSelector]')
+        .click().type('newAliasFor' + cacheName)
+        .type('{enter}');
+      cy.get('[data-cy=updateAliasesButton]').click(); //Update aliases
       cy.get('[data-cy=closeAction]').click(); //Closing modal with Close button
+      cy.contains('newAliasFor' + cacheName);
+      cy.contains('alias1');
 
       cy.login(Cypress.env('username'), Cypress.env('password'));
-
+      cy.contains('newAliasFor' + cacheName);
+      cy.contains('alias1');
       cy.get('[data-cy=actions-'+ cacheName + ']').click();
       cy.get('[aria-label=updateAliasesCacheAction]').click();
       // add aliases
@@ -48,13 +56,23 @@ describe('Data Container Caches', () => {
       cy.get('[data-cy=updateAliasesButton]').click(); //Update aliases
       cy.get('[data-cy=closeAction]').click(); //Closing modal with Close button
       cy.contains('alias1').should('not.exist');
+      cy.contains('newAliasFor' + cacheName);
       cy.contains(`Updated ${cacheName} cache: aliases configured successfully`);
 
       // Check detail has aliases
       cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);
-      cy.contains('Aliases').should('not.exist');
       cy.contains('alias1').should('not.exist');
+      cy.contains('newAliasFor' + cacheName);
+      cy.get('[data-cy=edit-alias-button]').click();
+      cy.get('#clearInput').click();
+      cy.get('[data-cy=updateAliasesButton]').click(); //Update aliases
+      cy.get('[data-cy=closeAction]').click(); //Closing modal with Close button
+      cy.contains('newAliasFor' + cacheName).should('not.exist');
+      cy.contains('No alias');
+
       cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.contains('newAliasFor' + cacheName).should('not.exist');
+
     });
   });
 });
