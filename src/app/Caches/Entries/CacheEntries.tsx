@@ -28,7 +28,7 @@ import {
   Truncate
 } from '@patternfly/react-core';
 import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { EyeIcon, FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import displayUtils from '@services/displayUtils';

@@ -3,8 +3,8 @@ import { ContentType, EncodingType } from '@services/infinispanRefData';
 
 describe('CacheResponse mapper test', () => {
   test('getEntries empty', () => {
-    const data = [];
-    let cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
+    const data = '[]';
+    const cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
       key: EncodingType.JSON,
       value: EncodingType.JSON
     });
@@ -12,7 +12,7 @@ describe('CacheResponse mapper test', () => {
   });
 
   test('getEntries JSON Data', () => {
-    const data = [
+    const data = JSON.stringify([
       { key: 1, value: 1, timeToLiveSeconds: -1, maxIdleTimeSeconds: -1, created: -1, lastUsed: -1, expireTime: -1 },
       {
         key: 'w',
@@ -32,8 +32,8 @@ describe('CacheResponse mapper test', () => {
         lastUsed: -1,
         expireTime: -1
       }
-    ];
-    let cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
+    ]);
+    const cacheResponseMapper = CacheRequestResponseMapper.toEntries(data.toString(), {
       key: EncodingType.JSON,
       value: EncodingType.JSON
     });
@@ -41,7 +41,7 @@ describe('CacheResponse mapper test', () => {
   });
 
   test('getEntries xml', () => {
-    const data = [
+    const data = JSON.stringify([
       {
         key: '<foo>11</foo>',
         value: '<bar>pepe</bar>',
@@ -51,8 +51,8 @@ describe('CacheResponse mapper test', () => {
         lastUsed: -1,
         expireTime: -1
       }
-    ];
-    let cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
+    ]);
+    const cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
       key: EncodingType.XML,
       value: EncodingType.XML
     });
@@ -68,7 +68,7 @@ describe('CacheResponse mapper test', () => {
     const keyContentType = ContentType.XML;
     const value = '<bar>pepe</bar>';
     const headers = new Headers();
-    let cacheEntry = CacheRequestResponseMapper.toEntry(
+    const cacheEntry = CacheRequestResponseMapper.toEntry(
       key,
       keyContentType,
       { key: EncodingType.XML, value: EncodingType.XML },
@@ -89,7 +89,7 @@ describe('CacheResponse mapper test', () => {
       _value: 'bar'
     });
     const headers = new Headers();
-    let cacheEntry = CacheRequestResponseMapper.toEntry(
+    const cacheEntry = CacheRequestResponseMapper.toEntry(
       key,
       keyContentType,
       { key: EncodingType.Protobuf, value: EncodingType.Protobuf },
@@ -111,7 +111,7 @@ describe('CacheResponse mapper test', () => {
       age: 12
     });
     const headers = new Headers();
-    let cacheEntry = CacheRequestResponseMapper.toEntry(
+    const cacheEntry = CacheRequestResponseMapper.toEntry(
       key,
       keyContentType,
       { key: EncodingType.Protobuf, value: EncodingType.Protobuf },

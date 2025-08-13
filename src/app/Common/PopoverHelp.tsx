@@ -5,7 +5,13 @@ import { HelpIcon } from '@patternfly/react-icons';
 /**
  * This component is used to add pop over helps to forms
  */
-const PopoverHelp = (props: { name: string; label: string; content: string | ReactNode; text?: string, icon?:ReactNode }) => {
+const PopoverHelp = (props: {
+  name: string;
+  label: string;
+  content: string | ReactNode;
+  text?: string;
+  icon?: ReactNode;
+}) => {
   const popOver = (
     <Popover headerContent={props.label} bodyContent={props.content}>
       <Button

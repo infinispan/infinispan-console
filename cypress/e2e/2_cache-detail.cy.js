@@ -90,7 +90,7 @@ describe('Cache Detail Overview', () => {
     cy.get('#toggle-keyContentType').click();
     cy.get('#option-custom_type').click();
     const keyPerson = `{"_type": "org.infinispan.Person","name": "Elaia_Key","age" : 12}`;
-    const valuePerson = '{"_type": "org.infinispan.Person","name": "Elaia_Value","age" : 12}';
+    const valuePerson = '{"_type": "org.infinispan.Person","name": "Elaia_Value","age" : 3605856439401412608}';
     cy.get('#key-entry')
       .click()
       .type(keyPerson, { parseSpecialCharSequences: false });
@@ -101,7 +101,7 @@ describe('Cache Detail Overview', () => {
     checkEntryAddedPopupToCache();
     closePopup();
     cy.contains('org.infinispan.Person');
-    verifyGet('#option-custom_type', keyPerson, 'Elaia_Value');
+    verifyGet('#option-custom_type', keyPerson, "3605856439401412608");
 
     //Adding double key/value
     cy.get('[data-cy=addEntryButton]').click();
