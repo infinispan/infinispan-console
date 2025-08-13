@@ -1,6 +1,8 @@
 import { ProtobufDataUtils } from '@services/protobufDataUtils';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
+import json_bigint from 'json-bigint';
+const JSONbigString = json_bigint({ storeAsString: true });
 
 /**
  * Entries mappings
@@ -104,7 +106,7 @@ export class CacheRequestResponseMapper {
    * @param encoding
    */
   public static toEntries(data: any, encoding: CacheEncoding): CacheEntry[] {
-    return data.map(
+    return JSONbigString.parse(data).map(
       (entry) =>
         <CacheEntry>{
           key: this.extractData(entry.key, encoding.key as EncodingType),
@@ -126,23 +128,23 @@ export class CacheRequestResponseMapper {
     }
 
     if (dataEncoding == EncodingType.JSON) {
-      return parse ? JSON.stringify(JSON.parse(data)) : JSON.stringify(data);
+      return parse ? JSONbigString.stringify(JSONbigString.parse(data)) : JSONbigString.stringify(data);
     }
 
     if (dataEncoding == EncodingType.Protobuf) {
       let protobufJson = data;
       if (parse) {
-        protobufJson = JSON.parse(data);
+        protobufJson = JSONbigString.parse(data);
       }
       const dataType = protobufJson['_type'];
       const dataValue = protobufJson['_value'];
       if (ProtobufDataUtils.fromProtobufType(dataType) == ContentType.customType) {
-        return JSON.stringify(protobufJson);
+        return JSONbigString.stringify(protobufJson);
       }
       return dataValue.toString();
     }
 
-    const stringify = JSON.stringify(data);
+    const stringify = JSONbigString.stringify(data);
     if (stringify.startsWith('{') || stringify.startsWith('[')) {
       return stringify;
     }

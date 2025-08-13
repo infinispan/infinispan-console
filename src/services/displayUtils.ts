@@ -1,5 +1,6 @@
-import { chart_color_blue_500, t_chart_color_purple_500 } from '@patternfly/react-tokens';
 import numeral from 'numeral';
+import json_bigint from 'json-bigint';
+const JSONbigString = json_bigint({ storeAsString: true });
 import {
   CacheType,
   CANCEL_STATUS,
@@ -209,8 +210,8 @@ class DisplayUtils {
     if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
       // Try parse and stringify
       try {
-        const json = this.trimJsonValues(JSON.parse(content), 40, 10);
-        return JSON.stringify(json, null, 2);
+        const json = this.trimJsonValues(JSONbigString.parse(content), 40, 10);
+        return JSONbigString.stringify(json, null, 2);
       } catch (err) {
         /* empty */
       }
@@ -245,7 +246,7 @@ class DisplayUtils {
     if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
       // Try parse and stringify
       try {
-        return JSON.stringify(JSON.parse(content), null, 2);
+        return JSONbigString.stringify(JSONbigString.parse(content), null, 2);
       } catch (err) {
         /* empty */
       }

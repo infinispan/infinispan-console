@@ -328,11 +328,12 @@ export class CacheService {
       limit;
 
     const customHeaders = new Headers();
-    customHeaders.set('Accept', ContentTypeHeaderMapper.fromContentType(ContentType.JSON));
+    customHeaders.append('Accept', 'text/plain');
     return this.fetchCaller.get(
       entriesUrl,
       (data) => CacheRequestResponseMapper.toEntries(data, encoding),
-      customHeaders
+      customHeaders,
+      true
     );
   }
 

@@ -13,7 +13,7 @@ message Person {
   /**
    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
    */
-  optional string age = 2;
+  optional int64 age = 2;
 
   /**
    * @Field(index=Index.YES, analyze = Analyze.NO, store = Store.NO)
