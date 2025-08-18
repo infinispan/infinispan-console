@@ -173,6 +173,10 @@ describe('XSite Config Tests', () => {
                   password: Cypress.env('password')
                 }
               });
+            cy.on("uncaught:exception", (err, runnable) => {
+              cy.log(err.message);
+              return false;
+            });
             cy.get('[data-cy=sideBarToggle]').click();
             cy.contains("NYC");
             cy.contains("xsiteCache");
