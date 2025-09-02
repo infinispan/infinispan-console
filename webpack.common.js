@@ -2,11 +2,12 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BG_IMAGES_DIRNAME = 'bgimages';
-const ASSET_PATH = process.env.ASSET_PATH || '/console/';
 module.exports = (env) => {
   return {
     module: {
@@ -115,7 +116,7 @@ module.exports = (env) => {
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath: ASSET_PATH,
+      publicPath: '',
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -129,6 +130,15 @@ module.exports = (env) => {
       new MonacoWebpackPlugin({
         languages: ['xml', 'json', 'yaml', 'plaintext']
       }),
+      new CopyWebpackPlugin({
+        patterns: [
+          { from: 'src/config.js', to: '' } // project root → dist/config.js
+        ],
+      }),
+      new HtmlWebpackTagsPlugin({
+        tags: ['config.js'],
+        append: false // ensures it loads before main.bundle.js
+      })
     ],
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
