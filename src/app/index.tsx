@@ -24,9 +24,13 @@ const App = () => {
   } else {
     ConsoleServices.init();
   }
+  // Base is coming from index.html, and can dynamically change in prod with a reverse proxy
+  const base =
+    document.querySelector('base')?.getAttribute('href')?.replace(/\/$/, '') || '/';
+
 
   return (
-    <Router basename="/console">
+    <Router basename={base == '{{INFINISPAN_BASE_PATH}}' ? '/console' : base}>
       <ThemeProvider>
         <UserContextProvider>
           <APIAlertProvider>

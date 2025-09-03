@@ -35,4 +35,7 @@ module.exports = merge(common('development'), {
       },
     ],
   },
+  output: {
+    publicPath: '/console/', // allows using '/console' url
+  },
 });
