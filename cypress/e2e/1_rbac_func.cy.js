@@ -109,11 +109,12 @@ describe('RBAC Functionality Tests', () => {
     cy.get('[data-cy=sideBarToggle]').click();
     cy.contains('Data Container').should('exist');
     cy.contains('Global Statistics').should('exist');
-    cy.contains('Cluster Membership').should('exist');
     if (isSuperAdmin) {
+      cy.contains('Cluster Membership').should('exist');
       cy.contains('Connected Clients').should('exist');
       cy.contains('Access Management').should('exist');
     } else {
+      cy.contains('Cluster Membership').should('not.exist');
       cy.contains('Connected Clients').should('not.exist');
       cy.contains('Access Management').should('not.exist');
     }
