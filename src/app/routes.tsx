@@ -69,7 +69,7 @@ const routes: IAppRoute[] = [
     path: '/cluster-membership',
     title: 'Cluster Membership',
     menu: true,
-    admin: false
+    admin: true
   },
   {
     id: 'cache_setup',
