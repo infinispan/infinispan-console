@@ -1,5 +1,13 @@
+import { CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES } from '../../src/services/cacheConfigUtils';
+
 describe('Local Cache Deployment', () => {
-   it('successfully navigates through menu', () => {
+  before(() => {
+    // Remove Cache if exists
+    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      '/caches/local-test-cache', 'DELETE', '', true, '41222');
+  });
+
+  it('successfully navigates through menu', () => {
       //Visiting Data Container page
       cy.origin('http://localhost:41222/console/', () => {
         cy.visit("/", {
@@ -11,6 +19,7 @@ describe('Local Cache Deployment', () => {
             password: Cypress.env('password')
           }
         });
+        cy.get('[data-cy=sideBarToggle]').click();
         cy.contains('Running');
         cy.contains('Tracing is enabled');
         cy.contains('No caches');

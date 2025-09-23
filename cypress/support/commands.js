@@ -50,10 +50,10 @@ Cypress.Commands.add('login', (username, password, url = '/') => {
   cy.get('[data-cy=sideBarToggle]').click();
 });
 
-Cypress.Commands.add('cleanupTest',(username, password, endpoint = '/', method = 'DELETE', body = '', ignoreError = false) => {
+Cypress.Commands.add('cleanupTest',(username, password, endpoint = '/', method = 'DELETE', body = '', ignoreError = false, port = '11222') => {
   cy.request({
     method: method,
-    url: endpoint.includes('http') ? endpoint : 'http://localhost:11222/rest/v2' + endpoint,
+    url: endpoint.includes('http') ? endpoint : `http://localhost:${port}/rest/v2` + endpoint,
     auth: {
       username: username,
       password: password
