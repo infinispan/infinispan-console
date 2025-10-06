@@ -326,6 +326,12 @@ describe('Cache Detail Overview', () => {
     cy.contains('Rebalancing is on');
   });
 
+  it('successfully displays delete cache modal', () => {
+    cy.get('[data-cy=detailCacheActions]').click();
+    cy.get("[data-cy=manageDeleteLink]").click();
+    cy.get('#deleteCacheModal').should('exist');
+  })
+
   function verifyGet(keyType, key, value) {
     // Going back to cache entries page
     cy.get('[data-cy=cacheEntriesTab]').click();

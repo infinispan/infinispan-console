@@ -211,7 +211,7 @@ describe('Cache Creation Wizard', () => {
     deleteCache('aSimpleCache');
   });
 
-  it('successfully creates without a template a XML config', () => {
+  it.only('successfully creates without a template a XML config', () => {
     //go to create cache page
     cy.get('[data-cy=createCacheButton]').click();
     cy.get('#cache-name').click();
@@ -242,26 +242,43 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy="statusInfo-clusterManager"]').should('exist');
     cy.get('[data-cy=rebalancingSwitch]').should('exist');
     cy.contains('aSimpleXmlCache');
-    deleteCache('aSimpleXmlCache');
+    deleteCache('aSimpleXmlCache', true);
   });
 
-  function deleteCache(cacheName) {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
-    cy.get(`[data-cy=actions-${cacheName}]`).click();
-    cy.get('[aria-label=deleteCacheAction]').click();
+  function deleteCache(cacheName, isDetailPage) {
+    if (isDetailPage) {
+      cy.login(Cypress.env('username'), Cypress.env('password'), `/cache/${cacheName}`);
+      cy.get('[data-cy=detailCacheActions]').click();
+      cy.get("[data-cy=manageDeleteLink]").click();
+    } else {
+      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.get(`[data-cy=actions-${cacheName}]`).click();
+      cy.get('[aria-label=deleteCacheAction]').click();
+    }
+
     cy.get('#deleteCacheModal').should('exist');
     cy.contains('Permanently delete cache?');
     cy.get('#deleteCacheModal [aria-label=Close]').click(); //Closing modal with close button
     cy.contains('Permanently delete cache?').should('not.exist');
 
-    cy.get(`[data-cy=actions-${cacheName}]`).click();
-    cy.get('[aria-label=deleteCacheAction]').click();
+    if (isDetailPage) {
+      cy.get('[data-cy=detailCacheActions]').click();
+      cy.get("[data-cy=manageDeleteLink]").click();
+    } else {
+      cy.get(`[data-cy=actions-${cacheName}]`).click();
+      cy.get('[aria-label=deleteCacheAction]').click();
+    }
     cy.contains('Permanently delete cache?');
     cy.get('[data-cy=cancelCacheDeleteButton]').click(); //Closing modal with Cancel button
     cy.contains('Permanently delete cache?').should('not.exist');
 
-    cy.get(`[data-cy=actions-${cacheName}]`).click();
-    cy.get('[aria-label=deleteCacheAction]').click();
+    if (isDetailPage) {
+      cy.get('[data-cy=detailCacheActions]').click();
+      cy.get("[data-cy=manageDeleteLink]").click();
+    } else {
+      cy.get(`[data-cy=actions-${cacheName}]`).click();
+      cy.get('[aria-label=deleteCacheAction]').click();
+    }
     cy.get('#cache-to-delete').click();
     cy.get('#cache-to-delete').type(cacheName);
     cy.get('[data-cy=deleteCacheButton]').click(); //Deleting cache aCache

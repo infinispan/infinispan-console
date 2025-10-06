@@ -50,8 +50,8 @@ export class ConsoleServices {
         return process.env.INFINISPAN_SERVER_URL + '/rest/v2';
       }
     } else {
-      const x = (window as any);
-      return window.location.origin.toString() + (x.INFINISPAN_CONFIG?.restContextPath || '/rest')  + '/v2';
+      const x = window as any;
+      return window.location.origin.toString() + (x.INFINISPAN_CONFIG?.restContextPath || '/rest') + '/v2';
     }
   }
 
