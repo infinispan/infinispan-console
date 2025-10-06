@@ -44,7 +44,8 @@ import {
   ExclamationCircleIcon,
   InfoCircleIcon,
   PencilAltIcon,
-  RedoIcon
+  RedoIcon,
+  TrashIcon
 } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
@@ -60,6 +61,7 @@ import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { PageHeader } from '@patternfly/react-component-groups';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
+import { DeleteCache } from '@app/Caches/DeleteCache';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -71,6 +73,7 @@ const DetailCache = (props: { cacheName: string }) => {
   const [activeTabKey1, setActiveTabKey1] = useState<number | string>('');
   const [activeTabKey2, setActiveTabKey2] = useState<number | string>(10);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [cacheAction, setCacheAction] = useState<string>('');
   const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
   const isCacheReader = ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
@@ -209,6 +212,10 @@ const DetailCache = (props: { cacheName: string }) => {
     return cache && cache?.features?.indexed;
   };
 
+  const displayDelete = () => {
+    return isAdmin && cache;
+  };
+
   const displayEditConfigManage = () => {
     return isAdmin && cache;
   };
@@ -292,6 +299,25 @@ const DetailCache = (props: { cacheName: string }) => {
         }
       >
         {t('caches.actions.action-manage-indexes')}
+      </DropdownItem>
+    );
+  };
+
+  const buildDelete = () => {
+    if (!displayDelete()) return;
+
+    return (
+      <DropdownItem
+        value={'deleteCache'}
+        key="manageDeleteLink"
+        data-cy="manageDeleteLink"
+        icon={<TrashIcon />}
+        onClick={(ev) => {
+          setIsOpenDelete(true);
+          setIsOpen(false);
+        }}
+      >
+        {t('caches.actions.action-delete')}
       </DropdownItem>
     );
   };
@@ -460,6 +486,7 @@ const DetailCache = (props: { cacheName: string }) => {
             {buildIndexManage()}
             {buildBackupsManage()}
             {buildRefresh()}
+            {buildDelete()}
           </DropdownList>
         </Dropdown>
       </ToolbarItem>
@@ -513,6 +540,20 @@ const DetailCache = (props: { cacheName: string }) => {
         )}
         {buildDetailContent()}
       </PageSection>
+      <DeleteCache
+        cacheName={cacheName}
+        isModalOpen={isOpenDelete}
+        closeModal={(deleteDone: boolean) => {
+          if (deleteDone) {
+            navigate({
+              pathname: '/',
+              search: location.search
+            });
+          } else {
+            setIsOpenDelete(false);
+          }
+        }}
+      />
       <UpdateAliasCache
         cacheName={cacheName}
         isModalOpen={cacheAction == 'aliases'}

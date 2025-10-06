@@ -213,7 +213,8 @@ const SelectMultiWithChips = (props: {
                 props.onClear();
                 textInputRef?.current?.focus();
               }}
-              aria-label="Clear input value" id="clearInput"
+              aria-label="Clear input value"
+              id="clearInput"
             >
               <TimesIcon aria-hidden />
             </Button>

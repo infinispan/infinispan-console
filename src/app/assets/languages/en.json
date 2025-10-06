@@ -589,6 +589,7 @@
       "action-manage-tracing": "Manage tracing",
       "action-manage-backups": "Manage backups",
       "action-manage-config": "Edit configuration",
+      "action-delete": "Delete",
       "refresh": "Refresh",
       "back": "Back"
     },
