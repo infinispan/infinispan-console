@@ -28,8 +28,8 @@ export class ContainerService {
    */
   public getDefaultCacheManager(): Promise<Either<ActionResponse, CacheManager>> {
     const healthPromise: Promise<Either<ActionResponse, ComponentStatusType>> = this.fetchCaller.get(
-      this.endpoint + '/container/health',
-      (data) => displayUtils.parseComponentStatus(data.cluster_health.health_status)
+      this.endpoint + '/container/health/status',
+      (data) => displayUtils.parseComponentStatus(data)
     );
 
     return healthPromise.then((maybeHealth) =>
