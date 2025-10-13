@@ -45,11 +45,13 @@ describe('Cache Expiration', () => {
       cy.contains('The minimum value is -1.');
       cy.contains('The minimum value is -1. Must be lower than lifespan');
       cy.get('[data-cy=lifespan]').clear().type(11);
-      cy.get('[data-cy=maxidle]').clear().type(12);
-      cy.get('[data-cy=saveConfigButton-expiration]').click();
-      cy.contains('Maxidle must be lower than lifespan');
       cy.get('[data-cy=toggle-lifespanUnitSelector]').click();
       cy.get('[data-cy=lifespanUnitSelector-option-hours]').click();
+      cy.get('[data-cy=maxidle]').clear().type(12);
+      cy.get('[data-cy=toggle-maxidleUnitSelector]').click();
+      cy.get('[data-cy=maxidleUnitSelector-option-hours]').click();
+      cy.get('[data-cy=saveConfigButton-expiration]').click();
+      cy.contains('Maxidle must be lower than lifespan');
       cy.get('[data-cy=toggle-maxidleUnitSelector]').click();
       cy.get('[data-cy=maxidleUnitSelector-option-minutes]').click();
       cy.get('[data-cy=saveConfigButton-expiration]').click();
