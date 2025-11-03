@@ -103,7 +103,6 @@ You can access the translation project for Infinispan Console on Weblate [here](
 Thank you for your contributions in making the Infinispan Console accessible to a broader audience!
 
 ## Code Quality Tools
-* For accessibility compliance, we use [react-axe](https://github.com/dequelabs/react-axe)
 * To keep our bundle size in check, we use [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)
 * To keep our code formatting in check, we use [prettier](https://github.com/prettier/prettier)
 * To keep our code logic and test coverage in check, we use [jest](https://github.com/facebook/jest)
