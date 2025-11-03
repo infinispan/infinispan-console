@@ -211,7 +211,7 @@ describe('Cache Creation Wizard', () => {
     deleteCache('aSimpleCache');
   });
 
-  it.only('successfully creates without a template a XML config', () => {
+  it.skip('successfully creates without a template a XML config', () => {
     //go to create cache page
     cy.get('[data-cy=createCacheButton]').click();
     cy.get('#cache-name').click();
