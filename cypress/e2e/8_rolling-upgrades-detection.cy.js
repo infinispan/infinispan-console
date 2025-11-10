@@ -32,7 +32,7 @@ describe('Rolling Upgrades', () => {
       cy.contains("2 members in use");
       cy.contains("Rolling Upgrade in Progress — Some features may be temporarily unavailable");
       cy.contains("16.0.0.Dev07");
-      cy.contains("16.0.0-SNAPSHOT");
+      cy.contains("16.0.2-SNAPSHOT");
 
       // Restarting the docker container with same version and waiting for 20seconds to server to come up, reloading the page
       cy.exec('bash restart_server_with_latest_version.sh > ~/log.log', 120000).then((result) => {
@@ -45,7 +45,7 @@ describe('Rolling Upgrades', () => {
       cy.contains("2 members in use");
       cy.contains("Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version.");
       cy.contains("16.0.0.Dev07").should('not.exist');
-      cy.contains("16.0.0-SNAPSHOT");
+      cy.contains("16.0.2-SNAPSHOT");
     })
   });
 
