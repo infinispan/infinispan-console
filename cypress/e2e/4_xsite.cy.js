@@ -109,7 +109,6 @@ describe('XSite Config Tests', () => {
       cy.login(Cypress.env('username'), Cypress.env('password'));
 
       cy.on("uncaught:exception", (err, runnable) => {
-        cy.log(err.message);
         return false;
       });
 
@@ -174,7 +173,6 @@ describe('XSite Config Tests', () => {
                 }
               });
             cy.on("uncaught:exception", (err, runnable) => {
-              cy.log(err.message);
               return false;
             });
             cy.get('[data-cy=sideBarToggle]').click();
