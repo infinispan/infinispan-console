@@ -11,7 +11,7 @@ describe('Cluster Membership', () => {
     cy.contains('Status');
     cy.contains('Physical address');
     cy.contains('Version');
-    cy.contains('16.0');
+    cy.contains('16.1');
     cy.get('[data-cy="downloadReportLink"]').should('exist');
     //@TODO Uncomment and fix this part after ISPN-16672 is fixed
     // cy.get('[data-cy="downloadReportLink"]').click();
