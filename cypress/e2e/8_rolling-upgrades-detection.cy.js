@@ -1,4 +1,21 @@
 describe('Rolling Upgrades', () => {
+  let DEV_VERSION = "";
+
+  before(() => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:51222/rest/v2/container',
+      auth: {
+        username: Cypress.env('username'),
+        password: Cypress.env('password')
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(json => {
+        DEV_VERSION = json['version'];
+      });
+  });
 
   it('successfully shows the rolling upgrades detection message in NYC', () => {
     cy.origin('http://localhost:31222/console/', () => {
@@ -29,10 +46,10 @@ describe('Rolling Upgrades', () => {
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();
-      cy.contains("2 members in use");
       cy.contains("Rolling Upgrade in Progress — Some features may be temporarily unavailable");
+      cy.contains("2 members in use");
       cy.contains("16.0.0.Dev08");
-      cy.contains("16.0.2-SNAPSHOT");
+      cy.contains(DEV_VERSION);
 
       // Restarting the docker container with same version and waiting for 20seconds to server to come up, reloading the page
       cy.exec('bash restart_server_with_latest_version.sh > ~/log.log', 120000).then((result) => {
@@ -45,7 +62,7 @@ describe('Rolling Upgrades', () => {
       cy.contains("2 members in use");
       cy.contains("Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version.");
       cy.contains("16.0.0.Dev08").should('not.exist');
-      cy.contains("16.0.2-SNAPSHOT");
+      cy.contains(DEV_VERSION);
     })
   });
 
