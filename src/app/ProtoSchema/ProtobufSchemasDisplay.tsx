@@ -97,6 +97,12 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   };
 
   useEffect(() => {
+    if (props.isVisible) {
+      reload();
+    }
+  }, [props.isVisible]);
+
+  useEffect(() => {
     if (schemas) {
       props.setProtoSchemasCount(schemas.length);
       setFilteredSchemas(schemas);
@@ -143,11 +149,6 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
 
   const closeEditSchemaModal = () => {
     setEditSchemaName('');
-  };
-
-  const closeDeleteSchemaModal = () => {
-    setDeleteSchemaName('');
-    reload();
   };
 
   const submitEditSchemaModal = () => {
@@ -286,7 +287,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
         >
           <Thead>
             <Tr>
-              <Th />
+              <Th screenReaderText={'expand button'}></Th>
               <Th width={30}>{columnNames.name}</Th>
               <Th width={60}>{columnNames.status}</Th>
             </Tr>
@@ -368,7 +369,10 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
       <DeleteSchema
         schemaName={deleteSchemaName}
         isModalOpen={deleteSchemaName !== ''}
-        closeModal={closeDeleteSchemaModal}
+        closeModal={() => {
+          setDeleteSchemaName('');
+          reload();
+        }}
       />
     </React.Fragment>
   );
