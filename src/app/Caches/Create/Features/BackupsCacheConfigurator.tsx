@@ -169,8 +169,8 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
                 name={index.toString()}
                 id={`async-${index}`}
                 onChange={() => {
-                  (site.siteStrategy = BackupSiteStrategy.ASYNC),
-                    setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip)));
+                  ((site.siteStrategy = BackupSiteStrategy.ASYNC),
+                    setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip))));
                 }}
                 isChecked={site.siteStrategy === 'ASYNC'}
                 label={t('caches.create.configurations.feature.strategy-async')}
@@ -179,8 +179,8 @@ const BackupsCacheConfigurator = (props: { isEnabled: boolean }) => {
                 name={index.toString()}
                 id={`sync-${index}`}
                 onChange={() => {
-                  (site.siteStrategy = BackupSiteStrategy.SYNC),
-                    setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip)));
+                  ((site.siteStrategy = BackupSiteStrategy.SYNC),
+                    setSites(sites.map((chip) => (chip.siteName === site.siteName ? site : chip))));
                 }}
                 isChecked={site.siteStrategy === 'SYNC'}
                 label={t('caches.create.configurations.feature.strategy-sync')}
