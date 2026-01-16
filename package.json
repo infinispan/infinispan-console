@@ -63,7 +63,7 @@
     "prettier": "^3.6.2",
     "prop-types": "^15.8.1",
     "raw-loader": "^4.0.2",
-    "react-router-dom": "^7.9.5",
+    "react-router-dom": "^7.12.0",
     "react-test-renderer": "^18",
     "regenerator-runtime": "^0.14.1",
     "rimraf": "^6.1.0",
