@@ -22,7 +22,7 @@ import {
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
 import { CatalogIcon, DownloadIcon, GithubIcon, UnknownIcon } from '@patternfly/react-icons';
-import { chart_color_blue_500, chart_global_Fill_Color_white } from '@patternfly/react-tokens';
+import { chart_color_blue_500, chart_color_orange_200, chart_global_Fill_Color_white } from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackground/ConsoleBackground';
 import { Support } from '@app/Support/Support';
 import { useTranslation } from 'react-i18next';
@@ -107,10 +107,19 @@ const Welcome = () => {
   const DetailSection = (
     <Stack className="detail-section">
       <StackItem>
-        <img width={'200px'} height={'42px'} src={icon} alt={brandname + ' logo'} />
+        <img
+          width={'200px'}
+          height={'42px'}
+          src={icon}
+          alt={brandname + ' logo'}
+        />
       </StackItem>
       <StackItem className={'font-title-bold'}>
-        <Title style={{ fontWeight: 'bold' }} size={TitleSizes['4xl']} headingLevel="h1">
+        <Title
+          style={{ fontWeight: 'bold' }}
+          size={TitleSizes['4xl']}
+          headingLevel="h1"
+        >
           {t('welcome-page.welcome-title', { brandname: brandname })}
         </Title>
       </StackItem>
@@ -118,13 +127,15 @@ const Welcome = () => {
         <StackItem className={'version-text'}>
           <Flex>
             <FlexItem>
-              <Content component={ContentVariants.p}>{t('welcome-page.current-version')}</Content>
+              <Content component={ContentVariants.p}>
+                {t('welcome-page.current-version')}
+              </Content>
             </FlexItem>
             <FlexItem>
               <Badge
                 style={{
                   backgroundColor: 'white',
-                  color: chart_color_blue_500.value
+                  color: chart_color_blue_500.value,
                 }}
               >
                 {version}
@@ -138,12 +149,33 @@ const Welcome = () => {
         <Content component={ContentVariants.p}>{description2}</Content>
         <Content component={ContentVariants.p}>
           {license}{' '}
-          <a style={{ color: 'white', textDecoration: 'underline' }} href={apacheLicenseLink} target="blank">
+          <a
+            style={{ color: 'white', textDecoration: 'underline' }}
+            href={apacheLicenseLink}
+            target="blank"
+          >
             {t('welcome-page.apache-license')}
           </a>
         </Content>
       </StackItem>
-      <StackItem>{buildConsoleButton()}</StackItem>
+      <StackItem>
+        <Flex>
+          <FlexItem>{buildConsoleButton()}</FlexItem>
+          <FlexItem>
+            <Button
+              component="a"
+              href="/swagger-ui/"
+              size="lg"
+              style={{
+                backgroundColor: chart_color_orange_200.value,
+                color: chart_global_Fill_Color_white.value,
+              }}
+            >
+              {t('welcome-page.open-swagger-ui')}
+            </Button>
+          </FlexItem>
+        </Flex>
+      </StackItem>
     </Stack>
   );
 
