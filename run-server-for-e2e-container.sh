@@ -9,8 +9,8 @@ fi
 
 ABSOLUTE_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo ${ABSOLUTE_PATH}
-SERVER_IMAGE_URL="${SERVER_IMAGE_URL:-quay.io/infinispan-test/server:main}"
-SERVER_IMAGE_URL_DIFF_VERSION="quay.io/infinispan/server:16.0.0.dev08"
+SERVER_IMAGE_URL="${SERVER_IMAGE_URL:-quay.io/infinispan/server:16.0}"
+SERVER_IMAGE_URL_DIFF_VERSION="quay.io/infinispan/server:16.0.4"
 
 $DOCKER_COMMAND pull ${SERVER_IMAGE_URL}
 $DOCKER_COMMAND run --name ispn-lon -d -p 11222:11222 -v ${ABSOLUTE_PATH}/scripts/identities.batch:/user-config/identities.batch -v ${ABSOLUTE_PATH}/dist:/opt/infinispan/static/console -v ${ABSOLUTE_PATH}/scripts/e2eTestsConfigLON.xml:/user-config/e2eTestsConfigLON.xml -e JAVA_OPTS="-Xms1024m -Xmx3072m -XX:MetaspaceSize=1024m -XX:MaxMetaspaceSize=2048m -Dinfinispan.site.name=LON -Djgroups.version.check=false -Djgroups.mcast_port=46656" -e IDENTITIES_BATCH="/user-config/identities.batch" ${SERVER_IMAGE_URL} --node-name=infinispan-4-lon-e2e -c infinispan-xsite.xml -c "/user-config/e2eTestsConfigLON.xml"

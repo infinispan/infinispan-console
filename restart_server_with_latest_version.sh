@@ -9,7 +9,7 @@ fi
 
 ABSOLUTE_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo ${ABSOLUTE_PATH}
-SERVER_IMAGE_URL="${SERVER_IMAGE_URL:-quay.io/infinispan-test/server:main}"
+SERVER_IMAGE_URL="${SERVER_IMAGE_URL:-quay.io/infinispan/server:16.0}"
 
 docker stop $(docker ps -aqf "name=ispn-nyc-1")
 docker rm $(docker ps -aqf "name=ispn-nyc-1")
