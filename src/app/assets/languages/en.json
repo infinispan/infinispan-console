@@ -38,7 +38,9 @@
     "documentation-name": "Documentation",
     "close-browser-message": "Close the browser or open an incognito window to log again.",
     "dark-theme": "Dark theme",
-    "logout": "Logout"
+    "logout": "Logout",
+    "swagger-ui": "Swagger Ui",
+    "metrics": "Metrics endpoint"
   },
   "welcome-page": {
     "welcome-title": "Welcome to {{brandname}} Server",
@@ -57,7 +59,8 @@
     "learn-more": " Get started",
     "develop": "Code applications for different use cases.",
     "tutorials": " Run quick tutorials",
-    "go-to-console": "Open the console"
+    "go-to-console": "Open the console",
+    "open-swagger-ui": "Open Swagger UI"
   },
   "login-form": {
     "login-main": "Log in to {{brandname}}.",
