@@ -693,6 +693,7 @@
       "stat-count": "Count",
       "stat-average": "Average",
       "stat-slowest": "Slowest",
+      "truncate-results": "Truncate results",
       "modal-clear-stats": "Permanently clear query metrics?",
       "modal-clear-stats-label": "Clear query metrics modal",
       "modal-button-clear-stats": "Clear metrics",
