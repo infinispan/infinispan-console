@@ -24,8 +24,7 @@ import {
   ToolbarGroup,
   ToolbarItem,
   ToolbarToggleGroup,
-  Tooltip,
-  Truncate
+  Tooltip
 } from '@patternfly/react-core';
 import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';

@@ -44,7 +44,7 @@
            </authentication>
          </hotrod-connector>
          <rest-connector name="rest">
-           <authentication mechanisms="BASIC DIGEST"/>
+           <authentication mechanisms="BASIC DIGEST-SHA-256"/>
          </rest-connector>
        </endpoint>
      </endpoints>

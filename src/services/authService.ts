@@ -37,7 +37,8 @@ export class AuthenticationService {
         throw response;
       })
       .then((json) => {
-        const jsonLength = Object.keys(json).length;
+        const jsonKeys = Object.keys(json);
+        const jsonLength = jsonKeys.length;
         if (jsonLength <= 1 || (jsonLength == 2 && json.mode === 'HTTP' && json.ready === 'true')) {
           return right(<AuthInfo>{
             mode: 'auth_disabled',
@@ -45,11 +46,18 @@ export class AuthenticationService {
             digest: false
           }) as Either<ActionResponse, AuthInfo>;
         }
-
+        let digest = false;
+        for (const key of jsonKeys) {
+          if (key.startsWith('DIGEST')) {
+            digest = true;
+            break;
+          }
+        }
+        console.log(digest);
         const authInfo = <AuthInfo>{
           mode: json.mode,
           ready: json.ready == 'true',
-          digest: json.DIGEST == 'true'
+          digest: digest
         };
 
         if (authInfo.mode == 'OIDC') {

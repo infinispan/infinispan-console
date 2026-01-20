@@ -4,6 +4,7 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  Checkbox,
   Divider,
   EmptyState,
   EmptyStateBody,
@@ -32,6 +33,8 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const { search, setSearch } = useSearch(props.cacheName);
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
   const [deleteByQueryOpen, setDeleteByQueryOpen] = useState(false);
+  const [trim, setTrim] = useState<boolean>(false);
+
   const columnNames = {
     value: 'Value'
   };
@@ -44,7 +47,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         useInlineStyles={true}
         wrapLongLines={true}
       >
-        {displayUtils.formatContentToDisplay(value)}
+        {trim ? displayUtils.formatContentToDisplayWithTruncate(value) : displayUtils.formatContentToDisplay(value)}
       </SyntaxHighlighter>
     );
   };
@@ -176,6 +179,16 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         </ToolbarItem>
         {buildButtons()}
         <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+      </ToolbarContent>
+      <ToolbarContent>
+        <ToolbarItem>
+          <Checkbox
+            labelPosition="start"
+            label={t('caches.query.truncate-results')}
+            id="checkbox-trim"
+            onClick={() => setTrim(!trim)}
+          />
+        </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
