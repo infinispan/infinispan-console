@@ -55,6 +55,26 @@ export class ConsoleServices {
     }
   }
 
+  public static metricsEndpoint(): string {
+    return ConsoleServices.getEndpoint('/metrics');
+  }
+
+  public static swaggerUi(): string {
+    return ConsoleServices.getEndpoint('/swagger-ui');
+  }
+
+  private static getEndpoint(endpoint: string): string {
+    if (ConsoleServices.isDevMode()) {
+      if (!process.env.INFINISPAN_SERVER_URL) {
+        return 'http://localhost:11222' + endpoint;
+      } else {
+        return process.env.INFINISPAN_SERVER_URL + endpoint;
+      }
+    } else {
+      return window.location.origin.toString() + endpoint;
+    }
+  }
+
   public static landing(): string {
     if (ConsoleServices.isDevMode()) {
       return 'http://localhost:9000/console/';

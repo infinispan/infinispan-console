@@ -49,11 +49,15 @@ describe('Welcome page', () => {
     // Show sidebar
     clickSideBar();
     //Checks if navigation menu is visible
+    cy.contains('Operations').should('be.visible');
     cy.contains('Data Container').should('be.visible');
     cy.contains('Global Statistics').should('be.visible');
     cy.contains('Cluster Membership').should('be.visible');
     cy.contains('Access Management').should('be.visible');
     cy.contains('Connected Clients').should('be.visible');
+    cy.contains('DevOps Tools').should('be.visible');
+    cy.contains('Swagger Ui').should('be.visible');
+    cy.contains('Metrics endpoint').should('be.visible');
 
     //Clicks the side menu Data Container
     cy.get('[itemid="data_container"]').click();

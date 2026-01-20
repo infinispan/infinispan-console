@@ -17,6 +17,7 @@ import {
   MenuToggle,
   MenuToggleElement,
   Nav,
+  NavGroup,
   NavItem,
   NavList,
   Page,
@@ -264,21 +265,34 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const Navigation = (
     <Nav id="nav-primary-simple">
       <NavList id="nav-list-simple">
-        {filteredRoutes.map(
-          (route, idx) =>
-            displayNavMenu(route) && (
-              <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
-                <NavLink
-                  itemID={route.id}
-                  caseSensitive={true}
-                  to={route.path + location.search}
-                  className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
-                >
-                  {route.label}
-                </NavLink>
-              </NavItem>
-            )
-        )}
+        <NavGroup title="Operations">
+          {filteredRoutes.map(
+            (route, idx) =>
+              displayNavMenu(route) && (
+                <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
+                  <NavLink
+                    itemID={route.id}
+                    caseSensitive={true}
+                    to={route.path + location.search}
+                    className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
+                  >
+                    {route.label}
+                  </NavLink>
+                </NavItem>
+              )
+          )}
+        </NavGroup>
+        <NavGroup title="DevOps Tools">
+          <NavItem icon={<ExternalLinkAltIcon />} onClick={() => window.open(ConsoleServices.swaggerUi(), '_blank')}>
+            {t('layout.swagger-ui')}
+          </NavItem>
+          <NavItem
+            icon={<ExternalLinkAltIcon />}
+            onClick={() => window.open(ConsoleServices.metricsEndpoint(), '_blank')}
+          >
+            {t('layout.metrics')}
+          </NavItem>
+        </NavGroup>
       </NavList>
     </Nav>
   );
