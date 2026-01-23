@@ -28,24 +28,45 @@ describe('Rolling Upgrades', () => {
           password: Cypress.env('password')
         }
       });
-      cy.get('[data-cy=sideBarToggle]').click();
-      cy.contains("2 members in use");
-      cy.contains("Rolling Upgrade in Progress — Some features may be temporarily unavailable");
-      cy.contains("16.0.0.Dev08");
-      cy.contains('16.1.0-SNAPSHOT');
+      cy.request({
+        method: 'GET',
+        url: 'http://localhost:31222/rest/v2/container/',
+        auth: {
+          username: Cypress.env('username'),
+          password: Cypress.env('password'),
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        failOnStatusCode: true,
+      }).then((response) => {
+        const version = response.body.version;
+        cy.get('[data-cy=sideBarToggle]').click();
+        cy.contains('2 members in use');
+        cy.contains(
+          'Rolling Upgrade in Progress — Some features may be temporarily unavailable',
+        );
+        cy.contains('16.0.0.Dev08');
+        cy.contains(version);
 
-      // Restarting the docker container with same version and waiting for 20seconds to server to come up, reloading the page
-      cy.exec('bash restart_server_with_latest_version.sh > ~/log.log', 120000).then((result) => {
-         cy.log(result.stdout);
-       }); //waiting for script to finish max for 3 minutes
-      cy.wait(20000)
-      cy.reload();
+        // Restarting the docker container with same version and waiting for 20seconds to server to come up, reloading the page
+        cy.exec(
+          'bash restart_server_with_latest_version.sh > ~/log.log',
+          120000,
+        ).then((result) => {
+          cy.log(result.stdout);
+        }); //waiting for script to finish max for 3 minutes
+        cy.wait(20000);
+        cy.reload();
 
-      cy.get('[data-cy=sideBarToggle]').click();
-      cy.contains("2 members in use");
-      cy.contains("Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version.");
-      cy.contains("16.0.0.Dev08").should('not.exist');
-      cy.contains('16.1.0-SNAPSHOT');
+        cy.get('[data-cy=sideBarToggle]').click();
+        cy.contains('2 members in use');
+        cy.contains(
+          'Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version.',
+        );
+        cy.contains('16.0.0.Dev08').should('not.exist');
+        cy.contains(version);
+      });
     })
   });
 
