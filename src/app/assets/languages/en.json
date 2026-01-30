@@ -91,6 +91,22 @@
     "text-create-user": "Create a username and password then reload.",
     "text-command": "bin/cli.sh user create myuser -p changeme -g admin"
   },
+  "routes": {
+    "cache": "Cache",
+    "cache-edit-configuration": "Edit cache configuration",
+    "cache-setup": "Cache Setup",
+    "configurations": "Configurations",
+    "create-cache": "Create Cache",
+    "index-management": "Index Management",
+    "operations": "Operations",
+    "devops-tools": "DevOps Tools",
+    "data-container": "Data Container",
+    "global-statistics": "Global Statistics",
+    "cluster-membership": "Cluster Membership",
+    "access-management": "Access Management",
+    "connected-clients": "Connected Clients",
+    "role-detail": "Role Detail"
+  },
   "cache-managers": {
     "title": "Data container",
     "caches-tab": "Caches",
