@@ -29,13 +29,14 @@ import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { GrantNewAccess } from '@app/AccessManagement/GrantNewAccess';
 import { RemovePrincipal } from '@app/AccessManagement/RemovePrincipal';
 import { ManageRolesForPrincipal } from '@app/AccessManagement/ManageRolesForPrincipal';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const PrincipalTableDisplay = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { principals, setLoading, loading, error } = useFetchAvailablePrincipals();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [principalsPagination, setPrincipalsPagination] = useState({
+  const [principalsPagination, setPrincipalsPagination] = useLocalStorage("principals-table", {
     page: 1,
     perPage: 5
   });

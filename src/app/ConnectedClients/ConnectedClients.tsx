@@ -41,13 +41,14 @@ import { useFetchConnectedClients } from '@app/services/serverHook';
 import { formatAge } from '@app/utils/formatAge';
 import { onSearch } from '@app/utils/searchFilter';
 import { PageHeader } from '@patternfly/react-component-groups';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const ConnectedClients = () => {
   const { t } = useTranslation();
   const { connectedClients, error, loading, setLoading } = useFetchConnectedClients();
   const [filteredConnections, setFilteredConnections] = useState<ConnectedClients[]>([]);
   const [rows, setRows] = useState<ConnectedClients[]>([]);
-  const [connectionPagination, setConnectionPagination] = useState({
+  const [connectionPagination, setConnectionPagination] = useLocalStorage<PaginationType>("connected-clients-table", {
     page: 1,
     perPage: 10
   });

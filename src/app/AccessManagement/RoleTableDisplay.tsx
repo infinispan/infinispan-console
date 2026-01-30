@@ -28,13 +28,14 @@ import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const RoleTableDisplay = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { roles, setLoading, loading, error } = useFetchAvailableRoles();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [rolesPagination, setRolesPagination] = useState({
+  const [rolesPagination, setRolesPagination] = useLocalStorage("roles-table", {
     page: 1,
     perPage: 10
   });

@@ -39,6 +39,7 @@ import { onSearch } from '@app/utils/searchFilter';
 import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const [isDeltaValid, setIsDeltaValid] = useState(true);
   const [isNewCounterValueValid, setIsNewCounterValueValid] = useState(true);
 
-  const [countersPagination, setCountersPagination] = useState({
+  const [countersPagination, setCountersPagination] = useLocalStorage("counters-table", {
     page: 1,
     perPage: 10
   });

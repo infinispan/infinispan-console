@@ -21,6 +21,7 @@ import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { useFetchAvailableUsers } from '@app/services/userManagementHook';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const UsersTableDisplay = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ const UsersTableDisplay = () => {
   const [realm, setRealm] = useState<string>('');
   const [users, setUsers] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [usersPagination, setUsersPagination] = useState({
+  const [usersPagination, setUsersPagination] = useLocalStorage("users-table", {
     page: 1,
     perPage: 5
   });

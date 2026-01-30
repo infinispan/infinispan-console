@@ -57,6 +57,7 @@ import { SetAvailableCache } from '@app/Caches/SetAvailableCache';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { CACHES_BANNER } from '@app/providers/APIAlertProvider';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 interface CacheAction {
   cacheName: string;
@@ -89,7 +90,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
   const [rowsLoading, setRowsLoading] = useState<boolean>(true);
 
-  const [cachesPagination, setCachesPagination] = useState({
+  const [cachesPagination, setCachesPagination] = useLocalStorage("caches-table", {
     page: 1,
     perPage: 10
   });

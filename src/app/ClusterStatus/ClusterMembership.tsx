@@ -28,13 +28,14 @@ import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { onSearch } from '@app/utils/searchFilter';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import displayUtils from '@services/displayUtils';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const ClusterMembership = () => {
   const { t } = useTranslation();
   const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
   const { clusterMembers, loading, error } = useFetchClusterMembers();
   const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
-  const [clusterMembersPagination, setClusterMembersPagination] = useState({
+  const [clusterMembersPagination, setClusterMembersPagination] = useLocalStorage("cluster-members-table", {
     page: 1,
     perPage: 10
   });

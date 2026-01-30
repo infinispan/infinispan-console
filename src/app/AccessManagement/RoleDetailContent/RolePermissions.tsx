@@ -24,11 +24,12 @@ import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { SearchIcon } from '@patternfly/react-icons';
 import { AddPermissions } from '@app/AccessManagement/RoleDetailContent/AddPermissions';
 import { RemovePermission } from '@app/AccessManagement/RoleDetailContent/RemovePermission';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const RolePermissions = (props: { name: string }) => {
   const { t } = useTranslation();
   const { role, loading, error, setLoading } = useDescribeRole(props.name);
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useLocalStorage("role-permissions-table", {
     page: 1,
     perPage: 5
   });

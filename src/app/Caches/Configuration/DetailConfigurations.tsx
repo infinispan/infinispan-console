@@ -32,6 +32,7 @@ import { onSearch } from '@app/utils/searchFilter';
 import { t_global_spacer_sm } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { PageHeader } from '@patternfly/react-component-groups';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const DetailConfigurations = () => {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ const DetailConfigurations = () => {
   const [rows, setRows] = useState<CacheConfig[]>([]);
   const [expandedTemplateNames, setExpandedRepoNames] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const [pageConfigsPagination, setCacheConfigsPagination] = useState({
+  const [pageConfigsPagination, setCacheConfigsPagination] = useLocalStorage("cache-configurations-table", {
     page: 1,
     perPage: 10
   });
