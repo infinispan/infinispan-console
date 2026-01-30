@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import {
   Button,
   ButtonVariant,
@@ -9,23 +9,29 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuList,
   Pagination,
   Popover,
+  Popper,
   SearchInput,
   Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarItem
 } from '@patternfly/react-core';
-import { ExternalLinkSquareAltIcon, HelpIcon, SearchIcon } from '@patternfly/react-icons';
+import { ExternalLinkSquareAltIcon, HelpIcon, SearchIcon, TrashIcon } from '@patternfly/react-icons';
 import displayUtils from '../../../services/displayUtils';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useSearch } from '@app/services/searchHook';
 import { DeleteByQueryEntries } from '@app/Caches/Query/DeleteByQueryEntries';
+import { useLocalStorage } from '@app/utils/localStorage';
+import { useClickOutside } from '@app/utils/clickOutside';
 
 const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const { t } = useTranslation();
@@ -34,6 +40,9 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
   const [deleteByQueryOpen, setDeleteByQueryOpen] = useState(false);
   const [trim, setTrim] = useState<boolean>(false);
+  const [history, setHistory] = useLocalStorage<HistoryMap>('cache-query-history', {});
+  const currentHistory = useMemo(() => history[props.cacheName] || [], [history, props.cacheName]);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const columnNames = {
     value: 'Value'
@@ -53,9 +62,15 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   };
 
   const onSearch = () => {
+    setIsHistoryOpen(false);
     setSearch((prevState) => {
       return { ...prevState, loading: true };
     });
+    const query = search.query.trim();
+    if (query.length > 0) {
+      const newHistory = [query, ...currentHistory.filter(i => i !== query)].slice(0, 10);
+      updateHistory(newHistory);
+    }
   };
 
   const onClear = () => {
@@ -83,6 +98,46 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
       onClear();
     }
   };
+
+  const updateHistory = (newItems: string[]) => {
+    // Merge the new array into the existing map without losing other histories
+    setHistory({
+      ...history,
+      [props.cacheName]: newItems
+    });
+  };
+
+  const deleteHistoryItem = (e: React.MouseEvent, itemToDelete: string) => {
+    e.stopPropagation(); // Prevent triggering the search when clicking delete
+    updateHistory(currentHistory.filter(item => item !== itemToDelete));
+  };
+
+  const dropdownMenu = (
+    <Menu onSelect={(_, item) => { 
+        setSearch((prevState) => {
+          return { ...prevState, query: item };
+        });
+        onSearch();
+      }}>
+      <MenuContent>
+        <MenuList>
+          {currentHistory.map((item, index) => (
+            <MenuItem 
+              key={index} 
+              itemId={item}
+              actions={
+                <Button variant="plain" onClick={(e) => deleteHistoryItem(e, item)} aria-label="Remove">
+                  <TrashIcon />
+                </Button>
+              }
+            >
+              {item}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </MenuContent>
+    </Menu>
+  );
 
   const onSetPage = (_event, pageNumber) => {
     setSearch((prevState) => {
@@ -138,18 +193,26 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const toolbar = (
     <Toolbar id="cache-query-toolbar" style={{ paddingLeft: 0 }}>
       <ToolbarContent>
-        <ToolbarItem>
-          <SearchInput
-            name="textSearchByQuery"
-            id="textSearchByQuery"
-            aria-label="Query textfield"
-            placeholder={t('caches.query.ickle-query')}
-            type="search"
-            submitSearchButtonLabel={'searchButton'}
-            style={{ width: '35rem' }}
-            onChange={(e, value) => onChangeSearch(value)}
-            onSearch={onSearch}
-            onClear={onClear}
+        <ToolbarItem>  
+          <Popper
+            trigger={
+              <SearchInput
+                name="textSearchByQuery"
+                id="textSearchByQuery"
+                aria-label="Query textfield"
+                placeholder={t('caches.query.ickle-query')}
+                type="search"
+                submitSearchButtonLabel={'searchButton'}
+                style={{ width: '35rem' }}
+                onFocus={() => setIsHistoryOpen(true)}
+                onChange={(e, value) => onChangeSearch(value)}
+                onSearch={onSearch}
+                onClear={onClear}
+                value={search.query}
+              />
+            }
+            popper={dropdownMenu}
+            isVisible={isHistoryOpen && currentHistory.length > 0}
           />
           <Popover
             headerContent={t('caches.query.ickle-query')}
