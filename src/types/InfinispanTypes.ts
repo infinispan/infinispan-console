@@ -566,3 +566,5 @@ interface EditableConfig {
   tracingEnabled: boolean;
   tracingCategories: string[];
 }
+
+type HistoryMap = Record<string, string[]>;
