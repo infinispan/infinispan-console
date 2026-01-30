@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { CheckCircleIcon, HelpIcon, ListIcon } from '@patternfly/react-icons';
 import { TableEmptyState } from '@app/Common/TableEmptyState';
 import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-
+import { useLocalStorage } from '@app/utils/localStorage';
 /**
  * Update schema modal
  */
@@ -28,7 +28,7 @@ const ViewMetamodel = (props: {
 }) => {
   const { t } = useTranslation();
   const [loadingFields, setLoadingFields] = useState(true);
-  const [fieldsPagination, setFieldsPagination] = useState<PaginationType>({
+  const [fieldsPagination, setFieldsPagination] = useLocalStorage<PaginationType>("index-metamodel-table", {
     page: 1,
     perPage: 10
   });

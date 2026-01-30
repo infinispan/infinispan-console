@@ -44,6 +44,7 @@ import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const CacheEntries = () => {
   const {
@@ -73,7 +74,7 @@ const CacheEntries = () => {
   const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(ContentType.string);
   const [searchValue, setSearchValue] = useState<string>('');
   const [trim, setTrim] = useState<boolean>(false);
-  const [entriesPagination, setEntriesPagination] = useState<PaginationType>({
+  const [entriesPagination, setEntriesPagination] = useLocalStorage<PaginationType>("cache-entries-table", {
     page: 1,
     perPage: 10
   });

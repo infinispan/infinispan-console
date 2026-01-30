@@ -21,11 +21,12 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { KeyIcon, SearchIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const RoleCaches = (props: { name: string }) => {
   const { t } = useTranslation();
   const { secured, nonSecured, loading, error } = useCachesForRole(props.name);
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useLocalStorage("role-caches-table", {
     page: 1,
     perPage: 5
   });

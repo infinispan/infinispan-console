@@ -34,6 +34,7 @@ import { useFetchProtobufSchemas } from '@app/services/protobufHooks';
 import { onSearch } from '@app/utils/searchFilter';
 import './ProtobufSchemasDisplay.css';
 import { ThemeContext } from '@app/providers/ThemeProvider';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   const [searchValue, setSearchValue] = useState<string>('');
   const [expandedSchemaNames, setExpandedSchemaNames] = useState<string[]>([]);
   const [loadingSchema, setLoadingSchema] = useState(false);
-  const [schemasPagination, setSchemasPagination] = useState({
+  const [schemasPagination, setSchemasPagination] = useLocalStorage("schemas-table", {
     page: 1,
     perPage: 10
   });

@@ -19,12 +19,13 @@ import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { TaskType } from '@services/infinispanRefData';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: boolean }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [error, setError] = useState('');
-  const [tasksPagination, setTasksPagination] = useState({
+  const [tasksPagination, setTasksPagination] = useLocalStorage("tasks-table", {
     page: 1,
     perPage: 10
   });

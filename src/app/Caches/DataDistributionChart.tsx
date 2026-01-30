@@ -29,13 +29,14 @@ import { useCacheDetail } from '@app/services/cachesHook';
 import { onSearch } from '@app/utils/searchFilter';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
+import { useLocalStorage } from '@app/utils/localStorage';
 
 const DataDistributionChart = (props: { cacheName: string }) => {
   const { t } = useTranslation();
   const { cache } = useCacheDetail();
   const MAX_NUMBER_FOR_CHART = 5;
   const [statsOption, setStatsOption] = useState<string>(DataDistributionStatsOption.Entries);
-  const [tablePagination, setTablePagination] = useState({
+  const [tablePagination, setTablePagination] = useLocalStorage("data-distribution-table", {
     page: 1,
     perPage: 5
   });
