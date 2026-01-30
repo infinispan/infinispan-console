@@ -132,7 +132,8 @@ module.exports = (env) => {
       }),
       new CopyWebpackPlugin({
         patterns: [
-          { from: 'src/config.js', to: '' } // project root → dist/config.js
+          { from: 'src/config.js', to: '' },
+          { from: path.resolve(__dirname, 'src/app/assets/languages'), to: 'languages'}
         ],
       }),
       new HtmlWebpackTagsPlugin({

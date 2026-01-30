@@ -56,6 +56,7 @@ import {
 import { ConsoleACL } from '@services/securityService';
 import { DARK, LIGHT, ThemeContext } from '@app/providers/ThemeProvider';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { LanguageSelector } from `@app/Common/LanguageSelector`;
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -167,6 +168,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
               />
             </ToggleGroup>
           </ToolbarItem>
+          <LanguageSelector />
           <ToolbarItem>
             <Dropdown
               id="aboutInfoQuestionMark"
@@ -265,7 +267,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const Navigation = (
     <Nav id="nav-primary-simple">
       <NavList id="nav-list-simple">
-        <NavGroup title="Operations">
+        <NavGroup title={t('routes.operations')}>
           {filteredRoutes.map(
             (route, idx) =>
               displayNavMenu(route) && (
@@ -276,13 +278,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
                     to={route.path + location.search}
                     className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
                   >
-                    {route.label}
+                    {t(route.label)}
                   </NavLink>
                 </NavItem>
               )
           )}
         </NavGroup>
-        <NavGroup title="DevOps Tools">
+        <NavGroup title={t('routes.devops-tools')}>
           <NavItem icon={<ExternalLinkAltIcon />} onClick={() => window.open(ConsoleServices.swaggerUi(), '_blank')}>
             {t('layout.swagger-ui')}
           </NavItem>
