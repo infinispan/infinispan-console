@@ -22,6 +22,8 @@ jobs:
     # Only add the issue to the project if the associated PR has been merged
     if: github.event.issue.pull_request && github.event.issue.pull_request.merged == true
   add-to-project:
+    if: ${{ always() }}
+    needs: [dump-github-context]    
     runs-on: ubuntu-latest
     # Specifies the environment where the job will run. In this case, it uses the latest Ubuntu runner.
 
