@@ -26,9 +26,6 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-
-      if: github.event.issue.pull_request && github.event.issue.pull_request.merged == true
-      # Only add the issue to the project if the associated PR has been merged
       - uses: actions/add-to-project@v1.0.2
         # Uses the `actions/add-to-project` GitHub Action to add items to a GitHub project.
         # This action simplifies the process of adding issues or pull requests to a project board.
@@ -39,7 +36,7 @@ jobs:
           # The URL of the GitHub project where the issue or pull request should be added.
           # Replace this URL with the correct project URL for your repository.
 
-          github-token: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
           # The GitHub personal access token (PAT) used to authenticate the action.
           # The token must have the necessary permissions to modify the specified project.
           # Store the token securely in the repository's secrets as `ADD_TO_PROJECT_PAT`.
