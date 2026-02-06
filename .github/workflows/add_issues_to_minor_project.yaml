@@ -28,7 +28,7 @@ jobs:
           # The URL of the GitHub project where the issue or pull request should be added.
           # Replace this URL with the correct project URL for your repository.
 
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
           # The GitHub personal access token (PAT) used to authenticate the action.
           # The token must have the necessary permissions to modify the specified project.
           # Store the token securely in the repository's secrets as `ADD_TO_PROJECT_PAT`.
