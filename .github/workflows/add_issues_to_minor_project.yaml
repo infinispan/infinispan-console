@@ -10,22 +10,22 @@ on:
       # Triggers the workflow when a new issue is closed in the repository.
 
 jobs:
-  add-to-project:
+  dump-github-context:
     runs-on: ubuntu-latest
     # Specifies the environment where the job will run. In this case, it uses the latest Ubuntu runner.
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-    # Only add the issue to the project if the associated PR has been merged
-    if: github.event.issue.pull_request && github.event.issue.pull_request.merged == true
     steps:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+    
+    # Only add the issue to the project if the associated PR has been merged
+    if: github.event.issue.pull_request && github.event.issue.pull_request.merged == true
+  add-to-project:
+    runs-on: ubuntu-latest
+    # Specifies the environment where the job will run. In this case, it uses the latest Ubuntu runner.
+
+    steps:
       - uses: actions/add-to-project@v1.0.2
         # Uses the `actions/add-to-project` GitHub Action to add items to a GitHub project.
         # This action simplifies the process of adding issues or pull requests to a project board.
