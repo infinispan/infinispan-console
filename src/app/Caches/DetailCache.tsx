@@ -62,6 +62,7 @@ import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus
 import { PageHeader } from '@patternfly/react-component-groups';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 import { DeleteCache } from '@app/Caches/DeleteCache';
+import { QueryHistory } from '@app/Caches/Query/QueryHistory';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -128,6 +129,13 @@ const DetailCache = (props: { cacheName: string }) => {
         </Tab>
         <Tab eventKey={11} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
           <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)} />
+        </Tab>
+        <Tab
+          eventKey={12}
+          data-cy="queryHistoryTab"
+          title={<TabTitleText>{t('caches.tabs.query-history')}</TabTitleText>}
+        >
+          <QueryHistory cacheName={cacheName} changeTab={() => setActiveTabKey1(3)} />
         </Tab>
       </Tabs>
     );

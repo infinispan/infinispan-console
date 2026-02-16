@@ -41,7 +41,7 @@ const DetailConfigurations = () => {
   const [rows, setRows] = useState<CacheConfig[]>([]);
   const [expandedTemplateNames, setExpandedRepoNames] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const [pageConfigsPagination, setCacheConfigsPagination] = useLocalStorage("cache-configurations-table", {
+  const [pageConfigsPagination, setCacheConfigsPagination] = useLocalStorage('cache-configurations-table', {
     page: 1,
     perPage: 10
   });

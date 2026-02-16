@@ -25,7 +25,7 @@ const TasksTableDisplay = (props: { setTasksCount: (number) => void; isVisible: 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [error, setError] = useState('');
-  const [tasksPagination, setTasksPagination] = useLocalStorage("tasks-table", {
+  const [tasksPagination, setTasksPagination] = useLocalStorage('tasks-table', {
     page: 1,
     perPage: 10
   });

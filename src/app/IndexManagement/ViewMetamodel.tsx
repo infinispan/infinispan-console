@@ -28,7 +28,7 @@ const ViewMetamodel = (props: {
 }) => {
   const { t } = useTranslation();
   const [loadingFields, setLoadingFields] = useState(true);
-  const [fieldsPagination, setFieldsPagination] = useLocalStorage<PaginationType>("index-metamodel-table", {
+  const [fieldsPagination, setFieldsPagination] = useLocalStorage<PaginationType>('index-metamodel-table', {
     page: 1,
     perPage: 10
   });

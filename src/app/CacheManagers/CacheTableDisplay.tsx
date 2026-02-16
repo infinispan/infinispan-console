@@ -90,7 +90,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
   const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
   const [rowsLoading, setRowsLoading] = useState<boolean>(true);
 
-  const [cachesPagination, setCachesPagination] = useLocalStorage("caches-table", {
+  const [cachesPagination, setCachesPagination] = useLocalStorage('caches-table', {
     page: 1,
     perPage: 10
   });

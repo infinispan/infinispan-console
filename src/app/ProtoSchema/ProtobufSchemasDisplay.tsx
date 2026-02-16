@@ -51,7 +51,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
   const [searchValue, setSearchValue] = useState<string>('');
   const [expandedSchemaNames, setExpandedSchemaNames] = useState<string[]>([]);
   const [loadingSchema, setLoadingSchema] = useState(false);
-  const [schemasPagination, setSchemasPagination] = useLocalStorage("schemas-table", {
+  const [schemasPagination, setSchemasPagination] = useLocalStorage('schemas-table', {
     page: 1,
     perPage: 10
   });
