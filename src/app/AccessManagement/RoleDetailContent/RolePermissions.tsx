@@ -29,7 +29,7 @@ import { useLocalStorage } from '@app/utils/localStorage';
 const RolePermissions = (props: { name: string }) => {
   const { t } = useTranslation();
   const { role, loading, error, setLoading } = useDescribeRole(props.name);
-  const [pagination, setPagination] = useLocalStorage("role-permissions-table", {
+  const [pagination, setPagination] = useLocalStorage('role-permissions-table', {
     page: 1,
     perPage: 5
   });

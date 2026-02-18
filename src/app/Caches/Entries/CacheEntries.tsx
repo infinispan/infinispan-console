@@ -74,7 +74,7 @@ const CacheEntries = () => {
   const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(ContentType.string);
   const [searchValue, setSearchValue] = useState<string>('');
   const [trim, setTrim] = useState<boolean>(false);
-  const [entriesPagination, setEntriesPagination] = useLocalStorage<PaginationType>("cache-entries-table", {
+  const [entriesPagination, setEntriesPagination] = useLocalStorage<PaginationType>('cache-entries-table', {
     page: 1,
     perPage: 10
   });
