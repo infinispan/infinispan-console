@@ -1,0 +1,12 @@
+// File name: persistence.core.proto
+// Generated from : persistence.core.proto
+syntax = "proto2";
+package org.infinispan.persistence.core;
+
+/**
+ * @TypeId(2)
+ */
+message MarshallableUserObject {
+   
+   optional bytes bytes = 1;
+}

@@ -361,6 +361,9 @@ export class CacheService {
       (encoding.value as EncodingType) == EncodingType.Java
     ) {
       customHeaders.append('Accept', 'application/json');
+    } else if ((encoding.value as EncodingType) == EncodingType.Octet) {
+      // For octet-stream, request protobuf format to decode WrappedMessage
+      customHeaders.append('Accept', 'application/x-protostream');
     } else {
       customHeaders.append('Accept', 'text/plain');
     }
@@ -393,13 +396,45 @@ export class CacheService {
 
     return this.fetchCaller
       .fetch(getEntryUrl, 'GET', customHeaders)
-      .then((response) => {
+      .then(async (response) => {
         if (response.ok) {
-          return response
-            .text()
-            .then((value) => [
-              CacheRequestResponseMapper.toEntry(key, keyContentType, encoding, value, response.headers)
-            ]);
+          // Handle binary response for octet-stream with protobuf
+          if ((encoding.value as EncodingType) == EncodingType.Octet) {
+            // Use blob() instead of arrayBuffer() to let browser handle decompression
+            const blob = await response.blob();
+            const buffer = await blob.arrayBuffer();
+            const bytes = new Uint8Array(buffer);
+            
+            // Log raw bytes in hex format for debugging
+            const hexString = Array.from(bytes)
+              .map(b => b.toString(16).padStart(2, '0'))
+              .join(' ');
+            console.log('=== Cache Entry Response Debug ===');
+            console.log('URL:', getEntryUrl);
+            console.log('Content-Type:', response.headers.get('Content-Type'));
+            console.log('Content-Encoding:', response.headers.get('Content-Encoding'));
+            console.log('Content-Length:', response.headers.get('Content-Length'));
+            console.log('Bytes length:', bytes.length);
+            console.log('Hex dump (first 200 bytes):', hexString.substring(0, 600)); // 200 bytes * 3 chars per byte
+            console.log('Full hex dump:', hexString);
+            console.log('==================================');
+            
+            const entry = await CacheRequestResponseMapper.toEntryFromBytes(
+              key,
+              keyContentType,
+              encoding,
+              bytes,
+              response.headers
+            );
+            return [entry];
+          } else {
+            // Existing text handling for other encodings
+            return response
+              .text()
+              .then((value) => [
+                CacheRequestResponseMapper.toEntry(key, keyContentType, encoding, value, response.headers)
+              ]);
+          }
         }
 
         if (response.status == 404) {

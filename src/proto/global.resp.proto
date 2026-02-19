@@ -1,0 +1,12 @@
+// File name: global.resp.proto
+// Generated from : global.resp.proto
+syntax = "proto3";
+package org.infinispan.global.resp;
+
+/**
+ * @TypeId(6104)
+ */
+message JsonBucket {
+   
+   bytes value = 1;
+}

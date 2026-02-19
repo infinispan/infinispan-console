@@ -1,0 +1,93 @@
+// File name: persistence.multimap.proto
+// Generated from : persistence.multimap.proto
+syntax = "proto2";
+package org.infinispan.persistence.multimap;
+
+import "persistence.core.proto";
+
+
+/**
+ * @TypeId(5305)
+ */
+message SetBucket {
+   
+   repeated MultimapObjectWrapper wrappedValues = 1;
+}
+
+
+/**
+ * @TypeId(5302)
+ */
+message ListBucket {
+   
+   repeated org.infinispan.persistence.core.MarshallableUserObject wrappedValues = 1;
+}
+
+
+/**
+ * @TypeId(5300)
+ */
+message Bucket {
+   
+   repeated org.infinispan.persistence.core.MarshallableUserObject wrappedValues = 1;
+}
+
+
+/**
+ * @TypeId(5306)
+ */
+message MultimapObjectWrapper {
+   
+   optional org.infinispan.persistence.core.MarshallableUserObject wrapper = 1;
+}
+
+
+/**
+ * @TypeId(5307)
+ */
+message SortedSetBucket {
+   
+
+   /**
+    * @TypeId(5309)
+    */
+   message IndexValue {
+      
+      optional double score = 1 [default = 0.0];
+      
+      optional int64 index = 2 [default = 0];
+   }
+   
+   repeated ScoredValue wrappedValues = 1;
+}
+
+
+/**
+ * @TypeId(5303)
+ */
+message HashMapBucket {
+   
+
+   /**
+    * @TypeId(5304)
+    */
+   message BucketEntry {
+      
+      optional org.infinispan.persistence.core.MarshallableUserObject wrappedKey = 1;
+      
+      optional org.infinispan.persistence.core.MarshallableUserObject wrappedValue = 2;
+   }
+   
+   repeated HashMapBucket.BucketEntry wrappedValues = 1;
+}
+
+
+/**
+ * @TypeId(5308)
+ */
+message ScoredValue {
+   
+   optional double score = 1;
+   
+   optional MultimapObjectWrapper wrappedValue = 2;
+}

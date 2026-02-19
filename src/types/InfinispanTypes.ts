@@ -73,6 +73,7 @@ interface CacheEntry {
   keyContentType?: string;
   value: string;
   valueContentType?: string;
+  valueType?: string; // Type information for display (e.g., "SetBucket", "string", "int32")
   timeToLive?: string;
   maxIdle?: string;
   created?: string;
