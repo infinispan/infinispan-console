@@ -41,6 +41,7 @@ import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { CreateOrUpdateEntryForm } from '@app/Caches/Entries/CreateOrUpdateEntryForm';
 import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
+import { ViewEntryModal } from '@app/Caches/Entries/ViewEntryModal';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
@@ -65,9 +66,12 @@ const CacheEntries = () => {
   const encodingDocs = t('brandname.encoding-docs-link');
   const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] = useState<boolean>(false);
   const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
+  const [isViewEntryModalOpen, setViewEntryModalOpen] = useState<boolean>(false);
   const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [keyToEdit, setKeyToEdit] = useState<string>('');
+  const [keyToView, setKeyToView] = useState<string>('');
   const [keyContentTypeToEdit, setKeyContentTypeToEdit] = useState<ContentType>(ContentType.StringContentType);
+  const [keyContentTypeToView, setKeyContentTypeToView] = useState<ContentType>(ContentType.StringContentType);
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [rows, setRows] = useState<CacheEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<CacheEntry[]>([]);
@@ -182,14 +186,15 @@ const CacheEntries = () => {
     expires: t('caches.entries.column-expires')
   };
 
-  const displayHighlighted = (value: string, encodingType: EncodingType, contentType?: ContentType) => {
+  const displayHighlighted = (value: string, encodingType: EncodingType, contentType?: ContentType, isClickable?: boolean, onClick?: () => void) => {
     const highlightedContent = (
       <SyntaxHighlighter
         language="json"
-        lineProps={{ style: { wordBreak: 'break-all' } }}
+        lineProps={{ style: { wordBreak: 'break-all', cursor: isClickable ? 'pointer' : 'default' } }}
         style={syntaxHighLighterTheme}
         useInlineStyles={true}
         wrapLongLines={true}
+        onClick={isClickable ? onClick : undefined}
       >
         {trim
           ? displayUtils.formatContentToDisplayWithTruncate(value, contentType)
@@ -228,10 +233,21 @@ const CacheEntries = () => {
     setKeyContentTypeToEdit(keyContentType);
   };
 
+  const onClickViewEntryButton = (entryKey: string, keyContentType: ContentType) => {
+    setKeyToView(entryKey);
+    setKeyContentTypeToView(keyContentType);
+    setViewEntryModalOpen(true);
+  };
+
   const closeCreateOrEditEntryFormModal = () => {
     searchEntryByKey();
     setKeyToEdit('');
     setCreateOrUpdateEntryFormOpen(false);
+  };
+
+  const closeViewEntryModal = () => {
+    setViewEntryModalOpen(false);
+    setKeyToView('');
   };
 
   const closeClearAllEntryModal = () => {
@@ -519,6 +535,7 @@ const CacheEntries = () => {
                   </Tr>
                 ) : (
                   rows.map((row) => {
+                    const isOctetStream = (cache.encoding?.value as EncodingType) === EncodingType.Octet;
                     return (
                       <Tr key={row.key}>
                         <Td dataLabel={columnNames.key}>
@@ -529,10 +546,22 @@ const CacheEntries = () => {
                           )}
                         </Td>
                         <Td dataLabel={columnNames.value}>
-                          {displayHighlighted(
-                            row.value,
-                            cache.encoding?.value as EncodingType,
-                            row.valueContentType as ContentType
+                          {isOctetStream ? (
+                            <Tooltip content={t('caches.entries.click-to-view-value')}>
+                              {displayHighlighted(
+                                row.value,
+                                cache.encoding?.value as EncodingType,
+                                row.valueContentType as ContentType,
+                                true,
+                                () => onClickViewEntryButton(row.key, row.keyContentType as ContentType)
+                              )}
+                            </Tooltip>
+                          ) : (
+                            displayHighlighted(
+                              row.value,
+                              cache.encoding?.value as EncodingType,
+                              row.valueContentType as ContentType
+                            )
                           )}
                         </Td>
                         <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
@@ -570,6 +599,14 @@ const CacheEntries = () => {
           cacheName={cache.name}
           isModalOpen={isClearAllModalOpen}
           closeModal={closeClearAllEntryModal}
+        />
+        <ViewEntryModal
+          cacheName={cache.name}
+          cacheEncoding={cache.encoding!}
+          entryKey={keyToView}
+          keyContentType={keyContentTypeToView}
+          isModalOpen={isViewEntryModalOpen}
+          closeModal={closeViewEntryModal}
         />
       </CardBody>
     </Card>

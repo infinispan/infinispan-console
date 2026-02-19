@@ -133,7 +133,11 @@ module.exports = (env) => {
       new CopyWebpackPlugin({
         patterns: [
           { from: 'src/config.js', to: '' },
-          { from: path.resolve(__dirname, 'src/app/assets/languages'), to: 'languages'}
+          { from: path.resolve(__dirname, 'src/app/assets/languages'), to: 'languages'},
+          { from: 'src/proto/message-wrapping.proto', to: 'proto/message-wrapping.proto' },
+          { from: 'src/proto/global.resp.proto', to: 'proto/global.resp.proto' },
+          { from: 'src/proto/persistence.core.proto', to: 'proto/persistence.core.proto' },
+          { from: 'src/proto/persistence.multimap.proto', to: 'proto/persistence.multimap.proto' },
         ],
       }),
       new HtmlWebpackTagsPlugin({

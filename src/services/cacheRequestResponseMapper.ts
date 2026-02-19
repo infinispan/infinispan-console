@@ -1,6 +1,7 @@
 import { ProtobufDataUtils } from '@services/protobufDataUtils';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
 import { Either, left, right } from '@services/either';
+import { WrappedMessageService } from '@services/wrappedMessageService';
 import json_bigint from 'json-bigint';
 const JSONbigString = json_bigint({ storeAsString: true });
 
@@ -122,6 +123,122 @@ export class CacheRequestResponseMapper {
     );
   }
 
+  /**
+   * Convert bytes to entry (for octet-stream with WrappedMessage)
+   *
+   * @param key
+   * @param keyContentType
+   * @param encoding
+   * @param bytes
+   * @param headers
+   */
+  /**
+   * STEP 3: Convert HTTP response bytes to CacheEntry
+   *
+   * This is the main entry point for converting raw bytes from the server into a CacheEntry object.
+   *
+   * Flow:
+   * 1. Receives bytes from HTTP response (application/octet-stream)
+   * 2. Attempts to decode as WrappedMessage protobuf
+   * 3. If successful, formats the decoded data for display
+   * 4. If failed, falls back to base64 encoding
+   * 5. Extracts metadata from HTTP headers (TTL, maxIdle, etc.)
+   * 6. Returns CacheEntry with formatted value and metadata
+   */
+  public static async toEntryFromBytes(
+    key: string,
+    keyContentType: ContentType,
+    encoding: CacheEncoding,
+    bytes: Uint8Array,
+    headers: Headers
+  ): Promise<CacheEntry> {
+    // STEP 4: Try to decode as WrappedMessage
+    const wrappedResult = await WrappedMessageService.decode(bytes);
+    
+    let value: string;
+    let valueContentType: ContentType;
+    let valueType: string | undefined;
+
+    if (wrappedResult.isRight()) {
+      const wrapped = wrappedResult.value;
+      
+      // STEP 8: Format value using formatForDisplay (which may use stringify functions from TYPE_ID_MAP)
+      valueType = wrapped.typeName || wrapped.type;
+      value = WrappedMessageService.formatForDisplay(wrapped);
+      
+      // Determine content type based on what was decoded
+      if (wrapped.typeName && wrapped.displayValue !== undefined && wrapped.nativeValue !== undefined) {
+        // Uniform bucket structure (JsonBucket, SetBucket, etc.)
+        valueContentType = ContentType.customType;
+      } else if (wrapped.type === 'message') {
+        // Other message types
+        valueContentType = ContentType.customType;
+      } else {
+        // Scalar types (string, int, etc.)
+        valueContentType = this.mapWrappedTypeToContentType(wrapped.type);
+      }
+    } else {
+      // Not a WrappedMessage or decode failed - show as base64
+      value = this.bytesToBase64(bytes);
+      valueContentType = ContentType.StringContentType;
+      valueType = 'binary';
+    }
+
+    // Extract metadata from headers
+    const timeToLive = headers.get('timeToLiveSeconds');
+    const maxIdleTimeSeconds = headers.get('maxIdleTimeSeconds');
+    const created = headers.get('created');
+    const lastUsed = headers.get('lastUsed');
+    const lastModified = headers.get('Last-Modified');
+    const expires = headers.get('Expires');
+    const cacheControl = headers.get('Cache-Control');
+    const etag = headers.get('Etag');
+
+    return <CacheEntry>{
+      key: key,
+      keyContentType: keyContentType,
+      value: value,
+      valueContentType: valueContentType,
+      valueType: valueType,
+      timeToLive: this.parseMetadataNumber(timeToLive),
+      maxIdle: this.parseMetadataNumber(maxIdleTimeSeconds),
+      created: this.parseMetadataDate(created),
+      lastUsed: this.parseMetadataDate(lastUsed),
+      lastModified: lastModified ? this.parseMetadataDate(Date.parse(lastModified)) : undefined,
+      expires: expires ? this.parseMetadataDate(Date.parse(expires)) : undefined,
+      cacheControl: cacheControl,
+      eTag: etag
+    };
+  }
+
+  /**
+   * Map WrappedMessage type to ContentType
+   */
+  private static mapWrappedTypeToContentType(type: string): ContentType {
+    const typeMap: Record<string, ContentType> = {
+      'string': ContentType.string,
+      'int32': ContentType.int32,
+      'int64': ContentType.int64,
+      'double': ContentType.double,
+      'float': ContentType.float,
+      'bool': ContentType.bool,
+      'message': ContentType.customType,
+      'enum': ContentType.customType
+    };
+    return typeMap[type] || ContentType.StringContentType;
+  }
+
+  /**
+   * Convert bytes to base64 string
+   */
+  private static bytesToBase64(bytes: Uint8Array): string {
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   private static extractData(data: any, dataEncoding: EncodingType, parse: boolean = false): string {
     if (data == null) {
       return '';
@@ -207,3 +324,5 @@ export class CacheRequestResponseMapper {
     });
   }
 }
+
+// Made with Bob

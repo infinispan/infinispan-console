@@ -18,12 +18,32 @@ module.exports = merge(common('development'), {
       index:'/console/'
     },
     open: 'console',
-    static: {
-      serveIndex: true,
-      directory: path.resolve(__dirname, 'dist'),
-    },
+    static: [
+      {
+        serveIndex: true,
+        directory: path.resolve(__dirname, 'dist'),
+      },
+      {
+        directory: path.resolve(__dirname, 'src/proto'),
+        publicPath: '/console/proto',
+      }
+    ],
     client: {
       overlay: true,
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    setupMiddlewares: (middlewares, devServer) => {
+      if (!devServer) {
+        throw new Error('webpack-dev-server is not defined');
+      }
+      // Serve .proto files with correct MIME type
+      devServer.app.get('*.proto', (req, res, next) => {
+        res.type('text/plain; charset=utf-8');
+        next();
+      });
+      return middlewares;
     },
   },
   module: {
