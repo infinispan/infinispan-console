@@ -19,8 +19,8 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
     
-    # Only add the issue to the project if the associated PR has been merged
-    if: github.event.issue.pull_request && github.event.issue.pull_request.merged == true
+  # Only add the issue to the project if the associated PR has been merged
+  if: github.event.issue.pull_request && github.event.issue.pull_request.merged == true
   add-to-project:
     if: ${{ always() }}
     needs: [dump-github-context]    
