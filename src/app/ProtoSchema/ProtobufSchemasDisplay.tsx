@@ -154,6 +154,11 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
 
   const submitEditSchemaModal = () => {
     setEditSchemaName('');
+    setSchemasContent((map) => {
+      const newMap = new Map(map);
+      newMap.delete(editSchemaName);
+      return newMap;
+    });
     reload();
     setLoadingSchema(true);
     loadSchema(editSchemaName);
