@@ -35,7 +35,7 @@ describe('Rolling Upgrades', () => {
         'Rolling Upgrade in Progress — Some features may be temporarily unavailable',
       );
       cy.contains('16.0.4');
-      cy.contains('16.0.5');
+      cy.contains('16.0.6');
 
       // Restarting the docker container with same version and waiting for 20seconds to server to come up, reloading the page
       cy.exec(
@@ -53,7 +53,7 @@ describe('Rolling Upgrades', () => {
         'Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version.',
       );
       cy.contains('16.0.4').should('not.exist');
-      cy.contains('16.0.5');
+      cy.contains('16.0.6');
     });
   });
 
