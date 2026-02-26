@@ -11,7 +11,7 @@
 
   <groupId>org.infinispan</groupId>
   <artifactId>infinispan-console</artifactId>
-  <version>16.1.2-SNAPSHOT</version>
+  <version>16.2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Infinispan Console</name>
   <description>The new Web Management Console for Infinispan</description>
@@ -129,7 +129,7 @@
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>install cypress@^13.2.0 --verbose</arguments>
+                  <arguments>install cypress@^15 --verbose</arguments>
                 </configuration>
               </execution>
               <execution>
