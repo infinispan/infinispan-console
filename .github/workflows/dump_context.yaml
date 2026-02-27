@@ -2,13 +2,15 @@
 # Posted by cảnh nguyễn, modified by community. See post 'Timeline' for change history
 # Retrieved 2026-02-24, License - CC BY-SA 4.0
 
-name: Dump context when closing an issue
+name: Dump context when closing a pull request
 
 on:
-  issues:
+  pull_request_target:
     types:
       - closed
-      # Triggers the workflow when a new issue is closed in the repository.
+    branches:
+      - main
+   # Triggers the workflow when a pull request on the main branch is closed in the repository.
 
 jobs:
   one:

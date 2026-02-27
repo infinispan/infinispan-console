@@ -1,0 +1,32 @@
+name: Add release label to closed issues
+# This GitHub Actions workflow automatically adds the current release as a label to closed 
+# issues with pull requests that were merged to the main branch. The value of the current 
+# release is held in a GitHub organization variable.
+
+on:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
+   # Triggers the workflow when a pull request on the main branch is closed in the repository.
+
+jobs:
+  add-release-label:
+    runs-on: ubuntu-latest
+    outputs:
+      issue_url: ${{ steps.get_linked_issue.outputs.issue_url }}
+    
+    steps:
+      - if: github.event.pull_request.merged == true
+        id: get_linked_issue
+        shell: bash
+        run: >
+          echo issue_url=$(node -pe "try{obj=JSON.parse(
+          '$(gh pr view ${{ github.event.pull_request.url }} --json closingIssuesReferences)'
+          );
+          obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
+      
+      - name: Label issue
+        if: ${{ steps.get_linked_issue.outputs.issue_url }}
+        run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label ${{ vars.RELEASE }}
