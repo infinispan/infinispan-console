@@ -31,4 +31,7 @@ jobs:
       
       - name: Label issue
         if: ${{ steps.get_linked_issue.outputs.issue_url }}
+        shell: bash
+        env: 
+          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label ${{ vars.RELEASE }}
