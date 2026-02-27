@@ -30,7 +30,8 @@ jobs:
           obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
       
       - name: Label issue
-        if: ${{ steps.get_linked_issue.outputs.issue_url }}
+        # Only run if the issue URL is valid
+        if: ${{ steps.get_linked_issue.outputs.issue_url }} != "undefined"
         shell: bash
         env: 
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
