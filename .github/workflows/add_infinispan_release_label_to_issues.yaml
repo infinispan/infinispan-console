@@ -21,6 +21,8 @@ jobs:
       - if: github.event.pull_request.merged == true
         id: get_linked_issue
         shell: bash
+        env: 
+          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: >
           echo issue_url=$(node -pe "try{obj=JSON.parse(
           '$(gh pr view ${{ github.event.pull_request.url }} --json closingIssuesReferences)'
