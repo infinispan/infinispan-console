@@ -64,7 +64,7 @@ const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisi
   const [isDeltaValid, setIsDeltaValid] = useState(true);
   const [isNewCounterValueValid, setIsNewCounterValueValid] = useState(true);
 
-  const [countersPagination, setCountersPagination] = useLocalStorage("counters-table", {
+  const [countersPagination, setCountersPagination] = useLocalStorage('counters-table', {
     page: 1,
     perPage: 10
   });

@@ -30,7 +30,7 @@ const UsersTableDisplay = () => {
   const [realm, setRealm] = useState<string>('');
   const [users, setUsers] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [usersPagination, setUsersPagination] = useLocalStorage("users-table", {
+  const [usersPagination, setUsersPagination] = useLocalStorage('users-table', {
     page: 1,
     perPage: 5
   });

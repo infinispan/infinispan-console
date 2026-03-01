@@ -35,7 +35,7 @@ const ClusterMembership = () => {
   const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
   const { clusterMembers, loading, error } = useFetchClusterMembers();
   const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
-  const [clusterMembersPagination, setClusterMembersPagination] = useLocalStorage("cluster-members-table", {
+  const [clusterMembersPagination, setClusterMembersPagination] = useLocalStorage('cluster-members-table', {
     page: 1,
     perPage: 10
   });

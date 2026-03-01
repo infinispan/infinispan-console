@@ -35,7 +35,7 @@ const RoleTableDisplay = () => {
   const brandname = t('brandname.brandname');
   const { roles, setLoading, loading, error } = useFetchAvailableRoles();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [rolesPagination, setRolesPagination] = useLocalStorage("roles-table", {
+  const [rolesPagination, setRolesPagination] = useLocalStorage('roles-table', {
     page: 1,
     perPage: 10
   });

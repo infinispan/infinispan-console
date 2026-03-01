@@ -26,7 +26,7 @@ import { useLocalStorage } from '@app/utils/localStorage';
 const RoleCaches = (props: { name: string }) => {
   const { t } = useTranslation();
   const { secured, nonSecured, loading, error } = useCachesForRole(props.name);
-  const [pagination, setPagination] = useLocalStorage("role-caches-table", {
+  const [pagination, setPagination] = useLocalStorage('role-caches-table', {
     page: 1,
     perPage: 5
   });

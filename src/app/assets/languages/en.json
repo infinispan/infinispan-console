@@ -593,7 +593,8 @@
       "metrics-enabled": "Metrics (Enabled)",
       "metrics-disabled": "Metrics (Not enabled)",
       "entries-manage": "Manage entries",
-      "query-values": "Query values"
+      "query-values": "Query values",
+      "query-history": "Query history"
     },
     "info": {
       "breadcrumb": "Detail of cache {{cacheName}}",
@@ -718,7 +719,12 @@
       "modal-delete-entries-title": "Permanently delete matching entries?",
       "modal-delete-entries-body-line-one": "This action will permanently delete all the mathing entries in {{cacheName}}, executing a 'DELETE' Ickle Query statement.",
       "modal-delete-entries-body-line-two": "This cannot be undone. You can always create the entries again.",
-      "modal-action-entries-success": "Delete by query successfully executed."
+      "modal-action-entries-success": "Delete by query successfully executed.",
+      "history": {
+        "clear": "Clear history",
+        "delete": "Delete",
+        "empty": "Query history is empty."
+      }
     },
     "index": {
       "title": "Index management",
