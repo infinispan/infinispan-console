@@ -9,7 +9,7 @@ on:
       - closed
     branches:
       - main
-   # Triggers the workflow when a pull request on the main branch is closed in the repository.
+      # Triggers the workflow when a pull request on the main branch is closed in the repository.
 
 jobs:
   add-release-label:
@@ -17,23 +17,24 @@ jobs:
     outputs:
       issue_url: ${{ steps.get_linked_issue.outputs.issue_url }}
     
-    steps:
-    
-    - if: github.event.pull_request.merged == true
-      # Only run if the PR was merged
-      id: get_linked_issue
-      shell: bash
-      env: 
-        GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
-      run: >
+    steps:    
+      - name: Get issue from merged PR
+        if: github.event.pull_request.merged == true
+        # Only run if the PR was merged
+        id: get_linked_issue
+        shell: bash
+        env: 
+          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
+        run: >
           echo issue_url=$(node -pe "try{obj=JSON.parse(
           '$(gh pr view ${{ github.event.pull_request.url }} --json closingIssuesReferences)'
           );
           obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
       
-   - if: "undefined" != "${{ steps.get_linked_issue.outputs.issue_url }}"
-      # Only run if the issue URL is valid
-      shell: bash
-      env: 
-        GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
-      run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label "release/${{ vars.RELEASE }}"
+      - name: Label issue
+        if: ${{ !contains(steps.get_linked_issue.outputs.issue_url, 'undefined') }}
+        # Only run if the issue URL is valid
+        shell: bash
+        env: 
+          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
+        run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label "release/${{ vars.RELEASE }}"
