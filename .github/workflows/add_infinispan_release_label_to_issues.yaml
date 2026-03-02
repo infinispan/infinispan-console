@@ -18,6 +18,7 @@ jobs:
       issue_url: ${{ steps.get_linked_issue.outputs.issue_url }}
     
     steps:
+      # Only run if the PR was merged
       - if: github.event.pull_request.merged == true
         id: get_linked_issue
         shell: bash
@@ -29,10 +30,9 @@ jobs:
           );
           obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
       
-      - name: Label issue
-        # Only run if the issue URL is valid
-        if: ${{ steps.get_linked_issue.outputs.issue_url }} != "undefined"
+      # Only run if the issue URL is valid
+      - if: ${{ steps.get_linked_issue.outputs.issue_url }} != "undefined"
         shell: bash
         env: 
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
-        run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label "release/${{ vars.RELEASE }}""
+        run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label "release/${{ vars.RELEASE }}"
