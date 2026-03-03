@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       issue_url: ${{ steps.get_linked_issue.outputs.issue_url }}
-      labels: ${{ steps.get_labels.outputs.labels }}
     
     steps:    
       - name: Get issue from merged PR
@@ -32,18 +31,11 @@ jobs:
           );
           obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
       
-      - name: Check if label exists
-        id: get_labels
+      - name: Create label and ignore error if it exists
         shell: bash
         env: 
-          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
-        run: echo labels=$(gh label list) >> "$GITHUB_OUTPUT"
-      
-      - name: Create label if it doesn't exist
-        if: ${{!contains( steps.get_labels.outputs.labels , 'release/vars.RELEASE' )}}
-        shell: bash
-        env: 
-          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
+          GH_TOKEN: "${{ secrets. INFINISPAN_RELEASE_TOKEN }}"
+        continue-on-error: true
         run: >
           gh label create "release/${{ vars.RELEASE }}" 
           --description "Label for issues with PRs merged to main during the Infinispan ${{ vars.RELEASE }} release cycle" 
