@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       issue_url: ${{ steps.get_linked_issue.outputs.issue_url }}
+      labels: ${{ steps.get_labels.outputs.labels }}
     
     steps:    
       - name: Get issue from merged PR
