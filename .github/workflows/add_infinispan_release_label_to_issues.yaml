@@ -27,7 +27,7 @@ jobs:
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: >
           echo issue_url=$(node -pe "try{obj=JSON.parse(
-          '$(gh pr view ${{ github.event.pull_request.url }} --json closingIssuesReferences)'
+          '$(gh pr view ${{ github.event.pull_request.html_url }} --json closingIssuesReferences)'
           );
           obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
       
