@@ -1,7 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { useLocalStorage } from '@utils/localStorage';
+import { QueryHistory } from '@app/Caches/Query/QueryHistory';
+import { convertToTimeQuantity } from '@utils/convertToTimeQuantity';
 
 export function useSearch(cacheName: string) {
+  const [history, setHistory] = useLocalStorage<HistoryMap>('cache-query-history', {});
+  const currentHistory = useMemo(() => history[cacheName] || [], [history, cacheName]);
   const [search, setSearch] = useState({
     page: 1,
     perPage: 10,
@@ -18,6 +23,8 @@ export function useSearch(cacheName: string) {
 
   useEffect(() => {
     if (search.loading && search.query.length > 0) {
+      const start: number = Date.now();
+
       ConsoleServices.search()
         .searchValues(cacheName, search.query, search.perPage, search.page - 1)
         .then((searchResult) => {
@@ -29,7 +36,20 @@ export function useSearch(cacheName: string) {
           setSearch((prevState) => {
             return { ...prevState, loading: false };
           })
-        );
+        )
+        .finally(() => {
+          const end: number = Date.now();
+          const historyItem = <QueryHistoryItem>{
+            query: search.query,
+            total: search.searchResult.total,
+            milliseconds: convertToTimeQuantity(end - start)
+          };
+          const newHistory = [historyItem, ...currentHistory.filter((i) => i.query !== search.query)].slice(0, 50);
+          setHistory({
+            ...history,
+            [cacheName]: newHistory
+          });
+        });
     }
   }, [search]);
 

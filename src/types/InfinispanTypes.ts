@@ -566,3 +566,11 @@ interface EditableConfig {
   tracingEnabled: boolean;
   tracingCategories: string[];
 }
+
+interface QueryHistoryItem {
+  query: string;
+  total: number;
+  milliseconds: string;
+}
+
+type HistoryMap = Record<string, QueryHistoryItem[]>;
