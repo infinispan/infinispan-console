@@ -1,7 +1,7 @@
 name: Add release label to closed issues
-# This GitHub Actions workflow automatically adds the current release as a label to closed 
-# issues with pull requests that were merged to the main branch. The value of the current 
-# release is held in a GitHub organization variable.
+# This GitHub Actions workflow automatically adds the current release as a label to closed
+# issues with pull requests that were merged. The value of the current
+# release is held in a GitHub organization variable. Handles backports on the 16.0 and 16.1 branches.
 
 on:
   pull_request_target:
@@ -9,41 +9,52 @@ on:
       - closed
     branches:
       - main
-      # Triggers the workflow when a pull request on the main branch is closed in the repository.
+      - 16.0
+      - 16.1
 
 jobs:
   add-release-label:
     runs-on: ubuntu-latest
     outputs:
-      issue_url: ${{ steps.get_linked_issue.outputs.issue_url }}
-    
-    steps:    
-      - name: Get issue from merged PR
-        if: github.event.pull_request.merged == true
+      issue_urls: ${{ steps.get_linked_issue.outputs.issue_urls }}
+      # An array of issue URLs fixed by the merged PR
+
+    steps:
+      - name: Get issue linked to merged PR
+        if: ${{ github.event.pull_request && github.event.pull_request.merged }}
         # Only run if the PR was merged
         id: get_linked_issue
         shell: bash
-        env: 
+        env:
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: >
-          echo issue_url=$(node -pe "try{obj=JSON.parse(
+          echo issue_urls=$(node -pe "try{obj=JSON.parse(
           '$(gh pr view ${{ github.event.pull_request.html_url }} --json closingIssuesReferences)'
           );
-          obj.closingIssuesReferences[0].url}catch(TypeError){}") >> "$GITHUB_OUTPUT"
-      
+          obj.closingIssuesReferences.map(issue => issue.url).toString().replaceAll(',',' ')}
+          catch(TypeError){}") >> "$GITHUB_OUTPUT"
+
       - name: Create label and ignore error if it exists
         shell: bash
-        env: 
+        env:
           GH_TOKEN: "${{ secrets. INFINISPAN_RELEASE_TOKEN }}"
         continue-on-error: true
         run: >
-          gh label create "release/${{ vars.RELEASE }}" 
-          --description "Label for issues with PRs merged to main during the Infinispan ${{ vars.RELEASE }} release cycle" 
+          gh label create "release/${{ vars.RELEASE }}"
+          --description "Label for issues with PRs merged to main during the Infinispan ${{ vars.RELEASE }} release cycle"
 
       - name: Label issue
-        if: ${{ !contains(steps.get_linked_issue.outputs.issue_url, 'undefined') }}
-        # Only run if the issue URL is valid
         shell: bash
-        env: 
+        env:
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
-        run: gh issue edit ${{ steps.get_linked_issue.outputs.issue_url }} --add-label "release/${{ vars.RELEASE }}"
+        run: >
+          let label="release/${{ vars.RELEASE }}"
+          if [[ ${{github.event.pull_request.base_ref}} -eq '16.0' ]];
+          then label="release/16.0";
+          elif [[ ${{github.event.pull_request.base_ref}} -eq '16.1' ]];
+          then label="release/16.1";
+          fi
+          declare -a arr=(${{ steps.get_linked_issue.outputs.issue_urls }});
+          for issue in "${arr[@]}";
+          gh issue edit $issue --add-label $label;
+          done
