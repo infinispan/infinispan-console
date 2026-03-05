@@ -1,7 +1,7 @@
 name: Add release label to closed issues
 # This GitHub Actions workflow automatically adds the current release as a label to closed
 # issues with pull requests that were merged. The value of the current
-# release is held in a GitHub organization variable. The GHA also handles backports on 
+# release is held in a GitHub organization variable. The GHA also handles backports on
 # the 16.0 and 16.1 branches.
 
 on:
@@ -50,9 +50,9 @@ jobs:
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: >
           label="release/${{ vars.RELEASE }}";
-          if [[ "${{ github.base_ref }}" == "16.0" ]];
+          if [[ "${{ github.event.pull_request.base.ref }}" == "16.0" ]];
           then label="release/16.0";
-          elif [[ "${{ github.base_ref }}" == "16.1" ]];
+          elif [[ "${{ github.event.pull_request.base.ref }}" == "16.1" ]];
           then label="release/16.1";
           fi;
           declare -a arr=(${{ steps.get_linked_issue.outputs.issue_urls }});
