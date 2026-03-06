@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Alert,
   AlertVariant,
   Button,
-  FileUpload,
   Form,
   FormGroup,
   Modal,
@@ -12,12 +11,18 @@ import {
   ModalHeader,
   TextInput
 } from '@patternfly/react-core';
+import { CodeEditor } from '@patternfly/react-code-editor';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import formUtils, { IField } from '../../services/formUtils';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
+import { Language } from '@patternfly/react-code-editor';
+import { PROTO_LANGUAGE_ID, registerProtobufLanguage } from './protoLanguage';
+
+registerProtobufLanguage();
 
 const schemaNameInitialState: IField = {
   value: '',
@@ -37,34 +42,11 @@ const schemaInitialState: IField = {
 
 const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { t } = useTranslation();
+  const { theme } = useContext(ThemeContext);
   const { addAlert } = useApiAlert();
   const [error, setError] = useState<string | undefined>(undefined);
   const [schemaName, setSchemaName] = useState<IField>(schemaNameInitialState);
   const [schema, setSchema] = useState<IField>(schemaInitialState);
-
-  const [filename, setFilename] = React.useState('');
-
-  const handleFileInputChange = (_, file: File) => {
-    setFilename(file.name);
-  };
-
-  const handleClear = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setFilename('');
-    setError(undefined);
-    setSchema(schemaInitialState);
-  };
-
-  const handleSchemaContentChange = (_event, v) => {
-    setSchema((prevState) => {
-      return { ...prevState, value: v };
-    });
-  };
-
-  const fileUploadDropZoneProps = {
-    accept: { 'application/x-protobuf': ['.proto', '.pb'] },
-    onDropRejected: () => setError('Invalid File Type! Please upload a protbuf file.'),
-    onDropAccepted: () => setError('')
-  };
 
   const clearCreateProtoSchema = (createDone: boolean) => {
     setSchemaName(schemaNameInitialState);
@@ -132,22 +114,19 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
           isRequired
           fieldId="schema-content"
         >
-          <FileUpload
+          <CodeEditor
             id="schema"
-            type="text"
-            name="schema"
-            aria-describedby="schema-content-helper"
-            value={schema.value}
-            filename={filename}
-            filenamePlaceholder="Drag and drop Protobuf Schema file or upload one"
-            onFileInputChange={handleFileInputChange}
-            onDataChange={handleSchemaContentChange}
-            onTextChange={handleSchemaContentChange}
-            dropzoneProps={fileUploadDropZoneProps}
-            onClearClick={handleClear}
-            allowEditingUploadedText={true}
-            browseButtonText="Upload"
-            validated={schema.validated}
+            isLineNumbersVisible
+            isUploadEnabled
+            language={PROTO_LANGUAGE_ID as Language}
+            code={schema.value}
+            onCodeChange={(v) =>
+              setSchema((prevState) => {
+                return { ...prevState, value: v };
+              })
+            }
+            height="60vh"
+            isDarkTheme={theme === DARK}
           />
         </FormGroup>
       </Form>
@@ -160,6 +139,7 @@ const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) 
       isOpen={props.isModalOpen}
       onClose={() => clearCreateProtoSchema(false)}
       aria-label="Add Protobuf schema"
+      variant="medium"
     >
       <ModalHeader titleIconVariant={AddCircleOIcon} title={t('schemas.create.modal-title')} />
       <ModalBody>{buildContent()}</ModalBody>
