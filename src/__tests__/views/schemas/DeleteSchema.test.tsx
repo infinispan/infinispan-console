@@ -17,7 +17,7 @@ beforeEach(() => {
 
 mockedSchemaHook.useDeleteProtobufSchema.mockImplementation(() => {
   return {
-    onDeleteSchema: () => onDeleteCalls++
+    onDeleteSchema: () => { onDeleteCalls++; return Promise.resolve(); }
   };
 });
 

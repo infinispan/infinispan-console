@@ -20,8 +20,8 @@ import {
 } from '@patternfly/react-core';
 import { ActionsColumn, ExpandableRowContent, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
-import { t_global_spacer_md, t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
+import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -33,8 +33,11 @@ import { EditSchema } from './EditSchema';
 import { useFetchProtobufSchemas } from '@app/services/protobufHooks';
 import { onSearch } from '@app/utils/searchFilter';
 import './ProtobufSchemasDisplay.css';
-import { ThemeContext } from '@app/providers/ThemeProvider';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { useLocalStorage } from '@app/utils/localStorage';
+import { PROTO_LANGUAGE_ID, registerProtobufLanguage } from './protoLanguage';
+
+registerProtobufLanguage();
 
 const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
@@ -55,7 +58,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
     page: 1,
     perPage: 10
   });
-  const { syntaxHighLighterTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
 
@@ -217,14 +220,14 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
 
     return (
       <ExpandableRowContent>
-        <SyntaxHighlighter
-          wrapLines={false}
-          style={syntaxHighLighterTheme}
-          useInlineStyles={true}
-          showLineNumbers={true}
-        >
-          {schemasContent.get(name)}
-        </SyntaxHighlighter>
+        <CodeEditor
+          isReadOnly
+          isLineNumbersVisible
+          language={PROTO_LANGUAGE_ID as Language}
+          code={schemasContent.get(name) || ''}
+          height="50vh"
+          isDarkTheme={theme === DARK}
+        />
       </ExpandableRowContent>
     );
   };

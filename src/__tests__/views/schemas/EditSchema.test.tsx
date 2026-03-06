@@ -69,7 +69,6 @@ describe('Edit schema', () => {
     );
 
     expect(screen.queryByRole('modal')).toBeDefined();
-    expect(screen.queryAllByRole('button')).toHaveLength(3);
     expect(screen.getByText('schemas.save-button').closest('button')).toHaveProperty('disabled');
 
     expect(closeModalCalls).toBe(0);
@@ -97,7 +96,6 @@ describe('Edit schema', () => {
     );
 
     expect(screen.queryByRole('modal')).toBeDefined();
-    expect(screen.queryAllByRole('button')).toHaveLength(3);
 
     const closeButton = screen.getByRole('button', { name: 'Close' });
     fireEvent.click(closeButton);

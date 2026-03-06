@@ -12,6 +12,16 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-cy="tab-Schemas"]').click({multiple: true, force: true});
   }
 
+  function typeInMonacoEditor(containerSelector, text) {
+    cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused().type(text, {force: true});
+  }
+
+  function clearAndTypeInMonacoEditor(containerSelector, text) {
+    cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused()
+      .type('{selectall}', {force: true})
+      .type(text, {force: true, parseSpecialCharSequences: false});
+  }
+
   it('successfully navigates through schemas', () => {
     clickTabSchemas();
     cy.contains('people');
@@ -61,7 +71,7 @@ describe('Proto Schema CRUD', () => {
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type(schemaName);
-    cy.get('#schema').click().type('schemaValue');
+    typeInMonacoEditor('#create-schema-modal', 'schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Schema ' + schemaName + ' created.');
     cy.get('[name=close-alert-button]').click(); //Closing alert popup.
@@ -75,11 +85,8 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Save');
     //Artificially adding here some delays between actions so that the proto schema is updated properly and normally shown on the page.
     cy.wait(1000);
-    cy.get('[data-cy=schemaEditArea]').type('{selectall}', { timeout: 5000 });
-    cy.wait(1000);
-    cy.get('[data-cy=schemaEditArea]').type(
-      'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
-      { parseSpecialCharSequences: false }
+    clearAndTypeInMonacoEditor('#edit-schema-modal',
+      'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }'
     );
     cy.wait(1000);
     cy.get('button[aria-label="confirm-edit-schema-button"]').click();
@@ -110,7 +117,7 @@ describe('Proto Schema CRUD', () => {
     clickTabSchemas();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('people');
-    cy.get('#schema').click().type('schemaValue');
+    typeInMonacoEditor('#create-schema-modal', 'schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Unexpected error creating schema people');
     cy.get('[data-cy="cancelAddSchemaButton"]').click();
@@ -120,7 +127,7 @@ describe('Proto Schema CRUD', () => {
     clickTabSchemas();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('1234567890+-*/name!@#$with%^&*special()_+symbols{}|":isnot?><saved>');
-    cy.get('#schema').click().type('1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
+    typeInMonacoEditor('#create-schema-modal', '1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('1234567890+-');
     cy.contains('*/name!@#$with%^&*special()_+symbols{}|":isnot?');
