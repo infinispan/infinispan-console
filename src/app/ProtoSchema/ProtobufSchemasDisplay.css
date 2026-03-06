@@ -4,7 +4,3 @@
   --pf-v6-c-table--cell--Overflow: auto;
   --pf-v6-c-table--cell--WhiteSpace: nowrap;
 }
-
-.pf-v6-c-file-upload {
-  --pf-v6-c-file-upload__file-details__c-form-control--MinHeight: 300px;
-}

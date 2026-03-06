@@ -27,6 +27,8 @@ module.exports = {
     '^keycloak-js$': '<rootDir>/__mocks__/keycloak-js.js',
     '^react-syntax-highlighter$': '<rootDir>/__mocks__/react-syntax-highlighter.js',
     '^react-syntax-highlighter/dist/esm/styles/hljs$': '<rootDir>/__mocks__/react-syntax-highlighter.js',
+    '^monaco-editor$': '<rootDir>/__mocks__/monaco-editor.js',
+    '^@patternfly/react-code-editor$': '<rootDir>/__mocks__/@patternfly/react-code-editor.js',
   },
 
   // A preset that is used as a base for Jest's configuration

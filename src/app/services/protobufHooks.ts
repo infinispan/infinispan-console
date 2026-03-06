@@ -49,7 +49,7 @@ export function useDeleteProtobufSchema(schemaName: string) {
   const { addAlert } = useApiAlert();
 
   const onDeleteSchema = () => {
-    ConsoleServices.protobuf()
+    return ConsoleServices.protobuf()
       .delete(schemaName)
       .then((actionResponse) => {
         addAlert(actionResponse);

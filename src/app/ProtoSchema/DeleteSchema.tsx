@@ -9,8 +9,9 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
   const { onDeleteSchema } = useDeleteProtobufSchema(props.schemaName);
 
   const onClickDeleteButton = () => {
-    onDeleteSchema();
-    props.closeModal();
+    onDeleteSchema().then(() => {
+      props.closeModal();
+    });
   };
 
   return (
