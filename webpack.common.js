@@ -96,16 +96,7 @@ module.exports = (env) => {
               'node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images'
             ),
           ],
-          type: 'asset/inline',
-          use: [
-            {
-              options: {
-                limit: 5000,
-                outputPath: 'images',
-                name: '[name].[ext]',
-              }
-            }
-          ]
+          type: 'asset/inline'
         },
         {
           test: /\.ttf$/,
