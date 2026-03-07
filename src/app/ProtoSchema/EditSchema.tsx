@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
+  Alert,
+  AlertVariant,
   Button,
   ButtonVariant,
-  Content,
+  Form,
+  FormGroup,
   Modal,
   ModalBody,
   ModalFooter,
-  ModalHeader,
-  TextArea
+  ModalHeader
 } from '@patternfly/react-core';
+import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { useEditProtobufSchema, useFetchProtobufSchemaContent } from '@app/services/protobufHooks';
-import { t_global_font_size_sm } from '@patternfly/react-tokens';
+import { PencilAltIcon } from '@patternfly/react-icons';
+import { PopoverHelp } from '@app/Common/PopoverHelp';
+import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
+import { Language } from '@patternfly/react-code-editor';
+import { PROTO_LANGUAGE_ID, registerProtobufLanguage } from './protoLanguage';
+
+registerProtobufLanguage();
 
 const EditSchema = (props: {
   schemaName: string;
@@ -20,9 +29,10 @@ const EditSchema = (props: {
   closeModal: () => void;
 }) => {
   const { t } = useTranslation();
+  const { theme } = useContext(ThemeContext);
   const [editSchemaContent, setEditSchemaContent] = useState<string>('');
   const { onEditSchema } = useEditProtobufSchema(props.schemaName, editSchemaContent);
-  const [formValidate, setFormValidate] = useState<'success' | 'error' | 'default'>('default');
+  const [error, setError] = useState<string | undefined>(undefined);
   const { schemaContent, setLoading } = useFetchProtobufSchemaContent(props.schemaName);
 
   useEffect(() => {
@@ -35,40 +45,61 @@ const EditSchema = (props: {
     if (schemaContent) setEditSchemaContent(schemaContent);
   }, [schemaContent]);
 
-  useEffect(() => {
-    if (editSchemaContent.length > 0) {
-      setFormValidate('success');
-    } else {
-      setFormValidate('error');
-    }
-  }, [editSchemaContent]);
-
   const onClickEditButton = () => {
+    if (editSchemaContent.length === 0) {
+      setError('Schema is required');
+      return;
+    }
+
+    setError(undefined);
     onEditSchema();
     props.submitModal();
   };
 
   return (
-    <Modal isOpen={props.isModalOpen} onClose={props.closeModal} aria-label="Edit schema modal" variant={'small'}>
-      <ModalHeader titleIconVariant={'warning'} title={t('schemas.edit.heading')} />
+    <Modal
+      id={'edit-schema-modal'}
+      isOpen={props.isModalOpen}
+      onClose={props.closeModal}
+      aria-label="Edit schema modal"
+      variant="medium"
+    >
+      <ModalHeader titleIconVariant={PencilAltIcon} title={t('schemas.edit.heading')} />
       <ModalBody>
-        <Content style={{ paddingBottom: '1rem' }}>
-          {t('schemas.edit.modal-description-1')}
-          <strong>{props.schemaName}</strong>
-          {t('schemas.edit.modal-description-2')}
-        </Content>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          {error && <Alert variant={AlertVariant.danger} isInline title={error} />}
 
-        <TextArea
-          id="schema-edit-area"
-          data-cy="schemaEditArea"
-          aria-label={'edit-schema-content'}
-          value={editSchemaContent}
-          onChange={(_event, val) => setEditSchemaContent(val)}
-          isRequired
-          validated={formValidate}
-          style={{ fontSize: t_global_font_size_sm.value }}
-          rows={15}
-        />
+          <FormGroup label={t('schemas.create.name')} fieldId="schema-name">
+            <strong>{props.schemaName}</strong>
+          </FormGroup>
+          <FormGroup
+            label={t('schemas.create.schema')}
+            labelHelp={
+              <PopoverHelp
+                name="schema-content"
+                label={t('schemas.create.schema')}
+                content={t('schemas.create.schema-tooltip')}
+              />
+            }
+            isRequired
+            fieldId="schema-content"
+          >
+            <CodeEditor
+              id="schema-edit"
+              isLineNumbersVisible
+              isUploadEnabled
+              language={PROTO_LANGUAGE_ID as Language}
+              code={editSchemaContent}
+              onCodeChange={(v) => setEditSchemaContent(v)}
+              height="60vh"
+              isDarkTheme={theme === DARK}
+            />
+          </FormGroup>
+        </Form>
       </ModalBody>
       <ModalFooter>
         <Button
@@ -78,7 +109,7 @@ const EditSchema = (props: {
           key="confirm"
           variant={ButtonVariant.primary}
           onClick={onClickEditButton}
-          isDisabled={formValidate === 'error'}
+          isDisabled={editSchemaContent.length === 0}
         >
           {t('schemas.save-button')}
         </Button>
