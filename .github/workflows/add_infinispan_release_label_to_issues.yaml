@@ -29,16 +29,16 @@ jobs:
         env:
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: >
-          echo issue_urls=$(node -pe "try{obj=JSON.parse(
+          echo issue_urls="$(node -pe "try{obj=JSON.parse(
           '$(gh pr view ${{ github.event.pull_request.html_url }} --json closingIssuesReferences)'
           );
           obj.closingIssuesReferences.map(issue => issue.url).toString().replaceAll(',',' ')}
-          catch(TypeError){}") >> "$GITHUB_OUTPUT"
+          catch(TypeError){}")" >> "$GITHUB_OUTPUT"
 
       - name: Create label and ignore error if it exists
         shell: bash
         env:
-          GH_TOKEN: "${{ secrets. INFINISPAN_RELEASE_TOKEN }}"
+          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         continue-on-error: true
         run: >
           gh label create "release/${{ vars.RELEASE }}"
@@ -51,12 +51,12 @@ jobs:
         run: >
           label="release/${{ vars.RELEASE }}";
           if [[ "${{ github.event.pull_request.base.ref }}" == "16.0" ]];
-          then label="release/16.0";
+          then label="${{ vars.RELEASE_16_0_VERSION }}";
           elif [[ "${{ github.event.pull_request.base.ref }}" == "16.1" ]];
-          then label="release/16.1";
+          then label="${{ vars.RELEASE_16_1_VERSION }}";
           fi;
           declare -a arr=(${{ steps.get_linked_issue.outputs.issue_urls }});
           for issue in "${arr[@]}";
-          do gh issue edit $issue --add-label $label;
+          do gh issue edit "$issue" --add-label "$label";
           done;
 
