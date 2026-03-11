@@ -19,9 +19,11 @@ jobs:
     outputs:
       issue_urls: ${{ steps.get_linked_issue.outputs.issue_urls }}
       # An array of issue URLs fixed by the merged PR
+      issue_label: ${{ steps.get_label.outputs.issue_label }}
+      # The label to use based on the branch
 
     steps:
-      - name: Get issue linked to merged PR
+      - name: Get issue(s) linked to merged PR
         if: ${{ github.event.pull_request && github.event.pull_request.merged }}
         # Only run if the PR was merged
         id: get_linked_issue
@@ -36,18 +38,11 @@ jobs:
           catch(TypeError){}")" >> "$GITHUB_OUTPUT"
 
       - name: Create label and ignore error if it exists
+        id: get_label
         shell: bash
         env:
           GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         continue-on-error: true
-        run: >
-          gh label create "release/${{ vars.RELEASE }}"
-          --description "Label for issues with PRs merged to main during the Infinispan ${{ vars.RELEASE }} release cycle"
-
-      - name: Label issue
-        shell: bash
-        env:
-          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
         run: >
           label="release/${{ vars.RELEASE }}";
           if [[ "${{ github.event.pull_request.base.ref }}" == "16.0" ]];
@@ -55,8 +50,17 @@ jobs:
           elif [[ "${{ github.event.pull_request.base.ref }}" == "16.1" ]];
           then label="${{ vars.RELEASE_16_1_VERSION }}";
           fi;
+          echo "issue_label=${label}" >> "$GITHUB_OUTPUT";
+          gh label create -f "release/${label}"
+          --color "#0E8A16";
+
+      - name: Label issue(s)
+        shell: bash
+        env:
+          GH_TOKEN: "${{ secrets.INFINISPAN_RELEASE_TOKEN }}"
+        run: >
           declare -a arr=(${{ steps.get_linked_issue.outputs.issue_urls }});
           for issue in "${arr[@]}";
-          do gh issue edit "$issue" --add-label "$label";
+          do gh issue edit "$issue" --add-label "${{ steps.get_label.outputs.issue_label }}";
           done;
 
