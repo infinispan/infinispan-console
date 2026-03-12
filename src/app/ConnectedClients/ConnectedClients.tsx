@@ -48,7 +48,7 @@ const ConnectedClients = () => {
   const { connectedClients, error, loading, setLoading } = useFetchConnectedClients();
   const [filteredConnections, setFilteredConnections] = useState<ConnectedClients[]>([]);
   const [rows, setRows] = useState<ConnectedClients[]>([]);
-  const [connectionPagination, setConnectionPagination] = useLocalStorage<PaginationType>("connected-clients-table", {
+  const [connectionPagination, setConnectionPagination] = useLocalStorage<PaginationType>('connected-clients-table', {
     page: 1,
     perPage: 10
   });

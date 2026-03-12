@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Dropdown, 
-  DropdownList, 
-  DropdownItem, 
-  MenuToggle, 
-  ToolbarItem 
-} from '@patternfly/react-core';
+import { Dropdown, DropdownList, DropdownItem, MenuToggle, ToolbarItem } from '@patternfly/react-core';
 import { GlobeIcon } from '@patternfly/react-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -51,7 +45,7 @@ const LanguageSelector = () => {
         onOpenChange={(isOpen) => setIsOpen(isOpen)}
         toggle={toggle}
         // In v6, alignment is often handled via popperProps if needed
-        popperProps={{ position: 'right' }} 
+        popperProps={{ position: 'right' }}
       >
         <DropdownList>
           {Object.entries(languages).map(([code, name]) => (
