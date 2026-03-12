@@ -56,7 +56,7 @@ import {
 import { ConsoleACL } from '@services/securityService';
 import { DARK, LIGHT, ThemeContext } from '@app/providers/ThemeProvider';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { LanguageSelector } from `@app/Common/LanguageSelector`;
+import { LanguageSelector } from '@app/Common/LanguageSelector';
 
 interface IAppLayout {
   children: React.ReactNode;

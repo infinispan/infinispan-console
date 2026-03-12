@@ -82,7 +82,7 @@
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>install cypress@13.2.0 --verbose</arguments>
+                  <arguments>install cypress@^15--verbose</arguments>
                 </configuration>
               </execution>
               <execution>
@@ -306,8 +306,8 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <npmVersion>9.8.1</npmVersion>
-              <nodeVersion>v18.18.0</nodeVersion>
+              <npmVersion>11.6.1</npmVersion>
+              <nodeVersion>v24.11.0</nodeVersion>
             </configuration>
           </execution>
           <execution>
