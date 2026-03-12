@@ -12,30 +12,6 @@ describe('Proto Schema CRUD', () => {
     cy.get('[data-cy="tab-Schemas"]').click({multiple: true, force: true});
   }
 
-  function typeInMonacoEditor(containerSelector, text) {
-    // If upload empty state is shown, click "Start from scratch" first
-    cy.get(containerSelector).then(($container) => {
-      if ($container.find('button:contains("Start from scratch")').length) {
-        cy.get(containerSelector).contains('Start from scratch').click();
-      }
-    });
-    // Wait for Monaco editor to fully render (view-lines indicates editor is ready)
-    cy.get(containerSelector + ' .view-lines', {timeout: 15000}).should('exist');
-    // Click the visible editor area to trigger Monaco's focus handling
-    cy.get(containerSelector + ' .monaco-editor').click();
-    cy.focused().type(text, {force: true});
-  }
-
-  function clearAndTypeInMonacoEditor(containerSelector, text) {
-    // Wait for Monaco editor to be ready with content
-    cy.get(containerSelector + ' .view-lines', {timeout: 10000}).should('exist');
-    // Click the visible editor area to trigger Monaco's focus handling
-    cy.get(containerSelector + ' .monaco-editor').click();
-    cy.focused()
-      .type('{selectall}', {force: true})
-      .type(text, {force: true, parseSpecialCharSequences: false});
-  }
-
   it('successfully navigates through schemas', () => {
     clickTabSchemas();
     cy.contains('people');
@@ -85,7 +61,7 @@ describe('Proto Schema CRUD', () => {
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type(schemaName);
-    typeInMonacoEditor('#create-schema-modal', 'schemaValue');
+    cy.typeInMonacoEditor('#create-schema-modal', 'schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Schema ' + schemaName + ' created.');
     cy.get('[name=close-alert-button]').click(); //Closing alert popup.
@@ -99,7 +75,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Save');
     //Artificially adding here some delays between actions so that the proto schema is updated properly and normally shown on the page.
     cy.wait(1000);
-    clearAndTypeInMonacoEditor('#edit-schema-modal',
+    cy.clearAndTypeInMonacoEditor('#edit-schema-modal',
       'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }'
     );
     cy.wait(1000);
@@ -131,7 +107,7 @@ describe('Proto Schema CRUD', () => {
     clickTabSchemas();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('people');
-    typeInMonacoEditor('#create-schema-modal', 'schemaValue');
+    cy.typeInMonacoEditor('#create-schema-modal', 'schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Unexpected error creating schema people');
     cy.get('[data-cy="cancelAddSchemaButton"]').click();
@@ -141,7 +117,7 @@ describe('Proto Schema CRUD', () => {
     clickTabSchemas();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('1234567890+-*/name!@#$with%^&*special()_+symbols{}|":isnot?><saved>');
-    typeInMonacoEditor('#create-schema-modal', '1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
+    cy.typeInMonacoEditor('#create-schema-modal', '1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('1234567890+-');
     cy.contains('*/name!@#$with%^&*special()_+symbols{}|":isnot?');
