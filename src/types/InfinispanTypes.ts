@@ -224,6 +224,11 @@ interface SearchResult {
   executed: boolean;
 }
 
+interface DeleteByQueryResult {
+  hit_count: number;
+  hit_count_exact: number;
+}
+
 interface ProtoError {
   message: string;
   cause: string;
@@ -566,3 +571,14 @@ interface EditableConfig {
   tracingEnabled: boolean;
   tracingCategories: string[];
 }
+
+interface QueryHistoryItem {
+  query: string;
+  total: number;
+  milliseconds: string;
+  error: boolean;
+  cause: string;
+  type: 'Search' | 'Delete' | 'Vector';
+}
+
+type HistoryMap = Record<string, QueryHistoryItem[]>;
