@@ -5,16 +5,46 @@ const PROTO_LANGUAGE_ID = 'protobuf';
 let registered = false;
 
 const keywords = [
-  'syntax', 'import', 'weak', 'public', 'package', 'option',
-  'message', 'enum', 'service', 'rpc', 'returns', 'stream',
-  'extend', 'oneof', 'map', 'reserved', 'to', 'extensions',
-  'optional', 'required', 'repeated', 'group'
+  'syntax',
+  'import',
+  'weak',
+  'public',
+  'package',
+  'option',
+  'message',
+  'enum',
+  'service',
+  'rpc',
+  'returns',
+  'stream',
+  'extend',
+  'oneof',
+  'map',
+  'reserved',
+  'to',
+  'extensions',
+  'optional',
+  'required',
+  'repeated',
+  'group'
 ];
 
 const typeKeywords = [
-  'double', 'float', 'int32', 'int64', 'uint32', 'uint64',
-  'sint32', 'sint64', 'fixed32', 'fixed64', 'sfixed32', 'sfixed64',
-  'bool', 'string', 'bytes'
+  'double',
+  'float',
+  'int32',
+  'int64',
+  'uint32',
+  'uint64',
+  'sint32',
+  'sint64',
+  'fixed32',
+  'fixed64',
+  'sfixed32',
+  'sfixed64',
+  'bool',
+  'string',
+  'bytes'
 ];
 
 // Infinispan indexing annotations with their parameters
@@ -260,9 +290,7 @@ export function registerProtobufLanguage() {
           if (!hasParams) {
             insertText = `@${name}`;
           } else {
-            const paramSnippets = paramList
-              .map((p, i) => `\${${i + 1}:${p} = }`)
-              .join(', ');
+            const paramSnippets = paramList.map((p, i) => `\${${i + 1}:${p} = }`).join(', ');
             insertText = `@${name}(${paramSnippets})`;
           }
 

@@ -36,7 +36,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   const { cache } = useCacheDetail();
   const MAX_NUMBER_FOR_CHART = 5;
   const [statsOption, setStatsOption] = useState<string>(DataDistributionStatsOption.Entries);
-  const [tablePagination, setTablePagination] = useLocalStorage("data-distribution-table", {
+  const [tablePagination, setTablePagination] = useLocalStorage('data-distribution-table', {
     page: 1,
     perPage: 5
   });

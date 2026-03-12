@@ -24,7 +24,7 @@ i18n
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: 'locale',
       caches: ['localStorage'],
-      excludeCacheFor: ['cimode'],
+      excludeCacheFor: ['cimode']
     },
     resources: {
       en: {
@@ -32,7 +32,7 @@ i18n
       }
     },
     backend: {
-      loadPath: '/languages/{{lng}}.json',
+      loadPath: '/languages/{{lng}}.json'
     },
     partialBundledLanguages: true
   });

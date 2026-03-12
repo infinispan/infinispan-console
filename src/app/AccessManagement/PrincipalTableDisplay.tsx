@@ -36,7 +36,7 @@ const PrincipalTableDisplay = () => {
   const brandname = t('brandname.brandname');
   const { principals, setLoading, loading, error } = useFetchAvailablePrincipals();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [principalsPagination, setPrincipalsPagination] = useLocalStorage("principals-table", {
+  const [principalsPagination, setPrincipalsPagination] = useLocalStorage('principals-table', {
     page: 1,
     perPage: 5
   });
