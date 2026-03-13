@@ -86,36 +86,34 @@ export class SearchService {
    * @param cacheName
    * @param query
    */
-  public async deleteByQuery(cacheName: string, query: string, message: string): Promise<ActionResponse> {
+  public async deleteByQuery(cacheName: string, query: string): Promise<Either<ActionResponse, DeleteByQueryResult>> {
     const url = this.endpoint + encodeURIComponent(cacheName) + '?action=deleteByQuery';
     const body = JSON.stringify({
       query: query
     });
+    // @ts-ignore
     return this.utils
       .fetch(url, 'POST', undefined, body)
       .then((response) => {
-        if (response.ok || response.status == 400) {
-          // Ok or bad request
-          return response.json();
+        if (response.ok) {
+          return response.json().then((data) =>
+            right(<DeleteByQueryResult>{
+              hit_count: data.hit_count,
+              hit_count_exact: data.hit_count_exact
+            })
+          );
         }
 
-        return response.text().then((text) => {
-          throw text;
+        return response.json().then((data) => {
+          const message = data.error?.cause || data.error?.message || response.statusText;
+          throw message;
         });
       })
-      .then(
-        () =>
-          <ActionResponse>{
-            message: message,
-            success: true
-          }
-      )
-      .catch(
-        (err) =>
-          <ActionResponse>{
-            message: err as string,
-            success: false
-          }
+      .catch((err) =>
+        left(<ActionResponse>{
+          message: err as string,
+          success: false
+        })
       );
   }
 

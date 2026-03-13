@@ -17,13 +17,13 @@ describe('Cache Detail Overview', () => {
   it('successfully deletes by query', () => {
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age = 9');
-    cy.get('button[aria-label=searchButton]').click();
+    cy.get('#textSearchByQuery').find('textarea').type('from org.infinispan.Person where age = 9', { force: true });
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Oihana');
     cy.get('[data-cy=deleteByQueryButton]').click();
     cy.get('[data-cy=deleteButton]').click();
-    cy.get('button[aria-label=searchButton]').click();
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('Values not found.');
     cy.get('[data-cy=deleteByQueryButton]').should('be.disabled');
   })
@@ -32,16 +32,17 @@ describe('Cache Detail Overview', () => {
     // Going back to cache entries page
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age > 2');
-    cy.get('button[aria-label=searchButton]').click();
+    cy.get('#textSearchByQuery').find('textarea').type('from org.infinispan.Person where age > 2', { force: true });
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
 
     // Going back to cache entries page
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().clear().type("from org.infinispan.Person where name = 'Elaia'");
-    cy.get('button[aria-label=searchButton]').click();
+    cy.get('#textSearchByQuery').find('textarea').type('{selectall}{backspace}', { force: true });
+    cy.get('#textSearchByQuery').find('textarea').type("from org.infinispan.Person where name = 'Elaia'", { force: true });
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
 
@@ -49,8 +50,9 @@ describe('Cache Detail Overview', () => {
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
 
-    cy.get('#textSearchByQuery').click().clear().type('from org.infinispan.Person where age=2');
-    cy.get('button[aria-label=searchButton]').click();
+    cy.get('#textSearchByQuery').find('textarea').type('{selectall}{backspace}', { force: true });
+    cy.get('#textSearchByQuery').find('textarea').type('from org.infinispan.Person where age=2', { force: true });
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('Values not found.');
 
     // Verify query metrics available
