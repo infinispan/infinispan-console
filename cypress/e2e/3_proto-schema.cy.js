@@ -13,6 +13,12 @@ describe('Proto Schema CRUD', () => {
   }
 
   function typeInMonacoEditor(containerSelector, text) {
+    // If upload empty state is shown, click "Start from scratch" first
+    cy.get(containerSelector).then(($container) => {
+      if ($container.find('button:contains("Start from scratch")').length) {
+        cy.get(containerSelector).contains('Start from scratch').click();
+      }
+    });
     cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused().type(text, {force: true});
   }
 
