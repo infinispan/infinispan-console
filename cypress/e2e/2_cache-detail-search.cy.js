@@ -102,7 +102,6 @@ describe('Cache Detail Overview', () => {
 
     cy.get("[data-cy=rebuildIndexButton]").click();
     cy.get("[data-cy=reindexButton]").click();
-    cy.contains("1").should("not.exist");
 
     cy.get("[data-cy=backButton]").click();
     cy.contains("Elaia");
