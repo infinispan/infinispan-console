@@ -27,13 +27,13 @@ export class SearchService {
     cacheName: string,
     query: string,
     maxResults: number,
-    offset: number
+    offset: number,
   ): Promise<SearchResult> {
-    const url = this.endpoint + encodeURIComponent(cacheName) + '?action=search';
+    const url = this.endpoint + encodeURIComponent(cacheName) + '/_search';
     const body = JSON.stringify({
       query: query,
       max_results: maxResults,
-      offset: offset * maxResults
+      offset: offset * maxResults,
     });
     return this.utils
       .fetch(url, 'POST', undefined, body)
@@ -55,7 +55,7 @@ export class SearchService {
             values: data.hits.map((hit) => JSON.stringify(hit.hit, null, 2)),
             error: false,
             cause: '',
-            executed: true
+            executed: true,
           };
         }
         // Parse the error
@@ -64,7 +64,7 @@ export class SearchService {
           values: [],
           error: true,
           executed: true,
-          cause: data['error'] ? data['error'].cause : JSON.stringify(data)
+          cause: data['error'] ? data['error'].cause : JSON.stringify(data),
         };
       })
       .catch(
@@ -75,8 +75,8 @@ export class SearchService {
             error: true,
             cause: 'Error executing search',
             message: err,
-            executed: true
-          }
+            executed: true,
+          },
       );
   }
 
@@ -86,10 +86,15 @@ export class SearchService {
    * @param cacheName
    * @param query
    */
-  public async deleteByQuery(cacheName: string, query: string, message: string): Promise<ActionResponse> {
-    const url = this.endpoint + encodeURIComponent(cacheName) + '?action=deleteByQuery';
+  public async deleteByQuery(
+    cacheName: string,
+    query: string,
+    message: string,
+  ): Promise<ActionResponse> {
+    const url =
+      this.endpoint + encodeURIComponent(cacheName) + '/_delete-by-query';
     const body = JSON.stringify({
-      query: query
+      query: query,
     });
     return this.utils
       .fetch(url, 'POST', undefined, body)
@@ -107,15 +112,15 @@ export class SearchService {
         () =>
           <ActionResponse>{
             message: message,
-            success: true
-          }
+            success: true,
+          },
       )
       .catch(
         (err) =>
           <ActionResponse>{
             message: err as string,
-            success: false
-          }
+            success: false,
+          },
       );
   }
 
@@ -124,33 +129,46 @@ export class SearchService {
    *
    * @param cacheName
    */
-  public async retrieveStats(cacheName: string): Promise<Either<ActionResponse, SearchStats>> {
-    return this.utils.get(this.endpoint + encodeURIComponent(cacheName) + '/search/stats', (data) => {
-      const queryStats = Object.keys(data.query).map(
-        (stat) =>
-          <QueryStat>{
-            name: (stat.charAt(0).toUpperCase() + stat.slice(1)).replace('_', ' '),
-            count: displayUtils.formatNumber(data.query[stat].count) + ' ns',
-            max: displayUtils.formatNumber(data.query[stat].max) + ' ns',
-            average: displayUtils.formatNumber(data.query[stat].average) + ' ns',
-            slowest: data.query[stat].slowest
-          }
-      );
+  public async retrieveStats(
+    cacheName: string,
+  ): Promise<Either<ActionResponse, SearchStats>> {
+    return this.utils.get(
+      this.endpoint + encodeURIComponent(cacheName) + '/_search-stats',
+      (data) => {
+        const queryStats = Object.keys(data.query).map(
+          (stat) =>
+            <QueryStat>{
+              name: (stat.charAt(0).toUpperCase() + stat.slice(1)).replace(
+                '_',
+                ' ',
+              ),
+              count: displayUtils.formatNumber(data.query[stat].count) + ' ns',
+              max: displayUtils.formatNumber(data.query[stat].max) + ' ns',
+              average:
+                displayUtils.formatNumber(data.query[stat].average) + ' ns',
+              slowest: data.query[stat].slowest,
+            },
+        );
 
-      const indexStats = Object.keys(data.index.types).map(
-        (indexType) =>
-          <IndexStat>{
-            name: indexType,
-            count: displayUtils.formatNumber(data.index.types[indexType].count),
-            size: displayUtils.formatBigNumber(data.index.types[indexType].size)
-          }
-      );
-      return <SearchStats>{
-        query: queryStats,
-        index: indexStats,
-        reindexing: data.reindexing
-      };
-    });
+        const indexStats = Object.keys(data.index.types).map(
+          (indexType) =>
+            <IndexStat>{
+              name: indexType,
+              count: displayUtils.formatNumber(
+                data.index.types[indexType].count,
+              ),
+              size: displayUtils.formatBigNumber(
+                data.index.types[indexType].size,
+              ),
+            },
+        );
+        return <SearchStats>{
+          query: queryStats,
+          index: indexStats,
+          reindexing: data.reindexing,
+        };
+      },
+    );
   }
 
   /**
@@ -158,34 +176,48 @@ export class SearchService {
    *
    * @param cacheName
    */
-  public async retrieveIndexMetamodel(cacheName: string): Promise<Either<ActionResponse, Map<string, IndexMetamodel>>> {
-    return this.utils.get(this.endpoint + encodeURIComponent(cacheName) + '/search/indexes/metamodel', (data) => {
-      const metamodels = new Map();
-      data.forEach((metamodel) => {
-        const name = metamodel['entity-name'];
-        metamodels.set(name, <IndexMetamodel>{
-          indexName: metamodel['index-name'],
-          entityName: name,
-          valueFields: Object.keys(metamodel['value-fields']).map(
-            (valueField) =>
-              <IndexValueField>{
-                name: valueField,
-                multiValued: metamodel['value-fields'][valueField]['multi-valued'],
-                multiValuedInRoot: metamodel['value-fields'][valueField]['multi-valued-in-root'],
-                type: metamodel['value-fields'][valueField]['type'],
-                projectionType: metamodel['value-fields'][valueField]['projection-type'],
-                argumentType: metamodel['value-fields'][valueField]['argument-type'],
-                searchable: metamodel['value-fields'][valueField]['searchable'],
-                sortable: metamodel['value-fields'][valueField]['sortable'],
-                projectable: metamodel['value-fields'][valueField]['projectable'],
-                aggregable: metamodel['value-fields'][valueField]['aggregable'],
-                analyzer: metamodel['value-fields'][valueField]['analyzer']
-              }
-          )
+  public async retrieveIndexMetamodel(
+    cacheName: string,
+  ): Promise<Either<ActionResponse, Map<string, IndexMetamodel>>> {
+    return this.utils.get(
+      this.endpoint + encodeURIComponent(cacheName) + '/_index-metamodel',
+      (data) => {
+        const metamodels = new Map();
+        data.forEach((metamodel) => {
+          const name = metamodel['entity-name'];
+          metamodels.set(name, <IndexMetamodel>{
+            indexName: metamodel['index-name'],
+            entityName: name,
+            valueFields: Object.keys(metamodel['value-fields']).map(
+              (valueField) =>
+                <IndexValueField>{
+                  name: valueField,
+                  multiValued:
+                    metamodel['value-fields'][valueField]['multi-valued'],
+                  multiValuedInRoot:
+                    metamodel['value-fields'][valueField][
+                      'multi-valued-in-root'
+                    ],
+                  type: metamodel['value-fields'][valueField]['type'],
+                  projectionType:
+                    metamodel['value-fields'][valueField]['projection-type'],
+                  argumentType:
+                    metamodel['value-fields'][valueField]['argument-type'],
+                  searchable:
+                    metamodel['value-fields'][valueField]['searchable'],
+                  sortable: metamodel['value-fields'][valueField]['sortable'],
+                  projectable:
+                    metamodel['value-fields'][valueField]['projectable'],
+                  aggregable:
+                    metamodel['value-fields'][valueField]['aggregable'],
+                  analyzer: metamodel['value-fields'][valueField]['analyzer'],
+                },
+            ),
+          });
         });
-      });
-      return metamodels;
-    });
+        return metamodels;
+      },
+    );
   }
 
   /**
@@ -195,9 +227,9 @@ export class SearchService {
    */
   public async purgeIndexes(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url: this.endpoint + encodeURIComponent(cacheName) + '/search/indexes?action=clear',
+      url: this.endpoint + encodeURIComponent(cacheName) + '/_index-clear',
       successMessage: `Index of cache ${cacheName} cleared.`,
-      errorMessage: `An error occurred when clearing the index for cache ${cacheName}.`
+      errorMessage: `An error occurred when clearing the index for cache ${cacheName}.`,
     });
   }
 
@@ -208,9 +240,10 @@ export class SearchService {
    */
   public async updateSchema(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url: this.endpoint + encodeURIComponent(cacheName) + '/search/indexes?action=updateSchema',
+      url:
+        this.endpoint + encodeURIComponent(cacheName) + '/_index-schema-update',
       successMessage: `Schema of cache ${cacheName} updated.`,
-      errorMessage: `An error occurred when updating the schema for cache ${cacheName}.`
+      errorMessage: `An error occurred when updating the schema for cache ${cacheName}.`,
     });
   }
 
@@ -221,9 +254,10 @@ export class SearchService {
    */
   public async reindex(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url: this.endpoint + encodeURIComponent(cacheName) + '/search/indexes?action=mass-index&mode=async',
+      url:
+        this.endpoint + encodeURIComponent(cacheName) + '/_reindex?mode=async',
       successMessage: `Reindexing cache ${cacheName} started.`,
-      errorMessage: `An error occurred when starting to rebuild the index for cache ${cacheName}.`
+      errorMessage: `An error occurred when starting to rebuild the index for cache ${cacheName}.`,
     });
   }
 
@@ -234,9 +268,10 @@ export class SearchService {
    */
   public async clearQueryStats(cacheName: string): Promise<ActionResponse> {
     return this.utils.post({
-      url: this.endpoint + encodeURIComponent(cacheName) + '/search/stats?action=clear',
+      url:
+        this.endpoint + encodeURIComponent(cacheName) + '/_search-stats-clear',
       successMessage: `Query statistics of cache ${cacheName} cleared.`,
-      errorMessage: `Cannot clear query statistics of cache ${cacheName}.`
+      errorMessage: `Cannot clear query statistics of cache ${cacheName}.`,
     });
   }
 }

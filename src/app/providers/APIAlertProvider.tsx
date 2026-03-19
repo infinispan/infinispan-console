@@ -6,13 +6,15 @@ const initialAlertState = {
   removeBanner: (id: string) => {},
   alertMap: new Map(),
   addAlert: (alert: ActionResponse) => {},
-  removeAlert: (pos: number) => {}
+  removeAlert: (pos: number) => {},
 };
 
 export const APIAlertContext = React.createContext(initialAlertState);
 
 export const CACHES_BANNER = 'caches';
 export const ROLLING_UPGRADE_BANNER = 'rolling';
+
+let alertCounter = 0;
 
 const APIAlertProvider = ({ children }) => {
   const [alertMap, setAlertMap] = useState(new Map());
@@ -28,10 +30,10 @@ const APIAlertProvider = ({ children }) => {
   };
 
   const addAlert = (actionResponse) => {
-    const time = new Date().getTime();
-    setAlertMap(new Map(alertMap.set(time, actionResponse)));
+    const id = alertCounter++;
+    setAlertMap(new Map(alertMap.set(id, actionResponse)));
     setTimeout(() => {
-      removeAlert(time);
+      removeAlert(id);
     }, 10000);
   };
 
@@ -46,10 +48,14 @@ const APIAlertProvider = ({ children }) => {
     removeBanner: useCallback(removeBanner, []),
     alertMap,
     addAlert: useCallback(addAlert, []),
-    removeAlert: useCallback(removeAlert, [])
+    removeAlert: useCallback(removeAlert, []),
   };
 
-  return <APIAlertContext.Provider value={contextValue}>{children}</APIAlertContext.Provider>;
+  return (
+    <APIAlertContext.Provider value={contextValue}>
+      {children}
+    </APIAlertContext.Provider>
+  );
 };
 
 export { APIAlertProvider };

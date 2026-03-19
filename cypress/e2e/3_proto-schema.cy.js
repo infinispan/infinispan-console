@@ -19,11 +19,19 @@ describe('Proto Schema CRUD', () => {
         cy.get(containerSelector).contains('Start from scratch').click();
       }
     });
-    cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused().type(text, {force: true});
+    // Wait for Monaco editor to fully render (view-lines indicates editor is ready)
+    cy.get(containerSelector + ' .view-lines', {timeout: 15000}).should('exist');
+    // Click the visible editor area to trigger Monaco's focus handling
+    cy.get(containerSelector + ' .monaco-editor').click();
+    cy.focused().type(text, {force: true});
   }
 
   function clearAndTypeInMonacoEditor(containerSelector, text) {
-    cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused()
+    // Wait for Monaco editor to be ready with content
+    cy.get(containerSelector + ' .view-lines', {timeout: 10000}).should('exist');
+    // Click the visible editor area to trigger Monaco's focus handling
+    cy.get(containerSelector + ' .monaco-editor').click();
+    cy.focused()
       .type('{selectall}', {force: true})
       .type(text, {force: true, parseSpecialCharSequences: false});
   }
@@ -99,10 +107,10 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Schema ' + schemaName +'.proto updated.');
     cy.wait(1000);
     cy.get('[name=close-alert-button]').click(); //Closing alert popup.
-    //Waiting 5 seconds so that the proto schema is managed to be updated on the page.
-    cy.wait(1000);
+    //Waiting so that the proto schema is managed to be updated on the page.
+    cy.wait(2000);
     cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
-    cy.wait(1000);
+    cy.wait(2000);
     cy.contains('schemaValue').should('not.exist');
     cy.contains('ExampleProto');
     cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
