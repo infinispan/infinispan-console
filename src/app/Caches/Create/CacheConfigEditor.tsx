@@ -11,7 +11,7 @@ import {
   FormSection,
   HelperText,
   HelperTextItem,
-  Spinner
+  Spinner,
 } from '@patternfly/react-core';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
@@ -43,13 +43,21 @@ const CacheConfigEditor = (props: {
   const configurationDocs = t('brandname.configuration-docs-link');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
 
-  const [editorConfig, setEditorConfig] = useState(props.cacheEditor.editorConfig || sampleConfig);
+  const [editorConfig, setEditorConfig] = useState(
+    props.cacheEditor.editorConfig || sampleConfig,
+  );
   const [configs, setConfigs] = useState(props.cacheEditor.configs);
   const [validConfig, setValidConfig] = useState(props.cacheEditor.validConfig);
   const [errorConfig, setErrorConfig] = useState(props.cacheEditor.errorConfig);
-  const [selectedConfig, setSelectedConfig] = useState(props.cacheEditor.selectedConfig);
-  const [configExpanded, setConfigExpanded] = useState(props.cacheEditor.configExpanded);
-  const [editorExpanded, setEditorExpanded] = useState(props.cacheEditor.editorExpanded);
+  const [selectedConfig, setSelectedConfig] = useState(
+    props.cacheEditor.selectedConfig,
+  );
+  const [configExpanded, setConfigExpanded] = useState(
+    props.cacheEditor.configExpanded,
+  );
+  const [editorExpanded, setEditorExpanded] = useState(
+    props.cacheEditor.editorExpanded,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,10 +84,19 @@ const CacheConfigEditor = (props: {
       errorConfig: errorConfig,
       selectedConfig: selectedConfig,
       configExpanded: configExpanded,
-      editorExpanded: editorExpanded
+      editorExpanded: editorExpanded,
     });
     props.setReviewConfig(editorConfig);
-  }, [editorConfig, configs, validConfig, errorConfig, selectedConfig, configExpanded, editorExpanded, loading]);
+  }, [
+    editorConfig,
+    configs,
+    validConfig,
+    errorConfig,
+    selectedConfig,
+    configExpanded,
+    editorExpanded,
+    loading,
+  ]);
 
   const handleChangeConfig = (editorConfig) => {
     props.setReviewConfig(editorConfig);
@@ -120,13 +137,16 @@ const CacheConfigEditor = (props: {
           id="cache-config"
           height="200px"
           isDarkTheme={theme === DARK}
+          options={{ editContext: false }}
         />
         <Alert
           isInline
           title={t('caches.create.edit-config.demo-cache')}
           variant={AlertVariant.info}
           actionLinks={
-            <AlertActionLink onClick={() => window.open(configurationDocs, '_blank')}>
+            <AlertActionLink
+              onClick={() => window.open(configurationDocs, '_blank')}
+            >
               {t('caches.create.cache-configuration-docs')}
             </AlertActionLink>
           }
@@ -150,8 +170,14 @@ const CacheConfigEditor = (props: {
 
     return (
       <Form>
-        <FormSection title={t('caches.create.edit-config.page-title')} titleElement="h2">
-          <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
+        <FormSection
+          title={t('caches.create.edit-config.page-title')}
+          titleElement="h2"
+        >
+          <FormGroup
+            fieldId="cache-config-name"
+            label={t('caches.create.templates')}
+          >
             <SelectSingleTypehead
               id="templates"
               onSelect={onSelectTemplate}
@@ -164,7 +190,9 @@ const CacheConfigEditor = (props: {
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant={validConfig}>{t('caches.create.templates-help')}</HelperTextItem>
+                <HelperTextItem variant={validConfig}>
+                  {t('caches.create.templates-help')}
+                </HelperTextItem>
               </HelperText>
             </FormHelperText>
           </FormGroup>

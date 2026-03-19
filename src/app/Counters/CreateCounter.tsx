@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalVariant,
   Radio,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
 import { useCreateCounter } from '@app/services/countersHook';
 import { useTranslation } from 'react-i18next';
@@ -23,47 +23,59 @@ import formUtils, { IField } from '@services/formUtils';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
-const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
+const CreateCounter = (props: {
+  isModalOpen: boolean;
+  submitModal: () => void;
+  closeModal: () => void;
+}) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
   const counterNameInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const counterStorageInitialState: IField = {
     value: 'PERSISTENT',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const counterTypeInitialState: IField = {
     value: CounterType.STRONG_COUNTER,
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const initialValueInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const lowerBoundInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
-  const [counterType, setCounterType] = useState<IField>(counterTypeInitialState);
-  const [counterName, setCounterName] = useState<IField>(counterNameInitialState);
-  const [counterStorage, setCounterStorage] = useState<IField>(counterStorageInitialState);
-  const [initialValue, setInitialValue] = useState<IField>(initialValueInitialState);
+  const [counterType, setCounterType] = useState<IField>(
+    counterTypeInitialState,
+  );
+  const [counterName, setCounterName] = useState<IField>(
+    counterNameInitialState,
+  );
+  const [counterStorage, setCounterStorage] = useState<IField>(
+    counterStorageInitialState,
+  );
+  const [initialValue, setInitialValue] = useState<IField>(
+    initialValueInitialState,
+  );
   const [lowerBound, setLowerBound] = useState<IField>(lowerBoundInitialState);
-  const [upperBound, setUpperBound] = useState<number>();
-  const [concurrencyLevel, setConcurrencyLevel] = useState<number>();
+  const [upperBound, setUpperBound] = useState<number | ''>('');
+  const [concurrencyLevel, setConcurrencyLevel] = useState<number | ''>('');
   const [counterData, setCounterData] = useState();
 
   useEffect(() => {
@@ -73,12 +85,20 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
       storage: counterStorage.value,
       initialValue: initialValue.value === '' ? undefined : initialValue.value,
       lowerBound: lowerBound.value === '' ? undefined : lowerBound.value,
-      upperBound: upperBound,
-      concurrencyLevel: concurrencyLevel
+      upperBound: upperBound === '' ? undefined : upperBound,
+      concurrencyLevel: concurrencyLevel === '' ? undefined : concurrencyLevel,
     };
 
     setCounterData(createCounterConfig(counterConfig));
-  }, [counterName, counterType, counterStorage, initialValue, lowerBound, upperBound, concurrencyLevel]);
+  }, [
+    counterName,
+    counterType,
+    counterStorage,
+    initialValue,
+    lowerBound,
+    upperBound,
+    concurrencyLevel,
+  ]);
 
   const { onCreateCounter } = useCreateCounter(counterName.value, counterData);
 
@@ -96,7 +116,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
                 t('cache-managers.counters.modal-lower-bound'),
                 setLowerBound,
                 validateLowerBound(value),
-                t('cache-managers.counters.modal-lower-bound-invalid')
+                t('cache-managers.counters.modal-lower-bound-invalid'),
               )
             }
             aria-label="lower-bound-input"
@@ -104,7 +124,10 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
           {lowerBound.validated === 'error' && (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                <HelperTextItem
+                  variant={'error'}
+                  icon={<ExclamationCircleIcon />}
+                >
                   {lowerBound.invalidText}
                 </HelperTextItem>
               </HelperText>
@@ -115,7 +138,11 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
           <TextInput
             value={upperBound}
             type="number"
-            onChange={(_event, val) => (isNaN(parseInt(val)) ? setUpperBound(undefined) : setUpperBound(parseInt(val)))}
+            onChange={(_event, val) =>
+              isNaN(parseInt(val))
+                ? setUpperBound('')
+                : setUpperBound(parseInt(val))
+            }
             aria-label="upper-bound-input"
           />
         </FormGroup>
@@ -130,7 +157,9 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
           value={concurrencyLevel}
           type="number"
           onChange={(_event, val) =>
-            isNaN(parseInt(val)) ? setConcurrencyLevel(undefined) : setConcurrencyLevel(parseInt(val))
+            isNaN(parseInt(val))
+              ? setConcurrencyLevel('')
+              : setConcurrencyLevel(parseInt(val))
           }
           aria-label="concurrency-level-input"
         />
@@ -143,16 +172,18 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
     if (counterType.value === CounterType.WEAK_COUNTER) return isValid;
 
     //Check validation with lowerbound
-    if (lowerBound.value !== '') isValid = parseInt(value) > parseInt(lowerBound.value) && isValid;
+    if (lowerBound.value !== '')
+      isValid = parseInt(value) > parseInt(lowerBound.value) && isValid;
 
     // Check validation with upperbound
-    if (upperBound !== undefined && value !== '') isValid = parseInt(value) <= upperBound && isValid;
+    if (upperBound !== '' && value !== '')
+      isValid = parseInt(value) <= upperBound && isValid;
 
     return isValid;
   };
 
   const validateLowerBound = (value: string): boolean => {
-    if (value !== '' && upperBound !== undefined) return parseInt(value) < upperBound;
+    if (value !== '' && upperBound !== '') return parseInt(value) < upperBound;
     return true;
   };
 
@@ -162,19 +193,19 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
       formUtils.validateRequiredField(
         counterName.value.trim(),
         t('cache-managers.counters.modal-counter-name'),
-        setCounterName
+        setCounterName,
       ) && isValid;
     isValid =
       formUtils.validateRequiredField(
         counterStorage.value.trim(),
         t('cache-managers.counters.storage'),
-        setCounterStorage
+        setCounterStorage,
       ) && isValid;
     isValid =
       formUtils.validateRequiredField(
         counterType.value.trim(),
         t('cache-managers.counters.counter-type'),
-        setCounterType
+        setCounterType,
       ) && isValid;
     isValid =
       formUtils.validateRequiredField(
@@ -182,7 +213,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
         t('cache-managers.counters.initial-value'),
         setInitialValue,
         validateInitialValue(initialValue.value),
-        t('cache-managers.counters.modal-initial-value-invalid')
+        t('cache-managers.counters.modal-initial-value-invalid'),
       ) && isValid;
     isValid =
       formUtils.validateRequiredField(
@@ -190,7 +221,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
         t('cache-managers.counters.modal-lower-bound'),
         setLowerBound,
         validateLowerBound(lowerBound.value),
-        t('cache-managers.counters.modal-lower-bound-invalid')
+        t('cache-managers.counters.modal-lower-bound-invalid'),
       ) && isValid;
 
     if (isValid) {
@@ -208,8 +239,8 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
     setCounterStorage(counterStorageInitialState);
     setInitialValue(initialValueInitialState);
     setLowerBound(lowerBoundInitialState);
-    setUpperBound(undefined);
-    setConcurrencyLevel(undefined);
+    setUpperBound('');
+    setConcurrencyLevel('');
   };
 
   return (
@@ -228,20 +259,31 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
             e.preventDefault();
           }}
         >
-          <FormGroup isRequired isInline label={t('cache-managers.counters.modal-counter-name')}>
+          <FormGroup
+            isRequired
+            isInline
+            label={t('cache-managers.counters.modal-counter-name')}
+          >
             <TextInput
               validated={counterName.validated}
               value={counterName.value}
               type="text"
               onChange={(_event, value) =>
-                formUtils.validateRequiredField(value, t('cache-managers.counters.modal-counter-name'), setCounterName)
+                formUtils.validateRequiredField(
+                  value,
+                  t('cache-managers.counters.modal-counter-name'),
+                  setCounterName,
+                )
               }
               aria-label="counter-name-input"
             />
             {counterName.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {counterName.invalidText}
                   </HelperTextItem>
                 </HelperText>
@@ -257,7 +299,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
                 name="storage"
                 label={t('cache-managers.counters.modal-storage')}
                 content={t('cache-managers.counters.modal-storage-tooltip', {
-                  brandname: brandname
+                  brandname: brandname,
                 })}
               />
             }
@@ -266,7 +308,11 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
               name="counter-storage-radio"
               id="persistent"
               onChange={() =>
-                formUtils.validateRequiredField('PERSISTENT', t('cache-managers.counters.storage'), setCounterStorage)
+                formUtils.validateRequiredField(
+                  'PERSISTENT',
+                  t('cache-managers.counters.storage'),
+                  setCounterStorage,
+                )
               }
               isChecked={counterStorage.value === 'PERSISTENT'}
               label={CounterStorage.PERSISTENT}
@@ -275,7 +321,11 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
               name="counter-storage-radio"
               id="volatile"
               onChange={() =>
-                formUtils.validateRequiredField('VOLATILE', t('cache-managers.counters.storage'), setCounterStorage)
+                formUtils.validateRequiredField(
+                  'VOLATILE',
+                  t('cache-managers.counters.storage'),
+                  setCounterStorage,
+                )
               }
               isChecked={counterStorage.value === 'VOLATILE'}
               label={CounterStorage.VOLATILE}
@@ -283,7 +333,10 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
             {counterStorage.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {counterStorage.invalidText}
                   </HelperTextItem>
                 </HelperText>
@@ -298,7 +351,9 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
               <PopoverHelp
                 name="type"
                 label={t('cache-managers.counters.counter-type')}
-                content={t('cache-managers.counters.modal-counter-type-tooltip')}
+                content={t(
+                  'cache-managers.counters.modal-counter-type-tooltip',
+                )}
               />
             }
           >
@@ -309,7 +364,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
                 formUtils.validateRequiredField(
                   CounterType.STRONG_COUNTER,
                   t('cache-managers.counters.counter-type'),
-                  setCounterType
+                  setCounterType,
                 )
               }
               isChecked={counterType.value === CounterType.STRONG_COUNTER}
@@ -322,7 +377,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
                 formUtils.validateRequiredField(
                   CounterType.WEAK_COUNTER,
                   t('cache-managers.counters.counter-type'),
-                  setCounterType
+                  setCounterType,
                 )
               }
               isChecked={counterType.value === CounterType.WEAK_COUNTER}
@@ -331,14 +386,20 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
             {counterType.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {counterType.invalidText}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
             )}
           </FormGroup>
-          <FormGroup isInline label={t('cache-managers.counters.initial-value')}>
+          <FormGroup
+            isInline
+            label={t('cache-managers.counters.initial-value')}
+          >
             <TextInput
               validated={initialValue.validated}
               value={initialValue.value}
@@ -349,7 +410,7 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
                   t('cache-managers.counters.initial-value'),
                   setInitialValue,
                   validateInitialValue(value),
-                  t('cache-managers.counters.modal-initial-value-invalid')
+                  t('cache-managers.counters.modal-initial-value-invalid'),
                 )
               }
               aria-label="initial-value-input"
@@ -357,22 +418,36 @@ const CreateCounter = (props: { isModalOpen: boolean; submitModal: () => void; c
             {initialValue.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {initialValue.invalidText}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
             )}
           </FormGroup>
-          {counterType.value === CounterType.STRONG_COUNTER && formStrongCounter()}
+          {counterType.value === CounterType.STRONG_COUNTER &&
+            formStrongCounter()}
           {counterType.value === CounterType.WEAK_COUNTER && formWeakCounter()}
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button key={'Create'} aria-label={'Create'} variant={ButtonVariant.primary} onClick={handleSubmit}>
+        <Button
+          key={'Create'}
+          aria-label={'Create'}
+          variant={ButtonVariant.primary}
+          onClick={handleSubmit}
+        >
           {t('cache-managers.counters.create-action')}
         </Button>
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={onCloseModal}
+        >
           {t('cache-managers.counters.modal-cancel-button')}
         </Button>
       </ModalFooter>
