@@ -6,6 +6,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
   // Removes the logs
   debug: false,
+  showSupportNotice: false,
   missingKeyHandler: false,
 
   // have a common namespace used around the full app
@@ -13,10 +14,10 @@ i18n.use(initReactI18next).init({
   defaultNS: 'translations',
 
   interpolation: {
-    escapeValue: false // not needed for react!!
+    escapeValue: false, // not needed for react!!
   },
 
-  resources: { en: { translations: {} } }
+  resources: { en: { translations: {} } },
 });
 
 export default i18n;

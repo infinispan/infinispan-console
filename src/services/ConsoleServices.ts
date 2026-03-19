@@ -51,8 +51,16 @@ export class ConsoleServices {
       }
     } else {
       const x = window as any;
-      return window.location.origin.toString() + (x.INFINISPAN_CONFIG?.restContextPath || '/rest') + '/v2';
+      return (
+        window.location.origin.toString() +
+        (x.INFINISPAN_CONFIG?.restContextPath || '/rest') +
+        '/v2'
+      );
     }
+  }
+
+  public static endpointV3(): string {
+    return ConsoleServices.endpoint().replace('v2', 'v3');
   }
 
   public static metricsEndpoint(): string {
@@ -84,47 +92,68 @@ export class ConsoleServices {
   }
 
   public static isWelcomePage(): boolean {
-    return location.pathname == '/console/welcome' || location.pathname == '/console/welcome/';
+    return (
+      location.pathname == '/console/welcome' ||
+      location.pathname == '/console/welcome/'
+    );
   }
 
   public static init(user?: string, password?: string) {
     if (!this.instance.initialized) {
       console.info('Init Console Services');
-      this.instance.authenticationService = new AuthenticationService(ConsoleServices.endpoint());
-      this.instance.fetchCaller = new FetchCaller(this.instance.authenticationService, user, password);
-      this.instance.protobufService = new ProtobufService(
-        ConsoleServices.endpoint() + '/schemas',
-        this.instance.fetchCaller
+      this.instance.authenticationService = new AuthenticationService(
+        ConsoleServices.endpoint(),
       );
-      this.instance.taskService = new TasksService(ConsoleServices.endpoint() + '/tasks', this.instance.fetchCaller);
+      this.instance.fetchCaller = new FetchCaller(
+        this.instance.authenticationService,
+        user,
+        password,
+      );
+      this.instance.protobufService = new ProtobufService(
+        ConsoleServices.endpointV3() + '/schemas',
+        ConsoleServices.endpointV3(),
+        this.instance.fetchCaller,
+      );
+      this.instance.taskService = new TasksService(
+        ConsoleServices.endpoint() + '/tasks',
+        this.instance.fetchCaller,
+      );
       this.instance.serverService = new ServerService(
         ConsoleServices.endpoint() + '/server',
-        this.instance.fetchCaller
+        this.instance.fetchCaller,
       );
       this.instance.countersService = new CountersService(
         ConsoleServices.endpoint() + '/counters',
-        this.instance.fetchCaller
+        this.instance.fetchCaller,
       );
       this.instance.xsiteReplicationService = new CrossSiteReplicationService(
-        ConsoleServices.endpoint(),
-        this.instance.fetchCaller
+        ConsoleServices.endpointV3(),
+        this.instance.fetchCaller,
       );
-      this.instance.cacheService = new CacheService(ConsoleServices.endpoint(), this.instance.fetchCaller);
-      this.instance.dataContainerService = new ContainerService(ConsoleServices.endpoint(), this.instance.fetchCaller);
+      this.instance.cacheService = new CacheService(
+        ConsoleServices.endpointV3(),
+        ConsoleServices.endpoint(),
+        this.instance.fetchCaller,
+      );
+      this.instance.dataContainerService = new ContainerService(
+        ConsoleServices.endpointV3(),
+        ConsoleServices.endpoint(),
+        this.instance.fetchCaller,
+      );
       this.instance.userService = new SecurityService(
         ConsoleServices.endpoint() + '/security',
         this.instance.fetchCaller,
-        this.instance.authenticationService
+        this.instance.authenticationService,
       );
 
       this.instance.searchService = new SearchService(
-        ConsoleServices.endpoint() + '/caches/',
-        this.instance.fetchCaller
+        ConsoleServices.endpointV3() + '/caches/',
+        this.instance.fetchCaller,
       );
 
       this.instance.clusterService = new ClusterService(
         ConsoleServices.endpoint() + '/cluster',
-        this.instance.fetchCaller
+        this.instance.fetchCaller,
       );
 
       this.instance.initialized = true;
