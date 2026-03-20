@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { EditSchema } from '@app/ProtoSchema/EditSchema';
 import * as EditSchemaHook from '@app/services/protobufHooks';
 import { renderWithRouter } from '../../../test-utils';
@@ -19,7 +19,10 @@ beforeEach(() => {
 
 mockedSchemaHook.useEditProtobufSchema.mockImplementation(() => {
   return {
-    onEditSchema: () => onEditSchemaCalls++
+    onEditSchema: () => {
+      onEditSchemaCalls++;
+      return Promise.resolve();
+    },
   };
 });
 
@@ -30,7 +33,7 @@ describe('Edit schema', () => {
         schemaContent: '',
         loading: true,
         error: '',
-        setLoading: () => {}
+        setLoading: () => {},
       };
     });
 
@@ -40,7 +43,7 @@ describe('Edit schema', () => {
         isModalOpen={false}
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
-      />
+      />,
     );
 
     expect(screen.queryByRole('modal')).toBeNull();
@@ -55,7 +58,7 @@ describe('Edit schema', () => {
         schemaContent: '',
         loading: true,
         error: '',
-        setLoading: () => {}
+        setLoading: () => {},
       };
     });
 
@@ -65,24 +68,26 @@ describe('Edit schema', () => {
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
-      />
+      />,
     );
 
     expect(screen.queryByRole('modal')).toBeDefined();
-    expect(screen.getByText('schemas.save-button').closest('button')).toHaveProperty('disabled');
+    expect(
+      screen.getByText('schemas.save-button').closest('button'),
+    ).toHaveProperty('disabled');
 
     expect(closeModalCalls).toBe(0);
     expect(submitModalCalls).toBe(0);
     expect(onEditSchemaCalls).toBe(0);
   });
 
-  test('render the dialog and buttons work', () => {
+  test('render the dialog and buttons work', async () => {
     mockedSchemaHook.useFetchProtobufSchemaContent.mockImplementation(() => {
       return {
         schemaContent: 'schema-content',
         loading: true,
         error: '',
-        setLoading: () => {}
+        setLoading: () => {},
       };
     });
 
@@ -92,7 +97,7 @@ describe('Edit schema', () => {
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
-      />
+      />,
     );
 
     expect(screen.queryByRole('modal')).toBeDefined();
@@ -101,13 +106,17 @@ describe('Edit schema', () => {
     fireEvent.click(closeButton);
     expect(closeModalCalls).toBe(1);
 
-    const cancelButton = screen.getByRole('button', { name: 'cancel-edit-schema-button' });
+    const cancelButton = screen.getByRole('button', {
+      name: 'cancel-edit-schema-button',
+    });
     fireEvent.click(cancelButton);
     expect(closeModalCalls).toBe(2);
 
-    const submitButton = screen.getByRole('button', { name: 'confirm-edit-schema-button' });
+    const submitButton = screen.getByRole('button', {
+      name: 'confirm-edit-schema-button',
+    });
     fireEvent.click(submitButton);
     expect(onEditSchemaCalls).toBe(1);
-    expect(submitModalCalls).toBe(1);
+    await waitFor(() => expect(submitModalCalls).toBe(1));
   });
 });

@@ -19,7 +19,9 @@ describe('Proto Schema CRUD', () => {
         cy.get(containerSelector).contains('Start from scratch').click();
       }
     });
-    cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused().type(text, {force: true});
+    // Wait for Monaco to initialize after "Start from scratch"
+    cy.get(containerSelector + ' textarea.inputarea', {timeout: 10000}).should('exist')
+      .click({force: true}).focused().type(text, {force: true});
   }
 
   function clearAndTypeInMonacoEditor(containerSelector, text) {

@@ -31,11 +31,14 @@ export function useFetchProtobufSchemas() {
   return { loading, reload, error, schemas };
 }
 
-export function useEditProtobufSchema(schemaName: string, schemaContent: string) {
+export function useEditProtobufSchema(
+  schemaName: string,
+  schemaContent: string,
+) {
   const { addAlert } = useApiAlert();
 
   const onEditSchema = () => {
-    ConsoleServices.protobuf()
+    return ConsoleServices.protobuf()
       .createOrUpdateSchema(schemaName, schemaContent, false)
       .then((eitherCreate) => {
         addAlert(eitherCreate);
@@ -72,7 +75,9 @@ export function useFetchProtobufSchemaContent(schemaName: string) {
           if (eitherResponse.isRight()) {
             setSchemasContent(eitherResponse.value);
           } else {
-            setError('An error occurred. Try closing the tab and opening it again.');
+            setError(
+              'An error occurred. Try closing the tab and opening it again.',
+            );
           }
         })
         .then(() => setLoading(false));
