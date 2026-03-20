@@ -14,6 +14,10 @@ on:
       - 16.0
       - 16.1
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-22.04

@@ -593,7 +593,8 @@
       "metrics-enabled": "Metrics (Enabled)",
       "metrics-disabled": "Metrics (Not enabled)",
       "entries-manage": "Manage entries",
-      "query-values": "Query values"
+      "query-values": "Query values",
+      "query-history": "Query history"
     },
     "info": {
       "breadcrumb": "Detail of cache {{cacheName}}",
@@ -699,7 +700,7 @@
       "query-error": "Query error",
       "ickle-query": "Ickle query",
       "ickle-query-docs": "Ickle query syntax",
-      "ickle-query-tooltip": "{{brandname}} provides an Ickle query language that lets you create relational and full-text queries.",
+      "ickle-query-tooltip": "{{brandname}} provides an Ickle query language that lets you create relational and full-text queries",
       "view-all-query-stats": "View all query statistics",
       "query-metrics-title": "Query metrics",
       "query-metrics-tooltip": "Average time, in nanoseconds, for queries on this cache.",
@@ -718,7 +719,18 @@
       "modal-delete-entries-title": "Permanently delete matching entries?",
       "modal-delete-entries-body-line-one": "This action will permanently delete all the mathing entries in {{cacheName}}, executing a 'DELETE' Ickle Query statement.",
       "modal-delete-entries-body-line-two": "This cannot be undone. You can always create the entries again.",
-      "modal-action-entries-success": "Delete by query successfully executed."
+      "modal-action-entries-success": "Delete by query successfully executed.",
+      "history": {
+        "clear": "Clear history",
+        "execute": "Execute",
+        "delete": "Delete",
+        "empty": "Query history is empty.",
+        "query": "Query",
+        "total": "Total",
+        "execution": "Execution",
+        "error": "Error",
+        "error-detail": "Error detail"
+      }
     },
     "index": {
       "title": "Index management",

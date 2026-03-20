@@ -62,6 +62,8 @@ import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus
 import { PageHeader } from '@patternfly/react-component-groups';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 import { DeleteCache } from '@app/Caches/DeleteCache';
+import { QueryHistory } from '@app/Caches/Query/QueryHistory';
+import { QueryContextProvider } from '@app/providers/QueryContextProvider';
 
 const DetailCache = (props: { cacheName: string }) => {
   const cacheName = props.cacheName;
@@ -110,26 +112,40 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     return (
-      <Tabs
-        unmountOnExit
-        isSubtab={true}
-        activeKey={activeTabKey2}
-        aria-label="Entries tab"
-        component={TabsComponent.nav}
-        style={theme === DARK ? {} : { backgroundColor: t_global_background_color_100.value }}
-        onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
-      >
-        <Tab
-          eventKey={10}
-          title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}
-          data-cy="manageEntriesTab"
+      <QueryContextProvider>
+        <Tabs
+          unmountOnExit
+          isSubtab={true}
+          activeKey={activeTabKey2}
+          aria-label="Entries tab"
+          component={TabsComponent.nav}
+          style={theme === DARK ? {} : { backgroundColor: t_global_background_color_100.value }}
+          onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
         >
-          <CacheEntries />
-        </Tab>
-        <Tab eventKey={11} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
-          <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)} />
-        </Tab>
-      </Tabs>
+          <Tab
+            eventKey={10}
+            title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}
+            data-cy="manageEntriesTab"
+          >
+            <CacheEntries />
+          </Tab>
+          <Tab eventKey={11} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
+            <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)} />
+          </Tab>
+          <Tab
+            eventKey={12}
+            data-cy="queryHistoryTab"
+            title={<TabTitleText>{t('caches.tabs.query-history')}</TabTitleText>}
+          >
+            <QueryHistory
+              cacheName={cacheName}
+              changeTab={() => {
+                setActiveTabKey2(11);
+              }}
+            />
+          </Tab>
+        </Tabs>
+      </QueryContextProvider>
     );
   };
 

@@ -50,6 +50,27 @@ Cypress.Commands.add('login', (username, password, url = '/') => {
   cy.get('[data-cy=sideBarToggle]').click();
 });
 
+Cypress.Commands.add('typeInMonacoEditor', (containerSelector, text) => {
+  cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused().type(text, {force: true});
+});
+
+Cypress.Commands.add('clearAndTypeInMonacoEditor', (containerSelector, text) => {
+  cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused()
+    .type('{selectall}', {force: true})
+    .type(text, {force: true, parseSpecialCharSequences: false});
+});
+
+Cypress.Commands.add('dismissAlerts', () => {
+  cy.get('body').then(($body) => {
+    const closeButtons = $body.find('button[name="close-alert-button"]');
+    if (closeButtons.length) {
+      cy.wrap(closeButtons).each(($btn) => {
+        cy.wrap($btn).click({ force: true });
+      });
+    }
+  });
+});
+
 Cypress.Commands.add('cleanupTest',(username, password, endpoint = '/', method = 'DELETE', body = '', ignoreError = false, port = '11222') => {
   cy.request({
     method: method,

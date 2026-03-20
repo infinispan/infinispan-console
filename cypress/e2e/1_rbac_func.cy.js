@@ -34,8 +34,8 @@ describe('RBAC Functionality Tests', () => {
     cy.get('[data-cy=actions-elaia]').should('not.exist');
     //Running query on secured page
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().type('from org.infinispan.Person where age>2');
-    cy.get('button[aria-label=searchButton]').click();
+    cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age>2');
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Elaia');
     checkNotOwnSecuredCache('a-rbac-test-cache');
@@ -244,8 +244,7 @@ describe('RBAC Functionality Tests', () => {
     }
 
     cy.get('[data-cy=addEntryButton]').click();
-    //Waiting till at least one popup dissappears so that it is possible to type
-    cy.wait(1500);
+    cy.dismissAlerts();
     cy.get('#key-entry').click().type('stringKey');
     cy.get('#toggle-valueContentType').click();
     cy.get('#option-custom_type').click();
@@ -256,6 +255,7 @@ describe('RBAC Functionality Tests', () => {
       });
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache indexed-cache-no-auth.');
+    cy.dismissAlerts();
     cy.contains('stringKey');
     cy.contains('Baby');
     //Adding more entry
@@ -265,6 +265,7 @@ describe('RBAC Functionality Tests', () => {
     cy.get('#value-entry').click().type('stringValue1');
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache indexed-cache-no-auth.');
+    cy.dismissAlerts();
     cy.contains('stringKey1');
     cy.contains('stringValue1');
     //Editing entry
@@ -273,17 +274,19 @@ describe('RBAC Functionality Tests', () => {
     cy.get('#value-entry').click().type('changedValue');
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry updated in cache indexed-cache-no-auth.');
+    cy.dismissAlerts();
     cy.contains('changedValue');
     //Deleting entry
     cy.get('[data-cy=actions-stringKey1]').click();
     cy.get('[aria-label=deleteEntryAction]').click();
     cy.get('[data-cy=deleteEntryButton]').click();
     cy.contains('Entry stringKey1 deleted.');
+    cy.dismissAlerts();
     cy.contains('stringValue1').should('not.exist');
     //Running query
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().type('from org.infinispan.Child where age<2');
-    cy.get('button[aria-label=searchButton]').click();
+    cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Child where age<2');
+    cy.get('[data-cy=searchButton]').click();
     if (!isMonitor) {
       //@TODO remove when the bug is fixed
       cy.contains('1 - 1 of 1');
@@ -293,7 +296,7 @@ describe('RBAC Functionality Tests', () => {
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=clearAllButton]').click();
     cy.get('[data-cy=deleteButton]').click();
-    cy.wait(1500); //Waiting till the whole page is loaded
+    cy.dismissAlerts();
     if (isSuperAdmin) {
       //Checking cache configuration page
       cy.get('[data-cy=cacheConfigurationTab]').click();
@@ -389,6 +392,7 @@ describe('RBAC Functionality Tests', () => {
       });
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache a-rbac-test-cache.');
+    cy.dismissAlerts();
     cy.get('[data-cy=actions-fordCar]').should('exist');
     //Adding one more entry
     cy.get('[data-cy=addEntryButton]').click();
@@ -402,6 +406,7 @@ describe('RBAC Functionality Tests', () => {
       });
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry added to cache a-rbac-test-cache.');
+    cy.dismissAlerts();
     cy.get('[data-cy=actions-kiaCar]').should('exist');
     //Editing entry
     cy.get('[data-cy=actions-kiaCar] > button').click();
@@ -414,23 +419,26 @@ describe('RBAC Functionality Tests', () => {
       });
     cy.get('[data-cy=addButton]').click();
     cy.contains('Entry updated in cache a-rbac-test-cache.');
+    cy.dismissAlerts();
     cy.contains('2016');
     //Deleting entry
     cy.get('[data-cy=actions-kiaCar] > button').click();
     cy.get('[aria-label=deleteEntryAction]').click();
     cy.get('[data-cy=deleteEntryButton]').click();
     cy.contains('Entry kiaCar deleted.');
+    cy.dismissAlerts();
     cy.contains('2AC1898').should('not.exist');
     //Running query
     cy.get('[data-cy=queriesTab]').click();
-    cy.get('#textSearchByQuery').click().type('from org.infinispan.Car where year>2010');
-    cy.get('button[aria-label=searchButton]').click();
+    cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Car where year>2010');
+    cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
     cy.contains('Ford');
     //Reseting cache state for next test
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=clearAllButton]').click();
     cy.get('[data-cy=deleteButton]').click();
+    cy.dismissAlerts();
   }
 
   function checkTasksPage() {
@@ -459,6 +467,6 @@ describe('RBAC Functionality Tests', () => {
 
   function checkGlobalStatsView() {
     cy.get('[data-cy="globalStatsActions"]').click();
-    cy.contains('[data-cy="clearAccessMetricsButton"]').should('not.exist');
+    cy.get('[data-cy="clearAccessMetricsButton"]').should('not.exist');
   }
 });

@@ -9,11 +9,14 @@ import {
   Modal,
   ModalBody,
   ModalFooter,
-  ModalHeader
+  ModalHeader,
 } from '@patternfly/react-core';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
-import { useEditProtobufSchema, useFetchProtobufSchemaContent } from '@app/services/protobufHooks';
+import {
+  useEditProtobufSchema,
+  useFetchProtobufSchemaContent,
+} from '@app/services/protobufHooks';
 import { PencilAltIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
@@ -31,9 +34,14 @@ const EditSchema = (props: {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const [editSchemaContent, setEditSchemaContent] = useState<string>('');
-  const { onEditSchema } = useEditProtobufSchema(props.schemaName, editSchemaContent);
+  const { onEditSchema } = useEditProtobufSchema(
+    props.schemaName,
+    editSchemaContent,
+  );
   const [error, setError] = useState<string | undefined>(undefined);
-  const { schemaContent, setLoading } = useFetchProtobufSchemaContent(props.schemaName);
+  const { schemaContent, setLoading } = useFetchProtobufSchemaContent(
+    props.schemaName,
+  );
 
   useEffect(() => {
     if (props.schemaName !== '') {
@@ -64,14 +72,19 @@ const EditSchema = (props: {
       aria-label="Edit schema modal"
       variant="medium"
     >
-      <ModalHeader titleIconVariant={PencilAltIcon} title={t('schemas.edit.heading')} />
+      <ModalHeader
+        titleIconVariant={PencilAltIcon}
+        title={t('schemas.edit.heading')}
+      />
       <ModalBody>
         <Form
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          {error && <Alert variant={AlertVariant.danger} isInline title={error} />}
+          {error && (
+            <Alert variant={AlertVariant.danger} isInline title={error} />
+          )}
 
           <FormGroup label={t('schemas.create.name')} fieldId="schema-name">
             <strong>{props.schemaName}</strong>
@@ -97,6 +110,7 @@ const EditSchema = (props: {
               onCodeChange={(v) => setEditSchemaContent(v)}
               height="60vh"
               isDarkTheme={theme === DARK}
+              options={{ editContext: false }}
             />
           </FormGroup>
         </Form>

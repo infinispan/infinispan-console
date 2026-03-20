@@ -77,7 +77,7 @@ describe('Proto Schema CRUD', () => {
     //Creating new schema
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type(schemaName);
-    typeInMonacoEditor('#create-schema-modal', 'schemaValue');
+    cy.typeInMonacoEditor('#create-schema-modal', 'schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Schema ' + schemaName + ' created.');
     cy.get('[name=close-alert-button]').click(); //Closing alert popup.
@@ -91,7 +91,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Save');
     //Artificially adding here some delays between actions so that the proto schema is updated properly and normally shown on the page.
     cy.wait(1000);
-    clearAndTypeInMonacoEditor('#edit-schema-modal',
+    cy.clearAndTypeInMonacoEditor('#edit-schema-modal',
       'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }'
     );
     cy.wait(1000);
@@ -123,7 +123,7 @@ describe('Proto Schema CRUD', () => {
     clickTabSchemas();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('people');
-    typeInMonacoEditor('#create-schema-modal', 'schemaValue');
+    cy.typeInMonacoEditor('#create-schema-modal', 'schemaValue');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('Unexpected error creating schema people');
     cy.get('[data-cy="cancelAddSchemaButton"]').click();
@@ -133,7 +133,7 @@ describe('Proto Schema CRUD', () => {
     clickTabSchemas();
     cy.get('button[aria-label="create-schema-button"]').click();
     cy.get('#schema-name').click().type('1234567890+-*/name!@#$with%^&*special()_+symbols{}|":isnot?><saved>');
-    typeInMonacoEditor('#create-schema-modal', '1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
+    cy.typeInMonacoEditor('#create-schema-modal', '1234567890+-*/value!@#$with%^&*special()_+symbols{}|":is?><saved>');
     cy.get('[data-cy="addSchemaButton"]').click();
     cy.contains('1234567890+-');
     cy.contains('*/name!@#$with%^&*special()_+symbols{}|":isnot?');
