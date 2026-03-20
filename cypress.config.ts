@@ -1,7 +1,7 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
-  retries: 3,
+  retries: 2,
   video: false,
   screenshotOnRunFailure: true,
   reporter: 'junit',

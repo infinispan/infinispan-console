@@ -17,6 +17,8 @@ describe('Proto Schema CRUD', () => {
     cy.get(containerSelector).then(($container) => {
       if ($container.find('button:contains("Start from scratch")').length) {
         cy.get(containerSelector).contains('Start from scratch').click();
+        // Wait for Monaco editor to fully initialize after switching from upload mode
+        cy.wait(1000);
       }
     });
     cy.get(containerSelector + ' textarea.inputarea').click({force: true}).focused().type(text, {force: true});
