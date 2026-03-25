@@ -41,13 +41,13 @@ const ContainerDataProvider = ({ children }) => {
             setError(eitherCm.value.message);
           }
         })
-        .then(() => setLoading(false));
+        .finally(() => setLoading(false));
     }
   }, [loading, connectedUser]);
 
   useEffect(() => {
     if (loadingCaches && cm) {
-      if (ConsoleServices.authentication().isNotSecured()) {
+      const fetchCaches = () =>
         ConsoleServices.dataContainer()
           .getCaches()
           .then((either) => {
@@ -57,20 +57,14 @@ const ContainerDataProvider = ({ children }) => {
               setErrorCaches(either.value.message);
             }
           })
-          .then(() => setLoadingCaches(false));
+          .finally(() => setLoadingCaches(false));
+
+      if (ConsoleServices.authentication().isNotSecured()) {
+        fetchCaches();
       } else {
         reloadAcl().then((r) => {
           if (r) {
-            ConsoleServices.dataContainer()
-              .getCaches()
-              .then((either) => {
-                if (either.isRight()) {
-                  setCaches(either.value);
-                } else {
-                  setErrorCaches(either.value.message);
-                }
-              })
-              .then(() => setLoadingCaches(false));
+            fetchCaches();
           } else {
             setErrorCaches('Unable to load ACL for caches. Reconnect');
             setLoadingCaches(false);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
@@ -47,6 +47,13 @@ const CacheDetailProvider = ({ children }) => {
   );
   const [limit, setLimit] = useState(initialContext.limit);
 
+  // Refs to hold current values for use inside async callbacks
+  const cacheNameRef = useRef(cacheName);
+  cacheNameRef.current = cacheName;
+
+  const cacheRef = useRef(cache);
+  cacheRef.current = cache;
+
   const loadCache = useCallback((name: string | undefined) => {
     if (name != undefined && name != '') {
       setCacheName((prev) => {
@@ -59,88 +66,132 @@ const CacheDetailProvider = ({ children }) => {
     }
   }, []);
 
+  // Fetch cache detail when loading is triggered
+  useEffect(() => {
+    if (!loading) return;
+
+    let cancelled = false;
+
+    const doFetchCache = async () => {
+      const name = cacheNameRef.current;
+
+      try {
+        const maybeCm =
+          await ConsoleServices.dataContainer().getDefaultCacheManager();
+        if (cancelled) return;
+
+        if (!maybeCm.isRight()) {
+          setError(maybeCm.value.message);
+          setLoading(false);
+          return;
+        }
+
+        setCacheManager(maybeCm.value);
+
+        const eitherDetail =
+          await ConsoleServices.caches().retrieveFullDetail(name);
+        if (cancelled) return;
+
+        if (eitherDetail.isRight()) {
+          setCache(eitherDetail.value);
+          setLoadingEntries(isEncodingAvailable(eitherDetail.value));
+          setLoading(false);
+          return;
+        }
+
+        // Cache can be unhealthy but existing — try health + config fallback
+        const eitherHealth =
+          await ConsoleServices.caches().retrieveHealth(name);
+        if (cancelled) return;
+
+        if (!eitherHealth.isRight()) {
+          setError(eitherHealth.value.message);
+          setLoading(false);
+          return;
+        }
+
+        const eitherConfig =
+          await ConsoleServices.caches().retrieveConfig(name);
+        if (cancelled) return;
+
+        if (eitherConfig.isRight()) {
+          const detail: DetailedInfinispanCache = {
+            name: name,
+            configuration: eitherConfig.value,
+            health: eitherHealth.value,
+            started: false,
+          };
+          setCache(detail);
+        } else {
+          setError(eitherConfig.value.message);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    doFetchCache();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loading]);
+
+  // Fetch entries when limit changes or entries reload is triggered
   useEffect(() => {
     setLoadingEntries(true);
   }, [limit]);
 
   useEffect(() => {
-    fetchEntries();
-  }, [loadingEntries]);
+    if (!loadingEntries) return;
 
-  useEffect(() => {
-    fetchCache();
-  }, [loading]);
+    const currentCache = cacheRef.current;
+    const currentCacheName = cacheNameRef.current;
 
-  const fetchCache = () => {
-    if (loading) {
-      ConsoleServices.dataContainer()
-        .getDefaultCacheManager()
-        .then((maybeCm) => {
-          if (maybeCm.isRight()) {
-            setCacheManager(maybeCm.value);
-            ConsoleServices.caches()
-              .retrieveFullDetail(cacheName)
-              .then((eitherDetail) => {
-                if (eitherDetail.isRight()) {
-                  setCache(eitherDetail.value);
-                } else {
-                  // Cache can be unhealthy but existing
-                  ConsoleServices.caches()
-                    .retrieveHealth(cacheName)
-                    .then((eitherHealth) => {
-                      if (eitherHealth.isRight()) {
-                        // We have the health. Get the config
-                        return ConsoleServices.caches()
-                          .retrieveConfig(cacheName)
-                          .then((eitherConfig) => {
-                            if (eitherConfig.isRight()) {
-                              const detail: DetailedInfinispanCache = {
-                                name: cacheName,
-                                configuration: eitherConfig.value,
-                                health: eitherHealth.value,
-                                started: false,
-                              };
-                              setCache(detail);
-                              // we are good;
-                              return '';
-                            } else {
-                              // return the error
-                              return eitherConfig.value.message;
-                            }
-                          })
-                          .finally(() => {
-                            // loading is over here
-                            setLoading(false);
-                          });
-                        // we are good
-                        return '';
-                      } else {
-                        // return the error
-                        return eitherHealth.value.message;
-                      }
-                    })
-                    .then((error) => {
-                      if (error.length > 0) {
-                        setError(error);
-                        setLoading(false);
-                      }
-                    });
-                }
-              })
-              .finally(() => {
-                setLoadingEntries(isEncodingAvailable(cache));
-              });
-          } else {
-            setError(maybeCm.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
+    if (
+      !ConsoleServices.security().hasCacheConsoleACL(
+        ConsoleACL.BULK_READ,
+        currentCacheName,
+        connectedUser,
+      )
+    ) {
+      setLoadingEntries(false);
+      setInfoEntries('caches.entries.read-error');
+      return;
     }
-  };
+
+    if (!currentCache) {
+      setLoadingEntries(false);
+      return;
+    }
+
+    ConsoleServices.caches()
+      .getEntries(currentCacheName, currentCache.encoding!, limit)
+      .then((eitherEntries) => {
+        if (eitherEntries.isRight()) {
+          setCacheEntries(eitherEntries.value);
+          setTotalEntriesCount(eitherEntries.value.length);
+          setErrorEntries('');
+          setInfoEntries('');
+        } else {
+          if (eitherEntries.value.success) {
+            setInfoEntries(eitherEntries.value.message);
+          } else {
+            setErrorEntries(eitherEntries.value.message);
+          }
+        }
+      })
+      .finally(() => setLoadingEntries(false));
+  }, [loadingEntries, connectedUser, limit]);
 
   const fetchEntry = (keyToSearch: string, kct: ContentType) => {
+    const currentCache = cacheRef.current;
+    const currentCacheName = cacheNameRef.current;
+
     ConsoleServices.caches()
-      .getEntry(cacheName, cache.encoding!, keyToSearch, kct)
+      .getEntry(currentCacheName, currentCache.encoding!, keyToSearch, kct)
       .then((response) => {
         let entries: CacheEntry[] = [];
         if (response.isRight()) {
@@ -150,48 +201,6 @@ const CacheDetailProvider = ({ children }) => {
         }
         setCacheEntries(entries);
       });
-  };
-
-  const fetchEditableProperties = () => {
-    if (cache) {
-    }
-  };
-
-  const fetchEntries = () => {
-    if (loadingEntries) {
-      if (
-        ConsoleServices.security().hasCacheConsoleACL(
-          ConsoleACL.BULK_READ,
-          cacheName,
-          connectedUser,
-        )
-      ) {
-        if (cache) {
-          ConsoleServices.caches()
-            .getEntries(cacheName, cache.encoding!, limit)
-            .then((eitherEntries) => {
-              if (eitherEntries.isRight()) {
-                setCacheEntries(eitherEntries.value);
-                setTotalEntriesCount(eitherEntries.value.length);
-                setErrorEntries('');
-                setInfoEntries('');
-              } else {
-                if (eitherEntries.value.success) {
-                  setInfoEntries(eitherEntries.value.message);
-                } else {
-                  setErrorEntries(eitherEntries.value.message);
-                }
-              }
-            })
-            .finally(() => setLoadingEntries(false));
-        } else {
-          setLoadingEntries(false);
-        }
-      } else {
-        setLoadingEntries(false);
-        setInfoEntries('caches.entries.read-error');
-      }
-    }
   };
 
   const reload = useCallback(() => setLoading(true), []);
