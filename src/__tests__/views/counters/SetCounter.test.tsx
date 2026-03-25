@@ -1,10 +1,10 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { SetCounter } from '@app/Counters/SetCounter';
-import * as SetCounterHook from '@app/services/countersHook';
+import * as SetCounterHook from '@app/hooks/countersHook';
 import { renderWithRouter } from '../../../test-utils';
 
-jest.mock('@app/services/countersHook');
+jest.mock('@app/hooks/countersHook');
 const mockedCounterHook = SetCounterHook as jest.Mocked<typeof SetCounterHook>;
 
 let closeModalCalls;
@@ -19,7 +19,7 @@ beforeEach(() => {
 
 mockedCounterHook.useSetCounter.mockImplementation(() => {
   return {
-    onSetCounter: () => onSetCounterCalls++
+    onSetCounter: () => onSetCounterCalls++,
   };
 });
 
@@ -34,7 +34,7 @@ describe('Set counter', () => {
         submitModal={() => submitModalCalls++}
         isModalOpen={false}
         closeModal={() => closeModalCalls++}
-      />
+      />,
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -52,7 +52,7 @@ describe('Set counter', () => {
         submitModal={() => submitModalCalls++}
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
-      />
+      />,
     );
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
@@ -60,7 +60,9 @@ describe('Set counter', () => {
     const submitButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText('cache-managers.counters.modal-set-helper-invalid')).toBeTruthy();
+    expect(
+      screen.getByText('cache-managers.counters.modal-set-helper-invalid'),
+    ).toBeTruthy();
     expect(closeModalCalls).toBe(0);
     expect(onSetCounterCalls).toBe(0);
     expect(submitModalCalls).toBe(0);
@@ -76,7 +78,7 @@ describe('Set counter', () => {
         submitModal={() => submitModalCalls++}
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
-      />
+      />,
     );
 
     expect(screen.queryByRole('modal')).toBeDefined();

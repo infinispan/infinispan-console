@@ -23,26 +23,27 @@ import {
   PageSection,
   Spinner,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
 import { ArrowIcon, CubesIcon, RedoIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import displayUtils from '@services/displayUtils';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { useFetchGlobalStats } from '@app/services/statsHook';
+import { useFetchGlobalStats } from '@app/hooks/statsHook';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import ClusterDistributionChart from '@app/GlobalStats/ClusterDistributionChart';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { PageHeader } from '@patternfly/react-component-groups';
 
 const GlobalStats = () => {
   const { t } = useTranslation();
   const { stats, error, loading, reload } = useFetchGlobalStats();
   const { connectedUser } = useConnectedUser();
-  const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(false);
+  const [isClearMetricsModalOpen, setClearMetricsModalOpen] =
+    useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const clusterStatsCard = () => {
@@ -59,18 +60,34 @@ const GlobalStats = () => {
         <CardBody>
           <Content component={ContentVariants.dl}>
             <Content component={ContentVariants.dt}>
-              {displayUtils.formatNumber(stats.required_minimum_number_of_nodes)}
+              {displayUtils.formatNumber(
+                stats.required_minimum_number_of_nodes,
+              )}
             </Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.required-minimum-number-of-nodes')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.data_memory_used)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.data-memory-used')}</Content>
-            <Content component={ContentVariants.dt}>{displayUtils.formatNumber(stats.off_heap_memory_used)}</Content>
-            <Content component={ContentVariants.dd}>{t('global-stats.off-heap-memory-used')}</Content>
+            <Content component={ContentVariants.dd}>
+              {t('global-stats.required-minimum-number-of-nodes')}
+            </Content>
+            <Content component={ContentVariants.dt}>
+              {displayUtils.formatNumber(stats.data_memory_used)}
+            </Content>
+            <Content component={ContentVariants.dd}>
+              {t('global-stats.data-memory-used')}
+            </Content>
+            <Content component={ContentVariants.dt}>
+              {displayUtils.formatNumber(stats.off_heap_memory_used)}
+            </Content>
+            <Content component={ContentVariants.dd}>
+              {t('global-stats.off-heap-memory-used')}
+            </Content>
           </Content>
         </CardBody>
         <CardFooter>
           <Link to={{ pathname: '/', search: location.search }}>
-            <Button data-cy="viewCachesLink" variant={ButtonVariant.link} icon={<ArrowIcon />}>
+            <Button
+              data-cy="viewCachesLink"
+              variant={ButtonVariant.link}
+              icon={<ArrowIcon />}
+            >
               {t('global-stats.view-caches-link')}
             </Button>
           </Link>
@@ -110,7 +127,9 @@ const GlobalStats = () => {
               icon={CubesIcon}
               headingLevel="h5"
             >
-              <EmptyStateBody>{t('global-stats.global-stats-disabled-help')}</EmptyStateBody>
+              <EmptyStateBody>
+                {t('global-stats.global-stats-disabled-help')}
+              </EmptyStateBody>
             </EmptyState>
           </CardBody>
         </Card>
@@ -157,7 +176,13 @@ const GlobalStats = () => {
           shouldFocusToggleOnSelect
         >
           <DropdownList>
-            <DropdownItem value={0} key="refreshAction" data-cy="refreshAction" onClick={reload} icon={<RedoIcon />}>
+            <DropdownItem
+              value={0}
+              key="refreshAction"
+              data-cy="refreshAction"
+              onClick={reload}
+              icon={<RedoIcon />}
+            >
               {t('common.actions.refresh')}
             </DropdownItem>
           </DropdownList>
@@ -168,7 +193,11 @@ const GlobalStats = () => {
 
   return (
     <React.Fragment>
-      <PageHeader title={t('global-stats.title')} subtitle={descriptionText()} actionMenu={displayActions} />
+      <PageHeader
+        title={t('global-stats.title')}
+        subtitle={descriptionText()}
+        actionMenu={displayActions}
+      />
       <PageSection>{buildStats()}</PageSection>
     </React.Fragment>
   );

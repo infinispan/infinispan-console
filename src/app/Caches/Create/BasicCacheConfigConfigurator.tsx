@@ -11,34 +11,63 @@ import {
   NumberInput,
   Radio,
   SelectOptionProps,
-  Switch
+  Switch,
 } from '@patternfly/react-core';
-import { CacheMode, CacheType, EncodingType } from '@services/infinispanRefData';
+import {
+  CacheMode,
+  CacheType,
+  EncodingType,
+} from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { useCreateCache } from '@app/services/createCacheHook';
-import { validateIndexedFeature, validateTransactionalFeature } from '@app/utils/featuresValidation';
+import { useCreateCache } from '@app/hooks/createCacheHook';
+import {
+  validateIndexedFeature,
+  validateTransactionalFeature,
+} from '@app/utils/featuresValidation';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 
-const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => {
+const BasicCacheConfigConfigurator = (props: {
+  cacheManager: CacheManager;
+}) => {
   const { t } = useTranslation();
   const { configuration, setConfiguration } = useCreateCache();
   const isLocal = props.cacheManager.isLocal;
   // State for the form
   // Passed to the parent component
-  const [topology, setTopology] = useState<string>(configuration.basic.topology);
-  const [mode, setMode] = useState<CacheMode>(configuration.basic.mode as CacheMode);
-  const [selectedNumberOwners, setSelectedNumberOwners] = useState(configuration.basic.numberOfOwners);
-  const [selectedEncodingCache, setSelectedEncodingCache] = useState(configuration.basic.encoding);
-  const [isStatistics, setIsStatistics] = useState(configuration.basic.statistics);
-  const [isExpiration, setIsExpiration] = useState(configuration.basic.expiration);
-  const [lifeSpanNumber, setLifeSpanNumber] = useState(configuration.basic.lifeSpanNumber);
-  const [lifeSpanUnit, setLifeSpanUnit] = useState(configuration.basic.lifeSpanUnit);
-  const [maxIdleNumber, setMaxIdleNumber] = useState(configuration.basic.maxIdleNumber);
-  const [maxIdleUnit, setMaxIdleUnit] = useState(configuration.basic.maxIdleUnit);
+  const [topology, setTopology] = useState<string>(
+    configuration.basic.topology,
+  );
+  const [mode, setMode] = useState<CacheMode>(
+    configuration.basic.mode as CacheMode,
+  );
+  const [selectedNumberOwners, setSelectedNumberOwners] = useState(
+    configuration.basic.numberOfOwners,
+  );
+  const [selectedEncodingCache, setSelectedEncodingCache] = useState(
+    configuration.basic.encoding,
+  );
+  const [isStatistics, setIsStatistics] = useState(
+    configuration.basic.statistics,
+  );
+  const [isExpiration, setIsExpiration] = useState(
+    configuration.basic.expiration,
+  );
+  const [lifeSpanNumber, setLifeSpanNumber] = useState(
+    configuration.basic.lifeSpanNumber,
+  );
+  const [lifeSpanUnit, setLifeSpanUnit] = useState(
+    configuration.basic.lifeSpanUnit,
+  );
+  const [maxIdleNumber, setMaxIdleNumber] = useState(
+    configuration.basic.maxIdleNumber,
+  );
+  const [maxIdleUnit, setMaxIdleUnit] = useState(
+    configuration.basic.maxIdleUnit,
+  );
 
   useEffect(() => {
     // Update the form when the state changes
@@ -48,7 +77,10 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
         basic: {
           topology: isLocal ? CacheType.Local : topology,
           mode: mode,
-          numberOfOwners: topology == CacheType.Distributed ? selectedNumberOwners : undefined,
+          numberOfOwners:
+            topology == CacheType.Distributed
+              ? selectedNumberOwners
+              : undefined,
           encoding: selectedEncodingCache,
           statistics: isStatistics,
           expiration: isExpiration,
@@ -56,19 +88,19 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
           lifeSpanUnit: lifeSpanUnit,
           maxIdleNumber: maxIdleNumber,
           maxIdleUnit: maxIdleUnit,
-          valid: lifeSpanNumber >= -1 && maxIdleNumber >= -1
+          valid: lifeSpanNumber >= -1 && maxIdleNumber >= -1,
         },
         feature: {
           ...prevState.feature,
           indexedCache: {
             ...prevState.feature.indexedCache,
-            valid: validateIndexedFeature(configuration, selectedEncodingCache)
+            valid: validateIndexedFeature(configuration, selectedEncodingCache),
           },
           transactionalCache: {
             ...prevState.feature.transactionalCache,
-            valid: validateTransactionalFeature(configuration, mode)
-          }
-        }
+            valid: validateTransactionalFeature(configuration, mode),
+          },
+        },
       };
     });
   }, [
@@ -81,7 +113,7 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
     lifeSpanNumber,
     lifeSpanUnit,
     maxIdleNumber,
-    maxIdleUnit
+    maxIdleUnit,
   ]);
 
   // Helper function for Number Owners Selection
@@ -102,7 +134,13 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
 
   const onChange = (event) => {
     const newValue = isNaN(event.target.value) ? 0 : Number(event.target.value);
-    setSelectedNumberOwners(newValue > maxValue ? maxValue : newValue < minValue ? minValue : newValue);
+    setSelectedNumberOwners(
+      newValue > maxValue
+        ? maxValue
+        : newValue < minValue
+          ? minValue
+          : newValue,
+    );
   };
 
   const formMode = () => {
@@ -160,7 +198,9 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
           <PopoverHelp
             name={'mode'}
             label={t('caches.create.configurations.basic.cluster-repl-title')}
-            content={t('caches.create.configurations.basic.cluster-repl-tooltip')}
+            content={t(
+              'caches.create.configurations.basic.cluster-repl-tooltip',
+            )}
           />
         }
       >
@@ -194,14 +234,20 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
           <PopoverHelp
             name={'number-of-owners'}
             label={t('caches.create.configurations.basic.number-owners')}
-            content={t('caches.create.configurations.basic.number-owners-tooltip')}
+            content={t(
+              'caches.create.configurations.basic.number-owners-tooltip',
+            )}
           />
         }
         fieldId="field-number-owners"
         isRequired={(topology as CacheType) == CacheType.Distributed}
       >
         <NumberInput
-          value={(topology as CacheType) == CacheType.Distributed ? selectedNumberOwners : 1}
+          value={
+            (topology as CacheType) == CacheType.Distributed
+              ? selectedNumberOwners
+              : 1
+          }
           min={minValue}
           max={maxValue}
           onMinus={onMinus}
@@ -219,7 +265,10 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
   };
 
   const encodingTypeOptions = (): SelectOptionProps[] => {
-    return selectOptionProps(EncodingType, [EncodingType.Empty, EncodingType.Unknown]);
+    return selectOptionProps(EncodingType, [
+      EncodingType.Empty,
+      EncodingType.Unknown,
+    ]);
   };
 
   const formStatistics = () => {
@@ -252,7 +301,9 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
           <PopoverHelp
             name={'encoding'}
             label={t('caches.create.configurations.basic.encoding-cache-title')}
-            content={t('caches.create.configurations.basic.encoding-cache-tooltip')}
+            content={t(
+              'caches.create.configurations.basic.encoding-cache-tooltip',
+            )}
           />
         }
       >
@@ -311,7 +362,9 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
               <PopoverHelp
                 name={'lifespan'}
                 label={t('caches.create.configurations.basic.lifespan')}
-                content={t('caches.create.configurations.basic.lifespan-tooltip')}
+                content={t(
+                  'caches.create.configurations.basic.lifespan-tooltip',
+                )}
               />
             }
           >
@@ -327,8 +380,13 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
             {validateLifeSpan() === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                    {t('caches.create.configurations.basic.lifespan-helper-invalid')}
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
+                    {t(
+                      'caches.create.configurations.basic.lifespan-helper-invalid',
+                    )}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
@@ -343,7 +401,9 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
               <PopoverHelp
                 name={'maxidle'}
                 label={t('caches.create.configurations.basic.max-idle')}
-                content={t('caches.create.configurations.basic.max-idle-tooltip')}
+                content={t(
+                  'caches.create.configurations.basic.max-idle-tooltip',
+                )}
               />
             }
           >
@@ -359,8 +419,13 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
             {validateMaxIdle() === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                    {t('caches.create.configurations.basic.max-idle-helper-invalid')}
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
+                    {t(
+                      'caches.create.configurations.basic.max-idle-helper-invalid',
+                    )}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
@@ -385,12 +450,16 @@ const BasicCacheConfigConfigurator = (props: { cacheManager: CacheManager }) => 
           <GridItem span={5}>{formEncodingCache()}</GridItem>
           <GridItem span={7}>
             {/* Display the number of owners of the cache when the topology is distributed. */}
-            {(topology as CacheType) == CacheType.Distributed && formNumberOwners()}
+            {(topology as CacheType) == CacheType.Distributed &&
+              formNumberOwners()}
           </GridItem>
           <GridItem span={12}>{formStatistics()}</GridItem>
         </Grid>
       </FormSection>
-      <FormSection title={t('caches.create.configurations.basic.expiration-title')} style={{ marginTop: 0 }}>
+      <FormSection
+        title={t('caches.create.configurations.basic.expiration-title')}
+        style={{ marginTop: 0 }}
+      >
         {formExpiration()}
         {isExpiration && formExpirationSettings()}
       </FormSection>

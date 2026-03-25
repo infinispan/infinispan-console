@@ -6,7 +6,7 @@ import {
   FormSection,
   HelperText,
   HelperTextItem,
-  Switch
+  Switch,
 } from '@patternfly/react-core';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -19,15 +19,19 @@ import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { TabsToolbar } from '@app/Caches/Configuration/Features/TabsToolbar';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { CONF_MUTABLE_TRACING_CATEGORIES, CONF_MUTABLE_TRACING_ENABLED } from '@services/cacheConfigUtils';
-import { useFetchEditableConfiguration } from '@app/services/configHook';
+import {
+  CONF_MUTABLE_TRACING_CATEGORIES,
+  CONF_MUTABLE_TRACING_ENABLED,
+} from '@services/cacheConfigUtils';
+import { useFetchEditableConfiguration } from '@app/hooks/configHook';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useEffect, useState } from 'react';
 
 const TracingConfigEdition = () => {
   const { t } = useTranslation();
   const cacheName = useParams()['cacheName'] as string;
-  const { loadingConfig, errorConfig, editableConfig } = useFetchEditableConfiguration(cacheName);
+  const { loadingConfig, errorConfig, editableConfig } =
+    useFetchEditableConfiguration(cacheName);
   const { addAlert } = useApiAlert();
   const [tracingEnabled, setTracingEnabled] = useState(false);
   const [tracingCategories, setTracingCategories] = useState<string[]>([]);
@@ -48,11 +52,19 @@ const TracingConfigEdition = () => {
 
   const updateTracing = () => {
     ConsoleServices.caches()
-      .setConfigAttribute(cacheName, CONF_MUTABLE_TRACING_ENABLED, tracingEnabled + '')
+      .setConfigAttribute(
+        cacheName,
+        CONF_MUTABLE_TRACING_ENABLED,
+        tracingEnabled + '',
+      )
       .then((actionResponse) => {
         if (tracingCategories.length > 0) {
           ConsoleServices.caches()
-            .setConfigAttribute(cacheName, CONF_MUTABLE_TRACING_CATEGORIES, tracingCategories.join(' '))
+            .setConfigAttribute(
+              cacheName,
+              CONF_MUTABLE_TRACING_CATEGORIES,
+              tracingCategories.join(' '),
+            )
             .then((actionResponse) => {
               addAlert(actionResponse);
             });
@@ -72,9 +84,17 @@ const TracingConfigEdition = () => {
             setTracingEnabled(!tracingEnabled);
           }}
           hasCheckIcon
-          label={tracingEnabled ? t('caches.tracing.tracing-enabled') : t('caches.tracing.tracing-disabled')}
+          label={
+            tracingEnabled
+              ? t('caches.tracing.tracing-enabled')
+              : t('caches.tracing.tracing-disabled')
+          }
         />
-        <PopoverHelp name={'tracing'} label={t('caches.tracing.title')} content={t('caches.tracing.tracing-tooltip')} />
+        <PopoverHelp
+          name={'tracing'}
+          label={t('caches.tracing.title')}
+          content={t('caches.tracing.tracing-tooltip')}
+        />
       </FormGroup>
     );
   };
@@ -97,7 +117,10 @@ const TracingConfigEdition = () => {
         {validateForm() === 'error' && (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+              <HelperTextItem
+                variant={'error'}
+                icon={<ExclamationCircleIcon />}
+              >
                 {t('caches.tracing.select-tracing-categories-helper')}
               </HelperTextItem>
             </HelperText>
@@ -109,14 +132,18 @@ const TracingConfigEdition = () => {
 
   const onSelectCategories = (selection: string) => {
     if (tracingCategories.includes(selection)) {
-      setTracingCategories(tracingCategories.filter((category) => category !== selection));
+      setTracingCategories(
+        tracingCategories.filter((category) => category !== selection),
+      );
     } else {
       setTracingCategories([...tracingCategories, selection]);
     }
   };
 
   const validateForm = (): 'success' | 'default' | 'error' => {
-    return tracingEnabled && tracingCategories.length == 0 ? 'error' : 'success';
+    return tracingEnabled && tracingCategories.length == 0
+      ? 'error'
+      : 'success';
   };
 
   if (loadingConfig) {

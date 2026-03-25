@@ -1,7 +1,15 @@
 import React from 'react';
-import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { useRemovePermission } from '@app/services/rolesHook';
+import { useRemovePermission } from '@app/hooks/rolesHook';
 
 const RemovePermission = (props: {
   name: string;
@@ -12,7 +20,12 @@ const RemovePermission = (props: {
   closeModal: () => void;
 }) => {
   const { t } = useTranslation();
-  const { onRemovePermission } = useRemovePermission(props.name, props.remove, props.permissions, props.submitModal);
+  const { onRemovePermission } = useRemovePermission(
+    props.name,
+    props.remove,
+    props.permissions,
+    props.submitModal,
+  );
 
   return (
     <Modal
@@ -26,16 +39,18 @@ const RemovePermission = (props: {
       <ModalHeader
         titleIconVariant={'warning'}
         title={t('access-management.role.modal-remove-permission-title', {
-          name: props.remove
+          name: props.remove,
         })}
       />
       <ModalBody>
         <Content>
           {t('access-management.role.modal-remove-permission-description-1', {
-            roleName: props.name
+            roleName: props.name,
           })}
         </Content>
-        <Content>{t('access-management.role.modal-remove-permission-description-2')}</Content>
+        <Content>
+          {t('access-management.role.modal-remove-permission-description-2')}
+        </Content>
       </ModalBody>
       <ModalFooter>
         <Button

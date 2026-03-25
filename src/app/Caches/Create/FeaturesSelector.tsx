@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Form, FormAlert, FormGroup, FormSection } from '@patternfly/react-core';
+import {
+  Alert,
+  Form,
+  FormAlert,
+  FormGroup,
+  FormSection,
+} from '@patternfly/react-core';
 import { CacheFeature, CacheMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -9,20 +15,21 @@ import SecuredCacheConfigurator from '@app/Caches/Create/Features/SecuredCacheCo
 import BackupsCacheConfigurator from '@app/Caches/Create/Features/BackupsCacheConfigurator';
 import TransactionalCacheConfigurator from '@app/Caches/Create/Features/TransactionalCacheConfigurator';
 import PersistentCacheConfigurator from '@app/Caches/Create/Features/PersistentCacheConfigurator';
-import { useCreateCache } from '@app/services/createCacheHook';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useCreateCache } from '@app/hooks/createCacheHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { validFeatures } from '@app/utils/featuresValidation';
-import { useFetchProtobufTypes } from '@app/services/protobufHook';
+import { useFetchProtobufTypes } from '@app/hooks/protobufHook';
 import { ConsoleACL } from '@services/securityService';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
-import { useDataContainer } from '@app/services/dataContainerHooks';
+import { useDataContainer } from '@app/hooks/dataContainerHooks';
 
 const FeaturesSelector = () => {
   const { t } = useTranslation();
   const { notSecured, connectedUser } = useConnectedUser();
   const { protobufTypes } = useFetchProtobufTypes();
-  const { configuration, setConfiguration, addFeature, removeFeature } = useCreateCache();
+  const { configuration, setConfiguration, addFeature, removeFeature } =
+    useCreateCache();
 
   const brandname = t('brandname.brandname');
 
@@ -49,8 +56,8 @@ const FeaturesSelector = () => {
         ...prevState,
         feature: {
           ...prevState.feature,
-          cacheFeatureSelected: []
-        }
+          cacheFeatureSelected: [],
+        },
       };
     });
   };
@@ -73,7 +80,10 @@ const FeaturesSelector = () => {
   };
 
   const isSecuredCacheCreationEnabled = () => {
-    return !notSecured && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
+    return (
+      !notSecured &&
+      ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
+    );
   };
 
   return (
@@ -83,11 +93,17 @@ const FeaturesSelector = () => {
         e.preventDefault();
       }}
     >
-      <FormSection title={t('caches.create.configurations.feature.cache-feature-list', { brandname: brandname })}>
+      <FormSection
+        title={t('caches.create.configurations.feature.cache-feature-list', {
+          brandname: brandname,
+        })}
+      >
         <FormGroup fieldId="cache-feature">
           <SelectMultiWithChips
             id="featuresSelect"
-            placeholder={t('caches.create.configurations.feature.cache-feature-list-placeholder')}
+            placeholder={t(
+              'caches.create.configurations.feature.cache-feature-list-placeholder',
+            )}
             options={selectOptionProps(CacheFeature)}
             onSelect={onSelectFeature}
             onClear={onClearFeatureSelection}
@@ -97,20 +113,30 @@ const FeaturesSelector = () => {
         </FormGroup>
       </FormSection>
       {displayAlert()}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BOUNDED) && <BoundedCacheConfigurator />}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.INDEXED) && (
-        <IndexedCacheConfigurator isEnabled={protobufTypes.length > 0} />
-      )}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.SECURED) && (
+      {configuration.feature.cacheFeatureSelected.includes(
+        CacheFeature.BOUNDED,
+      ) && <BoundedCacheConfigurator />}
+      {configuration.feature.cacheFeatureSelected.includes(
+        CacheFeature.INDEXED,
+      ) && <IndexedCacheConfigurator isEnabled={protobufTypes.length > 0} />}
+      {configuration.feature.cacheFeatureSelected.includes(
+        CacheFeature.SECURED,
+      ) && (
         <SecuredCacheConfigurator isEnabled={isSecuredCacheCreationEnabled()} />
       )}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS) && (
-        <BackupsCacheConfigurator isEnabled={isBackups} />
+      {configuration.feature.cacheFeatureSelected.includes(
+        CacheFeature.BACKUPS,
+      ) && <BackupsCacheConfigurator isEnabled={isBackups} />}
+      {configuration.feature.cacheFeatureSelected.includes(
+        CacheFeature.TRANSACTIONAL,
+      ) && (
+        <TransactionalCacheConfigurator
+          isEnabled={configuration.basic.mode === CacheMode.SYNC}
+        />
       )}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL) && (
-        <TransactionalCacheConfigurator isEnabled={configuration.basic.mode === CacheMode.SYNC} />
-      )}
-      {configuration.feature.cacheFeatureSelected.includes(CacheFeature.PERSISTENCE) && <PersistentCacheConfigurator />}
+      {configuration.feature.cacheFeatureSelected.includes(
+        CacheFeature.PERSISTENCE,
+      ) && <PersistentCacheConfigurator />}
     </Form>
   );
 };

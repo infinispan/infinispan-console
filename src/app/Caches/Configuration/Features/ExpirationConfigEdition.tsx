@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useParams } from 'react-router-dom';
-import { useFetchEditableConfiguration } from '@app/services/configHook';
+import { useFetchEditableConfiguration } from '@app/hooks/configHook';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { TimeUnits } from '@services/infinispanRefData';
@@ -16,7 +16,7 @@ import {
   GridItem,
   HelperText,
   HelperTextItem,
-  Switch
+  Switch,
 } from '@patternfly/react-core';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
@@ -25,15 +25,19 @@ import { TabsToolbar } from '@app/Caches/Configuration/Features/TabsToolbar';
 import {
   convertFromTimeQuantity,
   convertTimeToMilliseconds,
-  convertToTimeQuantity
+  convertToTimeQuantity,
 } from '@utils/convertToTimeQuantity';
-import { CONF_MUTABLE_EXPIRATION_LIFESPAN, CONF_MUTABLE_EXPIRATION_MAXIDLE } from '@services/cacheConfigUtils';
+import {
+  CONF_MUTABLE_EXPIRATION_LIFESPAN,
+  CONF_MUTABLE_EXPIRATION_MAXIDLE,
+} from '@services/cacheConfigUtils';
 
 const ExpirationConfigEdition = () => {
   const { t } = useTranslation();
   const { addAlert } = useApiAlert();
   const cacheName = useParams()['cacheName'] as string;
-  const { loadingConfig, errorConfig, editableConfig } = useFetchEditableConfiguration(cacheName);
+  const { loadingConfig, errorConfig, editableConfig } =
+    useFetchEditableConfiguration(cacheName);
   const [isExpiration, setIsExpiration] = useState(false);
   const [lifeSpanNumber, setLifeSpanNumber] = useState(-1);
   const [lifeSpanUnit, setLifeSpanUnit] = useState(TimeUnits.milliseconds);
@@ -72,8 +76,14 @@ const ExpirationConfigEdition = () => {
       return;
     }
 
-    const lifespanMilliseconds = convertTimeToMilliseconds(lifeSpanNumber, lifeSpanUnit);
-    const maxIdleMilliseconds = convertTimeToMilliseconds(maxIdleNumber, maxIdleUnit);
+    const lifespanMilliseconds = convertTimeToMilliseconds(
+      lifeSpanNumber,
+      lifeSpanUnit,
+    );
+    const maxIdleMilliseconds = convertTimeToMilliseconds(
+      maxIdleNumber,
+      maxIdleUnit,
+    );
 
     if (lifespanMilliseconds < maxIdleMilliseconds) {
       setError('error-maxidle-must-be-lower');
@@ -82,12 +92,20 @@ const ExpirationConfigEdition = () => {
 
     setError('');
 
-    const newLifespan = isExpiration ? convertToTimeQuantity(lifeSpanNumber, lifeSpanUnit) : '-1';
-    const newMaxidle = isExpiration ? convertToTimeQuantity(maxIdleNumber, maxIdleUnit) : '-1';
+    const newLifespan = isExpiration
+      ? convertToTimeQuantity(lifeSpanNumber, lifeSpanUnit)
+      : '-1';
+    const newMaxidle = isExpiration
+      ? convertToTimeQuantity(maxIdleNumber, maxIdleUnit)
+      : '-1';
 
     if (newMaxidle && newMaxidle != editableConfig?.maxIdle) {
       ConsoleServices.caches()
-        .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_MAXIDLE, newMaxidle)
+        .setConfigAttribute(
+          cacheName,
+          CONF_MUTABLE_EXPIRATION_MAXIDLE,
+          newMaxidle,
+        )
         .then((actionResponse) => {
           if (actionResponse.success) {
             addAlert(actionResponse);
@@ -98,7 +116,11 @@ const ExpirationConfigEdition = () => {
     }
     if (newLifespan && newLifespan != editableConfig?.lifespan) {
       ConsoleServices.caches()
-        .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_LIFESPAN, newLifespan)
+        .setConfigAttribute(
+          cacheName,
+          CONF_MUTABLE_EXPIRATION_LIFESPAN,
+          newLifespan,
+        )
         .then((actionResponse) => {
           if (actionResponse.success) {
             addAlert(actionResponse);
@@ -124,7 +146,11 @@ const ExpirationConfigEdition = () => {
 
     return (
       <GridItem span={12}>
-        <Alert variant="danger" isInline title={t(`caches.edit-configuration.${error}`)} />
+        <Alert
+          variant="danger"
+          isInline
+          title={t(`caches.edit-configuration.${error}`)}
+        />
       </GridItem>
     );
   };
@@ -184,7 +210,10 @@ const ExpirationConfigEdition = () => {
               {validateLifeSpan() === 'error' && (
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    <HelperTextItem
+                      variant={'error'}
+                      icon={<ExclamationCircleIcon />}
+                    >
                       {t('caches.edit-configuration.lifespan-helper-invalid')}
                     </HelperTextItem>
                   </HelperText>
@@ -217,7 +246,10 @@ const ExpirationConfigEdition = () => {
               {validateMaxIdle() === 'error' && (
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                    <HelperTextItem
+                      variant={'error'}
+                      icon={<ExclamationCircleIcon />}
+                    >
                       {t('caches.edit-configuration.max-idle-helper-invalid')}
                     </HelperTextItem>
                   </HelperText>

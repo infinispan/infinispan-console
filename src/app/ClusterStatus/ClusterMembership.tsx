@@ -17,13 +17,16 @@ import {
   Title,
   Toolbar,
   ToolbarContent,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
 import { CubesIcon, DownloadIcon, SearchIcon } from '@patternfly/react-icons';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import { useDownloadServerReport, useFetchClusterMembers } from '@app/services/clusterHook';
+import {
+  useDownloadServerReport,
+  useFetchClusterMembers,
+} from '@app/hooks/clusterHook';
 import { t_global_spacer_md } from '@patternfly/react-tokens';
 import { onSearch } from '@app/utils/searchFilter';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
@@ -32,13 +35,17 @@ import { useLocalStorage } from '@app/utils/localStorage';
 
 const ClusterMembership = () => {
   const { t } = useTranslation();
-  const { downloadServerReport, downloading, downloadNodeName } = useDownloadServerReport();
+  const { downloadServerReport, downloading, downloadNodeName } =
+    useDownloadServerReport();
   const { clusterMembers, loading, error } = useFetchClusterMembers();
-  const [filteredClusterMembers, setFilteredClusterMembers] = useState<ClusterMember[]>([]);
-  const [clusterMembersPagination, setClusterMembersPagination] = useLocalStorage('cluster-members-table', {
-    page: 1,
-    perPage: 10
-  });
+  const [filteredClusterMembers, setFilteredClusterMembers] = useState<
+    ClusterMember[]
+  >([]);
+  const [clusterMembersPagination, setClusterMembersPagination] =
+    useLocalStorage('cluster-members-table', {
+      page: 1,
+      perPage: 10,
+    });
   const [searchValue, setSearchValue] = useState<string>('');
   const [rows, setRows] = useState<ClusterMember[]>([]);
 
@@ -46,7 +53,7 @@ const ClusterMembership = () => {
     name: t('cluster-membership.node-name'),
     status: t('cluster-membership.status'),
     version: t('cluster-membership.version'),
-    physicalAdd: t('cluster-membership.physical-address')
+    physicalAdd: t('cluster-membership.physical-address'),
   };
 
   useEffect(() => {
@@ -55,15 +62,23 @@ const ClusterMembership = () => {
 
   useEffect(() => {
     if (filteredClusterMembers) {
-      const initSlice = (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
-      const updateRows = filteredClusterMembers.slice(initSlice, initSlice + clusterMembersPagination.perPage);
+      const initSlice =
+        (clusterMembersPagination.page - 1) * clusterMembersPagination.perPage;
+      const updateRows = filteredClusterMembers.slice(
+        initSlice,
+        initSlice + clusterMembersPagination.perPage,
+      );
       setRows(updateRows);
     }
   }, [clusterMembersPagination, filteredClusterMembers]);
 
   useEffect(() => {
     if (clusterMembers) {
-      setFilteredClusterMembers(clusterMembers.members.filter((data) => onSearch(searchValue, data.node_address)));
+      setFilteredClusterMembers(
+        clusterMembers.members.filter((data) =>
+          onSearch(searchValue, data.node_address),
+        ),
+      );
       onSetPage(1);
     }
   }, [searchValue, clusterMembers]);
@@ -71,14 +86,14 @@ const ClusterMembership = () => {
   const onSetPage = (pageNumber) => {
     setClusterMembersPagination({
       ...clusterMembersPagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setClusterMembersPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -159,27 +174,41 @@ const ClusterMembership = () => {
     if (!clusterMembers) {
       return (
         <EmptyState variant={EmptyStateVariant.full} icon={CubesIcon}>
-          <EmptyStateBody>{t('cluster-membership.empty-cluster')}</EmptyStateBody>
+          <EmptyStateBody>
+            {t('cluster-membership.empty-cluster')}
+          </EmptyStateBody>
         </EmptyState>
       );
     }
 
     return (
       <>
-        <Toolbar id="cluster-table-toolbar" style={{ marginBottom: t_global_spacer_md.value }}>
+        <Toolbar
+          id="cluster-table-toolbar"
+          style={{ marginBottom: t_global_spacer_md.value }}
+        >
           <ToolbarContent>
             <ToolbarItem>{searchInput}</ToolbarItem>
-            <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
+            <ToolbarItem variant="pagination">
+              {toolbarPagination('down')}
+            </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <Table className={'cluster-membership-table'} aria-label={t('cluster-membership.title')} variant={'compact'}>
+        <Table
+          className={'cluster-membership-table'}
+          aria-label={t('cluster-membership.title')}
+          variant={'compact'}
+        >
           <Thead>
             <Tr>
               <Th colSpan={1}>{columnNames.name}</Th>
               <Th colSpan={1}>{columnNames.status}</Th>
               <Th colSpan={1}>{columnNames.version}</Th>
               <Th colSpan={1}>{columnNames.physicalAdd}</Th>
-              <Th style={{ width: '28%' }} screenReaderText="Download server report buttons" />
+              <Th
+                style={{ width: '28%' }}
+                screenReaderText="Download server report buttons"
+              />
             </Tr>
           </Thead>
           <Tbody>
@@ -189,30 +218,39 @@ const ClusterMembership = () => {
                   <Bullseye>
                     <EmptyState
                       variant={EmptyStateVariant.sm}
-                      titleText={<>{t('cluster-membership.no-cluster-title')}</>}
+                      titleText={
+                        <>{t('cluster-membership.no-cluster-title')}</>
+                      }
                       icon={SearchIcon}
                       headingLevel="h2"
                     >
-                      <EmptyStateBody>{t('cluster-membership.no-cluster-body')}</EmptyStateBody>
+                      <EmptyStateBody>
+                        {t('cluster-membership.no-cluster-body')}
+                      </EmptyStateBody>
                     </EmptyState>
                   </Bullseye>
                 </Td>
               </Tr>
             ) : (
               rows.map((row) => {
-                const isDownloading = downloading && downloadNodeName === row.node_address;
+                const isDownloading =
+                  downloading && downloadNodeName === row.node_address;
                 return (
                   <Tr key={row.node_address}>
                     <Td dataLabel={columnNames.name}>{row.node_address}</Td>
                     <Td dataLabel={columnNames.status}>
                       {
                         <InfinispanComponentStatus
-                          status={displayUtils.parseComponentStatus(row.cache_manager_status)}
+                          status={displayUtils.parseComponentStatus(
+                            row.cache_manager_status,
+                          )}
                         />
                       }
                     </Td>
                     <Td dataLabel={columnNames.version}>{row.version}</Td>
-                    <Td dataLabel={columnNames.physicalAdd}>{row.physical_addresses}</Td>
+                    <Td dataLabel={columnNames.physicalAdd}>
+                      {row.physical_addresses}
+                    </Td>
                     <Td dataLabel={columnNames.physicalAdd}>
                       <Button
                         data-cy="downloadReportLink"
@@ -222,7 +260,9 @@ const ClusterMembership = () => {
                         icon={!isDownloading ? <DownloadIcon /> : null}
                         onClick={() => downloadServerReport(row.node_address)}
                       >
-                        {isDownloading ? t('cluster-membership.downloading') : t('cluster-membership.download-report')}
+                        {isDownloading
+                          ? t('cluster-membership.downloading')
+                          : t('cluster-membership.download-report')}
                       </Button>
                     </Td>
                   </Tr>
@@ -231,8 +271,13 @@ const ClusterMembership = () => {
             )}
           </Tbody>
         </Table>
-        <Toolbar id="cluster-membership-table-toolbar" className={'cluster-membership-table-display'}>
-          <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
+        <Toolbar
+          id="cluster-membership-table-toolbar"
+          className={'cluster-membership-table-display'}
+        >
+          <ToolbarItem variant="pagination">
+            {toolbarPagination('up')}
+          </ToolbarItem>
         </Toolbar>
       </>
     );

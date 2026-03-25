@@ -13,17 +13,24 @@ import {
   ModalHeader,
   ModalVariant,
   SelectOptionProps,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import formUtils, { IField } from '@services/formUtils';
 import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
-import { useFetchAvailableRoles } from '@app/services/rolesHook';
+import { useFetchAvailableRoles } from '@app/hooks/rolesHook';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
-import { useFetchAvailablePrincipals, useGrantAccess } from '@app/services/principalsHook';
-import { useFetchAvailableUsers } from '@app/services/userManagementHook';
+import {
+  useFetchAvailablePrincipals,
+  useGrantAccess,
+} from '@app/hooks/principalsHook';
+import { useFetchAvailableUsers } from '@app/hooks/userManagementHook';
 
-const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
+const GrantNewAccess = (props: {
+  isModalOpen: boolean;
+  submitModal: () => void;
+  closeModal: () => void;
+}) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { roles } = useFetchAvailableRoles();
@@ -36,7 +43,7 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
         id: role.name,
         value: role.name,
         children: role.name,
-        description: role.description
+        description: role.description,
       });
     });
     return array;
@@ -45,19 +52,27 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
   const principalNameInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const principalRolesInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
-  const [principalName, setPrincipalName] = useState<IField>(principalNameInitialState);
-  const [principalRolesField, setPrincipalRolesField] = useState<IField>(principalRolesInitialState);
+  const [principalName, setPrincipalName] = useState<IField>(
+    principalNameInitialState,
+  );
+  const [principalRolesField, setPrincipalRolesField] = useState<IField>(
+    principalRolesInitialState,
+  );
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
-  const { onGrantAccess } = useGrantAccess(principalName.value, selectedRoles, props.submitModal);
+  const { onGrantAccess } = useGrantAccess(
+    principalName.value,
+    selectedRoles,
+    props.submitModal,
+  );
 
   useEffect(() => {
     if (selectedRoles.length > 0) {
@@ -86,24 +101,32 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
       setPrincipalName({
         ...principalName,
         isValid: isValid,
-        invalidText: t('access-management.principals.modal-principal-name-is-required'),
-        validated: 'error'
+        invalidText: t(
+          'access-management.principals.modal-principal-name-is-required',
+        ),
+        validated: 'error',
       });
-    } else if (principals.filter((p) => p.name == trimmedPrincipalName).length > 0) {
+    } else if (
+      principals.filter((p) => p.name == trimmedPrincipalName).length > 0
+    ) {
       isValid = false;
       setPrincipalName({
         ...principalName,
         isValid: isValid,
-        invalidText: t('access-management.principals.modal-principal-exists', { name: trimmedPrincipalName }),
-        validated: 'error'
+        invalidText: t('access-management.principals.modal-principal-exists', {
+          name: trimmedPrincipalName,
+        }),
+        validated: 'error',
       });
     } else if (userNameExist(trimmedPrincipalName)) {
       isValid = false;
       setPrincipalName({
         ...principalName,
         isValid: isValid,
-        invalidText: t('access-management.principals.modal-user-exists', { name: trimmedPrincipalName }),
-        validated: 'error'
+        invalidText: t('access-management.principals.modal-user-exists', {
+          name: trimmedPrincipalName,
+        }),
+        validated: 'error',
       });
     }
 
@@ -114,7 +137,7 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
         ...principalRolesField,
         isValid: isValid,
         invalidText: t('access-management.principals.modal-roles-is-required'),
-        validated: 'error'
+        validated: 'error',
       });
     }
 
@@ -136,7 +159,7 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
       setSelectedRoles(
         selectedRoles.includes(value)
           ? selectedRoles.filter((selection) => selection !== value)
-          : [...selectedRoles, value]
+          : [...selectedRoles, value],
       );
     }
   };
@@ -155,7 +178,9 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
       <ModalHeader
         titleIconVariant={AddCircleOIcon}
         title={t('access-management.principals.modal-grant-title')}
-        description={t('access-management.principals.modal-grant-description', { brandname: brandname })}
+        description={t('access-management.principals.modal-grant-description', {
+          brandname: brandname,
+        })}
       />
       <ModalBody>
         <Form
@@ -163,7 +188,11 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
             e.preventDefault();
           }}
         >
-          <FormGroup isRequired isInline label={t('access-management.principals.modal-principal-name')}>
+          <FormGroup
+            isRequired
+            isInline
+            label={t('access-management.principals.modal-principal-name')}
+          >
             <TextInput
               validated={principalName.validated}
               value={principalName.value}
@@ -172,7 +201,7 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
                 formUtils.validateRequiredField(
                   value,
                   t('access-management.principals.modal-principal-name'),
-                  setPrincipalName
+                  setPrincipalName,
                 )
               }
               aria-label="principal-name-input"
@@ -180,17 +209,27 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
             {principalName.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {principalName.invalidText}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
             )}
           </FormGroup>
-          <FormGroup fieldId="roles" isRequired isInline label={t('access-management.principals.modal-roles')}>
+          <FormGroup
+            fieldId="roles"
+            isRequired
+            isInline
+            label={t('access-management.principals.modal-roles')}
+          >
             <SelectMultiWithChips
               id="roles"
-              placeholder={t('access-management.principals.modal-roles-list-placeholder')}
+              placeholder={t(
+                'access-management.principals.modal-roles-list-placeholder',
+              )}
               options={rolesOptions()}
               selection={selectedRoles}
               onSelect={onSelectRoles}
@@ -199,7 +238,10 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
             {principalRolesField.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {principalRolesField.invalidText}
                   </HelperTextItem>
                 </HelperText>
@@ -209,10 +251,20 @@ const GrantNewAccess = (props: { isModalOpen: boolean; submitModal: () => void; 
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button key={'Save'} aria-label={'Save'} variant={ButtonVariant.primary} onClick={handleSubmit}>
+        <Button
+          key={'Save'}
+          aria-label={'Save'}
+          variant={ButtonVariant.primary}
+          onClick={handleSubmit}
+        >
           {t('common.actions.save')}
         </Button>
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={onCloseModal}
+        >
           {t('common.actions.cancel')}
         </Button>
       </ModalFooter>

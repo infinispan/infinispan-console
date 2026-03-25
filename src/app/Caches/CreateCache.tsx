@@ -12,7 +12,7 @@ import {
   Content,
   ContentVariants,
   Toolbar,
-  ToolbarContent
+  ToolbarContent,
 } from '@patternfly/react-core';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -21,8 +21,8 @@ import { CreateCacheWizard } from '@app/Caches/Create/CreateCacheWizard';
 import { CreateCacheProvider } from '@app/providers/CreateCacheProvider';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { ConsoleACL } from '@services/securityService';
-import { useConnectedUser } from '@app/services/userManagementHook';
-import { useDataContainer } from '@app/services/dataContainerHooks';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
+import { useDataContainer } from '@app/hooks/dataContainerHooks';
 import { PageHeader } from '@patternfly/react-component-groups';
 
 const CreateCache = () => {
@@ -31,7 +31,10 @@ const CreateCache = () => {
   const { cm, loading, error } = useDataContainer();
   const [localSite, setLocalSite] = useState('');
   const { connectedUser } = useConnectedUser();
-  const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
+  const canCreateCache = ConsoleServices.security().hasConsoleACL(
+    ConsoleACL.CREATE,
+    connectedUser,
+  );
   useEffect(() => {
     if (cm) {
       if (cm.backups_enabled && cm.local_site) {
@@ -62,14 +65,20 @@ const CreateCache = () => {
 
   return (
     <CreateCacheProvider>
-      {canCreateCache && <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />}
+      {canCreateCache && (
+        <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />
+      )}
       <PageHeader
         title={
           localSite == ''
             ? t(`caches.${id}.page-title`)
-            : t(`caches.${id}.page-title-with-backups`, { localsite: localSite })
+            : t(`caches.${id}.page-title-with-backups`, {
+                localsite: localSite,
+              })
         }
-        subtitle={t(`caches.${id}.page-title-description`, { brandname: brandname })}
+        subtitle={t(`caches.${id}.page-title-description`, {
+          brandname: brandname,
+        })}
       />
 
       {loading && displayLoading()}

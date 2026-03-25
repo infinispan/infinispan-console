@@ -13,7 +13,7 @@ import {
   InputGroup,
   InputGroupItem,
   Radio,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
 import { EvictionType, MaxSizeUnit } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
@@ -22,19 +22,26 @@ import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useParams } from 'react-router-dom';
-import { useFetchEditableConfiguration } from '@app/services/configHook';
+import { useFetchEditableConfiguration } from '@app/hooks/configHook';
 import { TabsToolbar } from '@app/Caches/Configuration/Features/TabsToolbar';
-import { convertToMaxSizeUnit, convertToSizeAndUnit } from '@utils/convertToSizeAndUnit';
+import {
+  convertToMaxSizeUnit,
+  convertToSizeAndUnit,
+} from '@utils/convertToSizeAndUnit';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { validateNumber } from '@utils/validateInputNumber';
-import { CONF_MUTABLE_MEMORY_MAX_COUNT, CONF_MUTABLE_MEMORY_MAX_SIZE } from '@services/cacheConfigUtils';
+import {
+  CONF_MUTABLE_MEMORY_MAX_COUNT,
+  CONF_MUTABLE_MEMORY_MAX_SIZE,
+} from '@services/cacheConfigUtils';
 
 const BoundedCacheConfigurator = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = useParams()['cacheName'] as string;
-  const { loadingConfig, errorConfig, editableConfig } = useFetchEditableConfiguration(cacheName);
+  const { loadingConfig, errorConfig, editableConfig } =
+    useFetchEditableConfiguration(cacheName);
   const [evictionType, setEvictionType] = useState<'size' | 'count'>('size');
   const [maxValue, setMaxValue] = useState<string>('');
   const [maxSizeUnit, setMaxSizeUnit] = useState<MaxSizeUnit>(MaxSizeUnit.MB);
@@ -64,7 +71,10 @@ const BoundedCacheConfigurator = () => {
       newValue = convertToMaxSizeUnit(validation[1], maxSizeUnit);
     }
 
-    const property = evictionType == 'count' ? CONF_MUTABLE_MEMORY_MAX_COUNT : CONF_MUTABLE_MEMORY_MAX_SIZE;
+    const property =
+      evictionType == 'count'
+        ? CONF_MUTABLE_MEMORY_MAX_COUNT
+        : CONF_MUTABLE_MEMORY_MAX_SIZE;
     ConsoleServices.caches()
       .setConfigAttribute(cacheName, property, newValue)
       .then((actionResponse) => {
@@ -99,7 +109,11 @@ const BoundedCacheConfigurator = () => {
 
     return (
       <GridItem span={12}>
-        <Alert variant="danger" isInline title={t(`caches.edit-configuration.${error}`)} />
+        <Alert
+          variant="danger"
+          isInline
+          title={t(`caches.edit-configuration.${error}`)}
+        />
       </GridItem>
     );
   };
@@ -116,7 +130,10 @@ const BoundedCacheConfigurator = () => {
           <GridItem span={12}>
             {evictionType === EvictionType.size}
             <Content>
-              {t(`caches.edit-configuration.bounded-description-${evictionType}`, { brandname: brandname })}
+              {t(
+                `caches.edit-configuration.bounded-description-${evictionType}`,
+                { brandname: brandname },
+              )}
             </Content>
           </GridItem>
           {displayError()}
@@ -152,8 +169,13 @@ const BoundedCacheConfigurator = () => {
               {validateOnChange() === 'error' && (
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                      {t('caches.edit-configuration.bounded-max-size-helper-invalid')}
+                    <HelperTextItem
+                      variant={'error'}
+                      icon={<ExclamationCircleIcon />}
+                    >
+                      {t(
+                        'caches.edit-configuration.bounded-max-size-helper-invalid',
+                      )}
                     </HelperTextItem>
                   </HelperText>
                 </FormHelperText>
@@ -179,8 +201,13 @@ const BoundedCacheConfigurator = () => {
               {validateOnChange() === 'error' && (
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
-                      {t('caches.edit-configuration.bounded-max-count-helper-invalid')}
+                    <HelperTextItem
+                      variant={'error'}
+                      icon={<ExclamationCircleIcon />}
+                    >
+                      {t(
+                        'caches.edit-configuration.bounded-max-count-helper-invalid',
+                      )}
                     </HelperTextItem>
                   </HelperText>
                 </FormHelperText>

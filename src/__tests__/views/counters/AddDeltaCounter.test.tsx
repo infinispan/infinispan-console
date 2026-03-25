@@ -1,11 +1,13 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AddDeltaCounter } from '@app/Counters/AddDeltaCounter';
-import * as AddDeltaCounterHook from '@app/services/countersHook';
+import * as AddDeltaCounterHook from '@app/hooks/countersHook';
 import { renderWithRouter } from '../../../test-utils';
 
-jest.mock('@app/services/countersHook');
-const mockedCounterHook = AddDeltaCounterHook as jest.Mocked<typeof AddDeltaCounterHook>;
+jest.mock('@app/hooks/countersHook');
+const mockedCounterHook = AddDeltaCounterHook as jest.Mocked<
+  typeof AddDeltaCounterHook
+>;
 
 let closeModalCalls;
 let onAddDeltaCalls;
@@ -19,7 +21,7 @@ beforeEach(() => {
 
 mockedCounterHook.useAddDeltaCounter.mockImplementation(() => {
   return {
-    onAddDelta: () => onAddDeltaCalls++
+    onAddDelta: () => onAddDeltaCalls++,
   };
 });
 
@@ -34,7 +36,7 @@ describe('Add a delta', () => {
         submitModal={() => submitModalCalls++}
         isModalOpen={false}
         closeModal={() => closeModalCalls++}
-      />
+      />,
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -52,7 +54,7 @@ describe('Add a delta', () => {
         submitModal={() => submitModalCalls++}
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
-      />
+      />,
     );
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);
@@ -60,7 +62,9 @@ describe('Add a delta', () => {
     const submitButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText('cache-managers.counters.modal-delta-helper-invalid')).toBeTruthy();
+    expect(
+      screen.getByText('cache-managers.counters.modal-delta-helper-invalid'),
+    ).toBeTruthy();
     expect(closeModalCalls).toBe(0);
     expect(onAddDeltaCalls).toBe(0);
     expect(submitModalCalls).toBe(0);
@@ -76,7 +80,7 @@ describe('Add a delta', () => {
         submitModal={() => submitModalCalls++}
         isModalOpen={true}
         closeModal={() => closeModalCalls++}
-      />
+      />,
     );
 
     expect(screen.queryByRole('modal')).toBeDefined();

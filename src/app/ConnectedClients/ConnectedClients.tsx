@@ -31,13 +31,18 @@ import {
   ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { CubesIcon, InfoCircleIcon, RedoIcon, SearchIcon } from '@patternfly/react-icons';
+import {
+  CubesIcon,
+  InfoCircleIcon,
+  RedoIcon,
+  SearchIcon,
+} from '@patternfly/react-icons';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import { useFetchConnectedClients } from '@app/services/serverHook';
+import { useFetchConnectedClients } from '@app/hooks/serverHook';
 import { formatAge } from '@app/utils/formatAge';
 import { onSearch } from '@app/utils/searchFilter';
 import { PageHeader } from '@patternfly/react-component-groups';
@@ -45,13 +50,17 @@ import { useLocalStorage } from '@app/utils/localStorage';
 
 const ConnectedClients = () => {
   const { t } = useTranslation();
-  const { connectedClients, error, loading, setLoading } = useFetchConnectedClients();
-  const [filteredConnections, setFilteredConnections] = useState<ConnectedClients[]>([]);
+  const { connectedClients, error, loading, setLoading } =
+    useFetchConnectedClients();
+  const [filteredConnections, setFilteredConnections] = useState<
+    ConnectedClients[]
+  >([]);
   const [rows, setRows] = useState<ConnectedClients[]>([]);
-  const [connectionPagination, setConnectionPagination] = useLocalStorage<PaginationType>('connected-clients-table', {
-    page: 1,
-    perPage: 10
-  });
+  const [connectionPagination, setConnectionPagination] =
+    useLocalStorage<PaginationType>('connected-clients-table', {
+      page: 1,
+      perPage: 10,
+    });
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
@@ -63,14 +72,22 @@ const ConnectedClients = () => {
 
   useEffect(() => {
     if (filteredConnections) {
-      const initSlice = (connectionPagination.page - 1) * connectionPagination.perPage;
-      const updateRows = filteredConnections.slice(initSlice, initSlice + connectionPagination.perPage);
+      const initSlice =
+        (connectionPagination.page - 1) * connectionPagination.perPage;
+      const updateRows = filteredConnections.slice(
+        initSlice,
+        initSlice + connectionPagination.perPage,
+      );
       setRows(updateRows);
     }
   }, [filteredConnections, connectionPagination]);
 
   useEffect(() => {
-    setFilteredConnections(connectedClients.filter((client) => onSearch(searchValue, client['server-node-name'])));
+    setFilteredConnections(
+      connectedClients.filter((client) =>
+        onSearch(searchValue, client['server-node-name']),
+      ),
+    );
   }, [searchValue]);
 
   const columnNames = {
@@ -79,20 +96,20 @@ const ConnectedClients = () => {
     clientLibrary: t('connected-clients.client-library'),
     clientAddress: t('connected-clients.client-address'),
     protocolVersion: t('connected-clients.protocol-version'),
-    moreInfo: t('connected-clients.more-info')
+    moreInfo: t('connected-clients.more-info'),
   };
 
   const onSetPage = (_event, pageNumber) => {
     setConnectionPagination({
       ...connectionPagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setConnectionPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -103,7 +120,9 @@ const ConnectedClients = () => {
       icon={CubesIcon}
       headingLevel="h4"
     >
-      <EmptyStateBody>{t('connected-clients.no-connections-body')}</EmptyStateBody>
+      <EmptyStateBody>
+        {t('connected-clients.no-connections-body')}
+      </EmptyStateBody>
     </EmptyState>
   );
 
@@ -134,14 +153,22 @@ const ConnectedClients = () => {
 
   const displayPrincipal = (row) => {
     if (row.principal == null) {
-      return <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>;
+      return (
+        <Content component={ContentVariants.small}>
+          {t('connected-clients.null')}
+        </Content>
+      );
     }
     return row.principal;
   };
 
   const displayClientAddress = (row) => {
     if (row['remote-address'] == null) {
-      return <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>;
+      return (
+        <Content component={ContentVariants.small}>
+          {t('connected-clients.null')}
+        </Content>
+      );
     }
 
     return <Label color={'blue'}>{row['remote-address']}</Label>;
@@ -149,7 +176,11 @@ const ConnectedClients = () => {
 
   const displayClientVersion = (row) => {
     if (row['client-version'] == null) {
-      return <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>;
+      return (
+        <Content component={ContentVariants.small}>
+          {t('connected-clients.null')}
+        </Content>
+      );
     }
 
     return (
@@ -161,7 +192,11 @@ const ConnectedClients = () => {
 
   const displayClientLibrary = (row) => {
     if (row['client-library'] === null) {
-      return <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>;
+      return (
+        <Content component={ContentVariants.small}>
+          {t('connected-clients.null')}
+        </Content>
+      );
     }
 
     return row['client-library'];
@@ -169,7 +204,11 @@ const ConnectedClients = () => {
 
   const displayProtocolVersion = (row) => {
     if (row['protocol-version'] === null) {
-      return <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>;
+      return (
+        <Content component={ContentVariants.small}>
+          {t('connected-clients.null')}
+        </Content>
+      );
     }
 
     return row['protocol-version'];
@@ -183,52 +222,76 @@ const ConnectedClients = () => {
           <DescriptionListDescription>{row.id}</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>{t('connected-clients.created')}</DescriptionListTerm>
-          <DescriptionListDescription>{formatAge(row.created)}</DescriptionListDescription>
+          <DescriptionListTerm>
+            {t('connected-clients.created')}
+          </DescriptionListTerm>
+          <DescriptionListDescription>
+            {formatAge(row.created)}
+          </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>{t('connected-clients.ssl-application-protocol')}</DescriptionListTerm>
+          <DescriptionListTerm>
+            {t('connected-clients.ssl-application-protocol')}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             {row['ssl-application-protocol'] ? (
               row['ssl-application-protocol']
             ) : (
-              <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>
+              <Content component={ContentVariants.small}>
+                {t('connected-clients.null')}
+              </Content>
             )}
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>{t('connected-clients.ssl-cipher-suite')}</DescriptionListTerm>
+          <DescriptionListTerm>
+            {t('connected-clients.ssl-cipher-suite')}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             {row['ssl-cipher-suite'] ? (
               row['ssl-cipher-suite']
             ) : (
-              <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>
+              <Content component={ContentVariants.small}>
+                {t('connected-clients.null')}
+              </Content>
             )}
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>{t('connected-clients.ssl-protocol')}</DescriptionListTerm>
+          <DescriptionListTerm>
+            {t('connected-clients.ssl-protocol')}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             {row['ssl-protocol'] ? (
               row['ssl-protocol']
             ) : (
-              <Content component={ContentVariants.small}>{t('connected-clients.null')}</Content>
+              <Content component={ContentVariants.small}>
+                {t('connected-clients.null')}
+              </Content>
             )}
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>{t('connected-clients.client-version')}</DescriptionListTerm>
+          <DescriptionListTerm>
+            {t('connected-clients.client-version')}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             <Label color="blue">
-              {row['client-version'] == null ? t('connected-clients.null') : row['client-version']}
+              {row['client-version'] == null
+                ? t('connected-clients.null')
+                : row['client-version']}
             </Label>
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>{t('connected-clients.local-address')}</DescriptionListTerm>
+          <DescriptionListTerm>
+            {t('connected-clients.local-address')}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             <Label color="blue">
-              {row['local-address'] == null ? t('connected-clients.null') : row['local-address']}
+              {row['local-address'] == null
+                ? t('connected-clients.null')
+                : row['local-address']}
             </Label>
           </DescriptionListDescription>
         </DescriptionListGroup>
@@ -242,7 +305,11 @@ const ConnectedClients = () => {
         headerComponent="h3"
         bodyContent={description}
       >
-        <Button variant="plain" onClick={(e) => e.preventDefault()} icon={<InfoCircleIcon />} />
+        <Button
+          variant="plain"
+          onClick={(e) => e.preventDefault()}
+          icon={<InfoCircleIcon />}
+        />
       </Popover>
     );
   };
@@ -285,10 +352,16 @@ const ConnectedClients = () => {
         >
           <ToolbarContent>
             {buildSearch}
-            <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>
+              {pagination}
+            </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <Table className={'connections-table'} aria-label={'connections-table-label'} variant={'compact'}>
+        <Table
+          className={'connections-table'}
+          aria-label={'connections-table-label'}
+          variant={'compact'}
+        >
           <Thead>
             <Tr>
               <Th style={{ width: '15%' }} colSpan={1}>
@@ -318,7 +391,9 @@ const ConnectedClients = () => {
                       icon={SearchIcon}
                       headingLevel="h2"
                     >
-                      <EmptyStateBody>{t('connected-clients.no-filtered-connections-body')}</EmptyStateBody>
+                      <EmptyStateBody>
+                        {t('connected-clients.no-filtered-connections-body')}
+                      </EmptyStateBody>
                     </EmptyState>
                   </Bullseye>
                 </Td>
@@ -327,20 +402,37 @@ const ConnectedClients = () => {
               rows.map((row) => {
                 return (
                   <Tr key={row.id}>
-                    <Td dataLabel={columnNames.nodeName}>{row['server-node-name']}</Td>
-                    <Td dataLabel={columnNames.principal}>{displayPrincipal(row)}</Td>
-                    <Td dataLabel={columnNames.clientLibrary}>{displayClientLibrary(row)}</Td>
-                    <Td dataLabel={columnNames.clientAddress}>{displayClientAddress(row)}</Td>
-                    <Td dataLabel={columnNames.protocolVersion}>{displayProtocolVersion(row)}</Td>
-                    <Td dataLabel={columnNames.moreInfo}>{displayMoreInfo(row)}</Td>
+                    <Td dataLabel={columnNames.nodeName}>
+                      {row['server-node-name']}
+                    </Td>
+                    <Td dataLabel={columnNames.principal}>
+                      {displayPrincipal(row)}
+                    </Td>
+                    <Td dataLabel={columnNames.clientLibrary}>
+                      {displayClientLibrary(row)}
+                    </Td>
+                    <Td dataLabel={columnNames.clientAddress}>
+                      {displayClientAddress(row)}
+                    </Td>
+                    <Td dataLabel={columnNames.protocolVersion}>
+                      {displayProtocolVersion(row)}
+                    </Td>
+                    <Td dataLabel={columnNames.moreInfo}>
+                      {displayMoreInfo(row)}
+                    </Td>
                   </Tr>
                 );
               })
             )}
           </Tbody>
         </Table>
-        <Toolbar id="connections-table-toolbar" className={'connections-table-display'}>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+        <Toolbar
+          id="connections-table-toolbar"
+          className={'connections-table-display'}
+        >
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {pagination}
+          </ToolbarItem>
         </Toolbar>
       </>
     );
@@ -352,7 +444,12 @@ const ConnectedClients = () => {
       onSelect={() => setIsOpen(false)}
       onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-        <MenuToggle ref={toggleRef} data-cy="aclActions" onClick={() => setIsOpen(!isOpen)} isExpanded={isOpen}>
+        <MenuToggle
+          ref={toggleRef}
+          data-cy="aclActions"
+          onClick={() => setIsOpen(!isOpen)}
+          isExpanded={isOpen}
+        >
           {t('common.actions.actions')}
         </MenuToggle>
       )}

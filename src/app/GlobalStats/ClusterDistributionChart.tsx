@@ -9,13 +9,27 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { Chart, ChartAxis, ChartBar, ChartStack, ChartTooltip } from '@patternfly/react-charts/victory';
+import {
+  Table,
+  TableVariant,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@patternfly/react-table';
+import {
+  Chart,
+  ChartAxis,
+  ChartBar,
+  ChartStack,
+  ChartTooltip,
+} from '@patternfly/react-charts/victory';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import { useClusterDistribution } from '@app/services/dataDistributionHook';
+import { useClusterDistribution } from '@app/hooks/dataDistributionHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { formatBytes } from '@utils/formatBytes';
 import { onSearch } from '@app/utils/searchFilter';
@@ -27,13 +41,14 @@ const ClusterDistributionChart = () => {
   const MAX_NUMBER_FOR_CHART = 5;
   const [tablePagination, setTablePagination] = useState({
     page: 1,
-    perPage: 5
+    perPage: 5,
   });
   const [tableRow, setTableRow] = useState<ClusterDistribution[]>();
   const [searchValue, setSearchValue] = useState('');
   const [filteredData, setFilteredData] = useState<ClusterDistribution[]>([]);
 
-  const { clusterDistribution, loadingCluster, errorCluster } = useClusterDistribution();
+  const { clusterDistribution, loadingCluster, errorCluster } =
+    useClusterDistribution();
 
   useEffect(() => {
     if (clusterDistribution) setFilteredData(clusterDistribution);
@@ -42,14 +57,21 @@ const ClusterDistributionChart = () => {
   useEffect(() => {
     if (filteredData) {
       const initSlice = (tablePagination.page - 1) * tablePagination.perPage;
-      const updateRows = filteredData.slice(initSlice, initSlice + tablePagination.perPage);
+      const updateRows = filteredData.slice(
+        initSlice,
+        initSlice + tablePagination.perPage,
+      );
       setTableRow(updateRows);
     }
   }, [tablePagination, filteredData]);
 
   useEffect(() => {
     if (clusterDistribution) {
-      setFilteredData(clusterDistribution.filter((data) => onSearch(searchValue, data.node_name)));
+      setFilteredData(
+        clusterDistribution.filter((data) =>
+          onSearch(searchValue, data.node_name),
+        ),
+      );
       onSetPage(1);
     }
   }, [searchValue, clusterDistribution]);
@@ -57,21 +79,23 @@ const ClusterDistributionChart = () => {
   const onPerPageSelect = (event, selection) => {
     setTablePagination({
       page: 1,
-      perPage: selection
+      perPage: selection,
     });
   };
 
   const onSetPage = (selection) => {
     setTablePagination({
       ...tablePagination,
-      page: selection
+      page: selection,
     });
   };
 
   const columnNames = {
     nodeName: t('global-stats.cluster-distribution-node-name'),
-    memoryAvailable: t('global-stats.cluster-distribution-option-memory-available'),
-    memoryUsed: t('global-stats.cluster-distribution-option-memory-used')
+    memoryAvailable: t(
+      'global-stats.cluster-distribution-option-memory-available',
+    ),
+    memoryUsed: t('global-stats.cluster-distribution-option-memory-used'),
   };
 
   const searchInput = (
@@ -98,13 +122,24 @@ const ClusterDistributionChart = () => {
 
   const clusterTable = (
     <React.Fragment>
-      <Toolbar style={{ paddingTop: '0', marginBottom: '1rem' }} id="cluster-distribution-table-toolbar">
+      <Toolbar
+        style={{ paddingTop: '0', marginBottom: '1rem' }}
+        id="cluster-distribution-table-toolbar"
+      >
         <ToolbarContent>
-          <ToolbarItem variant={ToolbarItemVariant['search-filter']}>{searchInput}</ToolbarItem>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant['search-filter']}>
+            {searchInput}
+          </ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {pagination}
+          </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table aria-label="Cluster Distribution Table" variant={TableVariant.compact} borders>
+      <Table
+        aria-label="Cluster Distribution Table"
+        variant={TableVariant.compact}
+        borders
+      >
         <Thead>
           <Tr>
             <Th>{columnNames.nodeName}</Th>
@@ -116,7 +151,9 @@ const ClusterDistributionChart = () => {
           {tableRow?.map((row) => (
             <Tr key={row.node_name}>
               <Td dataLabel={columnNames.nodeName}>{row.node_name}</Td>
-              <Td dataLabel={columnNames.memoryAvailable}>{row.memory_available}</Td>
+              <Td dataLabel={columnNames.memoryAvailable}>
+                {row.memory_available}
+              </Td>
               <Td dataLabel={columnNames.memoryUsed}>{row.memory_used}</Td>
             </Tr>
           ))}
@@ -128,8 +165,14 @@ const ClusterDistributionChart = () => {
   // Find max domain
   let maxDomain = 1;
   if (clusterDistribution) {
-    const maxUsed = Math.max(...clusterDistribution.map((entry) => entry.memory_available), 1);
-    const maxAvailable = Math.max(...clusterDistribution.map((entry) => entry.memory_used), 1);
+    const maxUsed = Math.max(
+      ...clusterDistribution.map((entry) => entry.memory_available),
+      1,
+    );
+    const maxAvailable = Math.max(
+      ...clusterDistribution.map((entry) => entry.memory_used),
+      1,
+    );
     maxDomain = maxUsed + maxAvailable;
   }
 
@@ -138,7 +181,7 @@ const ClusterDistributionChart = () => {
       name: 'N ' + index + ': ' + item.node_name,
       y: item.memory_available,
       x: 'N ' + index + ': ' + item.node_name,
-      label: `${t('global-stats.cluster-distribution-option-memory-available')}: ${formatBytes(item.memory_available)}`
+      label: `${t('global-stats.cluster-distribution-option-memory-available')}: ${formatBytes(item.memory_available)}`,
     };
   });
 
@@ -147,7 +190,7 @@ const ClusterDistributionChart = () => {
       name: 'N ' + index + ': ' + item.node_name,
       y: item.memory_used,
       x: 'N ' + index + ': ' + item.node_name,
-      label: `${t('global-stats.cluster-distribution-option-memory-used')}: ${formatBytes(item.memory_used)}`
+      label: `${t('global-stats.cluster-distribution-option-memory-used')}: ${formatBytes(item.memory_used)}`,
     };
   });
 
@@ -158,11 +201,13 @@ const ClusterDistributionChart = () => {
         domainPadding={{ x: [30, 25] }}
         legendData={[
           {
-            name: t('global-stats.cluster-distribution-option-memory-used')
+            name: t('global-stats.cluster-distribution-option-memory-used'),
           },
           {
-            name: t('global-stats.cluster-distribution-option-memory-available')
-          }
+            name: t(
+              'global-stats.cluster-distribution-option-memory-available',
+            ),
+          },
         ]}
         domain={{ y: [0, maxDomain] }}
         legendPosition="bottom-left"
@@ -171,7 +216,7 @@ const ClusterDistributionChart = () => {
           bottom: 10,
           left: 200, // Adjusted to accommodate y axis label
           right: 50, // Adjusted to accommodate legend
-          top: 0
+          top: 0,
         }}
         width={700}
       >
@@ -179,7 +224,10 @@ const ClusterDistributionChart = () => {
         <ChartAxis dependentAxis tickFormat={(t) => formatBytes(t)} />
         <ChartStack horizontal>
           <ChartBar data={dataMemoryUsed} labelComponent={<ChartTooltip />} />
-          <ChartBar data={dataMemoryAvailable} labelComponent={<ChartTooltip />} />
+          <ChartBar
+            data={dataMemoryAvailable}
+            labelComponent={<ChartTooltip />}
+          />
         </ChartStack>
       </Chart>
     </div>
@@ -195,7 +243,10 @@ const ClusterDistributionChart = () => {
     }
 
     // Chart for low number of nodes
-    if (clusterDistribution && clusterDistribution.length < MAX_NUMBER_FOR_CHART) {
+    if (
+      clusterDistribution &&
+      clusterDistribution.length < MAX_NUMBER_FOR_CHART
+    ) {
       return clusterChart;
     }
 

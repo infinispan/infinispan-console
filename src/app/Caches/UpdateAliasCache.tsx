@@ -10,18 +10,23 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  ModalVariant
+  ModalVariant,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { useCacheAliases } from '@app/services/configHook';
+import { useCacheAliases } from '@app/hooks/configHook';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { CheckCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Update Alias Cache modal
  */
-const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
-  const { loading, setLoading, error, aliases, setAliases, update } = useCacheAliases(props.cacheName);
+const UpdateAliasCache = (props: {
+  cacheName: string;
+  isModalOpen: boolean;
+  closeModal: (boolean) => void;
+}) => {
+  const { loading, setLoading, error, aliases, setAliases, update } =
+    useCacheAliases(props.cacheName);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -60,10 +65,18 @@ const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; clos
       >
         {displayError()}
 
-        <Content>{t('caches.aliases.body1', { cacheName: props.cacheName })}</Content>
-        <Content>{t('caches.aliases.body2', { cacheName: props.cacheName })}</Content>
+        <Content>
+          {t('caches.aliases.body1', { cacheName: props.cacheName })}
+        </Content>
+        <Content>
+          {t('caches.aliases.body2', { cacheName: props.cacheName })}
+        </Content>
 
-        <FormGroup isInline fieldId="field-aliases" label={t('caches.aliases.values')}>
+        <FormGroup
+          isInline
+          fieldId="field-aliases"
+          label={t('caches.aliases.values')}
+        >
           <SelectMultiWithChips
             id="aliasesSelector"
             placeholder={t('caches.aliases.values')}
@@ -87,7 +100,10 @@ const UpdateAliasCache = (props: { cacheName: string; isModalOpen: boolean; clos
       onClose={() => clearUpdateAliasesModal(false)}
       aria-label={'Update aliases modal'}
     >
-      <ModalHeader titleIconVariant={'warning'} title={t('caches.aliases.title', { cacheName: props.cacheName })} />
+      <ModalHeader
+        titleIconVariant={'warning'}
+        title={t('caches.aliases.title', { cacheName: props.cacheName })}
+      />
       <ModalBody>{buildContent()}</ModalBody>
       <ModalFooter>
         <Button

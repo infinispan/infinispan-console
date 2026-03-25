@@ -17,7 +17,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
@@ -25,7 +25,7 @@ import { RoleGeneral } from '@app/AccessManagement/RoleDetailContent/RoleGeneral
 import { RolePermissions } from '@app/AccessManagement/RoleDetailContent/RolePermissions';
 import { RoleCaches } from '@app/AccessManagement/RoleDetailContent/RoleCaches';
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
-import { useDescribeRole } from '@app/services/rolesHook';
+import { useDescribeRole } from '@app/hooks/rolesHook';
 import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
 import { PageHeader } from '@patternfly/react-component-groups';
@@ -36,7 +36,9 @@ const RoleDetail = () => {
   const roleName = useParams()['roleName'] as string;
   const { t } = useTranslation();
   const { role, loading } = useDescribeRole(roleName);
-  const [activeTabKey, setActiveTabKey] = useState<'general' | 'permissions' | 'caches'>('general');
+  const [activeTabKey, setActiveTabKey] = useState<
+    'general' | 'permissions' | 'caches'
+  >('general');
   const [showGeneralDescription, setShowGeneralDescription] = useState(true);
   const [showPermissions, setShowPermissions] = useState(false);
   const [showCaches, setShowCaches] = useState(false);
@@ -47,7 +49,10 @@ const RoleDetail = () => {
     setIsOpen(!isOpen);
   };
 
-  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number | undefined) => {
+  const onSelect = (
+    _event: React.MouseEvent<Element, MouseEvent> | undefined,
+    value: string | number | undefined,
+  ) => {
     setIsOpen(false);
   };
 
@@ -69,7 +74,7 @@ const RoleDetail = () => {
   const tabs: AccessTab[] = [
     { name: t('access-management.role.tab-general'), key: 'general' },
     { name: t('access-management.role.tab-permissions'), key: 'permissions' },
-    { name: t('access-management.role.tab-caches'), key: 'caches' }
+    { name: t('access-management.role.tab-caches'), key: 'caches' },
   ];
 
   const buildTabs = () => {
@@ -116,7 +121,11 @@ const RoleDetail = () => {
         shouldFocusToggleOnSelect
       >
         <DropdownList>
-          <DropdownItem value={0} key="deleteRole" onClick={() => setIsDeleteRole(true)}>
+          <DropdownItem
+            value={0}
+            key="deleteRole"
+            onClick={() => setIsDeleteRole(true)}
+          >
             {t('common.actions.delete')}
           </DropdownItem>
         </DropdownList>
@@ -129,9 +138,15 @@ const RoleDetail = () => {
       <DataContainerBreadcrumb
         parentPage={'/access-management'}
         label={'access-management.title'}
-        currentPage={t('access-management.role.breadcrumb', { roleName: roleName })}
+        currentPage={t('access-management.role.breadcrumb', {
+          roleName: roleName,
+        })}
       />
-      <PageHeader title={role ? role.name : 'Role'} subtitle={''} actionMenu={displayActions()} />
+      <PageHeader
+        title={role ? role.name : 'Role'}
+        subtitle={''}
+        actionMenu={displayActions()}
+      />
       <PageSection variant={PageSectionVariants.default}>
         {buildTabs()}
         <Card>

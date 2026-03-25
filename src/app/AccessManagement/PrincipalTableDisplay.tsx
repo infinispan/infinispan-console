@@ -17,13 +17,25 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import {
+  ActionsColumn,
+  IAction,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
-import { useFetchAvailablePrincipals } from '@app/services/principalsHook';
-import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
+import { useFetchAvailablePrincipals } from '@app/hooks/principalsHook';
+import {
+  t_global_spacer_sm,
+  t_global_spacer_xl,
+} from '@patternfly/react-tokens';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { GrantNewAccess } from '@app/AccessManagement/GrantNewAccess';
@@ -34,12 +46,16 @@ import { useLocalStorage } from '@app/utils/localStorage';
 const PrincipalTableDisplay = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const { principals, setLoading, loading, error } = useFetchAvailablePrincipals();
+  const { principals, setLoading, loading, error } =
+    useFetchAvailablePrincipals();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [principalsPagination, setPrincipalsPagination] = useLocalStorage('principals-table', {
-    page: 1,
-    perPage: 5
-  });
+  const [principalsPagination, setPrincipalsPagination] = useLocalStorage(
+    'principals-table',
+    {
+      page: 1,
+      perPage: 5,
+    },
+  );
 
   const [filteredPrincipals, setFilteredPrincipals] = useState<Principal[]>([]);
   const [principalsRows, setPrincipalsRows] = useState<Principal[]>([]);
@@ -50,24 +66,34 @@ const PrincipalTableDisplay = () => {
 
   useEffect(() => {
     if (searchValue.trim() !== '') {
-      setFilteredPrincipals(principals.filter((role) => role.name.toLowerCase().includes(searchValue.toLowerCase())));
+      setFilteredPrincipals(
+        principals.filter((role) =>
+          role.name.toLowerCase().includes(searchValue.toLowerCase()),
+        ),
+      );
     } else {
       setFilteredPrincipals(principals);
     }
     setPrincipalsPagination({
       ...principalsPagination,
-      page: 1
+      page: 1,
     });
   }, [principals, searchValue]);
 
   useEffect(() => {
-    const initSlice = (principalsPagination.page - 1) * principalsPagination.perPage;
-    setPrincipalsRows(filteredPrincipals.slice(initSlice, initSlice + principalsPagination.perPage));
+    const initSlice =
+      (principalsPagination.page - 1) * principalsPagination.perPage;
+    setPrincipalsRows(
+      filteredPrincipals.slice(
+        initSlice,
+        initSlice + principalsPagination.perPage,
+      ),
+    );
   }, [filteredPrincipals, principalsPagination]);
 
   const columnNames = {
     name: t('access-management.principals.principal-name'),
-    roles: t('access-management.principals.roles')
+    roles: t('access-management.principals.roles'),
   };
 
   const rowActions = (principal: Principal): IAction[] => [
@@ -77,10 +103,10 @@ const PrincipalTableDisplay = () => {
       onClick: () => {
         setPrincipalToManage(principal.name);
         setIsManageRoles(true);
-      }
+      },
     },
     {
-      isSeparator: true
+      isSeparator: true,
     },
     {
       'aria-label': 'removePrincipal',
@@ -88,21 +114,21 @@ const PrincipalTableDisplay = () => {
       onClick: () => {
         setPrincipalToManage(principal.name);
         setIsRemovePrincipal(true);
-      }
-    }
+      },
+    },
   ];
 
   const onSetPage = (_event, pageNumber) => {
     setPrincipalsPagination({
       ...principalsPagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setPrincipalsPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -141,8 +167,10 @@ const PrincipalTableDisplay = () => {
                           data-cy={`detailLink-${currentRole}`}
                           key={currentRole}
                           to={{
-                            pathname: '/access-management/role/' + encodeURIComponent(currentRole),
-                            search: location.search
+                            pathname:
+                              '/access-management/role/' +
+                              encodeURIComponent(currentRole),
+                            search: location.search,
                           }}
                         >
                           {content}
@@ -176,9 +204,11 @@ const PrincipalTableDisplay = () => {
               <EmptyStateBody>
                 {principals.length == 0
                   ? t('access-management.principals.no-principals-body', {
-                      brandname: brandname
+                      brandname: brandname,
                     })
-                  : t('access-management.principals.no-filtered-principals-body')}
+                  : t(
+                      'access-management.principals.no-filtered-principals-body',
+                    )}
               </EmptyStateBody>
             </EmptyState>
           </Bullseye>
@@ -189,10 +219,10 @@ const PrincipalTableDisplay = () => {
 
   const grantAccessButtonHelper = (isEmptyPage?: boolean) => {
     const emptyPageButtonProp = {
-      style: { marginTop: t_global_spacer_xl.value }
+      style: { marginTop: t_global_spacer_xl.value },
     };
     const normalPageButtonProps = {
-      style: { marginLeft: t_global_spacer_sm.value }
+      style: { marginLeft: t_global_spacer_sm.value },
     };
     return (
       <Button
@@ -218,7 +248,7 @@ const PrincipalTableDisplay = () => {
         >
           <EmptyStateBody>
             {t('access-management.principals.no-principals-body', {
-              brandname: brandname
+              brandname: brandname,
             })}
           </EmptyStateBody>
           <EmptyStateFooter>{grantAccessButtonHelper(true)}</EmptyStateFooter>
@@ -227,21 +257,34 @@ const PrincipalTableDisplay = () => {
     }
 
     if (loading) {
-      return <TableLoadingState message={t('access-management.principals.loading-principals')} />;
+      return (
+        <TableLoadingState
+          message={t('access-management.principals.loading-principals')}
+        />
+      );
     }
 
     if (error) {
-      return <TableErrorState error={t('access-management.principals.loading-principals-error')} />;
+      return (
+        <TableErrorState
+          error={t('access-management.principals.loading-principals-error')}
+        />
+      );
     }
 
     return (
       <React.Fragment>
-        <Toolbar id="principal-table-toolbar" className={'principal-table-display'}>
+        <Toolbar
+          id="principal-table-toolbar"
+          className={'principal-table-display'}
+        >
           <ToolbarContent>
             <ToolbarGroup variant="filter-group">
               <ToolbarItem>
                 <SearchInput
-                  placeholder={t('access-management.principals.search-placeholder')}
+                  placeholder={t(
+                    'access-management.principals.search-placeholder',
+                  )}
                   value={searchValue}
                   onChange={(_event, value) => onSearchChange(value)}
                   onSearch={(_event, value) => onSearchChange(value)}
@@ -250,24 +293,41 @@ const PrincipalTableDisplay = () => {
               </ToolbarItem>
               <ToolbarItem>{grantAccessButtonHelper(false)}</ToolbarItem>
             </ToolbarGroup>
-            <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>
+              {pagination}
+            </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <Table className={'principals-table'} aria-label={'principals-table-label'} variant={'compact'}>
+        <Table
+          className={'principals-table'}
+          aria-label={'principals-table-label'}
+          variant={'compact'}
+        >
           <Thead noWrap>
             <Tr>
               <Th
                 info={{
-                  popover: <div>{t('access-management.principals.principal-name-tooltip')}</div>,
+                  popover: (
+                    <div>
+                      {t('access-management.principals.principal-name-tooltip')}
+                    </div>
+                  ),
                   ariaLabel: 'Principal name more information',
                   popoverProps: {
                     headerContent: columnNames.name,
                     footerContent: (
-                      <a target="_blank" rel="noreferrer" href={t('brandname.principals-docs-link')}>
-                        {t('access-management.principals.principals-hint-link', { brandname: brandname })}
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        href={t('brandname.principals-docs-link')}
+                      >
+                        {t(
+                          'access-management.principals.principals-hint-link',
+                          { brandname: brandname },
+                        )}
                       </a>
-                    )
-                  }
+                    ),
+                  },
                 }}
               >
                 {columnNames.name}
@@ -275,10 +335,19 @@ const PrincipalTableDisplay = () => {
               <Th>{columnNames.roles}</Th>
             </Tr>
           </Thead>
-          <Tbody>{principalsRows.length == 0 ? displayEmptySearch() : displayRowsPrincipals()}</Tbody>
+          <Tbody>
+            {principalsRows.length == 0
+              ? displayEmptySearch()
+              : displayRowsPrincipals()}
+          </Tbody>
         </Table>
-        <Toolbar id="principal-table-toolbar" className={'principal-table-display'}>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+        <Toolbar
+          id="principal-table-toolbar"
+          className={'principal-table-display'}
+        >
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {pagination}
+          </ToolbarItem>
         </Toolbar>
       </React.Fragment>
     );

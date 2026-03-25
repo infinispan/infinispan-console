@@ -12,9 +12,9 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
-import { useAddDeltaCounter } from '@app/services/countersHook';
+import { useAddDeltaCounter } from '@app/hooks/countersHook';
 import { useTranslation } from 'react-i18next';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
@@ -54,7 +54,7 @@ const AddDeltaCounter = (props: {
       <ModalBody>
         <Content component={'p'} isEditorial>
           {t('cache-managers.counters.modal-delta-content', {
-            counter: props.name
+            counter: props.name,
           })}
         </Content>
         <Form
@@ -74,7 +74,10 @@ const AddDeltaCounter = (props: {
             {validateForm() && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {t('cache-managers.counters.modal-delta-helper-invalid')}
                   </HelperTextItem>
                 </HelperText>

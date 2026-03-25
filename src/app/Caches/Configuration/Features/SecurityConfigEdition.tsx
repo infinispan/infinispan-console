@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useParams } from 'react-router-dom';
-import { useFetchEditableConfiguration } from '@app/services/configHook';
+import { useFetchEditableConfiguration } from '@app/hooks/configHook';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
@@ -14,7 +14,7 @@ import {
   Grid,
   GridItem,
   HelperText,
-  HelperTextItem
+  HelperTextItem,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
@@ -24,21 +24,29 @@ import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES } from '@services/cacheConfigUtils';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { useFetchAvailableRolesNames } from '@app/services/rolesHook';
+import { useFetchAvailableRolesNames } from '@app/hooks/rolesHook';
 
 const SecurityConfigEdition = () => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = useParams()['cacheName'] as string;
-  const { loadingConfig, errorConfig, editableConfig } = useFetchEditableConfiguration(cacheName);
-  const { availableRoleNames, loading: loadingRoles, error: rolesError } = useFetchAvailableRolesNames();
+  const { loadingConfig, errorConfig, editableConfig } =
+    useFetchEditableConfiguration(cacheName);
+  const {
+    availableRoleNames,
+    loading: loadingRoles,
+    error: rolesError,
+  } = useFetchAvailableRolesNames();
   const [roles, setRoles] = useState<string[]>([]);
-  const [validEntity, setvalidEntity] = useState<'success' | 'error' | 'default'>('default');
+  const [validEntity, setvalidEntity] = useState<
+    'success' | 'error' | 'default'
+  >('default');
   const [updateConfigError, setUpdateConfigError] = useState<string>('');
 
   const onSelectRoles = (selection) => {
-    if (roles.includes(selection)) setRoles(roles.filter((role) => role !== selection));
+    if (roles.includes(selection))
+      setRoles(roles.filter((role) => role !== selection));
     else setRoles([...roles, selection]);
   };
 
@@ -57,7 +65,11 @@ const SecurityConfigEdition = () => {
     setvalidEntity('success');
 
     ConsoleServices.caches()
-      .setConfigAttribute(cacheName, CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES, roles.join(' '))
+      .setConfigAttribute(
+        cacheName,
+        CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES,
+        roles.join(' '),
+      )
       .then((actionResponse) => {
         if (actionResponse.success) {
           addAlert(actionResponse);
@@ -84,7 +96,9 @@ const SecurityConfigEdition = () => {
         <Alert
           variant="danger"
           isInline
-          title={t('caches.edit-configuration.security-config-error', { error: updateConfigError })}
+          title={t('caches.edit-configuration.security-config-error', {
+            error: updateConfigError,
+          })}
         />
       </GridItem>
     );
@@ -110,7 +124,7 @@ const SecurityConfigEdition = () => {
           <GridItem span={12}>
             <Content>
               {t('caches.edit-configuration.security-description', {
-                brandname: brandname
+                brandname: brandname,
               })}
             </Content>
           </GridItem>
@@ -134,8 +148,13 @@ const SecurityConfigEdition = () => {
           {validEntity === 'error' && (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant={validEntity} icon={<ExclamationCircleIcon />}>
-                  {t('caches.edit-configuration.security-authz-roles-helper-invalid')}
+                <HelperTextItem
+                  variant={validEntity}
+                  icon={<ExclamationCircleIcon />}
+                >
+                  {t(
+                    'caches.edit-configuration.security-authz-roles-helper-invalid',
+                  )}
                 </HelperTextItem>
               </HelperText>
             </FormHelperText>

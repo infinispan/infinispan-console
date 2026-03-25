@@ -30,11 +30,15 @@ export function useFetchAvailablePrincipals() {
     principals,
     loading,
     setLoading,
-    error
+    error,
   };
 }
 
-export function useGrantAccess(principal: string, roles: string[], call: () => void) {
+export function useGrantAccess(
+  principal: string,
+  roles: string[],
+  call: () => void,
+) {
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
 
@@ -43,8 +47,12 @@ export function useGrantAccess(principal: string, roles: string[], call: () => v
       .grantAccess(
         principal,
         roles,
-        t('access-management.principals.grant-success', { principalName: principal }),
-        t('access-management.principals.grant-error', { principalName: principal })
+        t('access-management.principals.grant-success', {
+          principalName: principal,
+        }),
+        t('access-management.principals.grant-error', {
+          principalName: principal,
+        }),
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -52,7 +60,7 @@ export function useGrantAccess(principal: string, roles: string[], call: () => v
       .finally(() => call());
   };
   return {
-    onGrantAccess
+    onGrantAccess,
   };
 }
 
@@ -81,7 +89,7 @@ export function useDescribePrincipal(principalName: string) {
     principal,
     setLoading,
     loading,
-    error
+    error,
   };
 }
 
@@ -100,8 +108,14 @@ export function useGrantOrDenyRoles(principal: string, call: () => void) {
         principal,
         action,
         roles,
-        t('access-management.principals.' + action + '-role-success', { roles: roleStr, principalName: principal }),
-        t('access-management.principals.' + action + '-role-error', { roles: roleStr, principalName: principal })
+        t('access-management.principals.' + action + '-role-success', {
+          roles: roleStr,
+          principalName: principal,
+        }),
+        t('access-management.principals.' + action + '-role-error', {
+          roles: roleStr,
+          principalName: principal,
+        }),
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -110,7 +124,7 @@ export function useGrantOrDenyRoles(principal: string, call: () => void) {
   };
 
   return {
-    onGrantOrDenyRoles
+    onGrantOrDenyRoles,
   };
 }
 
@@ -122,8 +136,12 @@ export function useRemovePrincipal(principal: string, call: () => void) {
     ConsoleServices.security()
       .removePrincipal(
         principal,
-        t('access-management.principals.remove-success', { principalName: principal }),
-        t('access-management.principals.remove-error', { principalName: principal })
+        t('access-management.principals.remove-success', {
+          principalName: principal,
+        }),
+        t('access-management.principals.remove-error', {
+          principalName: principal,
+        }),
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -131,6 +149,6 @@ export function useRemovePrincipal(principal: string, call: () => void) {
       .finally(() => call());
   };
   return {
-    onRemove
+    onRemove,
   };
 }

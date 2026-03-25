@@ -27,7 +27,7 @@ import {
 import { useLocalStorage } from '@utils/localStorage';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { useSearch } from '@app/services/searchHook';
+import { useSearch } from '@app/hooks/searchHook';
 import displayUtils from '@services/displayUtils';
 import { ContentType } from '@services/infinispanRefData';
 

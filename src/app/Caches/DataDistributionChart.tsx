@@ -15,17 +15,34 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { Table, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { Chart, ChartBar, ChartGroup, ChartThemeColor, ChartVoronoiContainer } from '@patternfly/react-charts/victory';
+import {
+  Table,
+  TableVariant,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@patternfly/react-table';
+import {
+  Chart,
+  ChartBar,
+  ChartGroup,
+  ChartThemeColor,
+  ChartVoronoiContainer,
+} from '@patternfly/react-charts/victory';
 import { SearchIcon } from '@patternfly/react-icons';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { useTranslation } from 'react-i18next';
-import { useDataDistribution } from '@app/services/dataDistributionHook';
-import { DataDistributionStatsOption, StorageType } from '@services/infinispanRefData';
+import { useDataDistribution } from '@app/hooks/dataDistributionHook';
+import {
+  DataDistributionStatsOption,
+  StorageType,
+} from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { useCacheDetail } from '@app/services/cachesHook';
+import { useCacheDetail } from '@app/hooks/cachesHook';
 import { onSearch } from '@app/utils/searchFilter';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
@@ -35,13 +52,20 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   const { t } = useTranslation();
   const { cache } = useCacheDetail();
   const MAX_NUMBER_FOR_CHART = 5;
-  const [statsOption, setStatsOption] = useState<string>(DataDistributionStatsOption.Entries);
-  const [tablePagination, setTablePagination] = useLocalStorage('data-distribution-table', {
-    page: 1,
-    perPage: 5
-  });
+  const [statsOption, setStatsOption] = useState<string>(
+    DataDistributionStatsOption.Entries,
+  );
+  const [tablePagination, setTablePagination] = useLocalStorage(
+    'data-distribution-table',
+    {
+      page: 1,
+      perPage: 5,
+    },
+  );
   const [tableRow, setTableRow] = useState<DataDistribution[]>();
-  const { dataDistribution, loading, error } = useDataDistribution(props.cacheName);
+  const { dataDistribution, loading, error } = useDataDistribution(
+    props.cacheName,
+  );
   const [displayMemoryUsed, setDisplayMemoryUsed] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [filteredData, setFilteredData] = useState<DataDistribution[]>([]);
@@ -53,14 +77,21 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   useEffect(() => {
     if (filteredData) {
       const initSlice = (tablePagination.page - 1) * tablePagination.perPage;
-      const updateRows = filteredData.slice(initSlice, initSlice + tablePagination.perPage);
+      const updateRows = filteredData.slice(
+        initSlice,
+        initSlice + tablePagination.perPage,
+      );
       setTableRow(updateRows);
     }
   }, [tablePagination, filteredData]);
 
   useEffect(() => {
     if (dataDistribution) {
-      setFilteredData(dataDistribution.filter((data) => onSearch(searchValue, data.node_name)));
+      setFilteredData(
+        dataDistribution.filter((data) =>
+          onSearch(searchValue, data.node_name),
+        ),
+      );
       onSetPage(1);
     }
   }, [searchValue, dataDistribution]);
@@ -75,22 +106,24 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   const onPerPageSelect = (event, selection) => {
     setTablePagination({
       page: 1,
-      perPage: selection
+      perPage: selection,
     });
   };
 
   const onSetPage = (selection) => {
     setTablePagination({
       ...tablePagination,
-      page: selection
+      page: selection,
     });
   };
 
   const columnNames = {
     nodeName: t('caches.cache-metrics.data-distribution-node-name'),
     entries: t('caches.cache-metrics.data-distribution-option-entries'),
-    memory_entries: t('caches.cache-metrics.data-distribution-option-memory-entries'),
-    memory_used: t('caches.cache-metrics.data-distribution-option-memory-used')
+    memory_entries: t(
+      'caches.cache-metrics.data-distribution-option-memory-entries',
+    ),
+    memory_used: t('caches.cache-metrics.data-distribution-option-memory-used'),
   };
 
   const searchInput = (
@@ -120,10 +153,16 @@ const DataDistributionChart = (props: { cacheName: string }) => {
       <Toolbar id="distribution-table-toolbar">
         <ToolbarContent>
           <ToolbarItem>{searchInput}</ToolbarItem>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {pagination}
+          </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table aria-label={t('caches.cache-metrics.data-distribution-table')} variant={TableVariant.compact} borders>
+      <Table
+        aria-label={t('caches.cache-metrics.data-distribution-table')}
+        variant={TableVariant.compact}
+        borders
+      >
         <Thead>
           <Tr>
             <Th>{columnNames.nodeName}</Th>
@@ -139,11 +178,21 @@ const DataDistributionChart = (props: { cacheName: string }) => {
                 <Bullseye>
                   <EmptyState
                     variant={EmptyStateVariant.sm}
-                    titleText={<>{t('caches.cache-metrics.data-distribution-no-filtered')}</>}
+                    titleText={
+                      <>
+                        {t(
+                          'caches.cache-metrics.data-distribution-no-filtered',
+                        )}
+                      </>
+                    }
                     icon={SearchIcon}
                     headingLevel="h2"
                   >
-                    <EmptyStateBody>{t('caches.cache-metrics.data-distribution-no-filtered-body')}</EmptyStateBody>
+                    <EmptyStateBody>
+                      {t(
+                        'caches.cache-metrics.data-distribution-no-filtered-body',
+                      )}
+                    </EmptyStateBody>
                   </EmptyState>
                 </Bullseye>
               </Td>
@@ -153,7 +202,9 @@ const DataDistributionChart = (props: { cacheName: string }) => {
               <Tr key={row.node_name}>
                 <Td dataLabel={columnNames.nodeName}>{row.node_name}</Td>
                 <Td dataLabel={columnNames.entries}>{row.total_entries}</Td>
-                <Td dataLabel={columnNames.memory_entries}>{row.memory_entries}</Td>
+                <Td dataLabel={columnNames.memory_entries}>
+                  {row.memory_entries}
+                </Td>
                 <Td dataLabel={columnNames.memory_used}>{row.memory_used}</Td>
               </Tr>
             ))
@@ -167,11 +218,20 @@ const DataDistributionChart = (props: { cacheName: string }) => {
   let maxDomain = 1;
   if (dataDistribution) {
     if (statsOption === DataDistributionStatsOption.Entries) {
-      const totalEntriesMaxDomain = Math.max(...dataDistribution.map((entry) => entry.total_entries), 1);
-      const memoryEntriesMaxDomain = Math.max(...dataDistribution.map((entry) => entry.memory_entries), 1);
+      const totalEntriesMaxDomain = Math.max(
+        ...dataDistribution.map((entry) => entry.total_entries),
+        1,
+      );
+      const memoryEntriesMaxDomain = Math.max(
+        ...dataDistribution.map((entry) => entry.memory_entries),
+        1,
+      );
       maxDomain = Math.max(totalEntriesMaxDomain, memoryEntriesMaxDomain);
     } else if (statsOption === DataDistributionStatsOption.MemoryUsed) {
-      maxDomain = Math.max(...dataDistribution.map((entry) => entry.memory_used), 1);
+      maxDomain = Math.max(
+        ...dataDistribution.map((entry) => entry.memory_used),
+        1,
+      );
     }
   }
 
@@ -179,7 +239,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     return {
       name: 'N ' + index + ': ' + item.node_name,
       y: item.total_entries > 0 ? item.total_entries : 0,
-      x: 'N ' + index + ':' + item.node_name
+      x: 'N ' + index + ':' + item.node_name,
     };
   });
 
@@ -187,7 +247,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     return {
       name: 'N ' + index + ': ' + item.node_name,
       y: item.memory_entries > 0 ? item.memory_entries : 0,
-      x: 'N ' + index + ':' + item.node_name
+      x: 'N ' + index + ':' + item.node_name,
     };
   });
 
@@ -195,7 +255,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
     return {
       name: 'N ' + index + ': ' + item.node_name,
       y: item.memory_used > 0 ? item.memory_used : 0,
-      x: 'N ' + index + ':' + item.node_name
+      x: 'N ' + index + ':' + item.node_name,
     };
   });
 
@@ -205,7 +265,7 @@ const DataDistributionChart = (props: { cacheName: string }) => {
         height: '393px',
         width: '100%',
         maxWidth: '700px',
-        margin: 'auto'
+        margin: 'auto',
       }}
     >
       <Chart
@@ -230,16 +290,22 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           statsOption === DataDistributionStatsOption.MemoryUsed
             ? [
                 {
-                  name: t('caches.cache-metrics.data-distribution-option-memory-used')
-                }
+                  name: t(
+                    'caches.cache-metrics.data-distribution-option-memory-used',
+                  ),
+                },
               ]
             : [
                 {
-                  name: t('caches.cache-metrics.data-distribution-option-entries')
+                  name: t(
+                    'caches.cache-metrics.data-distribution-option-entries',
+                  ),
                 },
                 {
-                  name: t('caches.cache-metrics.data-distribution-option-memory-entries')
-                }
+                  name: t(
+                    'caches.cache-metrics.data-distribution-option-memory-entries',
+                  ),
+                },
               ]
         }
         legendOrientation="horizontal"
@@ -249,11 +315,13 @@ const DataDistributionChart = (props: { cacheName: string }) => {
           bottom: 10,
           left: 200, // Adjusted to accommodate y axis label
           right: 50, // Adjusted to accommodate legend
-          top: 0
+          top: 0,
         }}
         width={700}
         themeColor={
-          statsOption === DataDistributionStatsOption.MemoryUsed ? ChartThemeColor.purple : ChartThemeColor.blue
+          statsOption === DataDistributionStatsOption.MemoryUsed
+            ? ChartThemeColor.purple
+            : ChartThemeColor.blue
         }
       >
         {statsOption === DataDistributionStatsOption.MemoryUsed ? (
@@ -279,7 +347,9 @@ const DataDistributionChart = (props: { cacheName: string }) => {
       return <TableErrorState error={error} />;
     }
 
-    return dataDistribution && dataDistribution.length <= MAX_NUMBER_FOR_CHART ? distributionChart : distributionTable;
+    return dataDistribution && dataDistribution.length <= MAX_NUMBER_FOR_CHART
+      ? distributionChart
+      : distributionTable;
   };
 
   const buildStatsOption = () => {

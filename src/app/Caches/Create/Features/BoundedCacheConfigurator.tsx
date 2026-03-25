@@ -9,13 +9,17 @@ import {
   InputGroup,
   InputGroupItem,
   Radio,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
-import { EvictionStrategy, EvictionType, MaxSizeUnit } from '@services/infinispanRefData';
+import {
+  EvictionStrategy,
+  EvictionType,
+  MaxSizeUnit,
+} from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
-import { useCreateCache } from '@app/services/createCacheHook';
+import { useCreateCache } from '@app/hooks/createCacheHook';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
@@ -27,10 +31,18 @@ const BoundedCacheConfigurator = () => {
   const brandname = t('brandname.brandname');
 
   //Bounded Cache
-  const [evictionType, setEvictionType] = useState<'size' | 'count'>(configuration.feature.boundedCache.evictionType);
-  const [maxSize, setMaxSize] = useState<string>(configuration.feature.boundedCache.maxSize.toString());
-  const [maxCount, setMaxCount] = useState<string>(configuration.feature.boundedCache.maxCount.toString());
-  const [evictionStrategy, setEvictionStrategy] = useState<string>(configuration.feature.boundedCache.evictionStrategy);
+  const [evictionType, setEvictionType] = useState<'size' | 'count'>(
+    configuration.feature.boundedCache.evictionType,
+  );
+  const [maxSize, setMaxSize] = useState<string>(
+    configuration.feature.boundedCache.maxSize.toString(),
+  );
+  const [maxCount, setMaxCount] = useState<string>(
+    configuration.feature.boundedCache.maxCount.toString(),
+  );
+  const [evictionStrategy, setEvictionStrategy] = useState<string>(
+    configuration.feature.boundedCache.evictionStrategy,
+  );
 
   // Helper states for the maxSize input
   const [maxSizeUnit, setMaxSizeUnit] = useState<MaxSizeUnit>(MaxSizeUnit.MB);
@@ -52,21 +64,26 @@ const BoundedCacheConfigurator = () => {
           boundedCache: {
             evictionType: evictionType,
             maxSize: evictionType === 'size' ? validateNumber(maxSize)[1] : 0,
-            maxCount: evictionType === 'count' ? validateNumber(maxCount, true)[1] : 0,
+            maxCount:
+              evictionType === 'count' ? validateNumber(maxCount, true)[1] : 0,
             evictionStrategy: evictionStrategy,
             maxSizeUnit: maxSizeUnit.toString(),
-            valid: boundedFeatureValidation()
-          }
-        }
+            valid: boundedFeatureValidation(),
+          },
+        },
       };
     });
   }, [evictionType, maxSize, maxCount, evictionStrategy, maxSizeUnit]);
 
-  const validateBoundedValue = (testedEvictionType: 'count' | 'size'): 'success' | 'default' | 'error' => {
+  const validateBoundedValue = (
+    testedEvictionType: 'count' | 'size',
+  ): 'success' | 'default' | 'error' => {
     if (evictionType !== testedEvictionType) {
       return 'default';
     }
-    return evictionType === 'count' ? validateNumber(maxCount, true)[0] : validateNumber(maxSize)[0];
+    return evictionType === 'count'
+      ? validateNumber(maxCount, true)[0]
+      : validateNumber(maxSize)[0];
   };
 
   return (
@@ -100,7 +117,10 @@ const BoundedCacheConfigurator = () => {
               <PopoverHelp
                 name={'max-size'}
                 label={t('caches.create.configurations.feature.max-size')}
-                content={t('caches.create.configurations.feature.max-size-tooltip', { brandname: brandname })}
+                content={t(
+                  'caches.create.configurations.feature.max-size-tooltip',
+                  { brandname: brandname },
+                )}
               />
             }
             isRequired
@@ -132,8 +152,13 @@ const BoundedCacheConfigurator = () => {
             {validateBoundedValue('size') === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={validateBoundedValue('size')} icon={<ExclamationCircleIcon />}>
-                    {t('caches.create.configurations.feature.max-size-helper-invalid')}
+                  <HelperTextItem
+                    variant={validateBoundedValue('size')}
+                    icon={<ExclamationCircleIcon />}
+                  >
+                    {t(
+                      'caches.create.configurations.feature.max-size-helper-invalid',
+                    )}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
@@ -150,7 +175,10 @@ const BoundedCacheConfigurator = () => {
               <PopoverHelp
                 name="max-count"
                 label={t('caches.create.configurations.feature.max-count')}
-                content={t('caches.create.configurations.feature.max-count-tooltip', { brandname: brandname })}
+                content={t(
+                  'caches.create.configurations.feature.max-count-tooltip',
+                  { brandname: brandname },
+                )}
               />
             }
           >
@@ -166,8 +194,13 @@ const BoundedCacheConfigurator = () => {
             {validateBoundedValue('count') === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={validateBoundedValue('count')} icon={<ExclamationCircleIcon />}>
-                    {t('caches.create.configurations.feature.max-count-helper-invalid')}
+                  <HelperTextItem
+                    variant={validateBoundedValue('count')}
+                    icon={<ExclamationCircleIcon />}
+                  >
+                    {t(
+                      'caches.create.configurations.feature.max-count-helper-invalid',
+                    )}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
@@ -181,8 +214,13 @@ const BoundedCacheConfigurator = () => {
           labelHelp={
             <PopoverHelp
               name="eviction-strategy"
-              label={t('caches.create.configurations.feature.eviction-strategy')}
-              content={t('caches.create.configurations.feature.eviction-strategy-tooltip', { brandname: brandname })}
+              label={t(
+                'caches.create.configurations.feature.eviction-strategy',
+              )}
+              content={t(
+                'caches.create.configurations.feature.eviction-strategy-tooltip',
+                { brandname: brandname },
+              )}
             />
           }
         >

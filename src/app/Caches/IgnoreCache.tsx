@@ -1,9 +1,16 @@
 import React from 'react';
-import { Button, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
-import { useCaches } from '@app/services/dataContainerHooks';
+import {
+  Button,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from '@patternfly/react-core';
+import { useCaches } from '@app/hooks/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 import { EyeIcon, EyeSlashIcon } from '@patternfly/react-icons';
-import { useIgnoreCache, useUndoIgnoreCache } from '@app/services/cachesHook';
+import { useIgnoreCache, useUndoIgnoreCache } from '@app/hooks/cachesHook';
 
 /**
  * Ignore cache modal
@@ -61,19 +68,31 @@ const IgnoreCache = (props: {
       variant={'small'}
       isOpen={props.isModalOpen}
       onClose={() => clearIgnoreCacheModal(false)}
-      aria-label={props.action == 'ignore' ? 'Hide cache modal' : 'Show cache modal'}
+      aria-label={
+        props.action == 'ignore' ? 'Hide cache modal' : 'Show cache modal'
+      }
     >
       <ModalHeader
         titleIconVariant={props.action == 'ignore' ? EyeSlashIcon : EyeIcon}
-        title={props.action == 'ignore' ? t('caches.ignore.hide-title') : t('caches.ignore.show-title')}
+        title={
+          props.action == 'ignore'
+            ? t('caches.ignore.hide-title')
+            : t('caches.ignore.show-title')
+        }
       />
       <ModalBody>{buildContent()}</ModalBody>
       <ModalFooter>
         <Button
           aria-label={props.action == 'ignore' ? 'Hide' : 'Show'}
-          key={props.action == 'ignore' ? 'ignore-modal-button' : 'undo-ignore-modal'}
+          key={
+            props.action == 'ignore'
+              ? 'ignore-modal-button'
+              : 'undo-ignore-modal'
+          }
           onClick={handleIgnoreButton}
-          data-cy={props.action == 'ignore' ? 'hideCacheButton' : 'showCacheButton'}
+          data-cy={
+            props.action == 'ignore' ? 'hideCacheButton' : 'showCacheButton'
+          }
         >
           {props.action == 'ignore' ? 'Hide' : 'Show'}
         </Button>

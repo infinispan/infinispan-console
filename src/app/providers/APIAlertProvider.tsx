@@ -20,35 +20,44 @@ const APIAlertProvider = ({ children }) => {
   const [alertMap, setAlertMap] = useState(new Map());
   const [bannerMap, setBannerMap] = useState(new Map());
 
-  const addBanner = (id: string, message: string) => {
-    setBannerMap(new Map(bannerMap.set(id, message)));
-  };
+  const addBanner = useCallback((id: string, message: string) => {
+    setBannerMap((prev) => new Map(prev).set(id, message));
+  }, []);
 
-  const removeBanner = (id: string) => {
-    bannerMap.delete(id);
-    setBannerMap(new Map(bannerMap));
-  };
+  const removeBanner = useCallback((id: string) => {
+    setBannerMap((prev) => {
+      const next = new Map(prev);
+      next.delete(id);
+      return next;
+    });
+  }, []);
 
-  const addAlert = (actionResponse) => {
-    const id = alertCounter++;
-    setAlertMap(new Map(alertMap.set(id, actionResponse)));
-    setTimeout(() => {
-      removeAlert(id);
-    }, 10000);
-  };
+  const removeAlert = useCallback((id: number) => {
+    setAlertMap((prev) => {
+      const next = new Map(prev);
+      next.delete(id);
+      return next;
+    });
+  }, []);
 
-  const removeAlert = (id: number) => {
-    alertMap.delete(id);
-    setAlertMap(new Map(alertMap));
-  };
+  const addAlert = useCallback(
+    (actionResponse) => {
+      const id = alertCounter++;
+      setAlertMap((prev) => new Map(prev).set(id, actionResponse));
+      setTimeout(() => {
+        removeAlert(id);
+      }, 10000);
+    },
+    [removeAlert],
+  );
 
   const contextValue = {
     bannerMap,
-    addBanner: useCallback(addBanner, []),
-    removeBanner: useCallback(removeBanner, []),
+    addBanner,
+    removeBanner,
     alertMap,
-    addAlert: useCallback(addAlert, []),
-    removeAlert: useCallback(removeAlert, []),
+    addAlert,
+    removeAlert,
   };
 
   return (

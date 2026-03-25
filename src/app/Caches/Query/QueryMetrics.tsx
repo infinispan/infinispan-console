@@ -11,15 +11,15 @@ import {
   DividerVariant,
   Level,
   LevelItem,
-  Spinner
+  Spinner,
 } from '@patternfly/react-core';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { ClearMetrics } from '@app/ClearMetrics/ClearMetrics';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
-import { useSearchStats } from '@app/services/statsHook';
+import { useSearchStats } from '@app/hooks/statsHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 
 /**
@@ -30,7 +30,8 @@ const QueryMetrics = (props: { cacheName: string }) => {
   const { connectedUser } = useConnectedUser();
   const { stats, loading, error, setLoading } = useSearchStats(props.cacheName);
 
-  const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(false);
+  const [isClearMetricsModalOpen, setClearMetricsModalOpen] =
+    useState<boolean>(false);
 
   const closeClearMetricsModal = () => {
     setClearMetricsModalOpen(false);
@@ -55,22 +56,43 @@ const QueryMetrics = (props: { cacheName: string }) => {
               {queryStat.name} <Divider component={DividerVariant.hr} />
             </Content>
             <Content component={ContentVariants.dl} key={'stats-' + num}>
-              <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-count-label-' + num}>
+              <Content
+                component={ContentVariants.dt}
+                style={{ width: 250 }}
+                key={'stats-count-label-' + num}
+              >
                 {t('caches.query.stat-count')}
               </Content>
-              <Content component={ContentVariants.dd} key={'stats-count-value-' + num}>
+              <Content
+                component={ContentVariants.dd}
+                key={'stats-count-value-' + num}
+              >
                 {queryStat.count}
               </Content>
-              <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-qverage-label-' + num}>
+              <Content
+                component={ContentVariants.dt}
+                style={{ width: 250 }}
+                key={'stats-qverage-label-' + num}
+              >
                 {t('caches.query.stat-average')}
               </Content>
-              <Content component={ContentVariants.dd} key={'stats-average-value-' + num}>
+              <Content
+                component={ContentVariants.dd}
+                key={'stats-average-value-' + num}
+              >
                 {queryStat.average}
               </Content>
-              <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-max-label-' + num}>
+              <Content
+                component={ContentVariants.dt}
+                style={{ width: 250 }}
+                key={'stats-max-label-' + num}
+              >
                 {t('caches.query.stat-max')}
               </Content>
-              <Content component={ContentVariants.dd} key={'stats-max-value-' + num}>
+              <Content
+                component={ContentVariants.dd}
+                key={'stats-max-value-' + num}
+              >
                 {queryStat.max}
               </Content>
               {displaySlowest(queryStat, num)}
@@ -87,10 +109,17 @@ const QueryMetrics = (props: { cacheName: string }) => {
     }
     return (
       <React.Fragment>
-        <Content component={ContentVariants.dt} style={{ width: 250 }} key={'stats-slowest-label-' + num}>
+        <Content
+          component={ContentVariants.dt}
+          style={{ width: 250 }}
+          key={'stats-slowest-label-' + num}
+        >
           {t('caches.query.stat-slowest')}
         </Content>
-        <Content component={ContentVariants.dd} key={'stats-slowest-value-' + num}>
+        <Content
+          component={ContentVariants.dd}
+          key={'stats-slowest-value-' + num}
+        >
           <code>{queryStat.slowest}</code>
         </Content>
       </React.Fragment>
@@ -98,7 +127,9 @@ const QueryMetrics = (props: { cacheName: string }) => {
   };
 
   const buildClearStatsButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+    if (
+      !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
+    ) {
       return '';
     }
 

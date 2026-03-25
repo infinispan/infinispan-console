@@ -12,19 +12,29 @@ const initialUserState = {
   reloadAcl: (): Promise<boolean> => {
     return Promise.resolve(true);
   },
-  init: 'PENDING'
+  init: 'PENDING',
 };
 
 export const UserContext = React.createContext(initialUserState);
 
 const UserContextProvider = ({ children }) => {
-  const [loadingAcl, setLoadingAcl] = useState(!ConsoleServices.isWelcomePage());
-  const [connectedUser, setConnectedUser] = useState(initialUserState.connectedUser);
+  const [loadingAcl, setLoadingAcl] = useState(
+    !ConsoleServices.isWelcomePage(),
+  );
+  const [connectedUser, setConnectedUser] = useState(
+    initialUserState.connectedUser,
+  );
   const [notSecured, setNotSecured] = useState(initialUserState.notSecured);
   const [error, setError] = useState(initialUserState.error);
   const navigate = useNavigate();
   const [init, setInit] = useState<
-    'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN' | 'HTTP_LOGIN'
+    | 'SERVER_ERROR'
+    | 'READY'
+    | 'NOT_READY'
+    | 'PENDING'
+    | 'DONE'
+    | 'LOGIN'
+    | 'HTTP_LOGIN'
   >('PENDING');
 
   useEffect(() => {
@@ -45,11 +55,20 @@ const UserContextProvider = ({ children }) => {
                   if (!KeycloakService.Instance.authenticated()) {
                     KeycloakService.Instance.login();
                   }
-                  localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
-                  localStorage.setItem('react-refresh-token', KeycloakService.keycloakAuth.refreshToken as string);
+                  localStorage.setItem(
+                    'react-token',
+                    KeycloakService.keycloakAuth.token as string,
+                  );
+                  localStorage.setItem(
+                    'react-refresh-token',
+                    KeycloakService.keycloakAuth.refreshToken as string,
+                  );
                   setTimeout(() => {
                     KeycloakService.Instance.getToken().then((result) => {
-                      localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
+                      localStorage.setItem(
+                        'react-token',
+                        KeycloakService.keycloakAuth.token as string,
+                      );
                     });
                   }, 60000);
                   setInit('DONE');
@@ -77,7 +96,10 @@ const UserContextProvider = ({ children }) => {
         .userAcl()
         .then((eitherAcl) => {
           if (eitherAcl.isRight()) {
-            const maybeConnected = { name: eitherAcl.value.user, acl: eitherAcl.value };
+            const maybeConnected = {
+              name: eitherAcl.value.user,
+              acl: eitherAcl.value,
+            };
             setConnectedUser(maybeConnected);
           } else {
             setError(eitherAcl.value.message);
@@ -87,21 +109,24 @@ const UserContextProvider = ({ children }) => {
     }
   }, [loadingAcl, init]);
 
-  const logUser = () => {
+  const logUser = useCallback(() => {
     setError('');
     ConsoleServices.security()
       .userAcl()
       .then((eitherAcl) => {
         if (eitherAcl.isRight()) {
-          const maybeConnected = { name: eitherAcl.value.user, acl: eitherAcl.value };
+          const maybeConnected = {
+            name: eitherAcl.value.user,
+            acl: eitherAcl.value,
+          };
           setConnectedUser(maybeConnected);
         } else {
           setError(eitherAcl.value.message);
         }
       });
-  };
+  }, []);
 
-  const reloadAcl = (): Promise<boolean> => {
+  const reloadAcl = useCallback((): Promise<boolean> => {
     return ConsoleServices.security()
       .userAcl()
       .then((eitherAcl) => {
@@ -109,31 +134,33 @@ const UserContextProvider = ({ children }) => {
           setConnectedUser((prevState) => {
             return {
               ...prevState,
-              acl: eitherAcl.value
+              acl: eitherAcl.value,
             };
           });
         }
         return eitherAcl.isRight();
       });
-  };
+  }, []);
 
-  const notSecuredModeOn = () => {
+  const notSecuredModeOn = useCallback(() => {
     setNotSecured(true);
     ConsoleServices.authentication().noSecurityMode();
     navigate('/' + location.search);
-  };
+  }, [navigate]);
 
   const contextValue = {
     error: error,
     connectedUser: connectedUser,
     notSecured: notSecured,
-    logUser: useCallback(logUser, []),
-    notSecuredModeOn: useCallback(notSecuredModeOn, []),
-    reloadAcl: useCallback(reloadAcl, []),
-    init: init
+    logUser: logUser,
+    notSecuredModeOn: notSecuredModeOn,
+    reloadAcl: reloadAcl,
+    init: init,
   };
 
-  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
+  );
 };
 
 export { UserContextProvider };

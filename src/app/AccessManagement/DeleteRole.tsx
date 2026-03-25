@@ -1,9 +1,22 @@
 import React from 'react';
-import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { useDeleteRole } from '@app/services/rolesHook';
+import { useDeleteRole } from '@app/hooks/rolesHook';
 
-const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
+const DeleteRole = (props: {
+  name: string;
+  isModalOpen: boolean;
+  submitModal: () => void;
+  closeModal: () => void;
+}) => {
   const { t } = useTranslation();
   const { onDeleteRole } = useDeleteRole(props.name, props.submitModal);
   const brandname = t('brandname.brandname');
@@ -19,13 +32,20 @@ const DeleteRole = (props: { name: string; isModalOpen: boolean; submitModal: ()
     >
       <ModalHeader
         titleIconVariant={'danger'}
-        title={t('access-management.roles.modal-delete-title', { name: props.name })}
+        title={t('access-management.roles.modal-delete-title', {
+          name: props.name,
+        })}
       />
       <ModalBody>
         <Content>
-          {t('access-management.roles.modal-delete-description-1', { name: props.name, brandname: brandname })}
+          {t('access-management.roles.modal-delete-description-1', {
+            name: props.name,
+            brandname: brandname,
+          })}
         </Content>
-        <Content>{t('access-management.roles.modal-delete-description-2')}</Content>
+        <Content>
+          {t('access-management.roles.modal-delete-description-2')}
+        </Content>
       </ModalBody>
       <ModalFooter>
         <Button

@@ -28,7 +28,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
-import { useSearch } from '@app/services/searchHook';
+import { useSearch } from '@app/hooks/searchHook';
 import { DeleteByQueryEntries } from '@app/Caches/Query/DeleteByQueryEntries';
 import {
   CodeEditor,

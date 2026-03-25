@@ -22,7 +22,7 @@ import {
   PersistentStorageConfig,
 } from '@services/infinispanRefData';
 import { kebabCase } from '@app/utils/convertStringCase';
-import { useCreateCache } from '@app/services/createCacheHook';
+import { useCreateCache } from '@app/hooks/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { t_global_spacer_md } from '@patternfly/react-tokens';

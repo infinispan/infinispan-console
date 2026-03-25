@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { formatXml } from '@app/utils/dataSerializerUtils';
 import { useApiAlert } from '@utils/useApiAlert';
-import { CONF_MUTABLE_TRACING_CATEGORIES, CONF_MUTABLE_TRACING_ENABLED } from '@services/cacheConfigUtils';
+import {
+  CONF_MUTABLE_TRACING_CATEGORIES,
+  CONF_MUTABLE_TRACING_ENABLED,
+} from '@services/cacheConfigUtils';
 
 export function useCacheAliases(cacheName: string) {
   const { addAlert } = useApiAlert();

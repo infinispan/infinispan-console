@@ -5,7 +5,8 @@ import { ConsoleServices } from '@services/ConsoleServices';
  * Hook for cache data distribution chart
  */
 export function useDataDistribution(cacheName: string) {
-  const [dataDistribution, setDataDistribution] = useState<DataDistribution[]>();
+  const [dataDistribution, setDataDistribution] =
+    useState<DataDistribution[]>();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +33,8 @@ export function useDataDistribution(cacheName: string) {
  * Hook for cluster data distribution chart
  */
 export function useClusterDistribution() {
-  const [clusterDistribution, setClusterDistribution] = useState<ClusterDistribution[]>();
+  const [clusterDistribution, setClusterDistribution] =
+    useState<ClusterDistribution[]>();
   const [errorCluster, setErrorCluster] = useState('');
   const [loadingCluster, setLoadingCluster] = useState(true);
 

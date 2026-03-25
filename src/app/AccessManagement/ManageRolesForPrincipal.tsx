@@ -15,14 +15,21 @@ import {
   ModalVariant,
   SelectOptionProps,
   Spinner,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { IField } from '@services/formUtils';
-import { AddCircleOIcon, EditIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
-import { useFetchAvailableRoles } from '@app/services/rolesHook';
+import {
+  AddCircleOIcon,
+  EditIcon,
+  ExclamationCircleIcon,
+} from '@patternfly/react-icons';
+import { useFetchAvailableRoles } from '@app/hooks/rolesHook';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
-import { useDescribePrincipal, useGrantOrDenyRoles } from '@app/services/principalsHook';
+import {
+  useDescribePrincipal,
+  useGrantOrDenyRoles,
+} from '@app/hooks/principalsHook';
 
 const ManageRolesForPrincipal = (props: {
   principalName: string;
@@ -33,7 +40,9 @@ const ManageRolesForPrincipal = (props: {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { roles } = useFetchAvailableRoles();
-  const { principal, loading, error, setLoading } = useDescribePrincipal(props.principalName);
+  const { principal, loading, error, setLoading } = useDescribePrincipal(
+    props.principalName,
+  );
   const rolesOptions = () => {
     const array: SelectOptionProps[] = [];
     roles.forEach((role) => {
@@ -41,7 +50,7 @@ const ManageRolesForPrincipal = (props: {
         id: role.name,
         value: role.name,
         children: role.name,
-        description: role.description
+        description: role.description,
       });
     });
     return array;
@@ -50,12 +59,17 @@ const ManageRolesForPrincipal = (props: {
   const principalRolesInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
-  const [principalRolesField, setPrincipalRolesField] = useState<IField>(principalRolesInitialState);
+  const [principalRolesField, setPrincipalRolesField] = useState<IField>(
+    principalRolesInitialState,
+  );
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
-  const { onGrantOrDenyRoles } = useGrantOrDenyRoles(props.principalName, props.submitModal);
+  const { onGrantOrDenyRoles } = useGrantOrDenyRoles(
+    props.principalName,
+    props.submitModal,
+  );
 
   useEffect(() => {
     if (props.isModalOpen) {
@@ -83,7 +97,7 @@ const ManageRolesForPrincipal = (props: {
         ...principalRolesField,
         isValid: isValid,
         invalidText: t('access-management.principals.modal-roles-is-required'),
-        validated: 'error'
+        validated: 'error',
       });
     }
 
@@ -91,11 +105,11 @@ const ManageRolesForPrincipal = (props: {
       if (principal) {
         onGrantOrDenyRoles(
           'grant',
-          selectedRoles.filter((r) => !principal.roles.includes(r))
+          selectedRoles.filter((r) => !principal.roles.includes(r)),
         );
         onGrantOrDenyRoles(
           'deny',
-          principal.roles.filter((r) => !selectedRoles.includes(r))
+          principal.roles.filter((r) => !selectedRoles.includes(r)),
         );
       }
       onCloseModal();
@@ -113,7 +127,7 @@ const ManageRolesForPrincipal = (props: {
       setSelectedRoles(
         selectedRoles.includes(value)
           ? selectedRoles.filter((selection) => selection !== value)
-          : [...selectedRoles, value]
+          : [...selectedRoles, value],
       );
     }
   };
@@ -133,13 +147,29 @@ const ManageRolesForPrincipal = (props: {
           e.preventDefault();
         }}
       >
-        <FormGroup isRequired isInline label={t('access-management.principals.modal-principal-name')}>
-          <TextInput value={props.principalName} type="text" aria-label="principal-name-input" isDisabled={true} />
+        <FormGroup
+          isRequired
+          isInline
+          label={t('access-management.principals.modal-principal-name')}
+        >
+          <TextInput
+            value={props.principalName}
+            type="text"
+            aria-label="principal-name-input"
+            isDisabled={true}
+          />
         </FormGroup>
-        <FormGroup fieldId="roles" isRequired isInline label={t('access-management.principals.modal-roles')}>
+        <FormGroup
+          fieldId="roles"
+          isRequired
+          isInline
+          label={t('access-management.principals.modal-roles')}
+        >
           <SelectMultiWithChips
             id="roles"
-            placeholder={t('access-management.principals.modal-roles-list-placeholder')}
+            placeholder={t(
+              'access-management.principals.modal-roles-list-placeholder',
+            )}
             options={rolesOptions()}
             selection={selectedRoles}
             onSelect={onSelectRoles}
@@ -148,7 +178,10 @@ const ManageRolesForPrincipal = (props: {
           {principalRolesField.validated === 'error' && (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                <HelperTextItem
+                  variant={'error'}
+                  icon={<ExclamationCircleIcon />}
+                >
                   {principalRolesField.invalidText}
                 </HelperTextItem>
               </HelperText>
@@ -172,14 +205,27 @@ const ManageRolesForPrincipal = (props: {
       <ModalHeader
         titleIconVariant={EditIcon}
         title={t('access-management.principals.modal-manage-roles-title')}
-        description={t('access-management.principals.modal-manage-roles-description', { brandname: brandname })}
+        description={t(
+          'access-management.principals.modal-manage-roles-description',
+          { brandname: brandname },
+        )}
       />
       <ModalBody>{displayContent()}</ModalBody>
       <ModalFooter>
-        <Button key={'Save'} aria-label={'Save'} variant={ButtonVariant.primary} onClick={handleSubmit}>
+        <Button
+          key={'Save'}
+          aria-label={'Save'}
+          variant={ButtonVariant.primary}
+          onClick={handleSubmit}
+        >
           {t('common.actions.save')}
         </Button>
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={onCloseModal}
+        >
           {t('common.actions.cancel')}
         </Button>
       </ModalFooter>

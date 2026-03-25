@@ -8,10 +8,24 @@ import { UserContext } from '@app/providers/UserContextProvider';
 import { QueryContext } from '@app/providers/QueryContextProvider';
 
 export function useSearch(cacheName: string) {
-  const [history, setHistory] = useLocalStorage<HistoryMap>('cache-query-history', {});
-  const currentHistory = useMemo(() => history[cacheName] || [], [history, cacheName]);
-  const { search, storeResult, startSearch, endSearch, clearSearch, onPerPageSelect, onSetPage, onStoreQuery } =
-    useContext(QueryContext);
+  const [history, setHistory] = useLocalStorage<HistoryMap>(
+    'cache-query-history',
+    {},
+  );
+  const currentHistory = useMemo(
+    () => history[cacheName] || [],
+    [history, cacheName],
+  );
+  const {
+    search,
+    storeResult,
+    startSearch,
+    endSearch,
+    clearSearch,
+    onPerPageSelect,
+    onSetPage,
+    onStoreQuery,
+  } = useContext(QueryContext);
 
   useEffect(() => {
     if (search.loading && search.query.length > 0) {
@@ -27,12 +41,15 @@ export function useSearch(cacheName: string) {
             error: searchResult.error,
             cause: searchResult.cause,
             milliseconds: convertToTimeQuantity(end - start),
-            type: search.query.includes('<->') ? 'Vector' : 'Search'
+            type: search.query.includes('<->') ? 'Vector' : 'Search',
           };
-          const newHistory = [historyItem, ...currentHistory.filter((i) => i.query !== search.query)].slice(0, 50);
+          const newHistory = [
+            historyItem,
+            ...currentHistory.filter((i) => i.query !== search.query),
+          ].slice(0, 50);
           setHistory({
             ...history,
-            [cacheName]: newHistory
+            [cacheName]: newHistory,
           });
         })
         .finally(() => endSearch());
@@ -46,13 +63,23 @@ export function useSearch(cacheName: string) {
     clearSearch,
     onPerPageSelect,
     onSetPage,
-    onStoreQuery
+    onStoreQuery,
   };
 }
 
-export function useDeleteByQuery(cacheName: string, deleteQuery: string, finalAction: () => void) {
-  const [history, setHistory] = useLocalStorage<HistoryMap>('cache-query-history', {});
-  const currentHistory = useMemo(() => history[cacheName] || [], [history, cacheName]);
+export function useDeleteByQuery(
+  cacheName: string,
+  deleteQuery: string,
+  finalAction: () => void,
+) {
+  const [history, setHistory] = useLocalStorage<HistoryMap>(
+    'cache-query-history',
+    {},
+  );
+  const currentHistory = useMemo(
+    () => history[cacheName] || [],
+    [history, cacheName],
+  );
 
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
@@ -69,7 +96,7 @@ export function useDeleteByQuery(cacheName: string, deleteQuery: string, finalAc
             // Add success alert
             addAlert({
               message: t('caches.query.modal-action-entries-success'),
-              success: true
+              success: true,
             });
           } else {
             addAlert(either.value);
@@ -82,12 +109,15 @@ export function useDeleteByQuery(cacheName: string, deleteQuery: string, finalAc
             error: either.isLeft(),
             cause: either.isLeft() ? either.value.message : '',
             milliseconds: convertToTimeQuantity(end - start),
-            type: 'Delete'
+            type: 'Delete',
           };
-          const newHistory = [historyItem, ...currentHistory.filter((i) => i.query !== deleteQuery)].slice(0, 50);
+          const newHistory = [
+            historyItem,
+            ...currentHistory.filter((i) => i.query !== deleteQuery),
+          ].slice(0, 50);
           setHistory({
             ...history,
-            [cacheName]: newHistory
+            [cacheName]: newHistory,
           });
         })
         .finally(finalAction);
@@ -98,7 +128,9 @@ export function useDeleteByQuery(cacheName: string, deleteQuery: string, finalAc
 }
 
 export function useIndexMetamodel(cacheName: string) {
-  const [indexMetamodel, setIndexMetamodel] = useState<Map<string, IndexMetamodel>>(new Map());
+  const [indexMetamodel, setIndexMetamodel] = useState<
+    Map<string, IndexMetamodel>
+  >(new Map());
   const [errorIndexMetamodel, setErrorMetamodel] = useState('');
   const [loadingIndexMetamodel, setLoadingIndexMetamodel] = useState(true);
 
@@ -120,6 +152,6 @@ export function useIndexMetamodel(cacheName: string) {
   return {
     loadingIndexMetamodel,
     errorIndexMetamodel,
-    indexMetamodel
+    indexMetamodel,
   };
 }

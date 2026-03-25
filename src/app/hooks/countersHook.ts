@@ -43,7 +43,7 @@ export function useFetchCounters() {
     loading,
     counters,
     error,
-    reload
+    reload,
   };
 }
 
@@ -58,7 +58,7 @@ export function useDeleteCounter(name: string) {
       });
   };
   return {
-    onDelete
+    onDelete,
   };
 }
 
@@ -73,7 +73,7 @@ export function useAddDeltaCounter(name: string, deltaValue: number) {
       });
   };
   return {
-    onAddDelta
+    onAddDelta,
   };
 }
 
@@ -88,7 +88,7 @@ export function useResetCounter(name: string) {
       });
   };
   return {
-    onResetCounter
+    onResetCounter,
   };
 }
 
@@ -103,7 +103,7 @@ export function useCreateCounter(counterName: string, counterConfig) {
       });
   };
   return {
-    onCreateCounter
+    onCreateCounter,
   };
 }
 
@@ -118,6 +118,6 @@ export function useSetCounter(counterName: string, counterValue: number) {
       });
   };
   return {
-    onSetCounter
+    onSetCounter,
   };
 }

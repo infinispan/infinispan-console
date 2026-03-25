@@ -10,7 +10,7 @@ import {
 import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import { useCreateCache } from '@app/services/createCacheHook';
+import { useCreateCache } from '@app/hooks/createCacheHook';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import LanguageToggleRadios from './LanguageToggleRadios';
 import { ConfigDownloadType } from '@services/infinispanRefData';

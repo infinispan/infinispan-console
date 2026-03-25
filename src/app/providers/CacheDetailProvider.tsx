@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { ContentType } from '@services/infinispanRefData';
 import { isEncodingAvailable } from '@app/utils/encodingUtils';
@@ -20,7 +20,7 @@ const initialContext = {
   infoEntries: '',
   limit: '100',
   reloadEntries: () => {},
-  setLimit: (limit: string) => {}
+  setLimit: (limit: string) => {},
 };
 
 export const CacheDetailContext = React.createContext(initialContext);
@@ -28,23 +28,36 @@ export const CacheDetailContext = React.createContext(initialContext);
 const CacheDetailProvider = ({ children }) => {
   const { connectedUser } = useConnectedUser();
   const [cacheName, setCacheName] = useState('');
-  const [cacheManager, setCacheManager] = useState<CacheManager>(initialContext.cacheManager);
-  const [cache, setCache] = useState<DetailedInfinispanCache>(initialContext.cache);
+  const [cacheManager, setCacheManager] = useState<CacheManager>(
+    initialContext.cacheManager,
+  );
+  const [cache, setCache] = useState<DetailedInfinispanCache>(
+    initialContext.cache,
+  );
   const [error, setError] = useState(initialContext.error);
   const [loading, setLoading] = useState(initialContext.loading);
   const [cacheEntries, setCacheEntries] = useState(initialContext.cacheEntries);
-  const [totalEntriesCount, setTotalEntriesCount] = useState<number>(initialContext.totalEntriesCount);
+  const [totalEntriesCount, setTotalEntriesCount] = useState<number>(
+    initialContext.totalEntriesCount,
+  );
   const [errorEntries, setErrorEntries] = useState(initialContext.errorEntries);
   const [infoEntries, setInfoEntries] = useState(initialContext.infoEntries);
-  const [loadingEntries, setLoadingEntries] = useState(initialContext.loadingEntries);
+  const [loadingEntries, setLoadingEntries] = useState(
+    initialContext.loadingEntries,
+  );
   const [limit, setLimit] = useState(initialContext.limit);
 
-  const loadCache = (name: string | undefined) => {
-    if (name != undefined && name != '' && cacheName != name) {
-      setCacheName(name);
+  const loadCache = useCallback((name: string | undefined) => {
+    if (name != undefined && name != '') {
+      setCacheName((prev) => {
+        if (prev !== name) {
+          return name;
+        }
+        return prev;
+      });
       setLoading(true);
     }
-  };
+  }, []);
 
   useEffect(() => {
     setLoadingEntries(true);
@@ -85,7 +98,7 @@ const CacheDetailProvider = ({ children }) => {
                                 name: cacheName,
                                 configuration: eitherConfig.value,
                                 health: eitherHealth.value,
-                                started: false
+                                started: false,
                               };
                               setCache(detail);
                               // we are good;
@@ -146,7 +159,13 @@ const CacheDetailProvider = ({ children }) => {
 
   const fetchEntries = () => {
     if (loadingEntries) {
-      if (ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
+      if (
+        ConsoleServices.security().hasCacheConsoleACL(
+          ConsoleACL.BULK_READ,
+          cacheName,
+          connectedUser,
+        )
+      ) {
         if (cache) {
           ConsoleServices.caches()
             .getEntries(cacheName, cache.encoding!, limit)
@@ -175,11 +194,14 @@ const CacheDetailProvider = ({ children }) => {
     }
   };
 
+  const reload = useCallback(() => setLoading(true), []);
+  const reloadEntries = useCallback(() => setLoadingEntries(true), []);
+
   const contextValue = {
     loading: loading,
     error: error,
-    loadCache: useCallback(loadCache, []),
-    reload: useCallback(() => setLoading(true), []),
+    loadCache: loadCache,
+    reload: reload,
     cache: cache,
     cacheManager: cacheManager,
     cacheEntries: cacheEntries,
@@ -188,11 +210,15 @@ const CacheDetailProvider = ({ children }) => {
     errorEntries: errorEntries,
     infoEntries: infoEntries,
     limit: limit,
-    reloadEntries: useCallback(() => setLoadingEntries(true), []),
+    reloadEntries: reloadEntries,
     getByKey: fetchEntry,
-    setLimit: setLimit
+    setLimit: setLimit,
   };
-  return <CacheDetailContext.Provider value={contextValue}>{children}</CacheDetailContext.Provider>;
+  return (
+    <CacheDetailContext.Provider value={contextValue}>
+      {children}
+    </CacheDetailContext.Provider>
+  );
 };
 
 export { CacheDetailProvider };

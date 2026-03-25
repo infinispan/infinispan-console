@@ -9,10 +9,10 @@ const initialContext = {
       values: [],
       error: false,
       cause: '',
-      executed: false
+      executed: false,
     } as SearchResult,
     loading: false,
-    query: ''
+    query: '',
   },
   storeResult: (result: SearchResult) => {},
   execute: (query: string) => {},
@@ -21,7 +21,7 @@ const initialContext = {
   clearSearch: () => {},
   onSetPage: (_event: any, pageNumber: number) => {},
   onPerPageSelect: (_event: any, pageNumber: number) => {},
-  onStoreQuery: (query: string) => {}
+  onStoreQuery: (query: string) => {},
 };
 
 export const QueryContext = React.createContext(initialContext);
@@ -29,31 +29,31 @@ export const QueryContext = React.createContext(initialContext);
 const QueryContextProvider = ({ children }) => {
   const [search, setSearch] = useState(initialContext.search);
 
-  const onStoreQuery = (query: string) => {
+  const onStoreQuery = useCallback((query: string) => {
     setSearch((prevState) => {
       return { ...prevState, query: query };
     });
-  };
+  }, []);
 
-  const executeQuery = (query: string) => {
+  const executeQuery = useCallback((query: string) => {
     setSearch((prevState) => {
       return { ...prevState, query: query, loading: true };
     });
-  };
+  }, []);
 
-  const onSetPage = (_event: any, pageNumber: number) => {
+  const onSetPage = useCallback((_event: any, pageNumber: number) => {
     setSearch((prevState) => {
       return { ...prevState, page: pageNumber, loading: true };
     });
-  };
+  }, []);
 
-  const onPerPageSelect = (_event: any, perPage: number) => {
+  const onPerPageSelect = useCallback((_event: any, perPage: number) => {
     setSearch((prevState) => {
       return { ...prevState, perPage: perPage, loading: true };
     });
-  };
+  }, []);
 
-  const clearSearch = () => {
+  const clearSearch = useCallback(() => {
     setSearch((prevState) => {
       return {
         ...prevState,
@@ -63,43 +63,47 @@ const QueryContextProvider = ({ children }) => {
           values: [],
           error: false,
           cause: '',
-          executed: false
+          executed: false,
         },
-        loading: false
+        loading: false,
       };
     });
-  };
+  }, []);
 
-  const storeResult = (searchResult: SearchResult) => {
+  const storeResult = useCallback((searchResult: SearchResult) => {
     setSearch((prevState) => {
       return { ...prevState, searchResult: searchResult };
     });
-  };
+  }, []);
 
-  const startSearch = () => {
+  const startSearch = useCallback(() => {
     setSearch((prevState) => {
       return { ...prevState, loading: true };
     });
-  };
+  }, []);
 
-  const endSearch = () => {
+  const endSearch = useCallback(() => {
     setSearch((prevState) => {
       return { ...prevState, loading: false };
     });
-  };
+  }, []);
 
   const contextValue = {
     search: search,
-    execute: useCallback(executeQuery, []),
-    storeResult: useCallback(storeResult, []),
-    startSearch: useCallback(startSearch, []),
-    endSearch: useCallback(endSearch, []),
-    clearSearch: useCallback(clearSearch, []),
-    onSetPage: useCallback(onSetPage, []),
-    onPerPageSelect: useCallback(onPerPageSelect, []),
-    onStoreQuery: useCallback(onStoreQuery, [])
+    execute: executeQuery,
+    storeResult: storeResult,
+    startSearch: startSearch,
+    endSearch: endSearch,
+    clearSearch: clearSearch,
+    onSetPage: onSetPage,
+    onPerPageSelect: onPerPageSelect,
+    onStoreQuery: onStoreQuery,
   };
-  return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
+  return (
+    <QueryContext.Provider value={contextValue}>
+      {children}
+    </QueryContext.Provider>
+  );
 };
 
 export { QueryContextProvider };

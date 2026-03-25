@@ -12,12 +12,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalVariant,
-  SelectOptionProps
+  SelectOptionProps,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { IField } from '@services/formUtils';
 import { AddCircleOIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
-import { useUpdateRole } from '@app/services/rolesHook';
+import { useUpdateRole } from '@app/hooks/rolesHook';
 import { ROLES_MAP } from '@services/infinispanRefData';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
@@ -38,7 +38,7 @@ const AddPermissions = (props: {
           id: key,
           value: key,
           children: key,
-          description: desc
+          description: desc,
         });
       }
     });
@@ -49,13 +49,22 @@ const AddPermissions = (props: {
   const rolePermissionsInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
-  const [rolePermissionsField, setRolePermissionsField] = useState<IField>(rolePermissionsInitialState);
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>(props.permissions);
+  const [rolePermissionsField, setRolePermissionsField] = useState<IField>(
+    rolePermissionsInitialState,
+  );
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>(
+    props.permissions,
+  );
   const textInputRef = React.useRef<HTMLInputElement>();
-  const { onUpdateRole } = useUpdateRole(props.name, '', selectedPermissions, props.submitModal);
+  const { onUpdateRole } = useUpdateRole(
+    props.name,
+    '',
+    selectedPermissions,
+    props.submitModal,
+  );
 
   const handleSubmit = () => {
     if (selectedPermissions.length == 0) {
@@ -63,7 +72,7 @@ const AddPermissions = (props: {
         ...rolePermissionsField,
         isValid: true,
         invalidText: t('access-management.roles.modal-permissions-is-required'),
-        validated: 'error'
+        validated: 'error',
       });
     } else {
       onUpdateRole();
@@ -80,7 +89,7 @@ const AddPermissions = (props: {
       setSelectedPermissions(
         selectedPermissions.includes(value)
           ? selectedPermissions.filter((selection) => selection !== value)
-          : [...selectedPermissions, value]
+          : [...selectedPermissions, value],
       );
     }
     textInputRef.current?.focus();
@@ -105,10 +114,16 @@ const AddPermissions = (props: {
             e.preventDefault();
           }}
         >
-          <FormGroup fieldId="permissions" isRequired label={t('access-management.roles.modal-permissions')}>
+          <FormGroup
+            fieldId="permissions"
+            isRequired
+            label={t('access-management.roles.modal-permissions')}
+          >
             <SelectMultiWithChips
               id="permissions"
-              placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
+              placeholder={t(
+                'access-management.roles.modal-permissions-list-placeholder',
+              )}
               options={initialSelectOptions}
               selection={selectedPermissions}
               onSelect={onSelectPermission}
@@ -118,7 +133,10 @@ const AddPermissions = (props: {
             {rolePermissionsField.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={'error'}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {rolePermissionsField.invalidText}
                   </HelperTextItem>
                 </HelperText>
@@ -138,7 +156,12 @@ const AddPermissions = (props: {
           {t('common.actions.save')}
         </Button>
         ,
-        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
+        <Button
+          key={'Cancel'}
+          aria-label={'Cancel'}
+          variant={ButtonVariant.link}
+          onClick={onCloseModal}
+        >
           {t('common.actions.cancel')}
         </Button>
       </ModalFooter>
