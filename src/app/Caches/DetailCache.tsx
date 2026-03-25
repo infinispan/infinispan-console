@@ -29,7 +29,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core';
 import displayUtils from '@services/displayUtils';
 import { CacheMetrics } from '@app/Caches/CacheMetrics';
@@ -45,14 +45,14 @@ import {
   InfoCircleIcon,
   PencilAltIcon,
   RedoIcon,
-  TrashIcon
+  TrashIcon,
 } from '@patternfly/react-icons';
 import { QueryEntries } from '@app/Caches/Query/QueryEntries';
 import { Link } from 'react-router-dom';
-import { useCacheDetail } from '@app/services/cachesHook';
+import { useCacheDetail } from '@app/hooks/cachesHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { useTranslation } from 'react-i18next';
 import { RebalancingCache } from '@app/Rebalancing/RebalancingCache';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
@@ -77,8 +77,15 @@ const DetailCache = (props: { cacheName: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [cacheAction, setCacheAction] = useState<string>('');
-  const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
-  const isCacheReader = ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cacheName, connectedUser);
+  const isAdmin = ConsoleServices.security().hasConsoleACL(
+    ConsoleACL.ADMIN,
+    connectedUser,
+  );
+  const isCacheReader = ConsoleServices.security().hasCacheConsoleACL(
+    ConsoleACL.READ,
+    cacheName,
+    connectedUser,
+  );
 
   useEffect(() => {
     loadCache(cacheName);
@@ -119,23 +126,38 @@ const DetailCache = (props: { cacheName: string }) => {
           activeKey={activeTabKey2}
           aria-label="Entries tab"
           component={TabsComponent.nav}
-          style={theme === DARK ? {} : { backgroundColor: t_global_background_color_100.value }}
+          style={
+            theme === DARK
+              ? {}
+              : { backgroundColor: t_global_background_color_100.value }
+          }
           onSelect={(event, tabIndex) => setActiveTabKey2(tabIndex)}
         >
           <Tab
             eventKey={10}
-            title={<TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>}
+            title={
+              <TabTitleText>{t('caches.tabs.entries-manage')}</TabTitleText>
+            }
             data-cy="manageEntriesTab"
           >
             <CacheEntries />
           </Tab>
-          <Tab eventKey={11} data-cy="queriesTab" title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}>
-            <QueryEntries cacheName={cacheName} changeTab={() => setActiveTabKey1(2)} />
+          <Tab
+            eventKey={11}
+            data-cy="queriesTab"
+            title={<TabTitleText>{t('caches.tabs.query-values')}</TabTitleText>}
+          >
+            <QueryEntries
+              cacheName={cacheName}
+              changeTab={() => setActiveTabKey1(2)}
+            />
           </Tab>
           <Tab
             eventKey={12}
             data-cy="queryHistoryTab"
-            title={<TabTitleText>{t('caches.tabs.query-history')}</TabTitleText>}
+            title={
+              <TabTitleText>{t('caches.tabs.query-history')}</TabTitleText>
+            }
           >
             <QueryHistory
               cacheName={cacheName}
@@ -169,10 +191,12 @@ const DetailCache = (props: { cacheName: string }) => {
               <Link
                 to={{
                   pathname: '/',
-                  search: location.search
+                  search: location.search,
                 }}
               >
-                <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
+                <Button variant={ButtonVariant.secondary}>
+                  {t('common.actions.back')}
+                </Button>
               </Link>
             </EmptyStateActions>
           </EmptyStateFooter>
@@ -202,17 +226,24 @@ const DetailCache = (props: { cacheName: string }) => {
     return <CacheMetrics cacheName={cacheName} display={activeTabKey1 == 2} />;
 
     return (
-      <EmptyState variant={EmptyStateVariant.sm} titleText={`Empty ${cacheName}`} status="info" headingLevel="h2">
+      <EmptyState
+        variant={EmptyStateVariant.sm}
+        titleText={`Empty ${cacheName}`}
+        status="info"
+        headingLevel="h2"
+      >
         <EmptyStateBody>{error}</EmptyStateBody>
         <EmptyStateFooter>
           <EmptyStateActions>
             <Link
               to={{
                 pathname: '/',
-                search: location.search
+                search: location.search,
               }}
             >
-              <Button variant={ButtonVariant.secondary}>{t('caches.actions.back')}</Button>
+              <Button variant={ButtonVariant.secondary}>
+                {t('caches.actions.back')}
+              </Button>
             </Link>
           </EmptyStateActions>
         </EmptyStateFooter>
@@ -248,7 +279,7 @@ const DetailCache = (props: { cacheName: string }) => {
         onClick={(ev) =>
           navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/backups',
-            search: location.search
+            search: location.search,
           })
         }
       >
@@ -270,7 +301,9 @@ const DetailCache = (props: { cacheName: string }) => {
               <Spinner size={'sm'} isInline />
             </FlexItem>
             <FlexItem>
-              <Content component={ContentVariants.p}>{t('caches.rebuilding-index')}</Content>
+              <Content component={ContentVariants.p}>
+                {t('caches.rebuilding-index')}
+              </Content>
             </FlexItem>
           </Flex>
         </ToolbarItem>
@@ -289,8 +322,9 @@ const DetailCache = (props: { cacheName: string }) => {
         icon={<PencilAltIcon />}
         onClick={(ev) =>
           navigate({
-            pathname: '/cache/' + encodeURIComponent(cacheName) + '/configuration',
-            search: location.search
+            pathname:
+              '/cache/' + encodeURIComponent(cacheName) + '/configuration',
+            search: location.search,
           })
         }
       >
@@ -310,7 +344,7 @@ const DetailCache = (props: { cacheName: string }) => {
         onClick={(ev) =>
           navigate({
             pathname: '/cache/' + encodeURIComponent(cacheName) + '/indexing',
-            search: location.search
+            search: location.search,
           })
         }
       >
@@ -341,7 +375,9 @@ const DetailCache = (props: { cacheName: string }) => {
   const buildRefresh = () => {
     return (
       <React.Fragment>
-        {(displayBackupsManagement() || displayIndexManage()) && <Divider component="li" />}
+        {(displayBackupsManagement() || displayIndexManage()) && (
+          <Divider component="li" />
+        )}
         <DropdownItem
           value={'refresh'}
           key="refreshAction"
@@ -366,7 +402,9 @@ const DetailCache = (props: { cacheName: string }) => {
           <FlexItem>
             <LabelGroup
               categoryName={
-                cache.aliases && cache.aliases.length > 0 ? t('caches.info.aliases') : t('caches.info.no-alias')
+                cache.aliases && cache.aliases.length > 0
+                  ? t('caches.info.aliases')
+                  : t('caches.info.no-alias')
               }
               addLabelControl={
                 isAdmin ? (
@@ -392,15 +430,22 @@ const DetailCache = (props: { cacheName: string }) => {
         )}
         <FlexItem>
           <LabelGroup categoryName={t('caches.info.features')} numLabels={8}>
-            <Label color={'blue'} isCompact key={cache.type} icon={<InfoCircleIcon />}>
+            <Label
+              color={'blue'}
+              isCompact
+              key={cache.type}
+              icon={<InfoCircleIcon />}
+            >
               {cache.type}
             </Label>
             {cache.features &&
-              displayUtils.createFeaturesChipGroup(cache.features).map((feature) => (
-                <Label isCompact key={feature} icon={<InfoCircleIcon />}>
-                  {feature}
-                </Label>
-              ))}
+              displayUtils
+                .createFeaturesChipGroup(cache.features)
+                .map((feature) => (
+                  <Label isCompact key={feature} icon={<InfoCircleIcon />}>
+                    {feature}
+                  </Label>
+                ))}
           </LabelGroup>
         </FlexItem>
       </Flex>
@@ -444,7 +489,7 @@ const DetailCache = (props: { cacheName: string }) => {
         title={
           cache.size
             ? t('caches.tabs.entries-size', {
-                size: displayUtils.formatNumber(cache?.size)
+                size: displayUtils.formatNumber(cache?.size),
               })
             : t('caches.tabs.entries')
         }
@@ -458,7 +503,13 @@ const DetailCache = (props: { cacheName: string }) => {
       return;
     }
 
-    return <Tab data-cy="cacheConfigurationTab" eventKey={1} title={t('caches.tabs.configuration')} />;
+    return (
+      <Tab
+        data-cy="cacheConfigurationTab"
+        eventKey={1}
+        title={t('caches.tabs.configuration')}
+      />
+    );
   };
 
   const displayCacheStats = () => {
@@ -470,7 +521,11 @@ const DetailCache = (props: { cacheName: string }) => {
       <Tab
         data-cy="cacheMetricsTab"
         eventKey={2}
-        title={cache.stats?.enabled ? t('caches.tabs.metrics-enabled') : t('caches.tabs.metrics-disabled')}
+        title={
+          cache.stats?.enabled
+            ? t('caches.tabs.metrics-enabled')
+            : t('caches.tabs.metrics-disabled')
+        }
       />
     );
   };
@@ -515,7 +570,12 @@ const DetailCache = (props: { cacheName: string }) => {
     }
 
     if (error != '') {
-      return <PageHeader title={cacheName} subtitle={t('caches.info.error', { cacheName: cacheName })} />;
+      return (
+        <PageHeader
+          title={cacheName}
+          subtitle={t('caches.info.error', { cacheName: cacheName })}
+        />
+      );
     }
 
     if (!cache.started) {
@@ -525,17 +585,32 @@ const DetailCache = (props: { cacheName: string }) => {
           title={cache.name}
           subtitle={'cache detail'}
           actionMenu={displayActions}
-          label={<InfinispanComponentStatus status={cache.health} name={cacheName} isLabel={true} />}
+          label={
+            <InfinispanComponentStatus
+              status={cache.health}
+              name={cacheName}
+              isLabel={true}
+            />
+          }
         />
       );
     }
 
-    return <PageHeader title={cache.name} subtitle={''} actionMenu={displayActions} label={buildFeaturesChip()} />;
+    return (
+      <PageHeader
+        title={cache.name}
+        subtitle={''}
+        actionMenu={displayActions}
+        label={buildFeaturesChip()}
+      />
+    );
   };
 
   return (
     <React.Fragment>
-      <DataContainerBreadcrumb currentPage={t('caches.info.breadcrumb', { cacheName: cacheName })} />
+      <DataContainerBreadcrumb
+        currentPage={t('caches.info.breadcrumb', { cacheName: cacheName })}
+      />
       {buildCacheHeader()}
       {/*The padding 0 here gains some pixels from the info panel to the header */}
       <PageSection style={{ paddingTop: 0 }}>
@@ -563,7 +638,7 @@ const DetailCache = (props: { cacheName: string }) => {
           if (deleteDone) {
             navigate({
               pathname: '/',
-              search: location.search
+              search: location.search,
             });
           } else {
             setIsOpenDelete(false);

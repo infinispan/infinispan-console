@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useDescribeRole, useUpdateRole } from '@app/services/rolesHook';
+import { useDescribeRole, useUpdateRole } from '@app/hooks/rolesHook';
 import {
   ActionGroup,
   Alert,
@@ -13,7 +13,7 @@ import {
   Form,
   FormGroup,
   Spinner,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -25,30 +25,37 @@ const RoleGeneral = (props: { name: string }) => {
   const roleNameInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const roleDescriptionInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default'
+    validated: 'default',
   };
 
   const { t } = useTranslation();
   const { role, loading, error, setLoading } = useDescribeRole(props.name);
   const [roleName, setRoleName] = useState<IField>(roleNameInitialState);
-  const [roleDescription, setRoleDescription] = useState<IField>(roleDescriptionInitialState);
-  const { onUpdateRole } = useUpdateRole(props.name, roleDescription.value, [], () => setLoading(true));
+  const [roleDescription, setRoleDescription] = useState<IField>(
+    roleDescriptionInitialState,
+  );
+  const { onUpdateRole } = useUpdateRole(
+    props.name,
+    roleDescription.value,
+    [],
+    () => setLoading(true),
+  );
 
   useEffect(() => {
     if (role) {
       setRoleName({
         ...roleName,
-        value: role.name
+        value: role.name,
       });
       setRoleDescription({
         ...roleDescription,
-        value: role.description
+        value: role.description,
       });
     }
   }, [role]);
@@ -63,7 +70,7 @@ const RoleGeneral = (props: { name: string }) => {
         <EmptyState
           variant={EmptyStateVariant.sm}
           titleText={t('access-management.role.error', {
-            roleName: props.name
+            roleName: props.name,
           })}
           icon={ExclamationCircleIcon}
           headingLevel={'h2'}
@@ -75,10 +82,12 @@ const RoleGeneral = (props: { name: string }) => {
               <Link
                 to={{
                   pathname: '/access-management',
-                  search: location.search
+                  search: location.search,
                 }}
               >
-                <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
+                <Button variant={ButtonVariant.secondary}>
+                  {t('common.actions.back')}
+                </Button>
               </Link>
             </EmptyStateActions>
           </EmptyStateFooter>
@@ -89,7 +98,12 @@ const RoleGeneral = (props: { name: string }) => {
     const displayImplicitRoleMessage = () => {
       return (
         role?.implicit && (
-          <Alert isInline isPlain variant={'warning'} title={t('access-management.role.implicit-warning')} />
+          <Alert
+            isInline
+            isPlain
+            variant={'warning'}
+            title={t('access-management.role.implicit-warning')}
+          />
         )
       );
     };
@@ -102,7 +116,12 @@ const RoleGeneral = (props: { name: string }) => {
         }}
       >
         {displayImplicitRoleMessage()}
-        <FormGroup isRequired isInline disabled={true} label={t('access-management.roles.modal-role-name')}>
+        <FormGroup
+          isRequired
+          isInline
+          disabled={true}
+          label={t('access-management.roles.modal-role-name')}
+        >
           <TextInput
             isDisabled={true}
             validated={roleName.validated}
@@ -111,7 +130,11 @@ const RoleGeneral = (props: { name: string }) => {
             aria-label="role-name-input"
           />
         </FormGroup>
-        <FormGroup isInline disabled={role?.implicit} label={t('access-management.roles.modal-role-description')}>
+        <FormGroup
+          isInline
+          disabled={role?.implicit}
+          label={t('access-management.roles.modal-role-description')}
+        >
           <TextInput
             isDisabled={role?.implicit}
             validated={roleDescription.validated}
@@ -120,7 +143,7 @@ const RoleGeneral = (props: { name: string }) => {
             onChange={(_event, value) =>
               setRoleDescription({
                 ...roleDescription,
-                value: value
+                value: value,
               })
             }
             aria-label="role-description-input"

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 
 const initialContext = {
   error: '',
@@ -10,7 +10,7 @@ const initialContext = {
   loadingCaches: true,
   errorCaches: '',
   reload: () => {},
-  reloadCaches: () => {}
+  reloadCaches: () => {},
 };
 
 export const DataContainerContext = React.createContext(initialContext);
@@ -22,10 +22,16 @@ const ContainerDataProvider = ({ children }) => {
   const [error, setError] = useState(initialContext.error);
   const [loading, setLoading] = useState(initialContext.loading);
   const [errorCaches, setErrorCaches] = useState(initialContext.errorCaches);
-  const [loadingCaches, setLoadingCaches] = useState(initialContext.loadingCaches);
+  const [loadingCaches, setLoadingCaches] = useState(
+    initialContext.loadingCaches,
+  );
 
   useEffect(() => {
-    if (loading && (connectedUser.name != '' || ConsoleServices.authentication().isNotSecured())) {
+    if (
+      loading &&
+      (connectedUser.name != '' ||
+        ConsoleServices.authentication().isNotSecured())
+    ) {
       ConsoleServices.dataContainer()
         .getDefaultCacheManager()
         .then((eitherCm) => {
@@ -74,13 +80,13 @@ const ContainerDataProvider = ({ children }) => {
     }
   }, [cm, loadingCaches]);
 
-  const reload = () => {
+  const reload = useCallback(() => {
     setLoading(true);
-  };
+  }, []);
 
-  const reloadCaches = () => {
+  const reloadCaches = useCallback(() => {
     setLoadingCaches(true);
-  };
+  }, []);
 
   const contextValue = {
     loading: loading,
@@ -89,11 +95,15 @@ const ContainerDataProvider = ({ children }) => {
     cm: cm,
     loadingCaches: loadingCaches,
     errorCaches: errorCaches,
-    reload: useCallback(reload, []),
-    reloadCaches: useCallback(reloadCaches, [])
+    reload: reload,
+    reloadCaches: reloadCaches,
   };
 
-  return <DataContainerContext.Provider value={contextValue}>{children}</DataContainerContext.Provider>;
+  return (
+    <DataContainerContext.Provider value={contextValue}>
+      {children}
+    </DataContainerContext.Provider>
+  );
 };
 
 export { ContainerDataProvider };

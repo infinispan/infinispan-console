@@ -1,11 +1,11 @@
 import React from 'react';
 import { renderWithRouter } from '../../test-utils';
 import { screen } from '@testing-library/react';
-import * as ConfigHook from '@app/services/configHook';
+import * as ConfigHook from '@app/hooks/configHook';
 
 import { CacheConfiguration } from '@app/Caches/Configuration/CacheConfiguration';
 
-jest.mock('@app/services/configHook');
+jest.mock('@app/hooks/configHook');
 const mockedConfigHook = ConfigHook as jest.Mocked<typeof ConfigHook>;
 
 const jsonConfig = `{
@@ -46,10 +46,16 @@ describe('Configuration Page', () => {
       return {
         loading: false,
         error: '',
-        configuration: yamlConfig
+        configuration: yamlConfig,
       };
     });
-    renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
+    renderWithRouter(
+      <CacheConfiguration
+        cacheName="Test"
+        editable={false}
+        config={jsonConfig}
+      />,
+    );
     expect(screen.getByText('JSON')).toBeDefined();
     expect(screen.getByText('XML')).toBeDefined();
     expect(screen.getByText('YAML')).toBeDefined();
@@ -60,11 +66,17 @@ describe('Configuration Page', () => {
       return {
         loading: false,
         error: '',
-        configuration: xmlConfig
+        configuration: xmlConfig,
       };
     });
 
-    renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
+    renderWithRouter(
+      <CacheConfiguration
+        cacheName="Test"
+        editable={false}
+        config={jsonConfig}
+      />,
+    );
     expect(screen.getByText('JSON')).toBeDefined();
     expect(screen.getByText('XML')).toBeDefined();
     expect(screen.getByText('YAML')).toBeDefined();

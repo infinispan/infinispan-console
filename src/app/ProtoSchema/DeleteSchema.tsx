@@ -1,9 +1,21 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Content, ModalFooter, ModalHeader, ModalBody } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Content,
+  ModalFooter,
+  ModalHeader,
+  ModalBody,
+} from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { useDeleteProtobufSchema } from '@app/services/protobufHooks';
+import { useDeleteProtobufSchema } from '@app/hooks/protobufHooks';
 
-const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeModal: () => void }) => {
+const DeleteSchema = (props: {
+  schemaName: string;
+  isModalOpen: boolean;
+  closeModal: () => void;
+}) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const { onDeleteSchema } = useDeleteProtobufSchema(props.schemaName);
@@ -15,13 +27,24 @@ const DeleteSchema = (props: { schemaName: string; isModalOpen: boolean; closeMo
   };
 
   return (
-    <Modal isOpen={props.isModalOpen} onClose={props.closeModal} variant={'small'} aria-label="Delete schema modal">
-      <ModalHeader titleIconVariant={'danger'} title={t('schemas.delete.heading')} />
+    <Modal
+      isOpen={props.isModalOpen}
+      onClose={props.closeModal}
+      variant={'small'}
+      aria-label="Delete schema modal"
+    >
+      <ModalHeader
+        titleIconVariant={'danger'}
+        title={t('schemas.delete.heading')}
+      />
       <ModalBody>
         <Content component={'p'}>
-          <strong>{props.schemaName}</strong> {t('schemas.delete.modal-description-1', { brandname: brandname })}
+          <strong>{props.schemaName}</strong>{' '}
+          {t('schemas.delete.modal-description-1', { brandname: brandname })}
         </Content>
-        <Content component={'p'}>{t('schemas.delete.modal-description-2')}</Content>
+        <Content component={'p'}>
+          {t('schemas.delete.modal-description-2')}
+        </Content>
       </ModalBody>
       <ModalFooter>
         <Button

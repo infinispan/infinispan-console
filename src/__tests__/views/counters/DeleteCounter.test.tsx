@@ -1,11 +1,13 @@
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import * as DeleteCounterHook from '@app/services/countersHook';
+import * as DeleteCounterHook from '@app/hooks/countersHook';
 import { renderWithRouter } from '../../../test-utils';
 
-jest.mock('@app/services/countersHook');
-const mockedCounterHook = DeleteCounterHook as jest.Mocked<typeof DeleteCounterHook>;
+jest.mock('@app/hooks/countersHook');
+const mockedCounterHook = DeleteCounterHook as jest.Mocked<
+  typeof DeleteCounterHook
+>;
 
 let closeModalCalls;
 let onDeleteCalls;
@@ -19,7 +21,7 @@ beforeEach(() => {
 
 mockedCounterHook.useDeleteCounter.mockImplementation(() => {
   return {
-    onDelete: () => onDeleteCalls++
+    onDelete: () => onDeleteCalls++,
   };
 });
 
@@ -32,7 +34,7 @@ describe('Delete counter', () => {
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
         isDisabled={false}
-      />
+      />,
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -48,7 +50,7 @@ describe('Delete counter', () => {
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
         isDisabled={false}
-      />
+      />,
     );
 
     expect(mockedCounterHook.useDeleteCounter).toHaveBeenCalledWith('count-1');

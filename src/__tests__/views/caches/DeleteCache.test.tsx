@@ -1,10 +1,10 @@
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import * as DeleteCacheHook from '@app/services/cachesHook';
+import * as DeleteCacheHook from '@app/hooks/cachesHook';
 import { renderWithRouter } from '../../../test-utils';
 
-jest.mock('@app/services/cachesHook');
+jest.mock('@app/hooks/cachesHook');
 const mockedCacheHook = DeleteCacheHook as jest.Mocked<typeof DeleteCacheHook>;
 
 let closeModalCalls;
@@ -17,20 +17,32 @@ beforeEach(() => {
 
 mockedCacheHook.useDeleteCache.mockImplementation(() => {
   return {
-    onDelete: () => onDeleteCalls++
+    onDelete: () => onDeleteCalls++,
   };
 });
 
 describe('Delete cache', () => {
   test('not render the dialog if the modal is closed', () => {
-    renderWithRouter(<DeleteCache cacheName={'cache-1'} isModalOpen={false} closeModal={() => closeModalCalls++} />);
+    renderWithRouter(
+      <DeleteCache
+        cacheName={'cache-1'}
+        isModalOpen={false}
+        closeModal={() => closeModalCalls++}
+      />,
+    );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
     expect(onDeleteCalls).toBe(0);
   });
 
   test('render the dialog and buttons work', () => {
-    renderWithRouter(<DeleteCache cacheName={'cache-1'} isModalOpen={true} closeModal={() => closeModalCalls++} />);
+    renderWithRouter(
+      <DeleteCache
+        cacheName={'cache-1'}
+        isModalOpen={true}
+        closeModal={() => closeModalCalls++}
+      />,
+    );
 
     expect(mockedCacheHook.useDeleteCache).toHaveBeenCalledWith('cache-1');
 

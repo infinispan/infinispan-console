@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useEditProtobufSchema,
   useFetchProtobufSchemaContent,
-} from '@app/services/protobufHooks';
+} from '@app/hooks/protobufHooks';
 import { PencilAltIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';

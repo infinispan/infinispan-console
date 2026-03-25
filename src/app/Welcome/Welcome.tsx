@@ -18,19 +18,36 @@ import {
   Stack,
   StackItem,
   Title,
-  TitleSizes
+  TitleSizes,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/images/infinispan_logo_rgb_darkbluewhite_darkblue.svg';
-import { CatalogIcon, DownloadIcon, GithubIcon, UnknownIcon } from '@patternfly/react-icons';
-import { chart_color_blue_500, chart_global_Fill_Color_white } from '@patternfly/react-tokens';
+import {
+  CatalogIcon,
+  DownloadIcon,
+  GithubIcon,
+  UnknownIcon,
+} from '@patternfly/react-icons';
+import {
+  chart_color_blue_500,
+  chart_global_Fill_Color_white,
+} from '@patternfly/react-tokens';
 import { ConsoleBackground } from '@app/Common/ConsoleBackground/ConsoleBackground';
 import { Support } from '@app/Support/Support';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useNavigate } from 'react-router';
-import { useAppInitState, useConnectedUser } from '@app/services/userManagementHook';
-import { useFetchVersion } from '@app/services/serverHook';
-import { aboutLink, apacheLicenseLink, blogLink, hotRodClientsLink, tutorialsLink } from '@app/utils/links';
+import {
+  useAppInitState,
+  useConnectedUser,
+} from '@app/hooks/userManagementHook';
+import { useFetchVersion } from '@app/hooks/serverHook';
+import {
+  aboutLink,
+  apacheLicenseLink,
+  blogLink,
+  hotRodClientsLink,
+  tutorialsLink,
+} from '@app/utils/links';
 import './Welcome.css';
 
 const Welcome = () => {
@@ -64,7 +81,9 @@ const Welcome = () => {
     }
 
     if (init == 'SERVER_ERROR') {
-      return <Alert variant="danger" title="Server error. Check navigator logs" />;
+      return (
+        <Alert variant="danger" title="Server error. Check navigator logs" />
+      );
     }
 
     let onClickGoToConsole;
@@ -96,7 +115,7 @@ const Welcome = () => {
         onClick={onClickGoToConsole}
         style={{
           backgroundColor: chart_color_blue_500.value,
-          color: chart_global_Fill_Color_white.value
+          color: chart_global_Fill_Color_white.value,
         }}
       >
         {goToTheConsole}
@@ -107,10 +126,19 @@ const Welcome = () => {
   const DetailSection = (
     <Stack className="detail-section">
       <StackItem>
-        <img width={'200px'} height={'42px'} src={icon} alt={brandname + ' logo'} />
+        <img
+          width={'200px'}
+          height={'42px'}
+          src={icon}
+          alt={brandname + ' logo'}
+        />
       </StackItem>
       <StackItem className={'font-title-bold'}>
-        <Title style={{ fontWeight: 'bold' }} size={TitleSizes['4xl']} headingLevel="h1">
+        <Title
+          style={{ fontWeight: 'bold' }}
+          size={TitleSizes['4xl']}
+          headingLevel="h1"
+        >
           {t('welcome-page.welcome-title', { brandname: brandname })}
         </Title>
       </StackItem>
@@ -118,13 +146,15 @@ const Welcome = () => {
         <StackItem className={'version-text'}>
           <Flex>
             <FlexItem>
-              <Content component={ContentVariants.p}>{t('welcome-page.current-version')}</Content>
+              <Content component={ContentVariants.p}>
+                {t('welcome-page.current-version')}
+              </Content>
             </FlexItem>
             <FlexItem>
               <Badge
                 style={{
                   backgroundColor: 'white',
-                  color: chart_color_blue_500.value
+                  color: chart_color_blue_500.value,
                 }}
               >
                 {version}
@@ -138,7 +168,11 @@ const Welcome = () => {
         <Content component={ContentVariants.p}>{description2}</Content>
         <Content component={ContentVariants.p}>
           {license}{' '}
-          <a style={{ color: 'white', textDecoration: 'underline' }} href={apacheLicenseLink} target="blank">
+          <a
+            style={{ color: 'white', textDecoration: 'underline' }}
+            href={apacheLicenseLink}
+            target="blank"
+          >
             {t('welcome-page.apache-license')}
           </a>
         </Content>
@@ -162,7 +196,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`blog clicked`),
               selectableActionId: 'blog',
-              name: 'clickable-card'
+              name: 'clickable-card',
             }}
           >
             <Content className={'card-title'}>
@@ -170,7 +204,9 @@ const Welcome = () => {
               {t('welcome-page.blog')}
             </Content>
           </CardHeader>
-          <CardBody className={'card-contents'}>{t('welcome-page.blog-description')}</CardBody>
+          <CardBody className={'card-contents'}>
+            {t('welcome-page.blog-description')}
+          </CardBody>
         </Card>
       </GalleryItem>
       <GalleryItem>
@@ -185,7 +221,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`connect clicked`),
               selectableActionId: 'connect',
-              name: 'clickable-card'
+              name: 'clickable-card',
             }}
             className={'card-heading'}
           >
@@ -194,7 +230,9 @@ const Welcome = () => {
               {t('welcome-page.download')}
             </Content>
           </CardHeader>
-          <CardBody className={'card-contents'}>{t('welcome-page.connect', { brandname: brandname })}</CardBody>
+          <CardBody className={'card-contents'}>
+            {t('welcome-page.connect', { brandname: brandname })}
+          </CardBody>
         </Card>
       </GalleryItem>
       <GalleryItem>
@@ -209,7 +247,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`servers clicked`),
               selectableActionId: 'servers',
-              name: 'clickable-card'
+              name: 'clickable-card',
             }}
             className={'card-heading'}
           >
@@ -218,7 +256,9 @@ const Welcome = () => {
               {t('welcome-page.learn-more')}
             </Content>
           </CardHeader>
-          <CardBody className={'card-contents'}>{t('welcome-page.servers', { brandname: brandname })}</CardBody>
+          <CardBody className={'card-contents'}>
+            {t('welcome-page.servers', { brandname: brandname })}
+          </CardBody>
         </Card>
       </GalleryItem>
       <GalleryItem>
@@ -233,7 +273,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`develop clicked`),
               selectableActionId: 'develop',
-              name: 'clickable-card'
+              name: 'clickable-card',
             }}
             className={'card-heading'}
           >
@@ -242,7 +282,9 @@ const Welcome = () => {
               {t('welcome-page.tutorials')}
             </Content>
           </CardHeader>
-          <CardBody className={'card-contents'}>{t('welcome-page.develop', { brandname: brandname })}</CardBody>
+          <CardBody className={'card-contents'}>
+            {t('welcome-page.develop', { brandname: brandname })}
+          </CardBody>
         </Card>
       </GalleryItem>
     </Gallery>
@@ -251,7 +293,10 @@ const Welcome = () => {
   return (
     <Stack className="welcome-container">
       <ConsoleBackground />
-      <Support isModalOpen={supportOpen} closeModal={() => window.location.reload()} />
+      <Support
+        isModalOpen={supportOpen}
+        closeModal={() => window.location.reload()}
+      />
       <StackItem isFilled className="upper-section">
         {DetailSection}
       </StackItem>

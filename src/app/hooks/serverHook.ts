@@ -26,12 +26,14 @@ export function useFetchVersion() {
     setLoading,
     loading,
     version,
-    error
+    error,
   };
 }
 
 export function useFetchConnectedClients() {
-  const [connectedClients, setConnectedClients] = useState<ConnectedClients[]>([]);
+  const [connectedClients, setConnectedClients] = useState<ConnectedClients[]>(
+    [],
+  );
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 

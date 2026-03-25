@@ -11,14 +11,14 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { SearchIcon } from '@patternfly/react-icons';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
-import { useFetchAvailableUsers } from '@app/services/userManagementHook';
+import { useFetchAvailableUsers } from '@app/hooks/userManagementHook';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { useLocalStorage } from '@app/utils/localStorage';
@@ -32,7 +32,7 @@ const UsersTableDisplay = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [usersPagination, setUsersPagination] = useLocalStorage('users-table', {
     page: 1,
-    perPage: 5
+    perPage: 5,
   });
 
   const [filteredUsers, setFilteredUsers] = useState<string[]>([]);
@@ -52,36 +52,42 @@ const UsersTableDisplay = () => {
 
   useEffect(() => {
     if (searchValue.trim() !== '') {
-      setFilteredUsers(users.filter((user) => user.toLowerCase().includes(searchValue.toLowerCase())));
+      setFilteredUsers(
+        users.filter((user) =>
+          user.toLowerCase().includes(searchValue.toLowerCase()),
+        ),
+      );
     } else {
       setFilteredUsers(users);
     }
     setUsersPagination({
       ...usersPagination,
-      page: 1
+      page: 1,
     });
   }, [users, searchValue]);
 
   useEffect(() => {
     const initSlice = (usersPagination.page - 1) * usersPagination.perPage;
-    setUsersRows(filteredUsers.slice(initSlice, initSlice + usersPagination.perPage));
+    setUsersRows(
+      filteredUsers.slice(initSlice, initSlice + usersPagination.perPage),
+    );
   }, [filteredUsers, usersPagination]);
 
   const columnNames = {
-    name: t('access-management.users.user-name')
+    name: t('access-management.users.user-name'),
   };
 
   const onSetPage = (_event, pageNumber) => {
     setUsersPagination({
       ...usersPagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setUsersPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -124,7 +130,9 @@ const UsersTableDisplay = () => {
               </Title>
               <EmptyStateBody>
                 {users.length == 0
-                  ? t('access-management.users.no-users-body', { brandname: brandname })
+                  ? t('access-management.users.no-users-body', {
+                      brandname: brandname,
+                    })
                   : t('access-management.users.no-filtered-users-body')}
               </EmptyStateBody>
             </EmptyState>
@@ -136,16 +144,27 @@ const UsersTableDisplay = () => {
 
   const displayContent = () => {
     if (loading) {
-      return <TableLoadingState message={t('access-management.users.loading-users')} />;
+      return (
+        <TableLoadingState
+          message={t('access-management.users.loading-users')}
+        />
+      );
     }
 
     if (error) {
-      return <TableErrorState error={t('access-management.users.loading-users-error')} />;
+      return (
+        <TableErrorState
+          error={t('access-management.users.loading-users-error')}
+        />
+      );
     }
 
     return (
       <React.Fragment>
-        <Toolbar id="principal-table-toolbar" className={'principal-table-display'}>
+        <Toolbar
+          id="principal-table-toolbar"
+          className={'principal-table-display'}
+        >
           <ToolbarContent>
             <ToolbarGroup>
               <ToolbarItem variant="label" id="label-realm">
@@ -156,7 +175,9 @@ const UsersTableDisplay = () => {
                   id={'selectedRealm'}
                   placeholder={''}
                   selected={realm}
-                  options={selectOptionPropsFromArray(Array.from(realms.keys()))}
+                  options={selectOptionPropsFromArray(
+                    Array.from(realms.keys()),
+                  )}
                   onSelect={(value) => setRealm(value)}
                 />
               </ToolbarItem>
@@ -172,34 +193,52 @@ const UsersTableDisplay = () => {
                 />
               </ToolbarItem>
             </ToolbarGroup>
-            <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>
+              {pagination}
+            </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <Table className={'users-table'} aria-label={'users-table-label'} variant={'compact'}>
+        <Table
+          className={'users-table'}
+          aria-label={'users-table-label'}
+          variant={'compact'}
+        >
           <Thead noWrap>
             <Tr>
               <Th
                 info={{
-                  popover: <div>{t('access-management.users.user-name-tooltip')}</div>,
+                  popover: (
+                    <div>{t('access-management.users.user-name-tooltip')}</div>
+                  ),
                   ariaLabel: 'User name more information',
                   popoverProps: {
                     headerContent: columnNames.name,
                     footerContent: (
-                      <a target="_blank" rel="noreferrer" href={t('brandname.security-realms-docs-link')}>
-                        {t('access-management.users.users-hint-link', { brandname: brandname })}
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        href={t('brandname.security-realms-docs-link')}
+                      >
+                        {t('access-management.users.users-hint-link', {
+                          brandname: brandname,
+                        })}
                       </a>
-                    )
-                  }
+                    ),
+                  },
                 }}
               >
                 {columnNames.name}
               </Th>
             </Tr>
           </Thead>
-          <Tbody>{usersRows.length == 0 ? displayEmptySearch() : displayRowsUsers()}</Tbody>
+          <Tbody>
+            {usersRows.length == 0 ? displayEmptySearch() : displayRowsUsers()}
+          </Tbody>
         </Table>
         <Toolbar id="users-table-toolbar" className={'users-table-display'}>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {pagination}
+          </ToolbarItem>
         </Toolbar>
       </React.Fragment>
     );

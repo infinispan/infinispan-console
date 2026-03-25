@@ -3,8 +3,22 @@ import { UserContext } from '@app/providers/UserContextProvider';
 import { ConsoleServices } from '@services/ConsoleServices';
 
 export function useConnectedUser() {
-  const { connectedUser, error, notSecuredModeOn, logUser, notSecured, reloadAcl } = useContext(UserContext);
-  return { connectedUser, error, logUser, notSecuredModeOn, notSecured, reloadAcl };
+  const {
+    connectedUser,
+    error,
+    notSecuredModeOn,
+    logUser,
+    notSecured,
+    reloadAcl,
+  } = useContext(UserContext);
+  return {
+    connectedUser,
+    error,
+    logUser,
+    notSecuredModeOn,
+    notSecured,
+    reloadAcl,
+  };
 }
 
 export function useAppInitState() {
@@ -36,6 +50,6 @@ export function useFetchAvailableUsers() {
     realms,
     loading,
     setLoading,
-    error
+    error,
   };
 }

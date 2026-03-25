@@ -1,10 +1,10 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { EditSchema } from '@app/ProtoSchema/EditSchema';
-import * as EditSchemaHook from '@app/services/protobufHooks';
+import * as EditSchemaHook from '@app/hooks/protobufHooks';
 import { renderWithRouter } from '../../../test-utils';
 
-jest.mock('@app/services/protobufHooks');
+jest.mock('@app/hooks/protobufHooks');
 const mockedSchemaHook = EditSchemaHook as jest.Mocked<typeof EditSchemaHook>;
 
 let closeModalCalls;

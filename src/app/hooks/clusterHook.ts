@@ -13,9 +13,12 @@ export function useFetchClusterMembers() {
         .getClusterMembers()
         .then((eitherDefaultCm) => {
           if (eitherDefaultCm.isRight()) {
-            setClusterMembers(eitherDefaultCm.value as unknown as ClusterMembers);
+            setClusterMembers(
+              eitherDefaultCm.value as unknown as ClusterMembers,
+            );
           } else {
-            const actionResponse = eitherDefaultCm.value as unknown as ActionResponse;
+            const actionResponse =
+              eitherDefaultCm.value as unknown as ActionResponse;
             setError(actionResponse.message);
           }
         })
@@ -31,7 +34,7 @@ export function useFetchClusterMembers() {
     clusterMembers,
     loading,
     error,
-    reload
+    reload,
   };
 }
 
@@ -63,6 +66,6 @@ export function useDownloadServerReport() {
   return {
     downloadServerReport,
     downloading,
-    downloadNodeName
+    downloadNodeName,
   };
 }

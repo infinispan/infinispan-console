@@ -13,11 +13,20 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
-import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { useDescribeRole } from '@app/services/rolesHook';
+import {
+  ActionsColumn,
+  IAction,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@patternfly/react-table';
+import { useDescribeRole } from '@app/hooks/rolesHook';
 import { ROLES_MAP } from '@services/infinispanRefData';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
@@ -29,10 +38,13 @@ import { useLocalStorage } from '@app/utils/localStorage';
 const RolePermissions = (props: { name: string }) => {
   const { t } = useTranslation();
   const { role, loading, error, setLoading } = useDescribeRole(props.name);
-  const [pagination, setPagination] = useLocalStorage('role-permissions-table', {
-    page: 1,
-    perPage: 5
-  });
+  const [pagination, setPagination] = useLocalStorage(
+    'role-permissions-table',
+    {
+      page: 1,
+      perPage: 5,
+    },
+  );
   const [isAddPermissions, setIsAddPermissions] = useState(false);
   const [removePermission, setIsRemovePermission] = useState('');
   const [searchValue, setSearchValue] = useState<string>('');
@@ -46,7 +58,11 @@ const RolePermissions = (props: { name: string }) => {
 
     if (searchValue.trim() !== '') {
       setFilteredPermissions(
-        role.permissions.filter((perm) => perm.toLowerCase().includes(searchValue.toLowerCase())).sort()
+        role.permissions
+          .filter((perm) =>
+            perm.toLowerCase().includes(searchValue.toLowerCase()),
+          )
+          .sort(),
       );
     } else {
       setFilteredPermissions(role.permissions.sort());
@@ -54,7 +70,7 @@ const RolePermissions = (props: { name: string }) => {
 
     setPagination({
       ...pagination,
-      page: 1
+      page: 1,
     });
   }, [role, searchValue]);
 
@@ -63,12 +79,14 @@ const RolePermissions = (props: { name: string }) => {
       return;
     }
     const initSlice = (pagination.page - 1) * pagination.perPage;
-    setPermissionRows(filteredPermissions.slice(initSlice, initSlice + pagination.perPage));
+    setPermissionRows(
+      filteredPermissions.slice(initSlice, initSlice + pagination.perPage),
+    );
   }, [filteredPermissions, pagination]);
 
   const columnNames = {
     name: t('access-management.role.permission-name'),
-    description: t('access-management.role.permission-description')
+    description: t('access-management.role.permission-description'),
   };
 
   const rowActions = (permission): IAction[] => [
@@ -77,21 +95,21 @@ const RolePermissions = (props: { name: string }) => {
       title: t('common.actions.remove'),
       onClick: () => {
         setIsRemovePermission(permission);
-      }
-    }
+      },
+    },
   ];
 
   const onSetPage = (_event, pageNumber) => {
     setPagination({
       ...pagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -123,7 +141,9 @@ const RolePermissions = (props: { name: string }) => {
                 headingLevel="h2"
                 icon={SearchIcon}
               >
-                <EmptyStateBody>{t('access-management.role.no-filtered-permissions-body')}</EmptyStateBody>
+                <EmptyStateBody>
+                  {t('access-management.role.no-filtered-permissions-body')}
+                </EmptyStateBody>
               </EmptyState>
             </Bullseye>
           </Td>
@@ -138,7 +158,9 @@ const RolePermissions = (props: { name: string }) => {
             <Td dataLabel={columnNames.name} width={20}>
               {row}
             </Td>
-            <Td dataLabel={columnNames.description}>{ROLES_MAP.get(row) ? t(ROLES_MAP.get(row) as string) : row}</Td>
+            <Td dataLabel={columnNames.description}>
+              {ROLES_MAP.get(row) ? t(ROLES_MAP.get(row) as string) : row}
+            </Td>
             {!role.implicit && role.permissions.length > 1 && (
               <Td isActionCell aria-label={row + '-menu'}>
                 {<ActionsColumn items={rowActions(row)} />}
@@ -167,17 +189,30 @@ const RolePermissions = (props: { name: string }) => {
   const displayImplicitRoleMessage = () => {
     return (
       role?.implicit && (
-        <Alert isInline isPlain variant={'warning'} title={t('access-management.role.permissions-implicit-warning')} />
+        <Alert
+          isInline
+          isPlain
+          variant={'warning'}
+          title={t('access-management.role.permissions-implicit-warning')}
+        />
       )
     );
   };
 
   if (loading) {
-    return <TableLoadingState message={t('access-management.role.loading', { roleName: props.name })} />;
+    return (
+      <TableLoadingState
+        message={t('access-management.role.loading', { roleName: props.name })}
+      />
+    );
   }
 
   if (error) {
-    return <TableErrorState error={t('access-management.role.error', { roleName: props.name })} />;
+    return (
+      <TableErrorState
+        error={t('access-management.role.error', { roleName: props.name })}
+      />
+    );
   }
 
   return (
@@ -188,7 +223,9 @@ const RolePermissions = (props: { name: string }) => {
           <ToolbarGroup variant="filter-group">
             <ToolbarItem>
               <SearchInput
-                placeholder={t('access-management.role.permissions-search-placeholder')}
+                placeholder={t(
+                  'access-management.role.permissions-search-placeholder',
+                )}
                 value={searchValue}
                 onChange={(_event, value) => onSearchChange(value)}
                 onSearch={(_event, value) => onSearchChange(value)}
@@ -197,10 +234,16 @@ const RolePermissions = (props: { name: string }) => {
             </ToolbarItem>
             <ToolbarItem>{addPermissionButton()}</ToolbarItem>
           </ToolbarGroup>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{paginationComponent}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {paginationComponent}
+          </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table className={'permissions-table'} aria-label={'permissions-table-label'} variant={'compact'}>
+      <Table
+        className={'permissions-table'}
+        aria-label={'permissions-table-label'}
+        variant={'compact'}
+      >
         <Thead noWrap>
           <Tr>
             <Th>{columnNames.name}</Th>
@@ -209,8 +252,13 @@ const RolePermissions = (props: { name: string }) => {
         </Thead>
         <Tbody>{displayRows()}</Tbody>
       </Table>
-      <Toolbar id="permissions-table-toolbar" className={'permissions-table-toolbar'}>
-        <ToolbarItem variant={ToolbarItemVariant.pagination}>{paginationComponent}</ToolbarItem>
+      <Toolbar
+        id="permissions-table-toolbar"
+        className={'permissions-table-toolbar'}
+      >
+        <ToolbarItem variant={ToolbarItemVariant.pagination}>
+          {paginationComponent}
+        </ToolbarItem>
       </Toolbar>
       {role && (
         <AddPermissions

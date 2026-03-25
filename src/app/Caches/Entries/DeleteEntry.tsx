@@ -1,7 +1,15 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, Content, ModalFooter, ModalHeader, ModalBody } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Modal,
+  Content,
+  ModalFooter,
+  ModalHeader,
+  ModalBody,
+} from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { useCacheDetail } from '@app/services/cachesHook';
+import { useCacheDetail } from '@app/hooks/cachesHook';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ContentType, EncodingType } from '@services/infinispanRefData';
@@ -56,9 +64,17 @@ const DeleteEntry = (props: {
     }
   };
 
-  const tryDeleteEntry = (keyContentType: ContentType, retry: boolean): Promise<boolean> => {
+  const tryDeleteEntry = (
+    keyContentType: ContentType,
+    retry: boolean,
+  ): Promise<boolean> => {
     return ConsoleServices.caches()
-      .deleteEntry(props.cacheName, props.entryKey, props.cacheEncoding.key as EncodingType, keyContentType)
+      .deleteEntry(
+        props.cacheName,
+        props.entryKey,
+        props.cacheEncoding.key as EncodingType,
+        keyContentType,
+      )
       .then((actionResponse) => {
         if (retry && !actionResponse.success) {
           return true;
@@ -76,19 +92,34 @@ const DeleteEntry = (props: {
       onClose={props.closeModal}
       aria-label={t('caches.entries.modal-delete-title')}
     >
-      <ModalHeader titleIconVariant={'warning'} title={t('caches.entries.modal-delete-title')} />
+      <ModalHeader
+        titleIconVariant={'warning'}
+        title={t('caches.entries.modal-delete-title')}
+      />
       <ModalBody>
         <Content>
-          {t('caches.entries.modal-delete-body-line-one')} <strong>&quot;{props.entryKey}&quot;</strong>{' '}
-          {t('caches.entries.modal-delete-body-line-two')} <strong>{props.cacheName}</strong>.
+          {t('caches.entries.modal-delete-body-line-one')}{' '}
+          <strong>&quot;{props.entryKey}&quot;</strong>{' '}
+          {t('caches.entries.modal-delete-body-line-two')}{' '}
+          <strong>{props.cacheName}</strong>.
         </Content>
         <Content>{t('caches.entries.modal-delete-body-line-three')}</Content>
       </ModalBody>
       <ModalFooter>
-        <Button data-cy="deleteEntryButton" key="confirm" variant={ButtonVariant.danger} onClick={onClickDeleteButton}>
+        <Button
+          data-cy="deleteEntryButton"
+          key="confirm"
+          variant={ButtonVariant.danger}
+          onClick={onClickDeleteButton}
+        >
           {t('caches.entries.modal-button-delete')}
         </Button>
-        <Button data-cy="cancelDeleteEntry" key="cancel" variant="link" onClick={props.closeModal}>
+        <Button
+          data-cy="cancelDeleteEntry"
+          key="cancel"
+          variant="link"
+          onClick={props.closeModal}
+        >
           {t('caches.entries.modal-button-cancel')}
         </Button>
       </ModalFooter>

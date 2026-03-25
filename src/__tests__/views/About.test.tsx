@@ -1,10 +1,10 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { About } from '@app/About/About';
-import * as GetVersionHook from '@app/services/serverHook';
+import * as GetVersionHook from '@app/hooks/serverHook';
 import { renderWithRouter } from '../../test-utils';
 
-jest.mock('@app/services/serverHook');
+jest.mock('@app/hooks/serverHook');
 const mockedGetVersionHook = GetVersionHook as jest.Mocked<
   typeof GetVersionHook
 >;

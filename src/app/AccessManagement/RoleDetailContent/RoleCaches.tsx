@@ -12,11 +12,11 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
 import React, { useEffect, useState } from 'react';
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { useCachesForRole } from '@app/services/rolesHook';
+import { useCachesForRole } from '@app/hooks/rolesHook';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { KeyIcon, SearchIcon } from '@patternfly/react-icons';
@@ -28,7 +28,7 @@ const RoleCaches = (props: { name: string }) => {
   const { secured, nonSecured, loading, error } = useCachesForRole(props.name);
   const [pagination, setPagination] = useLocalStorage('role-caches-table', {
     page: 1,
-    perPage: 5
+    perPage: 5,
   });
   const [searchValue, setSearchValue] = useState<string>('');
   const [cachesRows, setCachesRows] = useState<string[]>([]);
@@ -41,14 +41,20 @@ const RoleCaches = (props: { name: string }) => {
 
     const caches = secured.concat(nonSecured);
     if (searchValue.trim() !== '') {
-      setFilteredCaches(caches.filter((perm) => perm.toLowerCase().includes(searchValue.toLowerCase())).sort());
+      setFilteredCaches(
+        caches
+          .filter((perm) =>
+            perm.toLowerCase().includes(searchValue.toLowerCase()),
+          )
+          .sort(),
+      );
     } else {
       setFilteredCaches(caches);
     }
 
     setPagination({
       ...pagination,
-      page: 1
+      page: 1,
     });
   }, [secured, nonSecured, searchValue, loading]);
 
@@ -57,24 +63,26 @@ const RoleCaches = (props: { name: string }) => {
       return;
     }
     const initSlice = (pagination.page - 1) * pagination.perPage;
-    setCachesRows(filteredCaches.slice(initSlice, initSlice + pagination.perPage));
+    setCachesRows(
+      filteredCaches.slice(initSlice, initSlice + pagination.perPage),
+    );
   }, [filteredCaches, pagination]);
 
   const columnNames = {
-    name: t('access-management.role.caches-name')
+    name: t('access-management.role.caches-name'),
   };
 
   const onSetPage = (_event, pageNumber) => {
     setPagination({
       ...pagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -107,7 +115,9 @@ const RoleCaches = (props: { name: string }) => {
                 status="info"
                 icon={SearchIcon}
               >
-                <EmptyStateBody>{t('access-management.role.no-filtered-caches-body')}</EmptyStateBody>
+                <EmptyStateBody>
+                  {t('access-management.role.no-filtered-caches-body')}
+                </EmptyStateBody>
               </EmptyState>
             </Bullseye>
           </Td>
@@ -126,10 +136,14 @@ const RoleCaches = (props: { name: string }) => {
                 key={row}
                 to={{
                   pathname: '/cache/' + encodeURIComponent(row),
-                  search: location.search
+                  search: location.search,
                 }}
               >
-                <Button data-cy={`detailButton-${row}`} key={`detail-button-${row}`} variant={ButtonVariant.link}>
+                <Button
+                  data-cy={`detailButton-${row}`}
+                  key={`detail-button-${row}`}
+                  variant={ButtonVariant.link}
+                >
                   {row}
                 </Button>
               </Link>
@@ -144,7 +158,7 @@ const RoleCaches = (props: { name: string }) => {
     return (
       <TableLoadingState
         message={t('access-management.role.loading-caches', {
-          roleName: props.name
+          roleName: props.name,
         })}
       />
     );
@@ -154,7 +168,7 @@ const RoleCaches = (props: { name: string }) => {
     return (
       <TableErrorState
         error={t('access-management.role.error-caches', {
-          roleName: props.name
+          roleName: props.name,
         })}
       />
     );
@@ -167,7 +181,9 @@ const RoleCaches = (props: { name: string }) => {
           <ToolbarGroup variant="filter-group">
             <ToolbarItem>
               <SearchInput
-                placeholder={t('access-management.role.caches-search-placeholder')}
+                placeholder={t(
+                  'access-management.role.caches-search-placeholder',
+                )}
                 value={searchValue}
                 onChange={(_event, value) => onSearchChange(value)}
                 onSearch={(_event, value) => onSearchChange(value)}
@@ -175,19 +191,27 @@ const RoleCaches = (props: { name: string }) => {
               />
             </ToolbarItem>
           </ToolbarGroup>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{paginationComponent}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {paginationComponent}
+          </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table className={'caches-table'} aria-label={'caches-table-label'} variant={'compact'}>
+      <Table
+        className={'caches-table'}
+        aria-label={'caches-table-label'}
+        variant={'compact'}
+      >
         <Thead noWrap>
           <Tr>
             <Th
               info={{
-                popover: <div>{t('access-management.role.caches-name-tooltip')}</div>,
+                popover: (
+                  <div>{t('access-management.role.caches-name-tooltip')}</div>
+                ),
                 ariaLabel: 'Cache name more information',
                 popoverProps: {
-                  headerContent: columnNames.name
-                }
+                  headerContent: columnNames.name,
+                },
               }}
             >
               {columnNames.name}
@@ -197,7 +221,9 @@ const RoleCaches = (props: { name: string }) => {
         <Tbody>{displayRows()}</Tbody>
       </Table>
       <Toolbar id="caches-table-toolbar" className={'caches-table-toolbar'}>
-        <ToolbarItem variant={ToolbarItemVariant.pagination}>{paginationComponent}</ToolbarItem>
+        <ToolbarItem variant={ToolbarItemVariant.pagination}>
+          {paginationComponent}
+        </ToolbarItem>
       </Toolbar>
     </React.Fragment>
   );

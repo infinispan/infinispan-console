@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useParams } from 'react-router-dom';
-import { useFetchEditableConfiguration } from '@app/services/configHook';
+import { useFetchEditableConfiguration } from '@app/hooks/configHook';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
@@ -14,12 +14,12 @@ import {
   Grid,
   GridItem,
   HelperText,
-  HelperTextItem
+  HelperTextItem,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
-import { useFetchProtobufTypes } from '@app/services/protobufHook';
+import { useFetchProtobufTypes } from '@app/hooks/protobufHook';
 import { TabsToolbar } from '@app/Caches/Configuration/Features/TabsToolbar';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -31,14 +31,22 @@ const IndexedConfigEdition = () => {
   const brandname = t('brandname.brandname');
   const { addAlert } = useApiAlert();
   const cacheName = useParams()['cacheName'] as string;
-  const { loadingConfig, errorConfig, editableConfig } = useFetchEditableConfiguration(cacheName);
-  const { protobufTypes, loading: loadingProtobufTypes, error: protobufTypesError } = useFetchProtobufTypes();
+  const { loadingConfig, errorConfig, editableConfig } =
+    useFetchEditableConfiguration(cacheName);
+  const {
+    protobufTypes,
+    loading: loadingProtobufTypes,
+    error: protobufTypesError,
+  } = useFetchProtobufTypes();
   const [indexedEntities, setIndexedEntities] = useState<string[]>([]);
-  const [validEntity, setValidEntity] = useState<'success' | 'error' | 'default'>('default');
+  const [validEntity, setValidEntity] = useState<
+    'success' | 'error' | 'default'
+  >('default');
   const [updateConfigError, setUpdateConfigError] = useState<string>('');
 
   const onSelectSchemas = (selection) => {
-    if (indexedEntities.includes(selection)) setIndexedEntities(indexedEntities.filter((role) => role !== selection));
+    if (indexedEntities.includes(selection))
+      setIndexedEntities(indexedEntities.filter((role) => role !== selection));
     else setIndexedEntities([...indexedEntities, selection]);
   };
 
@@ -57,7 +65,11 @@ const IndexedConfigEdition = () => {
     setValidEntity('success');
 
     ConsoleServices.caches()
-      .setConfigAttribute(cacheName, CONF_MUTABLE_INDEXING_INDEXED_ENTITIES, indexedEntities.join(' '))
+      .setConfigAttribute(
+        cacheName,
+        CONF_MUTABLE_INDEXING_INDEXED_ENTITIES,
+        indexedEntities.join(' '),
+      )
       .then((actionResponse) => {
         if (actionResponse.success) {
           addAlert(actionResponse);
@@ -81,7 +93,11 @@ const IndexedConfigEdition = () => {
 
     return (
       <GridItem span={12}>
-        <Alert variant="danger" isInline title={t('caches.edit-configuration.indexed-config-error')} />
+        <Alert
+          variant="danger"
+          isInline
+          title={t('caches.edit-configuration.indexed-config-error')}
+        />
       </GridItem>
     );
   };
@@ -106,14 +122,18 @@ const IndexedConfigEdition = () => {
           <GridItem span={12}>
             <Content>
               {t('caches.edit-configuration.index-storage-description', {
-                brandname: brandname
+                brandname: brandname,
               })}
             </Content>
           </GridItem>
         </Grid>
 
         {displayError()}
-        <FormGroup isRequired label={t('caches.edit-configuration.index-storage-entity')} fieldId="indexed-entities">
+        <FormGroup
+          isRequired
+          label={t('caches.edit-configuration.index-storage-entity')}
+          fieldId="indexed-entities"
+        >
           <SelectMultiWithChips
             id="entitiesSelector"
             placeholder={'Select an entity'}
@@ -126,8 +146,13 @@ const IndexedConfigEdition = () => {
           {validEntity === 'error' && (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant={validEntity} icon={<ExclamationCircleIcon />}>
-                  {t('caches.edit-configuration.index-storage-entity-helper-invalid')}
+                <HelperTextItem
+                  variant={validEntity}
+                  icon={<ExclamationCircleIcon />}
+                >
+                  {t(
+                    'caches.edit-configuration.index-storage-entity-helper-invalid',
+                  )}
                 </HelperTextItem>
               </HelperText>
             </FormHelperText>

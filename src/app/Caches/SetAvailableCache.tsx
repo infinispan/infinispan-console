@@ -1,14 +1,25 @@
 import React from 'react';
-import { Button, Modal, Content, ModalHeader, ModalBody, ModalFooter } from '@patternfly/react-core';
-import { useCaches } from '@app/services/dataContainerHooks';
+import {
+  Button,
+  Modal,
+  Content,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '@patternfly/react-core';
+import { useCaches } from '@app/hooks/dataContainerHooks';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleIcon } from '@patternfly/react-icons';
-import { useSetAvailableCache } from '@app/services/cachesHook';
+import { useSetAvailableCache } from '@app/hooks/cachesHook';
 
 /**
  * Set Available cache modal
  */
-const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
+const SetAvailableCache = (props: {
+  cacheName: string;
+  isModalOpen: boolean;
+  closeModal: (boolean) => void;
+}) => {
   const { reloadCaches } = useCaches();
   const { onSetAvailable } = useSetAvailableCache(props.cacheName);
   const { t } = useTranslation();
@@ -32,17 +43,30 @@ const SetAvailableCache = (props: { cacheName: string; isModalOpen: boolean; clo
       onClose={() => clearSetAvailableCacheModal(false)}
       aria-label="make-cache-available"
     >
-      <ModalHeader titleIconVariant={CheckCircleIcon} title={t('caches.availability.modal-available-title')} />
+      <ModalHeader
+        titleIconVariant={CheckCircleIcon}
+        title={t('caches.availability.modal-available-title')}
+      />
       <ModalBody>
         <Content>
-          <strong>{`'${props.cacheName}'`}</strong> {t('caches.availability.modal-available-description')}
+          <strong>{`'${props.cacheName}'`}</strong>{' '}
+          {t('caches.availability.modal-available-description')}
         </Content>
       </ModalBody>
       <ModalFooter>
-        <Button aria-label="Confirm" key="available" onClick={handleAvailableButton}>
+        <Button
+          aria-label="Confirm"
+          key="available"
+          onClick={handleAvailableButton}
+        >
           {t('caches.availability.modal-available-button-done')}
         </Button>
-        <Button aria-label="Cancel" key="cancel" variant="link" onClick={() => clearSetAvailableCacheModal(false)}>
+        <Button
+          aria-label="Cancel"
+          key="cancel"
+          variant="link"
+          onClick={() => clearSetAvailableCacheModal(false)}
+        >
           {t('caches.availability.modal-available-button-cancel')}
         </Button>
       </ModalFooter>

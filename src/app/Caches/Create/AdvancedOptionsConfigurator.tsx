@@ -10,12 +10,12 @@ import {
   InputGroup,
   InputGroupItem,
   Switch,
-  TextInput
+  TextInput,
 } from '@patternfly/react-core';
 import { StorageType, TimeUnits } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import TransactionalConfigurationTuning from '@app/Caches/Create/AdvancedTuning/TransactionalConfigurationTuning';
-import { useCreateCache } from '@app/services/createCacheHook';
+import { useCreateCache } from '@app/hooks/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import IndexedConfigurationTuning from '@app/Caches/Create/AdvancedTuning/IndexedConfigurationTuning';
 import BackupsCofigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsCofigurationTuning';
@@ -28,16 +28,24 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
   const { t } = useTranslation();
   const { configuration, setConfiguration } = useCreateCache();
 
-  const [storage, setStorage] = useState<StorageType | undefined>(configuration.advanced.storage as StorageType);
-  const [concurrencyLevel, setConcurrencyLevel] = useState<number | undefined>(configuration.advanced.concurrencyLevel);
-  const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<number | undefined>(
-    configuration.advanced.lockAcquisitionTimeout
+  const [storage, setStorage] = useState<StorageType | undefined>(
+    configuration.advanced.storage as StorageType,
   );
-  const [lockAcquisitionTimeoutUnit, setLockAcquisitionTimeoutUnit] = useState<string | undefined>(
-    configuration.advanced.lockAcquisitionTimeoutUnit
+  const [concurrencyLevel, setConcurrencyLevel] = useState<number | undefined>(
+    configuration.advanced.concurrencyLevel,
   );
-  const [striping, setStriping] = useState<boolean>(configuration.advanced.striping!);
-  const [aliases, setAliases] = useState<string[]>(configuration.advanced.aliases!);
+  const [lockAcquisitionTimeout, setLockAcquisitionTimeout] = useState<
+    number | undefined
+  >(configuration.advanced.lockAcquisitionTimeout);
+  const [lockAcquisitionTimeoutUnit, setLockAcquisitionTimeoutUnit] = useState<
+    string | undefined
+  >(configuration.advanced.lockAcquisitionTimeoutUnit);
+  const [striping, setStriping] = useState<boolean>(
+    configuration.advanced.striping!,
+  );
+  const [aliases, setAliases] = useState<string[]>(
+    configuration.advanced.aliases!,
+  );
 
   useEffect(() => {
     setConfiguration((prevState) => {
@@ -50,11 +58,18 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
           lockAcquisitionTimeout: lockAcquisitionTimeout,
           lockAcquisitionTimeoutUnit: lockAcquisitionTimeoutUnit,
           striping: striping,
-          aliases: aliases
-        }
+          aliases: aliases,
+        },
       };
     });
-  }, [storage, concurrencyLevel, lockAcquisitionTimeout, lockAcquisitionTimeoutUnit, striping, aliases]);
+  }, [
+    storage,
+    concurrencyLevel,
+    lockAcquisitionTimeout,
+    lockAcquisitionTimeoutUnit,
+    striping,
+    aliases,
+  ]);
 
   const handleConcurrencyLevel = (value) => {
     setConcurrencyLevel(value);
@@ -73,8 +88,12 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
         labelHelp={
           <PopoverHelp
             name="storage"
-            label={t('caches.create.configurations.advanced-options.storage-title')}
-            content={t('caches.create.configurations.advanced-options.storage-tooltip')}
+            label={t(
+              'caches.create.configurations.advanced-options.storage-title',
+            )}
+            content={t(
+              'caches.create.configurations.advanced-options.storage-tooltip',
+            )}
           />
         }
       >
@@ -111,14 +130,20 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
         labelHelp={
           <PopoverHelp
             name="aliases"
-            label={t('caches.create.configurations.advanced-options.aliases-title')}
-            content={t('caches.create.configurations.advanced-options.aliases-tooltip')}
+            label={t(
+              'caches.create.configurations.advanced-options.aliases-title',
+            )}
+            content={t(
+              'caches.create.configurations.advanced-options.aliases-tooltip',
+            )}
           />
         }
       >
         <SelectMultiWithChips
           id="aliasesSelector"
-          placeholder={t('caches.create.configurations.advanced-options.aliases')}
+          placeholder={t(
+            'caches.create.configurations.advanced-options.aliases',
+          )}
           options={[]}
           onSelect={helperAddAlias}
           onClear={clearAliasesSelection}
@@ -131,21 +156,31 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
 
   const formLocking = () => {
     return (
-      <FormSection title={t('caches.create.configurations.advanced-options.locking-title')}>
+      <FormSection
+        title={t('caches.create.configurations.advanced-options.locking-title')}
+      >
         <HelperText>
-          <HelperTextItem>{t('caches.create.configurations.advanced-options.locking-tooltip')}</HelperTextItem>
+          <HelperTextItem>
+            {t('caches.create.configurations.advanced-options.locking-tooltip')}
+          </HelperTextItem>
         </HelperText>
         <Grid hasGutter md={4}>
           <GridItem span={4}>
             <FormGroup
               isInline
               fieldId="field-concurrency-level"
-              label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
+              label={t(
+                'caches.create.configurations.advanced-options.concurrency-level-title',
+              )}
               labelHelp={
                 <PopoverHelp
                   name="concurrency-level"
-                  label={t('caches.create.configurations.advanced-options.concurrency-level-title')}
-                  content={t('caches.create.configurations.advanced-options.concurrency-level-tooltip')}
+                  label={t(
+                    'caches.create.configurations.advanced-options.concurrency-level-title',
+                  )}
+                  content={t(
+                    'caches.create.configurations.advanced-options.concurrency-level-tooltip',
+                  )}
                 />
               }
             >
@@ -163,12 +198,18 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
             <FormGroup
               isInline
               fieldId="field-lock-acquisition-timeout"
-              label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
+              label={t(
+                'caches.create.configurations.advanced-options.lock-acquisition-timeout-title',
+              )}
               labelHelp={
                 <PopoverHelp
                   name="lock-acquisition-timeout"
-                  label={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-title')}
-                  content={t('caches.create.configurations.advanced-options.lock-acquisition-timeout-tooltip')}
+                  label={t(
+                    'caches.create.configurations.advanced-options.lock-acquisition-timeout-title',
+                  )}
+                  content={t(
+                    'caches.create.configurations.advanced-options.lock-acquisition-timeout-tooltip',
+                  )}
                 />
               }
             >
@@ -180,7 +221,9 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
                         placeholder="10"
                         value={lockAcquisitionTimeout}
                         type="number"
-                        onChange={(_event, value) => handleLockAcquisitionTimeout(value)}
+                        onChange={(_event, value) =>
+                          handleLockAcquisitionTimeout(value)
+                        }
                         aria-label="lock-acquisition-timeout-input"
                         data-cy="lockTimeout"
                       />
@@ -189,10 +232,14 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
                       <SelectSingle
                         id={'lockAcquisitionTimeoutUnitSelector'}
                         placeholder={''}
-                        selected={lockAcquisitionTimeoutUnit || TimeUnits.milliseconds}
+                        selected={
+                          lockAcquisitionTimeoutUnit || TimeUnits.milliseconds
+                        }
                         options={selectOptionProps(TimeUnits)}
                         style={{ width: '150px' }}
-                        onSelect={(value) => setLockAcquisitionTimeoutUnit(value)}
+                        onSelect={(value) =>
+                          setLockAcquisitionTimeoutUnit(value)
+                        }
                       />
                     </GridItem>
                   </Grid>
@@ -209,12 +256,18 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
                 hasCheckIcon
                 isChecked={striping === undefined ? false : striping}
                 onChange={() => setStriping(!striping)}
-                label={t('caches.create.configurations.advanced-options.striping')}
+                label={t(
+                  'caches.create.configurations.advanced-options.striping',
+                )}
               />
               <PopoverHelp
                 name={'striping'}
-                label={t('caches.create.configurations.advanced-options.striping')}
-                content={t('caches.create.configurations.advanced-options.striping-tooltip')}
+                label={t(
+                  'caches.create.configurations.advanced-options.striping',
+                )}
+                content={t(
+                  'caches.create.configurations.advanced-options.striping-tooltip',
+                )}
               />
             </FormGroup>
           </GridItem>
@@ -232,7 +285,9 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
     >
       {formMemory()}
       {formAliases()}
-      <TracingCacheConfigurator tracingEnabled={props.cacheManager.tracing_enabled} />
+      <TracingCacheConfigurator
+        tracingEnabled={props.cacheManager.tracing_enabled}
+      />
       {formLocking()}
       <IndexedConfigurationTuning />
       <BackupsCofigurationTuning />

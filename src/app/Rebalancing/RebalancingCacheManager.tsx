@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Flex, FlexItem, Spinner, Switch } from '@patternfly/react-core';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@app/utils/useApiAlert';
-import { useDataContainer } from '@app/services/dataContainerHooks';
+import { useDataContainer } from '@app/hooks/dataContainerHooks';
 import { RebalancingConfirmationModal } from '@app/Rebalancing/RebalancingConfirmationModal';
 
 const RebalancingCacheManager = () => {

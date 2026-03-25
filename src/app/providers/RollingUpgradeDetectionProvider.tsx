@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useBanner } from '@utils/useApiAlert';
-import { useConnectedUser } from '@app/services/userManagementHook';
+import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ROLLING_UPGRADE_BANNER } from '@app/providers/APIAlertProvider';
 import { useTranslation } from 'react-i18next';
 
@@ -46,7 +46,9 @@ const RollingUpgradeDetectionProvider = ({ children }) => {
 
     if (localStorage) {
       // Store the status
-      const prevRollingUpgrade = localStorage.getItem(ROLLING_UPGRADE_KEY) as string;
+      const prevRollingUpgrade = localStorage.getItem(
+        ROLLING_UPGRADE_KEY,
+      ) as string;
       localStorage.setItem(ROLLING_UPGRADE_KEY, rollingUpgrade);
 
       if (prevRollingUpgrade == 'true' && rollingUpgrade == 'false') {
@@ -59,7 +61,11 @@ const RollingUpgradeDetectionProvider = ({ children }) => {
     }
   }, [rollingUpgrade]);
 
-  return <RollingUpgradeContext.Provider value={rollingUpgrade}>{children}</RollingUpgradeContext.Provider>;
+  return (
+    <RollingUpgradeContext.Provider value={rollingUpgrade}>
+      {children}
+    </RollingUpgradeContext.Provider>
+  );
 };
 
 export { RollingUpgradeDetectionProvider };

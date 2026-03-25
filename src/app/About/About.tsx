@@ -12,7 +12,7 @@ import {
   Icon,
   Spinner,
   Stack,
-  StackItem
+  StackItem,
 } from '@patternfly/react-core';
 import icon from '!!url-loader!@app/assets/favicons/ms-icon-310x310.png';
 
@@ -21,9 +21,9 @@ import {
   GithubIcon,
   OutlinedCommentsIcon,
   StackOverflowIcon,
-  TwitterSquareIcon
+  TwitterSquareIcon,
 } from '@patternfly/react-icons';
-import { useFetchVersion } from '@app/services/serverHook';
+import { useFetchVersion } from '@app/hooks/serverHook';
 import { useTranslation } from 'react-i18next';
 import './About.css';
 
@@ -34,7 +34,8 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
 
   const infinispanGithubLink = 'https://github.com/infinispan/';
   const infinispanZulipLink = 'https://infinispan.zulipchat.com/';
-  const infinispanStackOverflowLink = 'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
+  const infinispanStackOverflowLink =
+    'https://stackoverflow.com/questions/tagged/?tagnames=infinispan&sort=newest';
   const infinispanTwitterLink = 'https://x.com/infinispan/';
   const infinispanFacebookLink = 'https://www.facebook.com/infinispan/';
   const description1 = t('welcome-page.description1', { brandname: brandname });
@@ -72,7 +73,10 @@ const About = (props: { isModalOpen: boolean; closeModal: () => void }) => {
         <StackItem>
           <Content component={ContentVariants.dl}>
             <Content component={ContentVariants.dt}>Version</Content>
-            <Content component={ContentVariants.dd}> {loading ? <Spinner size={'sm'} /> : version}</Content>
+            <Content component={ContentVariants.dd}>
+              {' '}
+              {loading ? <Spinner size={'sm'} /> : version}
+            </Content>
           </Content>
         </StackItem>
         <StackItem>

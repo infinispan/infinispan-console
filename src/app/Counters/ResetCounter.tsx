@@ -1,6 +1,14 @@
 import React from 'react';
-import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
-import { useResetCounter } from '@app/services/countersHook';
+import {
+  Button,
+  ButtonVariant,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from '@patternfly/react-core';
+import { useResetCounter } from '@app/hooks/countersHook';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -25,10 +33,16 @@ const ResetCounter = (props: {
       aria-label={t('cache-managers.counters.modal-reset-title')}
       disableFocusTrap={true}
     >
-      <ModalHeader titleIconVariant={'warning'} title={t('cache-managers.counters.modal-reset-title')} />
+      <ModalHeader
+        titleIconVariant={'warning'}
+        title={t('cache-managers.counters.modal-reset-title')}
+      />
       <ModalBody>
         <Content component={'p'} isEditorial>
-          {t('cache-managers.counters.modal-reset-content', { counter: props.name, initialValue: props.initialValue })}
+          {t('cache-managers.counters.modal-reset-content', {
+            counter: props.name,
+            initialValue: props.initialValue,
+          })}
         </Content>
       </ModalBody>
       <ModalFooter>

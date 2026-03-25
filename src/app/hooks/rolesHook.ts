@@ -25,7 +25,7 @@ export function useFetchAvailableRolesNames() {
   return {
     availableRoleNames,
     loading,
-    error
+    error,
   };
 }
 
@@ -64,11 +64,16 @@ export function useFetchAvailableRoles() {
     roles,
     loading,
     setLoading,
-    error
+    error,
   };
 }
 
-export function useUpdateRole(roleName: string, roleDescription: string, permissions: string[], call: () => void) {
+export function useUpdateRole(
+  roleName: string,
+  roleDescription: string,
+  permissions: string[],
+  call: () => void,
+) {
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
 
@@ -79,7 +84,7 @@ export function useUpdateRole(roleName: string, roleDescription: string, permiss
         roleDescription,
         permissions,
         t('access-management.role.update-success', { name: roleName }),
-        t('access-management.role.update-error', { name: roleName })
+        t('access-management.role.update-error', { name: roleName }),
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -87,11 +92,16 @@ export function useUpdateRole(roleName: string, roleDescription: string, permiss
       .finally(() => call());
   };
   return {
-    onUpdateRole
+    onUpdateRole,
   };
 }
 
-export function useRemovePermission(roleName: string, permission: string, permissions: string[], call: () => void) {
+export function useRemovePermission(
+  roleName: string,
+  permission: string,
+  permissions: string[],
+  call: () => void,
+) {
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
 
@@ -109,7 +119,7 @@ export function useRemovePermission(roleName: string, permission: string, permis
         '',
         perms,
         t('access-management.role.update-success', { name: roleName }),
-        t('access-management.role.update-error', { name: roleName })
+        t('access-management.role.update-error', { name: roleName }),
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -117,11 +127,16 @@ export function useRemovePermission(roleName: string, permission: string, permis
       .finally(() => call());
   };
   return {
-    onRemovePermission
+    onRemovePermission,
   };
 }
 
-export function useCreateRole(roleName: string, roleDescription: string, permissions: string[], call: () => void) {
+export function useCreateRole(
+  roleName: string,
+  roleDescription: string,
+  permissions: string[],
+  call: () => void,
+) {
   const { addAlert } = useApiAlert();
 
   const onCreateRole = () => {
@@ -133,7 +148,7 @@ export function useCreateRole(roleName: string, roleDescription: string, permiss
       .finally(() => call());
   };
   return {
-    onCreateRole
+    onCreateRole,
   };
 }
 
@@ -145,7 +160,7 @@ export function useDeleteRole(roleName: string, call: () => void) {
       .deleteRole(
         roleName,
         t('access-management.roles.delete-success', { name: roleName }),
-        t('access-management.roles.delete-error', { name: roleName })
+        t('access-management.roles.delete-error', { name: roleName }),
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -153,7 +168,7 @@ export function useDeleteRole(roleName: string, call: () => void) {
       .finally(() => call());
   };
   return {
-    onDeleteRole
+    onDeleteRole,
   };
 }
 
@@ -181,7 +196,7 @@ export function useDescribeRole(roleName: string) {
     role,
     loading,
     error,
-    setLoading
+    setLoading,
   };
 }
 
@@ -190,14 +205,17 @@ export function useFlushCache(call: () => void) {
   const { t } = useTranslation();
   const onFlushCache = () => {
     ConsoleServices.security()
-      .flushCache(t('access-management.flush-cache-success'), t('access-management.flush-cache-error'))
+      .flushCache(
+        t('access-management.flush-cache-success'),
+        t('access-management.flush-cache-error'),
+      )
       .then((actionResponse) => {
         addAlert(actionResponse);
       })
       .finally(() => call());
   };
   return {
-    onFlushCache
+    onFlushCache,
   };
 }
 
@@ -214,7 +232,9 @@ export function useCachesForRole(roleName: string) {
         .then((either) => {
           if (either.isRight()) {
             const securedCaches = either.value.get('secured') as string[];
-            const nonSecuredCaches = either.value.get('non-secured') as string[];
+            const nonSecuredCaches = either.value.get(
+              'non-secured',
+            ) as string[];
             setSecured(securedCaches.sort());
             setNonSecured(nonSecuredCaches.sort());
           } else {
@@ -229,6 +249,6 @@ export function useCachesForRole(roleName: string) {
     secured,
     nonSecured,
     loading,
-    error
+    error,
   };
 }

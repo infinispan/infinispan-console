@@ -12,17 +12,21 @@ import {
   TextInput,
   ModalFooter,
   ModalHeader,
-  ModalBody
+  ModalBody,
 } from '@patternfly/react-core';
-import { useCaches } from '@app/services/dataContainerHooks';
-import { useDeleteCache } from '@app/services/cachesHook';
+import { useCaches } from '@app/hooks/dataContainerHooks';
+import { useDeleteCache } from '@app/hooks/cachesHook';
 import { useTranslation } from 'react-i18next';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
 /**
  * Delete cache modal
  */
-const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModal: (boolean) => void }) => {
+const DeleteCache = (props: {
+  cacheName: string;
+  isModalOpen: boolean;
+  closeModal: (boolean) => void;
+}) => {
   const { t } = useTranslation();
 
   const { reloadCaches } = useCaches();
@@ -35,7 +39,9 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
     }
   }, [props.isModalOpen]);
 
-  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<'success' | 'error' | 'default'>('default');
+  const [isValidCacheNameValue, setIsValidCacheNameValue] = useState<
+    'success' | 'error' | 'default'
+  >('default');
   const [cacheNameFormValue, setCacheNameFormValue] = useState('');
 
   const clearDeleteCacheModal = (deleteDone: boolean) => {
@@ -75,7 +81,8 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
         title={t('caches.delete.title')}
         description={
           <Content>
-            <strong>&quot;{props.cacheName}&quot; </strong> {t('caches.delete.body')}
+            <strong>&quot;{props.cacheName}&quot; </strong>{' '}
+            {t('caches.delete.body')}
           </Content>
         }
       />
@@ -86,7 +93,10 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
             e.preventDefault();
           }}
         >
-          <FormGroup label={t('caches.delete.cache-name')} fieldId="cache-to-delete">
+          <FormGroup
+            label={t('caches.delete.cache-name')}
+            fieldId="cache-to-delete"
+          >
             <TextInput
               isRequired
               validated={isValidCacheNameValue}
@@ -99,7 +109,10 @@ const DeleteCache = (props: { cacheName: string; isModalOpen: boolean; closeModa
             {isValidCacheNameValue === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem variant={isValidCacheNameValue} icon={<ExclamationCircleIcon />}>
+                  <HelperTextItem
+                    variant={isValidCacheNameValue}
+                    icon={<ExclamationCircleIcon />}
+                  >
                     {t('caches.delete.cache-name-invalid')}
                   </HelperTextItem>
                 </HelperText>

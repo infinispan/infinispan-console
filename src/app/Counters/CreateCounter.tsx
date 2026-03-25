@@ -15,7 +15,7 @@ import {
   Radio,
   TextInput,
 } from '@patternfly/react-core';
-import { useCreateCounter } from '@app/services/countersHook';
+import { useCreateCounter } from '@app/hooks/countersHook';
 import { useTranslation } from 'react-i18next';
 import { CounterStorage, CounterType } from '@services/infinispanRefData';
 import { createCounterConfig } from '@utils/counterUtils';

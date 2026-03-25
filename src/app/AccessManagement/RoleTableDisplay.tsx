@@ -17,14 +17,26 @@ import {
   ToolbarContent,
   ToolbarGroup,
   ToolbarItem,
-  ToolbarItemVariant
+  ToolbarItemVariant,
 } from '@patternfly/react-core';
-import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import {
+  ActionsColumn,
+  IAction,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@patternfly/react-table';
 import { useTranslation } from 'react-i18next';
 import { DatabaseIcon, LockIcon, SearchIcon } from '@patternfly/react-icons';
-import { useFetchAvailableRoles } from '@app/services/rolesHook';
+import { useFetchAvailableRoles } from '@app/hooks/rolesHook';
 import { CreateRole } from '@app/AccessManagement/CreateRole';
-import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
+import {
+  t_global_spacer_sm,
+  t_global_spacer_xl,
+} from '@patternfly/react-tokens';
 import { DeleteRole } from '@app/AccessManagement/DeleteRole';
 import { TableErrorState } from '@app/Common/TableErrorState';
 import { TableLoadingState } from '@app/Common/TableLoadingState';
@@ -37,7 +49,7 @@ const RoleTableDisplay = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [rolesPagination, setRolesPagination] = useLocalStorage('roles-table', {
     page: 1,
-    perPage: 10
+    perPage: 10,
   });
 
   const [filteredRoles, setFilteredRoles] = useState<Role[]>([]);
@@ -48,38 +60,44 @@ const RoleTableDisplay = () => {
 
   useEffect(() => {
     if (searchValue.trim() !== '') {
-      setFilteredRoles(roles.filter((role) => role.name.toLowerCase().includes(searchValue.toLowerCase())));
+      setFilteredRoles(
+        roles.filter((role) =>
+          role.name.toLowerCase().includes(searchValue.toLowerCase()),
+        ),
+      );
     } else {
       setFilteredRoles(roles);
     }
     setRolesPagination({
       ...rolesPagination,
-      page: 1
+      page: 1,
     });
   }, [roles, searchValue]);
 
   useEffect(() => {
     const initSlice = (rolesPagination.page - 1) * rolesPagination.perPage;
-    setRolesRows(filteredRoles.slice(initSlice, initSlice + rolesPagination.perPage));
+    setRolesRows(
+      filteredRoles.slice(initSlice, initSlice + rolesPagination.perPage),
+    );
   }, [filteredRoles, rolesPagination]);
 
   const columnNames = {
     name: t('access-management.roles.role-name'),
     permissions: t('access-management.roles.permissions'),
-    description: t('access-management.roles.role-description')
+    description: t('access-management.roles.role-description'),
   };
 
   const onSetPage = (_event, pageNumber) => {
     setRolesPagination({
       ...rolesPagination,
-      page: pageNumber
+      page: pageNumber,
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setRolesPagination({
       page: 1,
-      perPage: perPage
+      perPage: perPage,
     });
   };
 
@@ -105,8 +123,8 @@ const RoleTableDisplay = () => {
       title: t('common.actions.delete'),
       onClick: () => {
         setRoleToDelete(row.name);
-      }
-    }
+      },
+    },
   ];
 
   const displayRowsRoles = () => {
@@ -119,11 +137,16 @@ const RoleTableDisplay = () => {
               <Link
                 key={row.name}
                 to={{
-                  pathname: '/access-management/role/' + encodeURIComponent(row.name),
-                  search: location.search
+                  pathname:
+                    '/access-management/role/' + encodeURIComponent(row.name),
+                  search: location.search,
                 }}
               >
-                <Button data-cy={`detailLink-${row.name}`} key={`detailLink-${row}`} variant={ButtonVariant.link}>
+                <Button
+                  data-cy={`detailLink-${row.name}`}
+                  key={`detailLink-${row}`}
+                  variant={ButtonVariant.link}
+                >
                   {row.name}
                 </Button>
               </Link>
@@ -159,7 +182,7 @@ const RoleTableDisplay = () => {
               <EmptyStateBody>
                 {roles.length == 0
                   ? t('access-management.roles.no-roles-body', {
-                      brandname: brandname
+                      brandname: brandname,
                     })
                   : t('access-management.roles.no-filtered-roles-body')}
               </EmptyStateBody>
@@ -172,10 +195,10 @@ const RoleTableDisplay = () => {
 
   const createRoleButtonHelper = (isEmptyPage?: boolean) => {
     const emptyPageButtonProp = {
-      style: { marginTop: t_global_spacer_xl.value }
+      style: { marginTop: t_global_spacer_xl.value },
     };
     const normalPageButtonProps = {
-      style: { marginLeft: t_global_spacer_sm.value }
+      style: { marginLeft: t_global_spacer_sm.value },
     };
     return (
       <Button
@@ -201,7 +224,7 @@ const RoleTableDisplay = () => {
         >
           <EmptyStateBody>
             {t('access-management.roles.no-roles-body', {
-              brandname: brandname
+              brandname: brandname,
             })}
           </EmptyStateBody>
           <EmptyStateFooter>{createRoleButtonHelper(true)}</EmptyStateFooter>
@@ -210,11 +233,19 @@ const RoleTableDisplay = () => {
     }
 
     if (loading) {
-      return <TableLoadingState message={t('access-management.roles.loading-roles')} />;
+      return (
+        <TableLoadingState
+          message={t('access-management.roles.loading-roles')}
+        />
+      );
     }
 
     if (error) {
-      return <TableErrorState error={t('access-management.roles.loading-roles-error')} />;
+      return (
+        <TableErrorState
+          error={t('access-management.roles.loading-roles-error')}
+        />
+      );
     }
 
     return (
@@ -233,26 +264,38 @@ const RoleTableDisplay = () => {
               </ToolbarItem>
               <ToolbarItem>{createRoleButtonHelper(false)}</ToolbarItem>
             </ToolbarGroup>
-            <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>
+              {pagination}
+            </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
-        <Table className={'roles-table'} aria-label={'roles-table-label'} variant={'compact'}>
+        <Table
+          className={'roles-table'}
+          aria-label={'roles-table-label'}
+          variant={'compact'}
+        >
           <Thead noWrap>
             <Tr>
               <Th
                 info={{
-                  popover: <div>{t('access-management.roles.role-name-tooltip')}</div>,
+                  popover: (
+                    <div>{t('access-management.roles.role-name-tooltip')}</div>
+                  ),
                   ariaLabel: 'Role name more information',
                   popoverProps: {
                     headerContent: columnNames.name,
                     footerContent: (
-                      <a target="_blank" rel="noreferrer" href={t('brandname.default-roles-docs-link')}>
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        href={t('brandname.default-roles-docs-link')}
+                      >
                         {t('access-management.roles.roles-hint-link', {
-                          brandname: brandname
+                          brandname: brandname,
                         })}
                       </a>
-                    )
-                  }
+                    ),
+                  },
                 }}
               >
                 {columnNames.name}
@@ -261,10 +304,14 @@ const RoleTableDisplay = () => {
               <Th>{columnNames.description}</Th>
             </Tr>
           </Thead>
-          <Tbody>{rolesRows.length == 0 ? displayEmptySearch() : displayRowsRoles()}</Tbody>
+          <Tbody>
+            {rolesRows.length == 0 ? displayEmptySearch() : displayRowsRoles()}
+          </Tbody>
         </Table>
         <Toolbar id="role-table-toolbar" className={'role-table-display'}>
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination}</ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>
+            {pagination}
+          </ToolbarItem>
         </Toolbar>
       </React.Fragment>
     );
