@@ -1,41 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useServiceCall } from '@app/hooks/useServiceCall';
+import { Either } from '@services/either';
 
 export function useFetchClusterMembers() {
-  const [clusterMembers, setClusterMembers] = useState<ClusterMembers>();
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.cluster()
-        .getClusterMembers()
-        .then((eitherDefaultCm) => {
-          if (eitherDefaultCm.isRight()) {
-            setClusterMembers(
-              eitherDefaultCm.value as unknown as ClusterMembers,
-            );
-          } else {
-            const actionResponse =
-              eitherDefaultCm.value as unknown as ActionResponse;
-            setError(actionResponse.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
-
-  const reload = () => {
-    setLoading(true);
-  };
-
-  return {
-    clusterMembers,
+  const {
+    data: clusterMembers,
     loading,
     error,
     reload,
-  };
+  } = useServiceCall<ClusterMembers | undefined>(
+    () =>
+      ConsoleServices.cluster().getClusterMembers() as unknown as Promise<
+        Either<ActionResponse, ClusterMembers | undefined>
+      >,
+    undefined,
+  );
+
+  return { clusterMembers, loading, error, reload };
 }
 
 export function useDownloadServerReport() {

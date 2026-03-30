@@ -6,6 +6,7 @@ import {
   CONF_MUTABLE_TRACING_CATEGORIES,
   CONF_MUTABLE_TRACING_ENABLED,
 } from '@services/cacheConfigUtils';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useCacheAliases(cacheName: string) {
   const { addAlert } = useApiAlert();
@@ -60,47 +61,28 @@ export function useCacheAliases(cacheName: string) {
 }
 
 export function useFetchConfigurationYAML(cacheName: string) {
-  const [configuration, setConfiguration] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.caches()
-        .getConfiguration(cacheName, 'yaml')
-        .then((r) => {
-          if (r.isRight()) {
-            setConfiguration(r.value);
-          } else {
-            setError(r.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
+  const {
+    data: configuration,
+    loading,
+    error,
+  } = useServiceCall<string>(
+    () => ConsoleServices.caches().getConfiguration(cacheName, 'yaml'),
+    '',
+  );
 
   return { loading, error, configuration };
 }
 
 export function useFetchConfigurationXML(cacheName: string) {
-  const [configuration, setConfiguration] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.caches()
-        .getConfiguration(cacheName, 'xml')
-        .then((r) => {
-          if (r.isRight()) {
-            setConfiguration(formatXml(r.value));
-          } else {
-            setError(r.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
+  const {
+    data: configuration,
+    loading,
+    error,
+  } = useServiceCall<string>(
+    () => ConsoleServices.caches().getConfiguration(cacheName, 'xml'),
+    '',
+    { transform: formatXml },
+  );
 
   return { loading, error, configuration };
 }

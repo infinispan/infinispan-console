@@ -1,37 +1,24 @@
-import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchAvailablePrincipals() {
-  const [principals, setPrincipals] = useState<Principal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.security()
-        .getSecurityPrincipals()
-        .then((either) => {
-          if (either.isRight()) {
-            either.value.sort((r1, r2) => {
-              return r1.name < r2.name ? -1 : 1;
-            });
-            setPrincipals(either.value);
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return {
-    principals,
+  const {
+    data: principals,
     loading,
     setLoading,
     error,
-  };
+  } = useServiceCall<Principal[]>(
+    () => ConsoleServices.security().getSecurityPrincipals(),
+    [],
+    {
+      transform: (principals) =>
+        [...principals].sort((r1, r2) => (r1.name < r2.name ? -1 : 1)),
+    },
+  );
+
+  return { principals, loading, setLoading, error };
 }
 
 export function useGrantAccess(
@@ -65,32 +52,21 @@ export function useGrantAccess(
 }
 
 export function useDescribePrincipal(principalName: string) {
-  const { t } = useTranslation();
-  const [principal, setPrincipal] = useState<Principal>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.security()
-        .describePrincipal(principalName)
-        .then((either) => {
-          if (either.isRight()) {
-            setPrincipal({ name: principalName, roles: either.value.sort() });
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return {
-    principal,
+  const {
+    data: roles,
     setLoading,
     loading,
     error,
-  };
+  } = useServiceCall<string[] | undefined>(
+    () => ConsoleServices.security().describePrincipal(principalName),
+    undefined,
+  );
+
+  const principal = roles
+    ? { name: principalName, roles: roles.sort() }
+    : undefined;
+
+  return { principal, setLoading, loading, error };
 }
 
 export function useGrantOrDenyRoles(principal: string, call: () => void) {

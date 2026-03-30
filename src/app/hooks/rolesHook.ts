@@ -2,70 +2,41 @@ import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchAvailableRolesNames() {
-  const [availableRoleNames, setAvailableRoleNames] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.security()
-        .getSecurityRolesNames()
-        .then((either) => {
-          if (either.isRight()) {
-            setAvailableRoleNames(either.value);
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return {
-    availableRoleNames,
+  const {
+    data: availableRoleNames,
     loading,
     error,
-  };
+  } = useServiceCall<string[]>(
+    () => ConsoleServices.security().getSecurityRolesNames(),
+    [],
+  );
+
+  return { availableRoleNames, loading, error };
 }
 
 export function useFetchAvailableRoles() {
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.security()
-        .getSecurityRoles()
-        .then((either) => {
-          if (either.isRight()) {
-            either.value.sort((r1, r2) => {
-              if (r1.implicit && !r2.implicit) {
-                return -1;
-              }
-
-              if (!r1.implicit && r2.implicit) {
-                return 1;
-              }
-
-              return r1.name < r2.name ? -1 : 1;
-            });
-            setRoles(either.value);
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return {
-    roles,
+  const {
+    data: roles,
     loading,
     setLoading,
     error,
-  };
+  } = useServiceCall<Role[]>(
+    () => ConsoleServices.security().getSecurityRoles(),
+    [],
+    {
+      transform: (roles) =>
+        [...roles].sort((r1, r2) => {
+          if (r1.implicit && !r2.implicit) return -1;
+          if (!r1.implicit && r2.implicit) return 1;
+          return r1.name < r2.name ? -1 : 1;
+        }),
+    },
+  );
+
+  return { roles, loading, setLoading, error };
 }
 
 export function useUpdateRole(
@@ -173,31 +144,17 @@ export function useDeleteRole(roleName: string, call: () => void) {
 }
 
 export function useDescribeRole(roleName: string) {
-  const [role, setRole] = useState<Role>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.security()
-        .describeRole(roleName)
-        .then((either) => {
-          if (either.isRight()) {
-            setRole(either.value);
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return {
-    role,
+  const {
+    data: role,
     loading,
     error,
     setLoading,
-  };
+  } = useServiceCall<Role | undefined>(
+    () => ConsoleServices.security().describeRole(roleName),
+    undefined,
+  );
+
+  return { role, loading, error, setLoading };
 }
 
 export function useFlushCache(call: () => void) {
@@ -220,35 +177,14 @@ export function useFlushCache(call: () => void) {
 }
 
 export function useCachesForRole(roleName: string) {
-  const [secured, setSecured] = useState<string[]>([]);
-  const [nonSecured, setNonSecured] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { data, loading, error } = useServiceCall<Map<string, string[]>>(
+    () => ConsoleServices.caches().getCachesForRole(roleName),
+    new Map(),
+  );
 
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.caches()
-        .getCachesForRole(roleName)
-        .then((either) => {
-          if (either.isRight()) {
-            const securedCaches = either.value.get('secured') as string[];
-            const nonSecuredCaches = either.value.get(
-              'non-secured',
-            ) as string[];
-            setSecured(securedCaches.sort());
-            setNonSecured(nonSecuredCaches.sort());
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
+  const secured = (data.get('secured') as string[] | undefined)?.sort() ?? [];
+  const nonSecured =
+    (data.get('non-secured') as string[] | undefined)?.sort() ?? [];
 
-  return {
-    secured,
-    nonSecured,
-    loading,
-    error,
-  };
+  return { secured, nonSecured, loading, error };
 }

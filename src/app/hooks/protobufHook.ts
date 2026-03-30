@@ -1,27 +1,15 @@
-import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchProtobufTypes() {
-  const [protobufTypes, setProtobufTypes] = useState<string[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  const protobufService = ConsoleServices.protobuf();
-
-  useEffect(() => {
-    if (loading) {
-      protobufService
-        .getProtobufTypes()
-        .then((r) => {
-          if (r.isRight()) {
-            setProtobufTypes(r.value);
-          } else {
-            setError(r.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
+  const {
+    data: protobufTypes,
+    loading,
+    error,
+  } = useServiceCall<string[]>(
+    () => ConsoleServices.protobuf().getProtobufTypes(),
+    [],
+  );
 
   return { loading, error, protobufTypes };
 }

@@ -6,6 +6,7 @@ import { useApiAlert } from '@utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import { UserContext } from '@app/providers/UserContextProvider';
 import { QueryContext } from '@app/providers/QueryContextProvider';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useSearch(cacheName: string) {
   const [history, setHistory] = useLocalStorage<HistoryMap>(
@@ -128,30 +129,14 @@ export function useDeleteByQuery(
 }
 
 export function useIndexMetamodel(cacheName: string) {
-  const [indexMetamodel, setIndexMetamodel] = useState<
-    Map<string, IndexMetamodel>
-  >(new Map());
-  const [errorIndexMetamodel, setErrorMetamodel] = useState('');
-  const [loadingIndexMetamodel, setLoadingIndexMetamodel] = useState(true);
+  const {
+    data: indexMetamodel,
+    loading: loadingIndexMetamodel,
+    error: errorIndexMetamodel,
+  } = useServiceCall<Map<string, IndexMetamodel>>(
+    () => ConsoleServices.search().retrieveIndexMetamodel(cacheName),
+    new Map(),
+  );
 
-  useEffect(() => {
-    if (loadingIndexMetamodel) {
-      ConsoleServices.search()
-        .retrieveIndexMetamodel(cacheName)
-        .then((eitherMetamodel) => {
-          if (eitherMetamodel.isRight()) {
-            setIndexMetamodel(eitherMetamodel.value);
-          } else {
-            setErrorMetamodel(eitherMetamodel.value.message);
-          }
-        })
-        .then(() => setLoadingIndexMetamodel(false));
-    }
-  }, [loadingIndexMetamodel]);
-
-  return {
-    loadingIndexMetamodel,
-    errorIndexMetamodel,
-    indexMetamodel,
-  };
+  return { loadingIndexMetamodel, errorIndexMetamodel, indexMetamodel };
 }

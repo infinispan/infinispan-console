@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { groupConnections } from '@app/utils/connectedClientUtils';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchVersion() {
   const [version, setVersion] = useState('');
@@ -31,27 +32,16 @@ export function useFetchVersion() {
 }
 
 export function useFetchConnectedClients() {
-  const [connectedClients, setConnectedClients] = useState<ConnectedClients[]>(
+  const {
+    data: connectedClients,
+    error,
+    loading,
+    setLoading,
+  } = useServiceCall<ConnectedClients[]>(
+    () => ConsoleServices.server().getConnectedClients(),
     [],
+    { transform: groupConnections },
   );
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.server()
-        .getConnectedClients()
-        .then((either) => {
-          if (either.isRight()) {
-            // Grouping similar connections
-            setConnectedClients(groupConnections(either.value));
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
 
   return { connectedClients, error, loading, setLoading };
 }
