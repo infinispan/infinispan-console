@@ -1,71 +1,33 @@
-import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@utils/useApiAlert';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchGlobalStats() {
-  const [stats, setStats] = useState<CacheManagerStats>({
-    statistics_enabled: false,
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.dataContainer()
-        .getCacheManagerStats()
-        .then((eitherDetailedStats) => {
-          if (eitherDetailedStats.isRight()) {
-            setStats(eitherDetailedStats.value);
-          } else {
-            setError(eitherDetailedStats.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  const reload = () => {
-    if (!loading) setLoading(true);
-  };
-
-  return {
+  const {
+    data: stats,
     loading,
-    stats,
     error,
     reload,
-  };
+  } = useServiceCall<CacheManagerStats>(
+    () => ConsoleServices.dataContainer().getCacheManagerStats(),
+    { statistics_enabled: false },
+  );
+
+  return { loading, stats, error, reload };
 }
 
 export function useSearchStats(cacheName: string) {
-  const [stats, setStats] = useState<SearchStats>({
-    reindexing: false,
-    query: [],
-    index: [],
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.search()
-        .retrieveStats(cacheName)
-        .then((eitherStats) => {
-          if (eitherStats.isRight()) {
-            setStats(eitherStats.value);
-          } else {
-            setError(eitherStats.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  return {
+  const {
+    data: stats,
     loading,
-    stats,
     error,
     setLoading,
-  };
+  } = useServiceCall<SearchStats>(
+    () => ConsoleServices.search().retrieveStats(cacheName),
+    { reindexing: false, query: [], index: [] },
+  );
+
+  return { loading, stats, error, setLoading };
 }
 
 export function useClearStats(

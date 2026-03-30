@@ -1,38 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchCaches() {
-  const [caches, setCaches] = useState<CacheInfo[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.dataContainer()
-        .getCaches()
-        .then((either) => {
-          if (either.isRight()) {
-            setCaches(either.value);
-          } else {
-            setError(either.value.message);
-          }
-        })
-        .then(() => setLoading(false));
-    }
-  }, [loading]);
-
-  const reload = () => {
-    setLoading(true);
-  };
-
-  return {
+  const {
+    data: caches,
     loading,
-    caches,
     error,
     reload,
-  };
+  } = useServiceCall<CacheInfo[]>(
+    () => ConsoleServices.dataContainer().getCaches(),
+    [],
+  );
+
+  return { loading, caches, error, reload };
 }
 
 export function useCacheEntries() {
@@ -128,24 +111,14 @@ export function useSetAvailableCache(cacheName: string) {
 }
 
 export function useFetchCacheTemplates() {
-  const [cacheTemplates, setCacheTemplates] = useState<CacheConfig[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (loading) {
-      ConsoleServices.dataContainer()
-        .getCacheConfigurationTemplates()
-        .then((eitherConfigs) => {
-          if (eitherConfigs.isRight()) {
-            setCacheTemplates(eitherConfigs.value);
-          } else {
-            setError(eitherConfigs.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
+  const {
+    data: cacheTemplates,
+    loading,
+    error,
+  } = useServiceCall<CacheConfig[]>(
+    () => ConsoleServices.dataContainer().getCacheConfigurationTemplates(),
+    [],
+  );
 
   return { cacheTemplates, loading, error };
 }

@@ -1,32 +1,18 @@
 import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
+import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useFetchProtobufSchemas() {
-  const protobufService = ConsoleServices.protobuf();
-
-  const [schemas, setSchemas] = useState<ProtoSchema[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (loading) {
-      protobufService
-        .getProtobufSchemas()
-        .then((eitherResponse) => {
-          if (eitherResponse.isRight()) {
-            setSchemas(eitherResponse.value);
-          } else {
-            setError(eitherResponse.value.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [loading]);
-
-  const reload = () => {
-    if (!loading) setLoading(true);
-  };
+  const {
+    data: schemas,
+    loading,
+    reload,
+    error,
+  } = useServiceCall<ProtoSchema[]>(
+    () => ConsoleServices.protobuf().getProtobufSchemas(),
+    [],
+  );
 
   return { loading, reload, error, schemas };
 }
