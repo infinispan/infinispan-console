@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { CacheDetailContext } from '@app/providers/CacheDetailProvider';
+import { CacheMetadataContext } from '@app/providers/CacheMetadataProvider';
+import { CacheEntriesContext } from '@app/providers/CacheEntriesProvider';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useServiceCall } from '@app/hooks/useServiceCall';
@@ -29,7 +30,7 @@ export function useCacheEntries() {
     reloadEntries,
     getByKey,
     setLimit,
-  } = useContext(CacheDetailContext);
+  } = useContext(CacheEntriesContext);
   return {
     cacheEntries,
     totalEntriesCount,
@@ -45,7 +46,7 @@ export function useCacheEntries() {
 
 export function useCacheDetail() {
   const { cache, loading, error, loadCache, reload, cacheManager } =
-    useContext(CacheDetailContext);
+    useContext(CacheMetadataContext);
 
   return { cache, loading, error, loadCache, reload, cacheManager };
 }
