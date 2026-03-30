@@ -22,7 +22,7 @@ import { useCreateCache } from '@app/hooks/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
 import { TableErrorState } from '@app/Common/TableErrorState';
-import { useFetchProtobufTypes } from '@app/hooks/protobufHook';
+import { useFetchProtobufTypes } from '@app/hooks/protobufHooks';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
