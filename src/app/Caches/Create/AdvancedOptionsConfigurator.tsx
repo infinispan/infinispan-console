@@ -18,7 +18,7 @@ import TransactionalConfigurationTuning from '@app/Caches/Create/AdvancedTuning/
 import { useCreateCache } from '@app/hooks/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import IndexedConfigurationTuning from '@app/Caches/Create/AdvancedTuning/IndexedConfigurationTuning';
-import BackupsCofigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsCofigurationTuning';
+import BackupsConfigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsConfigurationTuning';
 import TracingCacheConfigurator from '@app/Caches/Create/Features/TracingCacheConfigurator';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
@@ -290,7 +290,7 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
       />
       {formLocking()}
       <IndexedConfigurationTuning />
-      <BackupsCofigurationTuning />
+      <BackupsConfigurationTuning />
       <TransactionalConfigurationTuning />
     </Form>
   );

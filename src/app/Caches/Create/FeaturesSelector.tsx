@@ -18,7 +18,7 @@ import PersistentCacheConfigurator from '@app/Caches/Create/Features/PersistentC
 import { useCreateCache } from '@app/hooks/createCacheHook';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { validFeatures } from '@app/utils/featuresValidation';
-import { useFetchProtobufTypes } from '@app/hooks/protobufHook';
+import { useFetchProtobufTypes } from '@app/hooks/protobufHooks';
 import { ConsoleACL } from '@services/securityService';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';

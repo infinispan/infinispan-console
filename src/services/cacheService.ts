@@ -242,7 +242,7 @@ export class CacheService {
         '/server/ignored-caches/' +
         encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} hidden.`,
-      errorMessage: `Unexpected error hidding cache ${cacheName}.`,
+      errorMessage: `Unexpected error hiding cache ${cacheName}.`,
     });
   }
 
@@ -725,10 +725,14 @@ export class CacheService {
       this.convertConfigFormat(cacheName, config, 'json', contentType),
       this.convertConfigFormat(cacheName, config, 'xml', contentType),
       this.convertConfigFormat(cacheName, config, 'yaml', contentType),
-    ]).then((reposes) => {
-      if (!reposes[0].success && !reposes[1].success && !reposes[2].success) {
+    ]).then((responses) => {
+      if (
+        !responses[0].success &&
+        !responses[1].success &&
+        !responses[2].success
+      ) {
         return left(<ActionResponse>{
-          message: reposes[0].message,
+          message: responses[0].message,
           success: false,
         }) as Either<ActionResponse, FormattedCacheConfig>;
       }
@@ -736,15 +740,15 @@ export class CacheService {
       let json: string | undefined = undefined;
       let xml: string | undefined = undefined;
       let yaml: string | undefined = undefined;
-      if (reposes[0].success) {
-        json = JSON.stringify(JSON.parse(reposes[0].data as string), null, 2);
+      if (responses[0].success) {
+        json = JSON.stringify(JSON.parse(responses[0].data as string), null, 2);
       }
-      if (reposes[1].success) {
-        xml = formatXml(reposes[1].data);
+      if (responses[1].success) {
+        xml = formatXml(responses[1].data);
       }
 
-      if (reposes[2].success) {
-        yaml = reposes[2].data as string;
+      if (responses[2].success) {
+        yaml = responses[2].data as string;
       }
 
       return right(<FormattedCacheConfig>{
