@@ -1,3 +1,5 @@
+import { IndexedStorage } from '@services/infinispanRefData';
+
 export interface TemplateOptionSelect {
   value: string;
   disabled?: boolean;
@@ -71,7 +73,7 @@ export interface IndexMerge {
 export interface IndexedCache {
   indexingMode?: 'AUTO' | 'MANUAL';
   indexedSharding?: number;
-  indexedStorage: 'filesystem' | 'local-heap';
+  indexedStorage: IndexedStorage.filesystem | IndexedStorage.localHeap;
   indexedStartupMode?: string;
   indexedEntities: string[];
   valid: boolean;

@@ -218,14 +218,14 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           id="auto"
           onChange={() => setIndexingMode(IndexingMode.auto)}
           isChecked={indexingMode === IndexingMode.auto}
-          label={t('caches.create.configurations.feature.indexing-mode-auto')}
+          label={IndexingMode.auto}
         />
         <Radio
           name="radio-indexing-mode"
           id="manual"
           onChange={() => setIndexingMode(IndexingMode.manual)}
           isChecked={indexingMode === IndexingMode.manual}
-          label={t('caches.create.configurations.feature.indexing-mode-manual')}
+          label={IndexingMode.manual}
         />
       </FormGroup>
       <FormGroup
@@ -246,8 +246,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         <Radio
           name="radio-storage"
           id="persistent"
-          onChange={() => setIndexedStorage(IndexedStorage.persistent)}
-          isChecked={indexedStorage === IndexedStorage.persistent}
+          onChange={() => setIndexedStorage(IndexedStorage.filesystem)}
+          isChecked={indexedStorage === IndexedStorage.filesystem}
           label={t(
             'caches.create.configurations.feature.index-storage-persistent',
           )}
@@ -255,8 +255,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         <Radio
           name="radio-storage"
           id="volatile"
-          onChange={() => setIndexedStorage(IndexedStorage.volatile)}
-          isChecked={indexedStorage === IndexedStorage.volatile}
+          onChange={() => setIndexedStorage(IndexedStorage.localHeap)}
+          isChecked={indexedStorage === IndexedStorage.localHeap}
           label={t(
             'caches.create.configurations.feature.index-storage-volatile',
           )}
