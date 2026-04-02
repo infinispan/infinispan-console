@@ -351,8 +351,6 @@
           "indexed-tooltip": "Para habilitar consultas más rápidas y búsqueda de texto completo, construya un índice de los valores del caché.",
           "indexing-mode": "Modo de indexación",
           "indexing-mode-tooltip": "Configure cómo {{brandname}} sincroniza las operaciones de caché con el índice.",
-          "indexing-mode-auto": "Automático",
-          "indexing-mode-manual": "Manual",
           "index-storage": "Almacenamiento del índice",
           "index-storage-tooltip": "Configure cómo {{brandname}} almacena los índices. El almacenamiento persistente guarda el índice en el sistema de archivos del host, por lo que está disponible entre reinicios. El almacenamiento volátil guarda el índice en la memoria de pila JVM, lo que significa que el índice no sobrevive a los reinicios. Solo debería configurar el almacenamiento volátil para conjuntos de datos pequeños.",
           "index-storage-persistent": "Persistente",

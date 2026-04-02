@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { FormGroup, Grid, GridItem, Radio, Switch, Content, TextInput, ContentVariants } from '@patternfly/react-core';
+import {
+  FormGroup,
+  Grid,
+  GridItem,
+  Radio,
+  Switch,
+  Content,
+  TextInput,
+  ContentVariants,
+} from '@patternfly/react-core';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { useTranslation } from 'react-i18next';
-import { BackupSiteFailurePolicy, BackupSiteStateTransferMode, BackupSiteStrategy } from '@services/infinispanRefData';
+import {
+  BackupSiteFailurePolicy,
+  BackupSiteStateTransferMode,
+  BackupSiteStrategy,
+} from '@services/infinispanRefData';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
@@ -16,29 +29,53 @@ const BackupSiteConfigurator = (props: {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const [failurePolicy, setFailurePolicy] = useState(props.backupSiteOptions[props.index]?.failurePolicy);
-  const [timeout, setTimeout] = useState(props.backupSiteOptions[props.index]?.timeout);
-  const [timeoutUnit, setTimeoutUnit] = useState(props.backupSiteOptions[props.index]?.timeoutUnit);
-  const [twoPhaseCommit, setTwoPhaseCommit] = useState(props.backupSiteOptions[props.index]?.twoPhaseCommit);
+  const [failurePolicy, setFailurePolicy] = useState(
+    props.backupSiteOptions[props.index]?.failurePolicy,
+  );
+  const [timeout, setTimeout] = useState(
+    props.backupSiteOptions[props.index]?.timeout,
+  );
+  const [timeoutUnit, setTimeoutUnit] = useState(
+    props.backupSiteOptions[props.index]?.timeoutUnit,
+  );
+  const [twoPhaseCommit, setTwoPhaseCommit] = useState(
+    props.backupSiteOptions[props.index]?.twoPhaseCommit,
+  );
   const [failurePolicyClass, setFailurePolicyClass] = useState(
-    props.backupSiteOptions[props.index]?.failurePolicyClass
+    props.backupSiteOptions[props.index]?.failurePolicyClass,
   );
 
-  const [afterFailures, setAfterFailures] = useState(props.backupSiteOptions![props.index]?.takeOffline?.afterFailures);
-  const [minWait, setMinWait] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWait);
-  const [minWaitUnit, setMinWaitUnit] = useState(props.backupSiteOptions[props.index]?.takeOffline?.minWaitUnit);
+  const [afterFailures, setAfterFailures] = useState(
+    props.backupSiteOptions![props.index]?.takeOffline?.afterFailures,
+  );
+  const [minWait, setMinWait] = useState(
+    props.backupSiteOptions[props.index]?.takeOffline?.minWait,
+  );
+  const [minWaitUnit, setMinWaitUnit] = useState(
+    props.backupSiteOptions[props.index]?.takeOffline?.minWaitUnit,
+  );
 
-  const [chunckSize, setChunckSize] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.chunckSize);
+  const [chunckSize, setChunckSize] = useState(
+    props.backupSiteOptions[props.index]?.stateTransfer?.chunckSize,
+  );
   const [timeoutStateTransfer, setTimeoutStateTransfer] = useState(
-    props.backupSiteOptions[props.index]?.stateTransfer?.timeout
+    props.backupSiteOptions[props.index]?.stateTransfer?.timeout,
   );
   const [timeoutStateTransferUnit, setTimeoutStateTransferUnit] = useState(
-    props.backupSiteOptions[props.index]?.stateTransfer?.timeoutUnit
+    props.backupSiteOptions[props.index]?.stateTransfer?.timeoutUnit,
   );
-  const [maxRetries, setMaxRetries] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.maxRetries);
-  const [waitTime, setWaitTime] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.waitTime);
-  const [waitTimeUnit, setWaitTimeUnit] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.waitTimeUnit);
-  const [mode, setMode] = useState(props.backupSiteOptions[props.index]?.stateTransfer?.mode);
+  const [maxRetries, setMaxRetries] = useState(
+    props.backupSiteOptions[props.index]?.stateTransfer?.maxRetries,
+  );
+  const [waitTime, setWaitTime] = useState(
+    props.backupSiteOptions[props.index]?.stateTransfer?.waitTime,
+  );
+  const [waitTimeUnit, setWaitTimeUnit] = useState(
+    props.backupSiteOptions[props.index]?.stateTransfer?.waitTimeUnit,
+  );
+  const [mode, setMode] = useState(
+    props.backupSiteOptions[props.index]?.stateTransfer?.mode,
+  );
 
   useEffect(() => {
     const data = {
@@ -50,7 +87,7 @@ const BackupSiteConfigurator = (props: {
       takeOffline: {
         afterFailures: afterFailures,
         minWait: minWait,
-        minWaitUnit: minWaitUnit
+        minWaitUnit: minWaitUnit,
       },
       stateTransfer: {
         chunckSize: chunckSize,
@@ -59,13 +96,13 @@ const BackupSiteConfigurator = (props: {
         maxRetries: maxRetries,
         waitTime: waitTime,
         waitTimeUnit: waitTimeUnit,
-        mode: mode
-      }
+        mode: mode,
+      },
     };
     props.backupSiteOptionsModifier([
       ...props.backupSiteOptions.slice(0, props.index),
       data,
-      ...props.backupSiteOptions.slice(props.index + 1)
+      ...props.backupSiteOptions.slice(props.index + 1),
     ]);
   }, [
     failurePolicy,
@@ -82,16 +119,20 @@ const BackupSiteConfigurator = (props: {
     maxRetries,
     waitTime,
     waitTimeUnit,
-    mode
+    mode,
   ]);
 
   const formTakeOffline = () => {
     return (
       <React.Fragment>
         <GridItem span={12}>
-          <Content component={ContentVariants.p}>{t('caches.create.configurations.feature.take-offline')}</Content>
+          <Content component={ContentVariants.p}>
+            {t('caches.create.configurations.feature.take-offline')}
+          </Content>
           <Content component={ContentVariants.small}>
-            {t('caches.create.configurations.feature.take-offline-tooltip', { brandname: brandname })}
+            {t('caches.create.configurations.feature.take-offline-tooltip', {
+              brandname: brandname,
+            })}
           </Content>
         </GridItem>
         <FormGroup
@@ -101,7 +142,9 @@ const BackupSiteConfigurator = (props: {
             <PopoverHelp
               name="afterFailures"
               label={t('caches.create.configurations.feature.after-failure')}
-              content={t('caches.create.configurations.feature.after-failure-tooltip')}
+              content={t(
+                'caches.create.configurations.feature.after-failure-tooltip',
+              )}
             />
           }
         >
@@ -124,7 +167,9 @@ const BackupSiteConfigurator = (props: {
             <PopoverHelp
               name="minwait"
               label={t('caches.create.configurations.feature.min-wait')}
-              content={t('caches.create.configurations.feature.min-wait-tooltip')}
+              content={t(
+                'caches.create.configurations.feature.min-wait-tooltip',
+              )}
             />
           }
         >
@@ -145,9 +190,13 @@ const BackupSiteConfigurator = (props: {
     return (
       <React.Fragment>
         <GridItem span={12}>
-          <Content component={ContentVariants.p}>{t('caches.create.configurations.feature.state-transfer')}</Content>
+          <Content component={ContentVariants.p}>
+            {t('caches.create.configurations.feature.state-transfer')}
+          </Content>
           <Content component={ContentVariants.small}>
-            {t('caches.create.configurations.feature.state-transfer-tooltip', { brandname: brandname })}
+            {t('caches.create.configurations.feature.state-transfer-tooltip', {
+              brandname: brandname,
+            })}
           </Content>
         </GridItem>
         <GridItem span={12}>
@@ -159,7 +208,10 @@ const BackupSiteConfigurator = (props: {
               <PopoverHelp
                 name="mode"
                 label={t('caches.create.configurations.feature.mode')}
-                content={t('caches.create.configurations.feature.mode-tooltip', { brandname: brandname })}
+                content={t(
+                  'caches.create.configurations.feature.mode-tooltip',
+                  { brandname: brandname },
+                )}
               />
             }
           >
@@ -168,16 +220,22 @@ const BackupSiteConfigurator = (props: {
               id="manual"
               data-cy="manual-radio"
               onChange={() => setMode(BackupSiteStateTransferMode.MANUAL)}
-              isChecked={(mode as BackupSiteStateTransferMode) == BackupSiteStateTransferMode.MANUAL}
-              label={t('caches.create.configurations.feature.mode-manual')}
+              isChecked={
+                (mode as BackupSiteStateTransferMode) ==
+                BackupSiteStateTransferMode.MANUAL
+              }
+              label={BackupSiteStateTransferMode.MANUAL}
             />
             <Radio
               name="mood-radio"
               id="auto"
               data-cy="auto-radio"
               onChange={() => setMode(BackupSiteStateTransferMode.AUTO)}
-              isChecked={(mode as BackupSiteStateTransferMode) == BackupSiteStateTransferMode.AUTO}
-              label={t('caches.create.configurations.feature.mode-auto')}
+              isChecked={
+                (mode as BackupSiteStateTransferMode) ==
+                BackupSiteStateTransferMode.AUTO
+              }
+              label={BackupSiteStateTransferMode.AUTO}
             />
           </FormGroup>
         </GridItem>
@@ -189,7 +247,9 @@ const BackupSiteConfigurator = (props: {
               <PopoverHelp
                 name="chuncksize"
                 label={t('caches.create.configurations.feature.chunk-size')}
-                content={t('caches.create.configurations.feature.chunk-size-tooltip')}
+                content={t(
+                  'caches.create.configurations.feature.chunk-size-tooltip',
+                )}
               />
             }
           >
@@ -209,12 +269,18 @@ const BackupSiteConfigurator = (props: {
         <GridItem span={6}>
           <FormGroup
             fieldId="timeout-state-transfer"
-            label={t('caches.create.configurations.feature.timeout-state-transfer')}
+            label={t(
+              'caches.create.configurations.feature.timeout-state-transfer',
+            )}
             labelHelp={
               <PopoverHelp
                 name="timeout-state-transfer"
-                label={t('caches.create.configurations.feature.timeout-state-transfer')}
-                content={t('caches.create.configurations.feature.timeout-state-transfer-tooltip')}
+                label={t(
+                  'caches.create.configurations.feature.timeout-state-transfer',
+                )}
+                content={t(
+                  'caches.create.configurations.feature.timeout-state-transfer-tooltip',
+                )}
               />
             }
           >
@@ -236,7 +302,9 @@ const BackupSiteConfigurator = (props: {
               <PopoverHelp
                 name="maxretries"
                 label={t('caches.create.configurations.feature.max-retries')}
-                content={t('caches.create.configurations.feature.max-retries-tooltip')}
+                content={t(
+                  'caches.create.configurations.feature.max-retries-tooltip',
+                )}
               />
             }
           >
@@ -261,7 +329,9 @@ const BackupSiteConfigurator = (props: {
               <PopoverHelp
                 name="wait-time"
                 label={t('caches.create.configurations.feature.wait-time')}
-                content={t('caches.create.configurations.feature.wait-time-tooltip')}
+                content={t(
+                  'caches.create.configurations.feature.wait-time-tooltip',
+                )}
               />
             }
           >
@@ -298,7 +368,9 @@ const BackupSiteConfigurator = (props: {
           <PopoverHelp
             name={'two-phase-commit'}
             label={t('caches.create.configurations.feature.two-phase-commit')}
-            content={t('caches.create.configurations.feature.two-phase-commit-tooltip')}
+            content={t(
+              'caches.create.configurations.feature.two-phase-commit-tooltip',
+            )}
           />
         </FormGroup>
       </GridItem>
@@ -315,7 +387,9 @@ const BackupSiteConfigurator = (props: {
           <PopoverHelp
             name="failure-policy"
             label={t('caches.create.configurations.feature.failure-policy')}
-            content={t('caches.create.configurations.feature.failure-policy-tooltip')}
+            content={t(
+              'caches.create.configurations.feature.failure-policy-tooltip',
+            )}
           />
         }
       >
@@ -353,8 +427,12 @@ const BackupSiteConfigurator = (props: {
         labelHelp={
           <PopoverHelp
             name="failurePolicyClass"
-            label={t('caches.create.configurations.feature.failure-policy-class')}
-            content={t('caches.create.configurations.feature.failure-policy-class-tooltip')}
+            label={t(
+              'caches.create.configurations.feature.failure-policy-class',
+            )}
+            content={t(
+              'caches.create.configurations.feature.failure-policy-class-tooltip',
+            )}
           />
         }
       >
@@ -362,7 +440,9 @@ const BackupSiteConfigurator = (props: {
           type="text"
           id="failurePolicyClass"
           value={failurePolicyClass}
-          onChange={(e, val) => setFailurePolicyClass(val === '' ? undefined! : val)}
+          onChange={(e, val) =>
+            setFailurePolicyClass(val === '' ? undefined! : val)
+          }
         />
       </FormGroup>
       {formTakeOffline()}

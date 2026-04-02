@@ -79,9 +79,9 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           isChecked={(mode as TransactionalMode) == TransactionalMode.NON_XA}
           label={
             <PopoverHelp
-              name={'non-durable-xa'}
-              text={t('caches.create.configurations.feature.non-xa')}
-              label={t('caches.create.configurations.feature.non-xa')}
+              name={'non-xa'}
+              text={TransactionalMode.NON_XA}
+              label={TransactionalMode.NON_XA}
               content={t(
                 'caches.create.configurations.feature.non-xa-tooltip',
                 { brandname: brandname },
@@ -99,8 +99,8 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           label={
             <PopoverHelp
               name={'non-durable-xa'}
-              text={t('caches.create.configurations.feature.non-durable-xa')}
-              label={t('caches.create.configurations.feature.non-durable-xa')}
+              text={TransactionalMode.NON_DURABLE_XA}
+              label={TransactionalMode.NON_DURABLE_XA}
               content={t(
                 'caches.create.configurations.feature.non-durable-xa-tooltip',
                 { brandname: brandname },
@@ -116,8 +116,8 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           label={
             <PopoverHelp
               name={'full-xa'}
-              text={t('caches.create.configurations.feature.full-xa')}
-              label={t('caches.create.configurations.feature.full-xa')}
+              text={TransactionalMode.FULL_XA}
+              label={TransactionalMode.FULL_XA}
               content={t(
                 'caches.create.configurations.feature.full-xa-tooltip',
                 { brandname: brandname },

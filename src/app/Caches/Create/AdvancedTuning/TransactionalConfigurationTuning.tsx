@@ -10,7 +10,11 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { CacheFeature, IsolationLevel } from '@services/infinispanRefData';
+import {
+  CacheFeature,
+  IsolationLevel,
+  TransactionalMode,
+} from '@services/infinispanRefData';
 import { useCreateCache } from '@app/hooks/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
@@ -125,12 +129,8 @@ const TransactionalConfigurationTuning = () => {
               label={
                 <PopoverHelp
                   name={'full-xa'}
-                  text={t(
-                    'caches.create.configurations.advanced-options.isolation-level-repeatable-read',
-                  )}
-                  label={t(
-                    'caches.create.configurations.advanced-options.isolation-level-repeatable-read',
-                  )}
+                  text={TransactionalMode.FULL_XA}
+                  label={TransactionalMode.FULL_XA}
                   content={t(
                     'caches.create.configurations.advanced-options.isolation-level-repeatable-read-tooltip',
                     {

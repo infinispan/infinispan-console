@@ -4,10 +4,15 @@ import {
   jdbcStore,
   querySqlStore,
   remoteStore,
-  tableSqlStore
+  tableSqlStore,
 } from '@app/utils/persistentStorageTemplate';
 
-export const TracingCategories = ['container', 'x-site', 'cluster', 'persistence'];
+export const TracingCategories = [
+  'container',
+  'x-site',
+  'cluster',
+  'persistence',
+];
 
 /**
  * Cache configuration utils class
@@ -41,14 +46,14 @@ export enum ContentType {
   fixed64 = 'fixed64',
   sfixed32 = 'sfixed32',
   sfixed64 = 'sfixed64',
-  customType = 'Custom Type'
+  customType = 'Custom Type',
 }
 
 export enum CacheType {
   Distributed = 'Distributed',
   Replicated = 'Replicated',
   Local = 'Local',
-  Invalidated = 'Invalidated'
+  Invalidated = 'Invalidated',
 }
 
 export enum EncodingType {
@@ -61,7 +66,7 @@ export enum EncodingType {
   JBoss = 'application/x-jboss-marshalling',
   Octet = 'application/octet-stream',
   Empty = 'Empty',
-  Unknown = 'Unknown'
+  Unknown = 'Unknown',
 }
 
 export enum InfinispanFlags {
@@ -86,27 +91,27 @@ export enum InfinispanFlags {
   SKIP_SIZE_OPTIMIZATION = 'SKIP_SIZE_OPTIMIZATION',
   SKIP_STATISTICS = 'SKIP_STATISTICS',
   SKIP_XSITE_BACKUP = 'SKIP_XSITE_BACKUP',
-  ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT'
+  ZERO_LOCK_ACQUISITION_TIMEOUT = 'ZERO_LOCK_ACQUISITION_TIMEOUT',
 }
 
 export enum EvictionStrategy {
   REMOVE = 'REMOVE',
-  EXCEPTION = 'EXCEPTION'
+  EXCEPTION = 'EXCEPTION',
 }
 
 export enum IsolationLevel {
   REPEATABLE_READ = 'REPEATABLE_READ',
-  READ_COMMITTED = 'READ_COMMITTED'
+  READ_COMMITTED = 'READ_COMMITTED',
 }
 
 export enum StorageType {
   HEAP = 'HEAP',
-  OFF_HEAP = 'OFF_HEAP'
+  OFF_HEAP = 'OFF_HEAP',
 }
 
 export enum CacheMode {
   ASYNC = 'ASYNC',
-  SYNC = 'SYNC'
+  SYNC = 'SYNC',
 }
 
 export enum CacheFeature {
@@ -115,7 +120,7 @@ export enum CacheFeature {
   SECURED = 'Authorization',
   PERSISTENCE = 'Persistence',
   TRANSACTIONAL = 'Transactional',
-  BACKUPS = 'Backups'
+  BACKUPS = 'Backups',
 }
 
 export enum CacheFeatureFilter {
@@ -124,11 +129,11 @@ export enum CacheFeatureFilter {
   Authorization = 'secured',
   Persistence = 'persistent',
   Transactional = 'transactional',
-  Backups = 'hasRemoteBackup'
+  Backups = 'hasRemoteBackup',
 }
 
 export enum CacheStatus {
-  IGNORED = 'Hidden'
+  IGNORED = 'Hidden',
 }
 
 export enum MaxSizeUnit {
@@ -139,7 +144,7 @@ export enum MaxSizeUnit {
   KiB = 'KiB',
   MiB = 'MiB',
   GiB = 'GiB',
-  TiB = 'TiB'
+  TiB = 'TiB',
 }
 
 export enum TimeUnits {
@@ -147,57 +152,57 @@ export enum TimeUnits {
   seconds = 'seconds',
   minutes = 'minutes',
   hours = 'hours',
-  days = 'days'
+  days = 'days',
 }
 
 export enum EvictionType {
   size = 'size',
-  count = 'count'
+  count = 'count',
 }
 
 export enum IndexingMode {
   auto = 'AUTO',
-  manual = 'MANUAL'
+  manual = 'MANUAL',
 }
 
 export enum IndexedStorage {
-  persistent = 'filesystem',
-  volatile = 'local-heap'
+  filesystem = 'filesystem',
+  localHeap = 'local-heap',
 }
 
 export enum IndexedStartupMode {
   none = 'None',
   purge = 'Purge',
   reindex = 'Reindex',
-  auto = 'Auto'
+  auto = 'Auto',
 }
 
 export enum BackupSiteStrategy {
   ASYNC = 'ASYNC',
-  SYNC = 'SYNC'
+  SYNC = 'SYNC',
 }
 
 export enum BackupSiteFailurePolicy {
   IGNORE = 'IGNORE',
   WARN = 'WARN',
   FAIL = 'FAIL',
-  CUSTOM = 'CUSTOM'
+  CUSTOM = 'CUSTOM',
 }
 
 export enum BackupSiteStateTransferMode {
   MANUAL = 'MANUAL',
-  AUTO = 'AUTO'
+  AUTO = 'AUTO',
 }
 
 export enum Locking {
   OPTIMISTIC = 'OPTIMISTIC',
-  PESSIMISTIC = 'PESSIMISTIC'
+  PESSIMISTIC = 'PESSIMISTIC',
 }
 
 export enum TransactionalMode {
   NON_XA = 'NON_XA',
   NON_DURABLE_XA = 'NON_DURABLE_XA',
-  FULL_XA = 'FULL_XA'
+  FULL_XA = 'FULL_XA',
 }
 
 export enum PersistentCacheStorage {
@@ -206,7 +211,7 @@ export enum PersistentCacheStorage {
   TableSQLStore = 'Table SQL store',
   QuerySQLStore = 'Query SQL store',
   JDBCStore = 'JDBC string-based store',
-  Custom = 'Custom store'
+  Custom = 'Custom store',
 }
 
 export const PersistentStorageConfig = new Map<string, string>([
@@ -215,41 +220,41 @@ export const PersistentStorageConfig = new Map<string, string>([
   [PersistentCacheStorage.TableSQLStore, tableSqlStore],
   [PersistentCacheStorage.QuerySQLStore, querySqlStore],
   [PersistentCacheStorage.JDBCStore, jdbcStore],
-  [PersistentCacheStorage.Custom, customStore]
+  [PersistentCacheStorage.Custom, customStore],
 ]);
 
 export enum ConfigDownloadType {
   JSON = 'JSON',
   XML = 'XML',
-  YAML = 'YAML'
+  YAML = 'YAML',
 }
 
 export enum DataDistributionStatsOption {
   Entries = 'Entries',
-  MemoryUsed = 'Total memory used'
+  MemoryUsed = 'Total memory used',
 }
 
 export enum CounterType {
   STRONG_COUNTER = 'Strong',
-  WEAK_COUNTER = 'Weak'
+  WEAK_COUNTER = 'Weak',
 }
 
 export enum TaskType {
-  ADMIN_SERVER_TASK = 'AdminServerTask'
+  ADMIN_SERVER_TASK = 'AdminServerTask',
 }
 export enum CounterStorage {
   VOLATILE = 'Volatile',
-  PERSISTENT = 'Persistent'
+  PERSISTENT = 'Persistent',
 }
 
 export enum RoleFilterOption {
   name = 'Name',
   cacheManagerPermissions = 'Cache Manager Permissions',
-  cachePermissions = 'Cache Permissions'
+  cachePermissions = 'Cache Permissions',
 }
 
 export enum Permission {
-  ALL = 'all'
+  ALL = 'all',
 }
 
 export const ROLES_MAP = new Map<string, string>([
@@ -266,84 +271,84 @@ export const ROLES_MAP = new Map<string, string>([
   ['EXEC', 'access-management.roles.permission-exec'],
   ['LISTEN', 'access-management.roles.permission-listen'],
   ['LIFECYCLE', 'access-management.roles.permission-lifecycle'],
-  ['NONE', 'access-management.roles.permission-none']
+  ['NONE', 'access-management.roles.permission-none'],
 ]);
 
 export const UNKNOWN: ComponentStatusType = {
   name: 'Unknown',
-  status: 'custom'
+  status: 'custom',
 };
 export const OK_STATUS: ComponentStatusType = {
   name: 'Ok',
-  status: 'success'
+  status: 'success',
 };
 export const RUNNING_STATUS: ComponentStatusType = {
   name: 'Running',
-  status: 'success'
+  status: 'success',
 };
 export const INIT_STATUS: ComponentStatusType = {
   name: 'Initializing',
-  status: 'warning'
+  status: 'warning',
 };
 export const CANCEL_STATUS: ComponentStatusType = {
   name: 'Cancelling',
-  status: 'warning'
+  status: 'warning',
 };
 
 export const ERROR_STATUS: ComponentStatusType = {
   name: 'Error',
-  status: 'danger'
+  status: 'danger',
 };
 export const TERMINATED_STATUS: ComponentStatusType = {
   name: 'Terminated',
-  status: 'info'
+  status: 'info',
 };
 export const STOPPING_STATUS: ComponentStatusType = {
   name: 'Stopping',
-  status: 'info'
+  status: 'info',
 };
 export const INSTANTIATED_STATUS: ComponentStatusType = {
   name: 'Instantiated',
-  status: 'info'
+  status: 'info',
 };
 
 export const ST_IDLE: ComponentStatusType = {
   name: 'Inactive',
-  status: 'success'
+  status: 'success',
 };
 export const ST_SENDING: ComponentStatusType = {
   name: 'Sending',
-  status: 'info'
+  status: 'info',
 };
 export const ST_SEND_OK: ComponentStatusType = {
   name: 'Transfer Ok',
-  status: 'success'
+  status: 'success',
 };
 export const ST_SEND_FAILED: ComponentStatusType = {
   name: 'Transfer Failed',
-  status: 'danger'
+  status: 'danger',
 };
 export const ST_SEND_CANCELED: ComponentStatusType = {
   name: 'Transfer Cancelled',
-  status: 'warning'
+  status: 'warning',
 };
 
 export const HEALTHY_HEALTH: ComponentStatusType = {
   name: 'Healthy',
-  status: 'success'
+  status: 'success',
 };
 
 export const HEALTHY_REBALANCING_HEALTH: ComponentStatusType = {
   name: 'Healthy rebalancing',
-  status: 'info'
+  status: 'info',
 };
 
 export const DEGRADED_HEALTH: ComponentStatusType = {
   name: 'Degraded',
-  status: 'warning'
+  status: 'warning',
 };
 
 export const FAILED: ComponentStatusType = {
   name: 'Failed',
-  status: 'danger'
+  status: 'danger',
 };
