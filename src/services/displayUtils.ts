@@ -156,54 +156,28 @@ class DisplayUtils {
     return this.formatNumber(digit);
   }
 
+  private static readonly FEATURE_MAP: [keyof Features, string][] = [
+    ['bounded', 'Bounded'],
+    ['indexed', 'Indexed'],
+    ['persistent', 'Persistent'],
+    ['transactional', 'Transactional'],
+    ['secured', 'Secured'],
+    ['hasRemoteBackup', 'Backups'],
+  ];
+
+  private collectFeatureLabels(features: Features): string[] {
+    return DisplayUtils.FEATURE_MAP.filter(([key]) => features[key]).map(
+      ([, label]) => label,
+    );
+  }
+
   public createFeaturesString(features: Features): string {
-    let featuresString = '';
-
-    if (features.bounded) {
-      featuresString = this.appendFeature(featuresString, 'Bounded');
-    }
-    if (features.indexed) {
-      featuresString = this.appendFeature(featuresString, 'Indexed');
-    }
-    if (features.persistent) {
-      featuresString = this.appendFeature(featuresString, 'Persistent');
-    }
-    if (features.transactional) {
-      featuresString = this.appendFeature(featuresString, 'Transactional');
-    }
-    if (features.secured) {
-      featuresString = this.appendFeature(featuresString, 'Secured');
-    }
-    if (features.hasRemoteBackup) {
-      featuresString = this.appendFeature(featuresString, 'Backups');
-    }
-
-    return featuresString.length > 0 ? featuresString : 'None';
+    const labels = this.collectFeatureLabels(features);
+    return labels.length > 0 ? labels.join(' / ') : 'None';
   }
 
   public createFeaturesChipGroup(features: Features): string[] {
-    let featureChipGroup: string[] = [];
-
-    if (features.bounded) {
-      featureChipGroup = ['Bounded', ...featureChipGroup];
-    }
-    if (features.indexed) {
-      featureChipGroup = ['Indexed', ...featureChipGroup];
-    }
-    if (features.persistent) {
-      featureChipGroup = ['Persistent', ...featureChipGroup];
-    }
-    if (features.transactional) {
-      featureChipGroup = ['Transactional', ...featureChipGroup];
-    }
-    if (features.secured) {
-      featureChipGroup = ['Secured', ...featureChipGroup];
-    }
-    if (features.hasRemoteBackup) {
-      featureChipGroup = ['Backups', ...featureChipGroup];
-    }
-
-    return featureChipGroup;
+    return this.collectFeatureLabels(features);
   }
 
   public formatContentToDisplayWithTruncate(
@@ -272,10 +246,6 @@ class DisplayUtils {
 
     return content as string;
   }
-
-  private appendFeature = (features: string, feature: string): string => {
-    return features + (features.length > 0 ? ' / ' : '') + feature;
-  };
 }
 
 const displayUtils: DisplayUtils = new DisplayUtils();
