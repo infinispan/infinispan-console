@@ -21,7 +21,7 @@ import {
   ST_SENDING,
   STOPPING_STATUS,
   TERMINATED_STATUS,
-  UNKNOWN
+  UNKNOWN,
 } from '@services/infinispanRefData';
 
 /**
@@ -156,58 +156,39 @@ class DisplayUtils {
     return this.formatNumber(digit);
   }
 
+  private static readonly FEATURE_MAP: [keyof Features, string][] = [
+    ['bounded', 'Bounded'],
+    ['indexed', 'Indexed'],
+    ['persistent', 'Persistent'],
+    ['transactional', 'Transactional'],
+    ['secured', 'Secured'],
+    ['hasRemoteBackup', 'Backups'],
+  ];
+
+  private collectFeatureLabels(features: Features): string[] {
+    return DisplayUtils.FEATURE_MAP.filter(([key]) => features[key]).map(
+      ([, label]) => label,
+    );
+  }
+
   public createFeaturesString(features: Features): string {
-    let featuresString = '';
-
-    if (features.bounded) {
-      featuresString = this.appendFeature(featuresString, 'Bounded');
-    }
-    if (features.indexed) {
-      featuresString = this.appendFeature(featuresString, 'Indexed');
-    }
-    if (features.persistent) {
-      featuresString = this.appendFeature(featuresString, 'Persistent');
-    }
-    if (features.transactional) {
-      featuresString = this.appendFeature(featuresString, 'Transactional');
-    }
-    if (features.secured) {
-      featuresString = this.appendFeature(featuresString, 'Secured');
-    }
-    if (features.hasRemoteBackup) {
-      featuresString = this.appendFeature(featuresString, 'Backups');
-    }
-
-    return featuresString.length > 0 ? featuresString : 'None';
+    const labels = this.collectFeatureLabels(features);
+    return labels.length > 0 ? labels.join(' / ') : 'None';
   }
 
   public createFeaturesChipGroup(features: Features): string[] {
-    let featureChipGroup: string[] = [];
-
-    if (features.bounded) {
-      featureChipGroup = ['Bounded', ...featureChipGroup];
-    }
-    if (features.indexed) {
-      featureChipGroup = ['Indexed', ...featureChipGroup];
-    }
-    if (features.persistent) {
-      featureChipGroup = ['Persistent', ...featureChipGroup];
-    }
-    if (features.transactional) {
-      featureChipGroup = ['Transactional', ...featureChipGroup];
-    }
-    if (features.secured) {
-      featureChipGroup = ['Secured', ...featureChipGroup];
-    }
-    if (features.hasRemoteBackup) {
-      featureChipGroup = ['Backups', ...featureChipGroup];
-    }
-
-    return featureChipGroup;
+    return this.collectFeatureLabels(features);
   }
 
-  public formatContentToDisplayWithTruncate(content: any, contentType?: ContentType): string {
-    if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
+  public formatContentToDisplayWithTruncate(
+    content: any,
+    contentType?: ContentType,
+  ): string {
+    if (
+      !contentType ||
+      contentType == ContentType.JSON ||
+      contentType == ContentType.customType
+    ) {
       // Try parse and stringify
       try {
         const json = this.trimJsonValues(JSONbigString.parse(content), 40, 10);
@@ -217,7 +198,9 @@ class DisplayUtils {
       }
     }
 
-    return (content as string).length > 40 ? content.substring(0, 30) + '...' : content;
+    return (content as string).length > 40
+      ? content.substring(0, 30) + '...'
+      : content;
   }
 
   public trimJsonValues(obj, stringMax: number, arrayMax: number) {
@@ -231,9 +214,11 @@ class DisplayUtils {
       if (key === '_type') {
         trimmed[key] = value; // Do not trim _type
       } else if (typeof value === 'string') {
-        trimmed[key] = value.length > stringMax ? value.slice(0, stringMax) + '…' : value;
+        trimmed[key] =
+          value.length > stringMax ? value.slice(0, stringMax) + '…' : value;
       } else if (Array.isArray(value)) {
-        trimmed[key] = value.length > arrayMax ? [...value.slice(0, arrayMax), '…'] : value;
+        trimmed[key] =
+          value.length > arrayMax ? [...value.slice(0, arrayMax), '…'] : value;
       } else {
         trimmed[key] = value;
       }
@@ -242,8 +227,15 @@ class DisplayUtils {
     return trimmed;
   }
 
-  public formatContentToDisplay(content: any, contentType?: ContentType): string {
-    if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
+  public formatContentToDisplay(
+    content: any,
+    contentType?: ContentType,
+  ): string {
+    if (
+      !contentType ||
+      contentType == ContentType.JSON ||
+      contentType == ContentType.customType
+    ) {
       // Try parse and stringify
       try {
         return JSONbigString.stringify(JSONbigString.parse(content), null, 2);
@@ -254,10 +246,6 @@ class DisplayUtils {
 
     return content as string;
   }
-
-  private appendFeature = (features: string, feature: string): string => {
-    return features + (features.length > 0 ? ' / ' : '') + feature;
-  };
 }
 
 const displayUtils: DisplayUtils = new DisplayUtils();
