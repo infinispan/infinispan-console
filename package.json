@@ -106,7 +106,6 @@
     "i18next-http-backend": "^3.0.2",
     "json-bigint": "^1.0.0",
     "keycloak-js": "^26",
-    "numeral": "^2.0.6",
     "react": "^18",
     "react-dom": "^18",
     "react-i18next": "^16.5.4",

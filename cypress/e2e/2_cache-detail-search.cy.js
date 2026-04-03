@@ -73,7 +73,7 @@ describe('Cache Detail Overview', () => {
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
     cy.contains("org.infinispan.Person");
-    cy.contains(/\d+ k/);
+    cy.contains(/\d+K/);
     cy.get("[data-cy=backButton]").click();
     cy.contains("Elaia");
 
@@ -109,6 +109,6 @@ describe('Cache Detail Overview', () => {
     cy.contains("Elaia");
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
-    cy.contains(/\d+ k/);
+    cy.contains(/\d+K/);
   })
 });
