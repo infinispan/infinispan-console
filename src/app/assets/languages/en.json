@@ -625,6 +625,7 @@
       "column-modified": "Modified",
       "column-lastused": "Last used",
       "truncate-values": "Truncate values",
+      "manage-columns": "Manage columns",
       "lifespan-immortal": "Forever",
       "maxidle-immortal": "Forever",
       "never-expire": "Never",

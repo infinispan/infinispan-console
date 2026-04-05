@@ -609,6 +609,7 @@
       "column-modified": "Geändert",
       "column-lastused": "Zuletzt verwendet",
       "truncate-values": "Werte abkürzen",
+      "manage-columns": "Spalten verwalten",
       "lifespan-immortal": "Ewig",
       "maxidle-immortal": "Ewig",
       "never-expire": "Nie verfallen",

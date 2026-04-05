@@ -608,6 +608,7 @@
       "column-modified": "Modificado",
       "column-lastused": "Último uso",
       "truncate-values": "Truncar valores",
+      "manage-columns": "Gerenciar colunas",
       "lifespan-immortal": "Para sempre",
       "maxidle-immortal": "Para sempre",
       "never-expire": "Nunca expira",

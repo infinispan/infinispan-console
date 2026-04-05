@@ -608,6 +608,7 @@
       "column-modified": "修改时间",
       "column-lastused": "最后使用",
       "truncate-values": "截断值",
+      "manage-columns": "管理列",
       "lifespan-immortal": "永恒",
       "maxidle-immortal": "永恒",
       "never-expire": "永不过期",

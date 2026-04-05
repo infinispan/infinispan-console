@@ -608,6 +608,7 @@
       "column-modified": "परिवर्तित किया गया",
       "column-lastused": "पिछला उपयोग",
       "truncate-values": "मान्यताओं को सीमित करें",
+      "manage-columns": "कॉलम प्रबंधित करें",
       "lifespan-immortal": "निरंतर",
       "maxidle-immortal": "निरंतर",
       "never-expire": "कभी नहीं समाप्त हो",

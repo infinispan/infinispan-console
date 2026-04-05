@@ -15,9 +15,12 @@ import {
   EmptyStateBody,
   EmptyStateFooter,
   EmptyStateVariant,
+  Flex,
+  FlexItem,
   Pagination,
   SearchInput,
   SelectOptionProps,
+  Switch,
   Toolbar,
   ToolbarContent,
   ToolbarFilter,
@@ -36,11 +39,15 @@ import {
   Tr,
 } from '@patternfly/react-table';
 import {
+  ColumnsIcon,
   FilterIcon,
   HelpIcon,
   PlusCircleIcon,
   SearchIcon,
 } from '@patternfly/react-icons';
+import ColumnManagementModal, {
+  ColumnManagementModalColumn,
+} from '@patternfly/react-component-groups/dist/dynamic/ColumnManagementModal';
 import {
   t_global_spacer_md,
   t_global_spacer_sm,
@@ -106,6 +113,66 @@ const CacheEntries = () => {
     });
 
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
+  const [isColumnModalOpen, setColumnModalOpen] = useState(false);
+
+  const defaultColumns: ColumnManagementModalColumn[] = [
+    {
+      title: t('caches.entries.column-key'),
+      key: 'key',
+      isShownByDefault: true,
+      isShown: true,
+      isUntoggleable: true,
+    },
+    {
+      title: t('caches.entries.column-value'),
+      key: 'value',
+      isShownByDefault: true,
+      isShown: true,
+      isUntoggleable: true,
+    },
+    {
+      title: t('caches.entries.column-lifespan'),
+      key: 'lifespan',
+      isShownByDefault: true,
+      isShown: true,
+    },
+    {
+      title: t('caches.entries.column-maxidle'),
+      key: 'maxIdle',
+      isShownByDefault: true,
+      isShown: true,
+    },
+    {
+      title: t('caches.entries.column-expires'),
+      key: 'expires',
+      isShownByDefault: false,
+      isShown: false,
+    },
+  ];
+
+  const [savedColumnVisibility, setSavedColumnVisibility] = useLocalStorage<
+    Record<string, boolean>
+  >('cache-entries-columns', {});
+
+  const [columns, setColumns] = useState<ColumnManagementModalColumn[]>(() =>
+    defaultColumns.map((col) => ({
+      ...col,
+      isShown:
+        col.key in savedColumnVisibility
+          ? savedColumnVisibility[col.key]
+          : col.isShown,
+    })),
+  );
+
+  const applyColumns = (newColumns: ColumnManagementModalColumn[]) => {
+    setColumns(newColumns);
+    const visibility: Record<string, boolean> = {};
+    newColumns.forEach((col) => (visibility[col.key] = col.isShown ?? false));
+    setSavedColumnVisibility(visibility);
+  };
+
+  const isColumnShown = (key: string) =>
+    columns.find((c) => c.key === key)?.isShown ?? false;
 
   useEffect(() => {
     if (cache.encoding?.key == EncodingType.Protobuf) {
@@ -453,18 +520,33 @@ const CacheEntries = () => {
             </Button>
           </Tooltip>
         </ToolbarItem>
-        <ToolbarItem variant="pagination">
-          {toolbarPagination('down')}
-        </ToolbarItem>
       </ToolbarContent>
       <ToolbarContent>
         <ToolbarItem>
-          <Checkbox
-            labelPosition="start"
-            label={t('caches.entries.truncate-values')}
-            id="checkbox-trim"
-            onClick={() => setTrim(!trim)}
-          />
+          <Flex>
+            <FlexItem>
+              <Button
+                data-cy="manageColumnsButton"
+                variant={ButtonVariant.link}
+                onClick={() => setColumnModalOpen(true)}
+                icon={<ColumnsIcon />}
+              >
+                {t('caches.entries.manage-columns')}
+              </Button>
+            </FlexItem>
+            <FlexItem data-cy="truncateSwitch">
+              <Switch
+                label={t('caches.entries.truncate-values')}
+                id="checkbox-trim"
+                isChecked={trim}
+                hasCheckIcon
+                onChange={() => setTrim(!trim)}
+              />
+            </FlexItem>
+          </Flex>
+        </ToolbarItem>
+        <ToolbarItem variant="pagination">
+          {toolbarPagination('down')}
         </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
@@ -551,33 +633,40 @@ const CacheEntries = () => {
                 <Tr>
                   <Th colSpan={1}>{columnNames.key}</Th>
                   <Th colSpan={1}>{columnNames.value}</Th>
-                  <Th
-                    info={{
-                      popover: t('caches.entries.column-lifespan-tooltip', {
-                        brandname: brandname,
-                      }),
-                      popoverProps: {
-                        headerContent: t('caches.entries.column-lifespan'),
-                      },
-                    }}
-                    colSpan={1}
-                  >
-                    {columnNames.lifespan}
-                  </Th>
-                  <Th
-                    info={{
-                      popover: t('caches.entries.column-maxidle-tooltip', {
-                        brandname: brandname,
-                      }),
-                      popoverProps: {
-                        headerContent: t('caches.entries.column-maxidle'),
-                      },
-                    }}
-                    colSpan={1}
-                  >
-                    {columnNames.maxIdle}
-                  </Th>
-                  <Th colSpan={2}>{columnNames.expires}</Th>
+                  {isColumnShown('lifespan') && (
+                    <Th
+                      info={{
+                        popover: t('caches.entries.column-lifespan-tooltip', {
+                          brandname: brandname,
+                        }),
+                        popoverProps: {
+                          headerContent: t('caches.entries.column-lifespan'),
+                        },
+                      }}
+                      colSpan={1}
+                    >
+                      {columnNames.lifespan}
+                    </Th>
+                  )}
+                  {isColumnShown('maxIdle') && (
+                    <Th
+                      info={{
+                        popover: t('caches.entries.column-maxidle-tooltip', {
+                          brandname: brandname,
+                        }),
+                        popoverProps: {
+                          headerContent: t('caches.entries.column-maxidle'),
+                        },
+                      }}
+                      colSpan={1}
+                    >
+                      {columnNames.maxIdle}
+                    </Th>
+                  )}
+                  {isColumnShown('expires') && (
+                    <Th colSpan={1}>{columnNames.expires}</Th>
+                  )}
+                  <Th />
                 </Tr>
               </Thead>
               <Tbody>
@@ -634,15 +723,21 @@ const CacheEntries = () => {
                             row.valueContentType as ContentType,
                           )}
                         </Td>
-                        <Td dataLabel={columnNames.lifespan}>
-                          {displayTimeToLive(row)}
-                        </Td>
-                        <Td dataLabel={columnNames.maxIdle}>
-                          {displayMaxIdle(row)}
-                        </Td>
-                        <Td dataLabel={columnNames.expires}>
-                          {displayExpires(row)}
-                        </Td>
+                        {isColumnShown('lifespan') && (
+                          <Td dataLabel={columnNames.lifespan}>
+                            {displayTimeToLive(row)}
+                          </Td>
+                        )}
+                        {isColumnShown('maxIdle') && (
+                          <Td dataLabel={columnNames.maxIdle}>
+                            {displayMaxIdle(row)}
+                          </Td>
+                        )}
+                        {isColumnShown('expires') && (
+                          <Td dataLabel={columnNames.expires}>
+                            {displayExpires(row)}
+                          </Td>
+                        )}
                         {displayActions(row)}
                       </Tr>
                     );
@@ -677,6 +772,12 @@ const CacheEntries = () => {
           cacheName={cache.name}
           isModalOpen={isClearAllModalOpen}
           closeModal={closeClearAllEntryModal}
+        />
+        <ColumnManagementModal
+          appliedColumns={columns}
+          applyColumns={applyColumns}
+          isOpen={isColumnModalOpen}
+          onClose={() => setColumnModalOpen(false)}
         />
       </CardBody>
     </Card>
