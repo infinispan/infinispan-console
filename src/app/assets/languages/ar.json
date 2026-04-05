@@ -609,6 +609,7 @@
       "column-modified": "تم التحديث",
       "column-lastused": "آخر الاستخدام",
       "truncate-values": "قص القيم",
+      "manage-columns": "إدارة الأعمدة",
       "lifespan-immortal": "دائماً",
       "maxidle-immortal": "دائماً",
       "never-expire": "لا ينتهي",

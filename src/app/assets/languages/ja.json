@@ -608,6 +608,7 @@
       "column-modified": "更新日",
       "column-lastused": "最後に使用した",
       "truncate-values": "値を短くする",
+      "manage-columns": "列の管理",
       "lifespan-immortal": "永遠",
       "maxidle-immortal": "永遠",
       "never-expire": "永続化",

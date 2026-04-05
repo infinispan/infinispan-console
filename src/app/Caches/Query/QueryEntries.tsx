@@ -15,6 +15,7 @@ import {
   GridItem,
   Pagination,
   Spinner,
+  Switch,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -103,11 +104,12 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
     <Toolbar id="cache-query-toolbar" style={{ paddingLeft: 0 }} isSticky>
       <ToolbarContent>
         <ToolbarItem>
-          <Checkbox
-            labelPosition="start"
+          <Switch
             label={t('caches.query.truncate-results')}
             id="checkbox-trim"
-            onClick={() => setTrim(!trim)}
+            isChecked={trim}
+            hasCheckIcon
+            onChange={() => setTrim(!trim)}
           />
         </ToolbarItem>
         <ToolbarItem variant="pagination">

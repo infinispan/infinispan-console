@@ -265,11 +265,11 @@ describe('Cache Detail Overview', () => {
       verifyGet('#option-string', keyPerson, value);
 
       //Checking the truncate checkbox
-      cy.get('#checkbox-trim').click();
+      cy.get('[data-cy=truncateSwitch]').click();
       cy.contains(valuePerson).should('not.exist');
       cy.contains('{"_type": "org.infinispan.Pers...').should('exist');
       //Unchecking the truncate checkbox
-      cy.get('#checkbox-trim').click();
+      cy.get('[data-cy=truncateSwitch]').click();
 
       //Testing the truncate data for string type
       const stringKey = 'longValueKey';
@@ -281,7 +281,7 @@ describe('Cache Detail Overview', () => {
       cy.contains(stringKey);
       cy.contains(stringValue);
       //Checking the truncate checkbox
-      cy.get('#checkbox-trim').click();
+      cy.get('[data-cy=truncateSwitch]').click();
       cy.contains(stringValue).should('not.exist');
       cy.contains('This is a long string text whi...');
     });
@@ -324,6 +324,60 @@ describe('Cache Detail Overview', () => {
     cy.contains('Enable rebalancing on this cache?');
     cy.get('[data-cy=rebalanceChangeButton]').click();
     cy.contains('Rebalancing is on');
+  });
+
+  it('successfully manages column visibility', () => {
+    // Add an entry so the table is visible
+    const key = 'colTestKey';
+    const value = 'colTestValue';
+    cy.get('[data-cy=addEntryButton]').click();
+    cy.get('#key-entry').click().type(key);
+    cy.get('#value-entry').click().type(value);
+    cy.get('[data-cy=addButton]').click();
+    checkEntryAddedPopupToCache();
+    closePopup();
+
+    // Verify default visible columns: Time to live and Max idle shown, Expires hidden
+    cy.contains('Time to live').should('exist');
+    cy.contains('Max idle').should('exist');
+    cy.contains('Expires').should('not.exist');
+
+    // Open manage columns modal
+    cy.get('[data-cy=manageColumnsButton]').click();
+
+    // Enable Expires column
+    cy.get('[data-testid="column-check-expires"]').click();
+    cy.get('[data-ouia-component-id="ColumnManagementModal-save-button"]').click();
+
+    // Verify Expires column is now visible
+    cy.contains('Expires').should('exist');
+
+    // Open manage columns modal again
+    cy.get('[data-cy=manageColumnsButton]').click();
+
+    // Disable Time to live column
+    cy.get('[data-testid="column-check-lifespan"]').click();
+    cy.get('[data-ouia-component-id="ColumnManagementModal-save-button"]').click();
+
+    // Verify Time to live is hidden, Expires still visible
+    cy.contains('Time to live').should('not.exist');
+    cy.contains('Expires').should('exist');
+
+    // Open manage columns and restore defaults
+    cy.get('[data-cy=manageColumnsButton]').click();
+    cy.get('button').contains('Reset to default').click();
+    cy.get('[data-ouia-component-id="ColumnManagementModal-save-button"]').click();
+
+    // Verify defaults restored
+    cy.contains('Time to live').should('exist');
+    cy.contains('Max idle').should('exist');
+    cy.contains('Expires').should('not.exist');
+
+    // Clean up
+    cy.get('[data-cy=actions-' + key + ']').click();
+    cy.get('[aria-label=deleteEntryAction]').click();
+    cy.get('[data-cy=deleteEntryButton]').click();
+    closePopup();
   });
 
   it('successfully displays delete cache modal', () => {
