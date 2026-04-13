@@ -17,5 +17,4 @@ reports/
 nohup.out
 batch
 server/server-unzipped/
-CLAUDE.md
 .claude/
