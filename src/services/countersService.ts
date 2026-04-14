@@ -21,11 +21,15 @@ export class CountersService {
       .fetch(this.endpoint, 'GET')
       .then((response) => response.text())
       .then((jsonList) => {
-        const counters: Promise<Counter>[] = JSON.parse(jsonList).map((name) => this.getCounter(name));
+        const counters: Promise<Counter>[] = JSON.parse(jsonList).map((name) =>
+          this.getCounter(name),
+        );
         return Promise.all(counters);
       })
       .then((counters) => right(counters) as Either<ActionResponse, Counter[]>)
-      .catch((err) => left(this.utils.mapError(err, 'Unable to retrieve counters')));
+      .catch((err) =>
+        left(this.utils.mapError(err, 'Unable to retrieve counters')),
+      );
   }
 
   private getCounter(name: string): Promise<Counter> {
@@ -57,7 +61,7 @@ export class CountersService {
             type: 'Weak',
             initialValue: weakCounter['initial-value'],
             storage: weakCounter.storage,
-            concurrencyLevel: weakCounter['concurrency-level']
+            concurrencyLevel: weakCounter['concurrency-level'],
           };
         } else {
           const strongCounter = value['strong-counter'];
@@ -67,7 +71,7 @@ export class CountersService {
             initialValue: strongCounter['initial-value'],
             storage: strongCounter.storage,
             lowerBound: strongCounter['lower-bound'],
-            upperBound: strongCounter['upper-bound']
+            upperBound: strongCounter['upper-bound'],
           };
         }
         return counterConfig;
@@ -83,7 +87,7 @@ export class CountersService {
     return this.utils.delete({
       url: this.endpoint + '/' + name,
       successMessage: `Counter ${name} has been deleted.`,
-      errorMessage: `Unexpected error deleting the counter ${name}.`
+      errorMessage: `Unexpected error deleting the counter ${name}.`,
     });
   }
 
@@ -96,7 +100,7 @@ export class CountersService {
     return this.utils.post({
       url: this.endpoint + '/' + name + '?action=add&delta=' + deltaValue,
       successMessage: `Delta value for counter ${name} has been set.`,
-      errorMessage: `Unexpected error setting delta value for counter ${name}.`
+      errorMessage: `Unexpected error setting delta value for counter ${name}.`,
     });
   }
 
@@ -104,19 +108,22 @@ export class CountersService {
     return this.utils.post({
       url: this.endpoint + '/' + name + '?action=reset',
       successMessage: `Counter ${name} has been reset.`,
-      errorMessage: `Unexpected error resetting counter ${name}.`
+      errorMessage: `Unexpected error resetting counter ${name}.`,
     });
   }
 
-  public createCounter(counterName: string, counterConfig: CounterConfig): Promise<ActionResponse> {
+  public createCounter(
+    counterName: string,
+    counterConfig: CounterConfig,
+  ): Promise<ActionResponse> {
     const customHeaders = new Headers();
     customHeaders.append('Content-Type', 'json');
-    return this.utils.post({
+    return this.utils.post(<ServiceCall>{
       url: this.endpoint + '/' + counterName,
       successMessage: `Counter ${counterName} has been created`,
       errorMessage: `Unexpected error creating counter ${counterName}`,
       customHeaders: customHeaders,
-      body: JSON.stringify(counterConfig, null, 2)
+      body: JSON.stringify(counterConfig, null, 2),
     });
   }
 
@@ -125,11 +132,19 @@ export class CountersService {
    * @param counterName, counter to be updated
    * @param counterValue, value to be set
    */
-  public setCounter(counterName: string, counterValue: number): Promise<ActionResponse> {
+  public setCounter(
+    counterName: string,
+    counterValue: number,
+  ): Promise<ActionResponse> {
     return this.utils.post({
-      url: this.endpoint + '/' + counterName + '?action=getAndSet&value=' + counterValue,
+      url:
+        this.endpoint +
+        '/' +
+        counterName +
+        '?action=getAndSet&value=' +
+        counterValue,
       successMessage: `Counter ${counterName} has been set to value ${counterValue}`,
-      errorMessage: `Unexpected error setting counter ${counterName} to value ${counterValue}`
+      errorMessage: `Unexpected error setting counter ${counterName} to value ${counterValue}`,
     });
   }
 }

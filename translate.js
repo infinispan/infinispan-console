@@ -37,23 +37,15 @@ async function translateBatch(batch, fullLanguageName, glossary) {
   if (Object.keys(batch).length === 0) return {};
 
   const prompt = `
-    You are a professional translator. Translate the following English UI strings into ${fullLanguageName}. 
+    You are a professional translator. Translate the following English UI strings into ${fullLanguageName}.
     Maintain the tone of a professional software application.
     Return ONLY a valid JSON object with the exact same keys.
-    
+
     Strings: ${JSON.stringify(batch)}`;
 
   try {
-    const response = await axios.post('http://localhost:11434/api/generate', {
-      model: OLLAMA_MODEL,
-      prompt: prompt,
-      format: 'json',
-      stream: false,
-      options: {
-        temperature: 0.3 // Lower temperature for more consistent, literal translations
-      }
-    });
-    
+    const response = await axios.post('http://localhost:11434/api/generate');
+
     return JSON.parse(response.data.response);
   } catch (error) {
     console.error(`  ❌ Chunk failed for ${fullLanguageName}: ${error.message}`);
@@ -130,17 +122,17 @@ async function runSync() {
     if (keys.length > 0) {
       console.log(`\n🌍 Translating ${keys.length} keys for ${langName.toUpperCase()}...`);
       const glossary = GLOSSARIES[langName] || "";
-      
+
       for (let i = 0; i < keys.length; i += CHUNK_SIZE) {
         const chunkKeys = keys.slice(i, i + CHUNK_SIZE);
         const chunkBatch = {};
         chunkKeys.forEach(k => { chunkBatch[k] = missing[k]; });
-        
+
         process.stdout.write(`  > Chunk ${Math.floor(i/CHUNK_SIZE) + 1}/${Math.ceil(keys.length/CHUNK_SIZE)}... `);
-        
+
         const translated = await translateBatch(chunkBatch, langName, glossary);
         Object.entries(translated).forEach(([path, val]) => setPath(targetData, path, val));
-        
+
         console.log('Done.');
       }
     }

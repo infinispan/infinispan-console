@@ -189,7 +189,7 @@ export class CacheService {
 
     const urlCreateCache =
       this.endpoint + '/caches/' + encodeURIComponent(cacheName);
-    return this.fetchCaller.post({
+    return this.fetchCaller.post(<ServiceCall>{
       url: urlCreateCache,
       successMessage: `Cache ${cacheName} created with the provided configuration.`,
       errorMessage:
@@ -202,7 +202,7 @@ export class CacheService {
   private createCustomHeader(
     header: string,
     configType: 'xml' | 'json' | 'yaml',
-  ) {
+  ): Headers {
     let contentType = ContentType.YAML;
     if (configType == 'json') {
       contentType = ContentType.JSON;
@@ -346,7 +346,7 @@ export class CacheService {
           customHeaders: headers,
           body: body,
         })
-      : this.fetchCaller.put({
+      : this.fetchCaller.put(<ServiceCall>{
           url: urlCreateOrUpdate,
           successMessage: `Entry updated in cache ${cacheName}.`,
           errorMessage: `Unexpected error updating an entry in cache ${cacheName}.`,
@@ -548,7 +548,7 @@ export class CacheService {
       '/entries/' +
       encodeURIComponent(keyForURL);
 
-    return this.fetchCaller.delete({
+    return this.fetchCaller.delete(<ServiceCall>{
       url: deleteUrl,
       successMessage: `Entry ${key} deleted.`,
       errorMessage: 'Unexpected error deleting the entry.',
@@ -570,7 +570,7 @@ export class CacheService {
     return this.fetchCaller.get(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/config',
       (text) => text,
-      customHeaders,
+      customHeaders as Headers,
       true,
     );
   }
@@ -776,7 +776,7 @@ export class CacheService {
     );
 
     const urlCreateCache = this.endpoint + '/_cache-config-convert';
-    return this.fetchCaller.post({
+    return this.fetchCaller.post(<ServiceCall>{
       url: urlCreateCache,
       successMessage: `Cache ${cacheName} is converted to ${configType}.`,
       errorMessage: `Unexpected error converting the cache to ${configType}.`,

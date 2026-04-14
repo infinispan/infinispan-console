@@ -39,6 +39,7 @@
     "close-browser-message": "Close the browser or open an incognito window to log again.",
     "dark-theme": "Dark theme",
     "logout": "Logout",
+    "view-my-permissions": "View my permissions",
     "swagger-ui": "Swagger Ui",
     "metrics": "Metrics endpoint"
   },
@@ -81,6 +82,7 @@
   "not-auth-page": {
     "title": "Unauthorized access",
     "description": "Connected user lacks ADMIN permission.",
+    "cache-no-read": "You don't have permission to read the content of cache '{{cacheName}}'.",
     "button": "Return to home page"
   },
   "support": {
@@ -105,7 +107,28 @@
     "cluster-membership": "Cluster Membership",
     "access-management": "Access Management",
     "connected-clients": "Connected Clients",
-    "role-detail": "Role Detail"
+    "role-detail": "Role Detail",
+    "my-permissions": "My Permissions"
+  },
+  "my-permissions": {
+    "title": "My Permissions",
+    "subtitle": "View your access level and cache-specific permissions for this cluster.",
+    "identity": "Identity",
+    "username": "Username",
+    "principals": "Principals",
+    "group-principals": "Group Principals",
+    "global-permissions": "Global Permissions",
+    "permissions-count": "{{count}} permissions",
+    "permissions-label": "Permissions",
+    "cache-permissions": "Cache Permissions",
+    "cache-name": "Cache",
+    "access-level": "Access Level",
+    "filter-caches": "Filter caches by name...",
+    "showing-caches": "Showing {{shown}} of {{total}} caches",
+    "full-access-all-caches": "You have full access (all permissions) on every cache in this cluster.",
+    "limited-access": "Limited access",
+    "limited-access-description": "Your access is limited. Contact an administrator if you need additional permissions.",
+    "internal": "Internal"
   },
   "cache-managers": {
     "title": "Data container",

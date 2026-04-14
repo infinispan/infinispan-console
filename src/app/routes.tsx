@@ -21,6 +21,7 @@ import { ConsoleACL } from '@services/securityService';
 import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
 import { NotFound } from '@app/NotFound/NotFound';
 import { RoleDetail } from '@app/AccessManagement/RoleDetail';
+import { MyPermissions } from '@app/MyPermissions/MyPermissions';
 import { useDocumentTitle } from '@utils/useDocumentTitle';
 import { accessibleRouteChangeHandler } from '@utils/utils';
 import { ContainerDataProvider } from '@app/providers/CacheManagerContextProvider';
@@ -224,6 +225,16 @@ const routes: IAppRoute[] = [
     title: 'routes.connected-clients',
     menu: true,
     admin: true,
+  },
+  {
+    id: 'my_permissions',
+    component: <MyPermissions />,
+    exact: true,
+    label: 'routes.my-permissions',
+    path: '/my-permissions',
+    title: 'routes.my-permissions',
+    menu: false,
+    admin: false,
   },
   {
     id: 'access_management_role_detail',

@@ -61,6 +61,7 @@ import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { PageHeader } from '@patternfly/react-component-groups';
 import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
+import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
 import { DeleteCache } from '@app/Caches/DeleteCache';
 import { QueryHistory } from '@app/Caches/Query/QueryHistory';
 import { QueryContextProvider } from '@app/providers/QueryContextProvider';
@@ -83,6 +84,11 @@ const DetailCache = (props: { cacheName: string }) => {
   );
   const isCacheReader = ConsoleServices.security().hasCacheConsoleACL(
     ConsoleACL.READ,
+    cacheName,
+    connectedUser,
+  );
+  const isCacheMonitor = ConsoleServices.security().hasCacheConsoleACL(
+    ConsoleACL.MONITOR,
     cacheName,
     connectedUser,
   );
@@ -605,6 +611,14 @@ const DetailCache = (props: { cacheName: string }) => {
       />
     );
   };
+
+  if (!loading && !isCacheReader && !isCacheMonitor && !isAdmin) {
+    return (
+      <NotAuthorized
+        description={t('not-auth-page.cache-no-read', { cacheName: cacheName })}
+      />
+    );
+  }
 
   return (
     <React.Fragment>

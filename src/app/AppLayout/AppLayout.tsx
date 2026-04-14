@@ -5,9 +5,10 @@ import {
   Button,
   Content,
   ContentVariants,
+  Divider,
   Dropdown,
-  DropdownGroup,
   DropdownItem,
+  DropdownList,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -54,7 +55,10 @@ import {
   MoonIcon,
   OutlinedArrowAltCircleRightIcon,
   QuestionCircleIcon,
+  ShieldAltIcon,
   SunIcon,
+  UserIcon,
+  UsersIcon,
 } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
 import { DARK, LIGHT, ThemeContext } from '@app/providers/ThemeProvider';
@@ -95,6 +99,24 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     </Brand>
   );
 
+  const isAdmin = ConsoleServices.security().hasConsoleACL(
+    ConsoleACL.ADMIN,
+    connectedUser,
+  );
+
+  const handleLogout = () => {
+    if (
+      KeycloakService.Instance.isInitialized() &&
+      KeycloakService.Instance.authenticated()
+    ) {
+      KeycloakService.Instance.logout(ConsoleServices.landing());
+    } else {
+      ConsoleServices.authentication().logOutLink();
+      navigate('/welcome');
+      window.location.reload();
+    }
+  };
+
   const userActions = () => {
     const chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
     if (
@@ -102,42 +124,60 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       (KeycloakService.Instance.isInitialized() &&
         KeycloakService.Instance.authenticated())
     ) {
+      const subjects = connectedUser.acl?.subjects || [];
+      const globalPerms = connectedUser.acl?.global || [];
+      const displayPerms = globalPerms.slice(0, 5);
+      const moreCount = globalPerms.length - displayPerms.length;
+
       return (
         <ToolbarItem>
           <Dropdown
             onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
             isOpen={isDropdownOpen}
+            popperProps={{ position: 'right' }}
             toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
               <MenuToggle
                 ref={toggleRef}
                 isFullHeight
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 isExpanded={isDropdownOpen}
+                icon={<UserIcon />}
               >
                 {connectedUser.name}
               </MenuToggle>
             )}
             shouldFocusToggleOnSelect
           >
-            <DropdownGroup key="user-action-group">
+            <DropdownList>
               <DropdownItem
-                key="user-action-group-1 logout"
+                key="view-permissions"
+                icon={<ShieldAltIcon />}
                 onClick={() => {
-                  if (
-                    KeycloakService.Instance.isInitialized() &&
-                    KeycloakService.Instance.authenticated()
-                  ) {
-                    KeycloakService.Instance.logout(ConsoleServices.landing());
-                  } else {
-                    ConsoleServices.authentication().logOutLink();
-                    navigate('/welcome');
-                    window.location.reload();
-                  }
+                  navigate('/my-permissions');
+                  setIsDropdownOpen(false);
                 }}
               >
+                {t('layout.view-my-permissions')}
+              </DropdownItem>
+              {isAdmin && (
+                <DropdownItem
+                  key="access-management"
+                  icon={<UsersIcon />}
+                  onClick={() => {
+                    navigate('/access-management');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  {t('routes.access-management')}
+                </DropdownItem>
+              )}
+            </DropdownList>
+            <Divider />
+            <DropdownList>
+              <DropdownItem key="logout" onClick={handleLogout}>
                 {t('layout.logout')}
               </DropdownItem>
-            </DropdownGroup>
+            </DropdownList>
           </Dropdown>
         </ToolbarItem>
       );

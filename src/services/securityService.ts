@@ -1,7 +1,6 @@
 import { Either } from './either';
 import { FetchCaller } from '@services/fetchCaller';
 import { AuthenticationService } from '@services/authService';
-
 export enum ConsoleACL {
   MONITOR = 'MONITOR',
   READ = 'READ',
@@ -9,7 +8,7 @@ export enum ConsoleACL {
   BULK_READ = 'BULK_READ',
   BULK_WRITE = 'BULK_WRITE',
   CREATE = 'CREATE',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
 }
 
 export enum ACL {
@@ -26,7 +25,7 @@ export enum ACL {
   ALL = 'ALL',
   ALL_READ = 'ALL_READ',
   ALL_WRITE = 'ALL_WRITE',
-  NONE = 'NONE'
+  NONE = 'NONE',
 }
 
 /**
@@ -39,7 +38,11 @@ export class SecurityService {
   fetchCaller: FetchCaller;
   authenticationService: AuthenticationService;
 
-  constructor(endpoint: string, fetchCaller: FetchCaller, authenticationService: AuthenticationService) {
+  constructor(
+    endpoint: string,
+    fetchCaller: FetchCaller,
+    authenticationService: AuthenticationService,
+  ) {
     this.endpoint = endpoint;
     this.fetchCaller = fetchCaller;
     this.authenticationService = authenticationService;
@@ -50,7 +53,7 @@ export class SecurityService {
    */
   public async userAcl(): Promise<Either<ActionResponse, Acl>> {
     return this.fetchCaller.get(this.endpoint + '/user/acl', (data) => {
-      const subjects = data.subject;
+      const subjects = data.subject as { name: string; type: string }[];
       let username = 'Connected User';
       for (const subject of subjects) {
         if (subject['type'] == 'NamePrincipal') {
@@ -63,14 +66,15 @@ export class SecurityService {
       for (const cacheName of Object.keys(data.caches)) {
         cachesAcl.set(cacheName, <CacheAcl>{
           name: cacheName,
-          acl: data.caches[cacheName].map((aclStr) => aclStr as ACL)
+          acl: data.caches[cacheName].map((aclStr) => aclStr as ACL).sort(),
         });
       }
 
       return <Acl>{
         user: username,
-        global: global.map((aclStr) => aclStr as ACL),
-        caches: cachesAcl
+        subjects: subjects,
+        global: global.map((aclStr) => aclStr as ACL).sort(),
+        caches: cachesAcl,
       };
     });
   }
@@ -83,7 +87,10 @@ export class SecurityService {
    * Console ACL
    * @param user
    */
-  public hasConsoleACL(consoleACL: ConsoleACL, user: ConnectedUser | undefined): boolean {
+  public hasConsoleACL(
+    consoleACL: ConsoleACL,
+    user: ConnectedUser | undefined,
+  ): boolean {
     if (this.authenticationService.isNotSecured()) {
       return true;
     }
@@ -100,7 +107,11 @@ export class SecurityService {
    * Console ACL for caches
    * @param user
    */
-  public hasCacheConsoleACL(consoleACL: ConsoleACL, cacheName: string, user: ConnectedUser) {
+  public hasCacheConsoleACL(
+    consoleACL: ConsoleACL,
+    cacheName: string,
+    user: ConnectedUser,
+  ) {
     if (this.isNotSecuredAccess()) {
       return true;
     }
@@ -109,7 +120,10 @@ export class SecurityService {
       return false;
     }
 
-    return this.checkConsoleAcl(consoleACL, this.getCacheACL(cacheName, user).acl);
+    return this.checkConsoleAcl(
+      consoleACL,
+      this.getCacheACL(cacheName, user).acl,
+    );
   }
 
   private checkConsoleAcl(consoleACL: ConsoleACL, aclList: string[]) {
@@ -123,10 +137,12 @@ export class SecurityService {
         hasAcl = aclList.includes(ACL.ADMIN);
         break;
       case ConsoleACL.BULK_READ:
-        hasAcl = aclList.includes(ACL.ALL_READ) || aclList.includes(ACL.BULK_READ);
+        hasAcl =
+          aclList.includes(ACL.ALL_READ) || aclList.includes(ACL.BULK_READ);
         break;
       case ConsoleACL.BULK_WRITE:
-        hasAcl = aclList.includes(ACL.ALL_WRITE) || aclList.includes(ACL.BULK_WRITE);
+        hasAcl =
+          aclList.includes(ACL.ALL_WRITE) || aclList.includes(ACL.BULK_WRITE);
         break;
       case ConsoleACL.READ:
         hasAcl = aclList.includes(ACL.ALL_READ) || aclList.includes(ACL.READ);
@@ -157,7 +173,9 @@ export class SecurityService {
    * Retrieve security roles
    *
    */
-  public async getSecurityRolesNames(): Promise<Either<ActionResponse, string[]>> {
+  public async getSecurityRolesNames(): Promise<
+    Either<ActionResponse, string[]>
+  > {
     return this.fetchCaller.get(this.endpoint + '/roles', (data) => data);
   }
 
@@ -166,16 +184,18 @@ export class SecurityService {
    *
    */
   public async getSecurityRoles(): Promise<Either<ActionResponse, Role[]>> {
-    return this.fetchCaller.get(this.endpoint + '/roles?action=detailed', (data) =>
-      Object.keys(data).map(
-        (roleName) =>
-          <Role>{
-            name: roleName,
-            description: data[roleName].description,
-            permissions: data[roleName].permissions,
-            implicit: data[roleName].implicit
-          }
-      )
+    return this.fetchCaller.get(
+      this.endpoint + '/roles?action=detailed',
+      (data) =>
+        Object.keys(data).map(
+          (roleName) =>
+            <Role>{
+              name: roleName,
+              description: data[roleName].description,
+              permissions: data[roleName].permissions,
+              implicit: data[roleName].implicit,
+            },
+        ),
     );
   }
 
@@ -183,7 +203,9 @@ export class SecurityService {
    * Retrieve security roles
    *
    */
-  public async describeRole(roleName: string): Promise<Either<ActionResponse, Role>> {
+  public async describeRole(
+    roleName: string,
+  ): Promise<Either<ActionResponse, Role>> {
     return this.fetchCaller.get(
       this.endpoint + '/permissions/' + roleName,
       (data) =>
@@ -191,8 +213,8 @@ export class SecurityService {
           name: roleName,
           description: data.description,
           permissions: data.permissions,
-          implicit: data.implicit
-        }
+          implicit: data.implicit,
+        },
     );
   }
 
@@ -202,15 +224,24 @@ export class SecurityService {
    * @param roleDescription
    * @param permissions
    */
-  public async createRole(roleName: string, roleDescription: string, permissions: string[]) {
+  public async createRole(
+    roleName: string,
+    roleDescription: string,
+    permissions: string[],
+  ) {
     const customHeaders = new Headers();
     customHeaders.append('Content-Type', 'json');
-    return this.fetchCaller.post({
-      url: this.endpoint + '/permissions/' + roleName + '?' + permissions.map((p) => 'permission=' + p).join('&'),
+    return this.fetchCaller.post(<ServiceCall>{
+      url:
+        this.endpoint +
+        '/permissions/' +
+        roleName +
+        '?' +
+        permissions.map((p) => 'permission=' + p).join('&'),
       successMessage: `Role ${roleName} has been created`,
       errorMessage: `Unexpected error creating role ${roleName}`,
       customHeaders: customHeaders,
-      body: roleDescription
+      body: roleDescription,
     });
   }
 
@@ -220,11 +251,15 @@ export class SecurityService {
    * @param messageOk
    * @param messageError
    */
-  public async deleteRole(roleName: string, messageOk: string, messageError: string) {
+  public async deleteRole(
+    roleName: string,
+    messageOk: string,
+    messageError: string,
+  ) {
     return this.fetchCaller.delete({
       url: this.endpoint + '/permissions/' + roleName,
       successMessage: messageOk,
-      errorMessage: messageError
+      errorMessage: messageError,
     });
   }
 
@@ -242,13 +277,18 @@ export class SecurityService {
     roleDescription: string,
     permissions: string[],
     messageOk: string,
-    messageError: string
+    messageError: string,
   ) {
     return this.fetchCaller.put({
-      url: this.endpoint + '/permissions/' + roleName + '?' + permissions.map((p) => 'permission=' + p).join('&'),
+      url:
+        this.endpoint +
+        '/permissions/' +
+        roleName +
+        '?' +
+        permissions.map((p) => 'permission=' + p).join('&'),
       successMessage: messageOk,
       errorMessage: messageError,
-      body: roleDescription
+      body: roleDescription,
     });
   }
 
@@ -261,7 +301,7 @@ export class SecurityService {
     return this.fetchCaller.post({
       url: this.endpoint + '/cache?action=flush',
       successMessage: messageOk,
-      errorMessage: messageError
+      errorMessage: messageError,
     });
   }
 
@@ -269,7 +309,9 @@ export class SecurityService {
    * Retrieve security users
    *
    */
-  public async getSecurityUsers(): Promise<Either<ActionResponse, Map<string, string[]>>> {
+  public async getSecurityUsers(): Promise<
+    Either<ActionResponse, Map<string, string[]>>
+  > {
     return this.fetchCaller.get(this.endpoint + '/users', (data) => {
       const realms = new Map<string, string[]>();
       Object.keys(data).forEach((r) => realms.set(r, data[r]));
@@ -281,29 +323,43 @@ export class SecurityService {
    * Retrieve security principals
    *
    */
-  public async getSecurityPrincipals(): Promise<Either<ActionResponse, Principal[]>> {
-    return this.fetchCaller.get(this.endpoint + '/principals?action=detailed', (data) =>
-      Object.keys(data).map(
-        (principalName) =>
-          <Principal>{
-            name: principalName,
-            roles: data[principalName]
-          }
-      )
+  public async getSecurityPrincipals(): Promise<
+    Either<ActionResponse, Principal[]>
+  > {
+    return this.fetchCaller.get(
+      this.endpoint + '/principals?action=detailed',
+      (data) =>
+        Object.keys(data).map(
+          (principalName) =>
+            <Principal>{
+              name: principalName,
+              roles: data[principalName],
+            },
+        ),
     );
   }
 
   /**
    * Created a new principal role mapper
    */
-  public async grantAccess(principal: string, roles: string[], messageOk: string, messageError: string) {
+  public async grantAccess(
+    principal: string,
+    roles: string[],
+    messageOk: string,
+    messageError: string,
+  ) {
     const customHeaders = new Headers();
     customHeaders.append('Content-Type', 'json');
-    return this.fetchCaller.post({
-      url: this.endpoint + '/roles/' + principal + '?action=grant&' + roles.map((p) => 'role=' + p).join('&'),
+    return this.fetchCaller.post(<ServiceCall>{
+      url:
+        this.endpoint +
+        '/roles/' +
+        principal +
+        '?action=grant&' +
+        roles.map((p) => 'role=' + p).join('&'),
       successMessage: messageOk,
       errorMessage: messageError,
-      customHeaders: customHeaders
+      customHeaders: customHeaders,
     });
   }
 
@@ -312,30 +368,46 @@ export class SecurityService {
     action: 'grant' | 'deny',
     roles: string[],
     messageOk: string,
-    messageError: string
+    messageError: string,
   ) {
     const customHeaders = new Headers();
     customHeaders.append('Content-Type', 'json');
-    return this.fetchCaller.put({
-      url: this.endpoint + '/roles/' + principal + '?action=' + action + '&' + roles.map((p) => 'role=' + p).join('&'),
+    return this.fetchCaller.put(<ServiceCall>{
+      url:
+        this.endpoint +
+        '/roles/' +
+        principal +
+        '?action=' +
+        action +
+        '&' +
+        roles.map((p) => 'role=' + p).join('&'),
       successMessage: messageOk,
       errorMessage: messageError,
-      customHeaders: customHeaders
+      customHeaders: customHeaders,
     });
   }
 
-  public async removePrincipal(principal: string, messageOk: string, messageError: string) {
+  public async removePrincipal(
+    principal: string,
+    messageOk: string,
+    messageError: string,
+  ) {
     const customHeaders = new Headers();
     customHeaders.append('Content-Type', 'json');
-    return this.fetchCaller.delete({
+    return this.fetchCaller.delete(<ServiceCall>{
       url: this.endpoint + '/roles/' + principal + '?action=grant',
       successMessage: messageOk,
       errorMessage: messageError,
-      customHeaders: customHeaders
+      customHeaders: customHeaders,
     });
   }
 
-  public async describePrincipal(principalName: string): Promise<Either<ActionResponse, string[]>> {
-    return this.fetchCaller.get(this.endpoint + '/roles/' + principalName, (data) => data);
+  public async describePrincipal(
+    principalName: string,
+  ): Promise<Either<ActionResponse, string[]>> {
+    return this.fetchCaller.get(
+      this.endpoint + '/roles/' + principalName,
+      (data) => data,
+    );
   }
 }
