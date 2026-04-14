@@ -79,6 +79,7 @@ import type {
 
 import type {
   CacheAcl as _CacheAcl,
+  AclSubject as _AclSubject,
   Acl as _Acl,
   ConnectedUser as _ConnectedUser,
   Role as _Role,
@@ -172,6 +173,7 @@ declare global {
 
   // security
   type CacheAcl = _CacheAcl;
+  type AclSubject = _AclSubject;
   type Acl = _Acl;
   type ConnectedUser = _ConnectedUser;
   type Role = _Role;

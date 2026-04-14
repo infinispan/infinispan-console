@@ -3,8 +3,14 @@ export interface CacheAcl {
   acl: string[];
 }
 
+export interface AclSubject {
+  name: string;
+  type: string;
+}
+
 export interface Acl {
   user: string;
+  subjects: AclSubject[];
   global: string[];
   caches: Map<string, CacheAcl>;
 }
