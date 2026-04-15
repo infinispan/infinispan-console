@@ -922,11 +922,6 @@
       "heading": "スキーマを削除しますか？",
       "modal-description-1": "{{brandname}} サーバーで 永続的に削除されます。このスキーマを使用しているキャッシュは影響を受けます。",
       "modal-description-2": "スキーマを再作成することもできます。"
-    },
-    "edit": {
-      "heading": "スキーマの編集",
-      "modal-description-1": "あなたは、 のスキーマを変更する予定です。",
-      "modal-description-2": "これにより、キャッシュに影響が及ぶ可能性があります。"
     }
   },
   "global-stats": {

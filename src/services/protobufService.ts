@@ -67,6 +67,29 @@ export class ProtobufService {
   }
 
   /**
+   * Get schema with detailed info (content, dependent caches, errors)
+   */
+  public async getSchemaDetailed(
+    schemaName: string,
+  ): Promise<Either<ActionResponse, ProtoSchemaDetail>> {
+    return this.utils.get(
+      this.endpoint + '/' + encodeURIComponent(schemaName) + '/_detailed',
+      (data) =>
+        <ProtoSchemaDetail>{
+          name: data.name,
+          content: data.content,
+          caches: data.caches || [],
+          error: data.error
+            ? <ProtoError>{
+                message: data.error.message,
+                cause: data.error.cause,
+              }
+            : null,
+        },
+    );
+  }
+
+  /**
    * Get the list of files and validation response
    */
   public getProtobufSchemas(): Promise<Either<ActionResponse, ProtoSchema[]>> {

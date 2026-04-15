@@ -85,3 +85,34 @@ export function useFetchProtobufSchemaContent(schemaName: string) {
 
   return { schemaContent, loading, error, setLoading };
 }
+
+export function useFetchProtobufSchemaDetailed(schemaName: string) {
+  const [schemaDetail, setSchemaDetail] = useState<ProtoSchemaDetail | null>(
+    null,
+  );
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const reload = () => {
+    setLoading(true);
+    ConsoleServices.protobuf()
+      .getSchemaDetailed(schemaName)
+      .then((eitherResponse) => {
+        if (eitherResponse.isRight()) {
+          setSchemaDetail(eitherResponse.value);
+        }
+        if (eitherResponse.isLeft()) {
+          setError(eitherResponse.value.message);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    if (schemaName) {
+      reload();
+    }
+  }, [schemaName]);
+
+  return { schemaDetail, loading, error, reload };
+}

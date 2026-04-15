@@ -15,7 +15,8 @@ module.exports = merge(common('development'), {
     port: PORT,
     compress: true,
     historyApiFallback: {
-      index:'/console/'
+      index:'/console/',
+      disableDotRule: true
     },
     open: 'console',
     static: {

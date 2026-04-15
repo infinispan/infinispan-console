@@ -26,6 +26,7 @@ import { accessibleRouteChangeHandler } from '@utils/utils';
 import { ContainerDataProvider } from '@app/providers/CacheManagerContextProvider';
 import { EditConfiguration } from '@app/Caches/Configuration/EditConfiguration';
 import { CacheDetailProvider } from '@app/providers/CacheDetailProvider';
+import { SchemaEditPage } from '@app/ProtoSchema/SchemaEditPage';
 
 export interface IAppRoute {
   id: string;
@@ -51,7 +52,43 @@ const routes: IAppRoute[] = [
     path: '/',
     title: 'routes.data-container',
     menu: true,
-    subRoutes: ['container', 'cache'],
+    subRoutes: ['container', 'cache', 'caches', 'counters', 'tasks', 'schemas'],
+    admin: false,
+  },
+  {
+    id: 'data_container_caches',
+    component: <CacheManagerPage />,
+    exact: true,
+    path: '/caches',
+    title: 'routes.data-container',
+    menu: false,
+    admin: false,
+  },
+  {
+    id: 'data_container_counters',
+    component: <CacheManagerPage />,
+    exact: true,
+    path: '/counters',
+    title: 'routes.data-container',
+    menu: false,
+    admin: false,
+  },
+  {
+    id: 'data_container_tasks',
+    component: <CacheManagerPage />,
+    exact: true,
+    path: '/tasks',
+    title: 'routes.data-container',
+    menu: false,
+    admin: false,
+  },
+  {
+    id: 'data_container_schemas',
+    component: <CacheManagerPage />,
+    exact: true,
+    path: '/schemas',
+    title: 'routes.data-container',
+    menu: false,
     admin: false,
   },
   {
@@ -146,6 +183,16 @@ const routes: IAppRoute[] = [
     title: 'routes.xsite-management-cache',
     menu: false,
     admin: true,
+  },
+  {
+    id: 'schema_edit',
+    component: <SchemaEditPage />,
+    exact: true,
+    label: 'routes.schema-edit',
+    path: '/schemas/:schemaName',
+    title: 'routes.schema-edit',
+    menu: false,
+    admin: false,
   },
   {
     id: 'cache_detail',

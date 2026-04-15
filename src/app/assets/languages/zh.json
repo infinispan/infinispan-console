@@ -922,11 +922,6 @@
       "heading": "删除模式？",
       "modal-description-1": "将在 {{brandname}} Server 中永久删除。使用此模式的缓存将受到影响。",
       "modal-description-2": "您始终可以重新创建该模式。"
-    },
-    "edit": {
-      "heading": "编辑模式",
-      "modal-description-1": "您即将更改 ",
-      "modal-description-2": " 的模式，这将影响缓存。"
     }
   },
   "global-stats": {

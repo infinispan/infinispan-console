@@ -17,3 +17,10 @@ export interface ProtoSchema {
   name: string;
   error?: ProtoError;
 }
+
+export interface ProtoSchemaDetail {
+  name: string;
+  content: string;
+  caches: string[];
+  error: ProtoError | null;
+}

@@ -950,11 +950,6 @@
       "heading": "Supprimer le schéma ?",
       "modal-description-1": "sera définitivement supprimé sur {{brandname}} Server. Les caches utilisant ce schéma seront affectés.",
       "modal-description-2": "Vous pouvez toujours recréer le schéma."
-    },
-    "edit": {
-      "heading": "Modifier le schéma",
-      "modal-description-1": "Vous allez modifier le schéma de ",
-      "modal-description-2": ", ce qui aura un impact sur les caches."
     }
   },
   "global-stats": {

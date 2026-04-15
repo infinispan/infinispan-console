@@ -329,17 +329,17 @@ describe('RBAC Functionality Tests', () => {
     cy.get('[data-cy="tab-Schemas"]').click({multiple: true, force: true});
     cy.contains('people');
     cy.contains('test-6.proto');
+    // Schema name is a link to the edit page
+    cy.get('[data-cy=schemaTable]').contains('people.proto').should('exist');
     cy.get('[data-cy="people.protoConfig"]').click();
     cy.contains('message Person');
     if (isAdmin) {
       cy.get('button[aria-label="create-schema-button"]').should('exist');
       cy.get('[data-cy="actions-people.proto"]>button').click();
-      cy.get('[aria-label="editSchemaAction"]').should('exist');
       cy.get('[aria-label="deleteSchemaAction"]').should('exist');
     } else {
       cy.get('button[aria-label="create-schema-button"]').should('not.exist');
       cy.get('[data-cy="actions-people.proto"]>button').click();
-      cy.get('[aria-label="editSchemaAction"]').should('exist');
       cy.get('[aria-label="deleteSchemaAction"]').should('exist');
     }
   }

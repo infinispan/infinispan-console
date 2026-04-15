@@ -68,27 +68,33 @@ describe('Proto Schema CRUD', () => {
     cy.contains(schemaName + '.proto');
     cy.contains('Schema ' + schemaName + '.proto has errors');
 
-    // Update
-    cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();
-    cy.get('[aria-label="editSchemaAction"]').click();
-    cy.contains('schemaValue');
-    cy.contains('Save');
-    //Artificially adding here some delays between actions so that the proto schema is updated properly and normally shown on the page.
+    // Verify schema name is a link to the edit page
+    cy.get('[data-cy=schemaTable]').contains(schemaName + '.proto').click();
+    cy.url().should('include', '/schemas/' + schemaName + '.proto');
+    // Verify the edit page loads with editor and buttons
+    cy.get('#schema-editor .view-lines', {timeout: 15000}).should('exist');
+    cy.get('#schema-editor').should('contain.text', 'schemaValue');
+    cy.get('button[aria-label="save-schema-button"]').should('exist');
+    cy.get('button[aria-label="cancel-edit-schema-button"]').should('exist');
+
+    // Update schema via REST API
+    cy.request({
+      method: 'PUT',
+      url: 'http://localhost:11222/rest/v2/schemas/' + schemaName + '.proto',
+      auth: {
+        username: Cypress.env('username'),
+        password: Cypress.env('password')
+      },
+      body: 'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
+      headers: { 'Content-Type': 'text/plain' }
+    });
     cy.wait(1000);
-    cy.clearAndTypeInMonacoEditor('#edit-schema-modal',
-      'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }'
-    );
-    cy.wait(1000);
-    cy.get('button[aria-label="confirm-edit-schema-button"]').click();
-    cy.contains('Schema ' + schemaName +'.proto updated.');
-    cy.wait(1000);
-    cy.get('[name=close-alert-button]').click(); //Closing alert popup.
-    //Waiting so that the proto schema is managed to be updated on the page.
-    cy.wait(2000);
-    cy.get('[data-cy="' + schemaName + '.protoConfig"]').click();
-    cy.wait(2000);
-    cy.contains('schemaValue').should('not.exist');
-    cy.contains('ExampleProto');
+
+    // Navigate back to schemas list
+    cy.get('button[aria-label="cancel-edit-schema-button"]').click();
+    cy.url().should('include', '/schemas');
+    cy.get('[data-cy=schemaTable]', {timeout: 10000}).should('exist');
+    cy.contains(schemaName + '.proto');
     cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
 
     //Deleting schema

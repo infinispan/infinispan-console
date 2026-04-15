@@ -35,6 +35,7 @@ import {
   t_global_spacer_sm,
 } from '@patternfly/react-tokens';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
+import { Link } from 'react-router-dom';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -42,7 +43,6 @@ import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
 import { CreateProtoSchema } from '@app/ProtoSchema/CreateProtoSchema';
 import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
-import { EditSchema } from './EditSchema';
 import { useFetchProtobufSchemas } from '@app/hooks/protobufHooks';
 import { onSearch } from '@app/utils/searchFilter';
 import './ProtobufSchemasDisplay.css';
@@ -69,7 +69,6 @@ const ProtobufSchemasDisplay = (props: {
   const [createSchemaFormOpen, setCreateSchemaFormOpen] =
     useState<boolean>(false);
   const [deleteSchemaName, setDeleteSchemaName] = useState<string>('');
-  const [editSchemaName, setEditSchemaName] = useState<string>('');
   const [searchValue, setSearchValue] = useState<string>('');
   const [expandedSchemaNames, setExpandedSchemaNames] = useState<string[]>([]);
   const [loadingSchema, setLoadingSchema] = useState(false);
@@ -85,15 +84,6 @@ const ProtobufSchemasDisplay = (props: {
   const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
 
   const displayActions = (row): IAction[] => [
-    {
-      'aria-label': 'editSchemaAction',
-      title: t('schemas.edit-button'),
-      onClick: () => {
-        setLoadingSchema(true);
-        loadSchema(row.name);
-        setEditSchemaName(row.name);
-      },
-    },
     {
       'aria-label': 'deleteSchemaAction',
       title: t('schemas.delete-button'),
@@ -190,22 +180,6 @@ const ProtobufSchemasDisplay = (props: {
         ? [...otherExpandedSchemaNames, schema.name]
         : otherExpandedSchemaNames;
     });
-
-  const closeEditSchemaModal = () => {
-    setEditSchemaName('');
-  };
-
-  const submitEditSchemaModal = () => {
-    setEditSchemaName('');
-    setSchemasContent((map) => {
-      const newMap = new Map(map);
-      newMap.delete(editSchemaName);
-      return newMap;
-    });
-    reload();
-    setLoadingSchema(true);
-    loadSchema(editSchemaName);
-  };
 
   const closeCreateSchemaModal = (createDone: boolean) => {
     if (createDone) {
@@ -409,7 +383,11 @@ const ProtobufSchemasDisplay = (props: {
                         },
                       }}
                     />
-                    <Td dataLabel={columnNames.name}>{row.name}</Td>
+                    <Td dataLabel={columnNames.name}>
+                      <Link to={'/schemas/' + encodeURIComponent(row.name)}>
+                        {row.name}
+                      </Link>
+                    </Td>
                     <Td dataLabel={columnNames.status}>
                       {displayProtoError(row.error)}
                     </Td>
@@ -443,12 +421,6 @@ const ProtobufSchemasDisplay = (props: {
       <CreateProtoSchema
         isModalOpen={createSchemaFormOpen}
         closeModal={closeCreateSchemaModal}
-      />
-      <EditSchema
-        schemaName={editSchemaName}
-        isModalOpen={editSchemaName !== ''}
-        submitModal={submitEditSchemaModal}
-        closeModal={closeEditSchemaModal}
       />
       <DeleteSchema
         schemaName={deleteSchemaName}

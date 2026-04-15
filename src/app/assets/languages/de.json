@@ -923,11 +923,6 @@
       "heading": "Schema löschen?",
       "modal-description-1": "wird im {{brandname}} Server dauerhaft gelöscht. Caches, die dieses Schema verwenden, werden betroffen sein.",
       "modal-description-2": "Sie können das Schema jederzeit neu erstellen."
-    },
-    "edit": {
-      "heading": "Schema bearbeiten",
-      "modal-description-1": "Sie sind dabei, das Schema von ",
-      "modal-description-2": "zu ändern, was die Caches betreffen wird."
     }
   },
   "global-stats": {
