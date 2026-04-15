@@ -9,7 +9,7 @@
  *   - security.ts      (ConnectedUser, Acl, Role, Principal, AuthInfo, ...)
  *   - counter.ts       (Counter, CounterConfig)
  *   - search.ts        (SearchResult, SearchStats, IndexMetamodel, QueryHistoryItem, ...)
- *   - server.ts        (Task, ProtoSchema, ProtoError)
+ *   - server.ts        (Task, ProtoSchema, ProtoSchemaDetail, ProtoError)
  *
  * New code should import from '@types/index' or the specific domain file.
  * These global declarations exist for backwards compatibility.
@@ -108,6 +108,7 @@ import type {
   Task as _Task,
   ProtoError as _ProtoError,
   ProtoSchema as _ProtoSchema,
+  ProtoSchemaDetail as _ProtoSchemaDetail,
 } from './server';
 
 declare global {
@@ -197,4 +198,5 @@ declare global {
   type Task = _Task;
   type ProtoError = _ProtoError;
   type ProtoSchema = _ProtoSchema;
+  type ProtoSchemaDetail = _ProtoSchemaDetail;
 }

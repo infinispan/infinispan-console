@@ -930,11 +930,6 @@
       "heading": "¿Eliminar esquema?",
       "modal-description-1": "será eliminado permanentemente en el servidor {{brandname}}. Las cachés que usen este esquema se verán afectadas.",
       "modal-description-2": "Puedes recrear siempre el esquema."
-    },
-    "edit": {
-      "heading": "Editar esquema",
-      "modal-description-1": "Estás a punto de cambiar el esquema de ",
-      "modal-description-2": ", lo que afectará las cachés."
     }
   },
   "global-stats": {

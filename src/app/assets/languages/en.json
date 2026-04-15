@@ -951,10 +951,18 @@
       "modal-description-1": " will be permanently deleted in {{brandname}} Server. Caches using this schema will be affected.",
       "modal-description-2": "You can always recreate the schema."
     },
-    "edit": {
-      "heading": "Edit schema",
-      "modal-description-1": "You are about to change the schema of ",
-      "modal-description-2": " which will impact caches."
+    "edit-page": {
+      "title": "Edit Schema",
+      "breadcrumb-schemas": "Schemas",
+      "back-to-schemas": "Back to schemas",
+      "warning-dependent-caches": "Saving changes to {{schemaName}} will immediately affect all dependent caches.",
+      "validation-title": "Validation",
+      "validation-valid": "Schema is valid",
+      "validation-errors": "Schema has errors",
+      "dependent-caches-title": "Dependent Caches",
+      "dependent-caches-description": "These caches use this schema.",
+      "no-dependent-caches": "No caches use this schema.",
+      "info-panel-toggle": "Toggle info panel"
     }
   },
   "global-stats": {

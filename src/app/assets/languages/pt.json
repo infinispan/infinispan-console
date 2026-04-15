@@ -934,11 +934,6 @@
       "heading": "Excluir esquema?",
       "modal-description-1": "será excluído permanentemente no {{brandname}} Server. Caches usando esse esquema serão afetados.",
       "modal-description-2": "Você sempre pode recrear o esquema."
-    },
-    "edit": {
-      "heading": "Editar esquema",
-      "modal-description-1": "Você está prestes a alterar o esquema de ",
-      "modal-description-2": ", que afetará os caches."
     }
   },
   "global-stats": {

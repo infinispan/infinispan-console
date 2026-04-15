@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Card,
   CardBody,
@@ -34,20 +35,47 @@ import { ClusterIcon } from '@patternfly/react-icons';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { PageHeader } from '@patternfly/react-component-groups';
 
+const PATH_TAB_MAP: Record<string, string> = {
+  '/caches': '0',
+  '/counters': '1',
+  '/tasks': '2',
+  '/schemas': '3',
+};
+
+const TAB_PATH_MAP: Record<string, string> = {
+  '0': '/caches',
+  '1': '/counters',
+  '2': '/tasks',
+  '3': '/schemas',
+};
+
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();
   const { cm, loading, error } = useDataContainer();
-  const [activeTabKey, setActiveTabKey] = useState('0');
+  const location = useLocation();
+  const initialTab = PATH_TAB_MAP[location.pathname] || '0';
+  const [activeTabKey, setActiveTabKey] = useState(initialTab);
   const [cachesCount, setCachesCount] = useState<number>(0);
   const [countersCount, setCountersCount] = useState<number>(0);
   const [tasksCount, setTasksCount] = useState<number>(0);
   const [protoSchemasCount, setProtoSchemasCount] = useState<number>(0);
-  const [showCaches, setShowCaches] = useState(true);
-  const [showCounters, setShowCounters] = useState(false);
-  const [showTasks, setShowTasks] = useState(false);
-  const [showSerializationContext, setShowSerializationContext] =
-    useState(false);
+  const [showCaches, setShowCaches] = useState(initialTab === '0');
+  const [showCounters, setShowCounters] = useState(initialTab === '1');
+  const [showTasks, setShowTasks] = useState(initialTab === '2');
+  const [showSerializationContext, setShowSerializationContext] = useState(
+    initialTab === '3',
+  );
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const tab = PATH_TAB_MAP[location.pathname] || '0';
+    setActiveTabKey(tab);
+    setShowCaches(tab === '0');
+    setShowCounters(tab === '1');
+    setShowTasks(tab === '2');
+    setShowSerializationContext(tab === '3');
+  }, [location.pathname]);
 
   const handleTabClick = (index) => {
     setActiveTabKey(index);
@@ -55,6 +83,7 @@ const CacheManagers = () => {
     setShowCounters(index == '1');
     setShowTasks(index == '2');
     setShowSerializationContext(index == '3');
+    navigate(TAB_PATH_MAP[index] || '/', { replace: true });
   };
 
   interface ContainerTab {

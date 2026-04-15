@@ -922,11 +922,6 @@
       "heading": "Elimina schema?",
       "modal-description-1": "verrà definitivamente eliminato dal server {{brandname}}. I cache che utilizzano questo schema verranno influenzati.",
       "modal-description-2": "Puoi sempre ricreare lo schema."
-    },
-    "edit": {
-      "heading": "Modifica schema",
-      "modal-description-1": "Stai per modificare lo schema di ",
-      "modal-description-2": ", che avrà un impatto sui cache."
     }
   },
   "global-stats": {
