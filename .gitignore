@@ -17,4 +17,11 @@ reports/
 nohup.out
 batch
 server/server-unzipped/
+# ignore agent-specific instruction files
+CLAUDE.md
+GEMINI.md
+.augment*
+.clinerules
+.goosehints
+AGENTS.md
 .claude/
