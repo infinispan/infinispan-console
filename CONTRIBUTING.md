@@ -94,6 +94,18 @@ Follow this format for commit messages: Start with the JIRA issue number, follow
 ISPN-1234 JIRA TITLE...
 ```
 
+### Use of Generative AI
+
+Generative AI tools may be used to assist in writing code, tests, or documentation, provided that you fully understand every change you submit. The goal is to keep the Console's code consistent and high-quality while respecting reviewers' limited time.
+
+If you use generative AI to assist with your contribution, all the following are required:
+
+* You understand the change. You must be able to explain what your code does and why. Submitting AI-generated code you do not understand is not acceptable.
+* You engage with review feedback. You are expected to respond to questions and comments from reviewers. If you use AI to help draft responses, you must edit and proofread them to ensure they are accurate and address the reviewer's point.
+* You can revise the code yourself. If a reviewer requests changes, you are responsible for addressing them, even if your AI tool is unable to produce a suitable fix.
+* You disclose AI agents usage. Include a note in the PR description indicating the usage of AI agents for generating complete solutions from a prompt (i.e. you do not need to mention a simple AI autocomplete). This helps reviewers calibrate their review.
+* You ensure licensing compliance. All generated code must be released under the Apache License, Version 2.0, the same license as Infinispan. You are responsible for verifying that the tools you use do not introduce additional licensing restrictions.
+
 ### Testing
 Ensure that your code includes unit tests when applicable. All tests should pass before submitting a PR.
 
