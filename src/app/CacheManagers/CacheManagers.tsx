@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  Button,
   Card,
   CardBody,
   Flex,
@@ -31,7 +32,7 @@ import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { RebalancingCacheManager } from '@app/Rebalancing/RebalancingCacheManager';
-import { ClusterIcon } from '@patternfly/react-icons';
+import { ClusterIcon, RedoIcon } from '@patternfly/react-icons';
 import { TracingEnabled } from '@app/Common/TracingEnabled';
 import { PageHeader } from '@patternfly/react-component-groups';
 
@@ -51,7 +52,7 @@ const TAB_PATH_MAP: Record<string, string> = {
 
 const CacheManagers = () => {
   const { connectedUser } = useConnectedUser();
-  const { cm, loading, error } = useDataContainer();
+  const { cm, loading, error, reload } = useDataContainer();
   const location = useLocation();
   const initialTab = PATH_TAB_MAP[location.pathname] || '0';
   const [activeTabKey, setActiveTabKey] = useState(initialTab);
@@ -272,6 +273,16 @@ const CacheManagers = () => {
               <ToolbarItem variant="separator"></ToolbarItem>
               <ToolbarItem>
                 <RebalancingCacheManager />
+              </ToolbarItem>
+              <ToolbarItem align={{ default: 'alignEnd' }}>
+                <Button
+                  variant="link"
+                  data-cy="refreshCacheContainer"
+                  icon={<RedoIcon />}
+                  onClick={() => reload()}
+                >
+                  {t('common.actions.refresh')}
+                </Button>
               </ToolbarItem>
             </ToolbarContent>
           </Toolbar>
