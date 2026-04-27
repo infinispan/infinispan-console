@@ -103,7 +103,7 @@
     "@patternfly/react-tokens": "^6.4.0",
     "i18next": "^25.8.13",
     "i18next-browser-languagedetector": "^8.2.1",
-    "i18next-http-backend": "^3.0.2",
+    "i18next-http-backend": "^3.0.5",
     "json-bigint": "^1.0.0",
     "keycloak-js": "^26",
     "react": "^18",
