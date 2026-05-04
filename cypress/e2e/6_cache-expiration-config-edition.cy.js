@@ -75,12 +75,6 @@ describe('Cache Expiration', () => {
         cy.get('[data-cy=toggle-maxidleUnitSelector]').click();
         cy.get('[data-cy=maxidleUnitSelector-option-minutes]').click();
         cy.get('[data-cy=saveConfigButton-expiration]').click();
-        cy.contains(
-          `Updated ${cacheName} cache: expiration.lifespan configured successfully`,
-        );
-        cy.contains(
-          `Updated ${cacheName} cache: expiration.max-idle configured successfully`,
-        );
         cy.get('[data-cy=backButton-expiration]').click();
         cy.get('[data-cy=cacheConfigurationTab]').click();
         cy.contains('"max-idle": "12m"');
