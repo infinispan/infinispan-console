@@ -1,4 +1,3 @@
-import numeral from 'numeral';
 import json_bigint from 'json-bigint';
 const JSONbigString = json_bigint({ storeAsString: true });
 import {
@@ -132,11 +131,26 @@ class DisplayUtils {
     return color;
   }
 
+  private formatCompact(digit: number): string {
+    const suffixes = [
+      { value: 1e12, suffix: 't' },
+      { value: 1e9, suffix: 'b' },
+      { value: 1e6, suffix: 'm' },
+      { value: 1e3, suffix: 'k' }
+    ];
+    for (const { value, suffix } of suffixes) {
+      if (digit >= value) {
+        return (digit / value).toFixed(1) + suffix;
+      }
+    }
+    return digit.toString();
+  }
+
   public formatNumber(digit: number | undefined): string {
     if (!digit) return '0';
 
     if (digit >= 100000000) {
-      return numeral(digit).format('0.0a');
+      return this.formatCompact(digit);
     }
 
     return digit.toLocaleString('en', { maximumFractionDigits: 2 });
@@ -146,11 +160,11 @@ class DisplayUtils {
     if (!digit) return '0';
 
     if (digit >= 1000000) {
-      return numeral(digit).format('0.0a');
+      return this.formatCompact(digit);
     }
 
     if (digit >= 1000) {
-      return numeral(digit).format('0 a');
+      return this.formatCompact(digit);
     }
 
     return this.formatNumber(digit);
