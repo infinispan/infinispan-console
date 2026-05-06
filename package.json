@@ -43,7 +43,7 @@
     "@typescript-eslint/parser": "^8.56.1",
     "@webpack-cli/serve": "^3.0.1",
     "ajv": "^8.18.0",
-    "baseline-browser-mapping": "^2.10.0",
+    "baseline-browser-mapping": "^2.10.27",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^7.1.4",
     "css-minimizer-webpack-plugin": "^7.0.4",
