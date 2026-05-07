@@ -86,6 +86,9 @@
     "webpack-dev-server": "^5.2.3",
     "webpack-merge": "^6.0.1"
   },
+  "overrides": {
+    "axios": "1.16.0"
+  },
   "dependencies": {
     "@patternfly/patternfly": "^6.4.0",
     "@patternfly/react-charts": "^8.4.1",
