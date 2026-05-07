@@ -1,4 +1,3 @@
-import numeral from 'numeral';
 import json_bigint from 'json-bigint';
 const JSONbigString = json_bigint({ storeAsString: true });
 import {
@@ -21,7 +20,7 @@ import {
   ST_SENDING,
   STOPPING_STATUS,
   TERMINATED_STATUS,
-  UNKNOWN
+  UNKNOWN,
 } from '@services/infinispanRefData';
 
 /**
@@ -132,11 +131,26 @@ class DisplayUtils {
     return color;
   }
 
+  private formatCompact(digit: number): string {
+    const suffixes = [
+      { value: 1e12, suffix: 't' },
+      { value: 1e9, suffix: 'b' },
+      { value: 1e6, suffix: 'm' },
+      { value: 1e3, suffix: 'k' },
+    ];
+    for (const { value, suffix } of suffixes) {
+      if (digit >= value) {
+        return (digit / value).toFixed(1) + suffix;
+      }
+    }
+    return digit.toString();
+  }
+
   public formatNumber(digit: number | undefined): string {
     if (!digit) return '0';
 
     if (digit >= 100000000) {
-      return numeral(digit).format('0.0a');
+      return this.formatCompact(digit);
     }
 
     return digit.toLocaleString('en', { maximumFractionDigits: 2 });
@@ -146,11 +160,11 @@ class DisplayUtils {
     if (!digit) return '0';
 
     if (digit >= 1000000) {
-      return numeral(digit).format('0.0a');
+      return this.formatCompact(digit);
     }
 
     if (digit >= 1000) {
-      return numeral(digit).format('0 a');
+      return this.formatCompact(digit);
     }
 
     return this.formatNumber(digit);
@@ -206,8 +220,15 @@ class DisplayUtils {
     return featureChipGroup;
   }
 
-  public formatContentToDisplayWithTruncate(content: any, contentType?: ContentType): string {
-    if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
+  public formatContentToDisplayWithTruncate(
+    content: any,
+    contentType?: ContentType,
+  ): string {
+    if (
+      !contentType ||
+      contentType == ContentType.JSON ||
+      contentType == ContentType.customType
+    ) {
       // Try parse and stringify
       try {
         const json = this.trimJsonValues(JSONbigString.parse(content), 40, 10);
@@ -217,7 +238,9 @@ class DisplayUtils {
       }
     }
 
-    return (content as string).length > 40 ? content.substring(0, 30) + '...' : content;
+    return (content as string).length > 40
+      ? content.substring(0, 30) + '...'
+      : content;
   }
 
   public trimJsonValues(obj, stringMax: number, arrayMax: number) {
@@ -231,9 +254,11 @@ class DisplayUtils {
       if (key === '_type') {
         trimmed[key] = value; // Do not trim _type
       } else if (typeof value === 'string') {
-        trimmed[key] = value.length > stringMax ? value.slice(0, stringMax) + '…' : value;
+        trimmed[key] =
+          value.length > stringMax ? value.slice(0, stringMax) + '…' : value;
       } else if (Array.isArray(value)) {
-        trimmed[key] = value.length > arrayMax ? [...value.slice(0, arrayMax), '…'] : value;
+        trimmed[key] =
+          value.length > arrayMax ? [...value.slice(0, arrayMax), '…'] : value;
       } else {
         trimmed[key] = value;
       }
@@ -242,8 +267,15 @@ class DisplayUtils {
     return trimmed;
   }
 
-  public formatContentToDisplay(content: any, contentType?: ContentType): string {
-    if (!contentType || contentType == ContentType.JSON || contentType == ContentType.customType) {
+  public formatContentToDisplay(
+    content: any,
+    contentType?: ContentType,
+  ): string {
+    if (
+      !contentType ||
+      contentType == ContentType.JSON ||
+      contentType == ContentType.customType
+    ) {
       // Try parse and stringify
       try {
         return JSONbigString.stringify(JSONbigString.parse(content), null, 2);
