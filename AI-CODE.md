@@ -32,6 +32,8 @@ Each feature area has its own directory: `Caches/`, `CacheManagers/`, `AccessMan
 * **Dev server:** `npm run start:dev` (http://localhost:9000, proxies API to :11222)
 * **Production build:** `npm run build`
 * **Run unit tests:** `npm test`
+* **Run a single test file:** `npm test -- --testPathPattern=MyComponent.test`
+* **Unit tests with coverage:** `npm test -- --coverage`
 * **Lint:** `npm run eslint`
 * **Format:** `npm run format`
 * **E2E tests (headless):** `npm run cy:run`
@@ -49,8 +51,8 @@ Each feature area has its own directory: `Caches/`, `CacheManagers/`, `AccessMan
 ### API Layer
 * **Service classes** in `src/services/` wrap REST calls using `FetchCaller` (Fetch API wrapper).
 * **`ConsoleServices`** is the singleton entry point — access services via `ConsoleServices.caches()`, `ConsoleServices.search()`, etc.
-* **Error handling** uses a functional `Either` monad (`src/services/either.ts`) — `right(data)` for success, `left(error)` for failure.
-* **REST endpoints:** V2 at `/rest/v2` (`ConsoleServices.endpoint()`), V3 at `/rest/v3` (`ConsoleServices.endpointV3()`).
+* **Error handling** uses a functional `Either` monad (`src/services/either.ts`) — `right(data)` for success, `left(error)` for failure. Errors surface to the user via the alert system (`useApiAlert`).
+* **REST endpoints:** V2 at `/rest/v2` (`ConsoleServices.endpoint()`) for container-level and server-level operations, V3 at `/rest/v3` (`ConsoleServices.endpointV3()`) for Cache, Search, XSite, and Protobuf services.
 
 ### Internationalization (i18n)
 * **All user-visible strings must be translated** — use `const { t } = useTranslation()` and `t('key')`.
@@ -74,6 +76,12 @@ Each feature area has its own directory: `Caches/`, `CacheManagers/`, `AccessMan
 
 ## Development Platform
 * **Issues:** Use GitHub issue types (Bug, Feature Request, Housekeeping) with templates in `.github/ISSUE_TEMPLATE/`.
+
+## Development Notes
+
+* Dev server proxies API requests to `INFINISPAN_SERVER_URL` (defaults to `http://localhost:11222`)
+* App base path is determined by the `<base href>` tag in HTML, falls back to `/console`
+* `config.js` is a runtime config template — Webpack replaces `INFINISPAN_REST_CONTEXT_PATH` at deploy time
 
 ## Related Projects
 * **Server:** The Infinispan server source code is in `../infinispan`

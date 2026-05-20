@@ -68,13 +68,10 @@
 
   <target name="licenses-xml">
     <mkdir dir="${outDir}"/>
-    <exec executable="${node}">
-      <arg value="${binDir}/license-reporter"/>
-      <arg value="save"/>
+    <exec executable="${node}" dir="${projectDir}">
+      <arg value="${projectDir}/scripts/generate-license-xml.js"/>
       <arg value="--xml"/>
       <arg value="licenses-console.xml"/>
-      <arg value="--silent"/>
-      <arg value="--full-dependency-tree"/>
       <arg value="--output-dir"/>
       <arg value="${outDir}"/>
     </exec>

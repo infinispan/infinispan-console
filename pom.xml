@@ -368,7 +368,7 @@
             </goals>
             <configuration>
               <target>
-                <property name="binDir" value="${basedir}/node_modules/.bin"/>
+                <property name="projectDir" value="${basedir}"/>
                 <property name="outDir" value="dist/META-INF/licenses"/>
                 <!-- node executable -->
                 <!-- use the executable download by frontend plugin in case node isn't installed globally -->
