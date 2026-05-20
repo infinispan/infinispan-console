@@ -44,7 +44,7 @@
     "@webpack-cli/serve": "^3.0.1",
     "ajv": "^8.20.0",
     "baseline-browser-mapping": "^2.10.27",
-    "copy-webpack-plugin": "^13.0.1",
+    "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.4",
     "css-minimizer-webpack-plugin": "^8.0.0",
     "cypress": "^15.10.0",
