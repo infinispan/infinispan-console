@@ -924,6 +924,7 @@
     "clear-search": "Limpar pesquisa",
     "name": "Nome",
     "status": "Estado",
+    "valid": "Válido",
     "create": {
       "modal-title": "Adicionar esquema Protobuf",
       "name": "Nome",

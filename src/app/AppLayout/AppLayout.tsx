@@ -359,7 +359,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
                       isCurrentActiveNavItem(route) ? 'pf-m-current' : ''
                     }
                   >
-                    {t(route.label)}
+                    {t(route.label as string)}
                   </NavLink>
                 </NavItem>
               ),

@@ -29,6 +29,7 @@ module.exports = {
     '^react-syntax-highlighter/dist/esm/styles/hljs$': '<rootDir>/__mocks__/react-syntax-highlighter.js',
     '^monaco-editor$': '<rootDir>/__mocks__/monaco-editor.js',
     '^@patternfly/react-code-editor$': '<rootDir>/__mocks__/@patternfly/react-code-editor.js',
+    '@patternfly/react-core/dist/esm/(.*)': '@patternfly/react-core/dist/js/$1',
   },
 
   // A preset that is used as a base for Jest's configuration

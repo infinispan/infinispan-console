@@ -31,11 +31,7 @@ import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { useSearch } from '@app/hooks/searchHook';
 import { DeleteByQueryEntries } from '@app/Caches/Query/DeleteByQueryEntries';
-import {
-  CodeEditor,
-  CodeEditorControl,
-  Language,
-} from '@patternfly/react-code-editor';
+import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import displayUtils from '@services/displayUtils';
 
 const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
@@ -195,16 +191,6 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
     );
   };
 
-  const customControl = (
-    <CodeEditorControl
-      icon={<SearchIcon />}
-      aria-label="Execute code"
-      tooltipProps={{ content: 'Execute code' }}
-      onClick={startSearch}
-      isVisible
-    />
-  );
-
   const ickleHelp = (
     <Content>
       {' '}
@@ -254,8 +240,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
               language={Language.sql}
               code={search.query}
               onChange={(value, event) => onChangeSearch(value)}
-              isFullHeight
-              height={'sizeToFit'}
+              height="70px"
               isDarkTheme={theme === DARK}
               shortcutsPopoverButtonText={''}
               shortcutsPopoverProps={shortcutsPopoverProps}

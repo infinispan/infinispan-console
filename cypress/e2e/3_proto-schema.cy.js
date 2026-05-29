@@ -66,7 +66,7 @@ describe('Proto Schema CRUD', () => {
     cy.contains('Schema ' + schemaName + ' created.');
     cy.get('[name=close-alert-button]').click(); //Closing alert popup.
     cy.contains(schemaName + '.proto');
-    cy.contains('Schema ' + schemaName + '.proto has errors');
+    cy.contains(schemaName + '.proto').parents('tr').find('.pf-m-danger').should('exist');
 
     // Verify schema name is a link to the edit page
     cy.get('[data-cy=schemaTable]').contains(schemaName + '.proto').click();
@@ -95,7 +95,7 @@ describe('Proto Schema CRUD', () => {
     cy.url().should('include', '/schemas');
     cy.get('[data-cy=schemaTable]', {timeout: 10000}).should('exist');
     cy.contains(schemaName + '.proto');
-    cy.contains('Schema ' + schemaName + '.proto has errors').should('not.exist');
+    cy.contains(schemaName + '.proto').parents('tr').find('.pf-m-danger').should('not.exist');
 
     //Deleting schema
     cy.get('[data-cy="actions-' + schemaName + '.proto"]>button').click();

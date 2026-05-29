@@ -912,6 +912,7 @@
     "clear-search": "Cancella ricerca",
     "name": "Nome",
     "status": "Stato",
+    "valid": "Valido",
     "create": {
       "modal-title": "Aggiungi schema Protobuf",
       "name": "Nome",

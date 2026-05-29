@@ -912,6 +912,7 @@
     "clear-search": "清除搜索",
     "name": "名称",
     "status": "状态",
+    "valid": "有效",
     "create": {
       "modal-title": "添加 Protobuf 模式",
       "name": "名称",

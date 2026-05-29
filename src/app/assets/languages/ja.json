@@ -912,6 +912,7 @@
     "clear-search": "検索をクリア",
     "name": "名前",
     "status": "状態",
+    "valid": "有効",
     "create": {
       "modal-title": "Protobuf スキーマの追加",
       "name": "名前",
