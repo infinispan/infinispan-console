@@ -940,6 +940,7 @@
     "clear-search": "Effacer la recherche",
     "name": "Nom",
     "status": "Statut",
+    "valid": "Valide",
     "create": {
       "modal-title": "Ajouter un schéma Protobuf",
       "name": "Nom",

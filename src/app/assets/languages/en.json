@@ -963,6 +963,7 @@
     "clear-search": "Clear search",
     "name": "Name",
     "status": "Status",
+    "valid": "Valid",
     "create": {
       "modal-title": "Add Protobuf schema",
       "name": "Name",

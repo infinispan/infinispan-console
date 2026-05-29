@@ -920,6 +920,7 @@
     "clear-search": "Limpiar búsqueda",
     "name": "Nombre",
     "status": "Estado",
+    "valid": "Válido",
     "create": {
       "modal-title": "Añadir esquema Protobuf",
       "name": "Nombre",

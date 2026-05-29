@@ -1,15 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  Alert,
-  AlertVariant,
   Bullseye,
   Button,
   ButtonVariant,
+  Content,
+  ContentVariants,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
   EmptyStateVariant,
+  Flex,
+  FlexItem,
+  Icon,
+  Label,
   Pagination,
   SearchInput,
   Spinner,
@@ -29,12 +33,16 @@ import {
   Thead,
   Tr,
 } from '@patternfly/react-table';
-import { DatabaseIcon, SearchIcon } from '@patternfly/react-icons';
+import {
+  DatabaseIcon,
+  ExclamationCircleIcon,
+  SearchIcon,
+} from '@patternfly/react-icons';
 import {
   t_global_spacer_md,
   t_global_spacer_sm,
 } from '@patternfly/react-tokens';
-import { CodeEditor, Language } from '@patternfly/react-code-editor';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import { Link } from 'react-router-dom';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useTranslation } from 'react-i18next';
@@ -46,11 +54,8 @@ import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
 import { useFetchProtobufSchemas } from '@app/hooks/protobufHooks';
 import { onSearch } from '@app/utils/searchFilter';
 import './ProtobufSchemasDisplay.css';
-import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
+import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useLocalStorage } from '@app/utils/localStorage';
-import { PROTO_LANGUAGE_ID, registerProtobufLanguage } from './protoLanguage';
-
-registerProtobufLanguage();
 
 const ProtobufSchemasDisplay = (props: {
   setProtoSchemasCount: (number) => void;
@@ -79,7 +84,7 @@ const ProtobufSchemasDisplay = (props: {
       perPage: 10,
     },
   );
-  const { theme } = useContext(ThemeContext);
+  const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
 
@@ -215,29 +220,26 @@ const ProtobufSchemasDisplay = (props: {
     return <ToolbarItem>{createSchemaButtonHelper()}</ToolbarItem>;
   };
 
-  const displayProtoError = (error: ProtoError | undefined) => {
+  const displaySchemaStatus = (error: ProtoError | undefined) => {
     if (error) {
       return (
-        <Alert
-          isPlain
-          isInline
-          variant={AlertVariant.danger}
-          title={error.message}
-          className="alert-message"
-        >
-          <p>{error.cause}</p>
-        </Alert>
+        <Flex>
+          <FlexItem spacer={{ default: 'spacerXs' }}>
+            <Icon status="danger">
+              <ExclamationCircleIcon />
+            </Icon>
+          </FlexItem>
+          <FlexItem>
+            <Content component={ContentVariants.p}>{error.cause}</Content>
+          </FlexItem>
+        </Flex>
       );
     }
 
     return (
-      <Alert
-        isPlain
-        isInline
-        variant={AlertVariant.success}
-        title={''}
-        className="alert-message"
-      />
+      <Label status="success" variant="outline">
+        {t('schemas.valid')}
+      </Label>
     );
   };
 
@@ -253,14 +255,15 @@ const ProtobufSchemasDisplay = (props: {
 
     return (
       <ExpandableRowContent>
-        <CodeEditor
-          isReadOnly
-          isLineNumbersVisible
-          language={PROTO_LANGUAGE_ID as Language}
-          code={schemasContent.get(name) || ''}
-          height="50vh"
-          isDarkTheme={theme === DARK}
-        />
+        <SyntaxHighlighter
+          language="protobuf"
+          wrapLines={false}
+          style={syntaxHighLighterTheme}
+          useInlineStyles={true}
+          showLineNumbers={true}
+        >
+          {schemasContent.get(name) || ''}
+        </SyntaxHighlighter>
       </ExpandableRowContent>
     );
   };
@@ -384,12 +387,22 @@ const ProtobufSchemasDisplay = (props: {
                       }}
                     />
                     <Td dataLabel={columnNames.name}>
-                      <Link to={'/schemas/' + encodeURIComponent(row.name)}>
+                      <Link
+                        to={'/schemas/' + encodeURIComponent(row.name)}
+                        style={
+                          row.error
+                            ? {
+                                color:
+                                  'var(--pf-t--global--color--status--danger--default)',
+                              }
+                            : undefined
+                        }
+                      >
                         {row.name}
                       </Link>
                     </Td>
                     <Td dataLabel={columnNames.status}>
-                      {displayProtoError(row.error)}
+                      {displaySchemaStatus(row.error)}
                     </Td>
                     <Td isActionCell data-cy={'actions-' + row.name}>
                       <ActionsColumn items={displayActions(row)} />

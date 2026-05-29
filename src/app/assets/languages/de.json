@@ -913,6 +913,7 @@
     "clear-search": "Suche löschen",
     "name": "Name",
     "status": "Status",
+    "valid": "Gültig",
     "create": {
       "modal-title": "Protobuf-Schema hinzufügen",
       "name": "Name",

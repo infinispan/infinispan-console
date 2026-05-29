@@ -913,6 +913,7 @@
     "clear-search": "مسح البحث",
     "name": "اسم",
     "status": "الحالة",
+    "valid": "صالح",
     "create": {
       "modal-title": "إضافة مخطط Protobuf",
       "name": "اسم",
