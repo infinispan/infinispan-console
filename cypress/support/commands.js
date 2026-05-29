@@ -47,7 +47,6 @@ Cypress.Commands.add('login', (username, password, url = '/') => {
       password: password
     }
   });
-  cy.get('[data-cy=sideBarToggle]').click();
 });
 
 Cypress.Commands.add('typeInMonacoEditor', (containerSelector, text) => {

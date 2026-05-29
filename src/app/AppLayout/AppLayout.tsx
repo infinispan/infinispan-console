@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Brand,
-  Button,
   Content,
   ContentVariants,
   Divider,
   Dropdown,
+  DropdownGroup,
   DropdownItem,
   DropdownList,
   Masthead,
@@ -24,6 +24,7 @@ import {
   Page,
   PageSidebar,
   PageSidebarBody,
+  PageToggleButton,
   SkipToContent,
   Spinner,
   ToggleGroup,
@@ -50,7 +51,7 @@ import {
 } from '@app/hooks/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import {
-  BarsIcon,
+  EllipsisVIcon,
   ExternalLinkAltIcon,
   MoonIcon,
   OutlinedArrowAltCircleRightIcon,
@@ -75,7 +76,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const { connectedUser } = useConnectedUser();
 
   const [isWelcomePage, setIsWelcomePage] = useState(
@@ -84,6 +84,8 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isKebabOpen, setIsKebabOpen] = useState(false);
+  const [isFullKebabOpen, setIsFullKebabOpen] = useState(false);
 
   useEffect(() => {
     setIsWelcomePage(pathname == '/welcome');
@@ -117,97 +119,75 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     }
   };
 
-  const userActions = () => {
-    const chromeAgent = navigator.userAgent.toString().indexOf('Chrome') > -1;
-    if (
-      chromeAgent ||
+  const isSecured = !ConsoleServices.authentication().isNotSecured();
+  const showUserDropdown =
+    isSecured &&
+    (navigator.userAgent.toString().indexOf('Chrome') > -1 ||
       (KeycloakService.Instance.isInitialized() &&
-        KeycloakService.Instance.authenticated())
-    ) {
-      const subjects = connectedUser.acl?.subjects || [];
-      const globalPerms = connectedUser.acl?.global || [];
-      const displayPerms = globalPerms.slice(0, 5);
-      const moreCount = globalPerms.length - displayPerms.length;
+        KeycloakService.Instance.authenticated()));
 
-      return (
-        <ToolbarItem>
-          <Dropdown
-            onSelect={() => setIsDropdownOpen(!isDropdownOpen)}
-            isOpen={isDropdownOpen}
-            popperProps={{ position: 'right' }}
-            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-              <MenuToggle
-                ref={toggleRef}
-                isFullHeight
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                isExpanded={isDropdownOpen}
-                icon={<UserIcon />}
-              >
-                {connectedUser.name}
-              </MenuToggle>
-            )}
-            shouldFocusToggleOnSelect
-          >
-            <DropdownList>
-              <DropdownItem
-                key="view-permissions"
-                icon={<ShieldAltIcon />}
-                onClick={() => {
-                  navigate('/my-permissions');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                {t('layout.view-my-permissions')}
-              </DropdownItem>
-              {isAdmin && (
-                <DropdownItem
-                  key="access-management"
-                  icon={<UsersIcon />}
-                  onClick={() => {
-                    navigate('/access-management');
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  {t('routes.access-management')}
-                </DropdownItem>
-              )}
-            </DropdownList>
-            <Divider />
-            <DropdownList>
-              <DropdownItem key="logout" onClick={handleLogout}>
-                {t('layout.logout')}
-              </DropdownItem>
-            </DropdownList>
-          </Dropdown>
-        </ToolbarItem>
-      );
-    }
-    return (
-      <ToolbarGroup variant="label-group">
-        <ToolbarItem>
-          <PopoverHelp
-            text={connectedUser.name}
-            name={'close'}
-            label={t('layout.logout')}
-            content={t('layout.close-browser-message')}
-            icon={<OutlinedArrowAltCircleRightIcon />}
-          />
-        </ToolbarItem>
-      </ToolbarGroup>
-    );
-  };
+  const userDropdownItems = (
+    <>
+      <DropdownItem
+        key="view-permissions"
+        icon={<ShieldAltIcon />}
+        onClick={() => {
+          navigate('/my-permissions');
+        }}
+      >
+        {t('layout.view-my-permissions')}
+      </DropdownItem>
+      {isAdmin && (
+        <DropdownItem
+          key="access-management"
+          icon={<UsersIcon />}
+          onClick={() => {
+            navigate('/access-management');
+          }}
+        >
+          {t('routes.access-management')}
+        </DropdownItem>
+      )}
+    </>
+  );
+
+  const helpAndAboutItems = (
+    <>
+      <DropdownItem
+        onClick={() => window.open(t('brandname.documentation-link'), '_blank')}
+        key="documentation"
+        icon={<ExternalLinkAltIcon />}
+      >
+        {t('layout.documentation-name')}
+      </DropdownItem>
+      <DropdownItem
+        onClick={() => setIsAboutOpen(true)}
+        key="about"
+        component="button"
+      >
+        {t('layout.about-name')}
+      </DropdownItem>
+    </>
+  );
 
   const headerToolbar = (
-    <Toolbar id="toolbar" isFullHeight>
+    <Toolbar id="toolbar" isStatic>
       <ToolbarContent>
-        <ToolbarGroup variant="label-group">
+        <ToolbarGroup
+          variant="label-group"
+          visibility={{ default: 'hidden', lg: 'visible' }}
+        >
           <ToolbarItem>
             <Content component={ContentVariants.h2}>
               {t('layout.console-name')}
             </Content>
           </ToolbarItem>
         </ToolbarGroup>
-        <ToolbarGroup align={{ default: 'alignEnd' }}>
+        <ToolbarGroup
+          variant="action-group-plain"
+          align={{ default: 'alignEnd' }}
+          gap={{ default: 'gapNone', md: 'gapMd' }}
+        >
           <ToolbarItem>
             <ToggleGroup>
               <ToggleGroupItem
@@ -226,45 +206,133 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
               />
             </ToggleGroup>
           </ToolbarItem>
-          <LanguageSelector />
-          <ToolbarItem>
+          {/* Desktop: individual language + help items */}
+          <ToolbarGroup
+            variant="action-group-plain"
+            visibility={{ default: 'hidden', lg: 'visible' }}
+          >
+            <LanguageSelector />
+            <ToolbarItem>
+              <Dropdown
+                id="aboutInfoQuestionMark"
+                onSelect={() => setIsHelpOpen(false)}
+                popperProps={{ position: 'right' }}
+                isOpen={isHelpOpen}
+                onOpenChange={(open) => setIsHelpOpen(open)}
+                toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                  <MenuToggle
+                    data-cy="aboutInfoQuestionMark"
+                    variant={'plain'}
+                    ref={toggleRef}
+                    onClick={() => setIsHelpOpen(!isHelpOpen)}
+                    isExpanded={isHelpOpen}
+                  >
+                    <QuestionCircleIcon />
+                  </MenuToggle>
+                )}
+              >
+                <DropdownList>{helpAndAboutItems}</DropdownList>
+              </Dropdown>
+            </ToolbarItem>
+          </ToolbarGroup>
+          {/* Medium screens: kebab with help items */}
+          <ToolbarItem
+            visibility={{ default: 'hidden', md: 'visible', lg: 'hidden' }}
+          >
             <Dropdown
-              id="aboutInfoQuestionMark"
-              onSelect={() => setIsHelpOpen(!isHelpOpen)}
+              isOpen={isKebabOpen}
+              onSelect={() => setIsKebabOpen(false)}
+              onOpenChange={(open) => setIsKebabOpen(open)}
               popperProps={{ position: 'right' }}
-              isOpen={isHelpOpen}
               toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                 <MenuToggle
-                  data-cy="aboutInfoQuestionMark"
-                  variant={'plain'}
                   ref={toggleRef}
-                  isFullHeight
-                  onClick={() => setIsHelpOpen(!isHelpOpen)}
-                  isExpanded={isHelpOpen}
-                >
-                  <QuestionCircleIcon />
-                </MenuToggle>
+                  onClick={() => setIsKebabOpen(!isKebabOpen)}
+                  isExpanded={isKebabOpen}
+                  variant="plain"
+                  aria-label="Toolbar menu"
+                  icon={<EllipsisVIcon />}
+                />
               )}
             >
-              <DropdownItem
-                onClick={() =>
-                  window.open(t('brandname.documentation-link'), '_blank')
-                }
-                key="documentation"
-                icon={<ExternalLinkAltIcon />}
-              >
-                {t('layout.documentation-name')}
-              </DropdownItem>
-              <DropdownItem
-                onClick={() => setIsAboutOpen(!isAboutOpen)}
-                key="about"
-                component="button"
-              >
-                {t('layout.about-name')}
-              </DropdownItem>
+              <DropdownList>{helpAndAboutItems}</DropdownList>
             </Dropdown>
           </ToolbarItem>
-          {!ConsoleServices.authentication().isNotSecured() && userActions()}
+          {/* Small screens: full kebab with user actions + help */}
+          <ToolbarItem visibility={{ md: 'hidden' }}>
+            <Dropdown
+              isOpen={isFullKebabOpen}
+              onSelect={() => setIsFullKebabOpen(false)}
+              onOpenChange={(open) => setIsFullKebabOpen(open)}
+              popperProps={{ position: 'right' }}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  ref={toggleRef}
+                  onClick={() => setIsFullKebabOpen(!isFullKebabOpen)}
+                  isExpanded={isFullKebabOpen}
+                  variant="plain"
+                  aria-label="Toolbar menu"
+                  icon={<EllipsisVIcon />}
+                />
+              )}
+            >
+              {isSecured && showUserDropdown && (
+                <DropdownGroup key="user-actions" aria-label="User actions">
+                  <DropdownList>
+                    {userDropdownItems}
+                    <DropdownItem key="logout" onClick={handleLogout}>
+                      {t('layout.logout')}
+                    </DropdownItem>
+                  </DropdownList>
+                </DropdownGroup>
+              )}
+              {isSecured && showUserDropdown && <Divider />}
+              <DropdownList>{helpAndAboutItems}</DropdownList>
+            </Dropdown>
+          </ToolbarItem>
+          {/* User dropdown: visible on md+ */}
+          {isSecured &&
+            (showUserDropdown ? (
+              <ToolbarItem visibility={{ default: 'hidden', md: 'visible' }}>
+                <Dropdown
+                  onSelect={() => setIsDropdownOpen(false)}
+                  isOpen={isDropdownOpen}
+                  onOpenChange={(open) => setIsDropdownOpen(open)}
+                  popperProps={{ position: 'right' }}
+                  toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                    <MenuToggle
+                      ref={toggleRef}
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      isExpanded={isDropdownOpen}
+                      icon={<UserIcon />}
+                    >
+                      {connectedUser.name}
+                    </MenuToggle>
+                  )}
+                  shouldFocusToggleOnSelect
+                >
+                  <DropdownList>{userDropdownItems}</DropdownList>
+                  <Divider />
+                  <DropdownList>
+                    <DropdownItem key="logout" onClick={handleLogout}>
+                      {t('layout.logout')}
+                    </DropdownItem>
+                  </DropdownList>
+                </Dropdown>
+              </ToolbarItem>
+            ) : (
+              <ToolbarGroup variant="label-group">
+                <ToolbarItem>
+                  <PopoverHelp
+                    text={connectedUser.name}
+                    name={'close'}
+                    label={t('layout.logout')}
+                    content={t('layout.close-browser-message')}
+                    icon={<OutlinedArrowAltCircleRightIcon />}
+                  />
+                </ToolbarItem>
+              </ToolbarGroup>
+            ))}
         </ToolbarGroup>
       </ToolbarContent>
     </Toolbar>
@@ -277,14 +345,13 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   );
 
   const Header = (
-    <Masthead>
+    <Masthead display={{ default: 'inline' }}>
       <MastheadMain>
         <MastheadToggle>
-          <Button
+          <PageToggleButton
             data-cy="sideBarToggle"
-            icon={<BarsIcon />}
             variant="plain"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            isHamburgerButton
             aria-label="Global navigation"
           />
         </MastheadToggle>
@@ -411,11 +478,14 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
 
     return (
       <Page
+        key="page-ready"
         mainContainerId="primary-app-container"
         masthead={isWelcomePage ? NoHeader : Header}
         isContentFilled
+        defaultManagedSidebarIsOpen={false}
+        isManagedSidebar
         skipToContent={isWelcomePage ? undefined : PageSkipToContent}
-        sidebar={!isWelcomePage && sidebarOpen && Sidebar}
+        sidebar={!isWelcomePage && Sidebar}
       >
         <ActionResponseAlert />
         <BannerAlert />

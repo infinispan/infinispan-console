@@ -3,6 +3,15 @@ describe('Welcome page', () => {
     cy.get('[data-cy=sideBarToggle]').click();
   }
 
+  function openSideBar() {
+    cy.get('[data-cy=sideBarToggle]').then(($btn) => {
+      if ($btn.attr('aria-expanded') === 'false') {
+        cy.wrap($btn).click();
+      }
+    });
+    cy.contains('Data Container').should('be.visible');
+  }
+
   it('successfully loads Welcome page', () => {
     cy.visit('/welcome', {
       headers: {
@@ -85,6 +94,37 @@ describe('Welcome page', () => {
     cy.get('[itemid="connected_clients"]').click();
     cy.contains('Connected clients');
     cy.contains('Server node');
+  });
+
+  it('successfully navigates in mobile viewport', () => {
+    cy.viewport(480, 896);
+    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.contains('Data container');
+
+    // Sidebar should be closed by default
+    cy.contains('Operations').should('not.be.visible');
+
+    // Open sidebar via hamburger menu
+    openSideBar();
+    cy.contains('Operations').should('be.visible');
+    cy.contains('Global Statistics').should('be.visible');
+    cy.contains('Cluster Membership').should('be.visible');
+    cy.contains('Access Management').should('be.visible');
+    cy.contains('Connected Clients').should('be.visible');
+
+    // Navigate to Global Statistics
+    cy.get('[itemid="global_stats"]').click();
+    cy.contains('Global statistics');
+
+    // Navigate to Cluster Membership
+    openSideBar();
+    cy.get('[itemid="cluster_membership"]').click();
+    cy.contains('Cluster membership');
+
+    // Navigate back to Data Container
+    openSideBar();
+    cy.get('[itemid="data_container"]').click();
+    cy.contains('Data container');
   });
 
   it('successfully opens and views About page', () => {
