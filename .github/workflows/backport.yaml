@@ -7,6 +7,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   create_backport:
     if: github.event.pull_request.merged == true
@@ -14,7 +17,7 @@ jobs:
     steps:
       - if: contains(github.event.pull_request.labels.*.name, '13.x')
         name: 13.x Backport
-        uses: kiegroup/git-backporting@v4.2.0
+        uses: kiegroup/git-backporting@e29dae5073d5b026781931f9be00fc19d0453acb # v4.2.0
         with:
           target-branch: 13.x
           pull-request: ${{ github.event.pull_request.url }}
@@ -23,7 +26,7 @@ jobs:
 
       - if: contains(github.event.pull_request.labels.*.name, '14.x')
         name: 14.x Backport
-        uses: kiegroup/git-backporting@v4.2.0
+        uses: kiegroup/git-backporting@e29dae5073d5b026781931f9be00fc19d0453acb # v4.2.0
         with:
           target-branch: 14.x
           pull-request: ${{ github.event.pull_request.url }}

@@ -18,13 +18,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           node-version: 24.11.0
           cache: 'npm'
@@ -136,12 +139,12 @@ jobs:
         run: cd data; bash ./create-data.sh admin password
 
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4
         with:
           config-file: cypress.config.ts
 
       - name: Uploading test results
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         if: failure()
         with:
           name: screenshots
@@ -154,4 +157,4 @@ jobs:
 
       - name: Dump docker logs on failure
         if: failure()
-        uses: jwalton/gh-docker-logs@v1
+        uses: jwalton/gh-docker-logs@54a2a89cd6a2c929525f26ca67a7a4857a5dc1d9 # v1

@@ -13,6 +13,9 @@ on:
       - 16.0
       - 16.1
 
+permissions:
+  contents: read
+
 jobs:
    add-release-label:
      if: ${{ github.event.pull_request.merged }}
