@@ -44,8 +44,9 @@ const EditSchema = (props: {
   }, [editSchemaContent]);
 
   const onClickEditButton = () => {
-    onEditSchema();
-    props.submitModal();
+    onEditSchema().then(() => {
+      props.submitModal();
+    });
   };
 
   return (

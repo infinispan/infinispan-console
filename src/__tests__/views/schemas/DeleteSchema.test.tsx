@@ -17,7 +17,7 @@ beforeEach(() => {
 
 mockedSchemaHook.useDeleteProtobufSchema.mockImplementation(() => {
   return {
-    onDeleteSchema: () => onDeleteCalls++
+    onDeleteSchema: () => { onDeleteCalls++; return Promise.resolve(); }
   };
 });
 
@@ -29,7 +29,7 @@ describe('Delete schema', () => {
     expect(onDeleteCalls).toBe(0);
   });
 
-  test('render the dialog and buttons work', () => {
+  test('render the dialog and buttons work', async () => {
     renderWithRouter(<DeleteSchema schemaName={'schema-1'} isModalOpen={true} closeModal={() => closeModalCalls++} />);
 
     expect(mockedSchemaHook.useDeleteProtobufSchema).toHaveBeenCalledWith('schema-1');
@@ -48,5 +48,7 @@ describe('Delete schema', () => {
     const confirmButton = screen.getByRole('button', { name: 'confirm-delete-schema-button' });
     fireEvent.click(confirmButton);
     expect(onDeleteCalls).toBe(1);
+    await new Promise(process.nextTick);
+    expect(closeModalCalls).toBe(3);
   });
 });
