@@ -35,7 +35,7 @@ export function useEditProtobufSchema(schemaName: string, schemaContent: string)
   const { addAlert } = useApiAlert();
 
   const onEditSchema = () => {
-    ConsoleServices.protobuf()
+    return ConsoleServices.protobuf()
       .createOrUpdateSchema(schemaName, schemaContent, false)
       .then((eitherCreate) => {
         addAlert(eitherCreate);
@@ -49,7 +49,7 @@ export function useDeleteProtobufSchema(schemaName: string) {
   const { addAlert } = useApiAlert();
 
   const onDeleteSchema = () => {
-    ConsoleServices.protobuf()
+    return ConsoleServices.protobuf()
       .delete(schemaName)
       .then((actionResponse) => {
         addAlert(actionResponse);

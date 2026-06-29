@@ -19,7 +19,7 @@ beforeEach(() => {
 
 mockedSchemaHook.useEditProtobufSchema.mockImplementation(() => {
   return {
-    onEditSchema: () => onEditSchemaCalls++
+    onEditSchema: () => { onEditSchemaCalls++; return Promise.resolve(); }
   };
 });
 
@@ -77,7 +77,7 @@ describe('Edit schema', () => {
     expect(onEditSchemaCalls).toBe(0);
   });
 
-  test('render the dialog and buttons work', () => {
+  test('render the dialog and buttons work', async () => {
     mockedSchemaHook.useFetchProtobufSchemaContent.mockImplementation(() => {
       return {
         schemaContent: 'schema-content',
@@ -110,6 +110,7 @@ describe('Edit schema', () => {
     const submitButton = screen.getByRole('button', { name: 'confirm-edit-schema-button' });
     fireEvent.click(submitButton);
     expect(onEditSchemaCalls).toBe(1);
+    await new Promise(process.nextTick);
     expect(submitModalCalls).toBe(1);
   });
 });
