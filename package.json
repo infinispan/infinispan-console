@@ -103,7 +103,7 @@
     "@patternfly/react-core": "^6.5.1",
     "@patternfly/react-icons": "^6.5.1",
     "@patternfly/react-log-viewer": "^6.4.0",
-    "@patternfly/react-styles": "^6.5.1",
+    "@patternfly/react-styles": "^6.6.0",
     "@patternfly/react-table": "^6.5.1",
     "@patternfly/react-tokens": "^6.5.1",
     "i18next": "^26.3.4",
