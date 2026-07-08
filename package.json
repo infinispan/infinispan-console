@@ -42,7 +42,7 @@
     "@typescript-eslint/eslint-plugin": "^8.62.1",
     "@typescript-eslint/parser": "^8.62.1",
     "ajv": "^8.20.0",
-    "baseline-browser-mapping": "^2.10.40",
+    "baseline-browser-mapping": "^2.10.42",
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.4",
     "css-minimizer-webpack-plugin": "^8.0.0",
