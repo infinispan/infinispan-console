@@ -88,7 +88,7 @@ export class SearchService {
    */
   public async deleteByQuery(
     cacheName: string,
-    query: string
+    query: string,
   ): Promise<Either<ActionResponse, DeleteByQueryResult>> {
     const url =
       this.endpoint + encodeURIComponent(cacheName) + '/_delete-by-query';
@@ -103,21 +103,22 @@ export class SearchService {
           return response.json().then((data) =>
             right(<DeleteByQueryResult>{
               hit_count: data.hit_count,
-              hit_count_exact: data.hit_count_exact
-            })
+              hit_count_exact: data.hit_count_exact,
+            }),
           );
         }
 
         return response.json().then((data) => {
-          const message = data.error?.cause || data.error?.message || response.statusText;
+          const message =
+            data.error?.cause || data.error?.message || response.statusText;
           throw message;
         });
       })
       .catch((err) =>
         left(<ActionResponse>{
           message: err as string,
-          success: false
-        })
+          success: false,
+        }),
       );
   }
 
@@ -139,7 +140,7 @@ export class SearchService {
                 '_',
                 ' ',
               ),
-              count: displayUtils.formatNumber(data.query[stat].count) + ' ns',
+              count: displayUtils.formatNumber(data.query[stat].count),
               max: displayUtils.formatNumber(data.query[stat].max) + ' ns',
               average:
                 displayUtils.formatNumber(data.query[stat].average) + ' ns',
