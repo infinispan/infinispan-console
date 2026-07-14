@@ -987,6 +987,23 @@
       "dependent-caches-description": "These caches use this schema.",
       "no-dependent-caches": "No caches use this schema.",
       "info-panel-toggle": "Toggle info panel"
+    },
+    "annotations": {
+      "Indexed": "Mark a message for indexing",
+      "Basic": "Index a field with its native type",
+      "Text": "Index a string field as full-text",
+      "Keyword": "Index a string field as a keyword (not analyzed)",
+      "Decimal": "Index a numeric field as a scaled decimal",
+      "Embedded": "Index an embedded message field",
+      "GeoPoint": "Mark a message as a geo-point (requires @Latitude and @Longitude fields)",
+      "GeoField": "Index a field containing a geo-point message",
+      "Latitude": "Mark a field as the latitude component of a geo-point",
+      "Longitude": "Mark a field as the longitude component of a geo-point",
+      "Vector": "Index a repeated field as a vector for similarity search",
+      "Field": "Legacy Hibernate Search field annotation",
+      "Analyzer": "Specify a custom analyzer",
+      "SortableField": "Legacy annotation to mark a field as sortable",
+      "unknown": "Documentation missing for annotation {{name}}"
     }
   },
   "global-stats": {

@@ -24,3 +24,15 @@ export interface ProtoSchemaDetail {
   caches: string[];
   error: ProtoError | null;
 }
+
+export interface ProtoAnnotationAttribute {
+  type: string;
+  defaultValue?: string;
+  allowedValues: string[];
+}
+
+export interface ProtoAnnotation {
+  name: string;
+  target: string[];
+  attributes: Record<string, ProtoAnnotationAttribute>;
+}

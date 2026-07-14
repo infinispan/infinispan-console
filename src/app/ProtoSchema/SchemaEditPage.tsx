@@ -29,12 +29,19 @@ import { CogIcon } from '@patternfly/react-icons';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useFetchProtobufSchemaDetailed } from '@app/hooks/protobufHooks';
+import {
+  useFetchProtobufAnnotations,
+  useFetchProtobufSchemaDetailed,
+} from '@app/hooks/protobufHooks';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { DeleteSchema } from '@app/ProtoSchema/DeleteSchema';
-import { PROTO_LANGUAGE_ID, registerProtobufLanguage } from './protoLanguage';
+import {
+  PROTO_LANGUAGE_ID,
+  registerProtobufLanguage,
+  updateAnnotations,
+} from './protoLanguage';
 import { PageHeader } from '@patternfly/react-component-groups';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import './SchemaEditPage.css';
@@ -49,7 +56,14 @@ const SchemaEditPage = () => {
   const { theme } = useContext(ThemeContext);
   const { schemaDetail, loading, error, reload } =
     useFetchProtobufSchemaDetailed(schemaName || '');
+  const { annotations } = useFetchProtobufAnnotations();
   const [editedContent, setEditedContent] = useState<string>('');
+
+  useEffect(() => {
+    if (annotations.length > 0) {
+      updateAnnotations(annotations);
+    }
+  }, [annotations]);
   const [saving, setSaving] = useState(false);
   const [isDrawerExpanded, setIsDrawerExpanded] = useState(true);
   const [isActionsOpen, setIsActionsOpen] = useState(false);

@@ -110,6 +110,8 @@ import type {
   ProtoError as _ProtoError,
   ProtoSchema as _ProtoSchema,
   ProtoSchemaDetail as _ProtoSchemaDetail,
+  ProtoAnnotation as _ProtoAnnotation,
+  ProtoAnnotationAttribute as _ProtoAnnotationAttribute,
 } from './server';
 
 declare global {
@@ -201,4 +203,6 @@ declare global {
   type ProtoError = _ProtoError;
   type ProtoSchema = _ProtoSchema;
   type ProtoSchemaDetail = _ProtoSchemaDetail;
+  type ProtoAnnotation = _ProtoAnnotation;
+  type ProtoAnnotationAttribute = _ProtoAnnotationAttribute;
 }
