@@ -125,4 +125,24 @@ export class ProtobufService {
       filterInternalProtobufTypes(data),
     );
   }
+
+  /**
+   * Get registered protobuf indexing annotations
+   */
+  public async getAnnotations(): Promise<
+    Either<ActionResponse, ProtoAnnotation[]>
+  > {
+    return this.utils.get(
+      this.endpointBase + '/meta/schemas/_annotations',
+      (data) =>
+        data.map(
+          (a) =>
+            <ProtoAnnotation>{
+              name: a.name,
+              target: a.target,
+              attributes: a.attributes,
+            },
+        ),
+    );
+  }
 }

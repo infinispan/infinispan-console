@@ -196,6 +196,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`blog clicked`),
               selectableActionId: 'blog',
+              selectableActionAriaLabel: t('welcome-page.blog'),
               name: 'clickable-card',
             }}
           >
@@ -221,6 +222,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`connect clicked`),
               selectableActionId: 'connect',
+              selectableActionAriaLabel: t('welcome-page.download'),
               name: 'clickable-card',
             }}
             className={'card-heading'}
@@ -247,6 +249,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`servers clicked`),
               selectableActionId: 'servers',
+              selectableActionAriaLabel: t('welcome-page.learn-more'),
               name: 'clickable-card',
             }}
             className={'card-heading'}
@@ -273,6 +276,7 @@ const Welcome = () => {
             selectableActions={{
               onClickAction: () => console.log(`develop clicked`),
               selectableActionId: 'develop',
+              selectableActionAriaLabel: t('welcome-page.tutorials'),
               name: 'clickable-card',
             }}
             className={'card-heading'}
