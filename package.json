@@ -61,7 +61,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "jest-fixed-jsdom": "^0.0.11",
     "js2xmlparser": "^5.0.0",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.1.0",
     "mini-css-extract-plugin": "^2.10.2",
     "monaco-editor-webpack-plugin": "^7.1.1",
     "postcss": "^8.5.19",
