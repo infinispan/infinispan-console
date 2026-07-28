@@ -53,7 +53,7 @@ Before you start contributing, make sure you have the following prerequisites in
 ```sh
 npm run start:dev
 ```
-You can access the console at http://localhost:4010. The console will automatically reload when you make changes.
+You can access the console at http://localhost:9000 (to use other than default port set PORT environment variable ```PORT=8888 npm run start:dev```). The console will automatically reload when you make changes.
 
 ## Contributing
 
