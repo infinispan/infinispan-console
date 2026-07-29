@@ -12,7 +12,6 @@ import { RollingUpgradeDetectionProvider } from '@app/providers/RollingUpgradeDe
 import { APIAlertProvider } from '@app/providers/APIAlertProvider';
 
 const App = () => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const searchParams = new URL(window.location).searchParams;
   // local dev mode basic
@@ -25,7 +24,9 @@ const App = () => {
     ConsoleServices.init();
   }
   // Base is coming from index.html, and can dynamically change in prod with a reverse proxy
-  const base = document.querySelector('base')?.getAttribute('href')?.replace(/\/$/, '') || '/';
+  const base =
+    document.querySelector('base')?.getAttribute('href')?.replace(/\/$/, '') ||
+    '/';
 
   return (
     <Router basename={base == '{{INFINISPAN_BASE_PATH}}' ? '/console' : base}>

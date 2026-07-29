@@ -2,16 +2,15 @@ import * as React from 'react';
 import { accessibleRouteChangeHandler } from '@app/utils/utils';
 
 interface IDynamicImport {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   load: () => Promise<any>;
   children: any;
-  /* eslint-enable @typescript-eslint/no-explicit-any */
+
   focusContentAfterMount: boolean;
 }
 
 class DynamicImport extends React.Component<IDynamicImport> {
   public state = {
-    component: null
+    component: null,
   };
   private routeFocusTimer: number;
   constructor(props: IDynamicImport) {
@@ -27,7 +26,7 @@ class DynamicImport extends React.Component<IDynamicImport> {
       .then((component) => {
         if (component) {
           this.setState({
-            component: component.default ? component.default : component
+            component: component.default ? component.default : component,
           });
         }
       })

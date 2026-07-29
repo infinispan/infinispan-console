@@ -248,7 +248,6 @@ const CacheEntries = () => {
 
     const actions = [];
     if (cache.updateEntry) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       actions.push({
         'aria-label': 'editEntryAction',
@@ -258,7 +257,6 @@ const CacheEntries = () => {
       });
     }
     if (cache.deleteEntry) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       actions.push({
         'aria-label': 'deleteEntryAction',
