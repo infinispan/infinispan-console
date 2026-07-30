@@ -22,7 +22,10 @@
       "remove": "Entfernen",
       "clear": "Leeren",
       "update": "Aktualisieren",
-      "close": "Schließen"
+      "close": "Schließen",
+      "upload": "Hochladen",
+      "copy-to-clipboard": "In die Zwischenablage kopieren",
+      "copied": "Kopiert"
     },
     "loading-empty-message": "Kein Ergebnis gefunden.",
     "loading-error-message": "Es gab einen Fehler beim Abrufen der Daten. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",

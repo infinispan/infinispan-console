@@ -1,9 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
-  Alert,
-  AlertActionLink,
-  AlertVariant,
+  Button,
   ExpandableSection,
   Form,
   FormGroup,
@@ -13,9 +17,15 @@ import {
   HelperTextItem,
   Spinner,
 } from '@patternfly/react-core';
-import { CodeEditor, Language } from '@patternfly/react-code-editor';
+import { ExternalLinkAltIcon, UploadIcon } from '@patternfly/react-icons';
+import {
+  CodeEditor,
+  CodeEditorControl,
+  Language,
+} from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
+import { CacheConfigUtils } from '@services/cacheConfigUtils';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingleTypehead } from '@app/Common/SelectSingleTypehead';
@@ -25,6 +35,7 @@ const CacheConfigEditor = (props: {
   cacheEditor: CacheEditorStep;
   cacheEditorModifier: (CacheEditorStep) => void;
   setReviewConfig: (string) => void;
+  setContentType: (contentType: 'json' | 'yaml' | 'xml') => void;
 }) => {
   const { theme } = useContext(ThemeContext);
   const sampleConfig =
@@ -58,7 +69,60 @@ const CacheConfigEditor = (props: {
   const [editorExpanded, setEditorExpanded] = useState(
     props.cacheEditor.editorExpanded,
   );
+  const languageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [editorLanguage, setEditorLanguage] = useState<Language>(Language.json);
   const [loading, setLoading] = useState(true);
+
+  const detectLanguage = (content: string): Language | undefined => {
+    const trimmed = content.trim();
+    if (trimmed.length === 0) {
+      return undefined;
+    }
+    const result = CacheConfigUtils.validateConfig(trimmed);
+    if (result.isRight()) {
+      switch (result.value) {
+        case 'json':
+          return Language.json;
+        case 'xml':
+          return Language.xml;
+        case 'yaml':
+          return Language.yaml;
+      }
+    }
+    return undefined;
+  };
+
+  const updateLanguage = useCallback((content: string) => {
+    if (languageTimerRef.current) {
+      clearTimeout(languageTimerRef.current);
+    }
+    languageTimerRef.current = setTimeout(() => {
+      const detected = detectLanguage(content);
+      if (detected) {
+        setEditorLanguage(detected);
+        const result = CacheConfigUtils.validateConfig(content.trim());
+        if (result.isRight()) {
+          props.setContentType(result.value);
+        }
+      }
+    }, 300);
+  }, []);
+
+  const handleFileUpload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const content = reader.result as string;
+        handleChangeConfig(content);
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    },
+    [],
+  );
 
   useEffect(() => {
     if (loading) {
@@ -98,9 +162,10 @@ const CacheConfigEditor = (props: {
     loading,
   ]);
 
-  const handleChangeConfig = (editorConfig) => {
-    props.setReviewConfig(editorConfig);
-    setEditorConfig(editorConfig);
+  const handleChangeConfig = (value) => {
+    props.setReviewConfig(value);
+    setEditorConfig(value);
+    updateLanguage(value);
     setValidConfig('success');
   };
 
@@ -125,31 +190,51 @@ const CacheConfigEditor = (props: {
   const displayCacheConfigEditor = () => {
     return (
       <FormGroup
-        label={t('caches.create.edit-config.cache-config')}
-        fieldId="cache-config"
-        isRequired={configs.length == 0}
-      >
-        <CodeEditor
-          isLineNumbersVisible
-          language={Language.plaintext}
-          code={editorConfig}
-          onChange={handleChangeConfig}
-          id="cache-config"
-          height="200px"
-          isDarkTheme={theme === DARK}
-          options={{ editContext: false }}
-        />
-        <Alert
-          isInline
-          title={t('caches.create.edit-config.demo-cache')}
-          variant={AlertVariant.info}
-          actionLinks={
-            <AlertActionLink
+        label={
+          <>
+            {t('caches.create.edit-config.cache-config')}{' '}
+            <Button
+              variant="link"
+              isInline
+              icon={<ExternalLinkAltIcon />}
+              iconPosition="end"
               onClick={() => window.open(configurationDocs, '_blank')}
             >
               {t('caches.create.cache-configuration-docs')}
-            </AlertActionLink>
+            </Button>
+          </>
+        }
+        fieldId="cache-config"
+        isRequired={configs.length == 0}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json,.xml,.yaml,.yml"
+          style={{ display: 'none' }}
+          onChange={handleFileUpload}
+        />
+        <CodeEditor
+          isLineNumbersVisible
+          isCopyEnabled
+          isLanguageLabelVisible
+          copyButtonAriaLabel={t('common.actions.copy-to-clipboard')}
+          copyButtonToolTipText={t('common.actions.copy-to-clipboard')}
+          customControls={
+            <CodeEditorControl
+              icon={<UploadIcon />}
+              aria-label={t('common.actions.upload')}
+              tooltipProps={{ content: t('common.actions.upload') }}
+              onClick={() => fileInputRef.current?.click()}
+            />
           }
+          language={editorLanguage}
+          code={editorConfig}
+          onCodeChange={handleChangeConfig}
+          id="cache-config"
+          height="300px"
+          isDarkTheme={theme === DARK}
+          options={{ editContext: false }}
         />
       </FormGroup>
     );

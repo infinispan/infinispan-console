@@ -17,7 +17,7 @@ import {
   ModalHeader,
   ModalVariant,
   Radio,
-  Spinner
+  Spinner,
 } from '@patternfly/react-core';
 import { ConfigDownloadType } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,22 @@ const DownloadCacheModal = (props: {
 }) => {
   const { t } = useTranslation();
 
-  const [downloadLanguage, setDownloadLanguage] = useState(ConfigDownloadType.JSON);
+  const contentTypeToDownloadType = (
+    ct: 'json' | 'yaml' | 'xml',
+  ): ConfigDownloadType => {
+    switch (ct) {
+      case 'yaml':
+        return ConfigDownloadType.YAML;
+      case 'xml':
+        return ConfigDownloadType.XML;
+      default:
+        return ConfigDownloadType.JSON;
+    }
+  };
+
+  const [downloadLanguage, setDownloadLanguage] = useState(
+    contentTypeToDownloadType(props.contentType),
+  );
   const [copied, setCopied] = useState(false);
   const [code, setCode] = useState('');
   const [jsonConfig, setJsonConfig] = useState(props.configuration);
@@ -42,7 +57,7 @@ const DownloadCacheModal = (props: {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [downloadURL, setDownloadURL] = useState(
-    'data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration)
+    'data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration),
   );
 
   useEffect(() => {
@@ -55,10 +70,13 @@ const DownloadCacheModal = (props: {
 
   useEffect(() => {
     if (props.configuration && props.isModalOpen) {
-      // Convert the config to all formats
-      // Also to check if the config is valid
+      setDownloadLanguage(contentTypeToDownloadType(props.contentType));
       ConsoleServices.caches()
-        .convertToAllFormat(props.cacheName, props.configuration, props.contentType)
+        .convertToAllFormat(
+          props.cacheName,
+          props.configuration,
+          props.contentType,
+        )
         .then((r) => {
           if (r.isRight()) {
             setYamlConfig(r.value.yaml);
@@ -70,19 +88,34 @@ const DownloadCacheModal = (props: {
           }
         })
         .finally(() => setLoading(false));
-      setDownloadURL('data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration));
+      setDownloadURL(
+        'data:text/json;charset=utf-8,' +
+          encodeURIComponent(props.configuration),
+      );
     }
   }, [props.configuration, props.isModalOpen]);
 
   useEffect(() => {
     if (downloadLanguage === ConfigDownloadType.JSON) {
-      setDownloadURL('data:text/json;charset=utf-8,' + encodeURIComponent(jsonConfig));
+      setDownloadURL(
+        'data:text/json;charset=utf-8,' + encodeURIComponent(jsonConfig),
+      );
     } else if (downloadLanguage === ConfigDownloadType.YAML) {
-      setDownloadURL('data:text/yaml;charset=utf-8,' + encodeURIComponent(yamlConfig));
+      setDownloadURL(
+        'data:text/yaml;charset=utf-8,' + encodeURIComponent(yamlConfig),
+      );
     } else if (downloadLanguage === ConfigDownloadType.XML) {
-      setDownloadURL('data:text/yaml;charset=utf-8,' + encodeURIComponent(xmlConfig));
+      setDownloadURL(
+        'data:text/yaml;charset=utf-8,' + encodeURIComponent(xmlConfig),
+      );
     }
-  }, [downloadLanguage, jsonConfig, props.configuration, xmlConfig, yamlConfig]);
+  }, [
+    downloadLanguage,
+    jsonConfig,
+    props.configuration,
+    xmlConfig,
+    yamlConfig,
+  ]);
 
   const clipboardCopyFunc = (event, text) => {
     navigator.clipboard.writeText(text.toString());
@@ -105,7 +138,9 @@ const DownloadCacheModal = (props: {
         variant="plain"
         onTooltipHidden={() => setCopied(false)}
       >
-        {copied ? t('caches.create.review.copied-tooltip') : t('caches.create.review.copy-tooltip')}
+        {copied
+          ? t('caches.create.review.copied-tooltip')
+          : t('caches.create.review.copy-tooltip')}
       </ClipboardCopyButton>
     </CodeBlockAction>
   );
@@ -113,7 +148,11 @@ const DownloadCacheModal = (props: {
   const codeBlock = (
     <React.Fragment>
       {error !== '' ? (
-        <Alert style={{ marginBottom: '1rem' }} title="Invalid configuration" variant={AlertVariant.danger}>
+        <Alert
+          style={{ marginBottom: '1rem' }}
+          title="Invalid configuration"
+          variant={AlertVariant.danger}
+        >
           {error}
         </Alert>
       ) : (
@@ -125,7 +164,11 @@ const DownloadCacheModal = (props: {
   );
 
   return (
-    <Modal variant={ModalVariant.medium} isOpen={props.isModalOpen} onClose={props.closeModal}>
+    <Modal
+      variant={ModalVariant.medium}
+      isOpen={props.isModalOpen}
+      onClose={props.closeModal}
+    >
       <ModalHeader
         title={t('caches.create.review.download-title')}
         description={t('caches.create.review.download-description')}
@@ -133,33 +176,48 @@ const DownloadCacheModal = (props: {
       <ModalBody>
         {loading && (
           <Content>
-            {t('caches.create.review.formatting-loading')} <Spinner isInline aria-label="formattting..." />
+            {t('caches.create.review.formatting-loading')}{' '}
+            <Spinner isInline aria-label="formattting..." />
           </Content>
         )}
         {!loading && (
           <Form isHorizontal id="download-modal-form">
-            <FormGroup hasNoPaddingTop isInline label="Code language" fieldId="code-language-radio-field">
+            <FormGroup
+              hasNoPaddingTop
+              isInline
+              label="Code language"
+              fieldId="code-language-radio-field"
+            >
               <Radio
                 name="language-radio"
                 id="modal-JSON"
                 onChange={() => {
                   setDownloadLanguage(ConfigDownloadType.JSON);
                 }}
-                isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.JSON}
+                isChecked={
+                  (downloadLanguage as ConfigDownloadType) ==
+                  ConfigDownloadType.JSON
+                }
                 label={t('caches.create.review.json')}
               />
               <Radio
                 name="language-radio"
                 id="modal-XML"
                 onChange={() => setDownloadLanguage(ConfigDownloadType.XML)}
-                isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.XML}
+                isChecked={
+                  (downloadLanguage as ConfigDownloadType) ==
+                  ConfigDownloadType.XML
+                }
                 label={t('caches.create.review.xml')}
               />
               <Radio
                 name="language-radio"
                 id="modal-YAML"
                 onChange={() => setDownloadLanguage(ConfigDownloadType.YAML)}
-                isChecked={(downloadLanguage as ConfigDownloadType) == ConfigDownloadType.YAML}
+                isChecked={
+                  (downloadLanguage as ConfigDownloadType) ==
+                  ConfigDownloadType.YAML
+                }
                 label={t('caches.create.review.yaml')}
               />
             </FormGroup>
@@ -177,7 +235,9 @@ const DownloadCacheModal = (props: {
           onClick={props.closeModal}
           isDisabled={error !== '' || loading}
           href={downloadURL}
-          download={props.cacheName + `.` + downloadLanguage.toLocaleLowerCase()}
+          download={
+            props.cacheName + `.` + downloadLanguage.toLocaleLowerCase()
+          }
         >
           {t('caches.create.review.download-button')}
         </Button>

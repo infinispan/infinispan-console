@@ -22,7 +22,10 @@
       "remove": "Remove",
       "clear": "Clear",
       "update": "Update",
-      "close": "Close"
+      "close": "Close",
+      "upload": "Upload",
+      "copy-to-clipboard": "Copy to clipboard",
+      "copied": "Copied"
     },
     "loading-empty-message": "No result found.",
     "loading-error-message": "There was an error retrieving data. Check your connection and try again.",
