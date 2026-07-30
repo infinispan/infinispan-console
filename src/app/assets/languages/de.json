@@ -22,7 +22,10 @@
       "remove": "Entfernen",
       "clear": "Leeren",
       "update": "Aktualisieren",
-      "close": "Schließen"
+      "close": "Schließen",
+      "upload": "Hochladen",
+      "copy-to-clipboard": "In die Zwischenablage kopieren",
+      "copied": "Kopiert"
     },
     "loading-empty-message": "Kein Ergebnis gefunden.",
     "loading-error-message": "Es gab einen Fehler beim Abrufen der Daten. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
@@ -412,7 +415,6 @@
           "chunk-size": "Paketgröße",
           "chunk-size-tooltip": "Geben Sie an, wie viele Cache-Einträge in jedem Übertragungsanforderungspaket gruppiert werden sollen.",
           "timeout-state-transfer": "Zeitüberschreitung",
-:w
           "timeout-state-transfer-tooltip": "Geben Sie den Zeitraum an, den gewartet werden soll, bis die Sicherungsstandorte das empfangene und angewendete Zustandspaket bestätigt hat. Der Standardwert beträgt 20 Minuten.",
           "max-retries": "Maximale Wiederholungen",
           "max-retries-tooltip": "Legen Sie die maximale Anzahl der Wiederholungsversuche für Push-Zustandsfehler fest. Geben Sie einen Wert von 0 (Null) ein, um Wiederholungsversuche zu deaktivieren. Der Standardwert beträgt 30.",

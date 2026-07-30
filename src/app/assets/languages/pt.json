@@ -22,7 +22,10 @@
       "remove": "Remover",
       "clear": "Limpar",
       "update": "Atualizar",
-      "close": "Fechar"
+      "close": "Fechar",
+      "upload": "Carregar",
+      "copy-to-clipboard": "Copiar para a área de transferência",
+      "copied": "Copiado"
     },
     "loading-empty-message": "Nenhum resultado encontrado.",
     "loading-error-message": "Ocorreu um erro ao recuperar os dados. Verifique sua conexão e tente novamente.",
