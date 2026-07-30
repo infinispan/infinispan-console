@@ -22,7 +22,10 @@
       "remove": "إزالة",
       "clear": "مسح",
       "update": "تحديث",
-      "close": "غلق"
+      "close": "غلق",
+      "upload": "تحميل",
+      "copy-to-clipboard": "نسخ إلى الحافظة",
+      "copied": "تم النسخ"
     },
     "loading-empty-message": "لم يتم العثور على نتائج.",
     "loading-error-message": "حدث خطأ أثناء استرجاع البيانات. تحقق من الاتصال وحاول مرة أخرى.",
