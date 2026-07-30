@@ -278,6 +278,7 @@ const CreateCacheWizard = (props: {
             cacheEditor={cacheEditor}
             cacheEditorModifier={setCacheEditor}
             setReviewConfig={setReviewConfig}
+            setContentType={setContentType}
           />
         </WizardStep>
         <WizardStep
