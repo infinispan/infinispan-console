@@ -22,7 +22,10 @@
       "remove": "除去",
       "clear": "クリア",
       "update": "更新",
-      "close": "閉じる"
+      "close": "閉じる",
+      "upload": "アップロード",
+      "copy-to-clipboard": "クリップボードにコピー",
+      "copied": "コピーしました"
     },
     "loading-empty-message": "結果が見つかりません。",
     "loading-error-message": "データの取得にエラーが発生しました。接続を確認し、再度試してください。",

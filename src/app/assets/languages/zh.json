@@ -22,7 +22,10 @@
       "remove": "移除",
       "clear": "清除",
       "update": "更新",
-      "close": "关闭"
+      "close": "关闭",
+      "upload": "上传",
+      "copy-to-clipboard": "复制到剪贴板",
+      "copied": "已复制"
     },
     "loading-empty-message": "未找到结果。",
     "loading-error-message": "数据检索时出错。请检查您的连接并重试。",
