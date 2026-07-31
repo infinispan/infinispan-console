@@ -134,6 +134,10 @@ jobs:
           # Wait for servers to startup
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:11222/rest/v2/cache-managers/default/health/status > /dev/null
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:31222/rest/v2/cache-managers/default/health/status > /dev/null
+
+      - if: github.base_ref == 'main' || github.ref_name == 'main' || github.base_ref == '16.2' || github.ref_name == '16.2'
+        name: Wait for additional Infinispan Servers
+        run: |
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:41222/rest/v2/cache-managers/default/health/status > /dev/null
           curl --fail --silent --show-error --retry-all-errors --retry 240 --retry-delay 1 http://localhost:51222/rest/v2/cache-managers/default/health/status > /dev/null
 
