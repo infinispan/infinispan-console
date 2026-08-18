@@ -717,6 +717,12 @@
       "modal-delete-entries-body-line-one": "Cette action supprimera toutes les entrées correspondantes dans {{cacheName}}, en exécutant une instruction de requête Ickle 'DELETE'.",
       "modal-delete-entries-body-line-two": "Cela ne peut pas être annulé. Vous pouvez toujours recréer les entrées.",
       "modal-action-entries-success": "Suppression par requête exécutée avec succès.",
+      "button-update-entries": "Mettre à jour les entrées",
+      "modal-update-entries-label": "Mettre à jour les entrées correspondantes ?",
+      "modal-update-entries-title": "Mettre à jour les entrées correspondantes ?",
+      "modal-update-entries-body-line-one": "Cette action mettra à jour toutes les entrées correspondantes dans {{cacheName}}, en exécutant une instruction de requête Ickle 'UPDATE'.",
+      "modal-update-entries-body-line-two": "Cela ne peut pas être annulé.",
+      "modal-update-entries-success": "Mise à jour par requête exécutée avec succès.",
       "history": {
         "clear": "Effacer l'historique",
         "execute": "Exécuter",

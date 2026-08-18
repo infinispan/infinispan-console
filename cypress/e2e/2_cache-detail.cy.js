@@ -89,8 +89,8 @@ describe('Cache Detail Overview', () => {
     cy.get('#cacheName').should('be.disabled');
     cy.get('#toggle-keyContentType').click();
     cy.get('#option-custom_type').click();
-    const keyPerson = `{"_type": "org.infinispan.Person","name": "Elaia_Key","age" : 12}`;
-    const valuePerson = '{"_type": "org.infinispan.Person","name": "Elaia_Value","age" : 3605856439401412608}';
+    const keyPerson = `{"_type": "org.infinispan.Person","name": "Leire_Key","age" : 12}`;
+    const valuePerson = '{"_type": "org.infinispan.Person","name": "Leire_Value","age" : 3605856439401412608}';
     cy.get('#key-entry')
       .click()
       .type(keyPerson, { parseSpecialCharSequences: false });

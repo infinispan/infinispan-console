@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
     "rootDir": ".",
     "outDir": "dist",
     "module": "esnext",
@@ -19,11 +17,11 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "paths": {
-      "@app/*": ["src/app/*"],
-      "@services/*": ["src/services/*"],
-      "@languages/*": ["src/app/assets/languages/*"],
-      "@assets/*": ["node_modules/@patternfly/react-core/dist/styles/assets/*"],
-      "@utils/*": ["src/app/utils/*"],
+      "@app/*": ["./src/app/*"],
+      "@services/*": ["./src/services/*"],
+      "@languages/*": ["./src/app/assets/languages/*"],
+      "@assets/*": ["./node_modules/@patternfly/react-core/dist/styles/assets/*"],
+      "@utils/*": ["./src/app/utils/*"],
     },
     "importHelpers": true,
     "skipLibCheck": true

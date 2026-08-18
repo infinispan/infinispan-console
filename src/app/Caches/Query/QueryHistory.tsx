@@ -137,13 +137,19 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
   const isQueryLong = (query: string) => query.length > 100;
   const isExpandable = (historyItem: QueryHistoryItem) => isQueryLong(historyItem.query) || historyItem.error;
 
-  const historyTypeColor = (queryType: 'Search' | 'Delete' | 'Vector') => {
+  const historyTypeColor = (
+    queryType: 'Search' | 'Delete' | 'Update' | 'Vector',
+  ) => {
     if (queryType == 'Vector') {
       return 'purple';
     }
 
     if (queryType == 'Delete') {
       return 'red';
+    }
+
+    if (queryType == 'Update') {
+      return 'orange';
     }
 
     return 'blue';
@@ -186,88 +192,106 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
               </Tr>
             </Tbody>
           ) : (
-            currentHistory.slice(getSlice(), getSlice() + queryHistoryPagination.perPage).map((historyItem, index) => {
-              const longQuery = isQueryLong(historyItem.query);
-              const expandable = isExpandable(historyItem);
-              const expanded = isQueryExpanded(historyItem.query);
-              const truncatedQuery = displayUtils.formatContentToDisplayWithTruncate(
-                historyItem.query,
-                ContentType.string
-              );
-              return (
-                <Tbody key={index} isExpanded={expandable && expanded}>
-                  <Tr>
-                    <Td
-                      expand={
-                        expandable
-                          ? {
-                              rowIndex: index,
-                              isExpanded: expanded,
-                              onToggle: () => toggleQueryExpanded(historyItem.query),
-                              expandId: index + '-expandable-query'
-                            }
-                          : undefined
-                      }
-                    />
-                    <Td dataLabel={columnNames.query}>
-                      <SyntaxHighlighter
-                        wrapLines={true}
-                        wrapLongLines={true}
-                        lineProps={{
-                          style: {
-                            wordBreak: 'break-all',
-                            whiteSpace: 'pre-wrap'
-                          }
-                        }}
-                        style={syntaxHighLighterTheme}
-                        useInlineStyles={true}
-                      >
-                        {longQuery ? truncatedQuery : historyItem.query}
-                      </SyntaxHighlighter>
-                      <Label isCompact color={historyTypeColor(historyItem.type)}>
-                        {historyItem.type}
-                      </Label>
-                      {historyItem.error && (
-                        <Label isCompact variant={'outline'} status={'danger'} style={{ marginLeft: '0.5rem' }}>
-                          {t('caches.query.history.error')}
+            currentHistory
+              .slice(getSlice(), getSlice() + queryHistoryPagination.perPage)
+              .map((historyItem, index) => {
+                const longQuery = isQueryLong(historyItem.query);
+                const expandable = isExpandable(historyItem);
+                const expanded = isQueryExpanded(historyItem.query);
+                const truncatedQuery =
+                  displayUtils.formatContentToDisplayWithTruncate(
+                    historyItem.query,
+                    ContentType.string,
+                  );
+                return (
+                  <Tbody key={index} isExpanded={expandable && expanded}>
+                    <Tr>
+                      <Td
+                        expand={
+                          expandable
+                            ? {
+                                rowIndex: index,
+                                isExpanded: expanded,
+                                onToggle: () =>
+                                  toggleQueryExpanded(historyItem.query),
+                                expandId: index + '-expandable-query',
+                              }
+                            : undefined
+                        }
+                      />
+                      <Td dataLabel={columnNames.query}>
+                        <SyntaxHighlighter
+                          wrapLines={true}
+                          wrapLongLines={true}
+                          lineProps={{
+                            style: {
+                              wordBreak: 'break-all',
+                              whiteSpace: 'pre-wrap',
+                            },
+                          }}
+                          style={syntaxHighLighterTheme}
+                          useInlineStyles={true}
+                        >
+                          {longQuery ? truncatedQuery : historyItem.query}
+                        </SyntaxHighlighter>
+                        <Label
+                          isCompact
+                          color={historyTypeColor(historyItem.type)}
+                        >
+                          {historyItem.type}
                         </Label>
-                      )}
-                    </Td>
-                    <Td dataLabel={columnNames.total}>{historyItem.total}</Td>
-                    <Td dataLabel={columnNames.execution}>{historyItem.milliseconds}</Td>
-                    <Td isActionCell data-cy={`actions-${index}`}>
-                      <ActionsColumn items={actions(historyItem.query)} />
-                    </Td>
-                  </Tr>
-                  {expandable && (
-                    <Tr isExpanded={expanded}>
-                      <Td />
-                      <Td colSpan={4}>
-                        <ExpandableRowContent>
-                          {longQuery && (
-                            <SyntaxHighlighter
-                              wrapLines={true}
-                              wrapLongLines={true}
-                              lineProps={{
-                                style: {
-                                  wordBreak: 'break-all',
-                                  whiteSpace: 'pre-wrap'
-                                }
-                              }}
-                              style={syntaxHighLighterTheme}
-                              useInlineStyles={true}
-                            >
-                              {historyItem.query}
-                            </SyntaxHighlighter>
-                          )}
-                          {displayError(historyItem)}
-                        </ExpandableRowContent>
+                        {historyItem.error && (
+                          <Label
+                            isCompact
+                            variant={'outline'}
+                            status={'danger'}
+                            style={{ marginLeft: '0.5rem' }}
+                          >
+                            {t('caches.query.history.error')}
+                          </Label>
+                        )}
+                      </Td>
+                      <Td dataLabel={columnNames.total}>
+                        {typeof historyItem.total === 'number'
+                          ? historyItem.total
+                          : 0}
+                      </Td>
+                      <Td dataLabel={columnNames.execution}>
+                        {historyItem.milliseconds}
+                      </Td>
+                      <Td isActionCell data-cy={`actions-${index}`}>
+                        <ActionsColumn items={actions(historyItem.query)} />
                       </Td>
                     </Tr>
-                  )}
-                </Tbody>
-              );
-            })
+                    {expandable && (
+                      <Tr isExpanded={expanded}>
+                        <Td />
+                        <Td colSpan={4}>
+                          <ExpandableRowContent>
+                            {longQuery && (
+                              <SyntaxHighlighter
+                                wrapLines={true}
+                                wrapLongLines={true}
+                                lineProps={{
+                                  style: {
+                                    wordBreak: 'break-all',
+                                    whiteSpace: 'pre-wrap',
+                                  },
+                                }}
+                                style={syntaxHighLighterTheme}
+                                useInlineStyles={true}
+                              >
+                                {historyItem.query}
+                              </SyntaxHighlighter>
+                            )}
+                            {displayError(historyItem)}
+                          </ExpandableRowContent>
+                        </Td>
+                      </Tr>
+                    )}
+                  </Tbody>
+                );
+              })
           )}
         </Table>
         <Toolbar id="query-history-table-toolbar" className={'query-history-table-display'}>

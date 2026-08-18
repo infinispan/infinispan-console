@@ -697,6 +697,12 @@
       "modal-delete-entries-body-line-one": "Esta acción eliminará permanentemente todas las entradas coincidentes en {{cacheName}}, ejecutando una sentencia 'DELETE' de consulta Ickle.",
       "modal-delete-entries-body-line-two": "No se puede deshacer. Siempre puede crear las entradas nuevamente.",
       "modal-action-entries-success": "Eliminación por consulta ejecutada exitosamente.",
+      "button-update-entries": "Actualizar entradas",
+      "modal-update-entries-label": "¿Actualizar las entradas coincidentes?",
+      "modal-update-entries-title": "¿Actualizar las entradas coincidentes?",
+      "modal-update-entries-body-line-one": "Esta acción actualizará todas las entradas coincidentes en {{cacheName}}, ejecutando una sentencia 'UPDATE' de consulta Ickle.",
+      "modal-update-entries-body-line-two": "No se puede deshacer.",
+      "modal-update-entries-success": "Actualización por consulta ejecutada exitosamente.",
       "history": {
         "clear": "Borrar historial",
         "execute": "Ejecutar",

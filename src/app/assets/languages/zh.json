@@ -699,7 +699,13 @@
       "modal-delete-entries-title": "永久删除匹配条目？",
       "modal-delete-entries-body-line-one": "此操作将永久删除{{cacheName}}中的所有匹配条目，执行一个 'DELETE' Ickle 查询语句。",
       "modal-delete-entries-body-line-two": "此操作无法撤销。您可以随时重新创建这些条目。",
-      "modal-action-entries-success": "按查询删除成功执行。"
+      "modal-action-entries-success": "按查询删除成功执行。",
+      "button-update-entries": "更新条目",
+      "modal-update-entries-label": "更新匹配条目？",
+      "modal-update-entries-title": "更新匹配条目？",
+      "modal-update-entries-body-line-one": "此操作将更新{{cacheName}}中的所有匹配条目，执行一个 'UPDATE' Ickle 查询语句。",
+      "modal-update-entries-body-line-two": "此操作无法撤销。",
+      "modal-update-entries-success": "按查询更新成功执行。"
     },
     "index": {
       "title": "索引管理",

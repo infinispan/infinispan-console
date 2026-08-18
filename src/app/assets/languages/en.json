@@ -740,6 +740,12 @@
       "modal-delete-entries-body-line-one": "This action will permanently delete all the mathing entries in {{cacheName}}, executing a 'DELETE' Ickle Query statement.",
       "modal-delete-entries-body-line-two": "This cannot be undone. You can always create the entries again.",
       "modal-action-entries-success": "Delete by query successfully executed.",
+      "button-update-entries": "Update entries",
+      "modal-update-entries-label": "Update matching entries?",
+      "modal-update-entries-title": "Update matching entries?",
+      "modal-update-entries-body-line-one": "This action will update all matching entries in {{cacheName}}, executing an 'UPDATE' Ickle Query statement.",
+      "modal-update-entries-body-line-two": "This cannot be undone.",
+      "modal-update-entries-success": "Update by query successfully executed.",
       "history": {
         "clear": "Clear history",
         "execute": "Execute",

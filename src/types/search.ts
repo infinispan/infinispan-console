@@ -11,6 +11,10 @@ export interface DeleteByQueryResult {
   hit_count_exact: number;
 }
 
+export interface UpdateByQueryResult {
+  updated_count: number;
+}
+
 export interface IndexStat {
   name: string;
   count: string;
@@ -57,7 +61,7 @@ export interface QueryHistoryItem {
   milliseconds: string;
   error: boolean;
   cause: string;
-  type: 'Search' | 'Delete' | 'Vector';
+  type: 'Search' | 'Delete' | 'Update' | 'Vector';
 }
 
 export type HistoryMap = Record<string, QueryHistoryItem[]>;
