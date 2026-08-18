@@ -23,7 +23,7 @@ describe('Query History', () => {
     cy.get('[data-cy=queriesTab]').click();
     cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age > 2');
     cy.get('[data-cy=searchButton]').click();
-    cy.contains('Elaia');
+    cy.contains('Leire');
 
     // Navigate to query history tab
     cy.get('[data-cy=queryHistoryTab]').click();
@@ -56,13 +56,30 @@ describe('Query History', () => {
     cy.cleanupTest(username, password, '/caches/indexed-cache/query-history-test', 'POST', payload);
   });
 
+  it('successfully records an update query in history', () => {
+    // Navigate to queries tab and execute an update query
+    cy.get('[data-cy=manageEntriesTab]').click();
+    cy.get('[data-cy=queriesTab]').click();
+    cy.typeInMonacoEditor('#textSearchByQuery', "update org.infinispan.Person set city = 'Barcelona' where name = 'HistoryTest'");
+    cy.get('[data-cy=updateByQueryButton]').click();
+    cy.get('[data-cy=updateButton]').click();
+
+    // Navigate to query history tab
+    cy.get('[data-cy=queryHistoryTab]').click();
+
+    // Verify the update query appears in history with Update type label
+    cy.get('[data-cy=queryHistoryTable]').should('exist');
+    cy.contains('update org.infinispan.Person');
+    cy.contains('Update');
+  });
+
   it('successfully deletes a single history item', () => {
     // First, create a history entry by running a query
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
     cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age > 2');
     cy.get('[data-cy=searchButton]').click();
-    cy.contains('Elaia');
+    cy.contains('Leire');
 
     // Navigate to query history tab
     cy.get('[data-cy=queryHistoryTab]').click();
@@ -83,7 +100,7 @@ describe('Query History', () => {
     cy.get('[data-cy=queriesTab]').click();
     cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age > 2');
     cy.get('[data-cy=searchButton]').click();
-    cy.contains('Elaia');
+    cy.contains('Leire');
 
     cy.clearAndTypeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age > 10');
     cy.get('[data-cy=searchButton]').click();
@@ -106,7 +123,7 @@ describe('Query History', () => {
     cy.get('[data-cy=queriesTab]').click();
     cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age > 2');
     cy.get('[data-cy=searchButton]').click();
-    cy.contains('Elaia');
+    cy.contains('Leire');
 
     // Navigate to query history tab
     cy.get('[data-cy=queryHistoryTab]').click();

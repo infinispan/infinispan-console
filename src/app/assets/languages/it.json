@@ -699,7 +699,13 @@
       "modal-delete-entries-title": "Elimina permanentemente le voci corrispondenti?",
       "modal-delete-entries-body-line-one": "Questa azione eliminerà permanentemente tutte le voci corrispondenti in {{cacheName}}, eseguendo una dichiarazione di query 'DELETE' Ickle.",
       "modal-delete-entries-body-line-two": "Questo non può essere annullato. Puoi sempre creare nuovamente le voci.",
-      "modal-action-entries-success": "Eliminazione per query eseguita con successo."
+      "modal-action-entries-success": "Eliminazione per query eseguita con successo.",
+      "button-update-entries": "Aggiorna voci",
+      "modal-update-entries-label": "Aggiornare le voci corrispondenti?",
+      "modal-update-entries-title": "Aggiornare le voci corrispondenti?",
+      "modal-update-entries-body-line-one": "Questa azione aggiornerà tutte le voci corrispondenti in {{cacheName}}, eseguendo una dichiarazione di query 'UPDATE' Ickle.",
+      "modal-update-entries-body-line-two": "Questo non può essere annullato.",
+      "modal-update-entries-success": "Aggiornamento per query eseguito con successo."
     },
     "index": {
       "title": "Gestione degli indici",

@@ -700,7 +700,13 @@
       "modal-delete-entries-title": "حذف العناصر المتطابقة بشكل دائم؟",
       "modal-delete-entries-body-line-one": "سيتم حذف جميع العناصر المتطابقة في {{cacheName}}, تنفيذ بيان استعلام 'DELETE' Ickle.",
       "modal-delete-entries-body-line-two": "لا يمكن التراجع عن هذا. يمكنك دائمًا إعادة إنشاء العناصر مرة أخرى.",
-      "modal-action-entries-success": "تم تنفيذ حذف العناصر بنجاح."
+      "modal-action-entries-success": "تم تنفيذ حذف العناصر بنجاح.",
+      "button-update-entries": "تحديث العناصر",
+      "modal-update-entries-label": "تحديث العناصر المتطابقة؟",
+      "modal-update-entries-title": "تحديث العناصر المتطابقة؟",
+      "modal-update-entries-body-line-one": "سيقوم هذا الإجراء بتحديث جميع العناصر المتطابقة في {{cacheName}}، بتنفيذ بيان استعلام 'UPDATE' Ickle.",
+      "modal-update-entries-body-line-two": "لا يمكن التراجع عن هذا.",
+      "modal-update-entries-success": "تم تنفيذ التحديث بالاستعلام بنجاح."
     },
     "index": {
       "title": "إدارة الفهرس",

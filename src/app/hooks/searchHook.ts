@@ -128,6 +128,64 @@ export function useDeleteByQuery(
   return { setExecute };
 }
 
+export function useUpdateByQuery(
+  cacheName: string,
+  updateQuery: string,
+  finalAction: () => void,
+) {
+  const [history, setHistory] = useLocalStorage<HistoryMap>(
+    'cache-query-history',
+    {},
+  );
+  const currentHistory = useMemo(
+    () => history[cacheName] || [],
+    [history, cacheName],
+  );
+
+  const { addAlert } = useApiAlert();
+  const { t } = useTranslation();
+  const [execute, setExecute] = useState(false);
+
+  useEffect(() => {
+    if (execute) {
+      setExecute(false);
+      const start: number = Date.now();
+      ConsoleServices.search()
+        .updateByQuery(cacheName, updateQuery)
+        .then((either) => {
+          if (either.isRight()) {
+            addAlert({
+              message: t('caches.query.modal-update-entries-success'),
+              success: true,
+            });
+          } else {
+            addAlert(either.value);
+          }
+          const end: number = Date.now();
+          const historyItem = <QueryHistoryItem>{
+            query: updateQuery,
+            total: either.isRight() ? either.value.updated_count : 0,
+            error: either.isLeft(),
+            cause: either.isLeft() ? either.value.message : '',
+            milliseconds: convertToTimeQuantity(end - start),
+            type: 'Update',
+          };
+          const newHistory = [
+            historyItem,
+            ...currentHistory.filter((i) => i.query !== updateQuery),
+          ].slice(0, 50);
+          setHistory({
+            ...history,
+            [cacheName]: newHistory,
+          });
+        })
+        .finally(finalAction);
+    }
+  }, [execute]);
+
+  return { setExecute };
+}
+
 export function useIndexMetamodel(cacheName: string) {
   const {
     data: indexMetamodel,

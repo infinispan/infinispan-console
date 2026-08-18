@@ -123,6 +123,47 @@ export class SearchService {
   }
 
   /**
+   * Update by query
+   *
+   * @param cacheName
+   * @param query
+   */
+  public async updateByQuery(
+    cacheName: string,
+    query: string,
+  ): Promise<Either<ActionResponse, UpdateByQueryResult>> {
+    const url =
+      this.endpoint + encodeURIComponent(cacheName) + '/_update-by-query';
+    const body = JSON.stringify({
+      query: query,
+    });
+    // @ts-ignore
+    return this.utils
+      .fetch(url, 'POST', undefined, body)
+      .then((response) => {
+        if (response.ok) {
+          return response.json().then((data) =>
+            right(<UpdateByQueryResult>{
+              updated_count: data.hit_count,
+            }),
+          );
+        }
+
+        return response.json().then((data) => {
+          const message =
+            data.error?.cause || data.error?.message || response.statusText;
+          throw message;
+        });
+      })
+      .catch((err) =>
+        left(<ActionResponse>{
+          message: err as string,
+          success: false,
+        }),
+      );
+  }
+
+  /**
    * Retrieve index and query stats
    *
    * @param cacheName

@@ -701,6 +701,12 @@
       "modal-delete-entries-body-line-one": "Esta ação excluirá permanentemente todas as entradas correspondentes em {{cacheName}}, executando uma declaração de consulta 'DELETE' Ickle.",
       "modal-delete-entries-body-line-two": "Isso não pode ser desfeito. Você sempre poderá criar as entradas novamente.",
       "modal-action-entries-success": "Exclusão por consulta realizada com sucesso.",
+      "button-update-entries": "Atualizar entradas",
+      "modal-update-entries-label": "Atualizar entradas correspondentes?",
+      "modal-update-entries-title": "Atualizar entradas correspondentes?",
+      "modal-update-entries-body-line-one": "Esta ação atualizará todas as entradas correspondentes em {{cacheName}}, executando uma declaração de consulta 'UPDATE' Ickle.",
+      "modal-update-entries-body-line-two": "Isso não pode ser desfeito.",
+      "modal-update-entries-success": "Atualização por consulta realizada com sucesso.",
       "history": {
         "clear": "Limpar histórico",
         "execute": "Executar",
