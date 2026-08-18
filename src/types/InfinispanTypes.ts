@@ -93,6 +93,7 @@ import type { Counter as _Counter, CounterConfig as _CounterConfig } from './cou
 import type {
   SearchResult as _SearchResult,
   DeleteByQueryResult as _DeleteByQueryResult,
+  UpdateByQueryResult as _UpdateByQueryResult,
   IndexStat as _IndexStat,
   QueryStat as _QueryStat,
   SearchStats as _SearchStats,
@@ -185,6 +186,7 @@ declare global {
   // search
   type SearchResult = _SearchResult;
   type DeleteByQueryResult = _DeleteByQueryResult;
+  type UpdateByQueryResult = _UpdateByQueryResult;
   type IndexStat = _IndexStat;
   type QueryStat = _QueryStat;
   type SearchStats = _SearchStats;

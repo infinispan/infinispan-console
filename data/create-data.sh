@@ -53,8 +53,8 @@ for i in {1..10}
 do
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/x-java-object;type=java.lang.String" -d "val-$i" http://localhost:11222/rest/v2/caches/indexed-cache/key-$i
 done
-curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/json" -d "@caches/peopleData.json" http://localhost:11222/rest/v2/caches/indexed-cache/elaia
-curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/json" -d "@caches/childData.json" http://localhost:11222/rest/v2/caches/indexed-cache-no-auth/elaia
+curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/json" -d "@caches/peopleData.json" http://localhost:11222/rest/v2/caches/indexed-cache/leire
+curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/json" -d "@caches/childData.json" http://localhost:11222/rest/v2/caches/indexed-cache-no-auth/leire
 
 #Java data
 curl -XPOST --digest -u $userPass -H "Key-Content-Type: application/x-java-object;type=java.lang.String" -H "Content-Type: application/x-java-object;type=java.lang.String" -d string http://localhost:11222/rest/v2/caches/java-cache/key
