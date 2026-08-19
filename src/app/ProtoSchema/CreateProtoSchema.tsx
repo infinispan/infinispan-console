@@ -20,7 +20,12 @@ import { AddCircleOIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { Language } from '@patternfly/react-code-editor';
-import { PROTO_LANGUAGE_ID, registerProtobufLanguage } from './protoLanguage';
+import {
+  PROTO_LANGUAGE_ID,
+  registerProtobufLanguage,
+  updateAnnotations,
+} from './protoLanguage';
+import { useFetchProtobufAnnotations } from '@app/hooks/protobufHooks';
 
 registerProtobufLanguage();
 
@@ -47,9 +52,16 @@ const CreateProtoSchema = (props: {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { addAlert } = useApiAlert();
+  const { annotations } = useFetchProtobufAnnotations();
   const [error, setError] = useState<string | undefined>(undefined);
   const [schemaName, setSchemaName] = useState<IField>(schemaNameInitialState);
   const [schema, setSchema] = useState<IField>(schemaInitialState);
+
+  React.useEffect(() => {
+    if (annotations.length > 0) {
+      updateAnnotations(annotations);
+    }
+  }, [annotations]);
 
   const clearCreateProtoSchema = (createDone: boolean) => {
     setSchemaName(schemaNameInitialState);

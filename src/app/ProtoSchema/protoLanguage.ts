@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import i18n from 'i18next';
 
 const PROTO_LANGUAGE_ID = 'protobuf';
 
@@ -26,7 +27,7 @@ const keywords = [
   'optional',
   'required',
   'repeated',
-  'group'
+  'group',
 ];
 
 const typeKeywords = [
@@ -44,127 +45,14 @@ const typeKeywords = [
   'sfixed64',
   'bool',
   'string',
-  'bytes'
+  'bytes',
 ];
 
-// Infinispan indexing annotations with their parameters
-const annotations: Record<string, { params: Record<string, string>; doc: string; target: string }> = {
-  Indexed: {
-    params: {
-      index: 'string',
-      enabled: 'boolean',
-      keyEntity: 'string',
-      keyPropertyName: 'string',
-      keyIncludeDepth: 'int'
-    },
-    doc: 'Mark a message for indexing',
-    target: 'message'
-  },
-  Basic: {
-    params: {
-      name: 'string',
-      projectable: 'boolean',
-      sortable: 'boolean',
-      searchable: 'boolean',
-      aggregable: 'boolean',
-      indexNullAs: 'string'
-    },
-    doc: 'Index a field with its native type',
-    target: 'field'
-  },
-  Text: {
-    params: {
-      name: 'string',
-      analyzer: 'string',
-      searchAnalyzer: 'string',
-      norms: 'boolean',
-      projectable: 'boolean',
-      searchable: 'boolean'
-    },
-    doc: 'Index a string field as full-text',
-    target: 'field'
-  },
-  Keyword: {
-    params: {
-      name: 'string',
-      normalizer: 'string',
-      norms: 'boolean',
-      projectable: 'boolean',
-      sortable: 'boolean',
-      searchable: 'boolean',
-      aggregable: 'boolean',
-      indexNullAs: 'string'
-    },
-    doc: 'Index a string field as a keyword (not analyzed)',
-    target: 'field'
-  },
-  Decimal: {
-    params: {
-      name: 'string',
-      decimalScale: 'int',
-      projectable: 'boolean',
-      sortable: 'boolean',
-      searchable: 'boolean',
-      aggregable: 'boolean',
-      indexNullAs: 'string'
-    },
-    doc: 'Index a numeric field as a scaled decimal',
-    target: 'field'
-  },
-  Embedded: {
-    params: {
-      name: 'string',
-      includeDepth: 'int'
-    },
-    doc: 'Index an embedded message field',
-    target: 'field'
-  },
-  GeoPoint: {
-    params: {
-      fieldName: 'string',
-      projectable: 'boolean',
-      sortable: 'boolean'
-    },
-    doc: 'Mark a message as a geo-point (requires @Latitude and @Longitude fields)',
-    target: 'message'
-  },
-  GeoField: {
-    params: {
-      name: 'string',
-      projectable: 'boolean',
-      sortable: 'boolean'
-    },
-    doc: 'Index a field containing a geo-point message',
-    target: 'field'
-  },
-  Latitude: {
-    params: {
-      fieldName: 'string'
-    },
-    doc: 'Mark a field as the latitude component of a geo-point',
-    target: 'field'
-  },
-  Longitude: {
-    params: {
-      fieldName: 'string'
-    },
-    doc: 'Mark a field as the longitude component of a geo-point',
-    target: 'field'
-  },
-  Vector: {
-    params: {
-      name: 'string',
-      projectable: 'boolean',
-      searchable: 'boolean',
-      indexNullAs: 'string',
-      dimension: 'int',
-      beamWidth: 'int',
-      maxConnections: 'int'
-    },
-    doc: 'Index a repeated field as a vector for similarity search',
-    target: 'field'
-  }
-};
+let annotations: ProtoAnnotation[] = [];
+
+export function updateAnnotations(serverAnnotations: ProtoAnnotation[]) {
+  annotations = serverAnnotations;
+}
 
 export function registerProtobufLanguage() {
   if (registered) return;
@@ -176,37 +64,37 @@ export function registerProtobufLanguage() {
   monaco.languages.setLanguageConfiguration(PROTO_LANGUAGE_ID, {
     comments: {
       lineComment: '//',
-      blockComment: ['/*', '*/']
+      blockComment: ['/*', '*/'],
     },
     brackets: [
       ['{', '}'],
       ['[', ']'],
-      ['(', ')']
+      ['(', ')'],
     ],
     autoClosingPairs: [
       { open: '{', close: '}' },
       { open: '[', close: ']' },
       { open: '(', close: ')' },
       { open: '"', close: '"' },
-      { open: "'", close: "'" }
+      { open: "'", close: "'" },
     ],
     surroundingPairs: [
       { open: '{', close: '}' },
       { open: '[', close: ']' },
       { open: '(', close: ')' },
       { open: '"', close: '"' },
-      { open: "'", close: "'" }
+      { open: "'", close: "'" },
     ],
     folding: {
       markers: {
         start: /^\s*(message|enum|service|oneof|extend)\b/,
-        end: /^\s*\}/
-      }
+        end: /^\s*\}/,
+      },
     },
     indentationRules: {
       increaseIndentPattern: /\{\s*$/,
-      decreaseIndentPattern: /^\s*\}/
-    }
+      decreaseIndentPattern: /^\s*\}/,
+    },
   });
 
   // Syntax highlighting
@@ -229,23 +117,23 @@ export function registerProtobufLanguage() {
               '@keywords': 'keyword',
               '@typeKeywords': 'type',
               '@constants': 'constant',
-              '@default': 'identifier'
-            }
-          }
-        ]
+              '@default': 'identifier',
+            },
+          },
+        ],
       ],
       comment: [
         [/[^/*]+/, 'comment'],
         [/\*\//, 'comment', '@pop'],
-        [/[/*]/, 'comment']
+        [/[/*]/, 'comment'],
       ],
       docComment: [
         [/@[A-Z]\w*/, 'annotation'],
         [/[^/*@]+/, 'comment.doc'],
         [/\*\//, 'comment.doc', '@pop'],
-        [/[/*@]/, 'comment.doc']
-      ]
-    }
+        [/[/*@]/, 'comment.doc'],
+      ],
+    },
   });
 
   // Auto-completion
@@ -257,7 +145,7 @@ export function registerProtobufLanguage() {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
         startColumn: word.startColumn,
-        endColumn: word.endColumn
+        endColumn: word.endColumn,
       };
 
       // Check if we're inside a comment (look for /** before cursor without closing */)
@@ -265,7 +153,7 @@ export function registerProtobufLanguage() {
         startLineNumber: 1,
         startColumn: 1,
         endLineNumber: position.lineNumber,
-        endColumn: position.column
+        endColumn: position.column,
       });
       const lastDocOpen = textUntilPosition.lastIndexOf('/**');
       const lastDocClose = textUntilPosition.lastIndexOf('*/');
@@ -280,27 +168,38 @@ export function registerProtobufLanguage() {
         // Suggest annotation names
         const annotationRange = {
           ...range,
-          startColumn: range.startColumn - 1 // include the @
+          startColumn: range.startColumn - 1, // include the @
         };
 
-        const annotationSuggestions = Object.entries(annotations).map(([name, info]) => {
-          const paramList = Object.keys(info.params);
-          const hasParams = paramList.length > 0;
+        const annotationSuggestions = annotations.map((annot) => {
+          const attrNames = Object.keys(annot.attributes);
+          const hasAttrs = attrNames.length > 0;
           let insertText: string;
-          if (!hasParams) {
-            insertText = `@${name}`;
+          if (!hasAttrs) {
+            insertText = `@${annot.name}`;
           } else {
-            const paramSnippets = paramList.map((p, i) => `\${${i + 1}:${p} = }`).join(', ');
-            insertText = `@${name}(${paramSnippets})`;
+            const attrSnippets = attrNames
+              .map((a, i) => `\${${i + 1}:${a} = }`)
+              .join(', ');
+            insertText = `@${annot.name}(${attrSnippets})`;
           }
 
+          const targetLabel = annot.target
+            .map((t) => t.toLowerCase())
+            .join('/');
+          const key = `schemas.annotations.${annot.name}`;
+          const doc = i18n.exists(key)
+            ? i18n.t(key)
+            : i18n.t('schemas.annotations.unknown', { name: annot.name });
+
           return {
-            label: `@${name}`,
+            label: `@${annot.name}`,
             kind: monaco.languages.CompletionItemKind.Interface,
             insertText,
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: `${info.doc} (${info.target}-level annotation)\n\nParameters: ${paramList.join(', ')}`,
-            range: annotationRange
+            insertTextRules:
+              monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: `${doc} — ${targetLabel}-level annotation\n\nAttributes: ${attrNames.join(', ')}`,
+            range: annotationRange,
           };
         });
 
@@ -317,98 +216,111 @@ export function registerProtobufLanguage() {
           label: 'message',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'message ${1:Name} {\n\t$0\n}',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define a new message type',
-          range
+          range,
         },
         {
           label: 'enum',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'enum ${1:Name} {\n\t${2:UNKNOWN} = 0;\n\t$0\n}',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define a new enum type',
-          range
+          range,
         },
         {
           label: 'service',
           kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: 'service ${1:Name} {\n\trpc ${2:Method} (${3:Request}) returns (${4:Response});\n\t$0\n}',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertText:
+            'service ${1:Name} {\n\trpc ${2:Method} (${3:Request}) returns (${4:Response});\n\t$0\n}',
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define a new service',
-          range
+          range,
         },
         {
           label: 'rpc',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'rpc ${1:Method} (${2:Request}) returns (${3:Response});',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define an RPC method',
-          range
+          range,
         },
         {
           label: 'oneof',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'oneof ${1:name} {\n\t$0\n}',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define a oneof field group',
-          range
+          range,
         },
         {
           label: 'map',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'map<${1:string}, ${2:string}> ${3:field_name} = ${4:1};',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define a map field',
-          range
+          range,
         },
         {
           label: 'syntax',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'syntax = "${1|proto2,proto3|}";',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Set the protobuf syntax version',
-          range
+          range,
         },
         {
           label: 'import',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'import "${1:filename}.proto";',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Import another proto file',
-          range
+          range,
         },
         {
           label: 'package',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'package ${1:name};',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Declare the package namespace',
-          range
+          range,
         },
         {
           label: 'repeated',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'repeated ${1:type} ${2:field_name} = ${3:1};',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define a repeated (list) field',
-          range
+          range,
         },
         {
           label: 'optional',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'optional ${1:type} ${2:field_name} = ${3:1};',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Define an optional field',
-          range
+          range,
         },
         {
           label: 'reserved',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: 'reserved ${1:2, 15, 9 to 11};',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          insertTextRules:
+            monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
           documentation: 'Reserve field numbers or names',
-          range
-        }
+          range,
+        },
       ];
 
       const snippetLabels = new Set(snippets.map((s) => s.label));
@@ -419,20 +331,20 @@ export function registerProtobufLanguage() {
           label: kw,
           kind: monaco.languages.CompletionItemKind.Keyword,
           insertText: kw,
-          range
+          range,
         }));
 
       const typeSuggestions = typeKeywords.map((t) => ({
         label: t,
         kind: monaco.languages.CompletionItemKind.TypeParameter,
         insertText: t,
-        range
+        range,
       }));
 
       return {
-        suggestions: [...snippets, ...keywordSuggestions, ...typeSuggestions]
+        suggestions: [...snippets, ...keywordSuggestions, ...typeSuggestions],
       };
-    }
+    },
   });
 }
 

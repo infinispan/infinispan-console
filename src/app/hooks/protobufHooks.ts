@@ -3,6 +3,19 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { useServiceCall } from '@app/hooks/useServiceCall';
 
+export function useFetchProtobufAnnotations() {
+  const {
+    data: annotations,
+    loading,
+    error,
+  } = useServiceCall<ProtoAnnotation[]>(
+    () => ConsoleServices.protobuf().getAnnotations(),
+    [],
+  );
+
+  return { loading, error, annotations };
+}
+
 export function useFetchProtobufTypes() {
   const {
     data: protobufTypes,
