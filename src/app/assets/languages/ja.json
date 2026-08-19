@@ -699,7 +699,13 @@
       "modal-delete-entries-title": "一致するエントリを永久に削除しますか？",
       "modal-delete-entries-body-line-one": "{{cacheName}}内のすべての一致するエントリが永久に削除され、'DELETE' Ickle Query ステートメントが実行されます。",
       "modal-delete-entries-body-line-two": "これは取り消せません。エントリをいつでも再作成できます。",
-      "modal-action-entries-success": "クエリで削除成功しました。"
+      "modal-action-entries-success": "クエリで削除成功しました。",
+      "button-update-entries": "エントリを更新",
+      "modal-update-entries-label": "一致するエントリを更新しますか？",
+      "modal-update-entries-title": "一致するエントリを更新しますか？",
+      "modal-update-entries-body-line-one": "この操作は{{cacheName}}内のすべての一致するエントリを更新し、'UPDATE' Ickle Query ステートメントを実行します。",
+      "modal-update-entries-body-line-two": "この操作は取り消せません。",
+      "modal-update-entries-success": "クエリによる更新が正常に実行されました。"
     },
     "index": {
       "title": "インデックス管理",

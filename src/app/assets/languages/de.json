@@ -699,7 +699,13 @@
       "modal-delete-entries-title": "Zugewiesene Einträge dauerhaft löschen?",
       "modal-delete-entries-body-line-one": "Diese Aktion wird alle zugewiesenen Einträge in {{cacheName}} dauerhaft löschen, indem ein 'DELETE' Ickle Query-Befehl ausgeführt wird.",
       "modal-delete-entries-body-line-two": "Dies kann nicht rückgängig gemacht werden. Sie können die Einträge jederzeit neu erstellen.",
-      "modal-action-entries-success": "Abfrage zum Löschen erfolgreich ausgeführt."
+      "modal-action-entries-success": "Abfrage zum Löschen erfolgreich ausgeführt.",
+      "button-update-entries": "Einträge aktualisieren",
+      "modal-update-entries-label": "Zugewiesene Einträge aktualisieren?",
+      "modal-update-entries-title": "Zugewiesene Einträge aktualisieren?",
+      "modal-update-entries-body-line-one": "Diese Aktion wird alle zugewiesenen Einträge in {{cacheName}} aktualisieren, indem ein 'UPDATE' Ickle Query-Befehl ausgeführt wird.",
+      "modal-update-entries-body-line-two": "Dies kann nicht rückgängig gemacht werden.",
+      "modal-update-entries-success": "Aktualisierung per Abfrage erfolgreich ausgeführt."
     },
     "index": {
       "title": "Indextool",

@@ -160,13 +160,19 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
   const isExpandable = (historyItem: QueryHistoryItem) =>
     isQueryLong(historyItem.query) || historyItem.error;
 
-  const historyTypeColor = (queryType: 'Search' | 'Delete' | 'Vector') => {
+  const historyTypeColor = (
+    queryType: 'Search' | 'Delete' | 'Update' | 'Vector',
+  ) => {
     if (queryType == 'Vector') {
       return 'purple';
     }
 
     if (queryType == 'Delete') {
       return 'red';
+    }
+
+    if (queryType == 'Update') {
+      return 'orange';
     }
 
     return 'blue';
@@ -273,7 +279,11 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
                           </Label>
                         )}
                       </Td>
-                      <Td dataLabel={columnNames.total}>{historyItem.total}</Td>
+                      <Td dataLabel={columnNames.total}>
+                        {typeof historyItem.total === 'number'
+                          ? historyItem.total
+                          : 0}
+                      </Td>
                       <Td dataLabel={columnNames.execution}>
                         {historyItem.milliseconds}
                       </Td>

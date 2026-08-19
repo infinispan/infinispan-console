@@ -699,7 +699,13 @@
       "modal-delete-entries-title": "समпадित प्रवर्तनों को अपने रूप से हटाना?",
       "modal-delete-entries-body-line-one": "यह विधि {{cacheName}} में सभी समпадित प्रवर्तनों को हटा देगी। 'DELETE' Ickle Query कथन को चलाएं।",
       "modal-delete-entries-body-line-two": "यह अपने रूप से पुनर्वापीत नहीं हो सकता। आप यदि चाहते हैं, प्रवर्तनों को फिर से बना सकते हैं।",
-      "modal-action-entries-success": "क्षेत्र मापन द्वारा हटाएँ।"
+      "modal-action-entries-success": "क्षेत्र मापन द्वारा हटाएँ।",
+      "button-update-entries": "प्रविष्टियाँ अपडेट करें",
+      "modal-update-entries-label": "मिलान प्रविष्टियाँ अपडेट करें?",
+      "modal-update-entries-title": "मिलान प्रविष्टियाँ अपडेट करें?",
+      "modal-update-entries-body-line-one": "यह क्रिया {{cacheName}} में सभी मिलान प्रविष्टियों को अपडेट करेगी, 'UPDATE' Ickle Query कथन चलाकर।",
+      "modal-update-entries-body-line-two": "यह पूर्ववत नहीं किया जा सकता।",
+      "modal-update-entries-success": "क्वेरी द्वारा अपडेट सफलतापूर्वक निष्पादित।"
     },
     "index": {
       "title": "सूची प्रबंधन",

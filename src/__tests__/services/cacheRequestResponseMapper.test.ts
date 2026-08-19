@@ -6,14 +6,22 @@ describe('CacheResponse mapper test', () => {
     const data = '[]';
     const cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
       key: EncodingType.JSON,
-      value: EncodingType.JSON
+      value: EncodingType.JSON,
     });
     expect(cacheResponseMapper.length).toBe(0);
   });
 
   test('getEntries JSON Data', () => {
     const data = JSON.stringify([
-      { key: 1, value: 1, timeToLiveSeconds: -1, maxIdleTimeSeconds: -1, created: -1, lastUsed: -1, expireTime: -1 },
+      {
+        key: 1,
+        value: 1,
+        timeToLiveSeconds: -1,
+        maxIdleTimeSeconds: -1,
+        created: -1,
+        lastUsed: -1,
+        expireTime: -1,
+      },
       {
         key: 'w',
         value: 'w',
@@ -21,7 +29,7 @@ describe('CacheResponse mapper test', () => {
         maxIdleTimeSeconds: -1,
         created: -1,
         lastUsed: -1,
-        expireTime: -1
+        expireTime: -1,
       },
       {
         key: { pepe: 'pepe' },
@@ -30,13 +38,16 @@ describe('CacheResponse mapper test', () => {
         maxIdleTimeSeconds: -1,
         created: -1,
         lastUsed: -1,
-        expireTime: -1
-      }
+        expireTime: -1,
+      },
     ]);
-    const cacheResponseMapper = CacheRequestResponseMapper.toEntries(data.toString(), {
-      key: EncodingType.JSON,
-      value: EncodingType.JSON
-    });
+    const cacheResponseMapper = CacheRequestResponseMapper.toEntries(
+      data.toString(),
+      {
+        key: EncodingType.JSON,
+        value: EncodingType.JSON,
+      },
+    );
     expect(cacheResponseMapper.length).toBe(3);
   });
 
@@ -49,12 +60,12 @@ describe('CacheResponse mapper test', () => {
         maxIdleTimeSeconds: 30,
         created: -1,
         lastUsed: -1,
-        expireTime: -1
-      }
+        expireTime: -1,
+      },
     ]);
     const cacheResponseMapper = CacheRequestResponseMapper.toEntries(data, {
       key: EncodingType.XML,
-      value: EncodingType.XML
+      value: EncodingType.XML,
     });
     expect(cacheResponseMapper.length).toBe(1);
     expect(cacheResponseMapper[0].key).toBe('<foo>11</foo>');
@@ -73,7 +84,7 @@ describe('CacheResponse mapper test', () => {
       keyContentType,
       { key: EncodingType.XML, value: EncodingType.XML },
       value,
-      headers
+      headers,
     );
     expect(cacheEntry.key).toBe(key);
     expect(cacheEntry.keyContentType).toBe(keyContentType);
@@ -86,7 +97,7 @@ describe('CacheResponse mapper test', () => {
     const keyContentType = ContentType.StringContentType;
     const value = JSON.stringify({
       _type: 'string',
-      _value: 'bar'
+      _value: 'bar',
     });
     const headers = new Headers();
     const cacheEntry = CacheRequestResponseMapper.toEntry(
@@ -94,7 +105,7 @@ describe('CacheResponse mapper test', () => {
       keyContentType,
       { key: EncodingType.Protobuf, value: EncodingType.Protobuf },
       value,
-      headers
+      headers,
     );
     expect(cacheEntry.key).toBe(key);
     expect(cacheEntry.keyContentType).toBe(keyContentType);
@@ -107,8 +118,8 @@ describe('CacheResponse mapper test', () => {
     const keyContentType = ContentType.string;
     const value = JSON.stringify({
       _type: 'org.infinispan.People',
-      name: 'Elaia',
-      age: 12
+      name: 'Leire',
+      age: 12,
     });
     const headers = new Headers();
     const cacheEntry = CacheRequestResponseMapper.toEntry(
@@ -116,7 +127,7 @@ describe('CacheResponse mapper test', () => {
       keyContentType,
       { key: EncodingType.Protobuf, value: EncodingType.Protobuf },
       value,
-      headers
+      headers,
     );
     expect(cacheEntry.key).toBe(key);
     expect(cacheEntry.keyContentType).toBe(keyContentType);
@@ -126,77 +137,195 @@ describe('CacheResponse mapper test', () => {
 
   test('format key or value to call rest api', () => {
     // Json values
-    expect(CacheRequestResponseMapper.formatContent('foo', ContentType.JSON, EncodingType.JSON).value).toBe('"foo"');
-    expect(CacheRequestResponseMapper.formatContent('123', ContentType.JSON, EncodingType.JSON).value).toBe('123');
-    expect(CacheRequestResponseMapper.formatContent('"123"', ContentType.JSON, EncodingType.JSON).value).toBe('"123"');
-    expect(CacheRequestResponseMapper.formatContent('true', ContentType.JSON, EncodingType.JSON).value).toBe('true');
-    expect(CacheRequestResponseMapper.formatContent('false', ContentType.JSON, EncodingType.JSON).value).toBe('false');
-    expect(CacheRequestResponseMapper.formatContent('"false"', ContentType.JSON, EncodingType.JSON).value).toBe(
-      '"false"'
-    );
-    expect(CacheRequestResponseMapper.formatContent('"true"', ContentType.JSON, EncodingType.JSON).value).toBe(
-      '"true"'
-    );
-    expect(CacheRequestResponseMapper.formatContent('[]', ContentType.JSON, EncodingType.JSON).value).toBe('[]');
-    expect(CacheRequestResponseMapper.formatContent('{}', ContentType.JSON, EncodingType.JSON).value).toBe('{}');
-    expect(
-      CacheRequestResponseMapper.formatContent('{llll', ContentType.JSON, EncodingType.JSON).isLeft()
-    ).toBeTruthy();
-    // Protobuf values
-    expect(CacheRequestResponseMapper.formatContent('foo', ContentType.string, EncodingType.Protobuf).value).toBe(
-      '{"_type":"string","_value":"foo"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('true', ContentType.bool, EncodingType.Protobuf).value).toBe(
-      '{"_type":"bool","_value":true}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('false', ContentType.bool, EncodingType.Protobuf).value).toBe(
-      '{"_type":"bool","_value":false}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.int32, EncodingType.Protobuf).value).toBe(
-      '{"_type":"int32","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.int64, EncodingType.Protobuf).value).toBe(
-      '{"_type":"int64","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.sint32, EncodingType.Protobuf).value).toBe(
-      '{"_type":"sint32","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.sint64, EncodingType.Protobuf).value).toBe(
-      '{"_type":"sint64","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.fixed32, EncodingType.Protobuf).value).toBe(
-      '{"_type":"fixed32","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.fixed64, EncodingType.Protobuf).value).toBe(
-      '{"_type":"fixed64","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('bbbb', ContentType.bytes, EncodingType.Protobuf).value).toBe(
-      '{"_type":"bytes","_value":"bbbb"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('12.34', ContentType.float, EncodingType.Protobuf).value).toBe(
-      '{"_type":"float","_value":"12.34"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.sfixed32, EncodingType.Protobuf).value).toBe(
-      '{"_type":"sfixed32","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.sfixed64, EncodingType.Protobuf).value).toBe(
-      '{"_type":"sfixed64","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42.99', ContentType.double, EncodingType.Protobuf).value).toBe(
-      '{"_type":"double","_value":"42.99"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.uint32, EncodingType.Protobuf).value).toBe(
-      '{"_type":"uint32","_value":"42"}'
-    );
-    expect(CacheRequestResponseMapper.formatContent('42', ContentType.uint64, EncodingType.Protobuf).value).toBe(
-      '{"_type":"uint64","_value":"42"}'
-    );
     expect(
       CacheRequestResponseMapper.formatContent(
-        '{"_type":"org.infinispan.Person", "name":"Elaia"}',
+        'foo',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('"foo"');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '123',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('123');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '"123"',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('"123"');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        'true',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('true');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        'false',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('false');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '"false"',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('"false"');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '"true"',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('"true"');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '[]',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('[]');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '{}',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).value,
+    ).toBe('{}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '{llll',
+        ContentType.JSON,
+        EncodingType.JSON,
+      ).isLeft(),
+    ).toBeTruthy();
+    // Protobuf values
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        'foo',
+        ContentType.string,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"string","_value":"foo"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        'true',
+        ContentType.bool,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"bool","_value":true}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        'false',
+        ContentType.bool,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"bool","_value":false}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.int32,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"int32","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.int64,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"int64","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.sint32,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"sint32","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.sint64,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"sint64","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.fixed32,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"fixed32","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.fixed64,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"fixed64","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        'bbbb',
+        ContentType.bytes,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"bytes","_value":"bbbb"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '12.34',
+        ContentType.float,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"float","_value":"12.34"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.sfixed32,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"sfixed32","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.sfixed64,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"sfixed64","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42.99',
+        ContentType.double,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"double","_value":"42.99"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.uint32,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"uint32","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '42',
+        ContentType.uint64,
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"uint64","_value":"42"}');
+    expect(
+      CacheRequestResponseMapper.formatContent(
+        '{"_type":"org.infinispan.Person", "name":"Leire"}',
         ContentType.customType,
-        EncodingType.Protobuf
-      ).value
-    ).toBe('{"_type":"org.infinispan.Person", "name":"Elaia"}');
+        EncodingType.Protobuf,
+      ).value,
+    ).toBe('{"_type":"org.infinispan.Person", "name":"Leire"}');
   });
 });
