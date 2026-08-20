@@ -108,7 +108,8 @@
     "cluster-membership": "Membres du cluster",
     "access-management": "Gestion des accès",
     "connected-clients": "Clients connectés",
-    "role-detail": "Détail du rôle"
+    "role-detail": "Détail du rôle",
+    "rolling-upgrades": "Mise à niveau progressive"
   },
   "cache-managers": {
     "title": "Conteneur de données",
@@ -1143,5 +1144,63 @@
   "rolling-upgrade": {
     "started": "Mise à jour en cours — Certaines fonctionnalités peuvent être temporairement indisponibles",
     "finished": "Mise à jour terminée — Veuillez vider votre cache de navigateur et vous reconnecter pour voir la dernière version de la console."
+  },
+  "rolling-upgrades": {
+    "title": "Mise à niveau progressive",
+    "description": "Une mise à niveau progressive permet de migrer les données d'un cluster source vers ce cluster sans interruption de service.",
+    "no-active": "Aucune mise à niveau progressive en cours.",
+    "start-button": "Démarrer la mise à niveau",
+    "source-label": "Source",
+    "status": {
+      "in-progress": "Mise à niveau progressive en cours",
+      "cache-name": "Nom du cache",
+      "connection": "Connexion",
+      "sync-status": "État de synchronisation",
+      "actions": "Actions",
+      "connected": "Connecté",
+      "not-connected": "Non connecté",
+      "not-synced": "Non synchronisé",
+      "syncing": "Synchronisation...",
+      "synced": "Synchronisé ({{count}} entrées)",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "Synchroniser",
+      "sync-all": "Tout synchroniser",
+      "disconnect": "Déconnecter",
+      "disconnect-all": "Tout déconnecter",
+      "connect": "Connecter"
+    },
+    "wizard": {
+      "title": "Démarrer la mise à niveau",
+      "step-source": "Connexion au cluster source",
+      "step-caches": "Sélectionner les caches",
+      "step-review": "Vérifier et connecter",
+      "host-label": "Hôte",
+      "host-helper": "Nom d'hôte ou adresse IP du cluster source",
+      "port-label": "Port",
+      "port-helper": "Port Hot Rod du cluster source",
+      "use-security": "Utiliser la sécurité (TLS / authentification)",
+      "username-label": "Nom d'utilisateur",
+      "password-label": "Mot de passe",
+      "select-all": "Tout sélectionner",
+      "no-caches": "Aucun cache disponible.",
+      "review-source": "Source",
+      "review-caches": "Caches",
+      "review-security": "Sécurité",
+      "review-security-none": "Aucune",
+      "review-security-enabled": "Activée",
+      "review-description": "Ceci connectera les caches sélectionnés au cluster source. Vous pourrez synchroniser les données ensuite.",
+      "connect-success": "{{count}} caches connectés avec succès au cluster source.",
+      "connect-error": "Échec de la connexion de certains caches au cluster source."
+    },
+    "modal": {
+      "sync-all-title": "Synchroniser tous les caches",
+      "sync-all-description": "Ceci synchronisera les données de {{count}} caches depuis le cluster source. Continuer ?",
+      "disconnect-all-title": "Déconnecter tous les caches",
+      "disconnect-all-description": "Ceci déconnectera tous les caches du cluster source. Assurez-vous que les données ont été synchronisées avant de déconnecter.",
+      "confirm": "Confirmer",
+      "cancel": "Annuler"
+    }
   }
 }

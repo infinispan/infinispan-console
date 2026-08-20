@@ -7,6 +7,7 @@ const initialUserState = {
   error: '',
   connectedUser: { name: '', acl: undefined } as ConnectedUser,
   notSecured: false,
+  managed: true,
   logUser: () => {},
   notSecuredModeOn: () => {},
   reloadAcl: (): Promise<boolean> => {
@@ -21,6 +22,7 @@ const UserContextProvider = ({ children }) => {
   const [loadingAcl, setLoadingAcl] = useState(!ConsoleServices.isWelcomePage());
   const [connectedUser, setConnectedUser] = useState(initialUserState.connectedUser);
   const [notSecured, setNotSecured] = useState(initialUserState.notSecured);
+  const [managed, setManaged] = useState(initialUserState.managed);
   const [error, setError] = useState(initialUserState.error);
   const navigate = useNavigate();
   const [init, setInit] = useState<
@@ -87,6 +89,15 @@ const UserContextProvider = ({ children }) => {
           }
         })
         .finally(() => setLoadingAcl(false));
+
+      ConsoleServices.cluster()
+        .getClusterMembers()
+        .then((either) => {
+          if (either.isRight()) {
+            const value = either.value as unknown as ClusterMembers;
+            setManaged(value.managed);
+          }
+        });
     }
   }, [loadingAcl, init]);
 
@@ -133,6 +144,7 @@ const UserContextProvider = ({ children }) => {
     error: error,
     connectedUser: connectedUser,
     notSecured: notSecured,
+    managed: managed,
     logUser: logUser,
     notSecuredModeOn: notSecuredModeOn,
     reloadAcl: reloadAcl,

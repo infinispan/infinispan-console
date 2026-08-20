@@ -1116,6 +1116,64 @@
     "started": "滚动升级正在进行中 —— 某些功能可能暂时不可用",
     "finished": "升级完成 —— 请清除浏览器缓存并重新连接以查看最新控制台版本。"
   },
+  "rolling-upgrades": {
+    "title": "滚动升级",
+    "description": "滚动升级允许您将数据从源集群迁移到此集群，实现零停机。",
+    "no-active": "当前没有正在进行的滚动升级。",
+    "start-button": "开始滚动升级",
+    "source-label": "源",
+    "status": {
+      "in-progress": "滚动升级进行中",
+      "cache-name": "缓存名称",
+      "connection": "连接",
+      "sync-status": "同步状态",
+      "actions": "操作",
+      "connected": "已连接",
+      "not-connected": "未连接",
+      "not-synced": "未同步",
+      "syncing": "同步中...",
+      "synced": "已同步（{{count}} 条数据）",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "同步",
+      "sync-all": "全部同步",
+      "disconnect": "断开连接",
+      "disconnect-all": "全部断开",
+      "connect": "连接"
+    },
+    "wizard": {
+      "title": "开始滚动升级",
+      "step-source": "源集群连接",
+      "step-caches": "选择缓存",
+      "step-review": "审核并连接",
+      "host-label": "主机",
+      "host-helper": "源集群的主机名或 IP 地址",
+      "port-label": "端口",
+      "port-helper": "源集群的 Hot Rod 端口",
+      "use-security": "使用安全连接（TLS / 认证）",
+      "username-label": "用户名",
+      "password-label": "密码",
+      "select-all": "全选",
+      "no-caches": "没有可用的缓存。",
+      "review-source": "源",
+      "review-caches": "缓存",
+      "review-security": "安全",
+      "review-security-none": "无",
+      "review-security-enabled": "已启用",
+      "review-description": "这将把选中的缓存连接到源集群。之后您可以同步数据。",
+      "connect-success": "已成功将 {{count}} 个缓存连接到源集群。",
+      "connect-error": "部分缓存连接到源集群失败。"
+    },
+    "modal": {
+      "sync-all-title": "同步所有缓存",
+      "sync-all-description": "这将从源集群同步 {{count}} 个缓存的数据。是否继续？",
+      "disconnect-all-title": "断开所有缓存",
+      "disconnect-all-description": "这将断开所有缓存与源集群的连接。请确保在断开前已完成数据同步。",
+      "confirm": "确认",
+      "cancel": "取消"
+    }
+  },
   "routes": {
     "operations": "操作",
     "devops-tools": "DevOps工具",
@@ -1130,6 +1188,7 @@
     "configurations": "配置",
     "create-cache": "创建缓存",
     "index-management": "索引管理",
-    "role-detail": "角色详情"
+    "role-detail": "角色详情",
+    "rolling-upgrades": "滚动升级"
   }
 }

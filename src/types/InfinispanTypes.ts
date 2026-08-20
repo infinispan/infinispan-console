@@ -109,6 +109,11 @@ import type {
   ProtoSchemaDetail as _ProtoSchemaDetail
 } from './server';
 
+import type {
+  RemoteStoreConfig as _RemoteStoreConfig,
+  CacheUpgradeStatus as _CacheUpgradeStatus
+} from './rolling-upgrade';
+
 declare global {
   // common
   type ComponentStatusType = _ComponentStatusType;
@@ -198,4 +203,8 @@ declare global {
   type ProtoError = _ProtoError;
   type ProtoSchema = _ProtoSchema;
   type ProtoSchemaDetail = _ProtoSchemaDetail;
+
+  // rolling upgrade
+  type RemoteStoreConfig = _RemoteStoreConfig;
+  type CacheUpgradeStatus = _CacheUpgradeStatus;
 }
