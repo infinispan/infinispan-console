@@ -1124,6 +1124,64 @@
     "started": "Actualización en curso — Algunas funciones pueden estar temporalmente no disponibles",
     "finished": "Actualización completa — Por favor, limpie la caché del navegador y vuelva a conectarse para ver la versión más reciente de la consola."
   },
+  "rolling-upgrades": {
+    "title": "Actualización progresiva",
+    "description": "Una actualización progresiva permite migrar datos de un clúster de origen a este clúster sin tiempo de inactividad.",
+    "no-active": "No hay actualizaciones progresivas en curso.",
+    "start-button": "Iniciar actualización progresiva",
+    "source-label": "Origen",
+    "status": {
+      "in-progress": "Actualización progresiva en curso",
+      "cache-name": "Nombre de caché",
+      "connection": "Conexión",
+      "sync-status": "Estado de sincronización",
+      "actions": "Acciones",
+      "connected": "Conectado",
+      "not-connected": "No conectado",
+      "not-synced": "No sincronizado",
+      "syncing": "Sincronizando...",
+      "synced": "Sincronizado ({{count}} entradas)",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "Sincronizar",
+      "sync-all": "Sincronizar todo",
+      "disconnect": "Desconectar",
+      "disconnect-all": "Desconectar todo",
+      "connect": "Conectar"
+    },
+    "wizard": {
+      "title": "Iniciar actualización progresiva",
+      "step-source": "Conexión al clúster de origen",
+      "step-caches": "Seleccionar cachés",
+      "step-review": "Revisar y conectar",
+      "host-label": "Host",
+      "host-helper": "Nombre de host o dirección IP del clúster de origen",
+      "port-label": "Puerto",
+      "port-helper": "Puerto Hot Rod del clúster de origen",
+      "use-security": "Usar seguridad (TLS / autenticación)",
+      "username-label": "Usuario",
+      "password-label": "Contraseña",
+      "select-all": "Seleccionar todo",
+      "no-caches": "No hay cachés disponibles.",
+      "review-source": "Origen",
+      "review-caches": "Cachés",
+      "review-security": "Seguridad",
+      "review-security-none": "Ninguna",
+      "review-security-enabled": "Habilitada",
+      "review-description": "Esto conectará las cachés seleccionadas al clúster de origen. Después podrá sincronizar los datos.",
+      "connect-success": "Se conectaron correctamente {{count}} cachés al clúster de origen.",
+      "connect-error": "Error al conectar algunas cachés al clúster de origen."
+    },
+    "modal": {
+      "sync-all-title": "Sincronizar todas las cachés",
+      "sync-all-description": "Esto sincronizará los datos de {{count}} cachés desde el clúster de origen. ¿Continuar?",
+      "disconnect-all-title": "Desconectar todas las cachés",
+      "disconnect-all-description": "Esto desconectará todas las cachés del clúster de origen. Asegúrese de que los datos se hayan sincronizado antes de desconectar.",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar"
+    }
+  },
   "routes": {
     "cache": "Caché",
     "cache-edit-configuration": "Editar configuración de caché",
@@ -1138,6 +1196,7 @@
     "cluster-membership": "Miembros del Clúster",
     "access-management": "Gestión de Acceso",
     "connected-clients": "Clientes Conectados",
-    "role-detail": "Detalles del Rol"
+    "role-detail": "Detalles del Rol",
+    "rolling-upgrades": "Actualización progresiva"
   }
 }

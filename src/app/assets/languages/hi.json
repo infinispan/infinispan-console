@@ -1116,6 +1116,64 @@
     "started": "निचले संचालन में आगमन — कुछ वैशिष्ट्य को अस्थापनात्मक रूप से उपलब्ध नहीं हो सकता।",
     "finished": "अधिकारी पुराना — कृपया अपने ब्राउजर की कэश को खाली करें और फिर से लौटें।"
   },
+  "rolling-upgrades": {
+    "title": "रोलिंग अपग्रेड",
+    "description": "रोलिंग अपग्रेड आपको बिना किसी डाउनटाइम के स्रोत क्लस्टर से इस क्लस्टर में डेटा माइग्रेट करने देता है।",
+    "no-active": "कोई रोलिंग अपग्रेड प्रगति में नहीं है।",
+    "start-button": "रोलिंग अपग्रेड शुरू करें",
+    "source-label": "स्रोत",
+    "status": {
+      "in-progress": "रोलिंग अपग्रेड प्रगति में है",
+      "cache-name": "कैश नाम",
+      "connection": "कनेक्शन",
+      "sync-status": "सिंक स्थिति",
+      "actions": "कार्य",
+      "connected": "कनेक्टेड",
+      "not-connected": "कनेक्ट नहीं",
+      "not-synced": "सिंक नहीं",
+      "syncing": "सिंक हो रहा है...",
+      "synced": "सिंक हो गया ({{count}} प्रविष्टियाँ)",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "सिंक",
+      "sync-all": "सभी सिंक करें",
+      "disconnect": "डिस्कनेक्ट",
+      "disconnect-all": "सभी डिस्कनेक्ट करें",
+      "connect": "कनेक्ट"
+    },
+    "wizard": {
+      "title": "रोलिंग अपग्रेड शुरू करें",
+      "step-source": "स्रोत क्लस्टर कनेक्शन",
+      "step-caches": "कैश चुनें",
+      "step-review": "समीक्षा करें और कनेक्ट करें",
+      "host-label": "होस्ट",
+      "host-helper": "स्रोत क्लस्टर का होस्टनेम या IP पता",
+      "port-label": "पोर्ट",
+      "port-helper": "स्रोत क्लस्टर का Hot Rod पोर्ट",
+      "use-security": "सुरक्षा का उपयोग करें (TLS / प्रमाणीकरण)",
+      "username-label": "उपयोगकर्ता नाम",
+      "password-label": "पासवर्ड",
+      "select-all": "सभी चुनें",
+      "no-caches": "कोई कैश उपलब्ध नहीं।",
+      "review-source": "स्रोत",
+      "review-caches": "कैश",
+      "review-security": "सुरक्षा",
+      "review-security-none": "कोई नहीं",
+      "review-security-enabled": "सक्षम",
+      "review-description": "यह चयनित कैश को स्रोत क्लस्टर से कनेक्ट करेगा। इसके बाद आप डेटा सिंक कर सकते हैं।",
+      "connect-success": "{{count}} कैश सफलतापूर्वक स्रोत क्लस्टर से कनेक्ट हो गए।",
+      "connect-error": "कुछ कैश को स्रोत क्लस्टर से कनेक्ट करने में विफल।"
+    },
+    "modal": {
+      "sync-all-title": "सभी कैश सिंक करें",
+      "sync-all-description": "यह स्रोत क्लस्टर से {{count}} कैश का डेटा सिंक करेगा। जारी रखें?",
+      "disconnect-all-title": "सभी कैश डिस्कनेक्ट करें",
+      "disconnect-all-description": "यह स्रोत क्लस्टर से सभी कैश को डिस्कनेक्ट करेगा। डिस्कनेक्ट करने से पहले सुनिश्चित करें कि डेटा सिंक हो चुका है।",
+      "confirm": "पुष्टि करें",
+      "cancel": "रद्द करें"
+    }
+  },
   "routes": {
     "cache": "कैश",
     "cache-edit-configuration": "कैश विन्यास संशोधन करें",
@@ -1130,6 +1188,7 @@
     "cluster-membership": "क्लूजर मिडियुशिप",
     "access-management": "योजना प्रबंधन",
     "connected-clients": "संबंधित कลाइ언ट्स",
-    "role-detail": "पूर्वकल्पना विवरण"
+    "role-detail": "पूर्वकल्पना विवरण",
+    "rolling-upgrades": "रोलिंग अपग्रेड"
   }
 }

@@ -34,7 +34,9 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
+// @ts-ignore
 import brandLight from '!!url-loader!@app/assets/images/brand.svg';
+// @ts-ignore
 import brandDark from '!!url-loader!@app/assets/images/brand_dark.svg';
 import { NavLink } from 'react-router-dom';
 import { IAppRoute, routes } from '@app/routes';
@@ -73,7 +75,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { connectedUser } = useConnectedUser();
+  const { connectedUser, managed } = useConnectedUser();
 
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -339,7 +341,8 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     return (
       route.menu == true &&
       route.label !== undefined &&
-      (!route.admin || (route.admin && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)))
+      (!route.admin || (route.admin && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser))) &&
+      (!route.bareMetalOnly || !managed)
     );
   };
 

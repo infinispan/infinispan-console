@@ -1128,6 +1128,64 @@
     "started": "Atualização em Andamento — Algumas funcionalidades podem estar temporariamente indisponíveis",
     "finished": "Atualização Completa — Por favor, limpe a cache do seu navegador e reconecte para ver a versão mais recente da console."
   },
+  "rolling-upgrades": {
+    "title": "Atualização progressiva",
+    "description": "Uma atualização progressiva permite migrar dados de um cluster de origem para este cluster sem tempo de inatividade.",
+    "no-active": "Nenhuma atualização progressiva em andamento.",
+    "start-button": "Iniciar atualização progressiva",
+    "source-label": "Origem",
+    "status": {
+      "in-progress": "Atualização progressiva em andamento",
+      "cache-name": "Nome da cache",
+      "connection": "Conexão",
+      "sync-status": "Status de sincronização",
+      "actions": "Ações",
+      "connected": "Conectado",
+      "not-connected": "Não conectado",
+      "not-synced": "Não sincronizado",
+      "syncing": "Sincronizando...",
+      "synced": "Sincronizado ({{count}} entradas)",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "Sincronizar",
+      "sync-all": "Sincronizar tudo",
+      "disconnect": "Desconectar",
+      "disconnect-all": "Desconectar tudo",
+      "connect": "Conectar"
+    },
+    "wizard": {
+      "title": "Iniciar atualização progressiva",
+      "step-source": "Conexão ao cluster de origem",
+      "step-caches": "Selecionar caches",
+      "step-review": "Revisar e conectar",
+      "host-label": "Host",
+      "host-helper": "Nome do host ou endereço IP do cluster de origem",
+      "port-label": "Porta",
+      "port-helper": "Porta Hot Rod do cluster de origem",
+      "use-security": "Usar segurança (TLS / autenticação)",
+      "username-label": "Usuário",
+      "password-label": "Senha",
+      "select-all": "Selecionar tudo",
+      "no-caches": "Nenhuma cache disponível.",
+      "review-source": "Origem",
+      "review-caches": "Caches",
+      "review-security": "Segurança",
+      "review-security-none": "Nenhuma",
+      "review-security-enabled": "Habilitada",
+      "review-description": "Isto conectará as caches selecionadas ao cluster de origem. Depois você poderá sincronizar os dados.",
+      "connect-success": "{{count}} caches conectadas com sucesso ao cluster de origem.",
+      "connect-error": "Falha ao conectar algumas caches ao cluster de origem."
+    },
+    "modal": {
+      "sync-all-title": "Sincronizar todas as caches",
+      "sync-all-description": "Isto sincronizará os dados de {{count}} caches do cluster de origem. Continuar?",
+      "disconnect-all-title": "Desconectar todas as caches",
+      "disconnect-all-description": "Isto desconectará todas as caches do cluster de origem. Certifique-se de que os dados foram sincronizados antes de desconectar.",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar"
+    }
+  },
   "routes": {
     "operations": "Operações",
     "devops-tools": "Ferramentas DevOps",
@@ -1142,6 +1200,7 @@
     "configurations": "Configurações",
     "create-cache": "Criar Cache",
     "index-management": "Gerenciamento de Índices",
-    "role-detail": "Detalhes do Papel"
+    "role-detail": "Detalhes do Papel",
+    "rolling-upgrades": "Atualização progressiva"
   }
 }

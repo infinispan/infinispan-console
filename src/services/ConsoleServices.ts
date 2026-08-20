@@ -10,6 +10,7 @@ import { ContainerService } from '@services/dataContainerService';
 import { SecurityService } from '@services/securityService';
 import { SearchService } from '@services/searchService';
 import { ClusterService } from '@services/clusterService';
+import { RollingUpgradeService } from '@services/rollingUpgradeService';
 
 /**
  * Infinispan Console Services
@@ -29,6 +30,7 @@ export class ConsoleServices {
   private userService;
   private searchService;
   private clusterService;
+  private rollingUpgradeService;
 
   private constructor() {
     this.initialized = false;
@@ -140,6 +142,11 @@ export class ConsoleServices {
         this.instance.fetchCaller
       );
 
+      this.instance.rollingUpgradeService = new RollingUpgradeService(
+        ConsoleServices.endpointV3(),
+        this.instance.fetchCaller
+      );
+
       this.instance.initialized = true;
     }
   }
@@ -186,6 +193,10 @@ export class ConsoleServices {
 
   public static cluster(): ClusterService {
     return this.instance.clusterService;
+  }
+
+  public static rollingUpgrade(): RollingUpgradeService {
+    return this.instance.rollingUpgradeService;
   }
 
   public isInitialized(): boolean {
