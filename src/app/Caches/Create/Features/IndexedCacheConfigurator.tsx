@@ -8,14 +8,14 @@ import {
   HelperTextItem,
   Radio,
   Spinner,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import {
   CacheFeature,
   EncodingType,
   IndexedStartupMode,
   IndexedStorage,
-  IndexingMode,
+  IndexingMode
 } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/hooks/createCacheHook';
@@ -26,10 +26,7 @@ import { useFetchProtobufTypes } from '@app/hooks/protobufHooks';
 import { FeatureAlert } from '@app/Caches/Create/Features/FeatureAlert';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { SelectSingle } from '@app/Common/SelectSingle';
-import {
-  selectOptionProps,
-  selectOptionPropsFromArray,
-} from '@utils/selectOptionPropsCreator';
+import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
 const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
@@ -39,26 +36,18 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
 
   const { protobufTypes, loading, error } = useFetchProtobufTypes();
 
-  const [indexingMode, setIndexingMode] = useState(
-    configuration.feature.indexedCache.indexingMode,
-  );
+  const [indexingMode, setIndexingMode] = useState(configuration.feature.indexedCache.indexingMode);
 
-  const [indexedStorage, setIndexedStorage] = useState<
-    'filesystem' | 'local-heap'
-  >(configuration.feature.indexedCache.indexedStorage);
-  const [indexedEntities, setIndexedEntities] = useState<string[]>(
-    configuration.feature.indexedCache.indexedEntities,
+  const [indexedStorage, setIndexedStorage] = useState<'filesystem' | 'local-heap'>(
+    configuration.feature.indexedCache.indexedStorage
   );
-  const [validEntity, setValidEntity] = useState<
-    'success' | 'error' | 'default'
-  >('default');
+  const [indexedEntities, setIndexedEntities] = useState<string[]>(configuration.feature.indexedCache.indexedEntities);
+  const [validEntity, setValidEntity] = useState<'success' | 'error' | 'default'>('default');
   const [indexedStartupMode, setIndexedStartupMode] = useState<string>(
-    configuration.feature.indexedCache.indexedStartupMode!,
+    configuration.feature.indexedCache.indexedStartupMode!
   );
 
-  const [indexedSharding, setIndexedSharding] = useState(
-    configuration.feature.indexedCache.indexedSharding,
-  );
+  const [indexedSharding, setIndexedSharding] = useState(configuration.feature.indexedCache.indexedSharding);
 
   useEffect(() => {
     setValidEntity(indexedEntities.length > 0 ? 'success' : 'error');
@@ -74,31 +63,20 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
             indexedStartupMode: indexedStartupMode,
             indexedEntities: indexedEntities,
             indexedSharding: indexedSharding,
-            valid: indexingFeatureValidation(),
-          },
-        },
+            valid: indexingFeatureValidation()
+          }
+        }
       };
     });
-  }, [
-    indexingMode,
-    indexedStorage,
-    indexedEntities,
-    indexedStartupMode,
-    indexedSharding,
-  ]);
+  }, [indexingMode, indexedStorage, indexedEntities, indexedStartupMode, indexedSharding]);
 
   const indexingFeatureValidation = (): boolean => {
-    return (
-      indexedEntities.length > 0 &&
-      configuration.basic.encoding === EncodingType.Protobuf
-    );
+    return indexedEntities.length > 0 && configuration.basic.encoding === EncodingType.Protobuf;
   };
 
   const onSelectSchemas = (selection) => {
     if (indexedEntities.includes(selection))
-      setIndexedEntities(
-        indexedEntities.filter((entity) => entity !== selection),
-      );
+      setIndexedEntities(indexedEntities.filter((entity) => entity !== selection));
     else setIndexedEntities([...indexedEntities, selection]);
   };
 
@@ -130,13 +108,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         labelHelp={
           <PopoverHelp
             name={'index-storage-entity'}
-            label={t(
-              'caches.create.configurations.feature.index-storage-entity',
-            )}
-            content={t(
-              'caches.create.configurations.feature.index-storage-entity-tooltip',
-              { brandname: brandname },
-            )}
+            label={t('caches.create.configurations.feature.index-storage-entity')}
+            content={t('caches.create.configurations.feature.index-storage-entity-tooltip', { brandname: brandname })}
           />
         }
         fieldId="indexed-entities"
@@ -153,13 +126,8 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
         {validEntity === 'error' && (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem
-                variant={validEntity}
-                icon={<ExclamationCircleIcon />}
-              >
-                {t(
-                  'caches.create.configurations.feature.index-storage-entity-helper',
-                )}
+              <HelperTextItem variant={validEntity} icon={<ExclamationCircleIcon />}>
+                {t('caches.create.configurations.feature.index-storage-entity-helper')}
               </HelperTextItem>
             </HelperText>
           </FormHelperText>
@@ -172,9 +140,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
     return (
       <FeatureAlert
         feature={CacheFeature.INDEXED}
-        error={t(
-          'caches.create.configurations.feature.indexed-types-disabled-description',
-        )}
+        error={t('caches.create.configurations.feature.indexed-types-disabled-description')}
       />
     );
   }
@@ -183,12 +149,9 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
     return (
       <FeatureAlert
         feature={CacheFeature.INDEXED}
-        error={t(
-          'caches.create.configurations.feature.indexed-encoding-disabled-description',
-          {
-            encoding: configuration.basic.encoding,
-          },
-        )}
+        error={t('caches.create.configurations.feature.indexed-encoding-disabled-description', {
+          encoding: configuration.basic.encoding
+        })}
       />
     );
   }
@@ -204,10 +167,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           <PopoverHelp
             name={'indexing-mode'}
             label={t('caches.create.configurations.feature.indexing-mode')}
-            content={t(
-              'caches.create.configurations.feature.indexing-mode-tooltip',
-              { brandname: brandname },
-            )}
+            content={t('caches.create.configurations.feature.indexing-mode-tooltip', { brandname: brandname })}
           />
         }
         fieldId="indexing-mode"
@@ -234,10 +194,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           <PopoverHelp
             name={'indexed-storage'}
             label={t('caches.create.configurations.feature.index-storage')}
-            content={t(
-              'caches.create.configurations.feature.index-storage-tooltip',
-              { brandname: brandname },
-            )}
+            content={t('caches.create.configurations.feature.index-storage-tooltip', { brandname: brandname })}
           />
         }
         fieldId="indexed-storage"
@@ -248,18 +205,14 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           id="persistent"
           onChange={() => setIndexedStorage(IndexedStorage.filesystem)}
           isChecked={indexedStorage === IndexedStorage.filesystem}
-          label={t(
-            'caches.create.configurations.feature.index-storage-persistent',
-          )}
+          label={t('caches.create.configurations.feature.index-storage-persistent')}
         />
         <Radio
           name="radio-storage"
           id="volatile"
           onChange={() => setIndexedStorage(IndexedStorage.localHeap)}
           isChecked={indexedStorage === IndexedStorage.localHeap}
-          label={t(
-            'caches.create.configurations.feature.index-storage-volatile',
-          )}
+          label={t('caches.create.configurations.feature.index-storage-volatile')}
         />
       </FormGroup>
       <FormGroup
@@ -268,10 +221,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           <PopoverHelp
             name={'indexed-startup-mode'}
             label={t('caches.create.configurations.feature.index-startup-mode')}
-            content={t(
-              'caches.create.configurations.feature.index-startup-mode-tooltip',
-              { brandname: brandname },
-            )}
+            content={t('caches.create.configurations.feature.index-startup-mode-tooltip', { brandname: brandname })}
           />
         }
         fieldId="indexed-startup-mode"
@@ -279,9 +229,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
       >
         <SelectSingle
           id={'startupModeSelector'}
-          placeholder={t(
-            'caches.create.configurations.feature.index-startup-mode-placeholder',
-          )}
+          placeholder={t('caches.create.configurations.feature.index-startup-mode-placeholder')}
           selected={indexedStartupMode}
           options={selectOptionProps(IndexedStartupMode)}
           onSelect={(value) => setIndexedStartupMode(value)}
@@ -294,10 +242,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
           <PopoverHelp
             name={'indexed-sharding'}
             label={t('caches.create.configurations.feature.index-sharding')}
-            content={t(
-              'caches.create.configurations.feature.index-sharding-tooltip',
-              { brandname: brandname },
-            )}
+            content={t('caches.create.configurations.feature.index-sharding-tooltip', { brandname: brandname })}
           />
         }
         fieldId="indexed-sharding"

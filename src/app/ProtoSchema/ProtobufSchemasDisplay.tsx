@@ -20,28 +20,11 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import {
-  ActionsColumn,
-  ExpandableRowContent,
-  IAction,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
-import {
-  DatabaseIcon,
-  ExclamationCircleIcon,
-  SearchIcon,
-} from '@patternfly/react-icons';
-import {
-  t_global_spacer_md,
-  t_global_spacer_sm,
-} from '@patternfly/react-tokens';
+import { ActionsColumn, ExpandableRowContent, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { DatabaseIcon, ExclamationCircleIcon, SearchIcon } from '@patternfly/react-icons';
+import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { Link } from 'react-router-dom';
 import { useApiAlert } from '@app/utils/useApiAlert';
@@ -57,10 +40,7 @@ import './ProtobufSchemasDisplay.css';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { useLocalStorage } from '@app/utils/localStorage';
 
-const ProtobufSchemasDisplay = (props: {
-  setProtoSchemasCount: (number) => void;
-  isVisible: boolean;
-}) => {
+const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
   const { addAlert } = useApiAlert();
   const protobufService = ConsoleServices.protobuf();
@@ -68,22 +48,16 @@ const ProtobufSchemasDisplay = (props: {
   const { schemas, loading, reload, error } = useFetchProtobufSchemas();
   const [filteredSchemas, setFilteredSchemas] = useState<ProtoSchema[]>([]);
   const [rows, setRows] = useState<ProtoSchema[]>([]);
-  const [schemasContent, setSchemasContent] = useState(
-    new Map<string, string>(),
-  );
-  const [createSchemaFormOpen, setCreateSchemaFormOpen] =
-    useState<boolean>(false);
+  const [schemasContent, setSchemasContent] = useState(new Map<string, string>());
+  const [createSchemaFormOpen, setCreateSchemaFormOpen] = useState<boolean>(false);
   const [deleteSchemaName, setDeleteSchemaName] = useState<string>('');
   const [searchValue, setSearchValue] = useState<string>('');
   const [expandedSchemaNames, setExpandedSchemaNames] = useState<string[]>([]);
   const [loadingSchema, setLoadingSchema] = useState(false);
-  const [schemasPagination, setSchemasPagination] = useLocalStorage(
-    'schemas-table',
-    {
-      page: 1,
-      perPage: 10,
-    },
-  );
+  const [schemasPagination, setSchemasPagination] = useLocalStorage('schemas-table', {
+    page: 1,
+    perPage: 10
+  });
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
   const isSchemaExpanded = (row) => expandedSchemaNames.includes(row.name);
@@ -94,27 +68,27 @@ const ProtobufSchemasDisplay = (props: {
       title: t('schemas.delete-button'),
       onClick: () => {
         setDeleteSchemaName(row.name);
-      },
-    },
+      }
+    }
   ];
 
   const onSetPage = (_event, pageNumber) => {
     setSchemasPagination({
       ...schemasPagination,
-      page: pageNumber,
+      page: pageNumber
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setSchemasPagination({
       page: 1,
-      perPage: perPage,
+      perPage: perPage
     });
   };
 
   const columnNames = {
     name: t('schemas.name'),
-    status: t('schemas.status'),
+    status: t('schemas.status')
   };
 
   useEffect(() => {
@@ -134,20 +108,14 @@ const ProtobufSchemasDisplay = (props: {
 
   useEffect(() => {
     if (filteredSchemas) {
-      const initSlice =
-        (schemasPagination.page - 1) * schemasPagination.perPage;
-      const updateRows = filteredSchemas.slice(
-        initSlice,
-        initSlice + schemasPagination.perPage,
-      );
+      const initSlice = (schemasPagination.page - 1) * schemasPagination.perPage;
+      const updateRows = filteredSchemas.slice(initSlice, initSlice + schemasPagination.perPage);
       setRows(updateRows);
     }
   }, [schemasPagination, filteredSchemas]);
 
   useEffect(() => {
-    setFilteredSchemas(
-      schemas.filter((schema) => onSearch(searchValue, schema.name)),
-    );
+    setFilteredSchemas(schemas.filter((schema) => onSearch(searchValue, schema.name)));
   }, [searchValue]);
 
   const loadSchema = (schemaName: string) => {
@@ -156,18 +124,10 @@ const ProtobufSchemasDisplay = (props: {
         .getSchema(schemaName)
         .then((eitherResponse) => {
           if (eitherResponse.isRight()) {
-            setSchemasContent(
-              (map) => new Map(map.set(schemaName, eitherResponse.value)),
-            );
+            setSchemasContent((map) => new Map(map.set(schemaName, eitherResponse.value)));
           } else {
             setSchemasContent(
-              (map) =>
-                new Map(
-                  map.set(
-                    schemaName,
-                    'An error occurred. Try closing the tab and opening it again.',
-                  ),
-                ),
+              (map) => new Map(map.set(schemaName, 'An error occurred. Try closing the tab and opening it again.'))
             );
             addAlert(eitherResponse.value);
           }
@@ -178,12 +138,8 @@ const ProtobufSchemasDisplay = (props: {
 
   const setSchemaExpanded = (schema, isExpanding = true) =>
     setExpandedSchemaNames((prevExpanded) => {
-      const otherExpandedSchemaNames = prevExpanded.filter(
-        (r) => r !== schema.name,
-      );
-      return isExpanding
-        ? [...otherExpandedSchemaNames, schema.name]
-        : otherExpandedSchemaNames;
+      const otherExpandedSchemaNames = prevExpanded.filter((r) => r !== schema.name);
+      return isExpanding ? [...otherExpandedSchemaNames, schema.name] : otherExpandedSchemaNames;
     });
 
   const closeCreateSchemaModal = (createDone: boolean) => {
@@ -209,12 +165,7 @@ const ProtobufSchemasDisplay = (props: {
   };
 
   const buildCreateSchemaButton = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(
-        ConsoleACL.CREATE,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return '';
     }
     return <ToolbarItem>{createSchemaButtonHelper()}</ToolbarItem>;
@@ -320,9 +271,7 @@ const ProtobufSchemasDisplay = (props: {
             <ToolbarItem>{searchInput}</ToolbarItem>
             <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
             {buildCreateSchemaButton()}
-            <ToolbarItem variant="pagination">
-              {toolbarPagination('down')}
-            </ToolbarItem>
+            <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
           </ToolbarContent>
         </Toolbar>
         <Table
@@ -350,17 +299,10 @@ const ProtobufSchemasDisplay = (props: {
                       icon={SearchIcon}
                       headingLevel="h2"
                     >
-                      <EmptyStateBody>
-                        {t('schemas.no-filter-schema-body')}
-                      </EmptyStateBody>
+                      <EmptyStateBody>{t('schemas.no-filter-schema-body')}</EmptyStateBody>
                       <EmptyStateFooter>
-                        <EmptyStateActions
-                          style={{ marginTop: t_global_spacer_sm.value }}
-                        >
-                          <Button
-                            variant={'link'}
-                            onClick={() => setSearchValue('')}
-                          >
+                        <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
+                          <Button variant={'link'} onClick={() => setSearchValue('')}>
                             {t('schemas.create-button')}
                           </Button>
                         </EmptyStateActions>
@@ -383,7 +325,7 @@ const ProtobufSchemasDisplay = (props: {
                         onToggle: () => {
                           setLoadingSchema(true);
                           setSchemaExpanded(row, !isSchemaExpanded(row));
-                        },
+                        }
                       }}
                     />
                     <Td dataLabel={columnNames.name}>
@@ -392,8 +334,7 @@ const ProtobufSchemasDisplay = (props: {
                         style={
                           row.error
                             ? {
-                                color:
-                                  'var(--pf-t--global--color--status--danger--default)',
+                                color: 'var(--pf-t--global--color--status--danger--default)'
                               }
                             : undefined
                         }
@@ -401,9 +342,7 @@ const ProtobufSchemasDisplay = (props: {
                         {row.name}
                       </Link>
                     </Td>
-                    <Td dataLabel={columnNames.status}>
-                      {displaySchemaStatus(row.error)}
-                    </Td>
+                    <Td dataLabel={columnNames.status}>{displaySchemaStatus(row.error)}</Td>
                     <Td isActionCell data-cy={'actions-' + row.name}>
                       <ActionsColumn items={displayActions(row)} />
                     </Td>
@@ -420,9 +359,7 @@ const ProtobufSchemasDisplay = (props: {
           )}
         </Table>
         <Toolbar>
-          <ToolbarItem variant="pagination">
-            {toolbarPagination('up')}
-          </ToolbarItem>
+          <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
         </Toolbar>
       </>
     );
@@ -431,10 +368,7 @@ const ProtobufSchemasDisplay = (props: {
   return (
     <React.Fragment>
       {page}
-      <CreateProtoSchema
-        isModalOpen={createSchemaFormOpen}
-        closeModal={closeCreateSchemaModal}
-      />
+      <CreateProtoSchema isModalOpen={createSchemaFormOpen} closeModal={closeCreateSchemaModal} />
       <DeleteSchema
         schemaName={deleteSchemaName}
         isModalOpen={deleteSchemaName !== ''}

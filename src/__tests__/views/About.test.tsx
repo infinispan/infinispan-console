@@ -5,16 +5,14 @@ import * as GetVersionHook from '@app/hooks/serverHook';
 import { renderWithRouter } from '../../test-utils';
 
 jest.mock('@app/hooks/serverHook');
-const mockedGetVersionHook = GetVersionHook as jest.Mocked<
-  typeof GetVersionHook
->;
+const mockedGetVersionHook = GetVersionHook as jest.Mocked<typeof GetVersionHook>;
 
 mockedGetVersionHook.useFetchVersion.mockImplementation(() => {
   return {
     version: 'Infinispan Corona 1.9',
     loading: false,
     error: '',
-    setLoading: () => {},
+    setLoading: () => {}
   };
 });
 
@@ -22,9 +20,7 @@ describe('About page', () => {
   test('modal shows the children and a close button', () => {
     const handleClose = jest.fn();
 
-    const { getByText, getByRole } = renderWithRouter(
-      <About isModalOpen={true} closeModal={handleClose} />,
-    );
+    const { getByText, getByRole } = renderWithRouter(<About isModalOpen={true} closeModal={handleClose} />);
 
     expect(getByText('Sponsored by Red Hat')).toBeTruthy();
 

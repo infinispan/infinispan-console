@@ -19,18 +19,9 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
-  ToolbarItemVariant,
+  ToolbarItemVariant
 } from '@patternfly/react-core';
-import {
-  ActionsColumn,
-  IAction,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+import { ActionsColumn, IAction, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { DeleteCounter } from '@app/Counters/DeleteCounter';
 import { useFetchCounters } from '@app/hooks/countersHook';
 import { useTranslation } from 'react-i18next';
@@ -45,18 +36,12 @@ import { ConsoleACL } from '@services/securityService';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { SetCounter } from '@app/Counters/SetCounter';
 import { onSearch } from '@app/utils/searchFilter';
-import {
-  t_global_spacer_sm,
-  t_global_spacer_xl,
-} from '@patternfly/react-tokens';
+import { t_global_spacer_sm, t_global_spacer_xl } from '@patternfly/react-tokens';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import { useLocalStorage } from '@app/utils/localStorage';
 
-const CounterTableDisplay = (props: {
-  setCountersCount: (number) => void;
-  isVisible: boolean;
-}) => {
+const CounterTableDisplay = (props: { setCountersCount: (number) => void; isVisible: boolean }) => {
   const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
   const { counters, loading, error, reload } = useFetchCounters();
@@ -79,13 +64,10 @@ const CounterTableDisplay = (props: {
   const [isDeltaValid, setIsDeltaValid] = useState(true);
   const [isNewCounterValueValid, setIsNewCounterValueValid] = useState(true);
 
-  const [countersPagination, setCountersPagination] = useLocalStorage(
-    'counters-table',
-    {
-      page: 1,
-      perPage: 10,
-    },
-  );
+  const [countersPagination, setCountersPagination] = useLocalStorage('counters-table', {
+    page: 1,
+    perPage: 10
+  });
   const [rows, setRows] = useState<Counter[]>([]);
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -101,33 +83,20 @@ const CounterTableDisplay = (props: {
 
   useEffect(() => {
     if (filteredCounters) {
-      const initSlice =
-        (countersPagination.page - 1) * countersPagination.perPage;
-      const updateRows = filteredCounters.slice(
-        initSlice,
-        initSlice + countersPagination.perPage,
-      );
+      const initSlice = (countersPagination.page - 1) * countersPagination.perPage;
+      const updateRows = filteredCounters.slice(initSlice, initSlice + countersPagination.perPage);
       setRows(updateRows);
     }
   }, [countersPagination, filteredCounters]);
 
   useEffect(() => {
-    setFilteredCounters(
-      counters
-        .filter((counter) => onSearch(searchValue, counter.name))
-        .filter(onFilter),
-    );
+    setFilteredCounters(counters.filter((counter) => onSearch(searchValue, counter.name)).filter(onFilter));
   }, [searchValue, selectedCounterType, selectedCounterStorage]);
 
   useEffect(() => {
     const validateDeltaValue = (value, counter): boolean => {
-      const newCurrentValue: number =
-        parseInt(counter?.value) + parseInt(value);
-      if (
-        newCurrentValue < counter?.config?.lowerBound ||
-        newCurrentValue > counter?.config?.upperBound
-      )
-        return false;
+      const newCurrentValue: number = parseInt(counter?.value) + parseInt(value);
+      if (newCurrentValue < counter?.config?.lowerBound || newCurrentValue > counter?.config?.upperBound) return false;
       return true;
     };
     setIsDeltaValid(validateDeltaValue(deltaValue, counterToEdit));
@@ -135,17 +104,12 @@ const CounterTableDisplay = (props: {
 
   useEffect(() => {
     const validateNewCounterValue = (value, counter): boolean => {
-      if (
-        value < parseInt(counter?.config?.lowerBound) ||
-        value > parseInt(counter?.config?.upperBound)
-      ) {
+      if (value < parseInt(counter?.config?.lowerBound) || value > parseInt(counter?.config?.upperBound)) {
         return false;
       }
       return true;
     };
-    setIsNewCounterValueValid(
-      validateNewCounterValue(counterSetValue, counterToEdit),
-    );
+    setIsNewCounterValueValid(validateNewCounterValue(counterSetValue, counterToEdit));
   }, [counterSetValue]);
 
   const columnNames = {
@@ -153,7 +117,7 @@ const CounterTableDisplay = (props: {
     currVal: t('cache-managers.counters.current-value'),
     initVal: t('cache-managers.counters.initial-value'),
     storage: t('cache-managers.counters.storage'),
-    config: t('cache-managers.counters.counter-configuration'),
+    config: t('cache-managers.counters.counter-configuration')
   };
 
   const strongCountersActions = (row): IAction[] => [
@@ -163,7 +127,7 @@ const CounterTableDisplay = (props: {
       onClick: () => {
         setCounterToSet(row.name);
         setCounterToEdit(row);
-      },
+      }
     },
     {
       'aria-label': 'addDeltaAction',
@@ -171,7 +135,7 @@ const CounterTableDisplay = (props: {
       onClick: () => {
         setCounterToAddDelta(row.name);
         setCounterToEdit(row);
-      },
+      }
     },
     {
       'aria-label': 'resetCounter',
@@ -179,15 +143,15 @@ const CounterTableDisplay = (props: {
       onClick: () => {
         setCounterToReset(row.name);
         setCounterToEdit(row);
-      },
+      }
     },
     {
       'aria-label': 'deleteCounter',
       title: t('cache-managers.counters.delete-action'),
       onClick: () => {
         setCounterToDelete(row.name);
-      },
-    },
+      }
+    }
   ];
 
   const weakCountersActions = (row): IAction[] => [
@@ -196,21 +160,21 @@ const CounterTableDisplay = (props: {
       title: t('cache-managers.counters.delete-action'),
       onClick: () => {
         setCounterToDelete(row.name);
-      },
-    },
+      }
+    }
   ];
 
   const onSetPage = (_event, pageNumber) => {
     setCountersPagination({
       ...countersPagination,
-      page: pageNumber,
+      page: pageNumber
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setCountersPagination({
       page: 1,
-      perPage: perPage,
+      perPage: perPage
     });
   };
 
@@ -222,9 +186,7 @@ const CounterTableDisplay = (props: {
 
   const onFilter = (counter: Counter) => {
     const matchesTypeValue = selectedCounterType.includes(counter.config.type);
-    const matchesStorageValue = selectedCounterStorage
-      .toUpperCase()
-      .includes(counter.config.storage);
+    const matchesStorageValue = selectedCounterStorage.toUpperCase().includes(counter.config.storage);
 
     return (
       (selectedCounterType.length === 0 || matchesTypeValue) &&
@@ -270,13 +232,7 @@ const CounterTableDisplay = (props: {
   };
 
   const buildSeparator = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(
-        ConsoleACL.CREATE,
-        connectedUser,
-      ) ||
-      filteredCounters.length !== 0
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser) || filteredCounters.length !== 0) {
       return;
     }
     return (
@@ -288,12 +244,7 @@ const CounterTableDisplay = (props: {
   };
 
   const buildCreateCounterButton = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(
-        ConsoleACL.CREATE,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
       return;
     }
     return <ToolbarItem>{createCounterButtonHelper()}</ToolbarItem>;
@@ -341,15 +292,11 @@ const CounterTableDisplay = (props: {
               {
                 id: 'counterTypeFilterClear',
                 value: 'clear',
-                children: t('cache-managers.counters.counter-type'),
-              } as SelectOptionProps,
+                children: t('cache-managers.counters.counter-type')
+              } as SelectOptionProps
             ].concat(selectOptionProps(CounterType))}
             selected={selectedCounterType}
-            onSelect={(value) =>
-              value == 'clear'
-                ? setSelectedCounterType('')
-                : setSelectedCounterType(value)
-            }
+            onSelect={(value) => (value == 'clear' ? setSelectedCounterType('') : setSelectedCounterType(value))}
           />
         </ToolbarItem>
         <ToolbarItem>
@@ -360,24 +307,18 @@ const CounterTableDisplay = (props: {
               {
                 id: 'counterStorageFilterClear',
                 value: 'clear',
-                children: t('cache-managers.counters.storage'),
-              } as SelectOptionProps,
+                children: t('cache-managers.counters.storage')
+              } as SelectOptionProps
             ].concat(selectOptionProps(CounterStorage))}
             selected={selectedCounterStorage}
-            onSelect={(value) =>
-              value == 'clear'
-                ? setSelectedCounterStorage('')
-                : setSelectedCounterStorage(value)
-            }
+            onSelect={(value) => (value == 'clear' ? setSelectedCounterStorage('') : setSelectedCounterStorage(value))}
           />
         </ToolbarItem>
         <ToolbarItem>{searchInput}</ToolbarItem>
         {buildSeparator()}
         {buildCreateCounterButton()}
         {filteredCounters.length !== 0 && (
-          <ToolbarItem variant={ToolbarItemVariant.pagination}>
-            {pagination('down')}
-          </ToolbarItem>
+          <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('down')}</ToolbarItem>
         )}
       </ToolbarContent>
     </Toolbar>
@@ -390,9 +331,7 @@ const CounterTableDisplay = (props: {
       icon={DatabaseIcon}
       headingLevel="h4"
     >
-      <EmptyStateBody>
-        {t('cache-managers.counters.no-counters-body')}
-      </EmptyStateBody>
+      <EmptyStateBody>{t('cache-managers.counters.no-counters-body')}</EmptyStateBody>
       <EmptyStateFooter>{createCounterButtonHelper()}</EmptyStateFooter>
     </EmptyState>
   );
@@ -403,14 +342,12 @@ const CounterTableDisplay = (props: {
         <Grid>
           <GridItem>
             <Content component={ContentVariants.small}>
-              {t('cache-managers.counters.lower-bound')}{' '}
-              {numberWithCommas(config.lowerBound)}
+              {t('cache-managers.counters.lower-bound')} {numberWithCommas(config.lowerBound)}
             </Content>
           </GridItem>
           <GridItem>
             <Content component={ContentVariants.small}>
-              {t('cache-managers.counters.upper-bound')}{' '}
-              {numberWithCommas(config.upperBound)}
+              {t('cache-managers.counters.upper-bound')} {numberWithCommas(config.upperBound)}
             </Content>
           </GridItem>
         </Grid>
@@ -418,8 +355,7 @@ const CounterTableDisplay = (props: {
     } else if (config.type === CounterType.WEAK_COUNTER) {
       return (
         <Content component={ContentVariants.small}>
-          {t('cache-managers.counters.concurrency-level')}{' '}
-          {config.concurrencyLevel}
+          {t('cache-managers.counters.concurrency-level')} {config.concurrencyLevel}
         </Content>
       );
     }
@@ -427,12 +363,9 @@ const CounterTableDisplay = (props: {
   };
 
   const displayStorage = (storage) => {
-    const labelColor =
-      storage === CounterStorage.PERSISTENT.toUpperCase() ? 'purple' : 'blue';
+    const labelColor = storage === CounterStorage.PERSISTENT.toUpperCase() ? 'purple' : 'blue';
     const storageValue =
-      storage === CounterStorage.PERSISTENT.toUpperCase()
-        ? CounterStorage.PERSISTENT
-        : CounterStorage.VOLATILE;
+      storage === CounterStorage.PERSISTENT.toUpperCase() ? CounterStorage.PERSISTENT : CounterStorage.VOLATILE;
     return (
       <Label color={labelColor} data-cy={'storage-' + storage}>
         {storageValue}
@@ -449,11 +382,7 @@ const CounterTableDisplay = (props: {
     page = (
       <>
         {toolbar}
-        <Table
-          className={'counters-table'}
-          aria-label={'counters-table-label'}
-          variant={'compact'}
-        >
+        <Table className={'counters-table'} aria-label={'counters-table-label'} variant={'compact'}>
           <Thead>
             <Tr>
               <Th colSpan={1}>{columnNames.name}</Th>
@@ -468,16 +397,11 @@ const CounterTableDisplay = (props: {
               <Tr>
                 <Td colSpan={6}>
                   <Bullseye>
-                    <EmptyState
-                      variant={EmptyStateVariant.sm}
-                      icon={SearchIcon}
-                    >
+                    <EmptyState variant={EmptyStateVariant.sm} icon={SearchIcon}>
                       <Title headingLevel="h2" size="lg">
                         {t('cache-managers.counters.no-filtered-counter')}
                       </Title>
-                      <EmptyStateBody>
-                        {t('cache-managers.counters.no-filtered-counter-body')}
-                      </EmptyStateBody>
+                      <EmptyStateBody>{t('cache-managers.counters.no-filtered-counter-body')}</EmptyStateBody>
                     </EmptyState>
                   </Bullseye>
                 </Td>
@@ -493,18 +417,10 @@ const CounterTableDisplay = (props: {
                 return (
                   <Tr key={row.name}>
                     <Td dataLabel={columnNames.name}>{row.name}</Td>
-                    <Td dataLabel={columnNames.currVal}>
-                      {numberWithCommas(row.value)}
-                    </Td>
-                    <Td dataLabel={columnNames.initVal}>
-                      {numberWithCommas(row.config.initialValue)}
-                    </Td>
-                    <Td dataLabel={columnNames.storage}>
-                      {displayStorage(row.config.storage)}
-                    </Td>
-                    <Td dataLabel={columnNames.config}>
-                      {displayConfig(row.config)}
-                    </Td>
+                    <Td dataLabel={columnNames.currVal}>{numberWithCommas(row.value)}</Td>
+                    <Td dataLabel={columnNames.initVal}>{numberWithCommas(row.config.initialValue)}</Td>
+                    <Td dataLabel={columnNames.storage}>{displayStorage(row.config.storage)}</Td>
+                    <Td dataLabel={columnNames.config}>{displayConfig(row.config)}</Td>
                     <Td isActionCell data-cy={'actions-' + row.name}>
                       <ActionsColumn items={rowActions} />
                     </Td>
@@ -516,9 +432,7 @@ const CounterTableDisplay = (props: {
         </Table>
         {filteredCounters.length !== 0 && (
           <Toolbar id="bottom-pagination-counter">
-            <ToolbarItem variant={ToolbarItemVariant.pagination}>
-              {pagination('up')}
-            </ToolbarItem>
+            <ToolbarItem variant={ToolbarItemVariant.pagination}>{pagination('up')}</ToolbarItem>
           </Toolbar>
         )}
       </>
@@ -539,12 +453,7 @@ const CounterTableDisplay = (props: {
         closeModal={() => {
           setCounterToDelete('');
         }}
-        isDisabled={
-          !ConsoleServices.security().hasConsoleACL(
-            ConsoleACL.ADMIN,
-            connectedUser,
-          )
-        }
+        isDisabled={!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)}
       />
       <AddDeltaCounter
         name={counterToAddDelta}

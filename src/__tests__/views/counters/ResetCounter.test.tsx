@@ -5,9 +5,7 @@ import * as ResetCounterHook from '@app/hooks/countersHook';
 import { renderWithRouter } from '../../../test-utils';
 
 jest.mock('@app/hooks/countersHook');
-const mockedCounterHook = ResetCounterHook as jest.Mocked<
-  typeof ResetCounterHook
->;
+const mockedCounterHook = ResetCounterHook as jest.Mocked<typeof ResetCounterHook>;
 
 let closeModalCalls;
 let onResetCalls;
@@ -21,7 +19,7 @@ beforeEach(() => {
 
 mockedCounterHook.useResetCounter.mockImplementation(() => {
   return {
-    onResetCounter: () => onResetCalls++,
+    onResetCounter: () => onResetCalls++
   };
 });
 
@@ -34,7 +32,7 @@ describe('Reset counter', () => {
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
         initialValue="5"
-      />,
+      />
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -50,7 +48,7 @@ describe('Reset counter', () => {
         closeModal={() => closeModalCalls++}
         submitModal={() => submitModalCalls++}
         initialValue="5"
-      />,
+      />
     );
 
     expect(mockedCounterHook.useResetCounter).toHaveBeenCalledWith('count-1');

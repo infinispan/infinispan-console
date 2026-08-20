@@ -25,12 +25,8 @@
     "cy:e2e": "cypress open",
     "prepare": "husky"
   },
-  "prettier": {
-    "parser": "typescript",
-    "singleQuote": true
-  },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx}": "prettier --write"
+    "src/**/*.{ts,tsx,js,jsx}": "prettier --config ./.prettierrc --write"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

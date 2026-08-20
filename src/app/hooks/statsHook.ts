@@ -7,11 +7,10 @@ export function useFetchGlobalStats() {
     data: stats,
     loading,
     error,
-    reload,
-  } = useServiceCall<CacheManagerStats>(
-    () => ConsoleServices.dataContainer().getCacheManagerStats(),
-    { statistics_enabled: false },
-  );
+    reload
+  } = useServiceCall<CacheManagerStats>(() => ConsoleServices.dataContainer().getCacheManagerStats(), {
+    statistics_enabled: false
+  });
 
   return { loading, stats, error, reload };
 }
@@ -21,20 +20,17 @@ export function useSearchStats(cacheName: string) {
     data: stats,
     loading,
     error,
-    setLoading,
-  } = useServiceCall<SearchStats>(
-    () => ConsoleServices.search().retrieveStats(cacheName),
-    { reindexing: false, query: [], index: [] },
-  );
+    setLoading
+  } = useServiceCall<SearchStats>(() => ConsoleServices.search().retrieveStats(cacheName), {
+    reindexing: false,
+    query: [],
+    index: []
+  });
 
   return { loading, stats, error, setLoading };
 }
 
-export function useClearStats(
-  name: string,
-  type: 'query' | 'cache-metrics' | 'global-stats',
-  action: () => void,
-) {
+export function useClearStats(name: string, type: 'query' | 'cache-metrics' | 'global-stats', action: () => void) {
   const { addAlert } = useApiAlert();
   const onClearStats = () => {
     let actionResponsePromise: undefined | Promise<ActionResponse>;
@@ -43,8 +39,7 @@ export function useClearStats(
     } else if (type == 'cache-metrics') {
       actionResponsePromise = ConsoleServices.caches().clearStats(name);
     } else if (type == 'global-stats') {
-      actionResponsePromise =
-        ConsoleServices.dataContainer().clearCacheManagerStats();
+      actionResponsePromise = ConsoleServices.dataContainer().clearCacheManagerStats();
     } else {
       console.warn('Requesting a reset type that is not available. Do nothing');
       actionResponsePromise = undefined;
@@ -61,6 +56,6 @@ export function useClearStats(
   };
 
   return {
-    onClearStats,
+    onClearStats
   };
 }

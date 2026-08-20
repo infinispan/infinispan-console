@@ -12,7 +12,7 @@ interface UseServiceCallOptions<T> {
 export function useServiceCall<T>(
   serviceFn: () => Promise<Either<ActionResponse, T>>,
   initialValue: T,
-  options?: UseServiceCallOptions<T>,
+  options?: UseServiceCallOptions<T>
 ) {
   const [data, setData] = useState<T>(initialValue);
   const [error, setError] = useState('');
@@ -23,9 +23,7 @@ export function useServiceCall<T>(
       serviceFn()
         .then((either) => {
           if (either.isRight()) {
-            const value = options?.transform
-              ? options.transform(either.value)
-              : either.value;
+            const value = options?.transform ? options.transform(either.value) : either.value;
             setData(value);
           } else {
             setError(either.value.message);

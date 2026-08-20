@@ -11,19 +11,10 @@ import {
   Pagination,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import {
-  ActionsColumn,
-  ExpandableRowContent,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+import { ActionsColumn, ExpandableRowContent, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { useLocalStorage } from '@utils/localStorage';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -35,41 +26,32 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
   const { t } = useTranslation();
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
   const { onStoreQuery } = useSearch(props.cacheName);
-  const [history, setHistory] = useLocalStorage<HistoryMap>(
-    'cache-query-history',
-    {},
-  );
-  const currentHistory = useMemo(
-    () => history[props.cacheName] || [],
-    [history, props.cacheName],
-  );
+  const [history, setHistory] = useLocalStorage<HistoryMap>('cache-query-history', {});
+  const currentHistory = useMemo(() => history[props.cacheName] || [], [history, props.cacheName]);
   const [expandedQueries, setExpandedQueries] = useState<string[]>([]);
-  const [queryHistoryPagination, setQueryHistoryPagination] = useLocalStorage(
-    'query-history-table',
-    {
-      page: 1,
-      perPage: 10,
-    },
-  );
+  const [queryHistoryPagination, setQueryHistoryPagination] = useLocalStorage('query-history-table', {
+    page: 1,
+    perPage: 10
+  });
 
   const onSetPage = (_event, pageNumber) => {
     setQueryHistoryPagination({
       ...queryHistoryPagination,
-      page: pageNumber,
+      page: pageNumber
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setQueryHistoryPagination({
       page: 1,
-      perPage: perPage,
+      perPage: perPage
     });
   };
 
   const columnNames = {
     query: t('caches.query.history.query'),
     total: t('caches.query.history.total'),
-    execution: t('caches.query.history.execution'),
+    execution: t('caches.query.history.execution')
   };
 
   const emptySearchMessage = (
@@ -108,7 +90,7 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
             onClick={() =>
               setHistory({
                 ...history,
-                [props.cacheName]: [],
+                [props.cacheName]: []
               })
             }
             data-cy="removeAllQueryHistory"
@@ -116,9 +98,7 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
             {t('caches.query.history.clear')}
           </Button>
         </ToolbarItem>
-        <ToolbarItem variant="pagination">
-          {toolbarPagination('down')}
-        </ToolbarItem>
+        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
@@ -126,7 +106,7 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
   const deleteHistoryItem = (query: string) => {
     setHistory({
       ...history,
-      [props.cacheName]: currentHistory.filter((item) => item.query !== query),
+      [props.cacheName]: currentHistory.filter((item) => item.query !== query)
     });
   };
 
@@ -140,25 +120,22 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
       {
         'aria-label': 'executeQueryHistoryItem',
         title: t('caches.query.history.execute'),
-        onClick: () => executeQuery(query),
+        onClick: () => executeQuery(query)
       },
       {
         'aria-label': 'deleteQueryHistoryItem',
         title: t('caches.query.history.delete'),
-        onClick: () => deleteHistoryItem(query),
-      },
+        onClick: () => deleteHistoryItem(query)
+      }
     ];
   };
 
   const isQueryExpanded = (query: string) => expandedQueries.includes(query);
   const toggleQueryExpanded = (query: string) => {
-    setExpandedQueries((prev) =>
-      prev.includes(query) ? prev.filter((q) => q !== query) : [...prev, query],
-    );
+    setExpandedQueries((prev) => (prev.includes(query) ? prev.filter((q) => q !== query) : [...prev, query]));
   };
   const isQueryLong = (query: string) => query.length > 100;
-  const isExpandable = (historyItem: QueryHistoryItem) =>
-    isQueryLong(historyItem.query) || historyItem.error;
+  const isExpandable = (historyItem: QueryHistoryItem) => isQueryLong(historyItem.query) || historyItem.error;
 
   const historyTypeColor = (queryType: 'Search' | 'Delete' | 'Vector') => {
     if (queryType == 'Vector') {
@@ -178,12 +155,7 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
     }
 
     return (
-      <Alert
-        title={t('caches.query.history.error-detail')}
-        variant={'danger'}
-        isInline
-        isPlain
-      >
+      <Alert title={t('caches.query.history.error-detail')} variant={'danger'} isInline isPlain>
         {historyItem.cause}
       </Alert>
     );
@@ -214,111 +186,92 @@ const QueryHistory = (props: { cacheName: string; changeTab: () => void }) => {
               </Tr>
             </Tbody>
           ) : (
-            currentHistory
-              .slice(getSlice(), getSlice() + queryHistoryPagination.perPage)
-              .map((historyItem, index) => {
-                const longQuery = isQueryLong(historyItem.query);
-                const expandable = isExpandable(historyItem);
-                const expanded = isQueryExpanded(historyItem.query);
-                const truncatedQuery =
-                  displayUtils.formatContentToDisplayWithTruncate(
-                    historyItem.query,
-                    ContentType.string,
-                  );
-                return (
-                  <Tbody key={index} isExpanded={expandable && expanded}>
-                    <Tr>
-                      <Td
-                        expand={
-                          expandable
-                            ? {
-                                rowIndex: index,
-                                isExpanded: expanded,
-                                onToggle: () =>
-                                  toggleQueryExpanded(historyItem.query),
-                                expandId: index + '-expandable-query',
-                              }
-                            : undefined
-                        }
-                      />
-                      <Td dataLabel={columnNames.query}>
-                        <SyntaxHighlighter
-                          wrapLines={true}
-                          wrapLongLines={true}
-                          lineProps={{
-                            style: {
-                              wordBreak: 'break-all',
-                              whiteSpace: 'pre-wrap',
-                            },
-                          }}
-                          style={syntaxHighLighterTheme}
-                          useInlineStyles={true}
-                        >
-                          {longQuery ? truncatedQuery : historyItem.query}
-                        </SyntaxHighlighter>
-                        <Label
-                          isCompact
-                          color={historyTypeColor(historyItem.type)}
-                        >
-                          {historyItem.type}
+            currentHistory.slice(getSlice(), getSlice() + queryHistoryPagination.perPage).map((historyItem, index) => {
+              const longQuery = isQueryLong(historyItem.query);
+              const expandable = isExpandable(historyItem);
+              const expanded = isQueryExpanded(historyItem.query);
+              const truncatedQuery = displayUtils.formatContentToDisplayWithTruncate(
+                historyItem.query,
+                ContentType.string
+              );
+              return (
+                <Tbody key={index} isExpanded={expandable && expanded}>
+                  <Tr>
+                    <Td
+                      expand={
+                        expandable
+                          ? {
+                              rowIndex: index,
+                              isExpanded: expanded,
+                              onToggle: () => toggleQueryExpanded(historyItem.query),
+                              expandId: index + '-expandable-query'
+                            }
+                          : undefined
+                      }
+                    />
+                    <Td dataLabel={columnNames.query}>
+                      <SyntaxHighlighter
+                        wrapLines={true}
+                        wrapLongLines={true}
+                        lineProps={{
+                          style: {
+                            wordBreak: 'break-all',
+                            whiteSpace: 'pre-wrap'
+                          }
+                        }}
+                        style={syntaxHighLighterTheme}
+                        useInlineStyles={true}
+                      >
+                        {longQuery ? truncatedQuery : historyItem.query}
+                      </SyntaxHighlighter>
+                      <Label isCompact color={historyTypeColor(historyItem.type)}>
+                        {historyItem.type}
+                      </Label>
+                      {historyItem.error && (
+                        <Label isCompact variant={'outline'} status={'danger'} style={{ marginLeft: '0.5rem' }}>
+                          {t('caches.query.history.error')}
                         </Label>
-                        {historyItem.error && (
-                          <Label
-                            isCompact
-                            variant={'outline'}
-                            status={'danger'}
-                            style={{ marginLeft: '0.5rem' }}
-                          >
-                            {t('caches.query.history.error')}
-                          </Label>
-                        )}
-                      </Td>
-                      <Td dataLabel={columnNames.total}>{historyItem.total}</Td>
-                      <Td dataLabel={columnNames.execution}>
-                        {historyItem.milliseconds}
-                      </Td>
-                      <Td isActionCell data-cy={`actions-${index}`}>
-                        <ActionsColumn items={actions(historyItem.query)} />
+                      )}
+                    </Td>
+                    <Td dataLabel={columnNames.total}>{historyItem.total}</Td>
+                    <Td dataLabel={columnNames.execution}>{historyItem.milliseconds}</Td>
+                    <Td isActionCell data-cy={`actions-${index}`}>
+                      <ActionsColumn items={actions(historyItem.query)} />
+                    </Td>
+                  </Tr>
+                  {expandable && (
+                    <Tr isExpanded={expanded}>
+                      <Td />
+                      <Td colSpan={4}>
+                        <ExpandableRowContent>
+                          {longQuery && (
+                            <SyntaxHighlighter
+                              wrapLines={true}
+                              wrapLongLines={true}
+                              lineProps={{
+                                style: {
+                                  wordBreak: 'break-all',
+                                  whiteSpace: 'pre-wrap'
+                                }
+                              }}
+                              style={syntaxHighLighterTheme}
+                              useInlineStyles={true}
+                            >
+                              {historyItem.query}
+                            </SyntaxHighlighter>
+                          )}
+                          {displayError(historyItem)}
+                        </ExpandableRowContent>
                       </Td>
                     </Tr>
-                    {expandable && (
-                      <Tr isExpanded={expanded}>
-                        <Td />
-                        <Td colSpan={4}>
-                          <ExpandableRowContent>
-                            {longQuery && (
-                              <SyntaxHighlighter
-                                wrapLines={true}
-                                wrapLongLines={true}
-                                lineProps={{
-                                  style: {
-                                    wordBreak: 'break-all',
-                                    whiteSpace: 'pre-wrap',
-                                  },
-                                }}
-                                style={syntaxHighLighterTheme}
-                                useInlineStyles={true}
-                              >
-                                {historyItem.query}
-                              </SyntaxHighlighter>
-                            )}
-                            {displayError(historyItem)}
-                          </ExpandableRowContent>
-                        </Td>
-                      </Tr>
-                    )}
-                  </Tbody>
-                );
-              })
+                  )}
+                </Tbody>
+              );
+            })
           )}
         </Table>
-        <Toolbar
-          id="query-history-table-toolbar"
-          className={'query-history-table-display'}
-        >
-          <ToolbarItem variant="pagination">
-            {toolbarPagination('up')}
-          </ToolbarItem>
+        <Toolbar id="query-history-table-toolbar" className={'query-history-table-display'}>
+          <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
         </Toolbar>
       </React.Fragment>
     );

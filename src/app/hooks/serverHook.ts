@@ -27,7 +27,7 @@ export function useFetchVersion() {
     setLoading,
     loading,
     version,
-    error,
+    error
   };
 }
 
@@ -36,12 +36,10 @@ export function useFetchConnectedClients() {
     data: connectedClients,
     error,
     loading,
-    setLoading,
-  } = useServiceCall<ConnectedClients[]>(
-    () => ConsoleServices.server().getConnectedClients(),
-    [],
-    { transform: groupConnections },
-  );
+    setLoading
+  } = useServiceCall<ConnectedClients[]>(() => ConsoleServices.server().getConnectedClients(), [], {
+    transform: groupConnections
+  });
 
   return { connectedClients, error, loading, setLoading };
 }

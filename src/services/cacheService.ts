@@ -9,7 +9,7 @@ import {
   CONF_MUTABLE_MEMORY_MAX_SIZE,
   CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES,
   CONF_MUTABLE_TRACING_CATEGORIES,
-  CONF_MUTABLE_TRACING_ENABLED,
+  CONF_MUTABLE_TRACING_ENABLED
 } from '@services/cacheConfigUtils';
 import { ContentTypeHeaderMapper } from '@services/contentTypeHeaderMapper';
 import { CacheRequestResponseMapper } from '@services/cacheRequestResponseMapper';
@@ -37,14 +37,12 @@ export class CacheService {
    *
    * @param cacheName
    */
-  public retrieveHealth(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, ComponentStatusType>> {
+  public retrieveHealth(cacheName: string): Promise<Either<ActionResponse, ComponentStatusType>> {
     return this.fetchCaller.get(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_health',
       (data) => displayUtils.parseComponentStatus(data),
       undefined,
-      true,
+      true
     );
   }
 
@@ -53,16 +51,14 @@ export class CacheService {
    *
    * @param cacheName
    */
-  public retrieveConfig(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, CacheConfig>> {
+  public retrieveConfig(cacheName: string): Promise<Either<ActionResponse, CacheConfig>> {
     return this.fetchCaller.get(
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/config',
       (data) =>
         <CacheConfig>{
           name: cacheName,
-          config: JSON.stringify(data, null, 2),
-        },
+          config: JSON.stringify(data, null, 2)
+        }
     );
   }
 
@@ -71,81 +67,68 @@ export class CacheService {
    *
    * @param cacheName
    */
-  public retrieveFullDetail(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, DetailedInfinispanCache>> {
-    return this.fetchCaller.get(
-      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/details',
-      (data) => {
-        let cacheStats = <CacheStats>{ enabled: false };
-        if (data['stats']) {
-          cacheStats = data.stats;
-          cacheStats.enabled = data.statistics;
-        }
-        const keyValueEncoding = {
-          key: CacheConfigUtils.toEncoding(data['key_storage']),
-          value: CacheConfigUtils.toEncoding(data['value_storage']),
-        };
-        let cacheConfig: CacheConfig | undefined = undefined;
-        if (data.configuration) {
-          cacheConfig = <CacheConfig>{
-            name: cacheName,
-            config: JSON.stringify(data.configuration, null, 2),
-          };
-        }
-
-        let cacheMemory: undefined | CacheMemory = undefined;
-        if (data['storage_type']) {
-          cacheMemory = <CacheMemory>{
-            storage_type: data['storage_type'],
-            max_size: data['max_size'],
-            max_size_bytes: data['max_size_bytes'],
-          };
-        }
-
-        const cacheType = CacheConfigUtils.mapCacheType(data['mode']);
-        const async = CacheConfigUtils.isAsync(data['mode']);
-        return <DetailedInfinispanCache>{
+  public retrieveFullDetail(cacheName: string): Promise<Either<ActionResponse, DetailedInfinispanCache>> {
+    return this.fetchCaller.get(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/details', (data) => {
+      let cacheStats = <CacheStats>{ enabled: false };
+      if (data['stats']) {
+        cacheStats = data.stats;
+        cacheStats.enabled = data.statistics;
+      }
+      const keyValueEncoding = {
+        key: CacheConfigUtils.toEncoding(data['key_storage']),
+        value: CacheConfigUtils.toEncoding(data['value_storage'])
+      };
+      let cacheConfig: CacheConfig | undefined = undefined;
+      if (data.configuration) {
+        cacheConfig = <CacheConfig>{
           name: cacheName,
-          started: true,
-          type: cacheType,
-          encoding: keyValueEncoding,
-          size: data['size'],
-          rehash_in_progress: data['rehash_in_progress'],
-          indexing_in_progress: data['indexing_in_progress'],
-          rebalancing_enabled: data['rebalancing_enabled'],
-          aliases: data.aliases,
-          editable:
-            data.indexed ||
-            (CacheConfigUtils.isEditable(
-              keyValueEncoding.key as EncodingType,
-            ) &&
-              CacheConfigUtils.isEditable(
-                keyValueEncoding.value as EncodingType,
-              )),
-          updateEntry: CacheConfigUtils.canUpdateEntries(
-            keyValueEncoding.key as EncodingType,
-          ),
-          deleteEntry: CacheConfigUtils.canDeleteEntries(
-            keyValueEncoding.key as EncodingType,
-          ),
-          queryable: data.queryable,
-          features: <Features>{
-            bounded: data.bounded,
-            indexed: data.indexed,
-            persistent: data.persistent,
-            transactional: data.transactional,
-            secured: data.secured,
-            hasRemoteBackup: data['has_remote_backup'],
-          },
-          tracing: data.tracing,
-          configuration: cacheConfig,
-          stats: cacheStats,
-          memory: cacheMemory,
-          async: async,
+          config: JSON.stringify(data.configuration, null, 2)
         };
-      },
-    );
+      }
+
+      let cacheMemory: undefined | CacheMemory = undefined;
+      if (data['storage_type']) {
+        cacheMemory = <CacheMemory>{
+          storage_type: data['storage_type'],
+          max_size: data['max_size'],
+          max_size_bytes: data['max_size_bytes']
+        };
+      }
+
+      const cacheType = CacheConfigUtils.mapCacheType(data['mode']);
+      const async = CacheConfigUtils.isAsync(data['mode']);
+      return <DetailedInfinispanCache>{
+        name: cacheName,
+        started: true,
+        type: cacheType,
+        encoding: keyValueEncoding,
+        size: data['size'],
+        rehash_in_progress: data['rehash_in_progress'],
+        indexing_in_progress: data['indexing_in_progress'],
+        rebalancing_enabled: data['rebalancing_enabled'],
+        aliases: data.aliases,
+        editable:
+          data.indexed ||
+          (CacheConfigUtils.isEditable(keyValueEncoding.key as EncodingType) &&
+            CacheConfigUtils.isEditable(keyValueEncoding.value as EncodingType)),
+        updateEntry: CacheConfigUtils.canUpdateEntries(keyValueEncoding.key as EncodingType),
+        deleteEntry: CacheConfigUtils.canDeleteEntries(keyValueEncoding.key as EncodingType),
+        queryable: data.queryable,
+        features: <Features>{
+          bounded: data.bounded,
+          indexed: data.indexed,
+          persistent: data.persistent,
+          transactional: data.transactional,
+          secured: data.secured,
+          hasRemoteBackup: data['has_remote_backup']
+        },
+        tracing: data.tracing,
+        configuration: cacheConfig,
+        stats: cacheStats,
+        memory: cacheMemory,
+        async: async
+      };
+    });
   }
 
   /**
@@ -155,21 +138,14 @@ export class CacheService {
    * @param cacheName, the cache name
    * @param configName, the template name
    */
-  public async createCacheByConfigName(
-    cacheName: string,
-    configName: string,
-  ): Promise<ActionResponse> {
+  public async createCacheByConfigName(cacheName: string, configName: string): Promise<ActionResponse> {
     const createCacheByConfig =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '?template=' +
-      encodeURIComponent(configName);
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '?template=' + encodeURIComponent(configName);
 
     return this.fetchCaller.post({
       url: createCacheByConfig,
       successMessage: `Cache ${cacheName} successfully created with ${configName}.`,
-      errorMessage: `Unexpected error when creating cache ${configName}.`,
+      errorMessage: `Unexpected error when creating cache ${configName}.`
     });
   }
 
@@ -183,26 +159,21 @@ export class CacheService {
   public async createCacheWithConfiguration(
     cacheName: string,
     config: string,
-    configType: 'xml' | 'json' | 'yaml',
+    configType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
     const customHeaders = this.createCustomHeader('Content-Type', configType);
 
-    const urlCreateCache =
-      this.endpoint + '/caches/' + encodeURIComponent(cacheName);
+    const urlCreateCache = this.endpoint + '/caches/' + encodeURIComponent(cacheName);
     return this.fetchCaller.post(<ServiceCall>{
       url: urlCreateCache,
       successMessage: `Cache ${cacheName} created with the provided configuration.`,
-      errorMessage:
-        'Unexpected error creating the cache with the provided configuration.',
+      errorMessage: 'Unexpected error creating the cache with the provided configuration.',
       customHeaders: customHeaders,
-      body: config,
+      body: config
     });
   }
 
-  private createCustomHeader(
-    header: string,
-    configType: 'xml' | 'json' | 'yaml',
-  ): Headers {
+  private createCustomHeader(header: string, configType: 'xml' | 'json' | 'yaml'): Headers {
     let contentType = ContentType.YAML;
     if (configType == 'json') {
       contentType = ContentType.JSON;
@@ -210,10 +181,7 @@ export class CacheService {
       contentType = ContentType.XML;
     }
     const customHeaders = new Headers();
-    customHeaders.append(
-      header,
-      ContentTypeHeaderMapper.fromContentType(contentType),
-    );
+    customHeaders.append(header, ContentTypeHeaderMapper.fromContentType(contentType));
     return customHeaders;
   }
 
@@ -226,7 +194,7 @@ export class CacheService {
     return this.fetchCaller.delete({
       url: this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} deleted.`,
-      errorMessage: `Unexpected error deleting cache ${cacheName}.`,
+      errorMessage: `Unexpected error deleting cache ${cacheName}.`
     });
   }
 
@@ -237,12 +205,9 @@ export class CacheService {
    */
   public async ignoreCache(cacheName: string): Promise<ActionResponse> {
     return this.fetchCaller.post({
-      url:
-        this.endpointV2 +
-        '/server/ignored-caches/' +
-        encodeURIComponent(cacheName),
+      url: this.endpointV2 + '/server/ignored-caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} hidden.`,
-      errorMessage: `Unexpected error hiding cache ${cacheName}.`,
+      errorMessage: `Unexpected error hiding cache ${cacheName}.`
     });
   }
 
@@ -253,12 +218,9 @@ export class CacheService {
    */
   public async undoIgnoreCache(cacheName: string): Promise<ActionResponse> {
     return this.fetchCaller.delete({
-      url:
-        this.endpointV2 +
-        '/server/ignored-caches/' +
-        encodeURIComponent(cacheName),
+      url: this.endpointV2 + '/server/ignored-caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} is now visible.`,
-      errorMessage: `Unexpected error making cache ${cacheName} visible again.`,
+      errorMessage: `Unexpected error making cache ${cacheName} visible again.`
     });
   }
 
@@ -284,21 +246,19 @@ export class CacheService {
     maxIdle: string,
     timeToLive: string,
     flags: string[],
-    create: boolean,
+    create: boolean
   ): Promise<ActionResponse> {
     const headers = new Headers();
-    const keyContentTypeHeader =
-      ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
-        cacheEncoding.key as EncodingType,
-        key,
-        keyContentType,
-      );
-    const contentTypeHeader =
-      ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
-        cacheEncoding.value as EncodingType,
-        value,
-        valueContentType,
-      );
+    const keyContentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
+      cacheEncoding.key as EncodingType,
+      key,
+      keyContentType
+    );
+    const contentTypeHeader = ContentTypeHeaderMapper.fromEncodingAndContentTypeToHeader(
+      cacheEncoding.value as EncodingType,
+      value,
+      valueContentType
+    );
     headers.append('Key-Content-Type', keyContentTypeHeader);
     headers.append('Content-Type', contentTypeHeader);
     if (timeToLive.length > 0) headers.append('timeToLiveSeconds', timeToLive);
@@ -310,7 +270,7 @@ export class CacheService {
     const maybeKeyForUrl = CacheRequestResponseMapper.formatContent(
       key,
       keyContentType,
-      cacheEncoding.key as EncodingType,
+      cacheEncoding.key as EncodingType
     );
     if (maybeKeyForUrl.isRight()) {
       keyForUrl = maybeKeyForUrl.value;
@@ -323,7 +283,7 @@ export class CacheService {
     const maybeBody = CacheRequestResponseMapper.formatContent(
       value,
       valueContentType,
-      cacheEncoding.value as EncodingType,
+      cacheEncoding.value as EncodingType
     );
     if (maybeBody.isRight()) {
       body = maybeBody.value;
@@ -332,11 +292,7 @@ export class CacheService {
     }
 
     const urlCreateOrUpdate =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/entries/' +
-      encodeURIComponent(keyForUrl);
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/entries/' + encodeURIComponent(keyForUrl);
 
     return create
       ? this.fetchCaller.post({
@@ -344,14 +300,14 @@ export class CacheService {
           successMessage: `Entry added to cache ${cacheName}.`,
           errorMessage: `Unexpected error creating an entry in cache ${cacheName}.`,
           customHeaders: headers,
-          body: body,
+          body: body
         })
       : this.fetchCaller.put(<ServiceCall>{
           url: urlCreateOrUpdate,
           successMessage: `Entry updated in cache ${cacheName}.`,
           errorMessage: `Unexpected error updating an entry in cache ${cacheName}.`,
           customHeaders: headers,
-          body: body,
+          body: body
         });
   }
 
@@ -364,7 +320,7 @@ export class CacheService {
   public async getEntries(
     cacheName: string,
     encoding: CacheEncoding,
-    limit: string,
+    limit: string
   ): Promise<Either<ActionResponse, CacheEntry[]>> {
     const entriesUrl =
       this.endpoint +
@@ -379,7 +335,7 @@ export class CacheService {
       entriesUrl,
       (data) => CacheRequestResponseMapper.toEntries(data, encoding),
       customHeaders,
-      true,
+      true
     );
   }
 
@@ -394,7 +350,7 @@ export class CacheService {
     cacheName: string,
     encoding: CacheEncoding,
     key: string,
-    keyContentType: ContentType,
+    keyContentType: ContentType
   ): Promise<Either<ActionResponse, CacheEntry[]>> {
     const customHeaders = new Headers();
 
@@ -413,39 +369,29 @@ export class CacheService {
 
     let keyContentTypeHeader;
     let keyForURL;
-    if (
-      encoding.key == EncodingType.Protobuf ||
-      encoding.key == EncodingType.JSON
-    ) {
-      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(
-        ContentType.JSON,
-      );
+    if (encoding.key == EncodingType.Protobuf || encoding.key == EncodingType.JSON) {
+      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(ContentType.JSON);
       const keyProtobuffed = CacheRequestResponseMapper.formatContent(
         key,
         keyContentType,
-        encoding.key as EncodingType,
+        encoding.key as EncodingType
       );
       if (keyProtobuffed.isLeft()) {
         // Return the error
-        return Promise.resolve(
-          left(keyProtobuffed.value as ActionResponse),
-        ) as Promise<Either<ActionResponse, CacheEntry[]>>;
+        return Promise.resolve(left(keyProtobuffed.value as ActionResponse)) as Promise<
+          Either<ActionResponse, CacheEntry[]>
+        >;
       }
       keyForURL = keyProtobuffed.value;
     } else {
-      keyContentTypeHeader =
-        ContentTypeHeaderMapper.fromContentType(keyContentType);
+      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(keyContentType);
       keyForURL = key;
     }
 
     customHeaders.append('Key-Content-Type', keyContentTypeHeader);
 
     const getEntryUrl =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/entries/' +
-      encodeURIComponent(keyForURL);
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/entries/' + encodeURIComponent(keyForURL);
 
     return this.fetchCaller
       .fetch(getEntryUrl, 'GET', customHeaders)
@@ -454,13 +400,7 @@ export class CacheService {
           return response
             .text()
             .then((value) => [
-              CacheRequestResponseMapper.toEntry(
-                key,
-                keyContentType,
-                encoding,
-                value,
-                response.headers,
-              ),
+              CacheRequestResponseMapper.toEntry(key, keyContentType, encoding, value, response.headers)
             ]);
         }
 
@@ -475,12 +415,7 @@ export class CacheService {
       })
       .then((data) => right(data) as Either<ActionResponse, CacheEntry[]>)
       .catch((err) => {
-        return left(
-          this.fetchCaller.mapError(
-            err,
-            'An error occurred retrieving key ' + key,
-          ),
-        );
+        return left(this.fetchCaller.mapError(err, 'An error occurred retrieving key ' + key));
       }) as Promise<Either<ActionResponse, CacheEntry[]>>;
   }
 
@@ -489,12 +424,11 @@ export class CacheService {
    * @param cacheName, the name of the cache
    */
   public async clear(cacheName: string): Promise<ActionResponse> {
-    const clearUrl =
-      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_clear';
+    const clearUrl = this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_clear';
     return this.fetchCaller.post({
       url: clearUrl,
       successMessage: `Cache ${cacheName} cleared.`,
-      errorMessage: `Unexpected error when clearing the cache ${cacheName}.`,
+      errorMessage: `Unexpected error when clearing the cache ${cacheName}.`
     });
   }
 
@@ -508,51 +442,37 @@ export class CacheService {
     cacheName: string,
     key: string,
     keyEncoding: EncodingType,
-    keyContentType: ContentType,
+    keyContentType: ContentType
   ): Promise<ActionResponse> {
     const headers = new Headers();
     let keyContentTypeHeader;
     let keyForURL;
-    if (
-      keyEncoding == EncodingType.Protobuf ||
-      keyEncoding == EncodingType.JSON
-    ) {
-      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(
-        ContentType.JSON,
-      );
-      const keyProtobuffed = CacheRequestResponseMapper.formatContent(
-        key,
-        keyContentType,
-        keyEncoding,
-      );
+    if (keyEncoding == EncodingType.Protobuf || keyEncoding == EncodingType.JSON) {
+      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(ContentType.JSON);
+      const keyProtobuffed = CacheRequestResponseMapper.formatContent(key, keyContentType, keyEncoding);
       if (keyProtobuffed.isLeft()) {
         // Return the error
         return Promise.resolve({
           message: 'Unexpected issue to parse key value',
-          success: false,
+          success: false
         });
       }
       keyForURL = keyProtobuffed.value;
     } else {
-      keyContentTypeHeader =
-        ContentTypeHeaderMapper.fromContentType(keyContentType);
+      keyContentTypeHeader = ContentTypeHeaderMapper.fromContentType(keyContentType);
       keyForURL = key;
     }
 
     headers.append('Key-Content-Type', keyContentTypeHeader);
 
     const deleteUrl =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/entries/' +
-      encodeURIComponent(keyForURL);
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/entries/' + encodeURIComponent(keyForURL);
 
     return this.fetchCaller.delete(<ServiceCall>{
       url: deleteUrl,
       successMessage: `Entry ${key} deleted.`,
       errorMessage: 'Unexpected error deleting the entry.',
-      customHeaders: headers,
+      customHeaders: headers
     });
   }
 
@@ -563,7 +483,7 @@ export class CacheService {
    */
   public async getConfiguration(
     cacheName: string,
-    configType: 'xml' | 'json' | 'yaml',
+    configType: 'xml' | 'json' | 'yaml'
   ): Promise<Either<ActionResponse, string>> {
     const customHeaders = this.createCustomHeader('Accept', configType);
 
@@ -571,7 +491,7 @@ export class CacheService {
       this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/config',
       (text) => text,
       customHeaders as Headers,
-      true,
+      true
     );
   }
 
@@ -581,10 +501,7 @@ export class CacheService {
    * @param cacheName
    * @param configAttribute
    */
-  public async getConfigAttribute(
-    cacheName: string,
-    configAttribute: string,
-  ): Promise<Either<ActionResponse, string>> {
+  public async getConfigAttribute(cacheName: string, configAttribute: string): Promise<Either<ActionResponse, string>> {
     return this.fetchCaller.get(
       this.endpoint +
         '/caches/' +
@@ -595,7 +512,7 @@ export class CacheService {
         configAttribute,
       (text) => text,
       undefined,
-      true,
+      true
     );
   }
 
@@ -606,11 +523,7 @@ export class CacheService {
    * @param configAttribute
    * @param configAttributeValue
    */
-  public async setConfigAttribute(
-    cacheName: string,
-    configAttribute: string,
-    value: string,
-  ): Promise<ActionResponse> {
+  public async setConfigAttribute(cacheName: string, configAttribute: string, value: string): Promise<ActionResponse> {
     let url =
       this.endpoint +
       '/caches/' +
@@ -626,7 +539,7 @@ export class CacheService {
     return this.fetchCaller.post({
       url: url,
       successMessage: `Updated ${cacheName} cache: ${configAttribute} configured successfully`,
-      errorMessage: `Unexpected error when updating ${cacheName} configuration attribute: ${configAttribute}.`,
+      errorMessage: `Unexpected error when updating ${cacheName} configuration attribute: ${configAttribute}.`
     });
   }
 
@@ -635,21 +548,13 @@ export class CacheService {
    * @param cacheName
    * @param enable, true to enable, false for disable
    */
-  public async rebalancing(
-    cacheName: string,
-    enable: boolean,
-  ): Promise<ActionResponse> {
+  public async rebalancing(cacheName: string, enable: boolean): Promise<ActionResponse> {
     const action = enable ? 'enable' : 'disable';
-    const url =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/_rebalancing-' +
-      action;
+    const url = this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_rebalancing-' + action;
     return this.fetchCaller.post({
       url: url,
       successMessage: `Cache ${cacheName} rebalancing successfully ${action}d.`,
-      errorMessage: `Unexpected error when cache ${cacheName} rebalancing ${action}d.`,
+      errorMessage: `Unexpected error when cache ${cacheName} rebalancing ${action}d.`
     });
   }
 
@@ -660,14 +565,11 @@ export class CacheService {
    */
   public async setAvailability(cacheName: string): Promise<ActionResponse> {
     const availabilityUrl =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/_availability?availability=AVAILABLE';
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_availability?availability=AVAILABLE';
     return this.fetchCaller.post({
       url: availabilityUrl,
       successMessage: `Cache ${cacheName} is now available.`,
-      errorMessage: `An error occurred while changing cache ${cacheName} availability.`,
+      errorMessage: `An error occurred while changing cache ${cacheName} availability.`
     });
   }
 
@@ -680,7 +582,7 @@ export class CacheService {
     return this.fetchCaller.head({
       url: this.endpoint + '/caches/' + encodeURIComponent(cacheName),
       successMessage: `Cache ${cacheName} name is available.`,
-      errorMessage: `Cache ${cacheName} already exists.`,
+      errorMessage: `Cache ${cacheName} already exists.`
     });
   }
 
@@ -688,7 +590,7 @@ export class CacheService {
     header1: string,
     configType1: 'xml' | 'json' | 'yaml',
     header2: string,
-    configType2: 'xml' | 'json' | 'yaml',
+    configType2: 'xml' | 'json' | 'yaml'
   ) {
     const customHeaders = new Headers();
 
@@ -698,10 +600,7 @@ export class CacheService {
     } else if (configType1 == 'xml') {
       contentType1 = ContentType.XML;
     }
-    customHeaders.append(
-      header1,
-      ContentTypeHeaderMapper.fromContentType(contentType1),
-    );
+    customHeaders.append(header1, ContentTypeHeaderMapper.fromContentType(contentType1));
 
     let contentType2 = ContentType.YAML;
     if (configType2 == 'json') {
@@ -709,31 +608,24 @@ export class CacheService {
     } else if (configType2 == 'xml') {
       contentType2 = ContentType.XML;
     }
-    customHeaders.append(
-      header2,
-      ContentTypeHeaderMapper.fromContentType(contentType2),
-    );
+    customHeaders.append(header2, ContentTypeHeaderMapper.fromContentType(contentType2));
     return customHeaders;
   }
 
   public async convertToAllFormat(
     cacheName: string,
     config: string,
-    contentType: 'xml' | 'json' | 'yaml',
+    contentType: 'xml' | 'json' | 'yaml'
   ): Promise<Either<ActionResponse, FormattedCacheConfig>> {
     return Promise.all([
       this.convertConfigFormat(cacheName, config, 'json', contentType),
       this.convertConfigFormat(cacheName, config, 'xml', contentType),
-      this.convertConfigFormat(cacheName, config, 'yaml', contentType),
+      this.convertConfigFormat(cacheName, config, 'yaml', contentType)
     ]).then((responses) => {
-      if (
-        !responses[0].success &&
-        !responses[1].success &&
-        !responses[2].success
-      ) {
+      if (!responses[0].success && !responses[1].success && !responses[2].success) {
         return left(<ActionResponse>{
           message: responses[0].message,
-          success: false,
+          success: false
         }) as Either<ActionResponse, FormattedCacheConfig>;
       }
 
@@ -754,7 +646,7 @@ export class CacheService {
       return right(<FormattedCacheConfig>{
         json: json,
         xml: xml,
-        yaml: yaml,
+        yaml: yaml
       }) as Either<ActionResponse, FormattedCacheConfig>;
     });
   }
@@ -766,14 +658,9 @@ export class CacheService {
     cacheName: string,
     config: string,
     configType: 'xml' | 'json' | 'yaml',
-    contentType: 'xml' | 'json' | 'yaml',
+    contentType: 'xml' | 'json' | 'yaml'
   ): Promise<ActionResponse> {
-    const customHeaders = this.createTwoCustomHeader(
-      'Accept',
-      configType,
-      'Content-Type',
-      contentType,
-    );
+    const customHeaders = this.createTwoCustomHeader('Accept', configType, 'Content-Type', contentType);
 
     const urlCreateCache = this.endpoint + '/_cache-config-convert';
     return this.fetchCaller.post(<ServiceCall>{
@@ -781,19 +668,14 @@ export class CacheService {
       successMessage: `Cache ${cacheName} is converted to ${configType}.`,
       errorMessage: `Unexpected error converting the cache to ${configType}.`,
       customHeaders: customHeaders,
-      body: config,
+      body: config
     });
   }
 
-  public async getDistribution(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, DataDistribution[]>> {
+  public async getDistribution(cacheName: string): Promise<Either<ActionResponse, DataDistribution[]>> {
     return this.fetchCaller.get(
-      this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/_distribution',
-      (text) => text,
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_distribution',
+      (text) => text
     );
   }
 
@@ -801,15 +683,9 @@ export class CacheService {
    * Retrieve caches for a role
    *
    */
-  public async getCachesForRole(
-    role: string,
-  ): Promise<Either<ActionResponse, Map<string, string[]>>> {
-    return this.fetchCaller.get(
-      this.endpoint + '/meta/caches/_role-accessible?role=' + role,
-      (data) =>
-        new Map()
-          .set('secured', data['secured'])
-          .set('non-secured', data['non-secured']),
+  public async getCachesForRole(role: string): Promise<Either<ActionResponse, Map<string, string[]>>> {
+    return this.fetchCaller.get(this.endpoint + '/meta/caches/_role-accessible?role=' + role, (data) =>
+      new Map().set('secured', data['secured']).set('non-secured', data['non-secured'])
     );
   }
 
@@ -818,15 +694,11 @@ export class CacheService {
    * @param cacheName, the name of the cache
    */
   public async clearStats(cacheName: string): Promise<ActionResponse> {
-    const clearUrl =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/_stats-reset';
+    const clearUrl = this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/_stats-reset';
     return this.fetchCaller.post({
       url: clearUrl,
       successMessage: `Cache stats ${cacheName} cleared.`,
-      errorMessage: `Unexpected error when clearing the cache ${cacheName} stats.`,
+      errorMessage: `Unexpected error when clearing the cache ${cacheName} stats.`
     });
   }
 
@@ -835,42 +707,19 @@ export class CacheService {
    *
    * @param cacheName, the name of the cache
    */
-  public async getEditableConfig(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, EditableConfig>> {
+  public async getEditableConfig(cacheName: string): Promise<Either<ActionResponse, EditableConfig>> {
     const editableConfigUrl =
-      this.endpoint +
-      '/caches/' +
-      encodeURIComponent(cacheName) +
-      '/config/attributes?full=true';
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/config/attributes?full=true';
     return this.fetchCaller.get(editableConfigUrl, (data) => {
       return <EditableConfig>{
         maxIdle: data[CONF_MUTABLE_EXPIRATION_MAXIDLE].value,
         lifespan: data[CONF_MUTABLE_EXPIRATION_LIFESPAN].value,
-        memoryMaxSize: this.extractValueOrUndefined(
-          CONF_MUTABLE_MEMORY_MAX_SIZE,
-          data,
-        ),
-        memoryMaxCount: this.extractValueOrUndefined(
-          CONF_MUTABLE_MEMORY_MAX_COUNT,
-          data,
-        ),
-        indexedEntities: this.extractValueOrEmpty(
-          CONF_MUTABLE_INDEXING_INDEXED_ENTITIES,
-          data,
-        ),
-        securityAuthorizationRoles: this.extractValueOrEmpty(
-          CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES,
-          data,
-        ),
-        tracingEnabled: this.extractValueOrFalse(
-          CONF_MUTABLE_TRACING_ENABLED,
-          data,
-        ),
-        tracingCategories: this.extractValueOrEmpty(
-          CONF_MUTABLE_TRACING_CATEGORIES,
-          data,
-        ),
+        memoryMaxSize: this.extractValueOrUndefined(CONF_MUTABLE_MEMORY_MAX_SIZE, data),
+        memoryMaxCount: this.extractValueOrUndefined(CONF_MUTABLE_MEMORY_MAX_COUNT, data),
+        indexedEntities: this.extractValueOrEmpty(CONF_MUTABLE_INDEXING_INDEXED_ENTITIES, data),
+        securityAuthorizationRoles: this.extractValueOrEmpty(CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES, data),
+        tracingEnabled: this.extractValueOrFalse(CONF_MUTABLE_TRACING_ENABLED, data),
+        tracingCategories: this.extractValueOrEmpty(CONF_MUTABLE_TRACING_CATEGORIES, data)
       };
     });
   }

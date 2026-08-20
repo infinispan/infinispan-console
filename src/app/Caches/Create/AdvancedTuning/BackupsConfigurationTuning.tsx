@@ -7,7 +7,7 @@ import {
   Grid,
   HelperText,
   HelperTextItem,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import { CacheFeature } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
@@ -22,21 +22,14 @@ const BackupsConfigurationTuning = () => {
   const brandname = t('brandname.brandname');
 
   const [backupSiteData, setBackupSiteData] = useState<BackupSite[]>(
-    configuration.advanced.backupSiteData ||
-      Array(configuration.feature.backupsCache?.sites.length).fill({}),
+    configuration.advanced.backupSiteData || Array(configuration.feature.backupsCache?.sites.length).fill({})
   );
-  const [mergePolicy, setMergePolicy] = useState(
-    configuration.advanced.backupSetting?.mergePolicy,
-  );
-  const [maxCleanupDelay, setMaxCleanupDelay] = useState(
-    configuration.advanced.backupSetting?.maxCleanupDelay,
-  );
+  const [mergePolicy, setMergePolicy] = useState(configuration.advanced.backupSetting?.mergePolicy);
+  const [maxCleanupDelay, setMaxCleanupDelay] = useState(configuration.advanced.backupSetting?.maxCleanupDelay);
   const [maxCleanupDelayUnit, setMaxCleanupDelayUnit] = useState(
-    configuration.advanced.backupSetting?.maxCleanupDelayUnit,
+    configuration.advanced.backupSetting?.maxCleanupDelayUnit
   );
-  const [tombstoneMapSize, setTombstoneMapSize] = useState(
-    configuration.advanced.backupSetting?.tombstoneMapSize,
-  );
+  const [tombstoneMapSize, setTombstoneMapSize] = useState(configuration.advanced.backupSetting?.tombstoneMapSize);
 
   useEffect(() => {
     setConfiguration((prevState) => {
@@ -48,24 +41,16 @@ const BackupsConfigurationTuning = () => {
             mergePolicy: mergePolicy,
             maxCleanupDelay: maxCleanupDelay,
             maxCleanupDelayUnit: maxCleanupDelayUnit,
-            tombstoneMapSize: tombstoneMapSize,
+            tombstoneMapSize: tombstoneMapSize
           },
           backupSiteData: backupSiteData,
-          valid: true,
-        },
+          valid: true
+        }
       };
     });
-  }, [
-    backupSiteData,
-    mergePolicy,
-    maxCleanupDelay,
-    maxCleanupDelayUnit,
-    tombstoneMapSize,
-  ]);
+  }, [backupSiteData, mergePolicy, maxCleanupDelay, maxCleanupDelayUnit, tombstoneMapSize]);
 
-  if (
-    !configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS)
-  ) {
+  if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.BACKUPS)) {
     return <div />;
   }
 
@@ -79,19 +64,14 @@ const BackupsConfigurationTuning = () => {
             <PopoverHelp
               name="merge-policy"
               label={t('caches.create.configurations.feature.merge-policy')}
-              content={t(
-                'caches.create.configurations.feature.merge-policy-tooltip',
-                { brandname: brandname },
-              )}
+              content={t('caches.create.configurations.feature.merge-policy-tooltip', { brandname: brandname })}
             />
           }
         >
           <TextInput
             placeholder="DEFAULT"
             value={mergePolicy}
-            onChange={(_event, val) =>
-              setMergePolicy(val === '' ? undefined! : val)
-            }
+            onChange={(_event, val) => setMergePolicy(val === '' ? undefined! : val)}
             aria-label="merge-policy-input"
             data-cy="merge-policy-input"
           />
@@ -103,12 +83,8 @@ const BackupsConfigurationTuning = () => {
           labelHelp={
             <PopoverHelp
               name="cleanup-delay"
-              label={t(
-                'caches.create.configurations.feature.max-cleanup-delay',
-              )}
-              content={t(
-                'caches.create.configurations.feature.max-cleanup-delay-tooltip',
-              )}
+              label={t('caches.create.configurations.feature.max-cleanup-delay')}
+              content={t('caches.create.configurations.feature.max-cleanup-delay-tooltip')}
             />
           }
         >
@@ -128,13 +104,8 @@ const BackupsConfigurationTuning = () => {
           labelHelp={
             <PopoverHelp
               name="tombstone-map-size"
-              label={t(
-                'caches.create.configurations.feature.tombstone-map-site',
-              )}
-              content={t(
-                'caches.create.configurations.feature.tombstone-map-site-tooltip',
-                { brandname: brandname },
-              )}
+              label={t('caches.create.configurations.feature.tombstone-map-site')}
+              content={t('caches.create.configurations.feature.tombstone-map-site-tooltip', { brandname: brandname })}
             />
           }
         >
@@ -155,15 +126,10 @@ const BackupsConfigurationTuning = () => {
   };
 
   return (
-    <FormSection
-      title={t('caches.create.configurations.advanced-options.backups-tuning')}
-    >
+    <FormSection title={t('caches.create.configurations.advanced-options.backups-tuning')}>
       <HelperText>
         <HelperTextItem>
-          {t(
-            'caches.create.configurations.advanced-options.backups-tuning-tooltip',
-            { brandname: brandname },
-          )}
+          {t('caches.create.configurations.advanced-options.backups-tuning-tooltip', { brandname: brandname })}
         </HelperTextItem>
       </HelperText>
       {formBackupsSetting()}
@@ -177,7 +143,7 @@ const BackupsConfigurationTuning = () => {
                 <FormFieldGroupHeader
                   titleText={{
                     text: site.siteName,
-                    id: site.siteName + '-titleText-id',
+                    id: site.siteName + '-titleText-id'
                   }}
                 />
               }

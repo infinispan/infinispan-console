@@ -17,7 +17,7 @@ import {
   Spinner,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { Link, useParams } from 'react-router-dom';
 import { t_global_spacer_md } from '@patternfly/react-tokens';
@@ -41,12 +41,10 @@ const IndexManagement = () => {
   const { connectedUser } = useConnectedUser();
   const cacheName = useParams()['cacheName'] as string;
   const { stats, loading, error, setLoading } = useSearchStats(cacheName);
-  const { indexMetamodel, loadingIndexMetamodel, errorIndexMetamodel } =
-    useIndexMetamodel(cacheName);
+  const { indexMetamodel, loadingIndexMetamodel, errorIndexMetamodel } = useIndexMetamodel(cacheName);
   const [purgeModalOpen, setPurgeModalOpen] = useState<boolean>(false);
   const [reindexModalOpen, setReindexModalOpen] = useState<boolean>(false);
-  const [updateSchemaModalOpen, setUpdateSchemaModalOpen] =
-    useState<boolean>(false);
+  const [updateSchemaModalOpen, setUpdateSchemaModalOpen] = useState<boolean>(false);
   const [indexMetamodelName, setIndexMetamodelName] = useState<string>('');
 
   const closePurgeModal = () => {
@@ -65,9 +63,7 @@ const IndexManagement = () => {
   };
 
   const buildUpdateSchemaAction = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       return;
     }
 
@@ -88,9 +84,7 @@ const IndexManagement = () => {
   };
 
   const buildReindexAction = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       return;
     }
 
@@ -111,9 +105,7 @@ const IndexManagement = () => {
   };
 
   const buildPurgeIndexButton = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       return;
     }
 
@@ -146,28 +138,17 @@ const IndexManagement = () => {
         <Grid hasGutter>
           {stats.index.map((indexData, num) => (
             <GridItem span={6} key={'grid-item-index-' + num}>
-              <Content
-                component={ContentVariants.dl}
-                key={'index-className-' + num}
-              >
-                <Content component={ContentVariants.dt}>
-                  {t('caches.index.class-name')}
-                </Content>
+              <Content component={ContentVariants.dl} key={'index-className-' + num}>
+                <Content component={ContentVariants.dt}>{t('caches.index.class-name')}</Content>
                 <Content component={ContentVariants.dd} key={'classNameValue'}>
-                  <Content
-                    component={'a'}
-                    onClick={() => setIndexMetamodelName(indexData.name)}
-                  >
+                  <Content component={'a'} onClick={() => setIndexMetamodelName(indexData.name)}>
                     {indexData.name}
                   </Content>
                 </Content>
                 <Content component={ContentVariants.dt} key={'entriesCount'}>
                   {t('caches.index.entities-number')}
                 </Content>
-                <Content
-                  component={ContentVariants.dd}
-                  key={'entriesCountValue'}
-                >
+                <Content component={ContentVariants.dd} key={'entriesCountValue'}>
                   <Content>{indexData.count}</Content>
                 </Content>
                 <Content component={ContentVariants.dt} key={'sizes'}>
@@ -184,11 +165,7 @@ const IndexManagement = () => {
     }
 
     return (
-      <EmptyState
-        variant={EmptyStateVariant.sm}
-        icon={DatabaseIcon}
-        status={'info'}
-      >
+      <EmptyState variant={EmptyStateVariant.sm} icon={DatabaseIcon} status={'info'}>
         <EmptyStateBody>{t('caches.index.empty')}</EmptyStateBody>
       </EmptyState>
     );
@@ -196,20 +173,12 @@ const IndexManagement = () => {
 
   return (
     <React.Fragment>
-      <DataContainerBreadcrumb
-        currentPage={t('caches.index.title')}
-        cacheName={cacheName}
-      />
-      <PageHeader
-        title={t('caches.index.title')}
-        subtitle={t('caches.index.description')}
-      />
+      <DataContainerBreadcrumb currentPage={t('caches.index.title')} cacheName={cacheName} />
+      <PageHeader title={t('caches.index.title')} subtitle={t('caches.index.description')} />
       <PageSection>
         {buildIndexPageContent()}
         <Toolbar id="indexing-page-toolbar">
-          <ToolbarContent
-            style={{ paddingLeft: 0, paddingTop: t_global_spacer_md.value }}
-          >
+          <ToolbarContent style={{ paddingLeft: 0, paddingTop: t_global_spacer_md.value }}>
             {buildUpdateSchemaAction()}
             {buildReindexAction()}
             {buildPurgeIndexButton()}
@@ -217,7 +186,7 @@ const IndexManagement = () => {
               <Link
                 to={{
                   pathname: '/cache/' + encodeURIComponent(cacheName),
-                  search: location.search,
+                  search: location.search
                 }}
               >
                 <Button variant={ButtonVariant.link} data-cy="backButton">
@@ -228,21 +197,9 @@ const IndexManagement = () => {
           </ToolbarContent>
         </Toolbar>
       </PageSection>
-      <PurgeIndex
-        cacheName={cacheName}
-        isModalOpen={purgeModalOpen}
-        closeModal={closePurgeModal}
-      />
-      <Reindex
-        cacheName={cacheName}
-        isModalOpen={reindexModalOpen}
-        closeModal={closeReindexModal}
-      />
-      <UpdateSchema
-        cacheName={cacheName}
-        isModalOpen={updateSchemaModalOpen}
-        closeModal={closeUpdateSchemaModal}
-      />
+      <PurgeIndex cacheName={cacheName} isModalOpen={purgeModalOpen} closeModal={closePurgeModal} />
+      <Reindex cacheName={cacheName} isModalOpen={reindexModalOpen} closeModal={closeReindexModal} />
+      <UpdateSchema cacheName={cacheName} isModalOpen={updateSchemaModalOpen} closeModal={closeUpdateSchemaModal} />
       <ViewMetamodel
         metamodelName={indexMetamodelName}
         metamodels={indexMetamodel}

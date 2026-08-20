@@ -12,29 +12,19 @@ const initialUserState = {
   reloadAcl: (): Promise<boolean> => {
     return Promise.resolve(true);
   },
-  init: 'PENDING',
+  init: 'PENDING'
 };
 
 export const UserContext = React.createContext(initialUserState);
 
 const UserContextProvider = ({ children }) => {
-  const [loadingAcl, setLoadingAcl] = useState(
-    !ConsoleServices.isWelcomePage(),
-  );
-  const [connectedUser, setConnectedUser] = useState(
-    initialUserState.connectedUser,
-  );
+  const [loadingAcl, setLoadingAcl] = useState(!ConsoleServices.isWelcomePage());
+  const [connectedUser, setConnectedUser] = useState(initialUserState.connectedUser);
   const [notSecured, setNotSecured] = useState(initialUserState.notSecured);
   const [error, setError] = useState(initialUserState.error);
   const navigate = useNavigate();
   const [init, setInit] = useState<
-    | 'SERVER_ERROR'
-    | 'READY'
-    | 'NOT_READY'
-    | 'PENDING'
-    | 'DONE'
-    | 'LOGIN'
-    | 'HTTP_LOGIN'
+    'SERVER_ERROR' | 'READY' | 'NOT_READY' | 'PENDING' | 'DONE' | 'LOGIN' | 'HTTP_LOGIN'
   >('PENDING');
 
   useEffect(() => {
@@ -55,20 +45,11 @@ const UserContextProvider = ({ children }) => {
                   if (!KeycloakService.Instance.authenticated()) {
                     KeycloakService.Instance.login();
                   }
-                  localStorage.setItem(
-                    'react-token',
-                    KeycloakService.keycloakAuth.token as string,
-                  );
-                  localStorage.setItem(
-                    'react-refresh-token',
-                    KeycloakService.keycloakAuth.refreshToken as string,
-                  );
+                  localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
+                  localStorage.setItem('react-refresh-token', KeycloakService.keycloakAuth.refreshToken as string);
                   setTimeout(() => {
                     KeycloakService.Instance.getToken().then((result) => {
-                      localStorage.setItem(
-                        'react-token',
-                        KeycloakService.keycloakAuth.token as string,
-                      );
+                      localStorage.setItem('react-token', KeycloakService.keycloakAuth.token as string);
                     });
                   }, 60000);
                   setInit('DONE');
@@ -98,7 +79,7 @@ const UserContextProvider = ({ children }) => {
           if (eitherAcl.isRight()) {
             const maybeConnected = {
               name: eitherAcl.value.user,
-              acl: eitherAcl.value,
+              acl: eitherAcl.value
             };
             setConnectedUser(maybeConnected);
           } else {
@@ -117,7 +98,7 @@ const UserContextProvider = ({ children }) => {
         if (eitherAcl.isRight()) {
           const maybeConnected = {
             name: eitherAcl.value.user,
-            acl: eitherAcl.value,
+            acl: eitherAcl.value
           };
           setConnectedUser(maybeConnected);
         } else {
@@ -134,7 +115,7 @@ const UserContextProvider = ({ children }) => {
           setConnectedUser((prevState) => {
             return {
               ...prevState,
-              acl: eitherAcl.value,
+              acl: eitherAcl.value
             };
           });
         }
@@ -155,12 +136,10 @@ const UserContextProvider = ({ children }) => {
     logUser: logUser,
     notSecuredModeOn: notSecuredModeOn,
     reloadAcl: reloadAcl,
-    init: init,
+    init: init
   };
 
-  return (
-    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
-  );
+  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 };
 
 export { UserContextProvider };

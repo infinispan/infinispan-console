@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { formatXml } from '@app/utils/dataSerializerUtils';
 import { useApiAlert } from '@utils/useApiAlert';
-import {
-  CONF_MUTABLE_TRACING_CATEGORIES,
-  CONF_MUTABLE_TRACING_ENABLED,
-} from '@services/cacheConfigUtils';
+import { CONF_MUTABLE_TRACING_CATEGORIES, CONF_MUTABLE_TRACING_ENABLED } from '@services/cacheConfigUtils';
 import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useCacheAliases(cacheName: string) {
@@ -64,11 +61,8 @@ export function useFetchConfigurationYAML(cacheName: string) {
   const {
     data: configuration,
     loading,
-    error,
-  } = useServiceCall<string>(
-    () => ConsoleServices.caches().getConfiguration(cacheName, 'yaml'),
-    '',
-  );
+    error
+  } = useServiceCall<string>(() => ConsoleServices.caches().getConfiguration(cacheName, 'yaml'), '');
 
   return { loading, error, configuration };
 }
@@ -77,12 +71,10 @@ export function useFetchConfigurationXML(cacheName: string) {
   const {
     data: configuration,
     loading,
-    error,
-  } = useServiceCall<string>(
-    () => ConsoleServices.caches().getConfiguration(cacheName, 'xml'),
-    '',
-    { transform: formatXml },
-  );
+    error
+  } = useServiceCall<string>(() => ConsoleServices.caches().getConfiguration(cacheName, 'xml'), '', {
+    transform: formatXml
+  });
 
   return { loading, error, configuration };
 }

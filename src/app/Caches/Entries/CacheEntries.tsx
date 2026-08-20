@@ -27,31 +27,14 @@ import {
   ToolbarGroup,
   ToolbarItem,
   ToolbarToggleGroup,
-  Tooltip,
+  Tooltip
 } from '@patternfly/react-core';
-import {
-  ActionsColumn,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
-import {
-  ColumnsIcon,
-  FilterIcon,
-  HelpIcon,
-  PlusCircleIcon,
-  SearchIcon,
-} from '@patternfly/react-icons';
+import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
+import { ColumnsIcon, FilterIcon, HelpIcon, PlusCircleIcon, SearchIcon } from '@patternfly/react-icons';
 import ColumnManagementModal, {
-  ColumnManagementModalColumn,
+  ColumnManagementModalColumn
 } from '@patternfly/react-component-groups/dist/dynamic/ColumnManagementModal';
-import {
-  t_global_spacer_md,
-  t_global_spacer_sm,
-} from '@patternfly/react-tokens';
+import { t_global_spacer_md, t_global_spacer_sm } from '@patternfly/react-tokens';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import displayUtils from '@services/displayUtils';
 import { useTranslation } from 'react-i18next';
@@ -66,10 +49,7 @@ import { ClearAllEntries } from '@app/Caches/Entries/ClearAllEntries';
 import { DeleteEntry } from '@app/Caches/Entries/DeleteEntry';
 import { ThemeContext } from '@app/providers/ThemeProvider';
 import { SelectSingle } from '@app/Common/SelectSingle';
-import {
-  selectOptionProps,
-  selectOptionPropsFromArray,
-} from '@utils/selectOptionPropsCreator';
+import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 import { useLocalStorage } from '@app/utils/localStorage';
 
 const CacheEntries = () => {
@@ -82,35 +62,28 @@ const CacheEntries = () => {
     reloadEntries,
     getByKey,
     limit,
-    setLimit,
+    setLimit
   } = useCacheEntries();
   const { cache } = useCacheDetail();
   const { connectedUser } = useConnectedUser();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
-  const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] =
-    useState<boolean>(false);
-  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] =
-    useState<boolean>(false);
+  const [isCreateOrUpdateEntryFormOpen, setCreateOrUpdateEntryFormOpen] = useState<boolean>(false);
+  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState<boolean>(false);
   const [keyToDelete, setKeyToDelete] = useState<string>('');
   const [keyToEdit, setKeyToEdit] = useState<string>('');
-  const [keyContentTypeToEdit, setKeyContentTypeToEdit] = useState<ContentType>(
-    ContentType.StringContentType,
-  );
+  const [keyContentTypeToEdit, setKeyContentTypeToEdit] = useState<ContentType>(ContentType.StringContentType);
   const [isClearAllModalOpen, setClearAllModalOpen] = useState<boolean>(false);
   const [rows, setRows] = useState<CacheEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<CacheEntry[]>([]);
-  const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(
-    ContentType.string,
-  );
+  const [selectSearchOption, setSelectSearchOption] = useState<ContentType>(ContentType.string);
   const [searchValue, setSearchValue] = useState<string>('');
   const [trim, setTrim] = useState<boolean>(false);
-  const [entriesPagination, setEntriesPagination] =
-    useLocalStorage<PaginationType>('cache-entries-table', {
-      page: 1,
-      perPage: 10,
-    });
+  const [entriesPagination, setEntriesPagination] = useLocalStorage<PaginationType>('cache-entries-table', {
+    page: 1,
+    perPage: 10
+  });
 
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
   const [isColumnModalOpen, setColumnModalOpen] = useState(false);
@@ -121,47 +94,45 @@ const CacheEntries = () => {
       key: 'key',
       isShownByDefault: true,
       isShown: true,
-      isUntoggleable: true,
+      isUntoggleable: true
     },
     {
       title: t('caches.entries.column-value'),
       key: 'value',
       isShownByDefault: true,
       isShown: true,
-      isUntoggleable: true,
+      isUntoggleable: true
     },
     {
       title: t('caches.entries.column-lifespan'),
       key: 'lifespan',
       isShownByDefault: true,
-      isShown: true,
+      isShown: true
     },
     {
       title: t('caches.entries.column-maxidle'),
       key: 'maxIdle',
       isShownByDefault: true,
-      isShown: true,
+      isShown: true
     },
     {
       title: t('caches.entries.column-expires'),
       key: 'expires',
       isShownByDefault: false,
-      isShown: false,
-    },
+      isShown: false
+    }
   ];
 
-  const [savedColumnVisibility, setSavedColumnVisibility] = useLocalStorage<
-    Record<string, boolean>
-  >('cache-entries-columns', {});
+  const [savedColumnVisibility, setSavedColumnVisibility] = useLocalStorage<Record<string, boolean>>(
+    'cache-entries-columns',
+    {}
+  );
 
   const [columns, setColumns] = useState<ColumnManagementModalColumn[]>(() =>
     defaultColumns.map((col) => ({
       ...col,
-      isShown:
-        col.key in savedColumnVisibility
-          ? savedColumnVisibility[col.key]
-          : col.isShown,
-    })),
+      isShown: col.key in savedColumnVisibility ? savedColumnVisibility[col.key] : col.isShown
+    }))
   );
 
   const applyColumns = (newColumns: ColumnManagementModalColumn[]) => {
@@ -171,8 +142,7 @@ const CacheEntries = () => {
     setSavedColumnVisibility(visibility);
   };
 
-  const isColumnShown = (key: string) =>
-    columns.find((c) => c.key === key)?.isShown ?? false;
+  const isColumnShown = (key: string) => columns.find((c) => c.key === key)?.isShown ?? false;
 
   useEffect(() => {
     if (cache.encoding?.key == EncodingType.Protobuf) {
@@ -205,12 +175,8 @@ const CacheEntries = () => {
 
   useEffect(() => {
     if (filteredEntries) {
-      const initSlice =
-        (entriesPagination.page - 1) * entriesPagination.perPage;
-      const updateRows = filteredEntries.slice(
-        initSlice,
-        initSlice + entriesPagination.perPage,
-      );
+      const initSlice = (entriesPagination.page - 1) * entriesPagination.perPage;
+      const updateRows = filteredEntries.slice(initSlice, initSlice + entriesPagination.perPage);
       setRows(updateRows);
     }
   }, [entriesPagination, filteredEntries]);
@@ -224,25 +190,19 @@ const CacheEntries = () => {
   const onSetPage = (_event, pageNumber) => {
     setEntriesPagination({
       ...entriesPagination,
-      page: pageNumber,
+      page: pageNumber
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setEntriesPagination({
       page: 1,
-      perPage: perPage,
+      perPage: perPage
     });
   };
 
   const displayActions = (row) => {
-    if (
-      !ConsoleServices.security().hasCacheConsoleACL(
-        ConsoleACL.WRITE,
-        cache.name,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
       return <Td></Td>;
     }
 
@@ -252,8 +212,7 @@ const CacheEntries = () => {
       actions.push({
         'aria-label': 'editEntryAction',
         title: t('caches.entries.action-edit'),
-        onClick: () =>
-          onClickEditEntryButton(row.key, row.keyContentType as ContentType),
+        onClick: () => onClickEditEntryButton(row.key, row.keyContentType as ContentType)
       });
     }
     if (cache.deleteEntry) {
@@ -261,8 +220,7 @@ const CacheEntries = () => {
       actions.push({
         'aria-label': 'deleteEntryAction',
         title: t('caches.entries.action-delete'),
-        onClick: () =>
-          onClickDeleteEntryButton(row.key, row.keyContentType as ContentType),
+        onClick: () => onClickDeleteEntryButton(row.key, row.keyContentType as ContentType)
       });
     }
 
@@ -282,14 +240,10 @@ const CacheEntries = () => {
     value: t('caches.entries.column-value'),
     lifespan: t('caches.entries.column-lifespan'),
     maxIdle: t('caches.entries.column-maxidle'),
-    expires: t('caches.entries.column-expires'),
+    expires: t('caches.entries.column-expires')
   };
 
-  const displayHighlighted = (
-    value: string,
-    encodingType: EncodingType,
-    contentType?: ContentType,
-  ) => {
+  const displayHighlighted = (value: string, encodingType: EncodingType, contentType?: ContentType) => {
     const highlightedContent = (
       <SyntaxHighlighter
         language="json"
@@ -323,19 +277,13 @@ const CacheEntries = () => {
     setClearAllModalOpen(true);
   };
 
-  const onClickEditEntryButton = (
-    entryKey: string,
-    keyContentType: ContentType,
-  ) => {
+  const onClickEditEntryButton = (entryKey: string, keyContentType: ContentType) => {
     setKeyToEdit(entryKey);
     setKeyContentTypeToEdit(keyContentType);
     setCreateOrUpdateEntryFormOpen(true);
   };
 
-  const onClickDeleteEntryButton = (
-    entryKey: string,
-    keyContentType: ContentType,
-  ) => {
+  const onClickDeleteEntryButton = (entryKey: string, keyContentType: ContentType) => {
     setDeleteEntryModalOpen(true);
     setKeyToDelete(entryKey);
     setKeyContentTypeToEdit(keyContentType);
@@ -359,13 +307,7 @@ const CacheEntries = () => {
   };
 
   const addEntryAction = () => {
-    if (
-      !ConsoleServices.security().hasCacheConsoleACL(
-        ConsoleACL.WRITE,
-        cache.name,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.WRITE, cache.name, connectedUser)) {
       return '';
     }
 
@@ -384,23 +326,13 @@ const CacheEntries = () => {
   };
 
   const clearAllAction = () => {
-    if (
-      !ConsoleServices.security().hasCacheConsoleACL(
-        ConsoleACL.BULK_WRITE,
-        cache.name,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_WRITE, cache.name, connectedUser)) {
       return '';
     }
 
     return (
       <ToolbarItem>
-        <Button
-          data-cy="clearAllButton"
-          variant={ButtonVariant.link}
-          onClick={onClickClearAllButton}
-        >
+        <Button data-cy="clearAllButton" variant={ButtonVariant.link} onClick={onClickClearAllButton}>
           {t('caches.entries.clear-entry-button-label')}
         </Button>
       </ToolbarItem>
@@ -414,13 +346,9 @@ const CacheEntries = () => {
       icon={PlusCircleIcon}
       headingLevel="h4"
     >
-      <EmptyStateBody>
-        {infoEntries ? t(infoEntries) : t('caches.entries.empty-cache-body')}
-      </EmptyStateBody>
+      <EmptyStateBody>{infoEntries ? t(infoEntries) : t('caches.entries.empty-cache-body')}</EmptyStateBody>
       <EmptyStateFooter>
-        <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
-          {addEntryAction()}
-        </EmptyStateActions>
+        <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>{addEntryAction()}</EmptyStateActions>
       </EmptyStateFooter>
     </EmptyState>
   );
@@ -442,11 +370,7 @@ const CacheEntries = () => {
   };
 
   const keyContentTypeOptions = (): SelectOptionProps[] => {
-    return selectOptionPropsFromArray(
-      CacheConfigUtils.getContentTypeOptions(
-        cache.encoding?.key as EncodingType,
-      ),
-    );
+    return selectOptionPropsFromArray(CacheConfigUtils.getContentTypeOptions(cache.encoding?.key as EncodingType));
   };
 
   const searchEntryByKey = () => {
@@ -495,10 +419,7 @@ const CacheEntries = () => {
         <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
           {buildSearch}
         </ToolbarToggleGroup>
-        <Divider
-          orientation={{ default: 'vertical' }}
-          inset={{ default: 'insetSm' }}
-        />
+        <Divider orientation={{ default: 'vertical' }} inset={{ default: 'insetSm' }} />
         {addEntryAction()}
         {clearAllAction()}
         <ToolbarItem>
@@ -510,9 +431,7 @@ const CacheEntries = () => {
             style={{ width: '100px' }}
             onSelect={(value) => setLimit(value)}
           />
-          <Tooltip
-            content={t('caches.entries.pagination-tooltip', { number: limit })}
-          >
+          <Tooltip content={t('caches.entries.pagination-tooltip', { number: limit })}>
             <Button variant="plain">
               <HelpIcon />
             </Button>
@@ -543,17 +462,13 @@ const CacheEntries = () => {
             </FlexItem>
           </Flex>
         </ToolbarItem>
-        <ToolbarItem variant="pagination">
-          {toolbarPagination('down')}
-        </ToolbarItem>
+        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
 
   const displayTimeToLive = (entry) => {
-    return entry.timeToLive
-      ? entry.timeToLive
-      : t('caches.entries.lifespan-immortal');
+    return entry.timeToLive ? entry.timeToLive : t('caches.entries.lifespan-immortal');
   };
 
   const displayMaxIdle = (entry) => {
@@ -565,13 +480,7 @@ const CacheEntries = () => {
   };
 
   const encodingMessageDisplay = () => {
-    if (
-      !ConsoleServices.security().hasCacheConsoleACL(
-        ConsoleACL.READ,
-        cache.name,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.READ, cache.name, connectedUser)) {
       return '';
     }
     const encodingKey = CacheConfigUtils.toEncoding(cache.encoding?.key);
@@ -592,13 +501,11 @@ const CacheEntries = () => {
           title={t('caches.configuration.pojo-encoding', {
             brandname: brandname,
             encodingKey: encodingKey,
-            encodingValue: encodingValue,
+            encodingValue: encodingValue
           })}
           variant={AlertVariant.info}
           actionLinks={
-            <AlertActionLink
-              onClick={() => window.open(encodingDocs, '_blank')}
-            >
+            <AlertActionLink onClick={() => window.open(encodingDocs, '_blank')}>
               {t('caches.configuration.encoding-docs-message')}
             </AlertActionLink>
           }
@@ -622,11 +529,7 @@ const CacheEntries = () => {
           <React.Fragment>
             {toolbar}
 
-            <Table
-              className={'entries-table'}
-              aria-label={'entries-table-label'}
-              variant={'compact'}
-            >
+            <Table className={'entries-table'} aria-label={'entries-table-label'} variant={'compact'}>
               <Thead>
                 <Tr>
                   <Th colSpan={1}>{columnNames.key}</Th>
@@ -635,11 +538,11 @@ const CacheEntries = () => {
                     <Th
                       info={{
                         popover: t('caches.entries.column-lifespan-tooltip', {
-                          brandname: brandname,
+                          brandname: brandname
                         }),
                         popoverProps: {
-                          headerContent: t('caches.entries.column-lifespan'),
-                        },
+                          headerContent: t('caches.entries.column-lifespan')
+                        }
                       }}
                       colSpan={1}
                     >
@@ -650,20 +553,18 @@ const CacheEntries = () => {
                     <Th
                       info={{
                         popover: t('caches.entries.column-maxidle-tooltip', {
-                          brandname: brandname,
+                          brandname: brandname
                         }),
                         popoverProps: {
-                          headerContent: t('caches.entries.column-maxidle'),
-                        },
+                          headerContent: t('caches.entries.column-maxidle')
+                        }
                       }}
                       colSpan={1}
                     >
                       {columnNames.maxIdle}
                     </Th>
                   )}
-                  {isColumnShown('expires') && (
-                    <Th colSpan={1}>{columnNames.expires}</Th>
-                  )}
+                  {isColumnShown('expires') && <Th colSpan={1}>{columnNames.expires}</Th>}
                   <Th />
                 </Tr>
               </Thead>
@@ -674,19 +575,13 @@ const CacheEntries = () => {
                       <Bullseye>
                         <EmptyState
                           variant={EmptyStateVariant.sm}
-                          titleText={
-                            <>{t('caches.entries.no-filtered-entry')}</>
-                          }
+                          titleText={<>{t('caches.entries.no-filtered-entry')}</>}
                           icon={SearchIcon}
                           headingLevel="h2"
                         >
-                          <EmptyStateBody>
-                            {t('caches.entries.no-filtered-entry-tooltip')}
-                          </EmptyStateBody>
+                          <EmptyStateBody>{t('caches.entries.no-filtered-entry-tooltip')}</EmptyStateBody>
                           <EmptyStateFooter>
-                            <EmptyStateActions
-                              style={{ marginTop: t_global_spacer_sm.value }}
-                            >
+                            <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
                               <Button
                                 data-cy="clearSearch"
                                 key="clear-search"
@@ -711,31 +606,21 @@ const CacheEntries = () => {
                           {displayHighlighted(
                             row.key,
                             cache.encoding?.key as EncodingType,
-                            row.keyContentType as ContentType,
+                            row.keyContentType as ContentType
                           )}
                         </Td>
                         <Td dataLabel={columnNames.value}>
                           {displayHighlighted(
                             row.value,
                             cache.encoding?.value as EncodingType,
-                            row.valueContentType as ContentType,
+                            row.valueContentType as ContentType
                           )}
                         </Td>
                         {isColumnShown('lifespan') && (
-                          <Td dataLabel={columnNames.lifespan}>
-                            {displayTimeToLive(row)}
-                          </Td>
+                          <Td dataLabel={columnNames.lifespan}>{displayTimeToLive(row)}</Td>
                         )}
-                        {isColumnShown('maxIdle') && (
-                          <Td dataLabel={columnNames.maxIdle}>
-                            {displayMaxIdle(row)}
-                          </Td>
-                        )}
-                        {isColumnShown('expires') && (
-                          <Td dataLabel={columnNames.expires}>
-                            {displayExpires(row)}
-                          </Td>
-                        )}
+                        {isColumnShown('maxIdle') && <Td dataLabel={columnNames.maxIdle}>{displayMaxIdle(row)}</Td>}
+                        {isColumnShown('expires') && <Td dataLabel={columnNames.expires}>{displayExpires(row)}</Td>}
                         {displayActions(row)}
                       </Tr>
                     );
@@ -744,9 +629,7 @@ const CacheEntries = () => {
               </Tbody>
             </Table>
             <Toolbar>
-              <ToolbarItem variant="pagination">
-                {toolbarPagination('up')}
-              </ToolbarItem>
+              <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
             </Toolbar>
           </React.Fragment>
         )}

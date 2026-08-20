@@ -8,11 +8,8 @@ export function useFetchAvailableRolesNames() {
   const {
     data: availableRoleNames,
     loading,
-    error,
-  } = useServiceCall<string[]>(
-    () => ConsoleServices.security().getSecurityRolesNames(),
-    [],
-  );
+    error
+  } = useServiceCall<string[]>(() => ConsoleServices.security().getSecurityRolesNames(), []);
 
   return { availableRoleNames, loading, error };
 }
@@ -22,29 +19,20 @@ export function useFetchAvailableRoles() {
     data: roles,
     loading,
     setLoading,
-    error,
-  } = useServiceCall<Role[]>(
-    () => ConsoleServices.security().getSecurityRoles(),
-    [],
-    {
-      transform: (roles) =>
-        [...roles].sort((r1, r2) => {
-          if (r1.implicit && !r2.implicit) return -1;
-          if (!r1.implicit && r2.implicit) return 1;
-          return r1.name < r2.name ? -1 : 1;
-        }),
-    },
-  );
+    error
+  } = useServiceCall<Role[]>(() => ConsoleServices.security().getSecurityRoles(), [], {
+    transform: (roles) =>
+      [...roles].sort((r1, r2) => {
+        if (r1.implicit && !r2.implicit) return -1;
+        if (!r1.implicit && r2.implicit) return 1;
+        return r1.name < r2.name ? -1 : 1;
+      })
+  });
 
   return { roles, loading, setLoading, error };
 }
 
-export function useUpdateRole(
-  roleName: string,
-  roleDescription: string,
-  permissions: string[],
-  call: () => void,
-) {
+export function useUpdateRole(roleName: string, roleDescription: string, permissions: string[], call: () => void) {
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
 
@@ -55,7 +43,7 @@ export function useUpdateRole(
         roleDescription,
         permissions,
         t('access-management.role.update-success', { name: roleName }),
-        t('access-management.role.update-error', { name: roleName }),
+        t('access-management.role.update-error', { name: roleName })
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -63,16 +51,11 @@ export function useUpdateRole(
       .finally(() => call());
   };
   return {
-    onUpdateRole,
+    onUpdateRole
   };
 }
 
-export function useRemovePermission(
-  roleName: string,
-  permission: string,
-  permissions: string[],
-  call: () => void,
-) {
+export function useRemovePermission(roleName: string, permission: string, permissions: string[], call: () => void) {
   const { addAlert } = useApiAlert();
   const { t } = useTranslation();
 
@@ -90,7 +73,7 @@ export function useRemovePermission(
         '',
         perms,
         t('access-management.role.update-success', { name: roleName }),
-        t('access-management.role.update-error', { name: roleName }),
+        t('access-management.role.update-error', { name: roleName })
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -98,16 +81,11 @@ export function useRemovePermission(
       .finally(() => call());
   };
   return {
-    onRemovePermission,
+    onRemovePermission
   };
 }
 
-export function useCreateRole(
-  roleName: string,
-  roleDescription: string,
-  permissions: string[],
-  call: () => void,
-) {
+export function useCreateRole(roleName: string, roleDescription: string, permissions: string[], call: () => void) {
   const { addAlert } = useApiAlert();
 
   const onCreateRole = () => {
@@ -119,7 +97,7 @@ export function useCreateRole(
       .finally(() => call());
   };
   return {
-    onCreateRole,
+    onCreateRole
   };
 }
 
@@ -131,7 +109,7 @@ export function useDeleteRole(roleName: string, call: () => void) {
       .deleteRole(
         roleName,
         t('access-management.roles.delete-success', { name: roleName }),
-        t('access-management.roles.delete-error', { name: roleName }),
+        t('access-management.roles.delete-error', { name: roleName })
       )
       .then((actionResponse) => {
         addAlert(actionResponse);
@@ -139,7 +117,7 @@ export function useDeleteRole(roleName: string, call: () => void) {
       .finally(() => call());
   };
   return {
-    onDeleteRole,
+    onDeleteRole
   };
 }
 
@@ -148,11 +126,8 @@ export function useDescribeRole(roleName: string) {
     data: role,
     loading,
     error,
-    setLoading,
-  } = useServiceCall<Role | undefined>(
-    () => ConsoleServices.security().describeRole(roleName),
-    undefined,
-  );
+    setLoading
+  } = useServiceCall<Role | undefined>(() => ConsoleServices.security().describeRole(roleName), undefined);
 
   return { role, loading, error, setLoading };
 }
@@ -162,29 +137,25 @@ export function useFlushCache(call: () => void) {
   const { t } = useTranslation();
   const onFlushCache = () => {
     ConsoleServices.security()
-      .flushCache(
-        t('access-management.flush-cache-success'),
-        t('access-management.flush-cache-error'),
-      )
+      .flushCache(t('access-management.flush-cache-success'), t('access-management.flush-cache-error'))
       .then((actionResponse) => {
         addAlert(actionResponse);
       })
       .finally(() => call());
   };
   return {
-    onFlushCache,
+    onFlushCache
   };
 }
 
 export function useCachesForRole(roleName: string) {
   const { data, loading, error } = useServiceCall<Map<string, string[]>>(
     () => ConsoleServices.caches().getCachesForRole(roleName),
-    new Map(),
+    new Map()
   );
 
   const secured = (data.get('secured') as string[] | undefined)?.sort() ?? [];
-  const nonSecured =
-    (data.get('non-secured') as string[] | undefined)?.sort() ?? [];
+  const nonSecured = (data.get('non-secured') as string[] | undefined)?.sort() ?? [];
 
   return { secured, nonSecured, loading, error };
 }

@@ -13,11 +13,7 @@ const FeatureAlert = (props: { feature: CacheFeature; error?: string }) => {
       variant={AlertVariant.info}
       isInline
       isPlain
-      title={t(
-        'caches.create.configurations.feature.' +
-          props.feature.toLowerCase() +
-          '-disabled',
-      )}
+      title={t('caches.create.configurations.feature.' + props.feature.toLowerCase() + '-disabled')}
       actionLinks={
         <React.Fragment>
           <AlertActionLink onClick={() => removeFeature(props.feature)}>
@@ -27,14 +23,9 @@ const FeatureAlert = (props: { feature: CacheFeature; error?: string }) => {
       }
     >
       {!props.error
-        ? t(
-            'caches.create.configurations.feature.' +
-              props.feature.toLowerCase() +
-              '-disabled-description',
-            {
-              brandname: brandname,
-            },
-          )
+        ? t('caches.create.configurations.feature.' + props.feature.toLowerCase() + '-disabled-description', {
+            brandname: brandname
+          })
         : props.error}
     </Alert>
   );

@@ -1,12 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  Alert,
-  AlertVariant,
-  Content,
-  ContentVariants,
-  Form,
-  FormGroup,
-} from '@patternfly/react-core';
+import { Alert, AlertVariant, Content, ContentVariants, Form, FormGroup } from '@patternfly/react-core';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
@@ -17,18 +10,13 @@ import { ConfigDownloadType } from '@services/infinispanRefData';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { toCodeEditorLanguage } from '@utils/getLanguage';
 
-const ReviewCacheConfig = (props: {
-  setReviewConfig: (string) => void;
-  setContentType: (string) => void;
-}) => {
+const ReviewCacheConfig = (props: { setReviewConfig: (string) => void; setContentType: (string) => void }) => {
   const { configuration } = useCreateCache();
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
   const [language, setLanguage] = useState(ConfigDownloadType.JSON);
-  const [jsonConfig, setJsonConfig] = useState(
-    CacheConfigUtils.createCacheConfigFromData(configuration),
-  );
+  const [jsonConfig, setJsonConfig] = useState(CacheConfigUtils.createCacheConfigFromData(configuration));
   const [yamlConfig, setYamlConfig] = useState('');
   const [xmlConfig, setXmlConfig] = useState('');
   const [error, setError] = useState('');
@@ -84,11 +72,7 @@ const ReviewCacheConfig = (props: {
     return (
       <FormGroup fieldId="cache-config">
         {error !== '' && (
-          <Alert
-            style={{ marginBottom: '1rem' }}
-            title="Invalid configuration"
-            variant={AlertVariant.danger}
-          >
+          <Alert style={{ marginBottom: '1rem' }} title="Invalid configuration" variant={AlertVariant.danger}>
             {error}
           </Alert>
         )}
@@ -101,9 +85,7 @@ const ReviewCacheConfig = (props: {
           height={'400px'}
           isCopyEnabled
           isDarkTheme={theme === DARK}
-          copyButtonSuccessTooltipText={t(
-            'caches.create.review.copied-tooltip',
-          )}
+          copyButtonSuccessTooltipText={t('caches.create.review.copied-tooltip')}
           copyButtonToolTipText={t('caches.create.review.copy-tooltip')}
           options={{ editContext: false }}
         />
@@ -120,12 +102,10 @@ const ReviewCacheConfig = (props: {
       <Content>
         <Content component={ContentVariants.h1}>
           {t('caches.create.review.review-title', {
-            name: configuration.start.cacheName,
+            name: configuration.start.cacheName
           })}
         </Content>
-        <Content component={ContentVariants.p}>
-          {t('caches.create.review.review-subtitle')}
-        </Content>
+        <Content component={ContentVariants.p}>{t('caches.create.review.review-subtitle')}</Content>
       </Content>
       <LanguageToggleRadios language={language} setLanguage={setLanguage} />
       {displayCacheConfigEditor()}

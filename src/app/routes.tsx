@@ -12,10 +12,7 @@ import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
 import { AccessManager } from '@app/AccessManagement/AccessManager';
-import {
-  useAppInitState,
-  useConnectedUser,
-} from '@app/hooks/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
 import { NotAuthorized } from '@app/NotAuthorized/NotAuthorized';
@@ -54,7 +51,7 @@ const routes: IAppRoute[] = [
     title: 'routes.data-container',
     menu: true,
     subRoutes: ['container', 'cache', 'caches', 'counters', 'tasks', 'schemas'],
-    admin: false,
+    admin: false
   },
   {
     id: 'data_container_caches',
@@ -63,7 +60,7 @@ const routes: IAppRoute[] = [
     path: '/caches',
     title: 'routes.data-container',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'data_container_counters',
@@ -72,7 +69,7 @@ const routes: IAppRoute[] = [
     path: '/counters',
     title: 'routes.data-container',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'data_container_tasks',
@@ -81,7 +78,7 @@ const routes: IAppRoute[] = [
     path: '/tasks',
     title: 'routes.data-container',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'data_container_schemas',
@@ -90,7 +87,7 @@ const routes: IAppRoute[] = [
     path: '/schemas',
     title: 'routes.data-container',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'global_stats',
@@ -100,7 +97,7 @@ const routes: IAppRoute[] = [
     path: '/global-stats',
     title: 'routes.global-statistics',
     menu: true,
-    admin: false,
+    admin: false
   },
   {
     id: 'cluster_membership',
@@ -110,7 +107,7 @@ const routes: IAppRoute[] = [
     path: '/cluster-membership',
     title: 'routes.cluster-membership',
     menu: true,
-    admin: true,
+    admin: true
   },
   {
     id: 'cache_setup',
@@ -125,7 +122,7 @@ const routes: IAppRoute[] = [
     title: 'routes.cache-setup',
     menu: false,
     readonlyUser: true,
-    admin: false,
+    admin: false
   },
   {
     id: 'create_cache',
@@ -139,7 +136,7 @@ const routes: IAppRoute[] = [
     path: '/container/caches/create',
     title: 'routes.create-cache',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'detail_configurations',
@@ -149,7 +146,7 @@ const routes: IAppRoute[] = [
     path: '/container/configurations',
     title: 'routes.configurations',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'cache_index_management',
@@ -159,7 +156,7 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName/indexing',
     title: 'routes.index-management',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'cache_edit_configuration',
@@ -173,7 +170,7 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName/configuration',
     title: 'routes.cache-edit-configuration',
     menu: false,
-    admin: true,
+    admin: true
   },
   {
     id: 'cache_xsite_management',
@@ -183,7 +180,7 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName/backups',
     title: 'routes.xsite-management-cache',
     menu: false,
-    admin: true,
+    admin: true
   },
   {
     id: 'schema_edit',
@@ -193,7 +190,7 @@ const routes: IAppRoute[] = [
     path: '/schemas/:schemaName',
     title: 'routes.schema-edit',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'cache_detail',
@@ -203,7 +200,7 @@ const routes: IAppRoute[] = [
     path: '/cache/:cacheName',
     title: 'routes.cache',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'access_management',
@@ -214,7 +211,7 @@ const routes: IAppRoute[] = [
     title: 'routes.access-management',
     menu: true,
     admin: true,
-    subRoutes: ['role'],
+    subRoutes: ['role']
   },
   {
     id: 'connected_clients',
@@ -224,7 +221,7 @@ const routes: IAppRoute[] = [
     path: '/connected-clients',
     title: 'routes.connected-clients',
     menu: true,
-    admin: true,
+    admin: true
   },
   {
     id: 'my_permissions',
@@ -234,7 +231,7 @@ const routes: IAppRoute[] = [
     path: '/my-permissions',
     title: 'routes.my-permissions',
     menu: false,
-    admin: false,
+    admin: false
   },
   {
     id: 'access_management_role_detail',
@@ -244,8 +241,8 @@ const routes: IAppRoute[] = [
     path: '/access-management/role/:roleName',
     title: 'routes.role-detail',
     menu: false,
-    admin: true,
-  },
+    admin: true
+  }
 ];
 
 let routeFocusTimer: number;
@@ -272,24 +269,10 @@ const AppRoutes = () => {
   return (
     <Routes>
       {routes.map((iroute, idx) => {
-        if (
-          iroute.admin &&
-          !ConsoleServices.security().hasConsoleACL(
-            ConsoleACL.ADMIN,
-            connectedUser,
-          )
-        ) {
-          return (
-            <Route key={idx} path={iroute.path} element={<NotAuthorized />} />
-          );
+        if (iroute.admin && !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
+          return <Route key={idx} path={iroute.path} element={<NotAuthorized />} />;
         }
-        return (
-          <Route
-            key={idx}
-            path={iroute.path}
-            element={<ComponentWithTitleUpdates appRoute={iroute} />}
-          />
-        );
+        return <Route key={idx} path={iroute.path} element={<ComponentWithTitleUpdates appRoute={iroute} />} />;
       })}
       <Route key={'welcome'} path={'/welcome'} element={<Welcome />} />
       <Route key={'not-found'} path={'*'} element={<NotFound />} />

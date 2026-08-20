@@ -7,7 +7,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { TableErrorState } from '@app/Common/TableErrorState';
 
@@ -22,7 +22,7 @@ interface ErrorBoundaryProps {
 class ErrorBoundary extends React.Component<Props, ErrorBoundaryProps> {
   state: ErrorBoundaryProps = {
     hasError: false,
-    error: '',
+    error: ''
   };
 
   static getDerivedStateFromError(error) {
@@ -45,19 +45,14 @@ class ErrorBoundary extends React.Component<Props, ErrorBoundaryProps> {
               <ToolbarGroup>
                 <ToolbarContent style={{ paddingLeft: 0 }}>
                   <ToolbarItem>
-                    <Content component={ContentVariants.h1}>
-                      Web console error
-                    </Content>
+                    <Content component={ContentVariants.h1}>Web console error</Content>
                   </ToolbarItem>
                 </ToolbarContent>
               </ToolbarGroup>
             </Toolbar>
           </PageSection>
           <PageSection>
-            <TableErrorState
-              error={'Something went wrong'}
-              detail={this.state.error}
-            />
+            <TableErrorState error={'Something went wrong'} detail={this.state.error} />
           </PageSection>
         </React.Fragment>
       );

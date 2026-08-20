@@ -8,10 +8,10 @@ export function useDataDistribution(cacheName: string) {
   const {
     data: dataDistribution,
     loading,
-    error,
+    error
   } = useServiceCall<DataDistribution[] | undefined>(
     () => ConsoleServices.caches().getDistribution(cacheName),
-    undefined,
+    undefined
   );
 
   return { loading, error, dataDistribution };
@@ -24,10 +24,10 @@ export function useClusterDistribution() {
   const {
     data: clusterDistribution,
     loading: loadingCluster,
-    error: errorCluster,
+    error: errorCluster
   } = useServiceCall<ClusterDistribution[] | undefined>(
     () => ConsoleServices.cluster().getClusterDistribution(),
-    undefined,
+    undefined
   );
 
   return { loadingCluster, errorCluster, clusterDistribution };

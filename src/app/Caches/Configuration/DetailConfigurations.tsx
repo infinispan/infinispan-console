@@ -19,17 +19,9 @@ import {
   Spinner,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
-import {
-  ExpandableRowContent,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+import { ExpandableRowContent, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
@@ -49,13 +41,10 @@ const DetailConfigurations = () => {
   const [rows, setRows] = useState<CacheConfig[]>([]);
   const [expandedTemplateNames, setExpandedRepoNames] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const [pageConfigsPagination, setCacheConfigsPagination] = useLocalStorage(
-    'cache-configurations-table',
-    {
-      page: 1,
-      perPage: 10,
-    },
-  );
+  const [pageConfigsPagination, setCacheConfigsPagination] = useLocalStorage('cache-configurations-table', {
+    page: 1,
+    perPage: 10
+  });
 
   const { syntaxHighLighterTheme } = useContext(ThemeContext);
 
@@ -65,49 +54,39 @@ const DetailConfigurations = () => {
 
   useEffect(() => {
     if (filteredTemplates) {
-      const initSlice =
-        (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
-      const updateRows = filteredTemplates.slice(
-        initSlice,
-        initSlice + pageConfigsPagination.perPage,
-      );
+      const initSlice = (pageConfigsPagination.page - 1) * pageConfigsPagination.perPage;
+      const updateRows = filteredTemplates.slice(initSlice, initSlice + pageConfigsPagination.perPage);
       setRows(updateRows);
     }
   }, [pageConfigsPagination, filteredTemplates]);
 
   useEffect(() => {
-    setFilteredTemplates(
-      cacheTemplates.filter((cache) => onSearch(searchValue, cache.name)),
-    );
+    setFilteredTemplates(cacheTemplates.filter((cache) => onSearch(searchValue, cache.name)));
   }, [searchValue]);
 
   const columnNames = {
-    name: t('caches.configuration.title'),
+    name: t('caches.configuration.title')
   };
 
   const isTemplateExpanded = (row) => expandedTemplateNames.includes(row.name);
 
   const setTemplateExpanded = (template, isExpanding = true) =>
     setExpandedRepoNames((prevExpanded) => {
-      const otherExpandedRepoNames = prevExpanded.filter(
-        (r) => r !== template.name,
-      );
-      return isExpanding
-        ? [...otherExpandedRepoNames, template.name]
-        : otherExpandedRepoNames;
+      const otherExpandedRepoNames = prevExpanded.filter((r) => r !== template.name);
+      return isExpanding ? [...otherExpandedRepoNames, template.name] : otherExpandedRepoNames;
     });
 
   const onSetPage = (_event, pageNumber) => {
     setCacheConfigsPagination({
       page: pageNumber,
-      perPage: pageConfigsPagination.perPage,
+      perPage: pageConfigsPagination.perPage
     });
   };
 
   const onPerPageSelect = (_event, perPage) => {
     setCacheConfigsPagination({
       page: pageConfigsPagination.page,
-      perPage: perPage,
+      perPage: perPage
     });
   };
 
@@ -118,9 +97,7 @@ const DetailConfigurations = () => {
       icon={CubeIcon}
       headingLevel="h4"
     >
-      <EmptyStateBody>
-        {t('caches.configuration.no-templates-body')}
-      </EmptyStateBody>
+      <EmptyStateBody>{t('caches.configuration.no-templates-body')}</EmptyStateBody>
     </EmptyState>
   );
 
@@ -150,9 +127,7 @@ const DetailConfigurations = () => {
     <Toolbar>
       <ToolbarContent>
         <ToolbarItem>{searchInput}</ToolbarItem>
-        {filteredTemplates.length !== 0 && (
-          <ToolbarItem variant="pagination">{toolbarPagination}</ToolbarItem>
-        )}
+        {filteredTemplates.length !== 0 && <ToolbarItem variant="pagination">{toolbarPagination}</ToolbarItem>}
       </ToolbarContent>
     </Toolbar>
   );
@@ -204,23 +179,14 @@ const DetailConfigurations = () => {
                     <Bullseye>
                       <EmptyState
                         variant={EmptyStateVariant.sm}
-                        titleText={
-                          <>{t('caches.configuration.no-filtered-templates')}</>
-                        }
+                        titleText={<>{t('caches.configuration.no-filtered-templates')}</>}
                         icon={SearchIcon}
                         headingLevel="h2"
                       >
-                        <EmptyStateBody>
-                          {t('caches.configuration.no-filtered-templates-body')}
-                        </EmptyStateBody>
+                        <EmptyStateBody>{t('caches.configuration.no-filtered-templates-body')}</EmptyStateBody>
                         <EmptyStateFooter>
-                          <EmptyStateActions
-                            style={{ marginTop: t_global_spacer_sm.value }}
-                          >
-                            <Button
-                              variant={'link'}
-                              onClick={() => setSearchValue('')}
-                            >
+                          <EmptyStateActions style={{ marginTop: t_global_spacer_sm.value }}>
+                            <Button variant={'link'} onClick={() => setSearchValue('')}>
                               {t('caches.configuration.clear-filter')}
                             </Button>
                           </EmptyStateActions>
@@ -242,11 +208,7 @@ const DetailConfigurations = () => {
                             ? {
                                 rowIndex,
                                 isExpanded: isTemplateExpanded(row),
-                                onToggle: () =>
-                                  setTemplateExpanded(
-                                    row,
-                                    !isTemplateExpanded(row),
-                                  ),
+                                onToggle: () => setTemplateExpanded(row, !isTemplateExpanded(row))
                               }
                             : undefined
                         }
@@ -257,9 +219,7 @@ const DetailConfigurations = () => {
                       <Tr isExpanded={isTemplateExpanded(row)}>
                         <Td />
                         <Td noPadding colSpan={1}>
-                          <ExpandableRowContent
-                            data-cy={row.name + 'ConfigExpanded'}
-                          >
+                          <ExpandableRowContent data-cy={row.name + 'ConfigExpanded'}>
                             <SyntaxHighlighter
                               wrapLines={false}
                               style={syntaxHighLighterTheme}

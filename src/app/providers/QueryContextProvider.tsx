@@ -9,10 +9,10 @@ const initialContext = {
       values: [],
       error: false,
       cause: '',
-      executed: false,
+      executed: false
     } as SearchResult,
     loading: false,
-    query: '',
+    query: ''
   },
   storeResult: (result: SearchResult) => {},
   execute: (query: string) => {},
@@ -21,7 +21,7 @@ const initialContext = {
   clearSearch: () => {},
   onSetPage: (_event: any, pageNumber: number) => {},
   onPerPageSelect: (_event: any, pageNumber: number) => {},
-  onStoreQuery: (query: string) => {},
+  onStoreQuery: (query: string) => {}
 };
 
 export const QueryContext = React.createContext(initialContext);
@@ -63,9 +63,9 @@ const QueryContextProvider = ({ children }) => {
           values: [],
           error: false,
           cause: '',
-          executed: false,
+          executed: false
         },
-        loading: false,
+        loading: false
       };
     });
   }, []);
@@ -97,13 +97,9 @@ const QueryContextProvider = ({ children }) => {
     clearSearch: clearSearch,
     onSetPage: onSetPage,
     onPerPageSelect: onPerPageSelect,
-    onStoreQuery: onStoreQuery,
+    onStoreQuery: onStoreQuery
   };
-  return (
-    <QueryContext.Provider value={contextValue}>
-      {children}
-    </QueryContext.Provider>
-  );
+  return <QueryContext.Provider value={contextValue}>{children}</QueryContext.Provider>;
 };
 
 export { QueryContextProvider };

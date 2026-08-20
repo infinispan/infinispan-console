@@ -12,7 +12,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import { useSetCounter } from '@app/hooks/countersHook';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +54,7 @@ const SetCounter = (props: {
       <ModalBody>
         <Content component={'p'} isEditorial>
           {t('cache-managers.counters.modal-set-content', {
-            counter: props.name,
+            counter: props.name
           })}
         </Content>
         <Form
@@ -74,10 +74,7 @@ const SetCounter = (props: {
             {validateForm() === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem
-                    variant={'error'}
-                    icon={<ExclamationCircleIcon />}
-                  >
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
                     {t('cache-managers.counters.modal-set-helper-invalid')}
                   </HelperTextItem>
                 </HelperText>

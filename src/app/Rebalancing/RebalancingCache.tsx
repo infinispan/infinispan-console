@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Content,
-  ContentVariants,
-  Flex,
-  FlexItem,
-  Icon,
-  Label,
-  Spinner,
-  Switch,
-} from '@patternfly/react-core';
+import { Content, ContentVariants, Flex, FlexItem, Icon, Label, Spinner, Switch } from '@patternfly/react-core';
 import { useCacheDetail } from '@app/hooks/cachesHook';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -16,10 +7,7 @@ import { ConsoleACL } from '@services/securityService';
 import { useTranslation } from 'react-i18next';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { RebalancingConfirmationModal } from '@app/Rebalancing/RebalancingConfirmationModal';
-import {
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 
 const RebalancingCache = () => {
   const { addAlert } = useApiAlert();
@@ -51,9 +39,7 @@ const RebalancingCache = () => {
           <Spinner size={'sm'} isInline />
         </FlexItem>
         <FlexItem>
-          <Content component={ContentVariants.p}>
-            {t('caches.rebalancing.rebalancing')}
-          </Content>
+          <Content component={ContentVariants.p}>{t('caches.rebalancing.rebalancing')}</Content>
         </FlexItem>
       </Flex>
     );
@@ -62,18 +48,12 @@ const RebalancingCache = () => {
   /**
    * If the user is ADMIN, can enable and disable rebalancing
    */
-  if (
-    ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-  ) {
+  if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
     return (
       <>
         <Switch
           id="rebalancing-switch"
-          label={
-            cache.rebalancing_enabled
-              ? t('caches.rebalancing.enabled')
-              : t('caches.rebalancing.disabled')
-          }
+          label={cache.rebalancing_enabled ? t('caches.rebalancing.enabled') : t('caches.rebalancing.disabled')}
           isChecked={cache.rebalancing_enabled}
           hasCheckIcon
           onChange={() => setConfirmationModalOpened(true)}
@@ -101,18 +81,12 @@ const RebalancingCache = () => {
     <Flex data-cy="cacheRebalanceInfo">
       <FlexItem spacer={{ default: 'spacerXs' }}>
         <Icon status={cache.rebalancing_enabled ? 'success' : 'warning'}>
-          {cache.rebalancing_enabled ? (
-            <CheckCircleIcon />
-          ) : (
-            <ExclamationTriangleIcon />
-          )}
+          {cache.rebalancing_enabled ? <CheckCircleIcon /> : <ExclamationTriangleIcon />}
         </Icon>
       </FlexItem>
       <FlexItem>
         <Content component={ContentVariants.p}>
-          {cache.rebalancing_enabled
-            ? t('caches.rebalancing.rebalanced')
-            : t('caches.rebalancing.disabled')}
+          {cache.rebalancing_enabled ? t('caches.rebalancing.rebalanced') : t('caches.rebalancing.disabled')}
         </Content>
       </FlexItem>
     </Flex>

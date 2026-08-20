@@ -6,9 +6,7 @@ import * as SetAvailableCacheHook from '@app/hooks/cachesHook';
 import { renderWithRouter } from '../../../test-utils';
 
 jest.mock('@app/hooks/cachesHook');
-const mockedCacheHook = SetAvailableCacheHook as jest.Mocked<
-  typeof SetAvailableCacheHook
->;
+const mockedCacheHook = SetAvailableCacheHook as jest.Mocked<typeof SetAvailableCacheHook>;
 
 let closeModalCalls;
 let onSetAvailableCalls;
@@ -20,18 +18,14 @@ beforeEach(() => {
 
 mockedCacheHook.useSetAvailableCache.mockImplementation(() => {
   return {
-    onSetAvailable: () => onSetAvailableCalls++,
+    onSetAvailable: () => onSetAvailableCalls++
   };
 });
 
 describe('Set available cache', () => {
   test('not render the dialog if the modal is closed', () => {
     renderWithRouter(
-      <SetAvailableCache
-        cacheName={'cache-1'}
-        isModalOpen={false}
-        closeModal={() => closeModalCalls++}
-      />,
+      <SetAvailableCache cacheName={'cache-1'} isModalOpen={false} closeModal={() => closeModalCalls++} />
     );
     expect(screen.queryByRole('modal')).toBeNull();
     expect(closeModalCalls).toBe(0);
@@ -40,16 +34,10 @@ describe('Set available cache', () => {
 
   test('render the dialog and buttons work', () => {
     renderWithRouter(
-      <SetAvailableCache
-        cacheName={'cache-1'}
-        isModalOpen={true}
-        closeModal={() => closeModalCalls++}
-      />,
+      <SetAvailableCache cacheName={'cache-1'} isModalOpen={true} closeModal={() => closeModalCalls++} />
     );
 
-    expect(mockedCacheHook.useSetAvailableCache).toHaveBeenCalledWith(
-      'cache-1',
-    );
+    expect(mockedCacheHook.useSetAvailableCache).toHaveBeenCalledWith('cache-1');
 
     expect(screen.queryByRole('modal')).toBeDefined();
     expect(screen.queryAllByRole('button')).toHaveLength(3);

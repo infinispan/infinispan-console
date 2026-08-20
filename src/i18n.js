@@ -24,23 +24,21 @@ i18n
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: 'locale',
       caches: ['localStorage'],
-      excludeCacheFor: ['cimode'],
+      excludeCacheFor: ['cimode']
     },
     resources: {
       en: {
-        translation: defaultBundle,
-      },
+        translation: defaultBundle
+      }
     },
     backend: {
       loadPath: (() => {
-        const base =
-          document.querySelector('base')?.getAttribute('href') || '/console/';
-        const resolvedBase =
-          base === '{{INFINISPAN_BASE_PATH}}' ? '/console/' : base;
+        const base = document.querySelector('base')?.getAttribute('href') || '/console/';
+        const resolvedBase = base === '{{INFINISPAN_BASE_PATH}}' ? '/console/' : base;
         return resolvedBase.replace(/\/?$/, '/') + 'languages/{{lng}}.json';
-      })(),
+      })()
     },
-    partialBundledLanguages: true,
+    partialBundledLanguages: true
   });
 
 export default i18n;

@@ -16,7 +16,7 @@ export class ContainerService {
     'org.infinispan.INVALIDATION_SYNC',
     'org.infinispan.LOCAL',
     'org.infinispan.REPL_ASYNC',
-    'org.infinispan.REPL_SYNC',
+    'org.infinispan.REPL_SYNC'
   ];
 
   constructor(endpoint: string, endpointV2: string, fetchCaller: FetchCaller) {
@@ -28,14 +28,11 @@ export class ContainerService {
   /**
    * For now there is a single cache manager
    */
-  public getDefaultCacheManager(): Promise<
-    Either<ActionResponse, CacheManager>
-  > {
-    const healthPromise: Promise<Either<ActionResponse, ComponentStatusType>> =
-      this.fetchCaller.get(
-        this.endpointV2 + '/container/health/status',
-        (data) => displayUtils.parseComponentStatus(data),
-      );
+  public getDefaultCacheManager(): Promise<Either<ActionResponse, CacheManager>> {
+    const healthPromise: Promise<Either<ActionResponse, ComponentStatusType>> = this.fetchCaller.get(
+      this.endpointV2 + '/container/health/status',
+      (data) => displayUtils.parseComponentStatus(data)
+    );
 
     return healthPromise.then((maybeHealth) =>
       this.fetchCaller.get(
@@ -47,30 +44,19 @@ export class ContainerService {
             physical_addresses: data.physical_addresses,
             coordinator: data.coordinator,
             cluster_name: data.cluster_name,
-            cache_manager_status: displayUtils.parseComponentStatus(
-              data.cache_manager_status,
-            ),
+            cache_manager_status: displayUtils.parseComponentStatus(data.cache_manager_status),
             cluster_size: data.cluster_size,
             defined_caches: this.removeInternalCaches(data.defined_caches),
-            cache_configuration_names: this.removeInternalTemplate(
-              data.cache_configuration_names,
-            ),
-            cluster_members: this.clusterMembers(
-              data.cluster_members,
-              data.cluster_members_physical_addresses,
-            ),
-            health: maybeHealth.isRight()
-              ? maybeHealth.value
-              : (maybeHealth.value as ActionResponse).message,
+            cache_configuration_names: this.removeInternalTemplate(data.cache_configuration_names),
+            cluster_members: this.clusterMembers(data.cluster_members, data.cluster_members_physical_addresses),
+            health: maybeHealth.isRight() ? maybeHealth.value : (maybeHealth.value as ActionResponse).message,
             local_site: data.local_site,
             rebalancing_enabled: data.rebalancing_enabled,
-            backups_enabled:
-              data.relay_node ||
-              (data.local_site != null && data.local_site !== ''), // relay node might be false if not coordinator
+            backups_enabled: data.relay_node || (data.local_site != null && data.local_site !== ''), // relay node might be false if not coordinator
             sites_view: data.sites_view,
-            tracing_enabled: data.tracing_enabled,
-          },
-      ),
+            tracing_enabled: data.tracing_enabled
+          }
+      )
     );
   }
 
@@ -89,15 +75,10 @@ export class ContainerService {
   /**
    * Retrieve the cache manager stats
    */
-  public async getCacheManagerStats(): Promise<
-    Either<ActionResponse, CacheManagerStats>
-  > {
-    return this.fetchCaller.get(
-      this.endpointV2 + '/container/stats',
-      (data) => {
-        return <CacheManagerStats>data;
-      },
-    );
+  public async getCacheManagerStats(): Promise<Either<ActionResponse, CacheManagerStats>> {
+    return this.fetchCaller.get(this.endpointV2 + '/container/stats', (data) => {
+      return <CacheManagerStats>data;
+    });
   }
 
   /**
@@ -108,7 +89,7 @@ export class ContainerService {
     return this.fetchCaller.post({
       url: clearUrl,
       successMessage: `Global metrics cleared.`,
-      errorMessage: `Unexpected error when clearing global metrics.`,
+      errorMessage: `Unexpected error when clearing global metrics.`
     });
   }
 
@@ -116,21 +97,17 @@ export class ContainerService {
    * Get cache configuration templates for in the cache manager name
    *
    */
-  public async getCacheConfigurationTemplates(): Promise<
-    Either<ActionResponse, CacheConfig[]>
-  > {
-    return this.fetchCaller.get(
-      this.endpointV2 + '/container/cache-configs/templates',
-      (data) =>
-        data
-          .filter((config) => !this.isInternalTemplate(config.name))
-          .map(
-            (config) =>
-              <CacheConfig>{
-                name: config.name,
-                config: JSON.stringify(config.configuration, undefined, 2),
-              },
-          ),
+  public async getCacheConfigurationTemplates(): Promise<Either<ActionResponse, CacheConfig[]>> {
+    return this.fetchCaller.get(this.endpointV2 + '/container/cache-configs/templates', (data) =>
+      data
+        .filter((config) => !this.isInternalTemplate(config.name))
+        .map(
+          (config) =>
+            <CacheConfig>{
+              name: config.name,
+              config: JSON.stringify(config.configuration, undefined, 2)
+            }
+        )
     );
   }
 
@@ -139,32 +116,30 @@ export class ContainerService {
    * @param name
    */
   public async getCaches(): Promise<Either<ActionResponse, CacheInfo[]>> {
-    return this.fetchCaller.get(
-      this.endpoint + '/meta/caches/_detailed',
-      (data) =>
-        data
-          .map(
-            (cacheInfo) =>
-              <CacheInfo>{
-                name: cacheInfo.name,
-                status: cacheInfo.status,
-                type: CacheConfigUtils.mapCacheType(cacheInfo.type),
-                simpleCache: cacheInfo.simpleCache,
-                aliases: cacheInfo.aliases,
-                features: <Features>{
-                  transactional: cacheInfo.transactional,
-                  persistent: cacheInfo.persistent,
-                  bounded: cacheInfo.bounded,
-                  secured: cacheInfo.secured,
-                  indexed: cacheInfo.indexed,
-                  hasRemoteBackup: cacheInfo.has_remote_backup,
-                },
-                tracing: cacheInfo.tracing,
-                health: displayUtils.parseComponentStatus(cacheInfo.health),
-                rebalancing_enabled: cacheInfo['rebalancing_enabled'],
+    return this.fetchCaller.get(this.endpoint + '/meta/caches/_detailed', (data) =>
+      data
+        .map(
+          (cacheInfo) =>
+            <CacheInfo>{
+              name: cacheInfo.name,
+              status: cacheInfo.status,
+              type: CacheConfigUtils.mapCacheType(cacheInfo.type),
+              simpleCache: cacheInfo.simpleCache,
+              aliases: cacheInfo.aliases,
+              features: <Features>{
+                transactional: cacheInfo.transactional,
+                persistent: cacheInfo.persistent,
+                bounded: cacheInfo.bounded,
+                secured: cacheInfo.secured,
+                indexed: cacheInfo.indexed,
+                hasRemoteBackup: cacheInfo.has_remote_backup
               },
-          )
-          .filter((cacheInfo) => !cacheInfo.name.startsWith('___')),
+              tracing: cacheInfo.tracing,
+              health: displayUtils.parseComponentStatus(cacheInfo.health),
+              rebalancing_enabled: cacheInfo['rebalancing_enabled']
+            }
+        )
+        .filter((cacheInfo) => !cacheInfo.name.startsWith('___'))
     );
   }
 
@@ -174,27 +149,23 @@ export class ContainerService {
    */
   public async rebalancing(enable: boolean): Promise<ActionResponse> {
     const action = enable ? 'enable' : 'disable';
-    const url =
-      this.endpointV2 + '/container?action=' + action + '-rebalancing';
+    const url = this.endpointV2 + '/container?action=' + action + '-rebalancing';
     return this.fetchCaller.post({
       url: url,
       successMessage: `Rebalancing ${action}d.`,
-      errorMessage: `Unexpected error when rebalancing ${action}d.`,
+      errorMessage: `Unexpected error when rebalancing ${action}d.`
     });
   }
 
-  private clusterMembers(
-    cluster_members: [string],
-    cluster_members_physical_addresses: [string],
-  ): ClusterMember[] {
+  private clusterMembers(cluster_members: [string], cluster_members_physical_addresses: [string]): ClusterMember[] {
     return cluster_members.map(
       (member, index) =>
         <ClusterMember>{
           node_address: member,
           physical_addresses: cluster_members_physical_addresses[index],
           version: '',
-          cache_manager_status: '',
-        },
+          cache_manager_status: ''
+        }
     );
   }
 }

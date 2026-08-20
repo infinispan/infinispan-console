@@ -32,7 +32,7 @@ import {
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import brandLight from '!!url-loader!@app/assets/images/brand.svg';
 import brandDark from '!!url-loader!@app/assets/images/brand_dark.svg';
@@ -45,10 +45,7 @@ import { ErrorBoundary } from '@app/ErrorBoundary';
 import { BannerAlert } from '@app/Common/BannerAlert';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
-import {
-  useAppInitState,
-  useConnectedUser,
-} from '@app/hooks/userManagementHook';
+import { useAppInitState, useConnectedUser } from '@app/hooks/userManagementHook';
 import { KeycloakService } from '@services/keycloakService';
 import {
   EllipsisVIcon,
@@ -59,7 +56,7 @@ import {
   ShieldAltIcon,
   SunIcon,
   UserIcon,
-  UsersIcon,
+  UsersIcon
 } from '@patternfly/react-icons';
 import { ConsoleACL } from '@services/securityService';
 import { DARK, LIGHT, ThemeContext } from '@app/providers/ThemeProvider';
@@ -78,9 +75,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const navigate = useNavigate();
   const { connectedUser } = useConnectedUser();
 
-  const [isWelcomePage, setIsWelcomePage] = useState(
-    ConsoleServices.isWelcomePage(),
-  );
+  const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -92,25 +87,15 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   }, [pathname]);
 
   const Logo = (
-    <Brand
-      src={theme == DARK ? brandDark : brandLight}
-      alt={t('layout.console-name')}
-      widths={{ default: '150px' }}
-    >
+    <Brand src={theme == DARK ? brandDark : brandLight} alt={t('layout.console-name')} widths={{ default: '150px' }}>
       <source srcSet={theme == DARK ? brandDark : brandLight} />
     </Brand>
   );
 
-  const isAdmin = ConsoleServices.security().hasConsoleACL(
-    ConsoleACL.ADMIN,
-    connectedUser,
-  );
+  const isAdmin = ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser);
 
   const handleLogout = () => {
-    if (
-      KeycloakService.Instance.isInitialized() &&
-      KeycloakService.Instance.authenticated()
-    ) {
+    if (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()) {
       KeycloakService.Instance.logout(ConsoleServices.landing());
     } else {
       ConsoleServices.authentication().logOutLink();
@@ -123,8 +108,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const showUserDropdown =
     isSecured &&
     (navigator.userAgent.toString().indexOf('Chrome') > -1 ||
-      (KeycloakService.Instance.isInitialized() &&
-        KeycloakService.Instance.authenticated()));
+      (KeycloakService.Instance.isInitialized() && KeycloakService.Instance.authenticated()));
 
   const userDropdownItems = (
     <>
@@ -160,11 +144,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       >
         {t('layout.documentation-name')}
       </DropdownItem>
-      <DropdownItem
-        onClick={() => setIsAboutOpen(true)}
-        key="about"
-        component="button"
-      >
+      <DropdownItem onClick={() => setIsAboutOpen(true)} key="about" component="button">
         {t('layout.about-name')}
       </DropdownItem>
     </>
@@ -173,14 +153,9 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const headerToolbar = (
     <Toolbar id="toolbar" isStatic>
       <ToolbarContent>
-        <ToolbarGroup
-          variant="label-group"
-          visibility={{ default: 'hidden', lg: 'visible' }}
-        >
+        <ToolbarGroup variant="label-group" visibility={{ default: 'hidden', lg: 'visible' }}>
           <ToolbarItem>
-            <Content component={ContentVariants.h2}>
-              {t('layout.console-name')}
-            </Content>
+            <Content component={ContentVariants.h2}>{t('layout.console-name')}</Content>
           </ToolbarItem>
         </ToolbarGroup>
         <ToolbarGroup
@@ -207,10 +182,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
             </ToggleGroup>
           </ToolbarItem>
           {/* Desktop: individual language + help items */}
-          <ToolbarGroup
-            variant="action-group-plain"
-            visibility={{ default: 'hidden', lg: 'visible' }}
-          >
+          <ToolbarGroup variant="action-group-plain" visibility={{ default: 'hidden', lg: 'visible' }}>
             <LanguageSelector />
             <ToolbarItem>
               <Dropdown
@@ -236,9 +208,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
             </ToolbarItem>
           </ToolbarGroup>
           {/* Medium screens: kebab with help items */}
-          <ToolbarItem
-            visibility={{ default: 'hidden', md: 'visible', lg: 'hidden' }}
-          >
+          <ToolbarItem visibility={{ default: 'hidden', md: 'visible', lg: 'hidden' }}>
             <Dropdown
               isOpen={isKebabOpen}
               onSelect={() => setIsKebabOpen(false)}
@@ -348,12 +318,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     <Masthead display={{ default: 'inline' }}>
       <MastheadMain>
         <MastheadToggle>
-          <PageToggleButton
-            data-cy="sideBarToggle"
-            variant="plain"
-            isHamburgerButton
-            aria-label="Global navigation"
-          />
+          <PageToggleButton data-cy="sideBarToggle" variant="plain" isHamburgerButton aria-label="Global navigation" />
         </MastheadToggle>
         <MastheadBrand>
           <MastheadLogo>{Logo}</MastheadLogo>
@@ -363,30 +328,18 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     </Masthead>
   );
 
-  const PageSkipToContent = (
-    <SkipToContent href="#primary-app-container">Skip to Content</SkipToContent>
-  );
+  const PageSkipToContent = <SkipToContent href="#primary-app-container">Skip to Content</SkipToContent>;
 
-  const create = ConsoleServices.security().hasConsoleACL(
-    ConsoleACL.CREATE,
-    connectedUser,
-  );
+  const create = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
 
   // The menu for non admin users
-  const filteredRoutes = routes.filter(
-    (route) => !route.readonlyUser || (!create && route.readonlyUser),
-  );
+  const filteredRoutes = routes.filter((route) => !route.readonlyUser || (!create && route.readonlyUser));
 
   const displayNavMenu = (route: IAppRoute): boolean => {
     return (
       route.menu == true &&
       route.label !== undefined &&
-      (!route.admin ||
-        (route.admin &&
-          ConsoleServices.security().hasConsoleACL(
-            ConsoleACL.ADMIN,
-            connectedUser,
-          )))
+      (!route.admin || (route.admin && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)))
     );
   };
 
@@ -414,36 +367,26 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
           {filteredRoutes.map(
             (route, idx) =>
               displayNavMenu(route) && (
-                <NavItem
-                  key={`${route.label}-${idx}`}
-                  id={`${route.label}-${idx}`}
-                >
+                <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
                   <NavLink
                     itemID={route.id}
                     caseSensitive={true}
                     to={route.path + location.search}
-                    className={
-                      isCurrentActiveNavItem(route) ? 'pf-m-current' : ''
-                    }
+                    className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
                   >
                     {t(route.label as string)}
                   </NavLink>
                 </NavItem>
-              ),
+              )
           )}
         </NavGroup>
         <NavGroup title={t('routes.devops-tools')}>
-          <NavItem
-            icon={<ExternalLinkAltIcon />}
-            onClick={() => window.open(ConsoleServices.swaggerUi(), '_blank')}
-          >
+          <NavItem icon={<ExternalLinkAltIcon />} onClick={() => window.open(ConsoleServices.swaggerUi(), '_blank')}>
             {t('layout.swagger-ui')}
           </NavItem>
           <NavItem
             icon={<ExternalLinkAltIcon />}
-            onClick={() =>
-              window.open(ConsoleServices.metricsEndpoint(), '_blank')
-            }
+            onClick={() => window.open(ConsoleServices.metricsEndpoint(), '_blank')}
           >
             {t('layout.metrics')}
           </NavItem>
@@ -463,10 +406,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
       );
     }
 
-    if (
-      (init == 'NOT_READY' || init == 'SERVER_ERROR') &&
-      !ConsoleServices.isWelcomePage()
-    ) {
+    if ((init == 'NOT_READY' || init == 'SERVER_ERROR') && !ConsoleServices.isWelcomePage()) {
       return <Navigate to="/welcome" />;
     }
 
@@ -490,10 +430,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
         <ActionResponseAlert />
         <BannerAlert />
         <ErrorBoundary>{children}</ErrorBoundary>
-        <About
-          isModalOpen={isAboutOpen}
-          closeModal={() => setIsAboutOpen(false)}
-        />
+        <About isModalOpen={isAboutOpen} closeModal={() => setIsAboutOpen(false)} />
       </Page>
     );
   };

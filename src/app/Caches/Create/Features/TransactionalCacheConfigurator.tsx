@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-  Radio,
-} from '@patternfly/react-core';
-import {
-  CacheFeature,
-  Locking,
-  TransactionalMode,
-} from '@services/infinispanRefData';
+import { FormGroup, FormHelperText, HelperText, HelperTextItem, Radio } from '@patternfly/react-core';
+import { CacheFeature, Locking, TransactionalMode } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/hooks/createCacheHook';
 import { FeatureCard } from '@app/Caches/Create/Features/FeatureCard';
@@ -22,12 +12,8 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
 
-  const [mode, setMode] = useState(
-    configuration.feature.transactionalCache.mode,
-  );
-  const [locking, setLocking] = useState(
-    configuration.feature.transactionalCache.locking,
-  );
+  const [mode, setMode] = useState(configuration.feature.transactionalCache.mode);
+  const [locking, setLocking] = useState(configuration.feature.transactionalCache.locking);
 
   useEffect(() => {
     setConfiguration((prevState) => {
@@ -38,9 +24,9 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           transactionalCache: {
             mode: mode,
             locking: locking,
-            valid: transactionalFeatureValidation(),
-          },
-        },
+            valid: transactionalFeatureValidation()
+          }
+        }
       };
     });
   }, [mode, locking]);
@@ -58,17 +44,11 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
       title="caches.create.configurations.feature.transactional"
       description="caches.create.configurations.feature.transactional-description"
     >
-      <FormGroup
-        fieldId="form-transaction-mode"
-        label={t('caches.create.configurations.feature.transactional-mode')}
-      >
+      <FormGroup fieldId="form-transaction-mode" label={t('caches.create.configurations.feature.transactional-mode')}>
         <FormHelperText>
           <HelperText>
             <HelperTextItem>
-              {t(
-                'caches.create.configurations.feature.transactional-mode-tooltip',
-                { brandname: brandname },
-              )}
+              {t('caches.create.configurations.feature.transactional-mode-tooltip', { brandname: brandname })}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
@@ -82,10 +62,7 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
               name={'non-xa'}
               text={TransactionalMode.NON_XA}
               label={TransactionalMode.NON_XA}
-              content={t(
-                'caches.create.configurations.feature.non-xa-tooltip',
-                { brandname: brandname },
-              )}
+              content={t('caches.create.configurations.feature.non-xa-tooltip', { brandname: brandname })}
             />
           }
         />
@@ -93,18 +70,13 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           name="radio-transactional-mode"
           id="non_durable_xa"
           onChange={() => setMode(TransactionalMode.NON_DURABLE_XA)}
-          isChecked={
-            (mode as TransactionalMode) == TransactionalMode.NON_DURABLE_XA
-          }
+          isChecked={(mode as TransactionalMode) == TransactionalMode.NON_DURABLE_XA}
           label={
             <PopoverHelp
               name={'non-durable-xa'}
               text={TransactionalMode.NON_DURABLE_XA}
               label={TransactionalMode.NON_DURABLE_XA}
-              content={t(
-                'caches.create.configurations.feature.non-durable-xa-tooltip',
-                { brandname: brandname },
-              )}
+              content={t('caches.create.configurations.feature.non-durable-xa-tooltip', { brandname: brandname })}
             />
           }
         />
@@ -118,23 +90,17 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
               name={'full-xa'}
               text={TransactionalMode.FULL_XA}
               label={TransactionalMode.FULL_XA}
-              content={t(
-                'caches.create.configurations.feature.full-xa-tooltip',
-                { brandname: brandname },
-              )}
+              content={t('caches.create.configurations.feature.full-xa-tooltip', { brandname: brandname })}
             />
           }
         />
       </FormGroup>
-      <FormGroup
-        fieldId="locking"
-        label={t('caches.create.configurations.feature.locking-mode')}
-      >
+      <FormGroup fieldId="locking" label={t('caches.create.configurations.feature.locking-mode')}>
         <FormHelperText>
           <HelperText>
             <HelperTextItem>
               {t('caches.create.configurations.feature.locking-mode-tooltip', {
-                brandname: brandname,
+                brandname: brandname
               })}
             </HelperTextItem>
           </HelperText>
@@ -147,18 +113,11 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           label={
             <PopoverHelp
               name={'optimistic'}
-              text={t(
-                'caches.create.configurations.feature.locking-mode-optimistic',
-              )}
-              label={t(
-                'caches.create.configurations.feature.locking-mode-optimistic',
-              )}
-              content={t(
-                'caches.create.configurations.feature.locking-mode-optimistic-tooltip',
-                {
-                  brandname: brandname,
-                },
-              )}
+              text={t('caches.create.configurations.feature.locking-mode-optimistic')}
+              label={t('caches.create.configurations.feature.locking-mode-optimistic')}
+              content={t('caches.create.configurations.feature.locking-mode-optimistic-tooltip', {
+                brandname: brandname
+              })}
             />
           }
         />
@@ -170,18 +129,11 @@ const TransactionalCacheConfigurator = (props: { isEnabled: boolean }) => {
           label={
             <PopoverHelp
               name={'pesimistic'}
-              text={t(
-                'caches.create.configurations.feature.locking-mode-pessimistic',
-              )}
-              label={t(
-                'caches.create.configurations.feature.locking-mode-pessimistic',
-              )}
-              content={t(
-                'caches.create.configurations.feature.locking-mode-pessimistic-tooltip',
-                {
-                  brandname: brandname,
-                },
-              )}
+              text={t('caches.create.configurations.feature.locking-mode-pessimistic')}
+              label={t('caches.create.configurations.feature.locking-mode-pessimistic')}
+              content={t('caches.create.configurations.feature.locking-mode-pessimistic-tooltip', {
+                brandname: brandname
+              })}
             />
           }
         />

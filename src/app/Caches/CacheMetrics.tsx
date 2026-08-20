@@ -15,7 +15,7 @@ import {
   EmptyStateVariant,
   Grid,
   GridItem,
-  Spinner,
+  Spinner
 } from '@patternfly/react-core';
 import { CubesIcon } from '@patternfly/react-icons';
 import { QueryMetrics } from '@app/Caches/Query/QueryMetrics';
@@ -36,21 +36,13 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
   const { connectedUser } = useConnectedUser();
   const { cache, error, loading } = useCacheDetail();
   const [stats, setStats] = useState<CacheStats | undefined>(cache.stats);
-  const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(
-    cache.queryable!,
+  const [displayQueryStats, setDisplayQueryStats] = useState<boolean>(cache.queryable!);
+  const [displayDataDistribution, setDisplayDataDistribution] = useState<boolean>(
+    ConsoleServices.security().hasConsoleACL(ConsoleACL.MONITOR, connectedUser)
   );
-  const [displayDataDistribution, setDisplayDataDistribution] =
-    useState<boolean>(
-      ConsoleServices.security().hasConsoleACL(
-        ConsoleACL.MONITOR,
-        connectedUser,
-      ),
-    );
   const memory = () => {
     if (cache.memory) {
-      return cache.memory.storage_type == 'OFF_HEAP'
-        ? StorageType.OFF_HEAP
-        : StorageType.HEAP;
+      return cache.memory.storage_type == 'OFF_HEAP' ? StorageType.OFF_HEAP : StorageType.HEAP;
     }
     return StorageType.HEAP;
   };
@@ -198,11 +190,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
     return (
       <Card>
         <CardBody>
-          <EmptyState
-            icon={Spinner}
-            titleText={t('common.loading')}
-            headingLevel="h4"
-          ></EmptyState>
+          <EmptyState icon={Spinner} titleText={t('common.loading')} headingLevel="h4"></EmptyState>
         </CardBody>
       </Card>
     );
@@ -224,12 +212,10 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
                 <Link
                   to={{
                     pathname: '/',
-                    search: location.search,
+                    search: location.search
                   }}
                 >
-                  <Button variant={ButtonVariant.secondary}>
-                    {t('common.actions.back')}
-                  </Button>
+                  <Button variant={ButtonVariant.secondary}>{t('common.actions.back')}</Button>
                 </Link>
               </EmptyStateActions>
             </EmptyStateFooter>
@@ -249,9 +235,7 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
         titleText={t('caches.cache-metrics.metrics-title')}
       >
         <EmptyStateBody>
-          <Content component={ContentVariants.p}>
-            {t('caches.cache-metrics.metrics-disabled')}
-          </Content>
+          <Content component={ContentVariants.p}>{t('caches.cache-metrics.metrics-disabled')}</Content>
         </EmptyStateBody>
       </EmptyState>
     );
@@ -262,30 +246,18 @@ const CacheMetrics = (props: { cacheName: string; display: boolean }) => {
       <CardBody>
         <Grid hasGutter={true}>
           <GridItem span={12}>
-            {stats && (
-              <MultiContentCard
-                withDividers
-                cards={[buildEntriesCard(), buildMemoryCard()]}
-              />
-            )}
+            {stats && <MultiContentCard withDividers cards={[buildEntriesCard(), buildMemoryCard()]} />}
           </GridItem>
           <GridItem span={12}>
             {stats && (
-              <MultiContentCard
-                withDividers
-                cards={[buildLifecycleCard(), buildOperationsPerformanceCard()]}
-              />
+              <MultiContentCard withDividers cards={[buildLifecycleCard(), buildOperationsPerformanceCard()]} />
             )}
           </GridItem>
           <GridItem span={5}>
             <DataAccess cacheName={props.cacheName} stats={stats!} />
           </GridItem>
-          {displayDataDistribution && (
-            <GridItem span={7}> {buildDataDistribution()}</GridItem>
-          )}
-          <GridItem span={displayDataDistribution ? 12 : 7}>
-            {buildQueryStats()}
-          </GridItem>
+          {displayDataDistribution && <GridItem span={7}> {buildDataDistribution()}</GridItem>}
+          <GridItem span={displayDataDistribution ? 12 : 7}>{buildQueryStats()}</GridItem>
         </Grid>
       </CardBody>
     </Card>

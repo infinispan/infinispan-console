@@ -31,13 +31,10 @@ const initialState: CacheMetadataState = {
   cache: undefined,
   loading: false,
   error: '',
-  fetchId: 0,
+  fetchId: 0
 };
 
-function metadataReducer(
-  state: CacheMetadataState,
-  action: CacheMetadataAction,
-): CacheMetadataState {
+function metadataReducer(state: CacheMetadataState, action: CacheMetadataAction): CacheMetadataState {
   switch (action.type) {
     case 'LOAD_CACHE':
       if (!action.name) return state;
@@ -46,14 +43,14 @@ function metadataReducer(
         cacheName: action.name,
         loading: true,
         error: '',
-        fetchId: state.fetchId + 1,
+        fetchId: state.fetchId + 1
       };
     case 'RELOAD':
       return {
         ...state,
         loading: true,
         error: '',
-        fetchId: state.fetchId + 1,
+        fetchId: state.fetchId + 1
       };
     case 'FETCH_SUCCESS':
       return {
@@ -61,20 +58,20 @@ function metadataReducer(
         cache: action.cache,
         cacheManager: action.cacheManager,
         loading: false,
-        error: '',
+        error: ''
       };
     case 'FETCH_PARTIAL':
       return {
         ...state,
         cache: action.cache,
         loading: false,
-        error: '',
+        error: ''
       };
     case 'FETCH_ERROR':
       return {
         ...state,
         loading: false,
-        error: action.error,
+        error: action.error
       };
   }
 }
@@ -101,19 +98,14 @@ const defaultValue: CacheMetadataContextValue = {
   error: '',
   entriesAvailable: false,
   loadCache: () => {},
-  reload: () => {},
+  reload: () => {}
 };
 
-export const CacheMetadataContext =
-  React.createContext<CacheMetadataContextValue>(defaultValue);
+export const CacheMetadataContext = React.createContext<CacheMetadataContextValue>(defaultValue);
 
 // --- Provider ---
 
-export const CacheMetadataProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const CacheMetadataProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(metadataReducer, initialState);
 
   // dispatch is stable — no stale-closure issues, no refs needed
@@ -121,7 +113,7 @@ export const CacheMetadataProvider = ({
     (name: string | undefined) => {
       if (name) dispatch({ type: 'LOAD_CACHE', name });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const reload = useCallback(() => dispatch({ type: 'RELOAD' }), [dispatch]);
@@ -135,8 +127,7 @@ export const CacheMetadataProvider = ({
 
     const fetchCache = async () => {
       try {
-        const maybeCm =
-          await ConsoleServices.dataContainer().getDefaultCacheManager();
+        const maybeCm = await ConsoleServices.dataContainer().getDefaultCacheManager();
         if (cancelled) return;
 
         if (!maybeCm.isRight()) {
@@ -144,22 +135,20 @@ export const CacheMetadataProvider = ({
           return;
         }
 
-        const eitherDetail =
-          await ConsoleServices.caches().retrieveFullDetail(name);
+        const eitherDetail = await ConsoleServices.caches().retrieveFullDetail(name);
         if (cancelled) return;
 
         if (eitherDetail.isRight()) {
           dispatch({
             type: 'FETCH_SUCCESS',
             cache: eitherDetail.value,
-            cacheManager: maybeCm.value,
+            cacheManager: maybeCm.value
           });
           return;
         }
 
         // Cache may be unhealthy but existing — try health + config fallback
-        const eitherHealth =
-          await ConsoleServices.caches().retrieveHealth(name);
+        const eitherHealth = await ConsoleServices.caches().retrieveHealth(name);
         if (cancelled) return;
 
         if (!eitherHealth.isRight()) {
@@ -167,8 +156,7 @@ export const CacheMetadataProvider = ({
           return;
         }
 
-        const eitherConfig =
-          await ConsoleServices.caches().retrieveConfig(name);
+        const eitherConfig = await ConsoleServices.caches().retrieveConfig(name);
         if (cancelled) return;
 
         if (eitherConfig.isRight()) {
@@ -178,13 +166,13 @@ export const CacheMetadataProvider = ({
               name,
               configuration: eitherConfig.value,
               health: eitherHealth.value,
-              started: false,
-            },
+              started: false
+            }
           });
         } else {
           dispatch({
             type: 'FETCH_ERROR',
-            error: eitherConfig.value.message,
+            error: eitherConfig.value.message
           });
         }
       } catch {
@@ -201,9 +189,7 @@ export const CacheMetadataProvider = ({
     };
   }, [state.fetchId]);
 
-  const entriesAvailable = state.cache
-    ? isEncodingAvailable(state.cache)
-    : false;
+  const entriesAvailable = state.cache ? isEncodingAvailable(state.cache) : false;
 
   const value: CacheMetadataContextValue = {
     cacheName: state.cacheName,
@@ -213,12 +199,8 @@ export const CacheMetadataProvider = ({
     error: state.error,
     entriesAvailable,
     loadCache,
-    reload,
+    reload
   };
 
-  return (
-    <CacheMetadataContext.Provider value={value}>
-      {children}
-    </CacheMetadataContext.Provider>
-  );
+  return <CacheMetadataContext.Provider value={value}>{children}</CacheMetadataContext.Provider>;
 };

@@ -7,11 +7,8 @@ export function useFetchProtobufTypes() {
   const {
     data: protobufTypes,
     loading,
-    error,
-  } = useServiceCall<string[]>(
-    () => ConsoleServices.protobuf().getProtobufTypes(),
-    [],
-  );
+    error
+  } = useServiceCall<string[]>(() => ConsoleServices.protobuf().getProtobufTypes(), []);
 
   return { loading, error, protobufTypes };
 }
@@ -21,19 +18,13 @@ export function useFetchProtobufSchemas() {
     data: schemas,
     loading,
     reload,
-    error,
-  } = useServiceCall<ProtoSchema[]>(
-    () => ConsoleServices.protobuf().getProtobufSchemas(),
-    [],
-  );
+    error
+  } = useServiceCall<ProtoSchema[]>(() => ConsoleServices.protobuf().getProtobufSchemas(), []);
 
   return { loading, reload, error, schemas };
 }
 
-export function useEditProtobufSchema(
-  schemaName: string,
-  schemaContent: string,
-) {
+export function useEditProtobufSchema(schemaName: string, schemaContent: string) {
   const { addAlert } = useApiAlert();
 
   const onEditSchema = () => {
@@ -74,9 +65,7 @@ export function useFetchProtobufSchemaContent(schemaName: string) {
           if (eitherResponse.isRight()) {
             setSchemasContent(eitherResponse.value);
           } else {
-            setError(
-              'An error occurred. Try closing the tab and opening it again.',
-            );
+            setError('An error occurred. Try closing the tab and opening it again.');
           }
         })
         .then(() => setLoading(false));
@@ -87,9 +76,7 @@ export function useFetchProtobufSchemaContent(schemaName: string) {
 }
 
 export function useFetchProtobufSchemaDetailed(schemaName: string) {
-  const [schemaDetail, setSchemaDetail] = useState<ProtoSchemaDetail | null>(
-    null,
-  );
+  const [schemaDetail, setSchemaDetail] = useState<ProtoSchemaDetail | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 

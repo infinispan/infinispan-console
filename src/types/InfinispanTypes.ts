@@ -19,7 +19,7 @@ import type {
   ComponentStatusType as _ComponentStatusType,
   ActionResponse as _ActionResponse,
   ServiceCall as _ServiceCall,
-  PaginationType as _PaginationType,
+  PaginationType as _PaginationType
 } from './common';
 
 import type {
@@ -37,7 +37,7 @@ import type {
   DataDistribution as _DataDistribution,
   XSite as _XSite,
   StateTransferStatus as _StateTransferStatus,
-  SiteNode as _SiteNode,
+  SiteNode as _SiteNode
 } from './cache';
 
 import type {
@@ -64,7 +64,7 @@ import type {
   PersistentCache as _PersistentCache,
   CacheFeatureStep as _CacheFeatureStep,
   AdvancedConfigurationStep as _AdvancedConfigurationStep,
-  CacheConfiguration as _CacheConfiguration,
+  CacheConfiguration as _CacheConfiguration
 } from './cache-configuration';
 
 import type {
@@ -74,7 +74,7 @@ import type {
   CacheManager as _CacheManager,
   CacheManagerStats as _CacheManagerStats,
   DefinedCache as _DefinedCache,
-  ConnectedClients as _ConnectedClients,
+  ConnectedClients as _ConnectedClients
 } from './cluster';
 
 import type {
@@ -85,13 +85,10 @@ import type {
   Role as _Role,
   Principal as _Principal,
   Realm as _Realm,
-  AuthInfo as _AuthInfo,
+  AuthInfo as _AuthInfo
 } from './security';
 
-import type {
-  Counter as _Counter,
-  CounterConfig as _CounterConfig,
-} from './counter';
+import type { Counter as _Counter, CounterConfig as _CounterConfig } from './counter';
 
 import type {
   SearchResult as _SearchResult,
@@ -102,14 +99,14 @@ import type {
   IndexMetamodel as _IndexMetamodel,
   IndexValueField as _IndexValueField,
   QueryHistoryItem as _QueryHistoryItem,
-  HistoryMap as _HistoryMap,
+  HistoryMap as _HistoryMap
 } from './search';
 
 import type {
   Task as _Task,
   ProtoError as _ProtoError,
   ProtoSchema as _ProtoSchema,
-  ProtoSchemaDetail as _ProtoSchemaDetail,
+  ProtoSchemaDetail as _ProtoSchemaDetail
 } from './server';
 
 declare global {

@@ -20,19 +20,9 @@ export class CrossSiteReplicationService {
    *
    * @param cacheName
    */
-  public async backupsForCache(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, XSite[]>> {
-    return this.utils.get(
-      this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/x-site/backups',
-      (data) =>
-        Object.keys(data).map(
-          (siteName) =>
-            <XSite>{ name: siteName, status: data[siteName].status },
-        ),
+  public async backupsForCache(cacheName: string): Promise<Either<ActionResponse, XSite[]>> {
+    return this.utils.get(this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/x-site/backups', (data) =>
+      Object.keys(data).map((siteName) => <XSite>{ name: siteName, status: data[siteName].status })
     );
   }
 
@@ -42,20 +32,10 @@ export class CrossSiteReplicationService {
    * @param cacheName
    * @param siteName
    */
-  public async backupsForSite(
-    cacheName: string,
-    siteName: string,
-  ): Promise<Either<ActionResponse, SiteNode[]>> {
+  public async backupsForSite(cacheName: string, siteName: string): Promise<Either<ActionResponse, SiteNode[]>> {
     return this.utils.get(
-      this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/x-site/backups/' +
-        siteName,
-      (data) =>
-        Object.keys(data).map(
-          (nodeName) => <SiteNode>{ name: nodeName, status: data[nodeName] },
-        ),
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/x-site/backups/' + siteName,
+      (data) => Object.keys(data).map((nodeName) => <SiteNode>{ name: nodeName, status: data[nodeName] })
     );
   }
 
@@ -64,22 +44,17 @@ export class CrossSiteReplicationService {
    *
    * @param cacheName
    */
-  public async stateTransferStatus(
-    cacheName: string,
-  ): Promise<Either<ActionResponse, StateTransferStatus[]>> {
+  public async stateTransferStatus(cacheName: string): Promise<Either<ActionResponse, StateTransferStatus[]>> {
     return this.utils.get(
-      this.endpoint +
-        '/caches/' +
-        encodeURIComponent(cacheName) +
-        '/x-site/push-state/_status',
+      this.endpoint + '/caches/' + encodeURIComponent(cacheName) + '/x-site/push-state/_status',
       (data) =>
         Object.keys(data).map(
           (siteName) =>
             <StateTransferStatus>{
               site: siteName,
-              status: displayUtils.parseStateTransferStatus(data[siteName]),
-            },
-        ),
+              status: displayUtils.parseStateTransferStatus(data[siteName])
+            }
+        )
     );
   }
 
@@ -89,16 +64,8 @@ export class CrossSiteReplicationService {
    * @param cacheName
    * @param siteName
    */
-  public async takeOffline(
-    cacheName: string,
-    siteName: string,
-  ): Promise<ActionResponse> {
-    return this.doActionOnCacheBackupSite(
-      cacheName,
-      siteName,
-      'take-offline',
-      'take offline',
-    );
+  public async takeOffline(cacheName: string, siteName: string): Promise<ActionResponse> {
+    return this.doActionOnCacheBackupSite(cacheName, siteName, 'take-offline', 'take offline');
   }
 
   /**
@@ -107,16 +74,8 @@ export class CrossSiteReplicationService {
    * @param cacheName
    * @param siteName
    */
-  public async bringOnline(
-    cacheName: string,
-    siteName: string,
-  ): Promise<ActionResponse> {
-    return this.doActionOnCacheBackupSite(
-      cacheName,
-      siteName,
-      'bring-online',
-      'bring online',
-    );
+  public async bringOnline(cacheName: string, siteName: string): Promise<ActionResponse> {
+    return this.doActionOnCacheBackupSite(cacheName, siteName, 'bring-online', 'bring online');
   }
 
   /**
@@ -125,16 +84,8 @@ export class CrossSiteReplicationService {
    * @param cacheName
    * @param siteName
    */
-  public async startStateTransfer(
-    cacheName: string,
-    siteName: string,
-  ): Promise<ActionResponse> {
-    return this.doActionOnCacheBackupSite(
-      cacheName,
-      siteName,
-      'start-push-state',
-      'state transfer',
-    );
+  public async startStateTransfer(cacheName: string, siteName: string): Promise<ActionResponse> {
+    return this.doActionOnCacheBackupSite(cacheName, siteName, 'start-push-state', 'state transfer');
   }
 
   /**
@@ -143,16 +94,8 @@ export class CrossSiteReplicationService {
    * @param cacheName
    * @param siteName
    */
-  public async cancelStateTransfer(
-    cacheName: string,
-    siteName: string,
-  ): Promise<ActionResponse> {
-    return this.doActionOnCacheBackupSite(
-      cacheName,
-      siteName,
-      'cancel-push-state',
-      'cancel state transfer',
-    );
+  public async cancelStateTransfer(cacheName: string, siteName: string): Promise<ActionResponse> {
+    return this.doActionOnCacheBackupSite(cacheName, siteName, 'cancel-push-state', 'cancel state transfer');
   }
 
   /**
@@ -161,16 +104,8 @@ export class CrossSiteReplicationService {
    * @param cacheName
    * @param siteName
    */
-  public async clearStateTransferState(
-    cacheName: string,
-    siteName: string,
-  ): Promise<ActionResponse> {
-    return this.doActionOnCacheBackupSite(
-      cacheName,
-      siteName,
-      'clear-push-state-status',
-      'clear state transfer state',
-    );
+  public async clearStateTransferState(cacheName: string, siteName: string): Promise<ActionResponse> {
+    return this.doActionOnCacheBackupSite(cacheName, siteName, 'clear-push-state-status', 'clear state transfer state');
   }
 
   /**
@@ -180,30 +115,19 @@ export class CrossSiteReplicationService {
     cacheName: string,
     siteName: string,
     action: string,
-    actionLabel: string,
+    actionLabel: string
   ): Promise<ActionResponse> {
     let url;
     const encodedCacheName = encodeURIComponent(cacheName);
     if (action == 'clear-push-state-status') {
-      url =
-        this.endpoint +
-        '/caches/' +
-        encodedCacheName +
-        '/x-site/push-state/_clear';
+      url = this.endpoint + '/caches/' + encodedCacheName + '/x-site/push-state/_clear';
     } else {
-      url =
-        this.endpoint +
-        '/caches/' +
-        encodedCacheName +
-        '/x-site/backups/' +
-        siteName +
-        '/_' +
-        action;
+      url = this.endpoint + '/caches/' + encodedCacheName + '/x-site/backups/' + siteName + '/_' + action;
     }
     return this.utils.post({
       url: url,
       successMessage: `Operation ${actionLabel} on site ${siteName} has started.`,
-      errorMessage: `An error happened during the operation ${actionLabel} started on ${siteName}.`,
+      errorMessage: `An error happened during the operation ${actionLabel} started on ${siteName}.`
     });
   }
 }

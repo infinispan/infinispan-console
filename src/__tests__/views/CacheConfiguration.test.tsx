@@ -46,16 +46,10 @@ describe('Configuration Page', () => {
       return {
         loading: false,
         error: '',
-        configuration: yamlConfig,
+        configuration: yamlConfig
       };
     });
-    renderWithRouter(
-      <CacheConfiguration
-        cacheName="Test"
-        editable={false}
-        config={jsonConfig}
-      />,
-    );
+    renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
     expect(screen.getByText('JSON')).toBeDefined();
     expect(screen.getByText('XML')).toBeDefined();
     expect(screen.getByText('YAML')).toBeDefined();
@@ -66,17 +60,11 @@ describe('Configuration Page', () => {
       return {
         loading: false,
         error: '',
-        configuration: xmlConfig,
+        configuration: xmlConfig
       };
     });
 
-    renderWithRouter(
-      <CacheConfiguration
-        cacheName="Test"
-        editable={false}
-        config={jsonConfig}
-      />,
-    );
+    renderWithRouter(<CacheConfiguration cacheName="Test" editable={false} config={jsonConfig} />);
     expect(screen.getByText('JSON')).toBeDefined();
     expect(screen.getByText('XML')).toBeDefined();
     expect(screen.getByText('YAML')).toBeDefined();

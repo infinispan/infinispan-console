@@ -8,7 +8,7 @@ import {
   DescriptionList,
   Divider,
   Level,
-  LevelItem,
+  LevelItem
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -20,8 +20,7 @@ import { MetricDescriptionListGroup } from '@app/Caches/Metrics/MetricDescriptio
 const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
   const { t } = useTranslation();
   const { connectedUser } = useConnectedUser();
-  const [isClearMetricsModalOpen, setClearMetricsModalOpen] =
-    useState<boolean>(false);
+  const [isClearMetricsModalOpen, setClearMetricsModalOpen] = useState<boolean>(false);
 
   const all =
     props.stats.hits +
@@ -34,19 +33,12 @@ const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
 
   const displayStats = (name: string, stat: number, label: string) => {
     return (
-      <MetricDescriptionListGroup
-        dataCy={'stat' + name}
-        metricName={label}
-        metricValue={stat}
-        ariaLabel={label}
-      />
+      <MetricDescriptionListGroup dataCy={'stat' + name} metricName={label} metricValue={stat} ariaLabel={label} />
     );
   };
 
   const buildClearStatsButton = () => {
-    if (
-      !ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-    ) {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       return '';
     }
 
@@ -87,41 +79,13 @@ const DataAccess = (props: { cacheName: string; stats: CacheStats }) => {
         </DescriptionList>
         <Divider component="li" role="separator" />
         <DescriptionList isHorizontal isCompact>
-          {displayStats(
-            'hits',
-            props.stats.hits,
-            'caches.cache-metrics.data-access-hits',
-          )}
-          {displayStats(
-            'misses',
-            props.stats.misses,
-            'caches.cache-metrics.data-access-misses',
-          )}
-          {displayStats(
-            'stores',
-            props.stats.stores,
-            'caches.cache-metrics.data-access-stores',
-          )}
-          {displayStats(
-            'retrievals',
-            props.stats.retrievals,
-            'caches.cache-metrics.data-access-retrievals',
-          )}
-          {displayStats(
-            'remove_hits',
-            props.stats.remove_hits,
-            'caches.cache-metrics.data-access-remove-hits',
-          )}
-          {displayStats(
-            'remove_misses',
-            props.stats.remove_misses,
-            'caches.cache-metrics.data-access-remove-misses',
-          )}
-          {displayStats(
-            'evictions',
-            props.stats.evictions,
-            'caches.cache-metrics.data-access-evictions',
-          )}
+          {displayStats('hits', props.stats.hits, 'caches.cache-metrics.data-access-hits')}
+          {displayStats('misses', props.stats.misses, 'caches.cache-metrics.data-access-misses')}
+          {displayStats('stores', props.stats.stores, 'caches.cache-metrics.data-access-stores')}
+          {displayStats('retrievals', props.stats.retrievals, 'caches.cache-metrics.data-access-retrievals')}
+          {displayStats('remove_hits', props.stats.remove_hits, 'caches.cache-metrics.data-access-remove-hits')}
+          {displayStats('remove_misses', props.stats.remove_misses, 'caches.cache-metrics.data-access-remove-misses')}
+          {displayStats('evictions', props.stats.evictions, 'caches.cache-metrics.data-access-evictions')}
         </DescriptionList>
       </CardBody>
     </Card>

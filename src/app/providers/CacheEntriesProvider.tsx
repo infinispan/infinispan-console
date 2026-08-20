@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
@@ -34,13 +28,10 @@ const initialState: CacheEntriesState = {
   totalCount: 0,
   loading: false,
   error: '',
-  info: '',
+  info: ''
 };
 
-function entriesReducer(
-  state: CacheEntriesState,
-  action: CacheEntriesAction,
-): CacheEntriesState {
+function entriesReducer(state: CacheEntriesState, action: CacheEntriesAction): CacheEntriesState {
   switch (action.type) {
     case 'FETCH_START':
       return { ...state, loading: true, error: '', info: '' };
@@ -51,7 +42,7 @@ function entriesReducer(
         totalCount: action.entries.length,
         loading: false,
         error: '',
-        info: '',
+        info: ''
       };
     case 'FETCH_ERROR':
       return { ...state, loading: false, error: action.error };
@@ -87,22 +78,16 @@ const defaultValue: CacheEntriesContextValue = {
   limit: '100',
   reloadEntries: () => {},
   getByKey: () => {},
-  setLimit: () => {},
+  setLimit: () => {}
 };
 
-export const CacheEntriesContext =
-  React.createContext<CacheEntriesContextValue>(defaultValue);
+export const CacheEntriesContext = React.createContext<CacheEntriesContextValue>(defaultValue);
 
 // --- Provider ---
 
-export const CacheEntriesProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const CacheEntriesProvider = ({ children }: { children: React.ReactNode }) => {
   const { connectedUser } = useConnectedUser();
-  const { cache, cacheName, entriesAvailable } =
-    useContext(CacheMetadataContext);
+  const { cache, cacheName, entriesAvailable } = useContext(CacheMetadataContext);
 
   const [state, dispatch] = useReducer(entriesReducer, initialState);
   const [limit, setLimit] = useState('100');
@@ -119,13 +104,7 @@ export const CacheEntriesProvider = ({
       return;
     }
 
-    if (
-      !ConsoleServices.security().hasCacheConsoleACL(
-        ConsoleACL.BULK_READ,
-        cacheName,
-        connectedUser,
-      )
-    ) {
+    if (!ConsoleServices.security().hasCacheConsoleACL(ConsoleACL.BULK_READ, cacheName, connectedUser)) {
       dispatch({ type: 'NO_PERMISSION', info: 'caches.entries.read-error' });
       return;
     }
@@ -146,7 +125,7 @@ export const CacheEntriesProvider = ({
         } else {
           dispatch({
             type: 'FETCH_ERROR',
-            error: eitherEntries.value.message,
+            error: eitherEntries.value.message
           });
         }
       });
@@ -168,12 +147,12 @@ export const CacheEntriesProvider = ({
           } else {
             dispatch({
               type: 'FETCH_ERROR',
-              error: response.value.message,
+              error: response.value.message
             });
           }
         });
     },
-    [cache, cacheName],
+    [cache, cacheName]
   );
 
   const value: CacheEntriesContextValue = {
@@ -185,12 +164,8 @@ export const CacheEntriesProvider = ({
     limit,
     reloadEntries,
     getByKey,
-    setLimit,
+    setLimit
   };
 
-  return (
-    <CacheEntriesContext.Provider value={value}>
-      {children}
-    </CacheEntriesContext.Provider>
-  );
+  return <CacheEntriesContext.Provider value={value}>{children}</CacheEntriesContext.Provider>;
 };

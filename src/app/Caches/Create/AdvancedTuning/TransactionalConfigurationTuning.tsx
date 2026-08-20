@@ -7,14 +7,10 @@ import {
   HelperText,
   HelperTextItem,
   Radio,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import {
-  CacheFeature,
-  IsolationLevel,
-  TransactionalMode,
-} from '@services/infinispanRefData';
+import { CacheFeature, IsolationLevel, TransactionalMode } from '@services/infinispanRefData';
 import { useCreateCache } from '@app/hooks/createCacheHook';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
@@ -24,29 +20,18 @@ const TransactionalConfigurationTuning = () => {
   const { configuration, setConfiguration } = useCreateCache();
   const brandname = t('brandname.brandname');
 
-  const [stopTimeout, setStopTimeout] = useState(
-    configuration.advanced.transactionalAdvance?.stopTimeout,
-  );
-  const [stopTimeoutUnit, setStopTimeoutUnit] = useState(
-    configuration.advanced.transactionalAdvance?.stopTimeoutUnit,
-  );
-  const [completeTimeout, setCompleteTimeout] = useState(
-    configuration.advanced.transactionalAdvance?.completeTimeout,
-  );
+  const [stopTimeout, setStopTimeout] = useState(configuration.advanced.transactionalAdvance?.stopTimeout);
+  const [stopTimeoutUnit, setStopTimeoutUnit] = useState(configuration.advanced.transactionalAdvance?.stopTimeoutUnit);
+  const [completeTimeout, setCompleteTimeout] = useState(configuration.advanced.transactionalAdvance?.completeTimeout);
   const [completeTimeoutUnit, setCompleteTimeoutUnit] = useState(
-    configuration.advanced.transactionalAdvance?.completeTimeoutUnit,
+    configuration.advanced.transactionalAdvance?.completeTimeoutUnit
   );
-  const [reaperInterval, setReaperInterval] = useState(
-    configuration.advanced.transactionalAdvance?.reaperInterval,
-  );
+  const [reaperInterval, setReaperInterval] = useState(configuration.advanced.transactionalAdvance?.reaperInterval);
   const [reaperIntervalUnit, setReaperIntervalUnit] = useState(
-    configuration.advanced.transactionalAdvance?.reaperIntervalUnit,
+    configuration.advanced.transactionalAdvance?.reaperIntervalUnit
   );
-  const [isolationLevel, setIsolationLevel] = useState<
-    IsolationLevel | undefined
-  >(
-    configuration.advanced.transactionalAdvance
-      ?.isolationLevel as IsolationLevel,
+  const [isolationLevel, setIsolationLevel] = useState<IsolationLevel | undefined>(
+    configuration.advanced.transactionalAdvance?.isolationLevel as IsolationLevel
   );
 
   useEffect(() => {
@@ -62,9 +47,9 @@ const TransactionalConfigurationTuning = () => {
             completeTimeoutUnit: completeTimeoutUnit,
             reaperInterval: reaperInterval,
             reaperIntervalUnit: reaperIntervalUnit,
-            isolationLevel: isolationLevel,
-          },
-        },
+            isolationLevel: isolationLevel
+          }
+        }
       };
     });
   }, [
@@ -74,28 +59,18 @@ const TransactionalConfigurationTuning = () => {
     completeTimeoutUnit,
     reaperInterval,
     reaperIntervalUnit,
-    isolationLevel,
+    isolationLevel
   ]);
 
-  if (
-    !configuration.feature.cacheFeatureSelected.includes(
-      CacheFeature.TRANSACTIONAL,
-    )
-  ) {
+  if (!configuration.feature.cacheFeatureSelected.includes(CacheFeature.TRANSACTIONAL)) {
     return <div />;
   }
 
   return (
-    <FormSection
-      title={t(
-        'caches.create.configurations.advanced-options.transactional-tuning',
-      )}
-    >
+    <FormSection title={t('caches.create.configurations.advanced-options.transactional-tuning')}>
       <HelperText>
         <HelperTextItem>
-          {t(
-            'caches.create.configurations.advanced-options.transactional-tuning-tooltip',
-          )}
+          {t('caches.create.configurations.advanced-options.transactional-tuning-tooltip')}
         </HelperTextItem>
       </HelperText>
       <Grid md={4} hasGutter>
@@ -103,18 +78,12 @@ const TransactionalConfigurationTuning = () => {
           <FormGroup
             isInline
             fieldId="field-isolation-level"
-            label={t(
-              'caches.create.configurations.advanced-options.isolation-level-title',
-            )}
+            label={t('caches.create.configurations.advanced-options.isolation-level-title')}
             labelHelp={
               <PopoverHelp
                 name="field-isolation-level"
-                label={t(
-                  'caches.create.configurations.advanced-options.isolation-level-title',
-                )}
-                content={t(
-                  'caches.create.configurations.advanced-options.isolation-level-tooltip',
-                )}
+                label={t('caches.create.configurations.advanced-options.isolation-level-title')}
+                content={t('caches.create.configurations.advanced-options.isolation-level-tooltip')}
               />
             }
           >
@@ -122,21 +91,15 @@ const TransactionalConfigurationTuning = () => {
               name="radio-isolation-level"
               id="repeatable-read"
               onChange={() => setIsolationLevel(IsolationLevel.REPEATABLE_READ)}
-              isChecked={
-                (isolationLevel as IsolationLevel) ==
-                IsolationLevel.REPEATABLE_READ
-              }
+              isChecked={(isolationLevel as IsolationLevel) == IsolationLevel.REPEATABLE_READ}
               label={
                 <PopoverHelp
                   name={'full-xa'}
                   text={TransactionalMode.FULL_XA}
                   label={TransactionalMode.FULL_XA}
-                  content={t(
-                    'caches.create.configurations.advanced-options.isolation-level-repeatable-read-tooltip',
-                    {
-                      brandname: brandname,
-                    },
-                  )}
+                  content={t('caches.create.configurations.advanced-options.isolation-level-repeatable-read-tooltip', {
+                    brandname: brandname
+                  })}
                 />
               }
             />
@@ -144,25 +107,15 @@ const TransactionalConfigurationTuning = () => {
               name="radio-isolation-level"
               id="read-committed"
               onChange={() => setIsolationLevel(IsolationLevel.READ_COMMITTED)}
-              isChecked={
-                (isolationLevel as IsolationLevel) ==
-                IsolationLevel.READ_COMMITTED
-              }
+              isChecked={(isolationLevel as IsolationLevel) == IsolationLevel.READ_COMMITTED}
               label={
                 <PopoverHelp
                   name={'full-xa'}
-                  text={t(
-                    'caches.create.configurations.advanced-options.isolation-level-read-committed',
-                  )}
-                  label={t(
-                    'caches.create.configurations.advanced-options.isolation-level-read-committed',
-                  )}
-                  content={t(
-                    'caches.create.configurations.advanced-options.isolation-level-read-committed-tooltip',
-                    {
-                      brandname: brandname,
-                    },
-                  )}
+                  text={t('caches.create.configurations.advanced-options.isolation-level-read-committed')}
+                  label={t('caches.create.configurations.advanced-options.isolation-level-read-committed')}
+                  content={t('caches.create.configurations.advanced-options.isolation-level-read-committed-tooltip', {
+                    brandname: brandname
+                  })}
                 />
               }
             />
@@ -171,21 +124,14 @@ const TransactionalConfigurationTuning = () => {
         <GridItem span={6}>
           <FormGroup
             fieldId="stopTimeout"
-            label={t(
-              'caches.create.configurations.advanced-options.stop-timeout',
-            )}
+            label={t('caches.create.configurations.advanced-options.stop-timeout')}
             labelHelp={
               <PopoverHelp
                 name="stopTimeout"
-                label={t(
-                  'caches.create.configurations.advanced-options.stop-timeout',
-                )}
-                content={t(
-                  'caches.create.configurations.advanced-options.stop-timeout-tooltip',
-                  {
-                    brandname: brandname,
-                  },
-                )}
+                label={t('caches.create.configurations.advanced-options.stop-timeout')}
+                content={t('caches.create.configurations.advanced-options.stop-timeout-tooltip', {
+                  brandname: brandname
+                })}
               />
             }
           >
@@ -202,21 +148,14 @@ const TransactionalConfigurationTuning = () => {
         <GridItem span={6}>
           <FormGroup
             fieldId="completeTimeout"
-            label={t(
-              'caches.create.configurations.advanced-options.complete-timeout',
-            )}
+            label={t('caches.create.configurations.advanced-options.complete-timeout')}
             labelHelp={
               <PopoverHelp
                 name="completeTimeout"
-                label={t(
-                  'caches.create.configurations.advanced-options.complete-timeout',
-                )}
-                content={t(
-                  'caches.create.configurations.advanced-options.complete-timeout-tooltip',
-                  {
-                    brandname: brandname,
-                  },
-                )}
+                label={t('caches.create.configurations.advanced-options.complete-timeout')}
+                content={t('caches.create.configurations.advanced-options.complete-timeout-tooltip', {
+                  brandname: brandname
+                })}
               />
             }
           >
@@ -233,21 +172,14 @@ const TransactionalConfigurationTuning = () => {
         <GridItem span={6}>
           <FormGroup
             fieldId="reaperInterval"
-            label={t(
-              'caches.create.configurations.advanced-options.reaper-interval',
-            )}
+            label={t('caches.create.configurations.advanced-options.reaper-interval')}
             labelHelp={
               <PopoverHelp
                 name="reaperInterval"
-                label={t(
-                  'caches.create.configurations.advanced-options.reaper-interval',
-                )}
-                content={t(
-                  'caches.create.configurations.advanced-options.reaper-interval-tooltip',
-                  {
-                    brandname: brandname,
-                  },
-                )}
+                label={t('caches.create.configurations.advanced-options.reaper-interval')}
+                content={t('caches.create.configurations.advanced-options.reaper-interval-tooltip', {
+                  brandname: brandname
+                })}
               />
             }
           >

@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  Content,
-  ModalFooter,
-  ModalBody,
-  ModalHeader,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, Content, ModalFooter, ModalBody, ModalHeader } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useDeleteRole } from '@app/hooks/rolesHook';
 import { useGrantAccess, useRemovePrincipal } from '@app/hooks/principalsHook';
@@ -34,18 +26,16 @@ const RemovePrincipal = (props: {
       <ModalHeader
         titleIconVariant={'warning'}
         title={t('access-management.principals.modal-remove-title', {
-          principalName: props.name,
+          principalName: props.name
         })}
       />
       <ModalBody>
         <Content>
           {t('access-management.principals.modal-remove-description-1', {
-            brandname: brandname,
+            brandname: brandname
           })}
         </Content>
-        <Content>
-          {t('access-management.principals.modal-remove-description-2')}
-        </Content>
+        <Content>{t('access-management.principals.modal-remove-description-2')}</Content>
       </ModalBody>
       <ModalFooter>
         <Button

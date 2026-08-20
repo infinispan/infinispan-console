@@ -16,7 +16,7 @@ import {
   TabTitleText,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { CacheTableDisplay } from '@app/CacheManagers/CacheTableDisplay';
 import { CounterTableDisplay } from '@app/CacheManagers/CounterTableDisplay';
@@ -40,14 +40,14 @@ const PATH_TAB_MAP: Record<string, string> = {
   '/caches': '0',
   '/counters': '1',
   '/tasks': '2',
-  '/schemas': '3',
+  '/schemas': '3'
 };
 
 const TAB_PATH_MAP: Record<string, string> = {
   '0': '/caches',
   '1': '/counters',
   '2': '/tasks',
-  '3': '/schemas',
+  '3': '/schemas'
 };
 
 const CacheManagers = () => {
@@ -63,9 +63,7 @@ const CacheManagers = () => {
   const [showCaches, setShowCaches] = useState(initialTab === '0');
   const [showCounters, setShowCounters] = useState(initialTab === '1');
   const [showTasks, setShowTasks] = useState(initialTab === '2');
-  const [showSerializationContext, setShowSerializationContext] = useState(
-    initialTab === '3',
-  );
+  const [showSerializationContext, setShowSerializationContext] = useState(initialTab === '3');
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -103,30 +101,23 @@ const CacheManagers = () => {
       {
         name: t('cache-managers.counters-tab'),
         count: countersCount,
-        key: '1',
-      },
+        key: '1'
+      }
     ];
 
-    if (
-      ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)
-    ) {
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)) {
       tabs.push({
         name: t('cache-managers.tasks-tab'),
         count: tasksCount,
-        key: '2',
+        key: '2'
       });
     }
 
-    if (
-      ConsoleServices.security().hasConsoleACL(
-        ConsoleACL.BULK_READ,
-        connectedUser,
-      )
-    ) {
+    if (ConsoleServices.security().hasConsoleACL(ConsoleACL.BULK_READ, connectedUser)) {
       tabs.push({
         name: t('cache-managers.schemas-tab'),
         count: protoSchemasCount,
-        key: '3',
+        key: '3'
       });
     }
 
@@ -193,33 +184,13 @@ const CacheManagers = () => {
 
     return (
       <React.Fragment>
-        {cm && (
-          <CacheTableDisplay
-            setCachesCount={setCachesCount}
-            isVisible={showCaches}
-          />
+        {cm && <CacheTableDisplay setCachesCount={setCachesCount} isVisible={showCaches} />}
+        {cm && <CounterTableDisplay setCountersCount={setCountersCount} isVisible={showCounters} />}
+        {cm && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser) && (
+          <TasksTableDisplay setTasksCount={setTasksCount} isVisible={showTasks} />
         )}
         {cm && (
-          <CounterTableDisplay
-            setCountersCount={setCountersCount}
-            isVisible={showCounters}
-          />
-        )}
-        {cm &&
-          ConsoleServices.security().hasConsoleACL(
-            ConsoleACL.ADMIN,
-            connectedUser,
-          ) && (
-            <TasksTableDisplay
-              setTasksCount={setTasksCount}
-              isVisible={showTasks}
-            />
-          )}
-        {cm && (
-          <ProtobufSchemasDisplay
-            setProtoSchemasCount={setProtoSchemasCount}
-            isVisible={showSerializationContext}
-          />
+          <ProtobufSchemasDisplay setProtoSchemasCount={setProtoSchemasCount} isVisible={showSerializationContext} />
         )}
       </React.Fragment>
     );
@@ -233,11 +204,7 @@ const CacheManagers = () => {
 
     return (
       <>
-        <PageHeader
-          ouiaId="cluster-manager-header"
-          title={title}
-          subtitle={''}
-        />
+        <PageHeader ouiaId="cluster-manager-header" title={title} subtitle={''} />
         <PageSection>
           <Toolbar id="cluster-manager-sub-header">
             <ToolbarContent>
@@ -257,10 +224,7 @@ const CacheManagers = () => {
                 </>
               )}
               <ToolbarItem>
-                <InfinispanComponentStatus
-                  name="clusterManager"
-                  status={cm.cache_manager_status}
-                />
+                <InfinispanComponentStatus name="clusterManager" status={cm.cache_manager_status} />
               </ToolbarItem>
               {cm.tracing_enabled && (
                 <React.Fragment>
@@ -275,12 +239,7 @@ const CacheManagers = () => {
                 <RebalancingCacheManager />
               </ToolbarItem>
               <ToolbarItem align={{ default: 'alignEnd' }}>
-                <Button
-                  variant="link"
-                  data-cy="refreshCacheContainer"
-                  icon={<RedoIcon />}
-                  onClick={() => reload()}
-                >
+                <Button variant="link" data-cy="refreshCacheContainer" icon={<RedoIcon />} onClick={() => reload()}>
                   {t('common.actions.refresh')}
                 </Button>
               </ToolbarItem>
@@ -295,9 +254,7 @@ const CacheManagers = () => {
   return (
     <React.Fragment>
       {buildHeader()}
-      <PageSection variant={PageSectionVariants.default}>
-        {buildSelectedContent()}
-      </PageSection>
+      <PageSection variant={PageSectionVariants.default}>{buildSelectedContent()}</PageSection>
     </React.Fragment>
   );
 };

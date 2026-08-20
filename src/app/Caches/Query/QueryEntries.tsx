@@ -18,13 +18,9 @@ import {
   Switch,
   Toolbar,
   ToolbarContent,
-  ToolbarItem,
+  ToolbarItem
 } from '@patternfly/react-core';
-import {
-  ExternalLinkSquareAltIcon,
-  SearchIcon,
-  TrashIcon,
-} from '@patternfly/react-icons';
+import { ExternalLinkSquareAltIcon, SearchIcon, TrashIcon } from '@patternfly/react-icons';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
@@ -37,15 +33,9 @@ import displayUtils from '@services/displayUtils';
 const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const {
-    search,
-    onStoreQuery,
-    storeResult,
-    startSearch,
-    clearSearch,
-    onPerPageSelect,
-    onSetPage,
-  } = useSearch(props.cacheName);
+  const { search, onStoreQuery, storeResult, startSearch, clearSearch, onPerPageSelect, onSetPage } = useSearch(
+    props.cacheName
+  );
   const { syntaxHighLighterTheme, theme } = useContext(ThemeContext);
   const [deleteByQueryOpen, setDeleteByQueryOpen] = useState(false);
   const [trim, setTrim] = useState<boolean>(false);
@@ -58,9 +48,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         useInlineStyles={true}
         wrapLongLines={true}
       >
-        {trim
-          ? displayUtils.formatContentToDisplayWithTruncate(value)
-          : displayUtils.formatContentToDisplay(value)}
+        {trim ? displayUtils.formatContentToDisplayWithTruncate(value) : displayUtils.formatContentToDisplay(value)}
       </SyntaxHighlighter>
     );
   };
@@ -75,7 +63,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         values: [],
         error: false,
         cause: '',
-        executed: false,
+        executed: false
       });
     }
   };
@@ -108,9 +96,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
             onChange={() => setTrim(!trim)}
           />
         </ToolbarItem>
-        <ToolbarItem variant="pagination">
-          {toolbarPagination('down')}
-        </ToolbarItem>
+        <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
@@ -121,20 +107,10 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
     </EmptyState>
   );
 
-  const emptyStateLoading = (
-    <EmptyState
-      titleText={t('caches.query.query-loading')}
-      headingLevel="h4"
-      icon={Spinner}
-    />
-  );
+  const emptyStateLoading = <EmptyState titleText={t('caches.query.query-loading')} headingLevel="h4" icon={Spinner} />;
 
   const errorSearchMessage = (
-    <EmptyState
-      status={'danger'}
-      headingLevel="h2"
-      titleText={t('caches.query.query-error')}
-    >
+    <EmptyState status={'danger'} headingLevel="h2" titleText={t('caches.query.query-error')}>
       <EmptyStateBody>{search.searchResult.cause}</EmptyStateBody>
     </EmptyState>
   );
@@ -160,12 +136,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
 
     return (
       <React.Fragment>
-        <Table
-          data-cy="queryTable"
-          className={'query-table'}
-          aria-label={'query-table-label'}
-          variant="compact"
-        >
+        <Table data-cy="queryTable" className={'query-table'} aria-label={'query-table-label'} variant="compact">
           <Tbody>
             {search.searchResult.values.length == 0 ? (
               <Tr>
@@ -183,9 +154,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
           </Tbody>
         </Table>
         <Toolbar id="query-table-toolbar" className={'query-table-display'}>
-          <ToolbarItem variant="pagination">
-            {toolbarPagination('up')}
-          </ToolbarItem>
+          <ToolbarItem variant="pagination">{toolbarPagination('up')}</ToolbarItem>
         </Toolbar>
       </React.Fragment>
     );
@@ -195,7 +164,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
     <Content>
       {' '}
       {t('caches.query.ickle-query-tooltip', {
-        brandname: brandname,
+        brandname: brandname
       })}
       <Content component={'p'}></Content>
       <Content component={'small'}>
@@ -218,14 +187,12 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         style={{ paddingLeft: 0 }}
         iconPosition={'start'}
         icon={<ExternalLinkSquareAltIcon />}
-        onClick={() =>
-          window.open(t('brandname.ickle-query-docs-link'), '_blank')
-        }
+        onClick={() => window.open(t('brandname.ickle-query-docs-link'), '_blank')}
       >
         {t('caches.query.ickle-query-docs')}
       </Button>
     ),
-    bodyContent: ickleHelp,
+    bodyContent: ickleHelp
   };
 
   return (
@@ -248,10 +215,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
             />
           </GridItem>
           <GridItem span={3}>
-            <Flex
-              direction={{ default: 'column' }}
-              spaceItems={{ default: 'spaceItemsXs' }}
-            >
+            <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
               <FlexItem>
                 <Button
                   variant={ButtonVariant.primary}
@@ -259,10 +223,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
                   onClick={startSearch}
                   data-cy="searchButton"
                   icon={<SearchIcon />}
-                  isDisabled={
-                    search.query.trim().length == 0 ||
-                    search.query.toLowerCase().startsWith('delete')
-                  }
+                  isDisabled={search.query.trim().length == 0 || search.query.toLowerCase().startsWith('delete')}
                 >
                   {'Search values'}
                 </Button>
@@ -274,10 +235,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
                   onClick={() => setDeleteByQueryOpen(true)}
                   data-cy="deleteByQueryButton"
                   icon={<TrashIcon />}
-                  isDisabled={
-                    search.query.trim().length == 0 ||
-                    !search.query.toLowerCase().startsWith('delete')
-                  }
+                  isDisabled={search.query.trim().length == 0 || !search.query.toLowerCase().startsWith('delete')}
                   size={'sm'}
                 >
                   {t('caches.query.button-delete-entries')}

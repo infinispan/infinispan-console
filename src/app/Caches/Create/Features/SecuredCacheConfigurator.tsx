@@ -6,7 +6,7 @@ import {
   FormHelperText,
   HelperText,
   HelperTextItem,
-  Spinner,
+  Spinner
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useCreateCache } from '@app/hooks/createCacheHook';
@@ -22,9 +22,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   const { configuration, setConfiguration } = useCreateCache();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
-  const [roles, setRoles] = useState<string[]>(
-    configuration.feature.securedCache.roles,
-  );
+  const [roles, setRoles] = useState<string[]>(configuration.feature.securedCache.roles);
   const { availableRoleNames, loading, error } = useFetchAvailableRolesNames();
 
   useEffect(() => {
@@ -35,9 +33,9 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
           ...prevState.feature,
           securedCache: {
             roles: roles,
-            valid: securedFeatureValidation(),
-          },
-        },
+            valid: securedFeatureValidation()
+          }
+        }
       };
     });
   }, [roles]);
@@ -54,8 +52,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
   };
 
   const onSelectRoles = (selection) => {
-    if (roles.includes(selection))
-      setRoles(roles.filter((role) => role !== selection));
+    if (roles.includes(selection)) setRoles(roles.filter((role) => role !== selection));
     else setRoles([...roles, selection]);
   };
 
@@ -68,9 +65,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
       return (
         <Bullseye>
           <Spinner size={'md'} isInline />
-          <Content>
-            {t('caches.create.configurations.feature.roles-loading')}
-          </Content>
+          <Content>{t('caches.create.configurations.feature.roles-loading')}</Content>
         </Bullseye>
       );
     }
@@ -88,10 +83,7 @@ const SecuredCacheConfigurator = (props: { isEnabled: boolean }) => {
         {validateForm() === 'error' && (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem
-                variant={'error'}
-                icon={<ExclamationCircleIcon />}
-              >
+              <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
                 {t('caches.create.configurations.feature.select-roles-helper')}
               </HelperTextItem>
             </HelperText>

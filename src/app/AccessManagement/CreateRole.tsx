@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalVariant,
   SelectOptionProps,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import formUtils, { IField } from '@services/formUtils';
@@ -22,11 +22,7 @@ import { useCreateRole, useFetchAvailableRoles } from '@app/hooks/rolesHook';
 import { ROLES_MAP } from '@services/infinispanRefData';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 
-const CreateRole = (props: {
-  isModalOpen: boolean;
-  submitModal: () => void;
-  closeModal: () => void;
-}) => {
+const CreateRole = (props: { isModalOpen: boolean; submitModal: () => void; closeModal: () => void }) => {
   const { t } = useTranslation();
   const { roles } = useFetchAvailableRoles();
   const initPermissions = () => {
@@ -37,7 +33,7 @@ const CreateRole = (props: {
         id: key,
         value: key,
         children: key,
-        description: desc,
+        description: desc
       });
     });
     return array;
@@ -47,35 +43,26 @@ const CreateRole = (props: {
   const roleNameInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default',
+    validated: 'default'
   };
 
   const roleDescriptionInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default',
+    validated: 'default'
   };
 
   const rolePermissionsInitialState: IField = {
     value: '',
     isValid: false,
-    validated: 'default',
+    validated: 'default'
   };
 
   const [roleName, setRoleName] = useState<IField>(roleNameInitialState);
-  const [roleDescription, setRoleDescription] = useState<IField>(
-    roleDescriptionInitialState,
-  );
-  const [rolePermissionsField, setRolePermissionsField] = useState<IField>(
-    rolePermissionsInitialState,
-  );
+  const [roleDescription, setRoleDescription] = useState<IField>(roleDescriptionInitialState);
+  const [rolePermissionsField, setRolePermissionsField] = useState<IField>(rolePermissionsInitialState);
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
-  const { onCreateRole } = useCreateRole(
-    roleName.value,
-    roleDescription.value,
-    selectedPermissions,
-    props.submitModal,
-  );
+  const { onCreateRole } = useCreateRole(roleName.value, roleDescription.value, selectedPermissions, props.submitModal);
 
   const handleSubmit = () => {
     let isValid = true;
@@ -87,7 +74,7 @@ const CreateRole = (props: {
         ...roleName,
         isValid: isValid,
         invalidText: t('access-management.roles.modal-role-name-is-required'),
-        validated: 'error',
+        validated: 'error'
       });
     } else if (roles.filter((r) => r.name == trimmedRoleName).length > 0) {
       isValid = false;
@@ -95,9 +82,9 @@ const CreateRole = (props: {
         ...roleName,
         isValid: isValid,
         invalidText: t('access-management.roles.modal-role-exists', {
-          name: trimmedRoleName,
+          name: trimmedRoleName
         }),
-        validated: 'error',
+        validated: 'error'
       });
     }
     // validates permissions
@@ -107,7 +94,7 @@ const CreateRole = (props: {
         ...rolePermissionsField,
         isValid: isValid,
         invalidText: t('access-management.roles.modal-permissions-is-required'),
-        validated: 'error',
+        validated: 'error'
       });
     }
 
@@ -129,7 +116,7 @@ const CreateRole = (props: {
       setSelectedPermissions(
         selectedPermissions.includes(value)
           ? selectedPermissions.filter((selection) => selection !== value)
-          : [...selectedPermissions, value],
+          : [...selectedPermissions, value]
       );
     }
   };
@@ -145,51 +132,34 @@ const CreateRole = (props: {
       aria-label={'roles-modal-create-title'}
       disableFocusTrap={true}
     >
-      <ModalHeader
-        titleIconVariant={AddCircleOIcon}
-        title={t('access-management.roles.modal-create-title')}
-      />
+      <ModalHeader titleIconVariant={AddCircleOIcon} title={t('access-management.roles.modal-create-title')} />
       <ModalBody>
         <Form
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <FormGroup
-            isRequired
-            isInline
-            label={t('access-management.roles.modal-role-name')}
-          >
+          <FormGroup isRequired isInline label={t('access-management.roles.modal-role-name')}>
             <TextInput
               validated={roleName.validated}
               value={roleName.value}
               type="text"
               onChange={(_event, value) =>
-                formUtils.validateRequiredField(
-                  value,
-                  t('access-management.roles.modal-role-name'),
-                  setRoleName,
-                )
+                formUtils.validateRequiredField(value, t('access-management.roles.modal-role-name'), setRoleName)
               }
               aria-label="role-name-input"
             />
             {roleName.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem
-                    variant={'error'}
-                    icon={<ExclamationCircleIcon />}
-                  >
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
                     {roleName.invalidText}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
             )}
           </FormGroup>
-          <FormGroup
-            isInline
-            label={t('access-management.roles.modal-role-description')}
-          >
+          <FormGroup isInline label={t('access-management.roles.modal-role-description')}>
             <TextInput
               validated={roleDescription.validated}
               value={roleDescription.value}
@@ -198,7 +168,7 @@ const CreateRole = (props: {
                 formUtils.validateRequiredField(
                   value,
                   t('access-management.roles.modal-role-description'),
-                  setRoleDescription,
+                  setRoleDescription
                 )
               }
               aria-label="role-description-input"
@@ -206,27 +176,17 @@ const CreateRole = (props: {
             {roleDescription.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem
-                    variant={'error'}
-                    icon={<ExclamationCircleIcon />}
-                  >
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
                     {roleDescription.invalidText}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
             )}
           </FormGroup>
-          <FormGroup
-            fieldId="permissions"
-            isRequired
-            isInline
-            label={t('access-management.roles.modal-permissions')}
-          >
+          <FormGroup fieldId="permissions" isRequired isInline label={t('access-management.roles.modal-permissions')}>
             <SelectMultiWithChips
               id="permissions"
-              placeholder={t(
-                'access-management.roles.modal-permissions-list-placeholder',
-              )}
+              placeholder={t('access-management.roles.modal-permissions-list-placeholder')}
               options={initialSelectOptions}
               selection={selectedPermissions}
               onSelect={onSelectPermission}
@@ -235,10 +195,7 @@ const CreateRole = (props: {
             {rolePermissionsField.validated === 'error' && (
               <FormHelperText>
                 <HelperText>
-                  <HelperTextItem
-                    variant={'error'}
-                    icon={<ExclamationCircleIcon />}
-                  >
+                  <HelperTextItem variant={'error'} icon={<ExclamationCircleIcon />}>
                     {rolePermissionsField.invalidText}
                   </HelperTextItem>
                 </HelperText>
@@ -248,20 +205,10 @@ const CreateRole = (props: {
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button
-          key={'Create'}
-          aria-label={'Create'}
-          variant={ButtonVariant.primary}
-          onClick={handleSubmit}
-        >
+        <Button key={'Create'} aria-label={'Create'} variant={ButtonVariant.primary} onClick={handleSubmit}>
           {t('common.actions.save')}
         </Button>
-        <Button
-          key={'Cancel'}
-          aria-label={'Cancel'}
-          variant={ButtonVariant.link}
-          onClick={onCloseModal}
-        >
+        <Button key={'Cancel'} aria-label={'Cancel'} variant={ButtonVariant.link} onClick={onCloseModal}>
           {t('common.actions.cancel')}
         </Button>
       </ModalFooter>

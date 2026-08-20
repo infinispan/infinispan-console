@@ -19,17 +19,13 @@ export class ProtobufService {
   /**
    * Create or Update a Proto Schema
    */
-  public async createOrUpdateSchema(
-    schemaName: string,
-    schema: string,
-    create: boolean,
-  ): Promise<ActionResponse> {
+  public async createOrUpdateSchema(schemaName: string, schema: string, create: boolean): Promise<ActionResponse> {
     if (create) {
       return this.utils.post({
         url: this.endpoint + '/' + encodeURIComponent(schemaName),
         successMessage: `Schema ${schemaName} created.`,
         errorMessage: `Unexpected error creating schema ${schemaName}`,
-        body: schema,
+        body: schema
       });
     }
 
@@ -37,7 +33,7 @@ export class ProtobufService {
       url: this.endpoint + '/' + encodeURIComponent(schemaName),
       successMessage: `Schema ${schemaName} updated.`,
       errorMessage: `Unexpected error updating schema ${schemaName}`,
-      body: schema,
+      body: schema
     });
   }
 
@@ -48,30 +44,21 @@ export class ProtobufService {
     return this.utils.delete({
       url: this.endpoint + '/' + encodeURIComponent(schemaName),
       successMessage: `Schema ${schemaName} has been deleted.`,
-      errorMessage: `Unexpected error happened when deleting schema ${schemaName}.`,
+      errorMessage: `Unexpected error happened when deleting schema ${schemaName}.`
     });
   }
 
   /**
    * Get schema
    */
-  public async getSchema(
-    schemaName: string,
-  ): Promise<Either<ActionResponse, string>> {
-    return this.utils.get(
-      this.endpoint + '/' + encodeURIComponent(schemaName),
-      (data) => data,
-      undefined,
-      true,
-    );
+  public async getSchema(schemaName: string): Promise<Either<ActionResponse, string>> {
+    return this.utils.get(this.endpoint + '/' + encodeURIComponent(schemaName), (data) => data, undefined, true);
   }
 
   /**
    * Get schema with detailed info (content, dependent caches, errors)
    */
-  public async getSchemaDetailed(
-    schemaName: string,
-  ): Promise<Either<ActionResponse, ProtoSchemaDetail>> {
+  public async getSchemaDetailed(schemaName: string): Promise<Either<ActionResponse, ProtoSchemaDetail>> {
     return this.utils.get(
       this.endpoint + '/' + encodeURIComponent(schemaName) + '/_detailed',
       (data) =>
@@ -82,10 +69,10 @@ export class ProtobufService {
           error: data.error
             ? <ProtoError>{
                 message: data.error.message,
-                cause: data.error.cause,
+                cause: data.error.cause
               }
-            : null,
-        },
+            : null
+        }
     );
   }
 
@@ -100,20 +87,19 @@ export class ProtobufService {
           if (schema['error'] != null) {
             protoError = <ProtoError>{
               message: schema.error.message,
-              cause: schema.error.cause,
+              cause: schema.error.cause
             };
           }
           return <ProtoSchema>{
             name: schema.name,
-            error: protoError,
+            error: protoError
           };
         })
         .filter(
           (schema) =>
-            schema.name !=
-              'org/infinispan/protostream/message-wrapping.proto' &&
-            schema.name != 'org/infinispan/query/remote/client/query.proto',
-        ),
+            schema.name != 'org/infinispan/protostream/message-wrapping.proto' &&
+            schema.name != 'org/infinispan/query/remote/client/query.proto'
+        )
     );
   }
 
@@ -121,8 +107,6 @@ export class ProtobufService {
    * List types of protobuf schemas
    */
   public async getProtobufTypes(): Promise<Either<ActionResponse, string[]>> {
-    return this.utils.get(this.endpointBase + '/meta/schemas/_types', (data) =>
-      filterInternalProtobufTypes(data),
-    );
+    return this.utils.get(this.endpointBase + '/meta/schemas/_types', (data) => filterInternalProtobufTypes(data));
   }
 }

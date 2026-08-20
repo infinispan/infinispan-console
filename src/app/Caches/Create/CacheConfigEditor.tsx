@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import {
   Button,
@@ -15,14 +9,10 @@ import {
   FormSection,
   HelperText,
   HelperTextItem,
-  Spinner,
+  Spinner
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, UploadIcon } from '@patternfly/react-icons';
-import {
-  CodeEditor,
-  CodeEditorControl,
-  Language,
-} from '@patternfly/react-code-editor';
+import { CodeEditor, CodeEditorControl, Language } from '@patternfly/react-code-editor';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
@@ -54,21 +44,13 @@ const CacheConfigEditor = (props: {
   const configurationDocs = t('brandname.configuration-docs-link');
   const [selectedConfigDisabled, setSelectedConfigDisabled] = useState(false);
 
-  const [editorConfig, setEditorConfig] = useState(
-    props.cacheEditor.editorConfig || sampleConfig,
-  );
+  const [editorConfig, setEditorConfig] = useState(props.cacheEditor.editorConfig || sampleConfig);
   const [configs, setConfigs] = useState(props.cacheEditor.configs);
   const [validConfig, setValidConfig] = useState(props.cacheEditor.validConfig);
   const [errorConfig, setErrorConfig] = useState(props.cacheEditor.errorConfig);
-  const [selectedConfig, setSelectedConfig] = useState(
-    props.cacheEditor.selectedConfig,
-  );
-  const [configExpanded, setConfigExpanded] = useState(
-    props.cacheEditor.configExpanded,
-  );
-  const [editorExpanded, setEditorExpanded] = useState(
-    props.cacheEditor.editorExpanded,
-  );
+  const [selectedConfig, setSelectedConfig] = useState(props.cacheEditor.selectedConfig);
+  const [configExpanded, setConfigExpanded] = useState(props.cacheEditor.configExpanded);
+  const [editorExpanded, setEditorExpanded] = useState(props.cacheEditor.editorExpanded);
   const languageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [editorLanguage, setEditorLanguage] = useState<Language>(Language.json);
@@ -109,20 +91,17 @@ const CacheConfigEditor = (props: {
     }, 300);
   }, []);
 
-  const handleFileUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const content = reader.result as string;
-        handleChangeConfig(content);
-      };
-      reader.readAsText(file);
-      event.target.value = '';
-    },
-    [],
-  );
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = reader.result as string;
+      handleChangeConfig(content);
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }, []);
 
   useEffect(() => {
     if (loading) {
@@ -148,19 +127,10 @@ const CacheConfigEditor = (props: {
       errorConfig: errorConfig,
       selectedConfig: selectedConfig,
       configExpanded: configExpanded,
-      editorExpanded: editorExpanded,
+      editorExpanded: editorExpanded
     });
     props.setReviewConfig(editorConfig);
-  }, [
-    editorConfig,
-    configs,
-    validConfig,
-    errorConfig,
-    selectedConfig,
-    configExpanded,
-    editorExpanded,
-    loading,
-  ]);
+  }, [editorConfig, configs, validConfig, errorConfig, selectedConfig, configExpanded, editorExpanded, loading]);
 
   const handleChangeConfig = (value) => {
     props.setReviewConfig(value);
@@ -255,14 +225,8 @@ const CacheConfigEditor = (props: {
 
     return (
       <Form>
-        <FormSection
-          title={t('caches.create.edit-config.page-title')}
-          titleElement="h2"
-        >
-          <FormGroup
-            fieldId="cache-config-name"
-            label={t('caches.create.templates')}
-          >
+        <FormSection title={t('caches.create.edit-config.page-title')} titleElement="h2">
+          <FormGroup fieldId="cache-config-name" label={t('caches.create.templates')}>
             <SelectSingleTypehead
               id="templates"
               onSelect={onSelectTemplate}
@@ -275,9 +239,7 @@ const CacheConfigEditor = (props: {
             />
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant={validConfig}>
-                  {t('caches.create.templates-help')}
-                </HelperTextItem>
+                <HelperTextItem variant={validConfig}>{t('caches.create.templates-help')}</HelperTextItem>
               </HelperText>
             </FormHelperText>
           </FormGroup>

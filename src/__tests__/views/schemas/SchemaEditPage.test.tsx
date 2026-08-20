@@ -8,14 +8,14 @@ jest.mock('@app/hooks/protobufHooks');
 const mockedHooks = ProtobufHooks as jest.Mocked<typeof ProtobufHooks>;
 
 (mockedHooks.useDeleteProtobufSchema as jest.Mock).mockReturnValue({
-  onDeleteSchema: jest.fn(() => Promise.resolve()),
+  onDeleteSchema: jest.fn(() => Promise.resolve())
 });
 
 const mockSchemaDetail = {
   name: 'test.proto',
   content: 'syntax = "proto3";\n\nmessage Person {\n  string name = 1;\n}',
   caches: ['cache1', 'cache2'],
-  error: null,
+  error: null
 };
 
 const mockSchemaDetailWithErrors = {
@@ -24,15 +24,15 @@ const mockSchemaDetailWithErrors = {
   caches: ['cache1'],
   error: {
     message: 'Syntax error in schema',
-    cause: 'Invalid field definition at line 4',
-  },
+    cause: 'Invalid field definition at line 4'
+  }
 };
 
 const mockSchemaDetailNoCaches = {
   name: 'test.proto',
   content: 'syntax = "proto3";\n\nmessage Person {\n  string name = 1;\n}',
   caches: [],
-  error: null,
+  error: null
 };
 
 describe('SchemaEditPage', () => {
@@ -45,12 +45,12 @@ describe('SchemaEditPage', () => {
       schemaDetail: null,
       loading: true,
       error: '',
-      reload: jest.fn(),
+      reload: jest.fn()
     });
 
     renderWithRouter({
       element: <SchemaEditPage />,
-      path: '/schemas/test.proto',
+      path: '/schemas/test.proto'
     });
 
     expect(screen.getByRole('progressbar')).toBeDefined();
@@ -63,12 +63,12 @@ describe('SchemaEditPage', () => {
       schemaDetail: null,
       loading: false,
       error: errorMessage,
-      reload: jest.fn(),
+      reload: jest.fn()
     });
 
     renderWithRouter({
       element: <SchemaEditPage />,
-      path: '/schemas/test.proto',
+      path: '/schemas/test.proto'
     });
 
     expect(screen.getByText(errorMessage)).toBeDefined();
@@ -80,30 +80,24 @@ describe('SchemaEditPage', () => {
       schemaDetail: mockSchemaDetail,
       loading: false,
       error: '',
-      reload: jest.fn(),
+      reload: jest.fn()
     });
 
     renderWithRouter({
       element: <SchemaEditPage />,
-      path: '/schemas/test.proto',
+      path: '/schemas/test.proto'
     });
 
     expect(screen.getByText('schemas.edit-page.title')).toBeDefined();
 
     // Warning banner should be present
-    expect(
-      screen.getByText('schemas.edit-page.warning-dependent-caches'),
-    ).toBeDefined();
+    expect(screen.getByText('schemas.edit-page.warning-dependent-caches')).toBeDefined();
 
     // Validation panel should show success
-    expect(
-      screen.getByText('schemas.edit-page.validation-valid'),
-    ).toBeDefined();
+    expect(screen.getByText('schemas.edit-page.validation-valid')).toBeDefined();
 
     // Dependent caches section
-    expect(
-      screen.getByText('schemas.edit-page.dependent-caches-description'),
-    ).toBeDefined();
+    expect(screen.getByText('schemas.edit-page.dependent-caches-description')).toBeDefined();
     expect(screen.getByText('cache1')).toBeDefined();
     expect(screen.getByText('cache2')).toBeDefined();
 
@@ -117,24 +111,20 @@ describe('SchemaEditPage', () => {
       schemaDetail: mockSchemaDetailWithErrors,
       loading: false,
       error: '',
-      reload: jest.fn(),
+      reload: jest.fn()
     });
 
     renderWithRouter({
       element: <SchemaEditPage />,
-      path: '/schemas/test.proto',
+      path: '/schemas/test.proto'
     });
 
     expect(screen.getByText('schemas.edit-page.title')).toBeDefined();
 
     // Validation panel should show errors
-    expect(
-      screen.getByText('schemas.edit-page.validation-errors'),
-    ).toBeDefined();
+    expect(screen.getByText('schemas.edit-page.validation-errors')).toBeDefined();
     expect(screen.getByText('Syntax error in schema')).toBeDefined();
-    expect(
-      screen.getByText('Invalid field definition at line 4'),
-    ).toBeDefined();
+    expect(screen.getByText('Invalid field definition at line 4')).toBeDefined();
 
     // Should not show validation success
     expect(screen.queryByText('schemas.edit-page.validation-valid')).toBeNull();
@@ -145,30 +135,24 @@ describe('SchemaEditPage', () => {
       schemaDetail: mockSchemaDetailNoCaches,
       loading: false,
       error: '',
-      reload: jest.fn(),
+      reload: jest.fn()
     });
 
     renderWithRouter({
       element: <SchemaEditPage />,
-      path: '/schemas/test.proto',
+      path: '/schemas/test.proto'
     });
 
     expect(screen.getByText('schemas.edit-page.title')).toBeDefined();
 
     // Should show no dependent caches message
-    expect(
-      screen.getByText('schemas.edit-page.no-dependent-caches'),
-    ).toBeDefined();
+    expect(screen.getByText('schemas.edit-page.no-dependent-caches')).toBeDefined();
 
     // Should not show the description for when caches exist
-    expect(
-      screen.queryByText('schemas.edit-page.dependent-caches-description'),
-    ).toBeNull();
+    expect(screen.queryByText('schemas.edit-page.dependent-caches-description')).toBeNull();
 
     // Warning banner should not be present
-    expect(
-      screen.queryByText('schemas.edit-page.warning-dependent-caches'),
-    ).toBeNull();
+    expect(screen.queryByText('schemas.edit-page.warning-dependent-caches')).toBeNull();
   });
 
   test('cancel button exists and is clickable', () => {
@@ -176,12 +160,12 @@ describe('SchemaEditPage', () => {
       schemaDetail: mockSchemaDetail,
       loading: false,
       error: '',
-      reload: jest.fn(),
+      reload: jest.fn()
     });
 
     renderWithRouter({
       element: <SchemaEditPage />,
-      path: '/schemas/test.proto',
+      path: '/schemas/test.proto'
     });
 
     const cancelButton = screen.getByLabelText('cancel-edit-schema-button');

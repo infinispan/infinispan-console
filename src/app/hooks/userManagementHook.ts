@@ -4,21 +4,14 @@ import { ConsoleServices } from '@services/ConsoleServices';
 import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useConnectedUser() {
-  const {
-    connectedUser,
-    error,
-    notSecuredModeOn,
-    logUser,
-    notSecured,
-    reloadAcl,
-  } = useContext(UserContext);
+  const { connectedUser, error, notSecuredModeOn, logUser, notSecured, reloadAcl } = useContext(UserContext);
   return {
     connectedUser,
     error,
     logUser,
     notSecuredModeOn,
     notSecured,
-    reloadAcl,
+    reloadAcl
   };
 }
 
@@ -32,11 +25,8 @@ export function useFetchAvailableUsers() {
     data: realms,
     loading,
     setLoading,
-    error,
-  } = useServiceCall<Map<string, string[]>>(
-    () => ConsoleServices.security().getSecurityUsers(),
-    new Map(),
-  );
+    error
+  } = useServiceCall<Map<string, string[]>>(() => ConsoleServices.security().getSecurityUsers(), new Map());
 
   return { realms, loading, setLoading, error };
 }

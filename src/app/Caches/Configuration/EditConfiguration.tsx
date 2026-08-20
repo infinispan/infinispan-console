@@ -1,15 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  Card,
-  CardBody,
-  EmptyState,
-  PageSection,
-  Spinner,
-  Tab,
-  Tabs,
-  TabTitleText,
-} from '@patternfly/react-core';
+import { Card, CardBody, EmptyState, PageSection, Spinner, Tab, Tabs, TabTitleText } from '@patternfly/react-core';
 import { useParams } from 'react-router-dom';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { useTranslation } from 'react-i18next';
@@ -47,27 +38,27 @@ const EditConfiguration = () => {
     cacheConfigTabs.push({
       name: t('caches.edit-configuration.tab-expiration'),
       key: 'expiration',
-      eventKey: 0,
+      eventKey: 0
     });
     if (cache.features?.bounded) {
       cacheConfigTabs.push({
         name: t('caches.edit-configuration.tab-bounded'),
         key: 'bounded',
-        eventKey: 1,
+        eventKey: 1
       });
     }
     if (cache.features?.indexed) {
       cacheConfigTabs.push({
         name: t('caches.edit-configuration.tab-indexed'),
         key: 'indexed',
-        eventKey: 2,
+        eventKey: 2
       });
     }
     if (cache.features?.secured) {
       cacheConfigTabs.push({
         name: t('caches.edit-configuration.tab-secured'),
         key: 'secured',
-        eventKey: 3,
+        eventKey: 3
       });
     }
     // Display Tracing Management only if Tracing is enabled in the Server
@@ -75,7 +66,7 @@ const EditConfiguration = () => {
       cacheConfigTabs.push({
         name: t('caches.edit-configuration.tab-tracing'),
         key: 'tracing',
-        eventKey: 4,
+        eventKey: 4
       });
     }
     setTabs(cacheConfigTabs);
@@ -86,11 +77,7 @@ const EditConfiguration = () => {
   };
 
   const buildTabs = (
-    <Tabs
-      data-cy="navigationTabs"
-      activeKey={activeTabKey}
-      onSelect={(_event, tab) => handleTabClick(tab as number)}
-    >
+    <Tabs data-cy="navigationTabs" activeKey={activeTabKey} onSelect={(_event, tab) => handleTabClick(tab as number)}>
       {tabs.map((tab) => (
         <Tab
           data-cy={'nav-item-' + tab.name}
@@ -130,10 +117,7 @@ const EditConfiguration = () => {
 
   return (
     <React.Fragment>
-      <DataContainerBreadcrumb
-        currentPage={t('caches.edit-configuration.title')}
-        cacheName={cacheName}
-      />
+      <DataContainerBreadcrumb currentPage={t('caches.edit-configuration.title')} cacheName={cacheName} />
       <PageHeader title={t('caches.edit-configuration.title')} subtitle={''} />
       <PageSection>{buildContent()}</PageSection>
     </React.Fragment>

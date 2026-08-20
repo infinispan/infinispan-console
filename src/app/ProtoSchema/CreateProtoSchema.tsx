@@ -9,7 +9,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import { CodeEditor } from '@patternfly/react-code-editor';
 import { useApiAlert } from '@app/utils/useApiAlert';
@@ -29,7 +29,7 @@ const schemaNameInitialState: IField = {
   isValid: true,
   invalidText: 'Schema name is required',
   helperText: 'The schema name must not exist',
-  validated: 'default',
+  validated: 'default'
 };
 
 const schemaInitialState: IField = {
@@ -37,13 +37,10 @@ const schemaInitialState: IField = {
   isValid: true,
   invalidText: 'Schema is required',
   helperText: 'Protobuf schema',
-  validated: 'default',
+  validated: 'default'
 };
 
-const CreateProtoSchema = (props: {
-  isModalOpen: boolean;
-  closeModal: (boolean) => void;
-}) => {
+const CreateProtoSchema = (props: { isModalOpen: boolean; closeModal: (boolean) => void }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { addAlert } = useApiAlert();
@@ -61,15 +58,8 @@ const CreateProtoSchema = (props: {
   const handleCreateButton = () => {
     let isValid = true;
     setError(undefined);
-    isValid =
-      formUtils.validateRequiredField(
-        schemaName.value,
-        'Schema name',
-        setSchemaName,
-      ) && isValid;
-    isValid =
-      formUtils.validateRequiredField(schema.value, 'Schema', setSchema) &&
-      isValid;
+    isValid = formUtils.validateRequiredField(schemaName.value, 'Schema name', setSchemaName) && isValid;
+    isValid = formUtils.validateRequiredField(schema.value, 'Schema', setSchema) && isValid;
 
     if (!isValid) {
       setError('There are form errors');
@@ -95,15 +85,9 @@ const CreateProtoSchema = (props: {
           e.preventDefault();
         }}
       >
-        {error && (
-          <Alert variant={AlertVariant.danger} isInline title={error} />
-        )}
+        {error && <Alert variant={AlertVariant.danger} isInline title={error} />}
 
-        <FormGroup
-          label={t('schemas.create.name')}
-          isRequired
-          fieldId="schema-name"
-        >
+        <FormGroup label={t('schemas.create.name')} isRequired fieldId="schema-name">
           <TextInput
             value={schemaName.value}
             id="schema-name"
@@ -158,10 +142,7 @@ const CreateProtoSchema = (props: {
       aria-label="Add Protobuf schema"
       variant="medium"
     >
-      <ModalHeader
-        titleIconVariant={AddCircleOIcon}
-        title={t('schemas.create.modal-title')}
-      />
+      <ModalHeader titleIconVariant={AddCircleOIcon} title={t('schemas.create.modal-title')} />
       <ModalBody>{buildContent()}</ModalBody>
       <ModalFooter>
         <Button

@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Content,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 import { useClearStats } from '@app/hooks/statsHook';
 import { useCacheDetail } from '@app/hooks/cachesHook';
@@ -36,30 +28,15 @@ const ClearMetrics = (props: {
       onClose={props.closeModal}
       aria-label={t(label + '.modal-clear-stats-label')}
     >
-      <ModalHeader
-        titleIconVariant={'warning'}
-        title={t(label + '.modal-clear-stats')}
-      />
+      <ModalHeader titleIconVariant={'warning'} title={t(label + '.modal-clear-stats')} />
       <ModalBody>
-        <Content component={'p'}>
-          {t(label + '.modal-button-clear-stats-body')}
-        </Content>
+        <Content component={'p'}>{t(label + '.modal-button-clear-stats-body')}</Content>
       </ModalBody>
       <ModalFooter>
-        <Button
-          data-cy="confirmButton"
-          key="confirm"
-          variant={ButtonVariant.danger}
-          onClick={onClearStats}
-        >
+        <Button data-cy="confirmButton" key="confirm" variant={ButtonVariant.danger} onClick={onClearStats}>
           {t(label + '.modal-button-clear-stats')}
         </Button>
-        <Button
-          data-cy="cancelButton"
-          key="cancel"
-          variant="link"
-          onClick={props.closeModal}
-        >
+        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={props.closeModal}>
           {t('common.actions.cancel')}
         </Button>
       </ModalFooter>

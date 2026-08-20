@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Content,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Modal, ModalBody, ModalFooter, ModalHeader } from '@patternfly/react-core';
 import { useDeleteCounter } from '@app/hooks/countersHook';
 import { useTranslation } from 'react-i18next';
 
@@ -34,14 +26,9 @@ const DeleteCounter = (props: {
       aria-label={t('cache-managers.counters.modal-delete-title')}
       disableFocusTrap={true}
     >
-      <ModalHeader
-        titleIconVariant={'warning'}
-        title={t('cache-managers.counters.modal-delete-title')}
-      />
+      <ModalHeader titleIconVariant={'warning'} title={t('cache-managers.counters.modal-delete-title')} />
       <ModalBody>
-        <Content component={'p'}>
-          {t('cache-managers.counters.modal-delete-content')}
-        </Content>
+        <Content component={'p'}>{t('cache-managers.counters.modal-delete-content')}</Content>
       </ModalBody>
 
       <ModalFooter>

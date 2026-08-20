@@ -16,7 +16,7 @@ import {
   SelectOptionProps,
   Spinner,
   TextArea,
-  TextInput,
+  TextInput
 } from '@patternfly/react-core';
 import { useApiAlert } from '@app/utils/useApiAlert';
 import { t_global_spacer_md } from '@patternfly/react-tokens';
@@ -25,24 +25,13 @@ import { useCacheDetail } from '@app/hooks/cachesHook';
 import { useTranslation } from 'react-i18next';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { CacheConfigUtils } from '@services/cacheConfigUtils';
-import {
-  ContentType,
-  EncodingType,
-  InfinispanFlags,
-} from '@services/infinispanRefData';
+import { ContentType, EncodingType, InfinispanFlags } from '@services/infinispanRefData';
 import { ProtobufDataUtils } from '@services/protobufDataUtils';
-import {
-  AddCircleOIcon,
-  ExclamationCircleIcon,
-  PencilAltIcon,
-} from '@patternfly/react-icons';
+import { AddCircleOIcon, ExclamationCircleIcon, PencilAltIcon } from '@patternfly/react-icons';
 import { PopoverHelp } from '@app/Common/PopoverHelp';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
 import { SelectSingle } from '@app/Common/SelectSingle';
-import {
-  selectOptionProps,
-  selectOptionPropsFromArray,
-} from '@utils/selectOptionPropsCreator';
+import { selectOptionProps, selectOptionPropsFromArray } from '@utils/selectOptionPropsCreator';
 
 const CreateOrUpdateEntryForm = (props: {
   cacheName: string;
@@ -61,82 +50,66 @@ const CreateOrUpdateEntryForm = (props: {
     isValid: false,
     invalidText: t('caches.entries.add-entry-key-invalid'),
     helperText: t('caches.entries.add-entry-key-help'),
-    validated: 'default',
+    validated: 'default'
   };
   const valueInitialState: IField = {
     value: '',
     isValid: false,
     invalidText: t('caches.entries.add-entry-value-invalid'),
     helperText: t('caches.entries.add-entry-value-help'),
-    validated: 'default',
+    validated: 'default'
   };
 
   const keyContentTypeInitialState: ISelectField = {
-    selected: CacheConfigUtils.getContentTypeOptions(
-      props.cacheEncoding.key as EncodingType,
-    )[0],
+    selected: CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.key as EncodingType)[0],
     expanded: false,
-    helperText: 'Select a key content type.',
+    helperText: 'Select a key content type.'
   };
 
   const contentTypeInitialState: ISelectField = {
     // add protobuf custom type by default in the values
-    selected: CacheConfigUtils.getContentTypeOptions(
-      props.cacheEncoding.value as EncodingType,
-    )[0],
+    selected: CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType)[0],
     expanded: false,
-    helperText: t('caches.entries.add-entry-content-type-help'),
+    helperText: t('caches.entries.add-entry-content-type-help')
   };
   const maxIdleInitialState: IField = {
     value: '',
     isValid: true,
     invalidText: t('caches.entries.add-entry-maxidle-invalid'),
     helperText: t('caches.entries.add-entry-maxidle-help'),
-    validated: 'default',
+    validated: 'default'
   };
   const timeToLiveInitialState: IField = {
     value: '',
     isValid: true,
     invalidText: t('caches.entries.add-entry-lifespan-invalid'),
     helperText: t('caches.entries.add-entry-lifespan-help'),
-    validated: 'default',
+    validated: 'default'
   };
   const flagsInitialState: ISelectField = {
     selected: [],
     expanded: false,
-    helperText: t('caches.entries.add-entry-flags-help'),
+    helperText: t('caches.entries.add-entry-flags-help')
   };
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [key, setKey] = useState<IField>(keyInitialState);
-  const [keyContentType, setKeyContentType] = useState<ISelectField>(
-    keyContentTypeInitialState,
-  );
+  const [keyContentType, setKeyContentType] = useState<ISelectField>(keyContentTypeInitialState);
   const [value, setValue] = useState<IField>(valueInitialState);
-  const [valueContentType, setValueContentType] = useState<ISelectField>(
-    contentTypeInitialState,
-  );
+  const [valueContentType, setValueContentType] = useState<ISelectField>(contentTypeInitialState);
   const [maxIdleField, setMaxIdleField] = useState<IField>(maxIdleInitialState);
-  const [timeToLiveField, setTimeToLiveField] = useState<IField>(
-    timeToLiveInitialState,
-  );
+  const [timeToLiveField, setTimeToLiveField] = useState<IField>(timeToLiveInitialState);
   const [flags, setFlags] = useState<ISelectField>(flagsInitialState);
   const [isEdition, setIsEdition] = useState<boolean>(props.keyToEdit != '');
 
   const keyContentTypeOptions = (): SelectOptionProps[] => {
-    return selectOptionPropsFromArray(
-      CacheConfigUtils.getContentTypeOptions(
-        props.cacheEncoding.key as EncodingType,
-      ),
-    );
+    return selectOptionPropsFromArray(CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.key as EncodingType));
   };
 
   const valueContentTypeOptions = (): SelectOptionProps[] => {
     return selectOptionPropsFromArray(
-      CacheConfigUtils.getContentTypeOptions(
-        props.cacheEncoding.value as EncodingType,
-      ),
+      CacheConfigUtils.getContentTypeOptions(props.cacheEncoding.value as EncodingType)
     );
   };
 
@@ -179,26 +152,16 @@ const CreateOrUpdateEntryForm = (props: {
           })
           .finally(() => setLoading(false));
       } else {
-        tryGetEntry(props.keyContentType, false).finally(() =>
-          setLoading(false),
-        );
+        tryGetEntry(props.keyContentType, false).finally(() => setLoading(false));
       }
     } else {
       setLoading(false);
     }
   }, [props.isModalOpen]);
 
-  const tryGetEntry = (
-    keyContentType: ContentType,
-    retry: boolean,
-  ): Promise<boolean> => {
+  const tryGetEntry = (keyContentType: ContentType, retry: boolean): Promise<boolean> => {
     return ConsoleServices.caches()
-      .getEntry(
-        props.cacheName,
-        props.cacheEncoding,
-        props.keyToEdit,
-        keyContentType,
-      )
+      .getEntry(props.cacheName, props.cacheEncoding, props.keyToEdit, keyContentType)
       .then((eitherResponse) => {
         if (eitherResponse.isRight()) {
           if (eitherResponse.value.length == 0) {
@@ -221,20 +184,20 @@ const CreateOrUpdateEntryForm = (props: {
           setKeyContentType((prevState) => {
             return {
               ...prevState,
-              selected: keyContentType as string,
+              selected: keyContentType as string
             };
           });
           setValueContentType((prevState) => {
             return {
               ...prevState,
-              selected: entry.valueContentType as string,
+              selected: entry.valueContentType as string
             };
           });
           if (entry.maxIdle) {
             setMaxIdleField((prevState) => {
               return {
                 ...prevState,
-                value: entry.maxIdle as string,
+                value: entry.maxIdle as string
               };
             });
           }
@@ -242,7 +205,7 @@ const CreateOrUpdateEntryForm = (props: {
             setTimeToLiveField((prevState) => {
               return {
                 ...prevState,
-                value: entry.timeToLive as string,
+                value: entry.timeToLive as string
               };
             });
           }
@@ -259,10 +222,7 @@ const CreateOrUpdateEntryForm = (props: {
       });
   };
 
-  const setExpanded = (
-    expanded: boolean,
-    stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>,
-  ) => {
+  const setExpanded = (expanded: boolean, stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>) => {
     stateDispatch((prevState) => {
       return { ...prevState, expanded: expanded };
     });
@@ -272,9 +232,7 @@ const CreateOrUpdateEntryForm = (props: {
     let prevSelectedFlags = flags.selected as string[];
 
     if (prevSelectedFlags.includes(selection)) {
-      prevSelectedFlags = prevSelectedFlags.filter(
-        (item) => item !== selection,
-      );
+      prevSelectedFlags = prevSelectedFlags.filter((item) => item !== selection);
     } else {
       prevSelectedFlags = [...prevSelectedFlags, selection];
     }
@@ -284,7 +242,7 @@ const CreateOrUpdateEntryForm = (props: {
   const setSelection = (
     selection,
     expanded: boolean,
-    stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>,
+    stateDispatch: React.Dispatch<React.SetStateAction<ISelectField>>
   ) => {
     stateDispatch((prevState) => {
       return { ...prevState, expanded: expanded, selected: selection };
@@ -304,7 +262,7 @@ const CreateOrUpdateEntryForm = (props: {
       setKeyContentType((prevState) => {
         return {
           ...prevState,
-          selected: ContentType.customType as string,
+          selected: ContentType.customType as string
         };
       });
     }
@@ -323,49 +281,30 @@ const CreateOrUpdateEntryForm = (props: {
       setValueContentType((prevState) => {
         return {
           ...prevState,
-          selected: ContentType.customType as string,
+          selected: ContentType.customType as string
         };
       });
     }
   };
 
   const onChangeMaxIdle = (maxIdle) => {
-    formUtils.validateNotRequiredNumericField(
-      maxIdle,
-      'Max idle',
-      setMaxIdleField,
-    );
+    formUtils.validateNotRequiredNumericField(maxIdle, 'Max idle', setMaxIdleField);
   };
 
   const onChangeTimeToLive = (timeToLive) => {
-    formUtils.validateNotRequiredNumericField(
-      timeToLive,
-      'Time to live',
-      setTimeToLiveField,
-    );
+    formUtils.validateNotRequiredNumericField(timeToLive, 'Time to live', setTimeToLiveField);
   };
 
   const handleAddOrUpdateEntryButton = () => {
     let isValid = true;
     setError('');
+    isValid = formUtils.validateRequiredField(key.value.trim(), 'Key', setKey) && isValid;
+    isValid = formUtils.validateRequiredField(value.value.trim(), 'Value', setValue) && isValid;
     isValid =
-      formUtils.validateRequiredField(key.value.trim(), 'Key', setKey) &&
+      formUtils.validateNotRequiredNumericField(maxIdleField.value.trim(), 'Max idle', setMaxIdleField) && isValid;
+    isValid =
+      formUtils.validateNotRequiredNumericField(timeToLiveField.value.trim(), 'Time to live', setTimeToLiveField) &&
       isValid;
-    isValid =
-      formUtils.validateRequiredField(value.value.trim(), 'Value', setValue) &&
-      isValid;
-    isValid =
-      formUtils.validateNotRequiredNumericField(
-        maxIdleField.value.trim(),
-        'Max idle',
-        setMaxIdleField,
-      ) && isValid;
-    isValid =
-      formUtils.validateNotRequiredNumericField(
-        timeToLiveField.value.trim(),
-        'Time to live',
-        setTimeToLiveField,
-      ) && isValid;
 
     const selectedKeyContentType = keyContentType.selected as ContentType;
     const selectedValueContentType = valueContentType.selected as ContentType;
@@ -382,7 +321,7 @@ const CreateOrUpdateEntryForm = (props: {
           maxIdleField.value,
           timeToLiveField.value,
           flags.selected as string[],
-          !isEdition,
+          !isEdition
         )
         .then((response) => {
           if (response.success) {
@@ -425,9 +364,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-key-type-label')}
-        labelHelp={
-          props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined
-        }
+        labelHelp={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
         fieldId="key-content-type-helper"
         placeholder={t('caches.entries.add-entry-form-key-type')}
         disabled={isEdition}
@@ -453,18 +390,8 @@ const CreateOrUpdateEntryForm = (props: {
 
   const cacheNameFormGroup = () => {
     return (
-      <FormGroup
-        label={t('caches.entries.add-entry-form-cache-name')}
-        isRequired
-        fieldId="cache-name"
-        disabled={true}
-      >
-        <TextInput
-          isDisabled
-          value={props.cacheName}
-          id="cacheName"
-          aria-describedby="cache-name-helper"
-        />
+      <FormGroup label={t('caches.entries.add-entry-form-cache-name')} isRequired fieldId="cache-name" disabled={true}>
+        <TextInput isDisabled value={props.cacheName} id="cacheName" aria-describedby="cache-name-helper" />
       </FormGroup>
     );
   };
@@ -490,9 +417,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-key')}
-        labelHelp={
-          props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined
-        }
+        labelHelp={props.cacheEncoding.key == EncodingType.Protobuf ? helper : undefined}
         isRequired
         fieldId="key-entry"
         disabled={isEdition}
@@ -512,7 +437,7 @@ const CreateOrUpdateEntryForm = (props: {
             <HelperTextItem
               variant={key.validated}
               {...(key.validated === 'error' && {
-                icon: <ExclamationCircleIcon />,
+                icon: <ExclamationCircleIcon />
               })}
             >
               {key.validated === 'error' ? key.invalidText : key.helperText}
@@ -544,11 +469,7 @@ const CreateOrUpdateEntryForm = (props: {
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-value')}
-        labelHelp={
-          props.cacheEncoding.value == EncodingType.Protobuf
-            ? helper
-            : undefined
-        }
+        labelHelp={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
         isRequired
         fieldId="value-entry"
       >
@@ -566,12 +487,10 @@ const CreateOrUpdateEntryForm = (props: {
             <HelperTextItem
               variant={value.validated}
               {...(value.validated === 'error' && {
-                icon: <ExclamationCircleIcon />,
+                icon: <ExclamationCircleIcon />
               })}
             >
-              {value.validated === 'error'
-                ? value.invalidText
-                : value.helperText}
+              {value.validated === 'error' ? value.invalidText : value.helperText}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
@@ -611,12 +530,10 @@ const CreateOrUpdateEntryForm = (props: {
             <HelperTextItem
               variant={timeToLiveField.validated}
               {...(timeToLiveField.validated === 'error' && {
-                icon: <ExclamationCircleIcon />,
+                icon: <ExclamationCircleIcon />
               })}
             >
-              {timeToLiveField.validated === 'error'
-                ? timeToLiveField.invalidText
-                : timeToLiveField.helperText}
+              {timeToLiveField.validated === 'error' ? timeToLiveField.invalidText : timeToLiveField.helperText}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
@@ -657,12 +574,10 @@ const CreateOrUpdateEntryForm = (props: {
             <HelperTextItem
               variant={maxIdleField.validated}
               {...(maxIdleField.validated === 'error' && {
-                icon: <ExclamationCircleIcon />,
+                icon: <ExclamationCircleIcon />
               })}
             >
-              {maxIdleField.validated === 'error'
-                ? maxIdleField.invalidText
-                : maxIdleField.helperText}
+              {maxIdleField.validated === 'error' ? maxIdleField.invalidText : maxIdleField.helperText}
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
@@ -675,19 +590,13 @@ const CreateOrUpdateEntryForm = (props: {
       <PopoverHelp
         name="valueContentType"
         label={t('caches.entries.add-entry-form-value-type-label')}
-        content={
-          "Choose 'Custom Type' to specify values with custom `_type` json value type."
-        }
+        content={"Choose 'Custom Type' to specify values with custom `_type` json value type."}
       />
     );
     return (
       <FormGroup
         label={t('caches.entries.add-entry-form-value-type-label')}
-        labelHelp={
-          props.cacheEncoding.value == EncodingType.Protobuf
-            ? helper
-            : undefined
-        }
+        labelHelp={props.cacheEncoding.value == EncodingType.Protobuf ? helper : undefined}
         fieldId="value-content-type-helper"
         isRequired
       >
@@ -714,17 +623,11 @@ const CreateOrUpdateEntryForm = (props: {
       <PopoverHelp
         name="flags"
         label={t('caches.entries.add-entry-form-flags')}
-        content={
-          'Apply flags to alter the default behavior adding or updating an entry.'
-        }
+        content={'Apply flags to alter the default behavior adding or updating an entry.'}
       />
     );
     return (
-      <FormGroup
-        label={t('caches.entries.add-entry-form-flags')}
-        labelHelp={helper}
-        fieldId="flags-helper"
-      >
+      <FormGroup label={t('caches.entries.add-entry-form-flags')} labelHelp={helper} fieldId="flags-helper">
         <SelectMultiWithChips
           id="ispnFlags"
           placeholder={t('caches.entries.add-entry-form-flags-label')}
@@ -735,9 +638,7 @@ const CreateOrUpdateEntryForm = (props: {
         />
         <FormHelperText>
           <HelperText>
-            <HelperTextItem>
-              {t('caches.entries.add-entry-form-flags-help')}
-            </HelperTextItem>
+            <HelperTextItem>{t('caches.entries.add-entry-form-flags-help')}</HelperTextItem>
           </HelperText>
         </FormHelperText>
       </FormGroup>
@@ -753,11 +654,7 @@ const CreateOrUpdateEntryForm = (props: {
     >
       <ModalHeader
         titleIconVariant={isEdition ? PencilAltIcon : AddCircleOIcon}
-        title={
-          isEdition
-            ? t('caches.entries.modal-edit-title')
-            : t('caches.entries.modal-add-title')
-        }
+        title={isEdition ? t('caches.entries.modal-edit-title') : t('caches.entries.modal-add-title')}
       />
       <ModalBody>
         {loading ? <Spinner size={'sm'} /> : <></>}
@@ -767,9 +664,7 @@ const CreateOrUpdateEntryForm = (props: {
           }}
           style={{ marginBottom: t_global_spacer_md.value }}
         >
-          {error != '' && (
-            <Alert variant={AlertVariant.danger} isInline title={error} />
-          )}
+          {error != '' && <Alert variant={AlertVariant.danger} isInline title={error} />}
 
           {cacheNameFormGroup()}
           {keyContentTypeFormGroup()}
@@ -779,9 +674,7 @@ const CreateOrUpdateEntryForm = (props: {
           {lifespanFormGroup()}
           {maxIdleFormGroup()}
         </Form>
-        <ExpandableSection
-          toggleText={t('caches.entries.add-entry-form-options')}
-        >
+        <ExpandableSection toggleText={t('caches.entries.add-entry-form-options')}>
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -792,21 +685,10 @@ const CreateOrUpdateEntryForm = (props: {
         </ExpandableSection>
       </ModalBody>
       <ModalFooter>
-        <Button
-          data-cy="addButton"
-          key="putEntryButton"
-          onClick={handleAddOrUpdateEntryButton}
-        >
-          {isEdition
-            ? t('caches.entries.action-edit')
-            : t('caches.entries.action-add')}
+        <Button data-cy="addButton" key="putEntryButton" onClick={handleAddOrUpdateEntryButton}>
+          {isEdition ? t('caches.entries.action-edit') : t('caches.entries.action-add')}
         </Button>
-        <Button
-          data-cy="cancelButton"
-          key="cancel"
-          variant="link"
-          onClick={onClose}
-        >
+        <Button data-cy="cancelButton" key="cancel" variant="link" onClick={onClose}>
           {t('caches.entries.modal-button-cancel')}
         </Button>
       </ModalFooter>

@@ -10,11 +10,8 @@ export function useFetchCaches() {
     data: caches,
     loading,
     error,
-    reload,
-  } = useServiceCall<CacheInfo[]>(
-    () => ConsoleServices.dataContainer().getCaches(),
-    [],
-  );
+    reload
+  } = useServiceCall<CacheInfo[]>(() => ConsoleServices.dataContainer().getCaches(), []);
 
   return { loading, caches, error, reload };
 }
@@ -29,7 +26,7 @@ export function useCacheEntries() {
     limit,
     reloadEntries,
     getByKey,
-    setLimit,
+    setLimit
   } = useContext(CacheEntriesContext);
   return {
     cacheEntries,
@@ -40,13 +37,12 @@ export function useCacheEntries() {
     limit,
     reloadEntries,
     getByKey,
-    setLimit,
+    setLimit
   };
 }
 
 export function useCacheDetail() {
-  const { cache, loading, error, loadCache, reload, cacheManager } =
-    useContext(CacheMetadataContext);
+  const { cache, loading, error, loadCache, reload, cacheManager } = useContext(CacheMetadataContext);
 
   return { cache, loading, error, loadCache, reload, cacheManager };
 }
@@ -62,7 +58,7 @@ export function useDeleteCache(cacheName: string) {
       });
   };
   return {
-    onDelete,
+    onDelete
   };
 }
 
@@ -77,7 +73,7 @@ export function useIgnoreCache(cacheName: string) {
       });
   };
   return {
-    onIgnore,
+    onIgnore
   };
 }
 
@@ -92,7 +88,7 @@ export function useUndoIgnoreCache(cacheName: string) {
       });
   };
   return {
-    onUndoIgnore,
+    onUndoIgnore
   };
 }
 
@@ -107,7 +103,7 @@ export function useSetAvailableCache(cacheName: string) {
       });
   };
   return {
-    onSetAvailable,
+    onSetAvailable
   };
 }
 
@@ -115,11 +111,8 @@ export function useFetchCacheTemplates() {
   const {
     data: cacheTemplates,
     loading,
-    error,
-  } = useServiceCall<CacheConfig[]>(
-    () => ConsoleServices.dataContainer().getCacheConfigurationTemplates(),
-    [],
-  );
+    error
+  } = useServiceCall<CacheConfig[]>(() => ConsoleServices.dataContainer().getCacheConfigurationTemplates(), []);
 
   return { cacheTemplates, loading, error };
 }

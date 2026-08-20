@@ -1,9 +1,7 @@
 import * as DownloadServerReport from '@app/hooks/clusterHook';
 
 jest.mock('@app/hooks/clusterHook');
-const mockedClusterHook = DownloadServerReport as jest.Mocked<
-  typeof DownloadServerReport
->;
+const mockedClusterHook = DownloadServerReport as jest.Mocked<typeof DownloadServerReport>;
 
 let onDownloadReport;
 
@@ -16,14 +14,13 @@ mockedClusterHook.useDownloadServerReport.mockImplementation(() => {
   return {
     downloadServerReport: () => onDownloadReport++,
     downloading: true,
-    downloadNodeName: 'node1',
+    downloadNodeName: 'node1'
   };
 });
 
 describe('downloadReport', () => {
   test('To download server report and check download calls', () => {
-    const { downloadServerReport } =
-      DownloadServerReport.useDownloadServerReport();
+    const { downloadServerReport } = DownloadServerReport.useDownloadServerReport();
     downloadServerReport('node1');
     expect(onDownloadReport).toBe(1);
   });

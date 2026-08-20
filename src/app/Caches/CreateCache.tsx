@@ -12,7 +12,7 @@ import {
   Content,
   ContentVariants,
   Toolbar,
-  ToolbarContent,
+  ToolbarContent
 } from '@patternfly/react-core';
 import { DataContainerBreadcrumb } from '@app/Common/DataContainerBreadcrumb';
 import { ConsoleServices } from '@services/ConsoleServices';
@@ -31,10 +31,7 @@ const CreateCache = () => {
   const { cm, loading, error } = useDataContainer();
   const [localSite, setLocalSite] = useState('');
   const { connectedUser } = useConnectedUser();
-  const canCreateCache = ConsoleServices.security().hasConsoleACL(
-    ConsoleACL.CREATE,
-    connectedUser,
-  );
+  const canCreateCache = ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser);
   useEffect(() => {
     if (cm) {
       if (cm.backups_enabled && cm.local_site) {
@@ -65,19 +62,17 @@ const CreateCache = () => {
 
   return (
     <CreateCacheProvider>
-      {canCreateCache && (
-        <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />
-      )}
+      {canCreateCache && <DataContainerBreadcrumb currentPage={t('caches.create.breadcrumb')} />}
       <PageHeader
         title={
           localSite == ''
             ? t(`caches.${id}.page-title`)
             : t(`caches.${id}.page-title-with-backups`, {
-                localsite: localSite,
+                localsite: localSite
               })
         }
         subtitle={t(`caches.${id}.page-title-description`, {
-          brandname: brandname,
+          brandname: brandname
         })}
       />
 

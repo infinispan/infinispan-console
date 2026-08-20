@@ -9,13 +9,13 @@ export function useFetchClusterMembers() {
     data: clusterMembers,
     loading,
     error,
-    reload,
+    reload
   } = useServiceCall<ClusterMembers | undefined>(
     () =>
       ConsoleServices.cluster().getClusterMembers() as unknown as Promise<
         Either<ActionResponse, ClusterMembers | undefined>
       >,
-    undefined,
+    undefined
   );
 
   return { clusterMembers, loading, error, reload };
@@ -49,6 +49,6 @@ export function useDownloadServerReport() {
   return {
     downloadServerReport,
     downloading,
-    downloadNodeName,
+    downloadNodeName
   };
 }
