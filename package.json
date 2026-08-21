@@ -89,7 +89,7 @@
   },
   "overrides": {
     "axios": "1.16.0",
-    "dompurify": "3.4.2"
+    "dompurify": "3.4.11"
   },
   "dependencies": {
     "@patternfly/patternfly": "^6.4.0",
