@@ -43,7 +43,7 @@
     "css-minimizer-webpack-plugin": "^8.0.0",
     "cypress": "^15.19.0",
     "dotenv-webpack": "^9.0.0",
-    "eslint": "^10.8.1",
+    "eslint": "^10.9.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "file-loader": "^6.2.0",
