@@ -1116,6 +1116,64 @@
     "started": "Rolling Upgrade läuft — Einige Funktionen können vorübergehend nicht verfügbar sein",
     "finished": "Rolling Upgrade abgeschlossen — Bitte Ihre Browser-Cache leeren und neu verbinden, um die neueste Konsole-Version zu sehen."
   },
+  "rolling-upgrades": {
+    "title": "Rolling Upgrades",
+    "description": "Ein Rolling Upgrade ermöglicht die Migration von Daten eines Quell-Clusters zu diesem Cluster ohne Ausfallzeit.",
+    "no-active": "Kein Rolling Upgrade in Bearbeitung.",
+    "start-button": "Rolling Upgrade starten",
+    "source-label": "Quelle",
+    "status": {
+      "in-progress": "Rolling Upgrade läuft",
+      "cache-name": "Cache-Name",
+      "connection": "Verbindung",
+      "sync-status": "Sync-Status",
+      "actions": "Aktionen",
+      "connected": "Verbunden",
+      "not-connected": "Nicht verbunden",
+      "not-synced": "Nicht synchronisiert",
+      "syncing": "Synchronisierung...",
+      "synced": "Synchronisiert ({{count}} Einträge)",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "Synchronisieren",
+      "sync-all": "Alle synchronisieren",
+      "disconnect": "Trennen",
+      "disconnect-all": "Alle trennen",
+      "connect": "Verbinden"
+    },
+    "wizard": {
+      "title": "Rolling Upgrade starten",
+      "step-source": "Quell-Cluster-Verbindung",
+      "step-caches": "Caches auswählen",
+      "step-review": "Überprüfen & Verbinden",
+      "host-label": "Host",
+      "host-helper": "Hostname oder IP-Adresse des Quell-Clusters",
+      "port-label": "Port",
+      "port-helper": "Hot Rod-Port des Quell-Clusters",
+      "use-security": "Sicherheit verwenden (TLS / Authentifizierung)",
+      "username-label": "Benutzername",
+      "password-label": "Passwort",
+      "select-all": "Alle auswählen",
+      "no-caches": "Keine Caches verfügbar.",
+      "review-source": "Quelle",
+      "review-caches": "Caches",
+      "review-security": "Sicherheit",
+      "review-security-none": "Keine",
+      "review-security-enabled": "Aktiviert",
+      "review-description": "Dies verbindet die ausgewählten Caches mit dem Quell-Cluster. Danach können Sie die Daten synchronisieren.",
+      "connect-success": "{{count}} Caches erfolgreich mit dem Quell-Cluster verbunden.",
+      "connect-error": "Einige Caches konnten nicht mit dem Quell-Cluster verbunden werden."
+    },
+    "modal": {
+      "sync-all-title": "Alle Caches synchronisieren",
+      "sync-all-description": "Dies synchronisiert die Daten von {{count}} Caches vom Quell-Cluster. Fortfahren?",
+      "disconnect-all-title": "Alle Caches trennen",
+      "disconnect-all-description": "Dies trennt alle Caches vom Quell-Cluster. Stellen Sie sicher, dass die Daten vor dem Trennen synchronisiert wurden.",
+      "confirm": "Bestätigen",
+      "cancel": "Abbrechen"
+    }
+  },
   "routes": {
     "operations": "Operationen",
     "devops-tools": "DevOps-Tools",
@@ -1130,6 +1188,7 @@
     "configurations": "Konfigurationen",
     "create-cache": "Cache erstellen",
     "index-management": "Indexverwaltung",
-    "role-detail": "Rollen-Details"
+    "role-detail": "Rollen-Details",
+    "rolling-upgrades": "Rolling Upgrades"
   }
 }

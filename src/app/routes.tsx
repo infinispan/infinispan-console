@@ -12,6 +12,7 @@ import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
 import { AccessManager } from '@app/AccessManagement/AccessManager';
+import { RollingUpgrades } from '@app/RollingUpgrades/RollingUpgrades';
 import { useAppInitState, useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
@@ -39,6 +40,7 @@ export interface IAppRoute {
   subRoutes?: string[];
   init?: string;
   readonlyUser?: boolean;
+  bareMetalOnly?: boolean;
 }
 
 const routes: IAppRoute[] = [
@@ -222,6 +224,17 @@ const routes: IAppRoute[] = [
     title: 'routes.connected-clients',
     menu: true,
     admin: true
+  },
+  {
+    id: 'rolling_upgrades',
+    component: <RollingUpgrades />,
+    exact: true,
+    label: 'routes.rolling-upgrades',
+    path: '/rolling-upgrades',
+    title: 'routes.rolling-upgrades',
+    menu: true,
+    admin: true,
+    bareMetalOnly: true
   },
   {
     id: 'my_permissions',

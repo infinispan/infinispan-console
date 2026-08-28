@@ -1116,6 +1116,64 @@
     "started": "ローリングアップグレードが進行中 — 一部の機能は一時的に利用できません",
     "finished": "アップグレード完了 — ブラウザのキャッシュをクリアして最新のコンソールバージョンに再接続してください。"
   },
+  "rolling-upgrades": {
+    "title": "ローリングアップグレード",
+    "description": "ローリングアップグレードにより、ダウンタイムなしでソースクラスタからこのクラスタにデータを移行できます。",
+    "no-active": "進行中のローリングアップグレードはありません。",
+    "start-button": "ローリングアップグレードを開始",
+    "source-label": "ソース",
+    "status": {
+      "in-progress": "ローリングアップグレード進行中",
+      "cache-name": "キャッシュ名",
+      "connection": "接続",
+      "sync-status": "同期状態",
+      "actions": "アクション",
+      "connected": "接続済み",
+      "not-connected": "未接続",
+      "not-synced": "未同期",
+      "syncing": "同期中...",
+      "synced": "同期済み（{{count}} エントリ）",
+      "no-sync": "—"
+    },
+    "actions": {
+      "sync": "同期",
+      "sync-all": "すべて同期",
+      "disconnect": "切断",
+      "disconnect-all": "すべて切断",
+      "connect": "接続"
+    },
+    "wizard": {
+      "title": "ローリングアップグレードを開始",
+      "step-source": "ソースクラスタ接続",
+      "step-caches": "キャッシュを選択",
+      "step-review": "確認して接続",
+      "host-label": "ホスト",
+      "host-helper": "ソースクラスタのホスト名または IP アドレス",
+      "port-label": "ポート",
+      "port-helper": "ソースクラスタの Hot Rod ポート",
+      "use-security": "セキュリティを使用（TLS / 認証）",
+      "username-label": "ユーザー名",
+      "password-label": "パスワード",
+      "select-all": "すべて選択",
+      "no-caches": "利用可能なキャッシュがありません。",
+      "review-source": "ソース",
+      "review-caches": "キャッシュ",
+      "review-security": "セキュリティ",
+      "review-security-none": "なし",
+      "review-security-enabled": "有効",
+      "review-description": "選択したキャッシュをソースクラスタに接続します。その後データを同期できます。",
+      "connect-success": "{{count}} 個のキャッシュをソースクラスタに接続しました。",
+      "connect-error": "一部のキャッシュのソースクラスタへの接続に失敗しました。"
+    },
+    "modal": {
+      "sync-all-title": "すべてのキャッシュを同期",
+      "sync-all-description": "ソースクラスタから {{count}} 個のキャッシュのデータを同期します。続行しますか？",
+      "disconnect-all-title": "すべてのキャッシュを切断",
+      "disconnect-all-description": "すべてのキャッシュをソースクラスタから切断します。切断前にデータが同期されていることを確認してください。",
+      "confirm": "確認",
+      "cancel": "キャンセル"
+    }
+  },
   "routes": {
     "operations": "操作",
     "devops-tools": "DevOps ツール",
@@ -1130,6 +1188,7 @@
     "configurations": "構成",
     "create-cache": "キャッシュを作成",
     "index-management": "インデックス管理",
-    "role-detail": "ロール詳細"
+    "role-detail": "ロール詳細",
+    "rolling-upgrades": "ローリングアップグレード"
   }
 }
