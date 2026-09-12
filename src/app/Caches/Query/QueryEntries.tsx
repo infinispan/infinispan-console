@@ -21,12 +21,19 @@ import {
   ToolbarItem
 } from '@patternfly/react-core';
 import { ExternalLinkSquareAltIcon, SearchIcon, TrashIcon } from '@patternfly/react-icons';
+import {
+  ExternalLinkSquareAltIcon,
+  PencilAltIcon,
+  SearchIcon,
+  TrashIcon,
+} from '@patternfly/react-icons';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 import { DARK, ThemeContext } from '@app/providers/ThemeProvider';
 import { useSearch } from '@app/hooks/searchHook';
 import { DeleteByQueryEntries } from '@app/Caches/Query/DeleteByQueryEntries';
+import { UpdateByQueryEntries } from '@app/Caches/Query/UpdateByQueryEntries';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
 import displayUtils from '@services/displayUtils';
 
@@ -38,6 +45,7 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
   );
   const { syntaxHighLighterTheme, theme } = useContext(ThemeContext);
   const [deleteByQueryOpen, setDeleteByQueryOpen] = useState(false);
+  const [updateByQueryOpen, setUpdateByQueryOpen] = useState(false);
   const [trim, setTrim] = useState<boolean>(false);
 
   const displayValue = (value: string) => {
@@ -174,6 +182,9 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
         <code>SELECT ... FROM Entity WHERE ...</code>
       </Content>
       <Content component={'small'}>
+        <code>UPDATE FROM Entity SET field = 'value' WHERE ...</code>
+      </Content>
+      <Content component={'small'}>
         <code>DELETE FROM Entity</code>
       </Content>
     </Content>
@@ -223,9 +234,28 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
                   onClick={startSearch}
                   data-cy="searchButton"
                   icon={<SearchIcon />}
-                  isDisabled={search.query.trim().length == 0 || search.query.toLowerCase().startsWith('delete')}
+                  isDisabled={
+                    search.query.trim().length == 0 ||
+                    search.query.toLowerCase().startsWith('update') ||
+                    search.query.toLowerCase().startsWith('delete')
+                  }
                 >
                   {'Search values'}
+                </Button>
+              </FlexItem>
+              <FlexItem>
+                <Button
+                  variant={ButtonVariant.secondary}
+                  onClick={() => setUpdateByQueryOpen(true)}
+                  data-cy="updateByQueryButton"
+                  icon={<PencilAltIcon />}
+                  isDisabled={
+                    search.query.trim().length == 0 ||
+                    !search.query.toLowerCase().startsWith('update')
+                  }
+                  size={'sm'}
+                >
+                  {t('caches.query.button-update-entries')}
                 </Button>
               </FlexItem>
               <FlexItem>
@@ -260,6 +290,14 @@ const QueryEntries = (props: { cacheName: string; changeTab: () => void }) => {
           isModalOpen={deleteByQueryOpen}
           closeModal={() => {
             setDeleteByQueryOpen(false);
+          }}
+          cacheName={props.cacheName}
+          query={search.query}
+        />
+        <UpdateByQueryEntries
+          isModalOpen={updateByQueryOpen}
+          closeModal={() => {
+            setUpdateByQueryOpen(false);
           }}
           cacheName={props.cacheName}
           query={search.query}

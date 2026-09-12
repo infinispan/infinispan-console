@@ -1,11 +1,11 @@
 describe('Cache Detail Overview', () => {
   before(() => {
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/indexed-cache/oihana',
+      '/caches/indexed-cache/maria',
       'DELETE');
-    const payload = '{"_type": "org.infinispan.Person", "name": "Oihana", "age": "9", "city": "Paris"}';
+    const payload = '{"_type": "org.infinispan.Person", "name": "Maria", "age": "9", "city": "Paris"}';
     cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
-      '/caches/indexed-cache/oihana',
+      '/caches/indexed-cache/maria',
       'POST', payload);
   });
 
@@ -13,6 +13,22 @@ describe('Cache Detail Overview', () => {
     // Opening indexed-cache cache page.
     cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/indexed-cache');
   });
+
+  it('successfully updates by query', () => {
+    cy.get('[data-cy=manageEntriesTab]').click();
+    cy.get('[data-cy=queriesTab]').click();
+    cy.typeInMonacoEditor('#textSearchByQuery', "update org.infinispan.Person set name = 'MariaUpdated' where age = 9");
+    cy.get('[data-cy=updateByQueryButton]').click();
+    cy.get('[data-cy=updateButton]').click();
+    cy.contains('Update by query successfully executed.');
+    // Switch tabs to reset CodeEditor state after modal close
+    cy.get('[data-cy=manageEntriesTab]').click();
+    cy.get('[data-cy=queriesTab]').click();
+    cy.clearAndTypeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age = 9');
+    cy.get('[data-cy=searchButton]').click();
+    cy.contains('MariaUpdated');
+    cy.get('[data-cy=updateByQueryButton]').should('be.disabled');
+  })
 
   it('successfully deletes by query', () => {
     cy.get('[data-cy=manageEntriesTab]').click();
@@ -37,15 +53,15 @@ describe('Cache Detail Overview', () => {
     cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age > 2');
     cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
-    cy.contains('Elaia');
+    cy.contains('Leire');
 
     // Going back to cache entries page
     cy.get('[data-cy=manageEntriesTab]').click();
     cy.get('[data-cy=queriesTab]').click();
-    cy.clearAndTypeInMonacoEditor('#textSearchByQuery', "from org.infinispan.Person where name = 'Elaia'");
+    cy.clearAndTypeInMonacoEditor('#textSearchByQuery', "from org.infinispan.Person where name = 'Leire'");
     cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
-    cy.contains('Elaia');
+    cy.contains('Leire');
 
     // Going back to cache entries page
     cy.get('[data-cy=manageEntriesTab]').click();
@@ -75,7 +91,7 @@ describe('Cache Detail Overview', () => {
     cy.contains("org.infinispan.Person");
     cy.contains(/\d+K/);
     cy.get("[data-cy=backButton]").click();
-    cy.contains("Elaia");
+    cy.contains("Leire");
 
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
@@ -106,7 +122,7 @@ describe('Cache Detail Overview', () => {
     cy.get("[data-cy=reindexButton]").click();
 
     cy.get("[data-cy=backButton]").click();
-    cy.contains("Elaia");
+    cy.contains("Leire");
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageIndexesLink]").click();
     cy.contains(/\d+K/);

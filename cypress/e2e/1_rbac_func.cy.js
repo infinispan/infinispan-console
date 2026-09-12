@@ -30,14 +30,14 @@ describe('RBAC Functionality Tests', () => {
     checkMenu(false);
     checkDataContainerView(false, false, false, false);
     checkSecuredCacheDetailsView(false, false, false, 'observer', 'indexed-cache');
-    cy.contains('Elaia');
-    cy.get('[data-cy=actions-elaia]').should('not.exist');
+    cy.contains('Leire');
+    cy.get('[data-cy=actions-leire]').should('not.exist');
     //Running query on secured page
     cy.get('[data-cy=queriesTab]').click();
     cy.typeInMonacoEditor('#textSearchByQuery', 'from org.infinispan.Person where age>2');
     cy.get('[data-cy=searchButton]').click();
     cy.contains('1 - 1 of 1');
-    cy.contains('Elaia');
+    cy.contains('Leire');
     checkNotOwnSecuredCache('a-rbac-test-cache');
     checkNonSecuredCacheDetailView(false, false);
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
