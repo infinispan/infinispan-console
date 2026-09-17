@@ -42,21 +42,25 @@ export class ConsoleServices {
     return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
   }
 
-  public static endpoint(): string {
+  private static apiBase(): string {
     if (ConsoleServices.isDevMode()) {
       if (!process.env.INFINISPAN_SERVER_URL) {
-        return 'http://localhost:11222/rest/v2';
+        return 'http://localhost:11222/rest';
       } else {
-        return process.env.INFINISPAN_SERVER_URL + '/rest/v2';
+        return process.env.INFINISPAN_SERVER_URL + '/rest';
       }
     } else {
       const x = window as any;
-      return window.location.origin.toString() + (x.INFINISPAN_CONFIG?.restContextPath || '/rest') + '/v2';
+      return window.location.origin.toString() + (x.INFINISPAN_CONFIG?.restContextPath || '/rest');
     }
   }
 
+  public static endpoint(): string {
+    return ConsoleServices.apiBase() + '/v2';
+  }
+
   public static endpointV3(): string {
-    return ConsoleServices.endpoint().replace('v2', 'v3');
+    return ConsoleServices.apiBase() + '/v3';
   }
 
   public static metricsEndpoint(): string {
