@@ -95,7 +95,8 @@ export class FetchCaller {
     const fetchOptions: RequestInit = {
       method: method,
       headers: headers,
-      credentials: 'include'
+      credentials: 'include',
+      cache: 'no-store'
     };
     if (body && body.length > 0) {
       fetchOptions['body'] = body;

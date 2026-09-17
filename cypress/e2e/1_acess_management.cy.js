@@ -46,6 +46,7 @@ describe('Access Management', () => {
       .should('have.value', 'aRole description')
       .type(' with update');
     cy.get('[aria-label=Save').click();
+    cy.contains('Role aRole has been updated');
     cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management/role/aRole');
     cy.get('[aria-label=role-description-input]')
       .should('have.value', 'aRole description with update');
