@@ -34,7 +34,9 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
+// @ts-ignore
 import brandLight from '!!url-loader!@app/assets/images/brand.svg';
+// @ts-ignore
 import brandDark from '!!url-loader!@app/assets/images/brand_dark.svg';
 import { NavLink } from 'react-router-dom';
 import { IAppRoute, routes } from '@app/routes';
@@ -73,7 +75,7 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { connectedUser } = useConnectedUser();
+  const { connectedUser, managed } = useConnectedUser();
 
   const [isWelcomePage, setIsWelcomePage] = useState(ConsoleServices.isWelcomePage());
   const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -339,7 +341,8 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     return (
       route.menu == true &&
       route.label !== undefined &&
-      (!route.admin || (route.admin && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser)))
+      (!route.admin || (route.admin && ConsoleServices.security().hasConsoleACL(ConsoleACL.ADMIN, connectedUser))) &&
+      (!route.bareMetalOnly || !managed)
     );
   };
 
@@ -360,26 +363,33 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     return isSubRoute;
   };
 
+  const renderNavGroup = (groupKey: 'data' | 'monitoring' | 'administration', titleKey: string) => {
+    const groupRoutes = filteredRoutes.filter((route) => route.navGroup === groupKey && displayNavMenu(route));
+    if (groupRoutes.length === 0) return null;
+    return (
+      <NavGroup title={t(titleKey)}>
+        {groupRoutes.map((route, idx) => (
+          <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
+            <NavLink
+              itemID={route.id}
+              caseSensitive={true}
+              to={route.path + location.search}
+              className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
+            >
+              {t(route.label as string)}
+            </NavLink>
+          </NavItem>
+        ))}
+      </NavGroup>
+    );
+  };
+
   const Navigation = (
     <Nav id="nav-primary-simple">
       <NavList id="nav-list-simple">
-        <NavGroup title={t('routes.operations')}>
-          {filteredRoutes.map(
-            (route, idx) =>
-              displayNavMenu(route) && (
-                <NavItem key={`${route.label}-${idx}`} id={`${route.label}-${idx}`}>
-                  <NavLink
-                    itemID={route.id}
-                    caseSensitive={true}
-                    to={route.path + location.search}
-                    className={isCurrentActiveNavItem(route) ? 'pf-m-current' : ''}
-                  >
-                    {t(route.label as string)}
-                  </NavLink>
-                </NavItem>
-              )
-          )}
-        </NavGroup>
+        {renderNavGroup('data', 'routes.data')}
+        {renderNavGroup('monitoring', 'routes.monitoring')}
+        {renderNavGroup('administration', 'routes.administration')}
         <NavGroup title={t('routes.devops-tools')}>
           <NavItem icon={<ExternalLinkAltIcon />} onClick={() => window.open(ConsoleServices.swaggerUi(), '_blank')}>
             {t('layout.swagger-ui')}
