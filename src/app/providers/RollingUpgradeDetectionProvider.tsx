@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useBanner } from '@utils/useApiAlert';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
@@ -6,6 +6,13 @@ import { ROLLING_UPGRADE_BANNER } from '@app/providers/APIAlertProvider';
 import { useTranslation } from 'react-i18next';
 
 export const RollingUpgradeContext = React.createContext('');
+
+export function useRollingUpgradeState() {
+  const rollingUpgrade = useContext(RollingUpgradeContext);
+  return {
+    rollingUpgrade: rollingUpgrade === 'true'
+  };
+}
 
 const RollingUpgradeDetectionProvider = ({ children }) => {
   const { connectedUser, notSecured } = useConnectedUser();
@@ -45,16 +52,13 @@ const RollingUpgradeDetectionProvider = ({ children }) => {
     }
 
     if (localStorage) {
-      // Store the status
       const prevRollingUpgrade = localStorage.getItem(ROLLING_UPGRADE_KEY) as string;
       localStorage.setItem(ROLLING_UPGRADE_KEY, rollingUpgrade);
 
       if (prevRollingUpgrade == 'true' && rollingUpgrade == 'false') {
-        // We stored a rolling upgrade. Reload the Console in case you don't see the good version
         addBanner(ROLLING_UPGRADE_BANNER, t('rolling-upgrade.finished'));
       }
     } else if (rollingUpgrade == 'false') {
-      // Remove the banner
       removeBanner(ROLLING_UPGRADE_BANNER);
     }
   }, [rollingUpgrade]);

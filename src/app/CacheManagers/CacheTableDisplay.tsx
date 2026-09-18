@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Badge,
   Bullseye,
@@ -58,6 +58,7 @@ import { UpdateAliasCache } from '@app/Caches/UpdateAliasCache';
 import { InfinispanComponentStatus } from '@app/Common/InfinispanComponentStatus';
 import { CACHES_BANNER } from '@app/providers/APIAlertProvider';
 import { useLocalStorage } from '@app/utils/localStorage';
+import { useRollingUpgradeState } from '@app/providers/RollingUpgradeDetectionProvider';
 
 interface CacheAction {
   cacheName: string;
@@ -70,6 +71,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
   const { addBanner, removeBanner } = useBanner();
   const { caches, errorCaches, loadingCaches, reloadCaches } = useCaches();
   const { cm } = useDataContainer();
+  const { rollingUpgrade } = useRollingUpgradeState();
 
   const [filteredCaches, setFilteredCaches] = useState<CacheInfo[]>([]);
   const [selectedCacheFeature, setSelectedCacheFeature] = useState<string[]>([]);
@@ -382,8 +384,15 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
   const displayCacheStatus = (cacheInfo: CacheInfo) => {
     const badgeIgnore = ignoreCacheBadge(cacheInfo);
     const badgeRebalancing = rebalancingOffBadge(cacheInfo);
+    const badgeRollingUpgrade = rollingUpgrade ? (
+      <Label key={`rolling-upgrade-${cacheInfo.name}`} color="orange">
+        {t('cache-managers.rolling-upgrade-status')}
+      </Label>
+    ) : (
+      ''
+    );
 
-    if (badgeIgnore == '' && badgeRebalancing == '') {
+    if (badgeIgnore == '' && badgeRebalancing == '' && badgeRollingUpgrade == '') {
       return '';
     }
 
@@ -391,6 +400,7 @@ const CacheTableDisplay = (props: { setCachesCount: (count: number) => void; isV
       <LabelGroup>
         {badgeIgnore}
         {badgeRebalancing}
+        {badgeRollingUpgrade}
       </LabelGroup>
     );
   };
