@@ -103,7 +103,9 @@
     "configurations": "Configurations",
     "create-cache": "Create Cache",
     "index-management": "Index Management",
-    "operations": "Operations",
+    "data": "Data",
+    "monitoring": "Monitoring",
+    "administration": "Administration",
     "devops-tools": "DevOps Tools",
     "data-container": "Data Container",
     "global-statistics": "Global Statistics",
@@ -111,7 +113,8 @@
     "access-management": "Access Management",
     "connected-clients": "Connected Clients",
     "role-detail": "Role Detail",
-    "my-permissions": "My Permissions"
+    "my-permissions": "My Permissions",
+    "rolling-upgrades": "Rolling Upgrades"
   },
   "my-permissions": {
     "title": "My Permissions",
@@ -150,6 +153,7 @@
     "ignore": "Hide",
     "undo-ignore": "Show",
     "ignored-status": "Hidden",
+    "rolling-upgrade-status": "Rolling upgrade",
     "delete": "Delete",
     "available": "Make available",
     "aliases-none": "None",
@@ -636,6 +640,7 @@
       "read-error": "Connected user lacks BULK_READ permission to browse the cache content.",
       "read-error-unknown-type": "This cache contains entries that can not be read or edited from the Console.",
       "read-error-spring-session": "This cache contains Spring Session entries that can not be read or edited from the Console.",
+      "rolling-upgrade-warning": "A rolling upgrade is in progress. Entries displayed may include data from the source cluster that has not been synchronized yet.",
       "action-add": "Add",
       "action-edit": "Edit",
       "action-delete": "Delete",
@@ -1185,5 +1190,66 @@
   "rolling-upgrade": {
     "started": "Rolling Upgrade in Progress — Some features may be temporarily unavailable",
     "finished": "Upgrade Complete — Please clear your browser cache and reconnect to see the latest console version."
+  },
+  "rolling-upgrades": {
+    "title": "Rolling Upgrades",
+    "description": "A rolling upgrade lets you migrate data from a source cluster to this cluster with zero downtime.",
+    "no-active": "No rolling upgrade in progress.",
+    "start-button": "Start Rolling Upgrade",
+    "source-label": "Source",
+    "status": {
+      "in-progress": "Rolling upgrade in progress",
+      "cache-name": "Cache Name",
+      "connection": "Connection",
+      "sync-status": "Sync Status",
+      "actions": "Actions",
+      "connected": "Connected",
+      "not-connected": "Not connected",
+      "not-synced": "Not synced",
+      "syncing": "Syncing...",
+      "synced": "Synced ({{count}} entries)",
+      "no-sync": "—",
+      "search-placeholder": "Search by cache name"
+    },
+    "actions": {
+      "sync": "Sync",
+      "sync-all": "Sync All",
+      "disconnect": "Disconnect",
+      "disconnect-all": "Disconnect All",
+      "connect": "Connect"
+    },
+    "wizard": {
+      "title": "Start Rolling Upgrade",
+      "step-source": "Source Cluster Connection",
+      "step-caches": "Select Caches",
+      "step-review": "Review & Connect",
+      "host-label": "Host",
+      "host-helper": "Hostname or IP address of the source cluster",
+      "port-label": "Port",
+      "port-helper": "Hot Rod port of the source cluster",
+      "use-security": "Use security (TLS / authentication)",
+      "username-label": "Username",
+      "password-label": "Password",
+      "select-all": "Select All",
+      "search-caches": "Search by cache name",
+      "cache-name": "Cache Name",
+      "no-caches": "No caches available.",
+      "review-source": "Source",
+      "review-caches": "Caches",
+      "review-security": "Security",
+      "review-security-none": "None",
+      "review-security-enabled": "Enabled",
+      "review-description": "This will connect the selected caches to the source cluster. You can synchronize data afterwards.",
+      "connect-success": "Successfully connected {{count}} caches to source cluster.",
+      "connect-error": "Failed to connect some caches to source cluster."
+    },
+    "modal": {
+      "sync-all-title": "Sync All Caches",
+      "sync-all-description": "This will synchronize data for {{count}} caches from the source cluster. Continue?",
+      "disconnect-all-title": "Disconnect All Caches",
+      "disconnect-all-description": "This will disconnect all caches from the source cluster. Ensure data has been synced before disconnecting.",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    }
   }
 }
