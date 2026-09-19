@@ -489,6 +489,16 @@ export class CacheConfigUtils {
       locking();
     }
 
+    if (
+      (data.basic.topology === CacheType.Distributed || data.basic.topology === CacheType.Replicated) &&
+      data.advanced.remoteTimeout
+    ) {
+      cache[cacheType]['remote-timeout'] = convertToTimeQuantity(
+        data.advanced.remoteTimeout,
+        data.advanced.remoteTimeoutUnit
+      );
+    }
+
     if (data.basic.expiration) {
       expiration();
     }

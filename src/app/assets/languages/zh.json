@@ -477,6 +477,8 @@
           "isolation-level-read-committed-tooltip": "如果另一个事务修改了条目，则读操作可能会返回不同的值。",
           "lock-acquisition-timeout-title": "锁超时",
           "lock-acquisition-timeout-tooltip": "设置等待获取锁的毫秒数。",
+          "remote-timeout-title": "远程超时",
+          "remote-timeout-tooltip": "设置等待远程节点响应的最大时间。",
           "striping": "条带化",
           "striping-tooltip": "为缓存中的所有条目使用共享的锁池。条带化降低了锁的内存占用，但可能减少并发性。如果你禁用条带化，则为缓存中的每个条目创建一个锁。",
           "index-tuning": "索引调优",

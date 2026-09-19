@@ -473,6 +473,8 @@
           "isolation-level-read-committed-tooltip": "Las operaciones de lectura pueden devolver valores diferentes si otra transacción modifica las entradas.",
           "lock-acquisition-timeout-title": "Tiempo de espera de adquisición de bloqueo",
           "lock-acquisition-timeout-tooltip": "Establece cuántos milisegundos esperar por la adquisición del bloqueo.",
+          "remote-timeout-title": "Tiempo de espera remoto",
+          "remote-timeout-tooltip": "Establece el tiempo máximo de espera para una respuesta de un nodo remoto.",
           "striping": "Segmentación de bloqueos",
           "striping-tooltip": "Utiliza un grupo compartido de bloqueos para todas las entradas en la caché. La segmentación de bloqueos reduce la huella de memoria del bloqueo pero puede reducir la concurrencia. Si desactiva la segmentación de bloqueos, se crea un bloqueo para cada entrada en la caché.",
           "index-tuning": "Ajuste de índices",

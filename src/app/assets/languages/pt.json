@@ -477,6 +477,8 @@
           "isolation-level-read-committed-tooltip": "As operações de leitura podem retornar valores diferentes se outra transação modificar os registros.",
           "lock-acquisition-timeout-title": "Tempo limite de aquisição de bloqueio",
           "lock-acquisition-timeout-tooltip": "Define quantos milissegundos esperar pela aquisição do bloqueio.",
+          "remote-timeout-title": "Tempo limite remoto",
+          "remote-timeout-tooltip": "Define o tempo máximo de espera por uma resposta de um nó remoto.",
           "striping": "Striping de bloqueios",
           "striping-tooltip": "Usa um pool compartilhado de bloqueios para todos os registros na cache. O striping reduz o consumo de memória dos bloqueios, mas pode reduzir a concorrência. Se você desabilitar o striping, um bloqueio é criado para cada registro na cache.",
           "index-tuning": "Ajuste de índice",
