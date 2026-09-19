@@ -184,6 +184,8 @@ export interface AdvancedConfigurationStep {
   concurrencyLevel?: number;
   lockAcquisitionTimeout?: number;
   lockAcquisitionTimeoutUnit?: string;
+  remoteTimeout?: number;
+  remoteTimeoutUnit?: string;
   striping?: boolean;
   indexReader: IndexReader;
   indexWriter: IndexWriter;

@@ -12,7 +12,7 @@ import {
   Switch,
   TextInput
 } from '@patternfly/react-core';
-import { StorageType, TimeUnits } from '@services/infinispanRefData';
+import { CacheType, StorageType, TimeUnits } from '@services/infinispanRefData';
 import { useTranslation } from 'react-i18next';
 import TransactionalConfigurationTuning from '@app/Caches/Create/AdvancedTuning/TransactionalConfigurationTuning';
 import { useCreateCache } from '@app/hooks/createCacheHook';
@@ -20,6 +20,7 @@ import { PopoverHelp } from '@app/Common/PopoverHelp';
 import IndexedConfigurationTuning from '@app/Caches/Create/AdvancedTuning/IndexedConfigurationTuning';
 import BackupsConfigurationTuning from '@app/Caches/Create/AdvancedTuning/BackupsConfigurationTuning';
 import TracingCacheConfigurator from '@app/Caches/Create/Features/TracingCacheConfigurator';
+import TimeQuantityInputGroup from '@app/Caches/Create/TimeQuantityInputGroup';
 import { SelectSingle } from '@app/Common/SelectSingle';
 import { selectOptionProps } from '@utils/selectOptionPropsCreator';
 import { SelectMultiWithChips } from '@app/Common/SelectMultiWithChips';
@@ -36,6 +37,10 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
   const [lockAcquisitionTimeoutUnit, setLockAcquisitionTimeoutUnit] = useState<string | undefined>(
     configuration.advanced.lockAcquisitionTimeoutUnit
   );
+  const [remoteTimeout, setRemoteTimeout] = useState<number | undefined>(configuration.advanced.remoteTimeout);
+  const [remoteTimeoutUnit, setRemoteTimeoutUnit] = useState<string | undefined>(
+    configuration.advanced.remoteTimeoutUnit
+  );
   const [striping, setStriping] = useState<boolean>(configuration.advanced.striping!);
   const [aliases, setAliases] = useState<string[]>(configuration.advanced.aliases!);
 
@@ -49,12 +54,23 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
           concurrencyLevel: concurrencyLevel,
           lockAcquisitionTimeout: lockAcquisitionTimeout,
           lockAcquisitionTimeoutUnit: lockAcquisitionTimeoutUnit,
+          remoteTimeout: remoteTimeout,
+          remoteTimeoutUnit: remoteTimeoutUnit,
           striping: striping,
           aliases: aliases
         }
       };
     });
-  }, [storage, concurrencyLevel, lockAcquisitionTimeout, lockAcquisitionTimeoutUnit, striping, aliases]);
+  }, [
+    storage,
+    concurrencyLevel,
+    lockAcquisitionTimeout,
+    lockAcquisitionTimeoutUnit,
+    remoteTimeout,
+    remoteTimeoutUnit,
+    striping,
+    aliases
+  ]);
 
   const handleConcurrencyLevel = (value) => {
     setConcurrencyLevel(value);
@@ -62,6 +78,10 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
 
   const handleLockAcquisitionTimeout = (value) => {
     setLockAcquisitionTimeout(value);
+  };
+
+  const handleRemoteTimeout = (value) => {
+    setRemoteTimeout(value);
   };
 
   const formMemory = () => {
@@ -200,6 +220,32 @@ const AdvancedOptionsConfigurator = (props: { cacheManager: CacheManager }) => {
               </InputGroup>
             </FormGroup>
           </GridItem>
+          {(configuration.basic.topology === CacheType.Distributed ||
+            configuration.basic.topology === CacheType.Replicated) && (
+            <GridItem span={6}>
+              <FormGroup
+                isInline
+                fieldId="field-remote-timeout"
+                label={t('caches.create.configurations.advanced-options.remote-timeout-title')}
+                labelHelp={
+                  <PopoverHelp
+                    name="remote-timeout"
+                    label={t('caches.create.configurations.advanced-options.remote-timeout-title')}
+                    content={t('caches.create.configurations.advanced-options.remote-timeout-tooltip')}
+                  />
+                }
+              >
+                <TimeQuantityInputGroup
+                  name="remoteTimeout"
+                  defaultValue="17500"
+                  value={remoteTimeout}
+                  unit={remoteTimeoutUnit}
+                  valueModifier={handleRemoteTimeout}
+                  unitModifier={setRemoteTimeoutUnit}
+                />
+              </FormGroup>
+            </GridItem>
+          )}
           <GridItem span={12}>
             <FormGroup fieldId="field-striping">
               <Switch

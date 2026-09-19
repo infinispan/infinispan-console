@@ -516,6 +516,8 @@
           "isolation-level-read-committed-tooltip": "Read operations might return different values if another transaction modifies the entries.",
           "lock-acquisition-timeout-title": "Lock timeout",
           "lock-acquisition-timeout-tooltip": "Sets how many milliseconds to wait for lock acquisition.",
+          "remote-timeout-title": "Remote timeout",
+          "remote-timeout-tooltip": "Sets the maximum time to wait for a response from a remote node.",
           "striping": "Lock striping",
           "striping-tooltip": "Uses a shared pool of locks for all entries in the cache. Striping lowers the memory footprint for locks but can reduce concurrency. If you disable striping, a lock is created for each entry in the cache.",
           "index-tuning": "Index tuning",

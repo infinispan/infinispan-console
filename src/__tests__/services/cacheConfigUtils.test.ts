@@ -12,7 +12,7 @@ import {
   REPL_SYNC,
   Replicated
 } from '@services/cacheConfigUtils';
-import { ContentType, EncodingType } from '@services/infinispanRefData';
+import { CacheType, ContentType, EncodingType, TimeUnits } from '@services/infinispanRefData';
 
 describe('Cache Config Utils tests', () => {
   test('cache topology', () => {
@@ -111,6 +111,48 @@ describe('Cache Config Utils tests', () => {
       ContentType.sfixed32,
       ContentType.sfixed64
     ]);
+  });
+
+  test('serializes remote timeout for distributed caches', () => {
+    const configuration = {
+      basic: {
+        topology: CacheType.Distributed,
+        mode: 'SYNC',
+        numberOfOwners: 2,
+        encoding: EncodingType.Protobuf,
+        statistics: true,
+        expiration: false,
+        lifeSpanNumber: -1,
+        lifeSpanUnit: TimeUnits.milliseconds,
+        maxIdleNumber: -1,
+        maxIdleUnit: TimeUnits.milliseconds,
+        valid: true
+      },
+      feature: {
+        cacheFeatureSelected: [],
+        boundedCache: {} as never,
+        indexedCache: {} as never,
+        securedCache: {} as never,
+        backupsCache: {} as never,
+        transactionalCache: {} as never,
+        persistentCache: {} as never
+      },
+      advanced: {
+        indexReader: {},
+        indexWriter: {},
+        indexMerge: {},
+        tracing: { globalEnabled: false, enabled: true, categories: [] },
+        aliases: [],
+        valid: true,
+        remoteTimeout: 15,
+        remoteTimeoutUnit: TimeUnits.seconds
+      },
+      start: { cacheName: '', createType: 'configure', valid: true }
+    } as CacheConfiguration;
+
+    const config = JSON.parse(CacheConfigUtils.createCacheConfigFromData(configuration));
+
+    expect(config['distributed-cache']['remote-timeout']).toBe('15s');
   });
 
   test('minim validation of the configuration json or xml', () => {
