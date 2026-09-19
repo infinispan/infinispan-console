@@ -477,6 +477,8 @@
           "isolation-level-read-committed-tooltip": "Le operazioni di lettura potrebbero restituire valori diversi se un'altra transazione modifica le voci.",
           "lock-acquisition-timeout-title": "Timeout acquisizione blocco",
           "lock-acquisition-timeout-tooltip": "Imposta quante millisecondi aspettare l'acquisizione del blocco.",
+          "remote-timeout-title": "Timeout remoto",
+          "remote-timeout-tooltip": "Imposta il tempo massimo di attesa per una risposta da un nodo remoto.",
           "striping": "Striscia di blocchi",
           "striping-tooltip": "Utilizza un pool condiviso di blocchi per tutte le voci nella cache. La striscia riduce la footprint della memoria per i blocchi, ma può ridurre la concorrenza. Se disabiliti la striscia, viene creato un blocco per ogni voce nella cache.",
           "index-tuning": "Regolazione dell'indice",

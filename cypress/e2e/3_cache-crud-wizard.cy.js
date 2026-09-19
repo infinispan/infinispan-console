@@ -4,7 +4,7 @@ describe('Cache Creation Wizard', () => {
   });
 
   it('successfully creates cache with all building options', () => {
-    cy.on("uncaught:exception", (err, runnable) => {
+    cy.on('uncaught:exception', (err, runnable) => {
       cy.log(err.message);
       return false;
     });
@@ -40,7 +40,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=indexSharding]').type(10);
     cy.get('[data-cy=wizardNextButton]').should('be.disabled');
     cy.get('[data-cy=menu-toogle-entitiesSelector]').click().type('org.infinispan.Car').type('{enter}');
-    cy.get('[data-cy=menu-toogle-entitiesSelector]').click()
+    cy.get('[data-cy=menu-toogle-entitiesSelector]').click();
 
     //Filling auth cache properties
     cy.get('[data-cy=menu-toogle-featuresSelect]').click();
@@ -73,6 +73,7 @@ describe('Cache Creation Wizard', () => {
     cy.get('#option-HEAP').click();
     cy.get('[data-cy=concurencyLevel]').clear().type(40);
     cy.get('[data-cy=lockTimeout]').clear().type(15);
+    cy.get('[data-cy=remoteTimeout]').clear().type(20);
     cy.get('#striping').next().click();
     //Indexing tuning
     cy.get('[data-cy=indexReaderExpand] button').click();
@@ -116,21 +117,19 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=downloadModal]').click();
     cy.get('[data-cy=downloadButton]').click();
     cy.wait(2000);
-    let downloadedFile = cy.readFile('./cypress/downloads/asuper-cache.json');
-    downloadedFile.should('exist');
-    downloadedFile.its('distributed-cache.mode').should('eq', 'SYNC');
+    cy.readFile('./cypress/downloads/asuper-cache.json').should('exist');
+    cy.readFile('./cypress/downloads/asuper-cache.json').its('distributed-cache.mode').should('eq', 'SYNC');
+    cy.readFile('./cypress/downloads/asuper-cache.json').its('distributed-cache.remote-timeout').should('eq', '20ms');
 
     cy.get('[data-cy=downloadModal]').click();
     cy.get('#modal-XML').click();
     cy.get('[data-cy=downloadButton]').click();
-    downloadedFile = cy.readFile('./cypress/downloads/asuper-cache.xml');
-    downloadedFile.should('exist');
+    cy.readFile('./cypress/downloads/asuper-cache.xml').should('exist');
 
     cy.get('[data-cy=downloadModal]').click();
     cy.get('#modal-YAML').click();
     cy.get('[data-cy=downloadButton]').click();
-    downloadedFile = cy.readFile('./cypress/downloads/asuper-cache.yaml');
-    downloadedFile.should('exist');
+    cy.readFile('./cypress/downloads/asuper-cache.yaml').should('exist');
 
     cy.get('[data-cy=wizardNextButton]').click();
 
@@ -176,14 +175,10 @@ describe('Cache Creation Wizard', () => {
     cy.get('[data-cy=toggle-templates]').click();
     cy.get('[data-cy=option-typeahead-e2e-test-template]').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    cy.contains(
-      'Cache ' + cacheName + ' successfully created with e2e-test-template.',
-    );
+    cy.contains('Cache ' + cacheName + ' successfully created with e2e-test-template.');
     // Once the cache created, redirection to main page is done and the cache should be visible
     //Is redirected to Data Container page
-    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should(
-      'exist',
-    );
+    cy.get('[data-ouia-component-id=cluster-manager-header-title]').should('exist');
     cy.contains(cacheName);
   }
 
@@ -194,11 +189,11 @@ describe('Cache Creation Wizard', () => {
     cy.get('#cache-name').type('aSimpleCache');
     cy.get('#edit').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    cy.get('#provideConfigAreaToggle').click({force: true});
-    if (Cypress.browser.name === "firefox") {
+    cy.get('#provideConfigAreaToggle').click({ force: true });
+    if (Cypress.browser.name === 'firefox') {
       //At the moment do nothing as the proper command for editing the config is not found yet
     } else {
-      cy.get('.pf-v6-c-code-editor__code:first').click({force: true}).focused()
+      cy.get('.pf-v6-c-code-editor__code:first').click({ force: true }).focused();
     }
 
     cy.get('[data-cy=wizardNextButton]').click();
@@ -218,22 +213,39 @@ describe('Cache Creation Wizard', () => {
     cy.get('#cache-name').type('aSimpleXmlCache');
     cy.get('#edit').click();
     cy.get('[data-cy=wizardNextButton]').click();
-    cy.get('#provideConfigAreaToggle').click({force: true});
+    cy.get('#provideConfigAreaToggle').click({ force: true });
 
-    if (Cypress.browser.name === "firefox") {
+    if (Cypress.browser.name === 'firefox') {
       //At the moment do nothing as the proper command for editing the config is not found yet
     } else {
-      cy.get('.pf-v6-c-code-editor__code textarea:first').click({force: true}).focused().type( '{downArrow}' )
-        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-        .type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}").type("{shift}{end}").type("{del}{del}")
-        .type("{shift}{end}").type("{del}{del}").type("{enter}{upArrow}")
+      cy.get('.pf-v6-c-code-editor__code textarea:first')
+        .click({ force: true })
+        .focused()
+        .type('{downArrow}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{shift}{end}')
+        .type('{del}{del}')
+        .type('{enter}{upArrow}')
         .type(
           '<local-cache name="local">\
           <expiration interval="500" lifespan="60000" max-idle="1000" touch="ASYNC"/>\
           <memory storage="OFF_HEAP" max-size="200 MB" when-full="MANUAL" />\
       </local-cache>',
           { parseSpecialCharSequences: false }
-        ).type("{del}{del}").type("{upArrow}{backspace}");
+        )
+        .type('{del}{del}')
+        .type('{upArrow}{backspace}');
     }
     cy.get('[data-cy=wizardNextButton]').click();
     cy.contains('Cache aSimpleXmlCache created with the provided configuration.');
@@ -249,7 +261,7 @@ describe('Cache Creation Wizard', () => {
     if (isDetailPage) {
       cy.login(Cypress.env('username'), Cypress.env('password'), `/cache/${cacheName}`);
       cy.get('[data-cy=detailCacheActions]').click();
-      cy.get("[data-cy=manageDeleteLink]").click();
+      cy.get('[data-cy=manageDeleteLink]').click();
     } else {
       cy.login(Cypress.env('username'), Cypress.env('password'));
       cy.get(`[data-cy=actions-${cacheName}]`).click();
@@ -263,7 +275,7 @@ describe('Cache Creation Wizard', () => {
 
     if (isDetailPage) {
       cy.get('[data-cy=detailCacheActions]').click();
-      cy.get("[data-cy=manageDeleteLink]").click();
+      cy.get('[data-cy=manageDeleteLink]').click();
     } else {
       cy.get(`[data-cy=actions-${cacheName}]`).click();
       cy.get('[aria-label=deleteCacheAction]').click();
@@ -274,7 +286,7 @@ describe('Cache Creation Wizard', () => {
 
     if (isDetailPage) {
       cy.get('[data-cy=detailCacheActions]').click();
-      cy.get("[data-cy=manageDeleteLink]").click();
+      cy.get('[data-cy=manageDeleteLink]').click();
     } else {
       cy.get(`[data-cy=actions-${cacheName}]`).click();
       cy.get('[aria-label=deleteCacheAction]').click();

@@ -493,6 +493,8 @@
           "isolation-level-read-committed-tooltip": "Les opérations de lecture peuvent retourner des valeurs différentes si une autre transaction modifie les entrées.",
           "lock-acquisition-timeout-title": "Délai d'attente pour l'acquisition du verrou",
           "lock-acquisition-timeout-tooltip": "Définit combien de millisecondes attendre pour acquérir un verrou.",
+          "remote-timeout-title": "Délai d'attente distant",
+          "remote-timeout-tooltip": "Définit le temps maximum d'attente pour une réponse d'un nœud distant.",
           "striping": "Striping de verrous",
           "striping-tooltip": "Utilise un pool partagé de verrous pour toutes les entrées du cache. Le striping réduit l'empreinte mémoire des verrous mais peut réduire la concurrence. Si vous désactivez le striping, un verrou est créé pour chaque entrée du cache.",
           "index-tuning": "Calibration de l'index",

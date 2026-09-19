@@ -477,6 +477,8 @@
           "isolation-level-read-committed-tooltip": "他のトランザクションがエントリを変更する場合、読み取り操作は異なる値を返す可能性があります。",
           "lock-acquisition-timeout-title": "ロックタイムアウト",
           "lock-acquisition-timeout-tooltip": "ロック獲得に待つ時間（ミリ秒）を設定します。",
+          "remote-timeout-title": "リモートタイムアウト",
+          "remote-timeout-tooltip": "リモートノードからの応答を待つ最大時間を設定します。",
           "striping": "ロック分割",
           "striping-tooltip": "キャッシュ内のすべてのエントリで共有プールを使用してロックを取得します。分割により、ロックのメモリ使用量が低下しますが、並行性が減少する可能性があります。分割を無効にすると、キャッシュ内の各エントリに対してロックが作成されます。",
           "index-tuning": "インデックス調整",

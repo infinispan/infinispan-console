@@ -477,6 +477,8 @@
           "isolation-level-read-committed-tooltip": "Leseoperationen können unterschiedliche Werte zurückgeben, wenn eine andere Transaktion die Einträge ändert.",
           "lock-acquisition-timeout-title": "Sperrzeitüberschreitung",
           "lock-acquisition-timeout-tooltip": "Legt fest, wie viele Millisekunden gewartet wird, bis die Sperre erworben werden kann.",
+          "remote-timeout-title": "Remote-Zeitüberschreitung",
+          "remote-timeout-tooltip": "Legt die maximale Wartezeit für eine Antwort von einem Remote-Knoten fest.",
           "striping": "Sperrverteilung",
           "striping-tooltip": "Verwendet einen gemeinsamen Pool von Sperrn für alle Einträge im Cache. Die Verteilung reduziert den Speicherbedarf für Sperren, kann aber die Konkurrenz verringern. Wenn Sie die Verteilung deaktivieren, wird eine Sperre für jeden Eintrag im Cache erstellt.",
           "index-tuning": "Indizierungsoptimierung",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   AlertVariant,
@@ -52,9 +52,12 @@ const DownloadCacheModal = (props: {
   const [xmlConfig, setXmlConfig] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [downloadURL, setDownloadURL] = useState(
-    'data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration)
-  );
+
+  useEffect(() => {
+    if (props.configuration) {
+      setJsonConfig(props.configuration);
+    }
+  }, [props.configuration]);
 
   useEffect(() => {
     downloadLanguage === ConfigDownloadType.JSON
@@ -80,19 +83,17 @@ const DownloadCacheModal = (props: {
           }
         })
         .finally(() => setLoading(false));
-      setDownloadURL('data:text/json;charset=utf-8,' + encodeURIComponent(props.configuration));
     }
   }, [props.configuration, props.isModalOpen]);
 
-  useEffect(() => {
-    if (downloadLanguage === ConfigDownloadType.JSON) {
-      setDownloadURL('data:text/json;charset=utf-8,' + encodeURIComponent(jsonConfig));
-    } else if (downloadLanguage === ConfigDownloadType.YAML) {
-      setDownloadURL('data:text/yaml;charset=utf-8,' + encodeURIComponent(yamlConfig));
+  const downloadURL = useMemo(() => {
+    if (downloadLanguage === ConfigDownloadType.YAML) {
+      return 'data:text/yaml;charset=utf-8,' + encodeURIComponent(yamlConfig);
     } else if (downloadLanguage === ConfigDownloadType.XML) {
-      setDownloadURL('data:text/yaml;charset=utf-8,' + encodeURIComponent(xmlConfig));
+      return 'data:text/xml;charset=utf-8,' + encodeURIComponent(xmlConfig);
     }
-  }, [downloadLanguage, jsonConfig, props.configuration, xmlConfig, yamlConfig]);
+    return 'data:text/json;charset=utf-8,' + encodeURIComponent(jsonConfig);
+  }, [downloadLanguage, jsonConfig, xmlConfig, yamlConfig]);
 
   const clipboardCopyFunc = (event, text) => {
     navigator.clipboard.writeText(text.toString());
