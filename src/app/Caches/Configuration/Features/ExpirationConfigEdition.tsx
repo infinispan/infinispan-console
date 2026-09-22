@@ -85,28 +85,32 @@ const ExpirationConfigEdition = () => {
     const newLifespan = isExpiration ? convertToTimeQuantity(lifeSpanNumber, lifeSpanUnit) : '-1';
     const newMaxidle = isExpiration ? convertToTimeQuantity(maxIdleNumber, maxIdleUnit) : '-1';
 
-    if (newMaxidle && newMaxidle != editableConfig?.maxIdle) {
-      ConsoleServices.caches()
-        .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_MAXIDLE, newMaxidle)
-        .then((actionResponse) => {
-          if (actionResponse.success) {
-            addAlert(actionResponse);
-          } else {
-            setError(actionResponse.message);
-          }
-        });
-    }
-    if (newLifespan && newLifespan != editableConfig?.lifespan) {
-      ConsoleServices.caches()
-        .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_LIFESPAN, newLifespan)
-        .then((actionResponse) => {
-          if (actionResponse.success) {
-            addAlert(actionResponse);
-          } else {
-            setError(actionResponse.message);
-          }
-        });
-    }
+    const updateMaxIdle =
+      newMaxidle && newMaxidle != editableConfig?.maxIdle
+        ? ConsoleServices.caches()
+            .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_MAXIDLE, newMaxidle)
+            .then((actionResponse) => {
+              if (actionResponse.success) {
+                addAlert(actionResponse);
+              } else {
+                setError(actionResponse.message);
+              }
+            })
+        : Promise.resolve();
+
+    updateMaxIdle.then(() => {
+      if (newLifespan && newLifespan != editableConfig?.lifespan) {
+        ConsoleServices.caches()
+          .setConfigAttribute(cacheName, CONF_MUTABLE_EXPIRATION_LIFESPAN, newLifespan)
+          .then((actionResponse) => {
+            if (actionResponse.success) {
+              addAlert(actionResponse);
+            } else {
+              setError(actionResponse.message);
+            }
+          });
+      }
+    });
   };
 
   const validateLifeSpan = (): 'default' | 'error' => {
