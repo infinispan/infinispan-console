@@ -85,7 +85,13 @@ export class FetchCaller {
    * @param url
    * @param method
    */
-  public fetch(url: string, method: string, customHeaders?: Headers, body?: string): Promise<Response> {
+  public fetch(
+    url: string,
+    method: string,
+    customHeaders?: Headers,
+    body?: string,
+    signal?: AbortSignal
+  ): Promise<Response> {
     const headers = this.createAuthenticatedHeader();
 
     if (customHeaders) {
@@ -100,6 +106,9 @@ export class FetchCaller {
     };
     if (body && body.length > 0) {
       fetchOptions['body'] = body;
+    }
+    if (signal) {
+      fetchOptions['signal'] = signal;
     }
     return fetch(url, fetchOptions);
   }

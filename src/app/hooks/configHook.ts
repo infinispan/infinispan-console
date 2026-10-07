@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { formatXml } from '@app/utils/dataSerializerUtils';
 import { useApiAlert } from '@utils/useApiAlert';
-import { CONF_MUTABLE_TRACING_CATEGORIES, CONF_MUTABLE_TRACING_ENABLED } from '@services/cacheConfigUtils';
 import { useServiceCall } from '@app/hooks/useServiceCall';
 
 export function useCacheAliases(cacheName: string) {
@@ -48,7 +47,7 @@ export function useCacheAliases(cacheName: string) {
             setError(r.value.message);
           }
         })
-        .finally(() => {
+        .then(() => {
           setLoading(false);
         });
     }

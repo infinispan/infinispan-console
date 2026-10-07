@@ -7,6 +7,7 @@ export interface ClusterMember {
 
 export interface ClusterMembers {
   rolling_upgrade: boolean;
+  managed: boolean;
   members: ClusterMember[];
   memory_available: number;
   memory_used: number;

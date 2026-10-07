@@ -39,6 +39,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import displayUtils from '@services/displayUtils';
 import { useTranslation } from 'react-i18next';
 import { useCacheDetail, useCacheEntries } from '@app/hooks/cachesHook';
+import { useRollingUpgradeState } from '@app/providers/RollingUpgradeDetectionProvider';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleACL } from '@services/securityService';
@@ -66,6 +67,7 @@ const CacheEntries = () => {
   } = useCacheEntries();
   const { cache } = useCacheDetail();
   const { connectedUser } = useConnectedUser();
+  const { rollingUpgrade } = useRollingUpgradeState();
   const { t } = useTranslation();
   const brandname = t('brandname.brandname');
   const encodingDocs = t('brandname.encoding-docs-link');
@@ -523,6 +525,15 @@ const CacheEntries = () => {
     <Card isPlain isFullHeight>
       <CardBody>
         {encodingMessageDisplay()}
+        {rollingUpgrade && (
+          <Alert
+            variant={AlertVariant.warning}
+            isInline
+            isPlain
+            title={t('caches.entries.rolling-upgrade-warning')}
+            style={{ marginBottom: t_global_spacer_md.value }}
+          />
+        )}
         {totalEntriesCount == 0 ? (
           emptyPage
         ) : (

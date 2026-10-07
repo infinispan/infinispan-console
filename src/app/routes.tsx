@@ -12,6 +12,7 @@ import { XSiteCache } from '@app/XSite/XSiteCache';
 import { DetailCachePage } from '@app/Caches/DetailCachePage';
 import { ConnectedClients } from './ConnectedClients/ConnectedClients';
 import { AccessManager } from '@app/AccessManagement/AccessManager';
+import { RollingUpgrades } from '@app/RollingUpgrades/RollingUpgrades';
 import { useAppInitState, useConnectedUser } from '@app/hooks/userManagementHook';
 import { ConsoleServices } from '@services/ConsoleServices';
 import { ConsoleACL } from '@services/securityService';
@@ -39,6 +40,8 @@ export interface IAppRoute {
   subRoutes?: string[];
   init?: string;
   readonlyUser?: boolean;
+  bareMetalOnly?: boolean;
+  navGroup?: 'data' | 'monitoring' | 'administration';
 }
 
 const routes: IAppRoute[] = [
@@ -51,7 +54,8 @@ const routes: IAppRoute[] = [
     title: 'routes.data-container',
     menu: true,
     subRoutes: ['container', 'cache', 'caches', 'counters', 'tasks', 'schemas'],
-    admin: false
+    admin: false,
+    navGroup: 'data'
   },
   {
     id: 'data_container_caches',
@@ -97,7 +101,8 @@ const routes: IAppRoute[] = [
     path: '/global-stats',
     title: 'routes.global-statistics',
     menu: true,
-    admin: false
+    admin: false,
+    navGroup: 'monitoring'
   },
   {
     id: 'cluster_membership',
@@ -107,7 +112,8 @@ const routes: IAppRoute[] = [
     path: '/cluster-membership',
     title: 'routes.cluster-membership',
     menu: true,
-    admin: true
+    admin: true,
+    navGroup: 'monitoring'
   },
   {
     id: 'cache_setup',
@@ -211,7 +217,8 @@ const routes: IAppRoute[] = [
     title: 'routes.access-management',
     menu: true,
     admin: true,
-    subRoutes: ['role']
+    subRoutes: ['role'],
+    navGroup: 'administration'
   },
   {
     id: 'connected_clients',
@@ -221,7 +228,20 @@ const routes: IAppRoute[] = [
     path: '/connected-clients',
     title: 'routes.connected-clients',
     menu: true,
-    admin: true
+    admin: true,
+    navGroup: 'monitoring'
+  },
+  {
+    id: 'rolling_upgrades',
+    component: <RollingUpgrades />,
+    exact: true,
+    label: 'routes.rolling-upgrades',
+    path: '/rolling-upgrades',
+    title: 'routes.rolling-upgrades',
+    menu: true,
+    admin: true,
+    bareMetalOnly: true,
+    navGroup: 'administration'
   },
   {
     id: 'my_permissions',
