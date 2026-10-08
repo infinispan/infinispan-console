@@ -1,10 +1,10 @@
 describe('Access Management', () => {
   beforeEach(() => {
     // cleanup created data
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/security/permissions/aRole')
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/security/roles/aPrincipal?action=grant')
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/security/permissions/aRole')
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/security/roles/aPrincipal?action=grant')
     // logs in the access management page
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/access-management');
   });
 
   it('successfully loads the page', () => {
@@ -38,7 +38,7 @@ describe('Access Management', () => {
     cy.contains('Role aRole has been created');
     cy.contains('aRole description');
 
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management/role/aRole');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/access-management/role/aRole');
     cy.get('[aria-label=role-name-input')
       .should('have.value', 'aRole')
       .should('be.disabled');
@@ -47,7 +47,7 @@ describe('Access Management', () => {
       .type(' with update');
     cy.get('[aria-label=Save').click();
     cy.contains('Role aRole has been updated');
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management/role/aRole');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/access-management/role/aRole');
     cy.get('[aria-label=role-description-input]')
       .should('have.value', 'aRole description with update');
 
@@ -67,7 +67,7 @@ describe('Access Management', () => {
     cy.contains('default');
 
     // remove
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/access-management');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/access-management');
     cy.get("[aria-label=aRole-menu]").click();
     cy.get("[aria-label=deleteRole]").click();
     cy.get("[aria-label=Delete]").click();

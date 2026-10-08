@@ -1,6 +1,6 @@
 describe('Client connection page', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/connected-clients');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/connected-clients');
   });
 
   it('successfully loads Client connections', () => {

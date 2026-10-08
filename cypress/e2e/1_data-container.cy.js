@@ -2,7 +2,7 @@ describe('Data Container Overview', () => {
   const numberOfCaches = 16;
 
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
   });
 
   //Data Container Overview

@@ -1,6 +1,6 @@
 describe('Query History', () => {
-  const username = Cypress.env('username');
-  const password = Cypress.env('password');
+  const username = Cypress.expose('username');
+  const password = Cypress.expose('password');
 
   before(() => {
     // Ensure test data exists

@@ -6,27 +6,27 @@ describe('Cache Expiration', () => {
 
   before(() => {
     // Set people cache expiration disabled
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/people?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_MAXIDLE}&attribute-value=-1`,
       'POST');
 
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/people?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_LIFESPAN}&attribute-value=-1`,
       'POST');
 
     // Set indexed-cache cache expiration disabled
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_MAXIDLE}&attribute-value=-1`,
       'POST');
     // Set indexed-cache cache expiration disabled
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_EXPIRATION_LIFESPAN}&attribute-value=-1`,
       'POST');
   });
 
   expirationCaches.forEach((cacheName) => {
     it('successfully displays and updates expiration config in cache: ' + cacheName, () => {
-      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/' + cacheName);
 
       cy.get('[data-cy=detailCacheActions]').click();
       cy.get("[data-cy=manageConfigEditionLink]").click();
@@ -79,7 +79,7 @@ describe('Cache Expiration', () => {
 
   nonAdminUserNames.forEach((user) => {
     it('non admins can\' access the page: ' + user, () => {
-      cy.login(user, Cypress.env('password'), '/cache/people');
+      cy.login(user, Cypress.expose('password'), '/cache/people');
       cy.get('[data-cy=detailCacheActions]').click();
       cy.get('[data-cy=manageConfigEditionLink]').should('not.exist');
     });

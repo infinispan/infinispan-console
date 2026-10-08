@@ -1,6 +1,6 @@
 describe('Cache Creation Wizard', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
   });
 
   it('successfully creates cache with all building options', () => {
@@ -154,7 +154,7 @@ describe('Cache Creation Wizard', () => {
   });
 
   it('DEPLOYER successfully creates with a template', () => {
-    cy.login('deployer', Cypress.env('password'));
+    cy.login('deployer', Cypress.expose('password'));
     const cacheName = 'aaCache';
     createCacheWithTemplate(cacheName);
     deleteCache(cacheName);
@@ -259,11 +259,11 @@ describe('Cache Creation Wizard', () => {
 
   function deleteCache(cacheName, isDetailPage) {
     if (isDetailPage) {
-      cy.login(Cypress.env('username'), Cypress.env('password'), `/cache/${cacheName}`);
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), `/cache/${cacheName}`);
       cy.get('[data-cy=detailCacheActions]').click();
       cy.get('[data-cy=manageDeleteLink]').click();
     } else {
-      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.login(Cypress.expose('username'), Cypress.expose('password'));
       cy.get(`[data-cy=actions-${cacheName}]`).click();
       cy.get('[aria-label=deleteCacheAction]').click();
     }

@@ -9,7 +9,7 @@ describe('Welcome page', () => {
         cy.wrap($btn).click();
       }
     });
-    cy.contains('Data Container').should('be.visible');
+    cy.get('[itemid="data_container"]', { timeout: 10000 }).should('be.visible');
   }
 
   it('successfully loads Welcome page', () => {
@@ -25,7 +25,7 @@ describe('Welcome page', () => {
   });
 
   it('successfully logs in and logs out', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
 
     cy.contains('Data container');
     cy.contains('Running'); // cluster status
@@ -52,7 +52,7 @@ describe('Welcome page', () => {
   });
 
   it('successfully opens and navigates side menu', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
     cy.contains('Data container');
     cy.contains('Running'); // cluster status
     // Show sidebar
@@ -98,19 +98,18 @@ describe('Welcome page', () => {
 
   it('successfully navigates in mobile viewport', () => {
     cy.viewport(480, 896);
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
     cy.contains('Data container');
 
     // Sidebar should be closed by default
-    cy.contains('Operations').should('not.be.visible');
+    cy.get('[data-cy=sideBarToggle]').should('have.attr', 'aria-expanded', 'false');
 
     // Open sidebar via hamburger menu
     openSideBar();
-    cy.contains('Operations').should('be.visible');
-    cy.contains('Global Statistics').should('be.visible');
-    cy.contains('Cluster Membership').should('be.visible');
-    cy.contains('Access Management').should('be.visible');
-    cy.contains('Connected Clients').should('be.visible');
+    cy.get('[itemid="global_stats"]').should('be.visible');
+    cy.get('[itemid="cluster_membership"]').should('be.visible');
+    cy.get('[itemid="access_management"]').should('be.visible');
+    cy.get('[itemid="connected_clients"]').should('be.visible');
 
     // Navigate to Global Statistics
     cy.get('[itemid="global_stats"]').click();
@@ -128,7 +127,7 @@ describe('Welcome page', () => {
   });
 
   it('successfully opens and views About page', () => {
-      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.login(Cypress.expose('username'), Cypress.expose('password'));
       cy.get('[data-cy=aboutInfoQuestionMark]').click();
       cy.contains('Documentation');
 

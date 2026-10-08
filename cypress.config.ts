@@ -10,7 +10,7 @@ export default defineConfig({
     mochaFile: 'reports/report-[hash].xml',
     toConsole: false,
   },
-  env: {
+  expose: {
     username: 'admin',
     password: 'password',
   },
@@ -32,6 +32,13 @@ export default defineConfig({
           launchOptions.preferences['pdfjs.disabled'] = true;
 
           return launchOptions;
+        }
+      });
+      on('task', {
+        execShell({ command }) {
+          const { execSync } = require('child_process');
+          const stdout = execSync(command, { timeout: 120000 }).toString();
+          return { stdout };
         }
       });
       return require('./cypress/plugins/index.js')(on, config)

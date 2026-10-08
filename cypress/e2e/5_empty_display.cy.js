@@ -6,8 +6,8 @@ describe('Empty values test', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();
@@ -29,8 +29,8 @@ describe('Empty values test', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();

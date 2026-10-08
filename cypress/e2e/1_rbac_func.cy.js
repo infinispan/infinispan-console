@@ -6,27 +6,27 @@ describe('RBAC Functionality Tests', () => {
 
   beforeEach(() => {
     // cleanup created data for a-rbac-test-cache
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/a-rbac-test-cache/fordCar', 'DELETE')
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/a-rbac-test-cache/kiaCar', 'DELETE')
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/indexed-cache-no-auth/stringKey', 'DELETE')
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/indexed-cache-no-auth/stringKey1', 'DELETE')
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/a-rbac-test-cache/fordCar', 'DELETE')
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/a-rbac-test-cache/kiaCar', 'DELETE')
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/indexed-cache-no-auth/stringKey', 'DELETE')
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/indexed-cache-no-auth/stringKey1', 'DELETE')
   });
 
   it('successfully logins and performs actions with monitor user', () => {
-    cy.login(monitorUserName, Cypress.env('password'));
+    cy.login(monitorUserName, Cypress.expose('password'));
     checkDataContainerView(true, false, false, false);
     checkSecuredCacheDetailsView(true, false, false, 'monitor', 'indexed-cache');
     checkNotOwnSecuredCache('a-rbac-test-cache');
     checkNonSecuredCacheDetailView(true, false);
     checkMenu(false);
-    cy.login(monitorUserName, Cypress.env('password'), '/cache/indexed-cache');
+    cy.login(monitorUserName, Cypress.expose('password'), '/cache/indexed-cache');
     checkNoEntriesTabView(false);
-    cy.login(monitorUserName, Cypress.env('password'), '/global-stats');
+    cy.login(monitorUserName, Cypress.expose('password'), '/global-stats');
     checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with observer user', () => {
-    cy.login(observerUserName, Cypress.env('password'));
+    cy.login(observerUserName, Cypress.expose('password'));
     checkMenu(false);
     checkDataContainerView(false, false, false, false);
     checkSecuredCacheDetailsView(false, false, false, 'observer', 'indexed-cache');
@@ -43,14 +43,14 @@ describe('RBAC Functionality Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView(false);
-    cy.login(observerUserName, Cypress.env('password'), '/cache/not-encoded');
+    cy.login(observerUserName, Cypress.expose('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
-    cy.login(observerUserName, Cypress.env('password'), '/global-stats');
+    cy.login(observerUserName, Cypress.expose('password'), '/global-stats');
     checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with application user', () => {
-    cy.login(applicationUserName, Cypress.env('password'));
+    cy.login(applicationUserName, Cypress.expose('password'));
 
     checkMenu(false);
     checkDataContainerView(false, false, false, false);
@@ -62,14 +62,14 @@ describe('RBAC Functionality Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(false);
     checkCountersPageView(false);
-    cy.login(applicationUserName, Cypress.env('password'), '/cache/not-encoded');
+    cy.login(applicationUserName, Cypress.expose('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
-    cy.login(applicationUserName, Cypress.env('password'), '/global-stats');
+    cy.login(applicationUserName, Cypress.expose('password'), '/global-stats');
     checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with deployer user', () => {
-    cy.login(deployerUserName, Cypress.env('password'));
+    cy.login(deployerUserName, Cypress.expose('password'));
 
     checkMenu(false);
     checkDataContainerView(false, true, true, false);
@@ -81,14 +81,14 @@ describe('RBAC Functionality Tests', () => {
     //Go to tasks (@TODO at the moment for observer no tasks are shown, add after fix)
     checkSchemasPageView(true);
     checkCountersPageView(false);
-    cy.login(deployerUserName, Cypress.env('password'), '/cache/not-encoded');
+    cy.login(deployerUserName, Cypress.expose('password'), '/cache/not-encoded');
     checkNoEntriesTabView(false);
-    cy.login(deployerUserName, Cypress.env('password'), '/global-stats');
+    cy.login(deployerUserName, Cypress.expose('password'), '/global-stats');
     checkGlobalStatsView()
   });
 
   it('successfully logins and performs actions with admin user', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
 
     checkMenu(true);
     checkDataContainerView(false, true, true, true);
@@ -101,7 +101,7 @@ describe('RBAC Functionality Tests', () => {
     checkSchemasPageView(true);
     checkCountersPageView(true);
     checkTasksPage();
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/not-encoded');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/not-encoded');
     checkNoEntriesTabView(true);
   });
 

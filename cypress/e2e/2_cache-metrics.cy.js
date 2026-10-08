@@ -1,6 +1,6 @@
 describe('Cache Metrics Overview', () => {
   it('successfully checks cache metrics labels in usual cache', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/people');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/people');
     //Check for Labels
     cy.get('[data-cy=cacheMetricsTab]').click();
     // Entries
@@ -33,7 +33,7 @@ describe('Cache Metrics Overview', () => {
   });
 
   it('successfully checks cache metrics labels for heap memory', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/heap-test');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/heap-test');
     cy.get('[data-cy=cacheMetricsTab]').click();
     cy.contains('Memory');
     cy.contains('Size in heap memory');
@@ -41,7 +41,7 @@ describe('Cache Metrics Overview', () => {
   });
 
   it('successfully checks cache metrics labels for off-heap memory', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/off-heap-test');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/off-heap-test');
     cy.contains('Metrics (Enabled)').click();
     cy.contains('Memory');
     cy.contains('Size in off-heap memory');
@@ -49,12 +49,12 @@ describe('Cache Metrics Overview', () => {
   });
 
   // it('successfully checks cache metrics for off-heap memory', () => {
-  //   cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/jboss-cache');
+  //   cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/jboss-cache');
   //   verifyCacheMetrics(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   // });
 
   it('successfully resets metrics', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/people');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/people');
     cy.get('[data-cy=cacheMetricsTab]').click();
     cy.get('[data-cy=clearAccessMetricsButton]').click();
     cy.contains('Permanently clear data access metrics?');

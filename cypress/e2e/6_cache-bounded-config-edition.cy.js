@@ -3,18 +3,18 @@ import { CONF_MUTABLE_MEMORY_MAX_COUNT, CONF_MUTABLE_MEMORY_MAX_SIZE } from '../
 describe('Bounded Cache Update', () => {
   before(() => {
     // Set  a-rbac-test-cache Max Size to 1.5
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/a-rbac-test-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_MEMORY_MAX_SIZE}&attribute-value=1.5GB`,
       'POST');
 
     // Set jsonCache Max Count to 9000
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/json-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_MEMORY_MAX_COUNT}&attribute-value=9000`,
       'POST');
   });
 
   it('successfully displays and updates max size in bounded cache', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/a-rbac-test-cache');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/a-rbac-test-cache');
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageConfigEditionLink]").click();
     cy.get("[data-cy=nav-item-Bounded]").click();
@@ -34,7 +34,7 @@ describe('Bounded Cache Update', () => {
   });
 
   it('successfully displays and updates max count in bounded cache', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/json-cache');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/json-cache');
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get("[data-cy=manageConfigEditionLink]").click();
     cy.get("[data-cy=nav-item-Bounded]").click();
@@ -52,7 +52,7 @@ describe('Bounded Cache Update', () => {
   });
 
   it('tab is invisible for not bounded caches', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/default');
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get('[data-cy=manageConfigEditionLink]').click();
     cy.get('[data-cy=nav-item-Bounded]').should('not.exist');

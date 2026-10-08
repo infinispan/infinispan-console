@@ -1,6 +1,6 @@
 describe('Data Container Caches', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
   });
 
   //Hide created cache and check the hidden filter

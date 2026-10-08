@@ -8,8 +8,8 @@ describe('Cache Tracing Update', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.contains("Tracing").should("not.exist");
@@ -21,7 +21,7 @@ describe('Cache Tracing Update', () => {
 
   cacheNames.forEach((cacheName) => {
     it('successfully displays tracing and changes options for cache ' + cacheName, () => {
-      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/' + cacheName);
       cy.contains('Tracing is enabled');
 
       cy.get('[data-cy=detailCacheActions]').click();

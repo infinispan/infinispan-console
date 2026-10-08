@@ -1,42 +1,42 @@
 describe('XSite Config Tests', () => {
   beforeEach(() => {
     // Makes sure xsite-cache does not exist in LON
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       '/caches/xsite-cache');
 
     // Makes sure xsite-cache does not exist in NYC
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       'http://localhost:31222/rest/v2/caches/xsite-backup');
 
     // Make sure xsiteCache does not contain stringKey in LON or NYC
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/stringKey');
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/stringKey');
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/xsiteCache/stringKey');
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/stringKey');
 
     // Make sure key3 has value3
     const value3 = {
       _type: 'string',
       _value: 'value3'
     };
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/key3', 'PUT', value3, true);
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/key3', 'PUT', value3, true);
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/xsiteCache/key3', 'PUT', value3, true);
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/key3', 'PUT', value3, true);
 
     // Make sure key5 has value5 and exists
     const value5 = {
       _type: 'string',
       _value: 'value5'
     };
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/key5', 'POST', value5, true);
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/key5', 'POST', value5, true);
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/xsiteCache/key5', 'POST', value5, true);
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), 'http://localhost:31222/rest/v2/caches/xsiteCache/key5', 'POST', value5, true);
 
     // Make sure backup NYC is online
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/x-site/backups/NYC?action=bring-online', 'POST');
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/xsiteCache/x-site/backups/NYC?action=bring-online', 'POST');
 
     // Make sure state is clear
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'), '/caches/xsiteCache/x-site/local?action=clear-push-state-status', 'POST', '');
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'), '/caches/xsiteCache/x-site/local?action=clear-push-state-status', 'POST', '');
   });
 
   it('successfully shows the site name on data container page in LON', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
     cy.contains("LON");
     //Going to next page for checking xsite caches.
     cy.get('[data-action=next]').first().click();
@@ -47,8 +47,8 @@ describe('XSite Config Tests', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();
@@ -64,8 +64,8 @@ describe('XSite Config Tests', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();
@@ -75,7 +75,7 @@ describe('XSite Config Tests', () => {
   });
 
   it('successfully views the Manage Backup pages.', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsiteCache');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/xsiteCache');
     cy.contains("Backups");
     cy.contains('1 - 5 of 5');
     cy.get('[data-cy="detailCacheActions"]').click();
@@ -91,8 +91,8 @@ describe('XSite Config Tests', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();
@@ -106,7 +106,7 @@ describe('XSite Config Tests', () => {
   });
 
   it('successfully creates cache with backup called xsite-cache', () => {
-      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.login(Cypress.expose('username'), Cypress.expose('password'));
 
       cy.on("uncaught:exception", (err, runnable) => {
         return false;
@@ -168,8 +168,8 @@ describe('XSite Config Tests', () => {
                   'Accept-Encoding': 'gzip, deflate, br'
                 },
                 auth: {
-                  username: Cypress.env('username'),
-                  password: Cypress.env('password')
+                  username: Cypress.expose('username'),
+                  password: Cypress.expose('password')
                 }
               });
             cy.on("uncaught:exception", (err, runnable) => {
@@ -217,7 +217,7 @@ describe('XSite Config Tests', () => {
             cy.contains('value1');
         })
       cy.wait(2000); // wait 2s
-      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsite-cache');
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/xsite-cache');
       //Verifying that entries entered in NYC were successfully synced to LON
       cy.contains('key1');
       cy.contains('value1');
@@ -225,7 +225,7 @@ describe('XSite Config Tests', () => {
 
     it('successfully takes offline NYC, adds/updates/deletes data, verifies that NYC does not cache, brings NYC online and checks the changes are transferred', () => {
         // log LON xsiteCache
-        cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsiteCache');
+        cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/xsiteCache');
         //Going to manage Backups page and taking the backup site offline
         cy.get('[data-cy="detailCacheActions"]').click();
         cy.get("[data-cy=manageBackupsLink]").click();
@@ -255,7 +255,7 @@ describe('XSite Config Tests', () => {
         cy.get('#value-entry').click().type('stringValue');
         cy.get('[data-cy=addButton]').click();
         cy.contains('Entry added to cache xsiteCache.');
-        cy.get('[name=close-alert-button]').click({ multiple: true }); //Closing alert popup.
+        cy.dismissAlerts();
         cy.contains('stringKey');
         cy.contains('stringValue');
 
@@ -266,8 +266,8 @@ describe('XSite Config Tests', () => {
                   'Accept-Encoding': 'gzip, deflate, br'
                 },
                 auth: {
-                  username: Cypress.env('username'),
-                  password: Cypress.env('password')
+                  username: Cypress.expose('username'),
+                  password: Cypress.expose('password')
                 }
               });
             cy.get('[data-cy=sideBarToggle]').click();
@@ -280,7 +280,7 @@ describe('XSite Config Tests', () => {
         });
 
       // Now take NYC online, and check the values
-      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/xsiteCache/backups');
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/xsiteCache/backups');
       cy.contains("Bring online");
       cy.get("#NYC-switch").click({force: true});
       cy.contains("Operation bring online on site NYC has started.");
@@ -307,8 +307,8 @@ describe('XSite Config Tests', () => {
             'Accept-Encoding': 'gzip, deflate, br'
           },
           auth: {
-            username: Cypress.env('username'),
-            password: Cypress.env('password')
+            username: Cypress.expose('username'),
+            password: Cypress.expose('password')
           }
         });
         cy.get('[data-cy=sideBarToggle]').click();

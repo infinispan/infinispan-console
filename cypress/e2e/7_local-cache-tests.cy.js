@@ -3,7 +3,7 @@ import { CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES } from '../../src/services/ca
 describe('Local Cache Deployment', () => {
   before(() => {
     // Remove Cache if exists
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       '/caches/local-test-cache', 'DELETE', '', true, '41222');
   });
 
@@ -15,8 +15,8 @@ describe('Local Cache Deployment', () => {
             'Accept-Encoding': 'gzip, deflate, br'
           },
           auth: {
-            username: Cypress.env('username'),
-            password: Cypress.env('password')
+            username: Cypress.expose('username'),
+            password: Cypress.expose('password')
           }
         });
         cy.get('[data-cy=sideBarToggle]').click();
@@ -32,8 +32,8 @@ describe('Local Cache Deployment', () => {
               'Accept-Encoding': 'gzip, deflate, br'
             },
             auth: {
-              username: Cypress.env('username'),
-              password: Cypress.env('password')
+              username: Cypress.expose('username'),
+              password: Cypress.expose('password')
             }
           });
           cy.contains('Cluster-wide statistics');
@@ -46,8 +46,8 @@ describe('Local Cache Deployment', () => {
               'Accept-Encoding': 'gzip, deflate, br'
             },
             auth: {
-              username: Cypress.env('username'),
-              password: Cypress.env('password')
+              username: Cypress.expose('username'),
+              password: Cypress.expose('password')
             }
           });
           cy.contains('1 member in use');
@@ -61,8 +61,8 @@ describe('Local Cache Deployment', () => {
               'Accept-Encoding': 'gzip, deflate, br'
             },
             auth: {
-              username: Cypress.env('username'),
-              password: Cypress.env('password')
+              username: Cypress.expose('username'),
+              password: Cypress.expose('password')
             }
           });
           cy.contains('observer');
@@ -75,8 +75,8 @@ describe('Local Cache Deployment', () => {
               'Accept-Encoding': 'gzip, deflate, br'
             },
             auth: {
-              username: Cypress.env('username'),
-              password: Cypress.env('password')
+              username: Cypress.expose('username'),
+              password: Cypress.expose('password')
             }
           });
           cy.contains('Server node')
@@ -94,8 +94,8 @@ describe('Local Cache Deployment', () => {
             'Accept-Encoding': 'gzip, deflate, br'
           },
           auth: {
-            username: Cypress.env('username'),
-            password: Cypress.env('password')
+            username: Cypress.expose('username'),
+            password: Cypress.expose('password')
           }
         });
     cy.contains('local');

@@ -1,6 +1,6 @@
 describe('Global stats', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/global-stats');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/global-stats');
   });
 
   it('successfully loads Global stats', () => {

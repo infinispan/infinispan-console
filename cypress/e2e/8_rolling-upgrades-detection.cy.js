@@ -7,8 +7,8 @@ describe('Rolling Upgrades', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.get('[data-cy=sideBarToggle]').click();
@@ -24,16 +24,16 @@ describe('Rolling Upgrades', () => {
           'Accept-Encoding': 'gzip, deflate, br'
         },
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password')
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password')
         }
       });
       cy.request({
         method: 'GET',
         url: 'http://localhost:31222/rest/v2/container/',
         auth: {
-          username: Cypress.env('username'),
-          password: Cypress.env('password'),
+          username: Cypress.expose('username'),
+          password: Cypress.expose('password'),
         },
         headers: {
           'Content-Type': 'application/json',
@@ -50,10 +50,9 @@ describe('Rolling Upgrades', () => {
         cy.contains(version);
 
         // Restarting the docker container with same version and waiting for 20seconds to server to come up, reloading the page
-        cy.exec(
-          'bash restart_server_with_latest_version.sh > ~/log.log',
-          120000,
-        ).then((result) => {
+        cy.task('execShell', {
+          command: 'bash restart_server_with_latest_version.sh > ~/log.log'
+        }, { timeout: 120000 }).then((result) => {
           cy.log(result.stdout);
         }); //waiting for script to finish max for 3 minutes
         cy.wait(20000);
@@ -77,8 +76,8 @@ describe('Rolling Upgrades', () => {
             'Accept-Encoding': 'gzip, deflate, br'
           },
           auth: {
-            username: Cypress.env('username'),
-            password: Cypress.env('password')
+            username: Cypress.expose('username'),
+            password: Cypress.expose('password')
           }
         });
         cy.get('[data-cy=sideBarToggle]').click();
