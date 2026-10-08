@@ -1,6 +1,6 @@
 describe('Cache Templates Overview', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
   });
 
   it('successfully loads templates', () => {

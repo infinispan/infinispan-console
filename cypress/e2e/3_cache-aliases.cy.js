@@ -1,6 +1,6 @@
 describe('Data Container Caches', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
   });
 
   const cacheNames = ['default']//, 'indexed-cache'];
@@ -29,7 +29,7 @@ describe('Data Container Caches', () => {
       cy.contains('alias1');
 
       // Check detail has aliases
-      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/' + cacheName);
       cy.contains('Aliases');
       cy.contains('alias1');
       cy.get('[data-cy=edit-alias-button]').click();
@@ -44,7 +44,7 @@ describe('Data Container Caches', () => {
       cy.contains('newAliasFor' + cacheName);
       cy.contains('alias1');
 
-      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.login(Cypress.expose('username'), Cypress.expose('password'));
       cy.contains('newAliasFor' + cacheName);
       cy.contains('alias1');
       cy.get('[data-cy=actions-'+ cacheName + ']').click();
@@ -60,7 +60,7 @@ describe('Data Container Caches', () => {
       cy.contains(`Updated ${cacheName} cache: aliases configured successfully`);
 
       // Check detail has aliases
-      cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/' + cacheName);
+      cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/' + cacheName);
       cy.contains('alias1').should('not.exist');
       cy.contains('newAliasFor' + cacheName);
       cy.get('[data-cy=edit-alias-button]').click();
@@ -70,7 +70,7 @@ describe('Data Container Caches', () => {
       cy.contains('newAliasFor' + cacheName).should('not.exist');
       cy.contains('No alias');
 
-      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.login(Cypress.expose('username'), Cypress.expose('password'));
       cy.contains('newAliasFor' + cacheName).should('not.exist');
 
     });

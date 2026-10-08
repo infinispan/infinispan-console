@@ -2,13 +2,13 @@ import { CONF_MUTABLE_INDEXING_INDEXED_ENTITIES } from '../../src/services/cache
 
 describe('Indexed Cache Update', () => {
   before(() => {
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/indexed-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_INDEXING_INDEXED_ENTITIES}&attribute-value='org.infinispan.Person'`,
       'POST');
   });
 
   it('successfully displays and updates indexed entities', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/indexed-cache');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/indexed-cache');
     cy.get('[data-cy=cacheConfigurationTab]').click();
     cy.contains("org.infinispan.Person").should('exist');
     cy.contains("org.infinispan.Car").should('not.exist');
@@ -27,7 +27,7 @@ describe('Indexed Cache Update', () => {
   });
 
   it('tab is invisible for not indexed caches', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/default');
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get('[data-cy=manageConfigEditionLink]').click();
     cy.get('[data-cy=nav-item-Indexed]').should('not.exist');

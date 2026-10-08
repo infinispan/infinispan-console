@@ -1,6 +1,6 @@
 describe('Cluster Membership', () => {
   beforeEach(() => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cluster-membership');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cluster-membership');
   });
 
   it('successfully loads Cluster Membership', () => {
@@ -8,8 +8,8 @@ describe('Cluster Membership', () => {
       method: 'GET',
       url: 'http://localhost:11222/rest/v2/container/',
       auth: {
-        username: Cypress.env('username'),
-        password: Cypress.env('password'),
+        username: Cypress.expose('username'),
+        password: Cypress.expose('password'),
       },
       headers: {
         'Content-Type': 'application/json',

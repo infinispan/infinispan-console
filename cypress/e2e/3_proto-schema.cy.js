@@ -2,10 +2,10 @@ describe('Proto Schema CRUD', () => {
   const schemaName = 'aTestSchema';
   beforeEach(() => {
     // Make sure aTestSchema schema does not exist
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       '/schemas/' + schemaName + '.proto');
     cy.wait(1000);
-    cy.login(Cypress.env('username'), Cypress.env('password'));
+    cy.login(Cypress.expose('username'), Cypress.expose('password'));
   });
 
   function clickTabSchemas() {
@@ -82,8 +82,8 @@ describe('Proto Schema CRUD', () => {
       method: 'PUT',
       url: 'http://localhost:11222/rest/v2/schemas/' + schemaName + '.proto',
       auth: {
-        username: Cypress.env('username'),
-        password: Cypress.env('password')
+        username: Cypress.expose('username'),
+        password: Cypress.expose('password')
       },
       body: 'package org.infinispan; message ExampleProto { optional int32 other_id = 1; }',
       headers: { 'Content-Type': 'text/plain' }

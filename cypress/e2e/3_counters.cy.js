@@ -1,6 +1,6 @@
 describe('Counters CRUD', () => {
     beforeEach(() => {
-      cy.login(Cypress.env('username'), Cypress.env('password'));
+      cy.login(Cypress.expose('username'), Cypress.expose('password'));
     });
 
     function clickTabCounters() {
@@ -9,7 +9,7 @@ describe('Counters CRUD', () => {
 
     it ('successfully adds delta to strong counter', () => {
       // Makes sure strong-5 has value 3
-      cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
         '/counters/strong-5?action=getAndSet&value=3', 'POST');
 
       clickTabCounters()
@@ -31,7 +31,7 @@ describe('Counters CRUD', () => {
 
     it ('successfully resets strong counter', () => {
       // Makes sure strong-5 has value 4
-      cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
         '/counters/strong-5?action=getAndSet&value=4', 'POST');
 
       clickTabCounters()
@@ -53,7 +53,7 @@ describe('Counters CRUD', () => {
 
     it('successfully creates weak & volatile counter', () => {
       // Make sure TestWeakVolatileCounter does not exist
-      cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
         '/counters/TestWeakVolatileCounter');
 
       clickTabCounters()
@@ -79,7 +79,7 @@ describe('Counters CRUD', () => {
 
     it('successfully creates weak & persistent counter', () => {
         // Make sure TestWeakPersistentCounter does not exist
-        cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+        cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
         '/counters/TestWeakPersistentCounter');
         clickTabCounters()
         //Creating new weak counter
@@ -95,7 +95,7 @@ describe('Counters CRUD', () => {
 
     it ('successfully creates strong & persistent counter', () => {
       // Make sure TestStrongPersistentCounter does not exist
-      cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+      cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
         '/counters/TestStrongPersistentCounter');
 
       clickTabCounters()
@@ -113,7 +113,7 @@ describe('Counters CRUD', () => {
 
     it ('successfully creates strong & volatile counter', () => {
         // Make sure TestStrongVolatileCounter does not exist
-        cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+        cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
           '/counters/TestStrongVolatileCounter');
         clickTabCounters()
         //Creating new strong counter
@@ -130,17 +130,17 @@ describe('Counters CRUD', () => {
 
       it ('successfully deletes weak counter', () => {
         // Make sure to delete and create 'weak-counter-for-delete'
-        cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+        cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
           '/counters/weak-counter-for-delete');
         const weakCounter = {
           'weak-counter' : {
             'storage': 'PERSISTENT'
           }
         }
-        cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+        cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
           '/counters/weak-counter-for-delete', 'POST', weakCounter, true);
 
-        cy.login(Cypress.env('username'), Cypress.env('password'));
+        cy.login(Cypress.expose('username'), Cypress.expose('password'));
         clickTabCounters()
         cy.contains('weak-counter-for-delete');
         cy.get("[data-cy=actions-weak-counter-for-delete").click();
@@ -152,7 +152,7 @@ describe('Counters CRUD', () => {
         cy.contains("Counter weak-counter-for-delete has been deleted.");
         cy.get('[name=close-alert-button]').click(); //Closing alert popup.
         // make sure we reload all. sometimes delete happens after retrieve
-        cy.login(Cypress.env('username'), Cypress.env('password'));
+        cy.login(Cypress.expose('username'), Cypress.expose('password'));
         clickTabCounters()
         cy.get("[data-cy=counter-search]").type('weak-counter-for-delete')
         cy.contains('No result found');
@@ -160,16 +160,16 @@ describe('Counters CRUD', () => {
 
       it ('successfully deletes strong counter', () => {
         // Make sure to delete and create 'strong-counter-for-delete'
-        cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+        cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
           '/counters/strong-counter-for-delete');
         const strongCounter = {
           'strong-counter' : {
             'storage': 'PERSISTENT'
           }
         }
-        cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+        cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
           '/counters/strong-counter-for-delete', 'POST', strongCounter, true);
-        cy.login(Cypress.env('username'), Cypress.env('password'));
+        cy.login(Cypress.expose('username'), Cypress.expose('password'));
         clickTabCounters()
         cy.contains('strong-counter-for-delete');
         cy.get("[data-cy=actions-strong-counter-for-delete").click();
@@ -179,7 +179,7 @@ describe('Counters CRUD', () => {
         cy.contains("Counter strong-counter-for-delete has been deleted.");
         cy.get('[name=close-alert-button]').click(); //Closing alert popup.
         // make sure we reload all. sometimes delete happens after retrieve
-        cy.login(Cypress.env('username'), Cypress.env('password'));
+        cy.login(Cypress.expose('username'), Cypress.expose('password'));
         clickTabCounters()
         cy.get("[data-cy=counter-search]").type('strong-counter-for-delete')
         cy.contains('No result found');

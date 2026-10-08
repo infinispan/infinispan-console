@@ -1,17 +1,17 @@
 describe('Cache Detail Overview', () => {
   before(() => {
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       '/caches/indexed-cache/maria',
       'DELETE');
     const payload = '{"_type": "org.infinispan.Person", "name": "Maria", "age": "9", "city": "Paris"}';
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       '/caches/indexed-cache/maria',
       'POST', payload);
   });
 
   beforeEach(() => {
     // Opening indexed-cache cache page.
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/indexed-cache');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/indexed-cache');
   });
 
   it('successfully updates by query', () => {

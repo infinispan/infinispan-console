@@ -2,7 +2,7 @@ describe('My Permissions page', () => {
   const observerUserName = 'observer';
 
   it('successfully displays permissions for admin user', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/my-permissions');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/my-permissions');
 
     // Identity card
     cy.contains('Identity').should('exist');
@@ -48,7 +48,7 @@ describe('My Permissions page', () => {
   });
 
   it('successfully displays permissions for observer user', () => {
-    cy.login(observerUserName, Cypress.env('password'), '/my-permissions');
+    cy.login(observerUserName, Cypress.expose('password'), '/my-permissions');
 
     // Identity card
     cy.contains('Identity').should('exist');
@@ -78,7 +78,7 @@ describe('My Permissions page', () => {
   });
 
   it('observer navigating to a cache without read permission sees not authorized', () => {
-    cy.login(observerUserName, Cypress.env('password'), '/cache/a-rbac-test-cache');
+    cy.login(observerUserName, Cypress.expose('password'), '/cache/a-rbac-test-cache');
 
     // Should display the not authorized page
     cy.contains('Unauthorized access').should('exist');

@@ -4,13 +4,13 @@ import {
 
 describe('RBAC Cache Update', () => {
   before(() => {
-    cy.cleanupTest(Cypress.env('username'), Cypress.env('password'),
+    cy.cleanupTest(Cypress.expose('username'), Cypress.expose('password'),
       `/caches/a-rbac-test-cache?action=set-mutable-attribute&attribute-name=${CONF_MUTABLE_SECURITY_AUTHORIZATION_ROLES}&attribute-value=observer admin monitor`,
       'POST');
   });
 
   it('successfully displays and updates roles', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/a-rbac-test-cache');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/a-rbac-test-cache');
     cy.get('[data-cy=cacheConfigurationTab]').click();
     cy.contains("observer").should('exist');
     cy.contains("admin").should('exist');
@@ -33,7 +33,7 @@ describe('RBAC Cache Update', () => {
   });
 
   it('tab is invisible for not secured caches', () => {
-    cy.login(Cypress.env('username'), Cypress.env('password'), '/cache/default');
+    cy.login(Cypress.expose('username'), Cypress.expose('password'), '/cache/default');
     cy.get('[data-cy=detailCacheActions]').click();
     cy.get('[data-cy=manageConfigEditionLink]').click();
     cy.get('[data-cy=nav-item-Security]').should('not.exist');
