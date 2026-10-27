@@ -149,8 +149,12 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
     setCreateSchemaFormOpen(false);
   };
 
-  const createSchemaButtonHelper = () => {
-    return (
+  const buildCreateSchemaButton = (toolbar: boolean) => {
+    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
+      return <></>;
+    }
+
+    const button = (
       <Button
         variant={ButtonVariant.primary}
         aria-label="create-schema-button"
@@ -162,13 +166,12 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
         {t('schemas.create-button')}
       </Button>
     );
-  };
 
-  const buildCreateSchemaButton = () => {
-    if (!ConsoleServices.security().hasConsoleACL(ConsoleACL.CREATE, connectedUser)) {
-      return '';
+    if (toolbar) {
+      return <ToolbarItem>{button}</ToolbarItem>;
     }
-    return <ToolbarItem>{createSchemaButtonHelper()}</ToolbarItem>;
+
+    return <EmptyStateFooter>{button}</EmptyStateFooter>;
   };
 
   const displaySchemaStatus = (error: ProtoError | undefined) => {
@@ -227,7 +230,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
       headingLevel="h4"
     >
       <EmptyStateBody>{t('schemas.no-schema-body')}</EmptyStateBody>
-      <EmptyStateFooter>{createSchemaButtonHelper()}</EmptyStateFooter>
+      {buildCreateSchemaButton(false)}
     </EmptyState>
   );
 
@@ -270,7 +273,7 @@ const ProtobufSchemasDisplay = (props: { setProtoSchemasCount: (number) => void;
           <ToolbarContent>
             <ToolbarItem>{searchInput}</ToolbarItem>
             <ToolbarItem variant={ToolbarItemVariant.separator}></ToolbarItem>
-            {buildCreateSchemaButton()}
+            {buildCreateSchemaButton(true)}
             <ToolbarItem variant="pagination">{toolbarPagination('down')}</ToolbarItem>
           </ToolbarContent>
         </Toolbar>
