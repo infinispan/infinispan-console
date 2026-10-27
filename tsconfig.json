@@ -24,7 +24,8 @@
       "@utils/*": ["./src/app/utils/*"],
     },
     "importHelpers": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["jest", "node"]
   },
   "include": [
     "src/**/*.ts",
