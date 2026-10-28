@@ -116,7 +116,7 @@
     "keycloak-js": "^26",
     "react": "^18",
     "react-dom": "^18",
-    "react-i18next": "^17.0.16",
+    "react-i18next": "^17.1.8",
     "react-syntax-highlighter": "^16.1.2",
     "victory": "37.3.6"
   }
