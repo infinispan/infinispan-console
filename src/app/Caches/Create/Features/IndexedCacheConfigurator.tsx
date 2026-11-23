@@ -52,7 +52,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
   useEffect(() => {
     setValidEntity(indexedEntities.length > 0 ? 'success' : 'error');
 
-    setConfiguration((prevState) => {
+    setConfiguration((prevState: { feature: any }) => {
       return {
         ...prevState,
         feature: {
@@ -74,7 +74,7 @@ const IndexedCacheConfigurator = (props: { isEnabled: boolean }) => {
     return indexedEntities.length > 0 && configuration.basic.encoding === EncodingType.Protobuf;
   };
 
-  const onSelectSchemas = (selection) => {
+  const onSelectSchemas = (selection: string) => {
     if (indexedEntities.includes(selection))
       setIndexedEntities(indexedEntities.filter((entity) => entity !== selection));
     else setIndexedEntities([...indexedEntities, selection]);
