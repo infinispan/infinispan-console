@@ -118,6 +118,6 @@
     "react-dom": "^18",
     "react-i18next": "^17.1.10",
     "react-syntax-highlighter": "^16.1.2",
-    "victory": "37.4.1"
+    "victory": "38.0.0"
   }
 }
